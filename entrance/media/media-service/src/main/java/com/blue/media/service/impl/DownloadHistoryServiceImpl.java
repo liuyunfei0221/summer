@@ -302,8 +302,8 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
                                         downloadHistoryToDownloadHistoryInfo(dh, ofNullable(attachmentIdAndNameMapping.get(dh.getAttachmentId())).orElse(EMPTY_DATA.value),
                                                 ofNullable(memberIdAndNameMapping.get(dh.getCreator())).orElse(EMPTY_DATA.value)))
                                 .collect(toList()))
-                                .flatMap(downloadHistoryInfo ->
-                                        just(new PageModelResponse<>(downloadHistoryInfo, tuple2.getT2())));
+                                .flatMap(downloadHistoryInfos ->
+                                        just(new PageModelResponse<>(downloadHistoryInfos, tuple2.getT2())));
                     })
                     :
                     just(new PageModelResponse<>(emptyList(), tuple2.getT2()));

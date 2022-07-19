@@ -5,9 +5,12 @@ import com.blue.basic.constant.verify.BusinessType;
 import com.blue.basic.constant.verify.VerifyType;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.captcha.component.CaptchaProcessor;
+import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.redis.component.BlueLeakyBucketRateLimiter;
 import com.blue.verify.component.verify.inter.VerifyHandler;
 import com.blue.verify.config.deploy.ImageVerifyDeploy;
+import com.blue.verify.repository.entity.VerifyHistory;
+import com.blue.verify.service.inter.VerifyHistoryService;
 import com.blue.verify.service.inter.VerifyService;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.util.FastByteArrayOutputStream;
@@ -26,10 +29,11 @@ import java.util.function.UnaryOperator;
 
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.BlueRandomGenerator.generate;
-import static com.blue.basic.common.base.CommonFunctions.SERVER_REQUEST_IDENTITY_SYNC_KEY_GETTER;
+import static com.blue.basic.common.base.CommonFunctions.*;
 import static com.blue.basic.constant.common.BlueHeader.VERIFY_KEY;
 import static com.blue.basic.constant.common.RateLimitKeyPrefix.IMAGE_VERIFY_RATE_LIMIT_KEY_PRE;
-import static com.blue.basic.constant.common.ResponseElement.*;
+import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.basic.constant.common.ResponseElement.TOO_MANY_REQUESTS;
 import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION;
 import static com.blue.basic.constant.verify.VerifyType.IMAGE;
 import static java.time.temporal.ChronoUnit.MILLIS;
@@ -46,7 +50,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "unused"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "unused", "JavadocDeclaration"})
 public class ImageVerifyHandler implements VerifyHandler {
 
     private static final Logger LOGGER = getLogger(ImageVerifyHandler.class);
@@ -56,6 +60,10 @@ public class ImageVerifyHandler implements VerifyHandler {
     private final VerifyService verifyService;
 
     private final BlueLeakyBucketRateLimiter blueLeakyBucketRateLimiter;
+
+    private final BlueIdentityProcessor blueIdentityProcessor;
+
+    private final VerifyHistoryService verifyHistoryService;
 
     private ExecutorService executorService;
 
@@ -68,10 +76,12 @@ public class ImageVerifyHandler implements VerifyHandler {
     private final long SEND_INTERVAL_MILLIS;
 
     public ImageVerifyHandler(CaptchaProcessor captchaProcessor, VerifyService verifyService, BlueLeakyBucketRateLimiter blueLeakyBucketRateLimiter,
-                              ExecutorService executorService, ImageVerifyDeploy imageVerifyDeploy) {
+                              BlueIdentityProcessor blueIdentityProcessor, VerifyHistoryService verifyHistoryService, ExecutorService executorService, ImageVerifyDeploy imageVerifyDeploy) {
         this.captchaProcessor = captchaProcessor;
         this.verifyService = verifyService;
         this.blueLeakyBucketRateLimiter = blueLeakyBucketRateLimiter;
+        this.blueIdentityProcessor = blueIdentityProcessor;
+        this.verifyHistoryService = verifyHistoryService;
         this.executorService = executorService;
 
         Integer keyLength = imageVerifyDeploy.getKeyLength();
@@ -150,6 +160,30 @@ public class ImageVerifyHandler implements VerifyHandler {
         }
     };
 
+    /**
+     * recode verify history
+     *
+     * @param businessType
+     * @param destination
+     * @param verify
+     * @param serverRequest
+     */
+    private void recordVerify(BusinessType businessType, String destination, String verify, ServerRequest serverRequest) {
+        VerifyHistory verifyHistory = new VerifyHistory();
+
+        verifyHistory.setId(blueIdentityProcessor.generate(VerifyHistory.class));
+        verifyHistory.setVerifyType(IMAGE.identity);
+        verifyHistory.setBusinessType(businessType.identity);
+        verifyHistory.setDestination(destination);
+        verifyHistory.setVerify(verify);
+        verifyHistory.setRequestIp(getIp(serverRequest));
+        verifyHistory.setCreateTime(TIME_STAMP_GETTER.get());
+
+        verifyHistoryService.insertVerifyHistory(verifyHistory)
+                .doOnError(throwable -> LOGGER.info("imageVerifyHandler.recordVerify() failed, verifyHistory = {}, throwable = {}", verifyHistory, throwable))
+                .subscribe(vh -> LOGGER.info("imageVerifyHandler.recordVerify() -> insertVerifyHistory(verifyHistory), vh = {}", vh));
+    }
+
     @Override
     public Mono<String> handle(BusinessType businessType, String destination) {
         LOGGER.info("ImageVerifyHandler -> Mono<String> handle(BusinessType businessType, String destination), businessType = {}, destination = {}", businessType, destination);
@@ -179,6 +213,8 @@ public class ImageVerifyHandler implements VerifyHandler {
                                                                     .header(CACHE_CONTROL, CACHE_CONTROL_VALUE)
                                                                     .header(VERIFY_KEY.name, verifyKey)
                                                                     .body(fromResource(resource))
+                                                    ).doOnSuccess(ig ->
+                                                            recordVerify(businessType, destination, verify, serverRequest)
                                                     );
                                         })
                                 :

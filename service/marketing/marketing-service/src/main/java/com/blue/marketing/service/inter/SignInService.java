@@ -13,6 +13,13 @@ import reactor.core.publisher.Mono;
 public interface SignInService {
 
     /**
+     * refresh day rewards
+     *
+     * @return
+     */
+    Mono<Void> refreshDayRewards();
+
+    /**
      * sign in today
      *
      * @param memberId

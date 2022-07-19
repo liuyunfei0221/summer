@@ -60,7 +60,7 @@ public class StringContentTemplateWriter implements TemplateWriter {
         if (isBlank(templateName))
             throw new RuntimeException("templateName can't be blank");
 
-        if (templateNames.contains(templateName))
+        if (!templateNames.contains(templateName))
             throw new RuntimeException("the template which name is " + templateName + " doesn't exist");
 
         try {

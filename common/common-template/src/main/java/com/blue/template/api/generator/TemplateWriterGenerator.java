@@ -1,8 +1,8 @@
 package com.blue.template.api.generator;
 
-import com.blue.template.api.conf.PackageFileWriterConf;
+import com.blue.template.api.conf.UriFileWriterConf;
 import com.blue.template.api.conf.StringContentWriterConf;
-import com.blue.template.component.PackageFileTemplateWriter;
+import com.blue.template.component.UriFileTemplateWriter;
 import com.blue.template.component.StringContentTemplateWriter;
 
 /**
@@ -14,13 +14,13 @@ import com.blue.template.component.StringContentTemplateWriter;
 public class TemplateWriterGenerator {
 
     /**
-     * generate package file template writer
+     * generate uri file template writer
      *
-     * @param packageFileWriterConf
+     * @param uriFileWriterConf
      * @return
      */
-    public static PackageFileTemplateWriter generatePackageFileTemplateWriter(PackageFileWriterConf packageFileWriterConf) {
-        return new PackageFileTemplateWriter(packageFileWriterConf);
+    public static UriFileTemplateWriter generateUriFileTemplateWriter(UriFileWriterConf uriFileWriterConf) {
+        return new UriFileTemplateWriter(uriFileWriterConf);
     }
 
     /**

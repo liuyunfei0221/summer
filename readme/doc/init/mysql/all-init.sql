@@ -400,6 +400,8 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
 
 -- verify manage
 
+       (130001, 'POST', 'blue-verify', '/manager/verifyHistories', '', b'1', b'1', b'1', b'1', b'1', 2,
+        'verify history list of manager', 'verify history list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- auth api
 

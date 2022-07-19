@@ -530,7 +530,7 @@ public class AuthServiceImpl implements AuthService {
                                 .map(idAndResourceMapping::get)
                                 .filter(Objects::nonNull)
                                 .map(r ->
-                                        RES_KEY_GENERATOR.apply(r.getRequestMethod().toUpperCase().intern(),
+                                        INIT_RES_KEY_GENERATOR.apply(r.getRequestMethod().toUpperCase().intern(),
                                                 REAL_URI_GETTER.apply(r).intern()).intern())
                                 .collect(toSet()), (a, b) -> a));
 
@@ -550,7 +550,7 @@ public class AuthServiceImpl implements AuthService {
 
         Map<String, Resource> tempKeyAndResourceMapping = resources
                 .parallelStream()
-                .collect(toMap(r -> RES_KEY_GENERATOR.apply(r.getRequestMethod().toUpperCase().intern(),
+                .collect(toMap(r -> INIT_RES_KEY_GENERATOR.apply(r.getRequestMethod().toUpperCase().intern(),
                         REAL_URI_GETTER.apply(r).intern()), r -> r, (a, b) -> a));
 
         List<Role> roles = roleListCf.join();

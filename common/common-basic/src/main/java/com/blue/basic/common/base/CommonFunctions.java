@@ -33,6 +33,7 @@ import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.basic.constant.common.SummerAttr.LANGUAGE;
 import static com.blue.basic.constant.common.Symbol.*;
 import static com.blue.basic.constant.common.Symbol.LIST_ELEMENT_SEPARATOR;
+import static com.blue.basic.constant.common.SyncKeyPrefix.REQUEST_SYNC_PRE;
 import static java.lang.Double.compare;
 import static java.lang.System.currentTimeMillis;
 import static java.time.Instant.now;
@@ -51,7 +52,7 @@ import static reactor.core.publisher.Mono.just;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"WeakerAccess", "JavaDoc", "AliControlFlowStatementWithoutBraces", "unused", "UastIncorrectHttpHeaderInspection"})
+@SuppressWarnings({"WeakerAccess", "JavaDoc", "AliControlFlowStatementWithoutBraces", "unused", "UastIncorrectHttpHeaderInspection", "ConstantConditions"})
 public class CommonFunctions {
 
     public static final Gson GSON = new GsonBuilder().serializeNulls().create();
@@ -67,15 +68,16 @@ public class CommonFunctions {
             URL_PAR_SEPARATOR = Symbol.URL_PAR_SEPARATOR.identity,
             UNKNOWN = Symbol.UNKNOWN.identity;
 
-    private static final String X_FORWARDED_FOR = "X-Forwarded-For";
-    private static final String PROXY_CLIENT_IP = "Proxy-Client-IP";
-    private static final String WL_PROXY_CLIENT_IP = "WL-Proxy-Client-IP";
-    private static final String HTTP_CLIENT_IP = "HTTP_CLIENT_IP";
-    private static final String HTTP_X_FORWARDED_FOR = "HTTP_X_FORWARDED_FOR";
-    private static final String X_REAL_IP = "X-Real-IP";
-
-    public static final String DEFAULT_LANGUAGE = lowerCase(LANGUAGE.replace(PAR_CONCATENATION, PAR_CONCATENATION_DATABASE_URL.identity));
-    public static final List<String> DEFAULT_LANGUAGES = singletonList(DEFAULT_LANGUAGE);
+    /**
+     * ip headers
+     */
+    public static final String
+            X_FORWARDED_FOR = "X-Forwarded-For",
+            PROXY_CLIENT_IP = "Proxy-Client-IP",
+            WL_PROXY_CLIENT_IP = "WL-Proxy-Client-IP",
+            HTTP_CLIENT_IP = "HTTP_CLIENT_IP",
+            HTTP_X_FORWARDED_FOR = "HTTP_X_FORWARDED_FOR",
+            X_REAL_IP = "X-Real-IP";
 
     /**
      * auth header key
@@ -83,9 +85,9 @@ public class CommonFunctions {
     public static final String AUTHORIZATION = BlueHeader.AUTHORIZATION.name;
 
     /**
-     * rate limiter key prefix
+     * request sync key prefix
      */
-    public static final String RATE_LIMIT_KEY_PRE = Symbol.RATE_LIMIT_KEY_PRE.identity;
+    public static final String REQ_SYNC_PRE = REQUEST_SYNC_PRE.prefix;
 
     /**
      * random key length
@@ -102,7 +104,20 @@ public class CommonFunctions {
      */
     public static final Clock CLOCK = SummerAttr.CLOCK;
 
-    private static final int MAX_LANGUAGE_COUNT = 32;
+    /**
+     * max language list from request
+     */
+    public static final int MAX_LANGUAGE_COUNT = 16;
+
+    /**
+     * default language
+     */
+    public static final String DEFAULT_LANGUAGE = lowerCase(LANGUAGE.replace(PAR_CONCATENATION, PAR_CONCATENATION_DATABASE_URL.identity));
+
+    /**
+     * default languages
+     */
+    public static final List<String> DEFAULT_LANGUAGES = singletonList(DEFAULT_LANGUAGE);
 
     /**
      * valid freemarker /.html/.js
@@ -166,8 +181,8 @@ public class CommonFunctions {
 
         String maybePathVariable = substring(uri, lastPartIdx);
 
-        int left = indexOf(maybePathVariable, "{");
-        int right = lastIndexOf(maybePathVariable, "}");
+        int left = indexOf(maybePathVariable, OPEN_BRACE.identity);
+        int right = lastIndexOf(maybePathVariable, CLOSE_BRACE.identity);
 
         if (left == NON_EXIST_INDEX && right == NON_EXIST_INDEX)
             return uri.intern();
@@ -200,9 +215,9 @@ public class CommonFunctions {
             (upperCase(method).intern() + PAR_CONCATENATION + uri).intern();
 
     /**
-     * resource key generator
+     * resource key generator for init
      */
-    public static final BinaryOperator<String> RES_KEY_GENERATOR = (method, uri) ->
+    public static final BinaryOperator<String> INIT_RES_KEY_GENERATOR = (method, uri) ->
             ((upperCase(method).intern() + PAR_CONCATENATION + INIT_REST_URI_PROCESSOR.apply(uri).intern()).intern()).intern();
 
     /**
@@ -214,9 +229,10 @@ public class CommonFunctions {
     };
 
     /**
-     * valid schema
+     * valid http schema
      */
-    public static final Set<String> VALID_SCHEMAS = of("https", "http")
+    public static final Set<String> VALID_HTTP_SCHEMAS = of(HttpSchema.values())
+            .map(hs -> hs.schema)
             .map(StringUtils::lowerCase)
             .collect(toSet());
 
@@ -232,7 +248,7 @@ public class CommonFunctions {
      * schema asserter
      */
     public static final Consumer<String> SCHEMA_ASSERTER = schema -> {
-        if (VALID_SCHEMAS.contains(lowerCase(schema)))
+        if (VALID_HTTP_SCHEMAS.contains(lowerCase(schema)))
             return;
 
         throw new BlueException(BAD_REQUEST);
@@ -286,18 +302,24 @@ public class CommonFunctions {
         throw new BlueException(DECRYPTION_FAILED);
     };
 
-    private static final Set<String> UN_PACK_KEYS = Stream.of(REQUEST_BODY.key, RESPONSE_STATUS.key, RESPONSE_BODY.key)
+    /**
+     * attr keys without package to event
+     */
+    private static final Set<String> ATTR_KEYS_NOT_PACKAGE = Stream.of(REQUEST_BODY.key, RESPONSE_STATUS.key, RESPONSE_BODY.key)
             .collect(toSet());
 
-    private static final List<String> ATTR_KEYS = Stream.of(BlueDataAttrKey.values())
-            .map(ak -> ak.key).filter(k -> !UN_PACK_KEYS.contains(k)).collect(toList());
+    /**
+     * attr keys package to event
+     */
+    private static final List<String> ATTR_KEYS_TO_PACKAGE = Stream.of(BlueDataAttrKey.values())
+            .map(ak -> ak.key).filter(k -> !ATTR_KEYS_NOT_PACKAGE.contains(k)).collect(toList());
 
     /**
      * package info to event
      */
     public static final BiConsumer<Map<String, Object>, DataEvent> EVENT_PACKAGER = (attributes, dataEvent) -> {
         if (isNotNull(attributes) && isNotNull(dataEvent))
-            ATTR_KEYS.forEach(key -> ofNullable(attributes.get(key)).map(String::valueOf)
+            ATTR_KEYS_TO_PACKAGE.forEach(key -> ofNullable(attributes.get(key)).map(String::valueOf)
                     .ifPresent(metadata -> dataEvent.addData(key, metadata)));
     };
 
@@ -336,6 +358,9 @@ public class CommonFunctions {
         return GSON.toJson(new EncryptedResponse(encryptByPublicKey(GSON.toJson(new DataWrapper(responseBody, TIME_STAMP_GETTER.get())), secKey)));
     }
 
+    /**
+     * ip tester
+     */
     private static final Predicate<String> VALID_IP_PRE = h ->
             isNotBlank(h) && !UNKNOWN.equalsIgnoreCase(h);
 
@@ -343,7 +368,7 @@ public class CommonFunctions {
      * request identity getter func
      */
     public static final Function<ServerHttpRequest, Mono<String>> SERVER_HTTP_REQUEST_IDENTITY_SYNC_KEY_GETTER = request ->
-            just(RATE_LIMIT_KEY_PRE + ofNullable(request)
+            just(REQ_SYNC_PRE + ofNullable(request)
                     .map(ServerHttpRequest::getHeaders)
                     .map(h -> h.getFirst(AUTHORIZATION))
                     .filter(StringUtils::isNotEmpty)
@@ -356,7 +381,7 @@ public class CommonFunctions {
      * request identity getter func
      */
     public static final Function<ServerRequest, Mono<String>> SERVER_REQUEST_IDENTITY_SYNC_KEY_GETTER = request ->
-            just(RATE_LIMIT_KEY_PRE + ofNullable(request)
+            just(REQ_SYNC_PRE + ofNullable(request)
                     .map(ServerRequest::headers)
                     .map(h -> h.firstHeader(AUTHORIZATION))
                     .filter(StringUtils::isNotEmpty)
@@ -369,7 +394,7 @@ public class CommonFunctions {
      * request ip getter func
      */
     public static final Function<ServerHttpRequest, Mono<String>> SERVER_HTTP_REQUEST_IP_SYNC_KEY_GETTER = request ->
-            just(RATE_LIMIT_KEY_PRE + ofNullable(request)
+            just(REQ_SYNC_PRE + ofNullable(request)
                     .map(req -> just(getIp(req)))
                     .orElseThrow(() -> new BlueException(BAD_REQUEST)));
 
@@ -377,26 +402,27 @@ public class CommonFunctions {
      * request ip getter func
      */
     public static final Function<ServerRequest, Mono<String>> SERVER_REQUEST_IP_SYNC_KEY_GETTER = request ->
-            just(RATE_LIMIT_KEY_PRE + ofNullable(request)
+            just(REQ_SYNC_PRE + ofNullable(request)
                     .map(CommonFunctions::getIp)
                     .orElseThrow(() -> new BlueException(BAD_REQUEST)));
 
-    private static List<String> parseAcceptLanguages(List<Locale.LanguageRange> languageRanges) {
-        if (isNotNull(languageRanges) && languageRanges.size() <= MAX_LANGUAGE_COUNT)
-            return languageRanges.stream()
-                    .sorted((a, b) -> compare(b.getWeight(), a.getWeight()))
-                    .map(Locale.LanguageRange::getRange)
-                    .collect(toList());
-
-        return DEFAULT_LANGUAGES;
-    }
+    /**
+     * locale language to language list
+     */
+    private static final Function<List<Locale.LanguageRange>, List<String>> LOCALE_LANGUAGES_PARSER = languageRanges ->
+            isNotNull(languageRanges) && languageRanges.size() <= MAX_LANGUAGE_COUNT ?
+                    languageRanges.stream()
+                            .sorted((a, b) -> compare(b.getWeight(), a.getWeight()))
+                            .map(Locale.LanguageRange::getRange)
+                            .collect(toList())
+                    :
+                    DEFAULT_LANGUAGES;
 
     public static final Function<ExceptionElement, ExceptionResponse> EXP_ELE_2_RESP = exceptionElement ->
             isNotNull(exceptionElement) ?
                     new ExceptionResponse(exceptionElement.getCode(), exceptionElement.getMessage())
                     :
                     new ExceptionResponse(INTERNAL_SERVER_ERROR.code, resolveToMessage(INTERNAL_SERVER_ERROR.code));
-
 
     /**
      * package response result for reactive
@@ -552,7 +578,6 @@ public class CommonFunctions {
 
         String ip = headers.firstHeader(X_FORWARDED_FOR);
         if (VALID_IP_PRE.test(ip))
-            //noinspection ConstantConditions
             return split(ip, LIST_ELEMENT_SEPARATOR.identity)[0];
 
         ip = headers.firstHeader(PROXY_CLIENT_IP);
@@ -628,11 +653,7 @@ public class CommonFunctions {
      * @return
      */
     public static List<String> getAcceptLanguages(ServerRequest serverRequest) {
-        try {
-            return parseAcceptLanguages(serverRequest.headers().acceptLanguage());
-        } catch (Exception e) {
-            return DEFAULT_LANGUAGES;
-        }
+        return LOCALE_LANGUAGES_PARSER.apply(serverRequest.headers().acceptLanguage());
     }
 
     /**
@@ -642,11 +663,7 @@ public class CommonFunctions {
      * @return
      */
     public static List<String> getAcceptLanguages(ServerHttpRequest serverHttpRequest) {
-        try {
-            return parseAcceptLanguages(serverHttpRequest.getHeaders().getAcceptLanguage());
-        } catch (Exception e) {
-            return DEFAULT_LANGUAGES;
-        }
+        return LOCALE_LANGUAGES_PARSER.apply(serverHttpRequest.getHeaders().getAcceptLanguage());
     }
 
     /**

@@ -72,6 +72,36 @@ identity:
   paddingScheduledDelayMillis: 15000
 
 
+mongo:
+  addressAttrs:
+    - address: 101.43.192.155
+      port: 27017
+  auth: true
+  authBase: admin
+  userName: blue
+  password: LiuZhiyi20200805
+  database: verify
+  retryReads: false
+  retryWrites: false
+  applicationName: blue-media
+  uuidRepresentation: JAVA_LEGACY
+  socketConnectTimeoutMillis: 60000
+  socketReadTimeoutMillis: 60000
+  socketReceiveBufferSize: 10000
+  socketSendBufferSize: 256
+  clusterConnectionMode: SINGLE
+  clusterType: STANDALONE
+  clusterLocalThresholdMillis: 60000
+  serverSelectionTimeoutMillis: 60000
+  poolMaxSize: 12
+  poolMinSize: 2
+  poolMaxWaitTimeMillis: 60000
+  poolMaxConnectionLifeTimeMillis: 60000
+  poolMaxConnectionIdleTimeMillis: 60000
+  poolMaintenanceInitialDelayMillis: 60000
+  poolMaintenanceFrequencyMillis: 60000
+
+
 executor:
   corePoolSize: 2
   maximumPoolSize: 8

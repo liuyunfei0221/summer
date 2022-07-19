@@ -28,15 +28,15 @@ public final class InvalidLocalAccessConsumer implements BlueLifecycle {
 
     private static final Logger LOGGER = getLogger(InvalidLocalAccessConsumer.class);
 
-    private final AccessInfoCache accessInfoCache;
-
     private final BlueConsumerConfig blueConsumerConfig;
+
+    private final AccessInfoCache accessInfoCache;
 
     private BluePulsarConsumer<InvalidLocalAccessEvent> invalidLocalAccessConsumer;
 
-    public InvalidLocalAccessConsumer(AccessInfoCache accessInfoCache, BlueConsumerConfig blueConsumerConfig) {
-        this.accessInfoCache = accessInfoCache;
+    public InvalidLocalAccessConsumer(BlueConsumerConfig blueConsumerConfig, AccessInfoCache accessInfoCache) {
         this.blueConsumerConfig = blueConsumerConfig;
+        this.accessInfoCache = accessInfoCache;
     }
 
     @PostConstruct

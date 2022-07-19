@@ -3,7 +3,7 @@ package com.blue.marketing.service.impl;
 import com.blue.basic.constant.marketing.BlueMarketingThreshold;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.marketing.api.model.*;
-import com.blue.marketing.config.deploy.BlockingDeploy;
+import com.blue.marketing.config.deploy.RewardsDeploy;
 import com.blue.marketing.event.producer.MarketingEventProducer;
 import com.blue.marketing.repository.entity.Reward;
 import com.blue.marketing.repository.entity.SignRewardTodayRelation;
@@ -36,8 +36,7 @@ import static java.lang.Thread.onSpinWait;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static reactor.core.publisher.Mono.error;
-import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -59,14 +58,16 @@ public class SignInServiceImpl implements SignInService {
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public SignInServiceImpl(RewardService rewardService, BlueBitMarker blueBitMarker,
-                             MarketingEventProducer marketingEventProducer, BlockingDeploy blockingDeploy) {
+                             MarketingEventProducer marketingEventProducer, RewardsDeploy rewardsDeploy) {
         this.rewardService = rewardService;
         this.blueBitMarker = blueBitMarker;
         this.marketingEventProducer = marketingEventProducer;
 
-        MAX_WAITING_FOR_REFRESH = blockingDeploy.getMillis();
+        MAX_WAITING_FOR_REFRESH = rewardsDeploy.getMaxBlockingMillis();
+        MAX_BACKUP = rewardsDeploy.getMaxBackup();
+
         LocalDate now = LocalDate.now();
-        DAY_REWARD_INITIALIZER.accept(now.getYear(), now.getMonthValue());
+        DAY_REWARD_REFRESHER.accept(now.getYear(), now.getMonthValue());
     }
 
     private static final int CURRENT_MONTH_RECORD_IDX = 0;
@@ -82,6 +83,8 @@ public class SignInServiceImpl implements SignInService {
 
     private static long MAX_WAITING_FOR_REFRESH;
 
+    private static int MAX_BACKUP;
+
     /**
      * current month
      */
@@ -92,10 +95,22 @@ public class SignInServiceImpl implements SignInService {
     private static final Function<Reward, SignInReward> REWARD_CONVERTER = r ->
             new SignInReward(isNotNull(r) ? new RewardInfo(r.getId(), r.getName(), r.getDetail(), r.getLink()) : null);
 
-    private final BiConsumer<Integer, Integer> DAY_REWARD_INITIALIZER = (year, month) -> {
-        List<SignRewardTodayRelation> relations = rewardService.selectRelationByYearAndMonth(year, month);
+    private static final int MIN_MONTH = 1, MAX_MONTH = 12;
+
+    private final BiConsumer<Integer, Integer> DAY_REWARD_REFRESHER = (year, month) -> {
+        int tarYear = year;
+        int tarMonth = month;
+        int backUp = 0;
+
+        List<SignRewardTodayRelation> relations;
+        while (isEmpty(relations = rewardService.selectRelationByYearAndMonth(tarYear, tarMonth)) && ++backUp < MAX_BACKUP)
+            if (--tarMonth < MIN_MONTH) {
+                tarMonth = MAX_MONTH;
+                --tarYear;
+            }
+
         if (isEmpty(relations))
-            throw new RuntimeException("The reward information of the current month is not configured");
+            throw new RuntimeException("The reward information of the current or backup month is not configured");
 
         List<Reward> rewards = rewardService.selectRewardByIds(relations.stream()
                 .map(SignRewardTodayRelation::getRewardId).collect(toList()));
@@ -121,7 +136,7 @@ public class SignInServiceImpl implements SignInService {
         tempMapping = null;
     };
 
-    private final Supplier<String> BLOCKER = () -> {
+    private final Supplier<Boolean> BLOCKER = () -> {
         if (rewardInfoRefreshing) {
             long start = currentTimeMillis();
             while (rewardInfoRefreshing) {
@@ -130,7 +145,7 @@ public class SignInServiceImpl implements SignInService {
                 onSpinWait();
             }
         }
-        return "refreshed";
+        return true;
     };
 
     private final Function<Integer, SignInReward> TODAY_REWARD_GETTER = day -> {
@@ -150,7 +165,7 @@ public class SignInServiceImpl implements SignInService {
         if (CURRENT_MONTH != month)
             synchronized (SignInServiceImpl.class) {
                 if (CURRENT_MONTH != month)
-                    DAY_REWARD_INITIALIZER.accept(year, month);
+                    DAY_REWARD_REFRESHER.accept(year, month);
             }
         return TODAY_REWARD_GETTER.apply(day);
     }
@@ -190,6 +205,17 @@ public class SignInServiceImpl implements SignInService {
 
         return new MonthSignInRewardRecord(recordInfo, total);
     };
+
+    /**
+     * refresh day rewards
+     *
+     * @return
+     */
+    @Override
+    public Mono<Void> refreshDayRewards() {
+        LocalDate now = LocalDate.now();
+        return fromRunnable(() -> DAY_REWARD_REFRESHER.accept(now.getYear(), now.getMonthValue())).then();
+    }
 
     /**
      * sign in today

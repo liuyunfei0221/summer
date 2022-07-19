@@ -4,10 +4,13 @@ import com.blue.basic.constant.verify.BusinessType;
 import com.blue.basic.constant.verify.VerifyType;
 import com.blue.basic.model.common.BlueResponse;
 import com.blue.basic.model.exps.BlueException;
+import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.redis.component.BlueLeakyBucketRateLimiter;
 import com.blue.verify.component.verify.inter.VerifyHandler;
 import com.blue.verify.config.deploy.SmsVerifyDeploy;
+import com.blue.verify.repository.entity.VerifyHistory;
 import com.blue.verify.service.inter.SmsService;
+import com.blue.verify.service.inter.VerifyHistoryService;
 import com.blue.verify.service.inter.VerifyService;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -20,11 +23,11 @@ import java.util.function.UnaryOperator;
 
 import static com.blue.basic.common.base.BlueChecker.isBlank;
 import static com.blue.basic.common.base.BlueChecker.isNull;
-import static com.blue.basic.common.base.CommonFunctions.SERVER_REQUEST_IP_SYNC_KEY_GETTER;
-import static com.blue.basic.common.base.CommonFunctions.success;
+import static com.blue.basic.common.base.CommonFunctions.*;
 import static com.blue.basic.constant.common.BlueHeader.VERIFY_KEY;
 import static com.blue.basic.constant.common.RateLimitKeyPrefix.SMS_VERIFY_RATE_LIMIT_KEY_PRE;
-import static com.blue.basic.constant.common.ResponseElement.*;
+import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.basic.constant.common.ResponseElement.TOO_MANY_REQUESTS;
 import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION;
 import static com.blue.basic.constant.verify.VerifyType.SMS;
 import static java.time.temporal.ChronoUnit.MILLIS;
@@ -39,7 +42,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "unused", "DuplicatedCode"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "unused", "DuplicatedCode", "JavadocDeclaration"})
 public class SmsVerifyHandler implements VerifyHandler {
 
     private static final Logger LOGGER = getLogger(SmsVerifyHandler.class);
@@ -50,16 +53,22 @@ public class SmsVerifyHandler implements VerifyHandler {
 
     private final BlueLeakyBucketRateLimiter blueLeakyBucketRateLimiter;
 
+    private final BlueIdentityProcessor blueIdentityProcessor;
+
+    private final VerifyHistoryService verifyHistoryService;
+
     private final int VERIFY_LEN;
     private final Duration DEFAULT_DURATION;
     private final int ALLOW;
     private final long SEND_INTERVAL_MILLIS;
 
     public SmsVerifyHandler(SmsService smsService, VerifyService verifyService, BlueLeakyBucketRateLimiter blueLeakyBucketRateLimiter,
-                            SmsVerifyDeploy smsVerifyDeploy) {
+                            BlueIdentityProcessor blueIdentityProcessor, VerifyHistoryService verifyHistoryService, SmsVerifyDeploy smsVerifyDeploy) {
         this.smsService = smsService;
         this.verifyService = verifyService;
         this.blueLeakyBucketRateLimiter = blueLeakyBucketRateLimiter;
+        this.blueIdentityProcessor = blueIdentityProcessor;
+        this.verifyHistoryService = verifyHistoryService;
 
         Integer verifyLength = smsVerifyDeploy.getVerifyLength();
         if (isNull(verifyLength) || verifyLength < 1)
@@ -97,6 +106,30 @@ public class SmsVerifyHandler implements VerifyHandler {
         return type.identity + PAR_CONCATENATION.identity + key;
     };
 
+    /**
+     * recode verify history
+     *
+     * @param businessType
+     * @param destination
+     * @param verify
+     * @param serverRequest
+     */
+    private void recordVerify(BusinessType businessType, String destination, String verify, ServerRequest serverRequest) {
+        VerifyHistory verifyHistory = new VerifyHistory();
+
+        verifyHistory.setId(blueIdentityProcessor.generate(VerifyHistory.class));
+        verifyHistory.setVerifyType(SMS.identity);
+        verifyHistory.setBusinessType(businessType.identity);
+        verifyHistory.setDestination(destination);
+        verifyHistory.setVerify(verify);
+        verifyHistory.setRequestIp(getIp(serverRequest));
+        verifyHistory.setCreateTime(TIME_STAMP_GETTER.get());
+
+        verifyHistoryService.insertVerifyHistory(verifyHistory)
+                .doOnError(throwable -> LOGGER.info("smsVerifyHandler.recordVerify() failed, verifyHistory = {}, throwable = {}", verifyHistory, throwable))
+                .subscribe(vh -> LOGGER.info("smsVerifyHandler.recordVerify() -> insertVerifyHistory(verifyHistory), vh = {}", vh));
+    }
+
     @Override
     public Mono<String> handle(BusinessType businessType, String destination) {
         LOGGER.info("SmsVerifyHandler -> Mono<String> handle(BusinessType businessType, String destination), businessType = {}, destination = {}", businessType, destination);
@@ -126,12 +159,13 @@ public class SmsVerifyHandler implements VerifyHandler {
                 .flatMap(allowed ->
                         allowed ?
                                 this.handle(businessType, destination)
-                                        .flatMap(vp ->
+                                        .flatMap(verify ->
                                                 ok().contentType(APPLICATION_JSON)
                                                         .header(VERIFY_KEY.name, destination)
                                                         .body(success(serverRequest)
                                                                 , BlueResponse.class)
-                                        )
+                                                        .doOnSuccess(ig ->
+                                                                recordVerify(businessType, destination, verify, serverRequest)))
                                 :
                                 error(() -> new BlueException(TOO_MANY_REQUESTS)));
     }

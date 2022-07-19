@@ -48,6 +48,11 @@ public enum BlueTopic {
     SIGN_EXPIRE("signExpire"),
 
     /**
+     * Refresh rewards
+     */
+    REWARDS_REFRESH("refreshRewards"),
+
+    /**
      * Marketing/Promotional Events
      */
     MARKETING("marketing");

@@ -28,15 +28,15 @@ public final class InvalidAuthConsumer implements BlueLifecycle {
 
     private static final Logger LOGGER = getLogger(InvalidAuthConsumer.class);
 
-    private final AuthControlService authControlService;
-
     private final BlueConsumerConfig blueConsumerConfig;
+
+    private final AuthControlService authControlService;
 
     private BluePulsarConsumer<InvalidAuthEvent> invalidAuthConsumer;
 
-    public InvalidAuthConsumer(AuthControlService authControlService, BlueConsumerConfig blueConsumerConfig) {
-        this.authControlService = authControlService;
+    public InvalidAuthConsumer(BlueConsumerConfig blueConsumerConfig, AuthControlService authControlService) {
         this.blueConsumerConfig = blueConsumerConfig;
+        this.authControlService = authControlService;
     }
 
     @PostConstruct

@@ -9,6 +9,11 @@ package com.blue.basic.constant.common;
 public enum SyncKeyPrefix {
 
     /**
+     * request sync key prefix
+     */
+    REQUEST_SYNC_PRE("REQ_SYNC:"),
+
+    /**
      * access update sync prefix
      */
     ACCESS_UPDATE_PRE("ACCESS_UPDATE:"),
@@ -26,7 +31,7 @@ public enum SyncKeyPrefix {
     /**
      * member role relation update sync key prefix
      */
-    MEMBER_ROLE_REL_UPDATE_PRE("MEMBER_ROLE_REL_UPDATING:"),
+    MEMBER_ROLE_REL_UPDATE_PRE("MEMBER_ROLE_REL_UPDATE:"),
 
     /**
      * operate address sync key pre

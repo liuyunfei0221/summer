@@ -5,7 +5,6 @@
 -- lake
 use lake;
 
-
 -- risk
 use risk;
 
@@ -91,3 +90,14 @@ db.getCollection("qrCodeConfig").insert( {
     _class: "com.blue.media.repository.entity.QrCodeConfig"
 } );
 db.qrCodeConfig.createIndex({"type":1});
+
+
+-- verify
+use verify;
+
+db.verifyHistory.createIndex({"id":1});
+db.verifyHistory.createIndex({"verifyType":1});
+db.verifyHistory.createIndex({"businessType":1});
+db.verifyHistory.createIndex({"destination":1});
+db.verifyHistory.createIndex({"requestIp":1});
+db.verifyHistory.createIndex({"createTime":-1});

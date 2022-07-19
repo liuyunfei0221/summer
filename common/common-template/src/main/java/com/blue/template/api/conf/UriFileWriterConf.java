@@ -1,18 +1,18 @@
 package com.blue.template.api.conf;
 
 /**
- * package file writer config
+ * uri file writer config
  *
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "JavaDoc"})
-public interface PackageFileWriterConf {
+public interface UriFileWriterConf {
 
     /**
-     * format path
+     * uri
      *
      * @return
      */
-    String getBasePackagePath();
+    String getUri();
 
 }

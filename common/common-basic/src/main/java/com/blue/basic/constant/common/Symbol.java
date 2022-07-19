@@ -9,11 +9,6 @@ package com.blue.basic.constant.common;
 public enum Symbol {
 
     /**
-     * request identity prefix
-     */
-    RATE_LIMIT_KEY_PRE("RL:"),
-
-    /**
      * unknown identity
      */
     UNKNOWN("UNKNOWN"),
@@ -81,8 +76,37 @@ public enum Symbol {
     /**
      * pair separator
      */
-    PAIR_SEPARATOR(";");
+    PAIR_SEPARATOR(";"),
 
+    /**
+     * open brace
+     */
+    OPEN_BRACE("{"),
+
+    /**
+     * close brace
+     */
+    CLOSE_BRACE("}"),
+
+    /**
+     * open parenthesis
+     */
+    OPEN_PARENTHESIS("("),
+
+    /**
+     * close parenthesis
+     */
+    CLOSE_PARENTHESIS(")"),
+
+    /**
+     * open bracket
+     */
+    OPEN_BRACKET("["),
+
+    /**
+     * close bracket
+     */
+    CLOSE_BRACKET("]");
 
     /**
      * identity
