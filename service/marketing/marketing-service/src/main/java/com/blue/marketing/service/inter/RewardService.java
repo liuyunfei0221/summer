@@ -2,7 +2,6 @@ package com.blue.marketing.service.inter;
 
 
 import com.blue.marketing.repository.entity.Reward;
-import com.blue.marketing.repository.entity.SignRewardTodayRelation;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,14 +29,5 @@ public interface RewardService {
      * @return
      */
     List<Reward> selectRewardByIds(List<Long> ids);
-
-    /**
-     * select reward-date-relation by date
-     *
-     * @param year
-     * @param month
-     * @return
-     */
-    List<SignRewardTodayRelation> selectRelationByYearAndMonth(Integer year, Integer month);
 
 }

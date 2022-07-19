@@ -2,9 +2,7 @@ package com.blue.marketing.service.impl;
 
 import com.blue.basic.model.exps.BlueException;
 import com.blue.marketing.repository.entity.Reward;
-import com.blue.marketing.repository.entity.SignRewardTodayRelation;
 import com.blue.marketing.repository.mapper.RewardMapper;
-import com.blue.marketing.repository.mapper.SignRewardTodayRelationMapper;
 import com.blue.marketing.service.inter.RewardService;
 import org.springframework.stereotype.Service;
 import reactor.util.Logger;
@@ -13,10 +11,12 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
-import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.common.base.BlueChecker.isEmpty;
+import static com.blue.basic.common.base.BlueChecker.isInvalidIdentity;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
 import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
-import static com.blue.basic.constant.common.ResponseElement.*;
+import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
+import static com.blue.basic.constant.common.ResponseElement.PAYLOAD_TOO_LARGE;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -35,12 +35,9 @@ public class RewardServiceImpl implements RewardService {
 
     private final RewardMapper rewardMapper;
 
-    private final SignRewardTodayRelationMapper signRewardTodayRelationMapper;
-
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public RewardServiceImpl(RewardMapper rewardMapper, SignRewardTodayRelationMapper signRewardTodayRelationMapper) {
+    public RewardServiceImpl(RewardMapper rewardMapper) {
         this.rewardMapper = rewardMapper;
-        this.signRewardTodayRelationMapper = signRewardTodayRelationMapper;
     }
 
     /**
@@ -76,22 +73,6 @@ public class RewardServiceImpl implements RewardService {
                 .stream().map(rewardMapper::selectByIds)
                 .flatMap(List::stream)
                 .collect(toList());
-    }
-
-    /**
-     * select reward-date-relation by date
-     *
-     * @param year
-     * @param month
-     * @return
-     */
-    @Override
-    public List<SignRewardTodayRelation> selectRelationByYearAndMonth(Integer year, Integer month) {
-        LOGGER.info("List<SignRewardTodayRelation> selectRelationByYearAndMonth(Integer year, Integer month), year = {}, month = {}", year, month);
-        if (isNull(year) || isNull(month) || year < 1 || month < 1)
-            throw new BlueException(BAD_REQUEST);
-
-        return signRewardTodayRelationMapper.selectByYearAndMonth(year, month);
     }
 
 }

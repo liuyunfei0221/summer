@@ -9,6 +9,7 @@ import com.blue.marketing.repository.entity.Reward;
 import com.blue.marketing.repository.entity.SignRewardTodayRelation;
 import com.blue.marketing.service.inter.RewardService;
 import com.blue.marketing.service.inter.SignInService;
+import com.blue.marketing.service.inter.SignRewardTodayRelationService;
 import com.blue.redis.component.BlueBitMarker;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -52,14 +53,17 @@ public class SignInServiceImpl implements SignInService {
 
     private RewardService rewardService;
 
+    private SignRewardTodayRelationService signRewardTodayRelationService;
+
     private final BlueBitMarker blueBitMarker;
 
     private final MarketingEventProducer marketingEventProducer;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public SignInServiceImpl(RewardService rewardService, BlueBitMarker blueBitMarker,
+    public SignInServiceImpl(RewardService rewardService, SignRewardTodayRelationService signRewardTodayRelationService, BlueBitMarker blueBitMarker,
                              MarketingEventProducer marketingEventProducer, RewardsDeploy rewardsDeploy) {
         this.rewardService = rewardService;
+        this.signRewardTodayRelationService = signRewardTodayRelationService;
         this.blueBitMarker = blueBitMarker;
         this.marketingEventProducer = marketingEventProducer;
 
@@ -103,7 +107,7 @@ public class SignInServiceImpl implements SignInService {
         int backUp = 0;
 
         List<SignRewardTodayRelation> relations;
-        while (isEmpty(relations = rewardService.selectRelationByYearAndMonth(tarYear, tarMonth)) && ++backUp < MAX_BACKUP)
+        while (isEmpty(relations = signRewardTodayRelationService.selectRelationByYearAndMonth(tarYear, tarMonth)) && ++backUp < MAX_BACKUP)
             if (--tarMonth < MIN_MONTH) {
                 tarMonth = MAX_MONTH;
                 --tarYear;
