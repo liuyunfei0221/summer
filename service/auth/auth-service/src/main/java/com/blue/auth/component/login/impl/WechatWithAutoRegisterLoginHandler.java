@@ -45,6 +45,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
+import static reactor.core.publisher.Mono.defer;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
@@ -111,27 +112,24 @@ public class WechatWithAutoRegisterLoginHandler implements LoginHandler {
                 .filter(BlueChecker::isNotBlank).orElse(WE.identity);
         assertSource(source, false);
 
-        Map<String, Object> extra = new HashMap<>(2);
-
         //TODO
         // like Mono<String> phoneMono = rpcWechatServiceConsumer.getInfo(encryptedData, iv, jsCode);
+        Map<String, Object> extra = new HashMap<>(2);
         return credentialService.getCredentialMonoByCredentialAndType(phone, WECHAT_AUTO_REGISTER.identity)
-                .flatMap(credentialOpt ->
-                        credentialOpt.map(credential -> {
-                                    extra.put(NEW_MEMBER.key, false);
-                                    return rpcMemberBasicServiceConsumer.getMemberBasicInfoByPrimaryKey(credential.getMemberId())
-                                            .flatMap(mbi -> {
-                                                MEMBER_STATUS_ASSERTER.accept(mbi);
-                                                return authService.generateAuthMono(mbi.getId(), WECHAT_AUTO_REGISTER.identity, loginParam.getDeviceType().intern());
-                                            });
-                                })
-                                .orElseGet(() -> {
-                                    extra.put(NEW_MEMBER.key, true);
-                                    return just(roleService.getDefaultRole().getId())
-                                            .flatMap(roleId -> just(autoRegisterService.autoRegisterMemberInfo(CREDENTIALS_GENERATOR.apply(phone), roleId, source))
-                                                    .flatMap(mbi -> authService.generateAuthMono(mbi.getId(), singletonList(roleId), WECHAT_AUTO_REGISTER.identity, loginParam.getDeviceType().intern())));
-                                })
-                )
+                .flatMap(credential -> {
+                    extra.put(NEW_MEMBER.key, false);
+                    return rpcMemberBasicServiceConsumer.getMemberBasicInfoByPrimaryKey(credential.getMemberId())
+                            .flatMap(mbi -> {
+                                MEMBER_STATUS_ASSERTER.accept(mbi);
+                                return authService.generateAuthMono(mbi.getId(), WECHAT_AUTO_REGISTER.identity, loginParam.getDeviceType().intern());
+                            });
+                })
+                .switchIfEmpty(defer(() -> {
+                    extra.put(NEW_MEMBER.key, true);
+                    return just(roleService.getDefaultRole().getId())
+                            .flatMap(roleId -> just(autoRegisterService.autoRegisterMemberInfo(CREDENTIALS_GENERATOR.apply(phone), roleId, source))
+                                    .flatMap(mbi -> authService.generateAuthMono(mbi.getId(), singletonList(roleId), WECHAT_AUTO_REGISTER.identity, loginParam.getDeviceType().intern())));
+                }))
                 .flatMap(ma ->
                         ok().contentType(APPLICATION_JSON)
                                 .header(AUTHORIZATION.name, ma.getAuth())
@@ -140,7 +138,6 @@ public class WechatWithAutoRegisterLoginHandler implements LoginHandler {
                                 .header(RESPONSE_EXTRA.name, GSON.toJson(extra))
                                 .body(success(serverRequest)
                                         , BlueResponse.class));
-
     }
 
     @Override

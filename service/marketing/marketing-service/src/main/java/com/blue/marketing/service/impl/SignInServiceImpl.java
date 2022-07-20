@@ -97,7 +97,7 @@ public class SignInServiceImpl implements SignInService {
     private static volatile Map<Integer, SignInReward> TODAY_REWARD_MAPPING;
 
     private static final Function<Reward, SignInReward> REWARD_CONVERTER = r ->
-            new SignInReward(isNotNull(r) ? new RewardInfo(r.getId(), r.getName(), r.getDetail(), r.getLink()) : null);
+            new SignInReward(isNotNull(r) ? new RewardInfo(r.getId(), r.getName(), r.getDetail(), r.getLink(), r.getType(), r.getData()) : null);
 
     private static final int MIN_MONTH = 1, MAX_MONTH = 12;
 

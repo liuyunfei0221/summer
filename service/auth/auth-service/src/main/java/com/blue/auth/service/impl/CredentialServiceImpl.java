@@ -30,6 +30,7 @@ import static java.util.stream.Collectors.*;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.justOrEmpty;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -85,7 +86,7 @@ public class CredentialServiceImpl implements CredentialService {
      */
     @Override
     public Optional<Credential> getCredentialByCredentialAndType(String credential, String credentialType) {
-        LOGGER.info("Mono<Optional<Credential>> getCredentialByCredentialAndType(String credential, String credentialType), credential = {}, credentialType = {}", credential, credentialType);
+        LOGGER.info("Optional<Credential> getCredentialByCredentialAndType(String credential, String credentialType), credential = {}, credentialType = {}", credential, credentialType);
         if (isBlank(credential))
             throw new BlueException(EMPTY_PARAM);
         assertCredentialType(credentialType, false);
@@ -101,8 +102,8 @@ public class CredentialServiceImpl implements CredentialService {
      * @return
      */
     @Override
-    public Mono<Optional<Credential>> getCredentialMonoByCredentialAndType(String credential, String credentialType) {
-        return just(getCredentialByCredentialAndType(credential, credentialType));
+    public Mono<Credential> getCredentialMonoByCredentialAndType(String credential, String credentialType) {
+        return justOrEmpty(credentialMapper.getByCredentialAndType(credential, credentialType));
     }
 
     /**
@@ -172,8 +173,8 @@ public class CredentialServiceImpl implements CredentialService {
      * @return
      */
     @Override
-    public Mono<Optional<Credential>> getCredentialMonoByMemberIdAndType(Long memberId, String credentialType) {
-        return just(getCredentialByMemberIdAndType(memberId, credentialType));
+    public Mono<Credential> getCredentialMonoByMemberIdAndType(Long memberId, String credentialType) {
+        return justOrEmpty(credentialMapper.getByMemberIdAndType(memberId, credentialType));
     }
 
     /**

@@ -60,8 +60,7 @@ import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Stream.of;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
-import static reactor.core.publisher.Mono.just;
-import static reactor.core.publisher.Mono.zip;
+import static reactor.core.publisher.Mono.*;
 
 /**
  * style service impl
@@ -428,8 +427,8 @@ public class StyleServiceImpl implements StyleService {
      * @return
      */
     @Override
-    public Mono<Optional<Style>> getStyleMono(Long id) {
-        return just(this.getStyle(id));
+    public Mono<Style> getStyleMono(Long id) {
+        return justOrEmpty(styleMapper.selectByPrimaryKey(id));
     }
 
     /**

@@ -77,7 +77,7 @@ public interface RoleService {
      * @param id
      * @return
      */
-    Mono<Optional<Role>> getRoleMono(Long id);
+    Mono<Role> getRoleMono(Long id);
 
     /**
      * select roles by ids

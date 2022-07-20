@@ -110,7 +110,7 @@ public interface MemberBasicService {
      * @param phone
      * @return
      */
-    Mono<Optional<MemberBasic>> getMemberBasicMonoByPhone(String phone);
+    Mono<MemberBasic> getMemberBasicMonoByPhone(String phone);
 
     /**
      * query member mono by email
@@ -118,7 +118,7 @@ public interface MemberBasicService {
      * @param email
      * @return
      */
-    Mono<Optional<MemberBasic>> getMemberBasicMonoByEmail(String email);
+    Mono<MemberBasic> getMemberBasicMonoByEmail(String email);
 
     /**
      * query member by id with assert

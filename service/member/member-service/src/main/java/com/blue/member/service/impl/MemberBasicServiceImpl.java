@@ -493,12 +493,12 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<Optional<MemberBasic>> getMemberBasicMonoByPhone(String phone) {
-        LOGGER.info("Mono<Optional<MemberBasic>> getMemberBasicMonoByPhone(String phone), phone = {}", phone);
+    public Mono<MemberBasic> getMemberBasicMonoByPhone(String phone) {
+        LOGGER.info("Mono<MemberBasic> getMemberBasicMonoByPhone(String phone), phone = {}", phone);
         if (isBlank(phone))
             throw new BlueException(BAD_REQUEST);
 
-        return just(ofNullable(memberBasicMapper.selectByPhone(phone)));
+        return justOrEmpty(memberBasicMapper.selectByPhone(phone));
     }
 
     /**
@@ -508,12 +508,12 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<Optional<MemberBasic>> getMemberBasicMonoByEmail(String email) {
-        LOGGER.info("Mono<Optional<MemberBasic>> getMemberBasicMonoByEmail(String email), email = {}", email);
+    public Mono<MemberBasic> getMemberBasicMonoByEmail(String email) {
+        LOGGER.info("Mono<MemberBasic> getMemberBasicMonoByEmail(String email), email = {}", email);
         if (isBlank(email))
             throw new BlueException(BAD_REQUEST);
 
-        return just(ofNullable(memberBasicMapper.selectByEmail(email)));
+        return justOrEmpty(memberBasicMapper.selectByEmail(email));
     }
 
     /**

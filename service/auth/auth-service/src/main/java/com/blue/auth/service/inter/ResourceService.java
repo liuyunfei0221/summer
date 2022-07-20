@@ -61,7 +61,7 @@ public interface ResourceService {
      * @param id
      * @return
      */
-    Mono<Optional<Resource>> getResourceMono(Long id);
+    Mono<Resource> getResourceMono(Long id);
 
     /**
      * select all resources

@@ -132,8 +132,8 @@ public class EventRecordServiceImpl implements EventRecordService {
      * @return
      */
     @Override
-    public Mono<Optional<EventRecord>> getEventRecordMono(Long id) {
-        return just(this.getEventRecord(id));
+    public Mono<EventRecord> getEventRecordMono(Long id) {
+        return justOrEmpty(eventRecordMapper.selectByPrimaryKey(id));
     }
 
     /**

@@ -77,7 +77,7 @@ public interface StyleService {
      * @param id
      * @return
      */
-    Mono<Optional<Style>> getStyleMono(Long id);
+    Mono<Style> getStyleMono(Long id);
 
     /**
      * select all style

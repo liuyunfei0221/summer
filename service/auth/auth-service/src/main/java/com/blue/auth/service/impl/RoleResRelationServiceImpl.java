@@ -286,13 +286,8 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
             throw new BlueException(INVALID_IDENTITY);
 
         return roleService.getRoleMono(roleId)
-                .flatMap(roleOpt ->
-                        roleOpt.map(role ->
-                                        just(AuthModelConverters.ROLE_2_ROLE_INFO_CONVERTER.apply(role)))
-                                .orElseGet(() -> {
-                                    LOGGER.error("role info doesn't exist, roleId = {}", roleId);
-                                    return error(() -> new BlueException(DATA_NOT_EXIST));
-                                })
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
+                .map((ROLE_2_ROLE_INFO_CONVERTER)
                 ).flatMap(roleInfo ->
                         this.selectResIdsMonoByRoleId(roleId)
                                 .flatMap(resourceService::selectResourceMonoByIds)
@@ -343,14 +338,9 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
             throw new BlueException(INVALID_IDENTITY);
 
         return resourceService.getResourceMono(resId)
-                .flatMap(resOpt ->
-                        resOpt.map(res ->
-                                        just(RESOURCE_2_RESOURCE_INFO_CONVERTER.apply(res)))
-                                .orElseGet(() -> {
-                                    LOGGER.error("res info doesn't exist, resId = {}", resId);
-                                    return error(() -> new BlueException(DATA_NOT_EXIST));
-                                })
-                ).flatMap(resourceInfo ->
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
+                .map(RESOURCE_2_RESOURCE_INFO_CONVERTER)
+                .flatMap(resourceInfo ->
                         this.selectRoleIdsMonoByResId(resId)
                                 .flatMap(roleService::selectRoleMonoByIds)
                                 .flatMap(roles -> just(roles.stream().map(ROLE_2_ROLE_INFO_CONVERTER).collect(toList())))

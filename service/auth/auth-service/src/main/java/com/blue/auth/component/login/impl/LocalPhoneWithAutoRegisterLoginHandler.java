@@ -30,8 +30,8 @@ import static com.blue.auth.constant.LoginAttribute.IDENTITY;
 import static com.blue.basic.common.base.BlueChecker.isInvalidStatus;
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.CommonFunctions.GSON;
-import static com.blue.basic.common.base.ConstantProcessor.assertSource;
 import static com.blue.basic.common.base.CommonFunctions.success;
+import static com.blue.basic.common.base.ConstantProcessor.assertSource;
 import static com.blue.basic.common.base.SourceGetter.getSource;
 import static com.blue.basic.constant.auth.CredentialType.*;
 import static com.blue.basic.constant.auth.ExtraKey.NEW_MEMBER;
@@ -46,6 +46,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
+import static reactor.core.publisher.Mono.defer;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
@@ -108,31 +109,28 @@ public class LocalPhoneWithAutoRegisterLoginHandler implements LoginHandler {
 
         String phone = loginParam.getData(IDENTITY.key);
 
-        Map<String, Object> extra = new HashMap<>(2);
-
         String source = ofNullable(getSource(serverRequest))
                 .filter(BlueChecker::isNotBlank).orElse(APP.identity);
         assertSource(source, false);
 
         //TODO
         // like Mono<String> phoneMono = rpcLocalPhoneServiceConsumer.getInfo(encryptedData, iv, jsCode);
+        Map<String, Object> extra = new HashMap<>(2);
         return credentialService.getCredentialMonoByCredentialAndType(phone, LOCAL_PHONE_AUTO_REGISTER.identity)
-                .flatMap(credentialOpt ->
-                        credentialOpt.map(credential -> {
-                                    extra.put(NEW_MEMBER.key, false);
-                                    return rpcMemberBasicServiceConsumer.getMemberBasicInfoByPrimaryKey(credential.getMemberId())
-                                            .flatMap(mbi -> {
-                                                MEMBER_STATUS_ASSERTER.accept(mbi);
-                                                return authService.generateAuthMono(mbi.getId(), LOCAL_PHONE_AUTO_REGISTER.identity, loginParam.getDeviceType().intern());
-                                            });
-                                })
-                                .orElseGet(() -> {
-                                    extra.put(NEW_MEMBER.key, true);
-                                    return just(roleService.getDefaultRole().getId())
-                                            .flatMap(roleId -> just(autoRegisterService.autoRegisterMemberInfo(CREDENTIALS_GENERATOR.apply(phone), roleId, source))
-                                                    .flatMap(mbi -> authService.generateAuthMono(mbi.getId(), singletonList(roleId), LOCAL_PHONE_AUTO_REGISTER.identity, loginParam.getDeviceType().intern())));
-                                })
-                )
+                .flatMap(credential -> {
+                    extra.put(NEW_MEMBER.key, false);
+                    return rpcMemberBasicServiceConsumer.getMemberBasicInfoByPrimaryKey(credential.getMemberId())
+                            .flatMap(mbi -> {
+                                MEMBER_STATUS_ASSERTER.accept(mbi);
+                                return authService.generateAuthMono(mbi.getId(), LOCAL_PHONE_AUTO_REGISTER.identity, loginParam.getDeviceType().intern());
+                            });
+                })
+                .switchIfEmpty(defer(() -> {
+                    extra.put(NEW_MEMBER.key, true);
+                    return just(roleService.getDefaultRole().getId())
+                            .flatMap(roleId -> just(autoRegisterService.autoRegisterMemberInfo(CREDENTIALS_GENERATOR.apply(phone), roleId, source))
+                                    .flatMap(mbi -> authService.generateAuthMono(mbi.getId(), singletonList(roleId), LOCAL_PHONE_AUTO_REGISTER.identity, loginParam.getDeviceType().intern())));
+                }))
                 .flatMap(ma ->
                         ok().contentType(APPLICATION_JSON)
                                 .header(AUTHORIZATION.name, ma.getAuth())
@@ -141,7 +139,6 @@ public class LocalPhoneWithAutoRegisterLoginHandler implements LoginHandler {
                                 .header(RESPONSE_EXTRA.name, GSON.toJson(extra))
                                 .body(success(serverRequest)
                                         , BlueResponse.class));
-
     }
 
     @Override

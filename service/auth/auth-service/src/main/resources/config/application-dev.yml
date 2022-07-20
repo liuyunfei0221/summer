@@ -337,8 +337,8 @@ executor:
 
 
 message:
-  messageLocation: E:\tempFile\i18n\message
-  elementLocation: E:\tempFile\i18n\element
+  messageLocation: classpath:i18n/message
+  elementLocation: classpath:i18n/element
 
 
 scheduler:

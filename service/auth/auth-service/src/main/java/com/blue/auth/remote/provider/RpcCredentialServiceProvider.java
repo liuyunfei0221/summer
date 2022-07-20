@@ -6,7 +6,6 @@ import com.blue.auth.service.inter.CredentialService;
 import com.blue.basic.model.exps.BlueException;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
-import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
@@ -14,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static com.blue.auth.converter.AuthModelConverters.CREDENTIAL_2_CREDENTIAL_INFO_CONVERTER;
 import static com.blue.basic.constant.common.ResponseElement.DATA_NOT_EXIST;
-import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.*;
 
 /**
  * rpc credential provider
@@ -52,9 +51,8 @@ public class RpcCredentialServiceProvider implements RpcCredentialService {
     public CompletableFuture<CredentialInfo> getCredentialByMemberIdAndType(Long memberId, String credentialType) {
         return just(true).publishOn(scheduler)
                 .flatMap(v -> credentialService.getCredentialMonoByMemberIdAndType(memberId, credentialType))
-                .flatMap(cOpt -> cOpt.map(CREDENTIAL_2_CREDENTIAL_INFO_CONVERTER)
-                        .map(Mono::just)
-                        .orElseThrow(() -> new BlueException(DATA_NOT_EXIST)))
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
+                .map(CREDENTIAL_2_CREDENTIAL_INFO_CONVERTER)
                 .toFuture();
     }
 
@@ -83,9 +81,8 @@ public class RpcCredentialServiceProvider implements RpcCredentialService {
     public CompletableFuture<CredentialInfo> getCredentialByCredentialAndType(String credential, String credentialType) {
         return just(true).publishOn(scheduler)
                 .flatMap(v -> credentialService.getCredentialMonoByCredentialAndType(credential, credentialType))
-                .flatMap(cOpt -> cOpt.map(CREDENTIAL_2_CREDENTIAL_INFO_CONVERTER)
-                        .map(Mono::just)
-                        .orElseThrow(() -> new BlueException(DATA_NOT_EXIST)))
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
+                .map(CREDENTIAL_2_CREDENTIAL_INFO_CONVERTER)
                 .toFuture();
     }
 

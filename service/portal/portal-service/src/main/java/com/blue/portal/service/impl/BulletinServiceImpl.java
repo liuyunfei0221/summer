@@ -58,8 +58,7 @@ import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Stream.of;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
-import static reactor.core.publisher.Mono.just;
-import static reactor.core.publisher.Mono.zip;
+import static reactor.core.publisher.Mono.*;
 
 /**
  * bulletin service impl
@@ -395,8 +394,8 @@ public class BulletinServiceImpl implements BulletinService {
      * @return
      */
     @Override
-    public Mono<Optional<Bulletin>> getBulletinMono(Long id) {
-        return just(this.getBulletin(id));
+    public Mono<Bulletin> getBulletinMono(Long id) {
+        return justOrEmpty(bulletinMapper.selectByPrimaryKey(id));
     }
 
     /**

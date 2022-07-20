@@ -6,7 +6,6 @@ import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.service.inter.MemberBasicService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
-import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
@@ -14,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static com.blue.basic.constant.common.ResponseElement.DATA_NOT_EXIST;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_BASIC_INFO;
-import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.*;
 
 /**
  * rpc member basic provider
@@ -78,9 +77,8 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
     public CompletableFuture<MemberBasicInfo> getMemberBasicInfoByPhone(String phone) {
         return just(phone).publishOn(scheduler)
                 .flatMap(memberBasicService::getMemberBasicMonoByPhone)
-                .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
-                        .map(Mono::just)
-                        .orElseThrow(() -> new BlueException(DATA_NOT_EXIST)))
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
+                .map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                 .toFuture();
     }
 
@@ -94,9 +92,8 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
     public CompletableFuture<MemberBasicInfo> getMemberBasicInfoByEmail(String email) {
         return just(email).publishOn(scheduler)
                 .flatMap(memberBasicService::getMemberBasicMonoByEmail)
-                .flatMap(mbOpt -> mbOpt.map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
-                        .map(Mono::just)
-                        .orElseThrow(() -> new BlueException(DATA_NOT_EXIST)))
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
+                .map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                 .toFuture();
     }
 

@@ -1,10 +1,18 @@
 package com.blue.marketing.service.impl;
 
+import com.blue.basic.model.common.PageModelRequest;
+import com.blue.basic.model.common.PageModelResponse;
 import com.blue.basic.model.exps.BlueException;
+import com.blue.marketing.api.model.RewardInfo;
+import com.blue.marketing.api.model.RewardManagerInfo;
+import com.blue.marketing.model.RewardCondition;
+import com.blue.marketing.model.RewardInsertParam;
+import com.blue.marketing.model.RewardUpdateParam;
 import com.blue.marketing.repository.entity.Reward;
 import com.blue.marketing.repository.mapper.RewardMapper;
 import com.blue.marketing.service.inter.RewardService;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.util.List;
@@ -40,6 +48,21 @@ public class RewardServiceImpl implements RewardService {
         this.rewardMapper = rewardMapper;
     }
 
+    @Override
+    public RewardInfo insertReward(RewardInsertParam rewardInsertParam, Long operatorId) {
+        return null;
+    }
+
+    @Override
+    public RewardInfo updateReward(RewardUpdateParam rewardUpdateParam, Long operatorId) {
+        return null;
+    }
+
+    @Override
+    public RewardInfo deleteReward(Long id) {
+        return null;
+    }
+
     /**
      * select reward by id
      *
@@ -53,6 +76,11 @@ public class RewardServiceImpl implements RewardService {
             throw new BlueException(INVALID_IDENTITY);
 
         return ofNullable(rewardMapper.selectByPrimaryKey(id));
+    }
+
+    @Override
+    public Mono<Reward> getRewardMono(Long id) {
+        return null;
     }
 
     /**
@@ -75,4 +103,28 @@ public class RewardServiceImpl implements RewardService {
                 .collect(toList());
     }
 
+    @Override
+    public Mono<List<Reward>> selectRewardMonoByIds(List<Long> ids) {
+        return null;
+    }
+
+    @Override
+    public Mono<List<Reward>> selectReward() {
+        return null;
+    }
+
+    @Override
+    public Mono<List<Reward>> selectRewardMonoByLimitAndCondition(Long limit, Long rows, RewardCondition rewardCondition) {
+        return null;
+    }
+
+    @Override
+    public Mono<Long> countRewardMonoByCondition(RewardCondition rewardCondition) {
+        return null;
+    }
+
+    @Override
+    public Mono<PageModelResponse<RewardManagerInfo>> selectRewardManagerInfoPageMonoByPageAndCondition(PageModelRequest<RewardCondition> pageModelRequest) {
+        return null;
+    }
 }

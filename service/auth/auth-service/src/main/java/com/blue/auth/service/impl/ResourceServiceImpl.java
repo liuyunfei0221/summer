@@ -46,8 +46,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
-import static reactor.core.publisher.Mono.just;
-import static reactor.core.publisher.Mono.zip;
+import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -372,12 +371,12 @@ public class ResourceServiceImpl implements ResourceService {
      * @return
      */
     @Override
-    public Mono<Optional<Resource>> getResourceMono(Long id) {
-        LOGGER.info("Mono<Optional<Resource>> getResourceMonoById(Long id), id = {}", id);
+    public Mono<Resource> getResourceMono(Long id) {
+        LOGGER.info("Mono<Resource> getResourceMonoById(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return just(getResource(id));
+        return justOrEmpty(resourceMapper.selectByPrimaryKey(id));
     }
 
     /**

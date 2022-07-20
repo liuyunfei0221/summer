@@ -31,7 +31,7 @@ public interface CredentialService {
      * @param credentialType
      * @return
      */
-    Mono<Optional<Credential>> getCredentialMonoByCredentialAndType(String credential, String credentialType);
+    Mono<Credential> getCredentialMonoByCredentialAndType(String credential, String credentialType);
 
     /**
      * select by credential and types
@@ -76,7 +76,7 @@ public interface CredentialService {
      * @param credentialType
      * @return
      */
-    Mono<Optional<Credential>> getCredentialMonoByMemberIdAndType(Long memberId, String credentialType);
+    Mono<Credential> getCredentialMonoByMemberIdAndType(Long memberId, String credentialType);
 
     /**
      * select by member id and types

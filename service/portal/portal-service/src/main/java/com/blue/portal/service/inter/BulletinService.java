@@ -68,7 +68,7 @@ public interface BulletinService {
      * @param id
      * @return
      */
-    Mono<Optional<Bulletin>> getBulletinMono(Long id);
+    Mono<Bulletin> getBulletinMono(Long id);
 
     /**
      * select all bulletin

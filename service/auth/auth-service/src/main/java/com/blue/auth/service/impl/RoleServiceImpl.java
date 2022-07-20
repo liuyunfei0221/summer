@@ -48,8 +48,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
-import static reactor.core.publisher.Mono.just;
-import static reactor.core.publisher.Mono.zip;
+import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -369,21 +368,6 @@ public class RoleServiceImpl implements RoleService {
     }
 
     /**
-     * get role by role id
-     *
-     * @param id
-     * @return
-     */
-    @Override
-    public Optional<Role> getRole(Long id) {
-        LOGGER.info("Optional<Role> getRoleById(Long id), id = {}", id);
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
-
-        return ofNullable(roleMapper.selectByPrimaryKey(id));
-    }
-
-    /**
      * get default role
      *
      * @return
@@ -399,18 +383,33 @@ public class RoleServiceImpl implements RoleService {
     }
 
     /**
+     * get role by role id
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Optional<Role> getRole(Long id) {
+        LOGGER.info("Optional<Role> getRoleById(Long id), id = {}", id);
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return ofNullable(roleMapper.selectByPrimaryKey(id));
+    }
+
+    /**
      * get role mono by role id
      *
      * @param id
      * @return
      */
     @Override
-    public Mono<Optional<Role>> getRoleMono(Long id) {
-        LOGGER.info("Mono<Optional<Role>> getRoleMonoById(Long id), id = {}", id);
+    public Mono<Role> getRoleMono(Long id) {
+        LOGGER.info("Mono<Role> getRoleMonoById(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return just(getRole(id));
+        return justOrEmpty(roleMapper.selectByPrimaryKey(id));
     }
 
     /**

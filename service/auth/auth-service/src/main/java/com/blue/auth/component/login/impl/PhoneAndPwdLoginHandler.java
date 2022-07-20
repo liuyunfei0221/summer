@@ -30,9 +30,10 @@ import static com.blue.basic.constant.auth.ExtraKey.NEW_MEMBER;
 import static com.blue.basic.constant.common.BlueHeader.*;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.Status.VALID;
+import static java.util.Optional.ofNullable;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
-import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -81,8 +82,9 @@ public class PhoneAndPwdLoginHandler implements LoginHandler {
             throw new BlueException(INVALID_ACCT_OR_PWD);
 
         return credentialService.getCredentialMonoByCredentialAndType(phone, PHONE_PWD.identity)
-                .flatMap(credentialOpt ->
-                        just(credentialOpt
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(INVALID_ACCT_OR_PWD))))
+                .flatMap(credential ->
+                        just(ofNullable(credential)
                                 .filter(c -> VALID.status == c.getStatus())
                                 .filter(c -> isNotBlank(c.getAccess()))
                                 .filter(c -> matchAccess(access, c.getAccess()))

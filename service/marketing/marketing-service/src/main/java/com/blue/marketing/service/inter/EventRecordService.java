@@ -48,7 +48,7 @@ public interface EventRecordService {
      * @param id
      * @return
      */
-    Mono<Optional<EventRecord>> getEventRecordMono(Long id);
+    Mono<EventRecord> getEventRecordMono(Long id);
 
     /**
      * select event records by ids
