@@ -98,8 +98,10 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
     private static final Function<DownloadHistoryCondition, Query> CONDITION_PROCESSOR = condition -> {
         Query query = new Query();
 
-        if (condition == null)
+        if (condition == null){
+            query.with(SORTER_CONVERTER.apply(new DownloadHistoryCondition()));
             return query;
+        }
 
         DownloadHistory probe = new DownloadHistory();
 

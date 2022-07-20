@@ -99,7 +99,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
         'update style', 'update style', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (110024, 'DELETE', 'blue-base', '/manager/style/{id}', '', b'1', b'1', b'1', b'1', b'1', 2,
         'delete style', 'delete style', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (110025, 'PUT', 'blue-base', '/manager/style/active', '', b'1', b'1', b'1', b'1', b'1', 2,
+       (110025, 'PATCH', 'blue-base', '/manager/style/active', '', b'1', b'1', b'1', b'1', b'1', 2,
         'update active style', 'update active style', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- verify api
@@ -337,9 +337,18 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
 
 -- marketing manage
 
-       (280001, 'POST', 'blue-marketing', '/manager/eventRecords', '', b'1', b'1', b'1', b'0', b'1', 2,
+       (280001, 'POST', 'blue-marketing', '/manager/rewards', '', b'1', b'1', b'1', b'1', b'1', 2,
+        'reward list of manager', 'reward list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (280002, 'POST', 'blue-marketing', '/manager/reward', '', b'1', b'1', b'1', b'1', b'1', 2,
+        'insert reward', 'insert reward', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (280003, 'PUT', 'blue-marketing', '/manager/reward', '', b'1', b'1', b'1', b'1', b'1', 2,
+        'update reward', 'update reward', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (280004, 'DELETE', 'blue-marketing', '/manager/reward/{id}', '', b'1', b'1', b'1', b'1', b'1', 2,
+        'delete reward', 'delete reward', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (280005, 'POST', 'blue-marketing', '/manager/eventRecords', '', b'1', b'1', b'1', b'0', b'1', 2,
         'event record list of manager', 'event record list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
         1),
+
 
 -- shine api
 

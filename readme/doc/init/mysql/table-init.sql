@@ -739,7 +739,8 @@ CREATE TABLE `reward`
     `update_time` bigint       NOT NULL COMMENT 'data update time',
     `creator`     bigint       NOT NULL COMMENT 'creator id',
     `updater`     bigint       NOT NULL COMMENT 'updater id',
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_name_type`(`name`,`type`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of marketing reward';
 
 CREATE TABLE `sign_reward_today_relation`
@@ -754,7 +755,7 @@ CREATE TABLE `sign_reward_today_relation`
     `creator`     bigint  NOT NULL COMMENT 'creator id',
     `updater`     bigint  NOT NULL COMMENT 'updater id',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_date_reward`(`year`,`month`,`day`,`reward_id`) USING BTREE,
+    UNIQUE KEY `idx_date`(`year`,`month`,`day`) USING BTREE,
     KEY           `idx_creator`(`creator`) USING BTREE,
     KEY           `idx_updater`(`updater`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of reward and date relation';

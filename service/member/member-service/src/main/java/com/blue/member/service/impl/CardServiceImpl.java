@@ -213,8 +213,10 @@ public class CardServiceImpl implements CardService {
     private static final Function<CardCondition, Query> CONDITION_PROCESSOR = condition -> {
         Query query = new Query();
 
-        if (condition == null)
+        if (condition == null){
+            query.with(SORTER_CONVERTER.apply(new CardCondition()));
             return query;
+        }
 
         Card probe = new Card();
 

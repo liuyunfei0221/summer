@@ -152,7 +152,7 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-        sign_reward_today_relation FORCE INDEX(idx_date_reward)
+        sign_reward_today_relation FORCE INDEX(idx_date)
         WHERE
         year = #{year, jdbcType=SMALLINT}
         AND

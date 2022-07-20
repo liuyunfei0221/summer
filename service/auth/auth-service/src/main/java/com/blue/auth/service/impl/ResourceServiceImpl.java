@@ -334,7 +334,7 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public ResourceInfo deleteResource(Long id) {
-        LOGGER.info("ResourceInfo deleteResourceById(Long id), id = {}", id);
+        LOGGER.info("ResourceInfo deleteResource(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 

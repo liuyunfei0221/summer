@@ -10,7 +10,7 @@ import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 
 /**
- * params for insert a new role
+ * params for insert a new reward
  *
  * @author liuyunfei
  */
@@ -21,27 +21,45 @@ public class RewardInsertParam implements Serializable, Asserter {
 
     private String name;
 
-    private String description;
+    private String detail;
 
-    private Integer level;
+    private String link;
+
+    /**
+     * reward type
+     *
+     * @see com.blue.basic.constant.marketing.RewardType
+     */
+    private Integer type;
+
+    /**
+     * reward json
+     */
+    private String data;
 
     public RewardInsertParam() {
     }
 
-    public RewardInsertParam(String name, String description, Integer level) {
+    public RewardInsertParam(String name, String detail, String link, Integer type, String data) {
         this.name = name;
-        this.description = description;
-        this.level = level;
+        this.detail = detail;
+        this.link = link;
+        this.type = type;
+        this.data = data;
     }
 
     @Override
     public void asserts() {
         if (isBlank(this.name))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank");
-        if (isBlank(this.description))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "description can't be blank");
-        if (isNull(this.level) || this.level < 1)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "level can't be null or less than 1");
+        if (isBlank(this.detail))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "detail can't be blank");
+        if (isBlank(this.link))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "link can't be blank");
+        if (isNull(this.type))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "type can't be null");
+        if (isBlank(this.data))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "data can't be blank");
     }
 
     public String getName() {
@@ -52,28 +70,46 @@ public class RewardInsertParam implements Serializable, Asserter {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public String getDetail() {
+        return detail;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDetail(String detail) {
+        this.detail = detail;
     }
 
-    public Integer getLevel() {
-        return level;
+    public String getLink() {
+        return link;
     }
 
-    public void setLevel(Integer level) {
-        this.level = level;
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
     }
 
     @Override
     public String toString() {
-        return "RoleInsertParam{" +
+        return "RewardInsertParam{" +
                 "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", level=" + level +
+                ", detail='" + detail + '\'' +
+                ", link='" + link + '\'' +
+                ", type=" + type +
+                ", data='" + data + '\'' +
                 '}';
     }
 

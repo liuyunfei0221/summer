@@ -93,6 +93,7 @@ public enum ResponseElement {
 
     //<editor-fold desc="marketing">
     REPEAT_SIGN_IN(HttpStatus.BAD_REQUEST.value(), 400800001, "Please don't sign in again"),
+    REWARD_NAME_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400800002, "Reward name already exists"),
     //</editor-fold>
 
 

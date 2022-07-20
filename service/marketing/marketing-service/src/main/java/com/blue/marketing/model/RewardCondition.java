@@ -8,7 +8,7 @@ import java.io.Serializable;
 import static com.blue.basic.constant.common.SortType.DESC;
 
 /**
- * event record condition for select
+ * reward condition for select
  *
  * @author liuyunfei
  */
@@ -20,8 +20,6 @@ public final class RewardCondition extends SortCondition implements Serializable
     private Long id;
 
     private String nameLike;
-
-    private String detail;
 
     private String link;
 
@@ -55,12 +53,11 @@ public final class RewardCondition extends SortCondition implements Serializable
         super(sortAttribute, sortType);
     }
 
-    public RewardCondition(Long id, String nameLike, String detail, String link, Integer type, Integer status, Long createTimeBegin, Long createTimeEnd,
+    public RewardCondition(Long id, String nameLike, String link, Integer type, Integer status, Long createTimeBegin, Long createTimeEnd,
                            Long updateTimeBegin, Long updateTimeEnd, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.id = id;
         this.nameLike = nameLike;
-        this.detail = detail;
         this.link = link;
         this.type = type;
         this.status = status;
@@ -84,14 +81,6 @@ public final class RewardCondition extends SortCondition implements Serializable
 
     public void setNameLike(String nameLike) {
         this.nameLike = nameLike;
-    }
-
-    public String getDetail() {
-        return detail;
-    }
-
-    public void setDetail(String detail) {
-        this.detail = detail;
     }
 
     public String getLink() {
@@ -155,7 +144,6 @@ public final class RewardCondition extends SortCondition implements Serializable
         return "RewardCondition{" +
                 "id=" + id +
                 ", nameLike='" + nameLike + '\'' +
-                ", detail='" + detail + '\'' +
                 ", link='" + link + '\'' +
                 ", type=" + type +
                 ", status=" + status +

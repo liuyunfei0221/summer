@@ -23,7 +23,7 @@ import java.util.Optional;
 public interface RewardService {
 
     /**
-     * insert a new role
+     * insert a new reward
      *
      * @param rewardInsertParam
      * @param operatorId
@@ -32,7 +32,7 @@ public interface RewardService {
     RewardInfo insertReward(RewardInsertParam rewardInsertParam, Long operatorId);
 
     /**
-     * update a exist role
+     * update a exist reward
      *
      * @param rewardUpdateParam
      * @param operatorId
@@ -41,7 +41,7 @@ public interface RewardService {
     RewardInfo updateReward(RewardUpdateParam rewardUpdateParam, Long operatorId);
 
     /**
-     * delete role
+     * delete reward
      *
      * @param id
      * @return
@@ -57,12 +57,19 @@ public interface RewardService {
     Optional<Reward> getReward(Long id);
 
     /**
-     * get role mono by role id
+     * get reward mono by role id
      *
      * @param id
      * @return
      */
     Mono<Reward> getRewardMono(Long id);
+
+    /**
+     * select all rewards
+     *
+     * @return
+     */
+    Mono<List<Reward>> selectReward();
 
     /**
      * select rewards by ids
@@ -73,7 +80,7 @@ public interface RewardService {
     List<Reward> selectRewardByIds(List<Long> ids);
 
     /**
-     * select roles mono by ids
+     * select rewards mono by ids
      *
      * @param ids
      * @return
@@ -81,14 +88,7 @@ public interface RewardService {
     Mono<List<Reward>> selectRewardMonoByIds(List<Long> ids);
 
     /**
-     * select all roles
-     *
-     * @return
-     */
-    Mono<List<Reward>> selectReward();
-
-    /**
-     * select role by page and condition
+     * select reward by page and condition
      *
      * @param limit
      * @param rows
@@ -98,7 +98,7 @@ public interface RewardService {
     Mono<List<Reward>> selectRewardMonoByLimitAndCondition(Long limit, Long rows, RewardCondition rewardCondition);
 
     /**
-     * count role by condition
+     * count reward by condition
      *
      * @param rewardCondition
      * @return
@@ -106,7 +106,7 @@ public interface RewardService {
     Mono<Long> countRewardMonoByCondition(RewardCondition rewardCondition);
 
     /**
-     * select role info page by condition
+     * select reward info page by condition
      *
      * @param pageModelRequest
      * @return

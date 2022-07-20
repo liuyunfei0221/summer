@@ -172,6 +172,13 @@
         where id = #{id,jdbcType=BIGINT}
     </select>
 
+    <select id="select" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        reward
+    </select>
+
     <select id="selectByIds" parameterType="java.util.List" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
@@ -182,6 +189,80 @@
         <foreach collection="ids" open="(" close=")" separator="," item="id" index="index">
             #{id,jdbcType=BIGINT}
         </foreach>
+    </select>
+
+    <sql id="Reward_Conditions">
+        <if test="rewardCondition != null">
+            <where>
+                <if test="rewardCondition.id != null">
+                    AND
+                    id = #{rewardCondition.id,jdbcType=BIGINT}
+                </if>
+                <if test="rewardCondition.nameLike != null and rewardCondition.nameLike != ''">
+                    AND
+                    name LIKE #{rewardCondition.nameLike,jdbcType=VARCHAR}
+                </if>
+                <if test="rewardCondition.link != null and rewardCondition.link != ''">
+                    AND
+                    link = #{rewardCondition.link,jdbcType=VARCHAR}
+                </if>
+                <if test="rewardCondition.type != null">
+                    AND
+                    type = #{rewardCondition.type,jdbcType=TINYINT}
+                </if>
+                <if test="rewardCondition.status != null">
+                    AND
+                    status = #{rewardCondition.status,jdbcType=TINYINT}
+                </if>
+                <if test="rewardCondition.createTimeBegin != null">
+                    AND
+                    create_time &gt;= #{rewardCondition.createTimeBegin,jdbcType=BIGINT}
+                </if>
+                <if test="rewardCondition.createTimeEnd != null">
+                    AND
+                    create_time &lt;= #{rewardCondition.createTimeEnd,jdbcType=BIGINT}
+                </if>
+                <if test="rewardCondition.updateTimeBegin != null">
+                    AND
+                    update_time &gt;= #{rewardCondition.updateTimeBegin,jdbcType=BIGINT}
+                </if>
+                <if test="rewardCondition.updateTimeEnd != null">
+                    AND
+                    update_time &lt;= #{rewardCondition.updateTimeEnd,jdbcType=BIGINT}
+                </if>
+            </where>
+        </if>
+    </sql>
+
+    <select id="selectByLimitAndCondition" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        reward
+        <include refid="Reward_Conditions"/>
+        <if test="rewardCondition != null and rewardCondition.sortAttribute != null and rewardCondition.sortAttribute != '' and rewardCondition.sortType != null and rewardCondition.sortType != ''">
+            ORDER BY
+            ${rewardCondition.sortAttribute} ${rewardCondition.sortType}
+        </if>
+        LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
+    </select>
+
+    <select id="countByCondition" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM
+        reward
+        <include refid="Reward_Conditions"/>
+    </select>
+
+    <select id="selectByUnique" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        reward FORCE INDEX(idx_name_type)
+        WHERE
+        `name` = #{name,jdbcType=VARCHAR}
+        AND
+        type = #{type,jdbcType=TINYINT}
     </select>
 
 </mapper>

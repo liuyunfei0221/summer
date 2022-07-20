@@ -1,5 +1,6 @@
 package com.blue.marketing.repository.mapper;
 
+import com.blue.marketing.model.RewardCondition;
 import com.blue.marketing.repository.entity.Reward;
 import org.apache.ibatis.annotations.Param;
 
@@ -25,6 +26,14 @@ public interface RewardMapper {
 
     Reward selectByPrimaryKey(Long id);
 
+    List<Reward> select();
+
     List<Reward> selectByIds(@Param("ids") List<Long> ids);
+
+    List<Reward> selectByLimitAndCondition(@Param("limit") Long limit, @Param("rows") Long rows, @Param("rewardCondition") RewardCondition rewardCondition);
+
+    Long countByCondition(@Param("rewardCondition") RewardCondition rewardCondition);
+
+    Reward selectByUnique(@Param("name") String name, @Param("type") Integer type);
 
 }

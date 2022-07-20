@@ -4,14 +4,14 @@ package com.blue.marketing.api.model;
 import java.io.Serializable;
 
 /**
- * sign in reward info
+ * reward manager info
  *
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
 public final class RewardManagerInfo implements Serializable {
 
-    private static final long serialVersionUID = 5642744602142762972L;
+    private static final long serialVersionUID = 8175699924429543753L;
 
     private Long id;
 
@@ -33,16 +33,40 @@ public final class RewardManagerInfo implements Serializable {
      */
     private String data;
 
+    /**
+     * @see com.blue.basic.constant.common.Status
+     */
+    private Integer status;
+
+    private Long createTime;
+
+    private Long updateTime;
+
+    private Long creator;
+
+    private String creatorName;
+
+    private Long updater;
+
+    private String updaterName;
+
     public RewardManagerInfo() {
     }
 
-    public RewardManagerInfo(Long id, String name, String detail, String link, Integer type, String data) {
+    public RewardManagerInfo(Long id, String name, String detail, String link, Integer type, String data, Integer status, Long createTime, Long updateTime, Long creator, String creatorName, Long updater, String updaterName) {
         this.id = id;
         this.name = name;
         this.detail = detail;
         this.link = link;
         this.type = type;
         this.data = data;
+        this.status = status;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
+        this.creator = creator;
+        this.creatorName = creatorName;
+        this.updater = updater;
+        this.updaterName = updaterName;
     }
 
     public Long getId() {
@@ -93,15 +117,78 @@ public final class RewardManagerInfo implements Serializable {
         this.data = data;
     }
 
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Long getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Long createTime) {
+        this.createTime = createTime;
+    }
+
+    public Long getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Long updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public Long getCreator() {
+        return creator;
+    }
+
+    public void setCreator(Long creator) {
+        this.creator = creator;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
+    }
+
+    public Long getUpdater() {
+        return updater;
+    }
+
+    public void setUpdater(Long updater) {
+        this.updater = updater;
+    }
+
+    public String getUpdaterName() {
+        return updaterName;
+    }
+
+    public void setUpdaterName(String updaterName) {
+        this.updaterName = updaterName;
+    }
+
     @Override
     public String toString() {
-        return "RewardInfo{" +
+        return "RewardManagerInfo{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", detail='" + detail + '\'' +
                 ", link='" + link + '\'' +
                 ", type=" + type +
                 ", data='" + data + '\'' +
+                ", status=" + status +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", creator=" + creator +
+                ", creatorName='" + creatorName + '\'' +
+                ", updater=" + updater +
+                ", updaterName='" + updaterName + '\'' +
                 '}';
     }
 

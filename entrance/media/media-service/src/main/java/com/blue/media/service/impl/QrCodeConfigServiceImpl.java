@@ -186,8 +186,10 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
     private static final Function<QrCodeCondition, Query> CONDITION_PROCESSOR = condition -> {
         Query query = new Query();
 
-        if (condition == null)
+        if (condition == null){
+            query.with(SORTER_CONVERTER.apply(new QrCodeCondition()));
             return query;
+        }
 
         QrCodeConfig probe = new QrCodeConfig();
 

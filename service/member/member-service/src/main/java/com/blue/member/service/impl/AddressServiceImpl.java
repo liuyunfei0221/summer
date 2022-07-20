@@ -264,8 +264,10 @@ public class AddressServiceImpl implements AddressService {
     private static final Function<AddressCondition, Query> CONDITION_PROCESSOR = condition -> {
         Query query = new Query();
 
-        if (condition == null)
+        if (condition == null){
+            query.with(SORTER_CONVERTER.apply(new AddressCondition()));
             return query;
+        }
 
         Address probe = new Address();
 

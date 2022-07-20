@@ -390,7 +390,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
         'update style', 'update style', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (110024, 'DELETE', 'blue-base', '/manager/style/{id}', '', b'1', b'1', b'1', b'1', b'1', 2,
         'delete style', 'delete style', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (110025, 'PUT', 'blue-base', '/manager/style/active', '', b'1', b'1', b'1', b'1', b'1', 2,
+       (110025, 'PATCH', 'blue-base', '/manager/style/active', '', b'1', b'1', b'1', b'1', b'1', 2,
         'update active style', 'update active style', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- verify api
@@ -628,7 +628,15 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
 
 -- marketing manage
 
-       (280001, 'POST', 'blue-marketing', '/manager/eventRecords', '', b'1', b'1', b'1', b'0', b'1', 2,
+       (280001, 'POST', 'blue-marketing', '/manager/rewards', '', b'1', b'1', b'1', b'1', b'1', 2,
+        'reward list of manager', 'reward list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (280002, 'POST', 'blue-marketing', '/manager/reward', '', b'1', b'1', b'1', b'1', b'1', 2,
+        'insert reward', 'insert reward', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (280003, 'PUT', 'blue-marketing', '/manager/reward', '', b'1', b'1', b'1', b'1', b'1', 2,
+        'update reward', 'update reward', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (280004, 'DELETE', 'blue-marketing', '/manager/reward/{id}', '', b'1', b'1', b'1', b'1', b'1', 2,
+        'delete reward', 'delete reward', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (280005, 'POST', 'blue-marketing', '/manager/eventRecords', '', b'1', b'1', b'1', b'0', b'1', 2,
         'event record list of manager', 'event record list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
         1),
 
@@ -1173,7 +1181,8 @@ CREATE TABLE `reward`
     `update_time` bigint       NOT NULL COMMENT 'data update time',
     `creator`     bigint       NOT NULL COMMENT 'creator id',
     `updater`     bigint       NOT NULL COMMENT 'updater id',
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_name_type`(`name`,`type`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of marketing reward';
 
 CREATE TABLE `sign_reward_today_relation`
@@ -1188,7 +1197,7 @@ CREATE TABLE `sign_reward_today_relation`
     `creator`     bigint  NOT NULL COMMENT 'creator id',
     `updater`     bigint  NOT NULL COMMENT 'updater id',
     PRIMARY KEY (`id`),
-    UNIQUE KEY `idx_date_reward`(`year`,`month`,`day`,`reward_id`) USING BTREE,
+    UNIQUE KEY `idx_date`(`year`,`month`,`day`) USING BTREE,
     KEY           `idx_creator`(`creator`) USING BTREE,
     KEY           `idx_updater`(`updater`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of reward and date relation';

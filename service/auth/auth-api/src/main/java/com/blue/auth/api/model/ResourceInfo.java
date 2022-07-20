@@ -67,7 +67,7 @@ public final class ResourceInfo implements Serializable {
     /**
      * resource type: 1.client api 2.manager api 3.open api
      */
-    private String type;
+    private Integer type;
 
     /**
      * resource name
@@ -84,7 +84,7 @@ public final class ResourceInfo implements Serializable {
 
     public ResourceInfo(Long id, String requestMethod, String module, String relativeUri, String absoluteUri, String relationView,
                         Boolean authenticate, Boolean requestUnDecryption, Boolean responseUnEncryption, Boolean existenceRequestBody, Boolean existenceResponseBody,
-                        String type, String name, String description) {
+                        Integer type, String name, String description) {
         this.id = id;
         this.requestMethod = requestMethod;
         this.module = module;
@@ -189,11 +189,11 @@ public final class ResourceInfo implements Serializable {
         this.existenceResponseBody = existenceResponseBody;
     }
 
-    public String getType() {
+    public Integer getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 

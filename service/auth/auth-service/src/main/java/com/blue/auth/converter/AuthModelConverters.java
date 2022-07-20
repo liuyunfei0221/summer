@@ -115,7 +115,7 @@ public final class AuthModelConverters {
 
         return new ResourceInfo(resource.getId(), resource.getRequestMethod().intern(), module, relativeUri, (PATH_SEPARATOR.identity.intern() + module + relativeUri).intern(), resource.getRelationView(),
                 resource.getAuthenticate(), resource.getRequestUnDecryption(), resource.getResponseUnEncryption(), resource.getExistenceRequestBody(), resource.getExistenceResponseBody(),
-                getResourceTypeByIdentity(resource.getType()).disc.intern(), resource.getName(), resource.getDescription());
+                resource.getType(), resource.getName(), resource.getDescription());
     };
 
     /**

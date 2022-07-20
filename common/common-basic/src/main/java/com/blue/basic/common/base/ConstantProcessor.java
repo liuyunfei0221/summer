@@ -9,6 +9,7 @@ import com.blue.basic.constant.auth.DeviceType;
 import com.blue.basic.constant.auth.ResourceType;
 import com.blue.basic.constant.auth.RoleType;
 import com.blue.basic.constant.common.*;
+import com.blue.basic.constant.marketing.RewardType;
 import com.blue.basic.constant.media.AttachmentType;
 import com.blue.basic.constant.media.QrCodeGenType;
 import com.blue.basic.constant.member.ChineseZodiac;
@@ -154,6 +155,12 @@ public final class ConstantProcessor {
      */
     private static final Map<Integer, BulletinType> BULLETIN_TYPE_MAPPING =
             of(BulletinType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
+
+    /**
+     * valid reward type identity and type mapping
+     */
+    private static final Map<Integer, RewardType> REWARD_TYPE_MAPPING =
+            of(RewardType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
 
     /**
      * valid style type identity and type mapping
@@ -423,6 +430,19 @@ public final class ConstantProcessor {
             return;
 
         if (!BULLETIN_TYPE_MAPPING.containsKey(identity))
+            throw new BlueException(INVALID_IDENTITY);
+    }
+
+    /**
+     * assert reward type
+     *
+     * @param identity
+     */
+    public static void assertRewardType(Integer identity, boolean nullable) {
+        if (nullable && isNull(identity))
+            return;
+
+        if (!REWARD_TYPE_MAPPING.containsKey(identity))
             throw new BlueException(INVALID_IDENTITY);
     }
 
@@ -834,6 +854,23 @@ public final class ConstantProcessor {
             throw new BlueException(INVALID_IDENTITY);
 
         BulletinType type = BULLETIN_TYPE_MAPPING.get(identity);
+        if (isNull(type))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return type;
+    }
+
+    /**
+     * get bulletin type by identity
+     *
+     * @param identity
+     * @return
+     */
+    public static RewardType getRewardTypeByIdentity(Integer identity) {
+        if (isNull(identity))
+            throw new BlueException(INVALID_IDENTITY);
+
+        RewardType type = REWARD_TYPE_MAPPING.get(identity);
         if (isNull(type))
             throw new BlueException(INVALID_IDENTITY);
 

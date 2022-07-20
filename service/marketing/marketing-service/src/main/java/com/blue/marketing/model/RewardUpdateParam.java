@@ -6,7 +6,7 @@ import static com.blue.basic.common.base.BlueChecker.isInvalidIdentity;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
 
 /**
- * params for update a exist role
+ * params for update a exist reward
  *
  * @author liuyunfei
  */
@@ -20,8 +20,8 @@ public final class RewardUpdateParam extends RewardInsertParam {
     public RewardUpdateParam() {
     }
 
-    public RewardUpdateParam(Long id, String name, String description, Integer level) {
-        super(name, description, level);
+    public RewardUpdateParam(Long id, String name, String detail, String link, Integer type, String data) {
+        super(name, detail, link, type, data);
         this.id = id;
     }
 
@@ -45,10 +45,14 @@ public final class RewardUpdateParam extends RewardInsertParam {
 
     @Override
     public String toString() {
-        return "RoleUpdateParam{" +
+        return "RewardUpdateParam{" +
                 "id=" + id +
                 ", name='" + super.getName() + '\'' +
-                ", description='" + super.getDescription() + '\'' +
+                ", detail='" + super.getDetail() + '\'' +
+                ", link='" + super.getLink() + '\'' +
+                ", type=" + super.getType() +
+                ", data='" + super.getData() + '\'' +
                 '}';
     }
+
 }
