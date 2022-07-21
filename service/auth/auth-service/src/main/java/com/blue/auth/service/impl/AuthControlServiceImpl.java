@@ -147,15 +147,11 @@ public class AuthControlServiceImpl implements AuthControlService {
         if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId))
             throw new BlueException(MEMBER_ALREADY_HAS_A_ROLE);
 
-        long epochSecond = TIME_STAMP_GETTER.get();
-
         MemberRoleRelation memberRoleRelation = new MemberRoleRelation();
         memberRoleRelation.setMemberId(memberId);
         memberRoleRelation.setRoleId(roleId);
-        memberRoleRelation.setCreateTime(epochSecond);
-        memberRoleRelation.setUpdateTime(epochSecond);
+        memberRoleRelation.setCreateTime(TIME_STAMP_GETTER.get());
         memberRoleRelation.setCreator(memberId);
-        memberRoleRelation.setUpdater(memberId);
 
         return memberRoleRelation;
     };
@@ -168,15 +164,11 @@ public class AuthControlServiceImpl implements AuthControlService {
         if (isNull(role))
             throw new BlueException(DATA_NOT_EXIST);
 
-        long epochSecond = TIME_STAMP_GETTER.get();
-
         MemberRoleRelation memberRoleRelation = new MemberRoleRelation();
         memberRoleRelation.setMemberId(memberId);
         memberRoleRelation.setRoleId(role.getId());
-        memberRoleRelation.setCreateTime(epochSecond);
-        memberRoleRelation.setUpdateTime(epochSecond);
+        memberRoleRelation.setCreateTime(TIME_STAMP_GETTER.get());
         memberRoleRelation.setCreator(memberId);
-        memberRoleRelation.setUpdater(memberId);
 
         return memberRoleRelation;
     };

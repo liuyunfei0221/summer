@@ -96,11 +96,11 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         if (isInvalidIdentity(resId))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "resId is invalid");
 
-        if (isNull(relation.getCreateTime()) || isNull(relation.getUpdateTime()))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "createTime or updateTime is invalid");
+        if (isNull(relation.getCreateTime()))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "createTime is invalid");
 
-        if (isInvalidIdentity(relation.getCreator()) || isInvalidIdentity(relation.getUpdater()))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "creator or updater is invalid");
+        if (isInvalidIdentity(relation.getCreator()))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "creator is invalid");
 
         if (isNotNull(roleResRelationMapper.selectExistByRoleIdAndResId(roleId, resId)))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The data base res and role already exists");
@@ -141,7 +141,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid operatorId");
 
-        long epochSecond = TIME_STAMP_GETTER.get();
+        long timeStamp = TIME_STAMP_GETTER.get();
 
         return resIds.stream()
                 .map(resId -> {
@@ -150,10 +150,8 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
                     relation.setId(blueIdentityProcessor.generate(RoleResRelation.class));
                     relation.setRoleId(roleId);
                     relation.setResId(resId);
-                    relation.setCreateTime(epochSecond);
-                    relation.setUpdateTime(epochSecond);
+                    relation.setCreateTime(timeStamp);
                     relation.setCreator(operatorId);
-                    relation.setUpdater(operatorId);
 
                     return relation;
                 }).collect(toList());

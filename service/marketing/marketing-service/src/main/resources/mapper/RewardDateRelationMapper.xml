@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress SqlNoDataSourceInspection, SqlDialectInspection -->
+<mapper namespace="com.blue.marketing.repository.mapper.RewardDateRelationMapper">
+    <resultMap id="BaseResultMap" type="com.blue.marketing.repository.entity.RewardDateRelation">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="reward_id" jdbcType="BIGINT" property="rewardId"/>
+        <result column="year" jdbcType="SMALLINT" property="year"/>
+        <result column="month" jdbcType="TINYINT" property="month"/>
+        <result column="day" jdbcType="TINYINT" property="day"/>
+        <result column="create_time" jdbcType="BIGINT" property="createTime"/>
+        <result column="update_time" jdbcType="BIGINT" property="updateTime"/>
+        <result column="creator" jdbcType="BIGINT" property="creator"/>
+        <result column="updater" jdbcType="BIGINT" property="updater"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        , reward_id, year, month, day, create_time, update_time, creator, updater
+    </sql>
+
+    <insert id="insert" parameterType="com.blue.marketing.repository.entity.RewardDateRelation">
+        insert into reward_date_relation (id, reward_id, year,
+                                          month, day, create_time,
+                                          update_time, creator, updater)
+        values (#{id,jdbcType=BIGINT}, #{rewardId,jdbcType=BIGINT}, #{year,jdbcType=SMALLINT},
+                #{month,jdbcType=TINYINT}, #{day,jdbcType=TINYINT}, #{createTime,jdbcType=BIGINT},
+                #{updateTime,jdbcType=BIGINT}, #{creator,jdbcType=BIGINT}, #{updater,jdbcType=BIGINT})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.blue.marketing.repository.entity.RewardDateRelation">
+        insert into reward_date_relation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="rewardId != null">
+                reward_id,
+            </if>
+            <if test="year != null">
+                year,
+            </if>
+            <if test="month != null">
+                month,
+            </if>
+            <if test="day != null">
+                day,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+            <if test="updater != null">
+                updater,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="rewardId != null">
+                #{rewardId,jdbcType=BIGINT},
+            </if>
+            <if test="year != null">
+                #{year,jdbcType=SMALLINT},
+            </if>
+            <if test="month != null">
+                #{month,jdbcType=TINYINT},
+            </if>
+            <if test="day != null">
+                #{day,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=BIGINT},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=BIGINT},
+            </if>
+            <if test="updater != null">
+                #{updater,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.blue.marketing.repository.entity.RewardDateRelation">
+        update reward_date_relation
+        set reward_id   = #{rewardId,jdbcType=BIGINT},
+            year        = #{year,jdbcType=SMALLINT},
+            month       = #{month,jdbcType=TINYINT},
+            day         = #{day,jdbcType=TINYINT},
+            create_time = #{createTime,jdbcType=BIGINT},
+            update_time = #{updateTime,jdbcType=BIGINT},
+            creator     = #{creator,jdbcType=BIGINT},
+            updater     = #{updater,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.blue.marketing.repository.entity.RewardDateRelation">
+        update reward_date_relation
+        <set>
+            <if test="rewardId != null">
+                reward_id = #{rewardId,jdbcType=BIGINT},
+            </if>
+            <if test="year != null">
+                year = #{year,jdbcType=SMALLINT},
+            </if>
+            <if test="month != null">
+                month = #{month,jdbcType=TINYINT},
+            </if>
+            <if test="day != null">
+                day = #{day,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=BIGINT},
+            </if>
+            <if test="creator != null">
+                creator = #{creator,jdbcType=BIGINT},
+            </if>
+            <if test="updater != null">
+                updater = #{updater,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from reward_date_relation
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from reward_date_relation
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectByYearAndMonth" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        reward_date_relation FORCE INDEX(idx_date)
+        WHERE
+        year = #{year, jdbcType=SMALLINT}
+        AND
+        month = #{month, jdbcType=TINYINT}
+    </select>
+
+    <select id="countByYearAndMonth" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM
+        reward_date_relation FORCE INDEX(idx_date)
+        WHERE
+        year = #{year, jdbcType=SMALLINT}
+        AND
+        month = #{month, jdbcType=TINYINT}
+    </select>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        <if test="list != null and list.size > 0">
+            INSERT INTO reward_date_relation (
+            <include refid="Base_Column_List"/>
+            ) values
+            <foreach collection="list" index="index" item="item" separator=",">
+                (
+                #{item.id,jdbcType=BIGINT},
+                #{item.rewardId,jdbcType=BIGINT},
+                #{item.year,jdbcType=SMALLINT},
+                #{item.month,jdbcType=TINYINT},
+                #{item.day,jdbcType=TINYINT},
+                #{item.createTime,jdbcType=BIGINT},
+                #{item.updateTime,jdbcType=BIGINT},
+                #{item.creator,jdbcType=BIGINT},
+                #{item.updater,jdbcType=BIGINT}
+                )
+            </foreach>
+        </if>
+    </insert>
+
+    <select id="selectByUnique" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        reward_date_relation FORCE INDEX(idx_date)
+        WHERE
+        year = #{year, jdbcType=SMALLINT}
+        AND
+        month = #{month, jdbcType=TINYINT}
+        AND
+        day = #{day, jdbcType=TINYINT}
+    </select>
+
+    <select id="selectByIds" parameterType="java.util.List" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        reward_date_relation
+        WHERE
+        id IN
+        <foreach collection="ids" open="(" close=")" separator="," item="id" index="index">
+            #{id,jdbcType=BIGINT}
+        </foreach>
+    </select>
+
+    <sql id="Reward_Date_Relation_Conditions">
+        <if test="rewardDateRelationCondition != null">
+            <where>
+                <if test="rewardDateRelationCondition.id != null">
+                    AND
+                    id = #{rewardDateRelationCondition.id,jdbcType=BIGINT}
+                </if>
+                <if test="rewardDateRelationCondition.rewardId != null">
+                    AND
+                    reward_id = #{rewardDateRelationCondition.rewardId,jdbcType=BIGINT}
+                </if>
+                <if test="rewardDateRelationCondition.year != null">
+                    AND
+                    year = #{rewardDateRelationCondition.year,jdbcType=SMALLINT}
+                </if>
+                <if test="rewardDateRelationCondition.month != null">
+                    AND
+                    month = #{rewardDateRelationCondition.month,jdbcType=TINYINT}
+                </if>
+                <if test="rewardDateRelationCondition.day != null">
+                    AND
+                    day = #{rewardDateRelationCondition.day,jdbcType=TINYINT}
+                </if>
+                <if test="rewardDateRelationCondition.createTimeBegin != null">
+                    AND
+                    create_time &gt;= #{rewardDateRelationCondition.createTimeBegin,jdbcType=BIGINT}
+                </if>
+                <if test="rewardDateRelationCondition.createTimeEnd != null">
+                    AND
+                    create_time &lt;= #{rewardDateRelationCondition.createTimeEnd,jdbcType=BIGINT}
+                </if>
+                <if test="rewardDateRelationCondition.updateTimeBegin != null">
+                    AND
+                    update_time &gt;= #{rewardDateRelationCondition.updateTimeBegin,jdbcType=BIGINT}
+                </if>
+                <if test="rewardDateRelationCondition.updateTimeEnd != null">
+                    AND
+                    update_time &lt;= #{rewardDateRelationCondition.updateTimeEnd,jdbcType=BIGINT}
+                </if>
+            </where>
+        </if>
+    </sql>
+
+    <select id="selectByLimitAndCondition" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        reward_date_relation
+        <include refid="Reward_Date_Relation_Conditions"/>
+        <if test="rewardDateRelationCondition != null and rewardDateRelationCondition.sortAttribute != null and rewardDateRelationCondition.sortAttribute != '' and rewardDateRelationCondition.sortType != null and rewardDateRelationCondition.sortType != ''">
+            ORDER BY
+            ${rewardDateRelationCondition.sortAttribute} ${rewardDateRelationCondition.sortType}
+        </if>
+        LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
+    </select>
+
+    <select id="countByCondition" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM
+        reward_date_relation
+        <include refid="Reward_Date_Relation_Conditions"/>
+    </select>
+
+</mapper>

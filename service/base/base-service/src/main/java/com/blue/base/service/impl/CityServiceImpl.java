@@ -207,7 +207,7 @@ public class CityServiceImpl implements CityService {
     /**
      * is a city exist?
      */
-    private final Consumer<CityInsertParam> INSERT_CITY_VALIDATOR = param -> {
+    private final Consumer<CityInsertParam> INSERT_ITEM_VALIDATOR = param -> {
         if (isNull(param))
             throw new BlueException(EMPTY_PARAM);
         param.asserts();
@@ -250,7 +250,7 @@ public class CityServiceImpl implements CityService {
     /**
      * is a city exist?
      */
-    private final Function<CityUpdateParam, City> UPDATE_CITY_VALIDATOR_AND_ORIGIN_RETURNER = param -> {
+    private final Function<CityUpdateParam, City> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = param -> {
         if (isNull(param))
             throw new BlueException(EMPTY_PARAM);
         param.asserts();
@@ -278,7 +278,7 @@ public class CityServiceImpl implements CityService {
     /**
      * for city
      */
-    public final BiFunction<CityUpdateParam, City, Boolean> UPDATE_CITY_VALIDATOR = (p, t) -> {
+    public final BiFunction<CityUpdateParam, City, Boolean> UPDATE_ITEM_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
         if (!p.getId().equals(t.getId()))
@@ -339,7 +339,7 @@ public class CityServiceImpl implements CityService {
     public Mono<CityInfo> insertCity(CityInsertParam cityInsertParam) {
         LOGGER.info("Mono<CityInfo> insertCity(CityInsertParam cityInsertParam), cityInsertParam = {}", cityInsertParam);
 
-        INSERT_CITY_VALIDATOR.accept(cityInsertParam);
+        INSERT_ITEM_VALIDATOR.accept(cityInsertParam);
         City city = CITY_INSERT_PARAM_2_CITY_CONVERTER.apply(cityInsertParam);
 
         return cityRepository.insert(city)
@@ -361,15 +361,16 @@ public class CityServiceImpl implements CityService {
     public Mono<CityInfo> updateCity(CityUpdateParam cityUpdateParam) {
         LOGGER.info("Mono<CityInfo> updateCity(CityUpdateParam cityUpdateParam), cityUpdateParam = {}", cityUpdateParam);
 
-        City city = UPDATE_CITY_VALIDATOR_AND_ORIGIN_RETURNER.apply(cityUpdateParam);
+        City city = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(cityUpdateParam);
 
         Long originalCountryId = city.getCountryId();
         Long originalStateId = city.getStateId();
 
-        Boolean changed = UPDATE_CITY_VALIDATOR.apply(cityUpdateParam, city);
+        Boolean changed = UPDATE_ITEM_VALIDATOR.apply(cityUpdateParam, city);
         if (changed != null && !changed)
             throw new BlueException(DATA_HAS_NOT_CHANGED);
 
+        city.setUpdateTime(TIME_STAMP_GETTER.get());
         return cityRepository.save(city)
                 .publishOn(scheduler)
                 .map(CITY_2_CITY_INFO_CONVERTER)

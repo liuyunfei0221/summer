@@ -6,10 +6,10 @@ import com.blue.marketing.api.model.*;
 import com.blue.marketing.config.deploy.RewardsDeploy;
 import com.blue.marketing.event.producer.MarketingEventProducer;
 import com.blue.marketing.repository.entity.Reward;
-import com.blue.marketing.repository.entity.SignRewardTodayRelation;
+import com.blue.marketing.repository.entity.RewardDateRelation;
 import com.blue.marketing.service.inter.RewardService;
 import com.blue.marketing.service.inter.SignInService;
-import com.blue.marketing.service.inter.SignRewardTodayRelationService;
+import com.blue.marketing.service.inter.RewardDateRelationService;
 import com.blue.redis.component.BlueBitMarker;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -53,17 +53,17 @@ public class SignInServiceImpl implements SignInService {
 
     private RewardService rewardService;
 
-    private SignRewardTodayRelationService signRewardTodayRelationService;
+    private RewardDateRelationService rewardDateRelationService;
 
     private final BlueBitMarker blueBitMarker;
 
     private final MarketingEventProducer marketingEventProducer;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public SignInServiceImpl(RewardService rewardService, SignRewardTodayRelationService signRewardTodayRelationService, BlueBitMarker blueBitMarker,
+    public SignInServiceImpl(RewardService rewardService, RewardDateRelationService rewardDateRelationService, BlueBitMarker blueBitMarker,
                              MarketingEventProducer marketingEventProducer, RewardsDeploy rewardsDeploy) {
         this.rewardService = rewardService;
-        this.signRewardTodayRelationService = signRewardTodayRelationService;
+        this.rewardDateRelationService = rewardDateRelationService;
         this.blueBitMarker = blueBitMarker;
         this.marketingEventProducer = marketingEventProducer;
 
@@ -106,8 +106,8 @@ public class SignInServiceImpl implements SignInService {
         int tarMonth = month;
         int backUp = 0;
 
-        List<SignRewardTodayRelation> relations;
-        while (isEmpty(relations = signRewardTodayRelationService.selectRelationByYearAndMonth(tarYear, tarMonth)) && ++backUp < MAX_BACKUP)
+        List<RewardDateRelation> relations;
+        while (isEmpty(relations = rewardDateRelationService.selectRewardDateRelationByYearAndMonth(tarYear, tarMonth)) && ++backUp < MAX_BACKUP)
             if (--tarMonth < MIN_MONTH) {
                 tarMonth = MAX_MONTH;
                 --tarYear;
@@ -117,14 +117,14 @@ public class SignInServiceImpl implements SignInService {
             throw new RuntimeException("The reward information of the current or backup month is not configured");
 
         List<Reward> rewards = rewardService.selectRewardByIds(relations.stream()
-                .map(SignRewardTodayRelation::getRewardId).collect(toList()));
+                .map(RewardDateRelation::getRewardId).collect(toList()));
         Map<Long, Reward> rewardMap = rewards.stream().collect(toMap(Reward::getId, r -> r, (a, b) -> a));
 
         LocalDate currentDate = LocalDate.of(year, month, 1);
         int dayOfMonth = currentDate.lengthOfMonth();
 
         Map<Integer, SignInReward> tempMapping = relations.stream()
-                .collect(toMap(SignRewardTodayRelation::getDay, r ->
+                .collect(toMap(RewardDateRelation::getDay, r ->
                         REWARD_CONVERTER.apply(rewardMap.get(r.getRewardId())), (a, b) -> b));
 
         Map<Integer, SignInReward> relationMapping = new HashMap<>(dayOfMonth);

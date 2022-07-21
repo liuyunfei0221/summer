@@ -71,7 +71,7 @@ public enum BlueCommonThreshold {
      * phone number/email length maximum for member login
      */
     ID_LEN_MAX(64L),
-    
+
     /**
      * system default id
      */
@@ -150,7 +150,32 @@ public enum BlueCommonThreshold {
     /**
      * login timestamp for not login
      */
-    NOT_LOGGED_IN_TIME(0L);
+    NOT_LOGGED_IN_TIME(0L),
+
+    /**
+     * min of year
+     */
+    MIN_YEAR(1970L),
+
+    /**
+     * min of month
+     */
+    MIN_MONTH(1L),
+
+    /**
+     * max of month
+     */
+    MAX_MONTH(12L),
+
+    /**
+     * min day of month
+     */
+    MIN_DAY_OF_MONTH(1L),
+
+    /**
+     * max day of month
+     */
+    MAX_DAY_OF_MONTH(31L);
 
     /**
      * number

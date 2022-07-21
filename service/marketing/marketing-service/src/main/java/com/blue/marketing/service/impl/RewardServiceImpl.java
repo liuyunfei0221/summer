@@ -8,6 +8,7 @@ import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.marketing.api.model.RewardInfo;
 import com.blue.marketing.api.model.RewardManagerInfo;
 import com.blue.marketing.constant.RewardSortAttribute;
+import com.blue.marketing.event.producer.RewardsRefreshProducer;
 import com.blue.marketing.model.RewardCondition;
 import com.blue.marketing.model.RewardInsertParam;
 import com.blue.marketing.model.RewardUpdateParam;
@@ -31,11 +32,13 @@ import java.util.stream.Stream;
 
 import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
 import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.common.base.ConditionSortProcessor.process;
 import static com.blue.basic.common.base.ConstantProcessor.assertResourceType;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
 import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
 import static com.blue.basic.constant.common.ResponseElement.*;
+import static com.blue.basic.constant.common.SummerAttr.EMPTY_EVENT;
 import static com.blue.basic.constant.common.Symbol.DATABASE_WILDCARD;
 import static com.blue.marketing.converter.MarketingModelConverters.*;
 import static java.util.Collections.emptyList;
@@ -62,15 +65,18 @@ public class RewardServiceImpl implements RewardService {
 
     private final BlueIdentityProcessor blueIdentityProcessor;
 
+    private final RewardsRefreshProducer rewardsRefreshProducer;
+
     private RewardMapper rewardMapper;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public RewardServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BlueIdentityProcessor blueIdentityProcessor, RewardMapper rewardMapper) {
+    public RewardServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BlueIdentityProcessor blueIdentityProcessor,
+                             RewardsRefreshProducer rewardsRefreshProducer, RewardMapper rewardMapper) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.blueIdentityProcessor = blueIdentityProcessor;
+        this.rewardsRefreshProducer = rewardsRefreshProducer;
         this.rewardMapper = rewardMapper;
     }
-
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(RewardSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
@@ -97,10 +103,7 @@ public class RewardServiceImpl implements RewardService {
         return new ArrayList<>(operatorIds);
     };
 
-    /**
-     * is a reward exist?
-     */
-    private final Consumer<RewardInsertParam> INSERT_REWARD_VALIDATOR = rip -> {
+    private final Consumer<RewardInsertParam> INSERT_ITEM_VALIDATOR = rip -> {
         if (isNull(rip))
             throw new BlueException(EMPTY_PARAM);
         rip.asserts();
@@ -109,10 +112,7 @@ public class RewardServiceImpl implements RewardService {
             throw new BlueException(REWARD_NAME_ALREADY_EXIST);
     };
 
-    /**
-     * is a reward exist?
-     */
-    private final Function<RewardUpdateParam, Reward> UPDATE_REWARD_VALIDATOR_AND_ORIGIN_RETURNER = rup -> {
+    private final Function<RewardUpdateParam, Reward> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = rup -> {
         if (isNull(rup))
             throw new BlueException(EMPTY_PARAM);
         rup.asserts();
@@ -135,10 +135,7 @@ public class RewardServiceImpl implements RewardService {
         return reward;
     };
 
-    /**
-     * for reward
-     */
-    public static final BiFunction<RewardUpdateParam, Reward, Boolean> UPDATE_REWARD_VALIDATOR = (p, t) -> {
+    public static final BiFunction<RewardUpdateParam, Reward, Boolean> UPDATE_ITEM_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
 
@@ -196,7 +193,7 @@ public class RewardServiceImpl implements RewardService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
-        INSERT_REWARD_VALIDATOR.accept(rewardInsertParam);
+        INSERT_ITEM_VALIDATOR.accept(rewardInsertParam);
         Reward reward = REWARD_INSERT_PARAM_2_REWARD_CONVERTER.apply(rewardInsertParam);
 
         reward.setId(blueIdentityProcessor.generate(Reward.class));
@@ -223,11 +220,15 @@ public class RewardServiceImpl implements RewardService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
-        Reward reward = UPDATE_REWARD_VALIDATOR_AND_ORIGIN_RETURNER.apply(rewardUpdateParam);
-        if (!UPDATE_REWARD_VALIDATOR.apply(rewardUpdateParam, reward))
+        Reward reward = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(rewardUpdateParam);
+        if (!UPDATE_ITEM_VALIDATOR.apply(rewardUpdateParam, reward))
             throw new BlueException(DATA_HAS_NOT_CHANGED);
 
+        reward.setUpdater(operatorId);
+        reward.setUpdateTime(TIME_STAMP_GETTER.get());
+
         rewardMapper.updateByPrimaryKeySelective(reward);
+        rewardsRefreshProducer.send(EMPTY_EVENT);
 
         return REWARD_2_REWARD_INFO_CONVERTER.apply(reward);
     }
@@ -285,17 +286,6 @@ public class RewardServiceImpl implements RewardService {
     }
 
     /**
-     * select all rewards
-     *
-     * @return
-     */
-    @Override
-    public Mono<List<Reward>> selectReward() {
-        LOGGER.info("Mono<List<Reward>> selectReward()");
-        return just(rewardMapper.select());
-    }
-
-    /**
      * select rewards by ids
      *
      * @param ids
@@ -323,9 +313,31 @@ public class RewardServiceImpl implements RewardService {
      */
     @Override
     public Mono<List<Reward>> selectRewardMonoByIds(List<Long> ids) {
-        LOGGER.info("Mono<List<Resource>> selectResourceMonoByIds(List<Long> ids), ids = {}", ids);
-
+        LOGGER.info("Mono<List<Reward>> selectRewardMonoByIds(List<Long> ids), ids = {}", ids);
         return just(this.selectRewardByIds(ids));
+    }
+
+    /**
+     * select reward info by ids
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public List<RewardInfo> selectRewardInfoByIds(List<Long> ids) {
+        LOGGER.info("List<RewardInfo> selectRewardInfoByIds(List<Long> ids), ids = {}", ids);
+        return this.selectRewardByIds(ids).stream().map(REWARD_2_REWARD_INFO_CONVERTER).collect(toList());
+    }
+
+    /**
+     * select reward info mono by ids
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public Mono<List<RewardInfo>> selectRewardInfoMonoByIds(List<Long> ids) {
+        return just(this.selectRewardInfoByIds(ids));
     }
 
     /**

@@ -46,7 +46,12 @@ public enum SyncKeyPrefix {
     /**
      * question insert key pre
      */
-    QUESTION_INSERT_PRE("QUESTION_INSERT:");
+    QUESTION_INSERT_PRE("QUESTION_INSERT:"),
+
+    /**
+     * reward date relation update sync key prefix
+     */
+    REWARD_DATE_REL_UPDATE_PRE("REWARD_DATE_REL_UPDATE:");
 
     public final String prefix;
 

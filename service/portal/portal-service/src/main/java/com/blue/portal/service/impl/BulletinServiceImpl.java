@@ -178,7 +178,7 @@ public class BulletinServiceImpl implements BulletinService {
     /**
      * is a bulletin exist?
      */
-    private final Consumer<BulletinInsertParam> INSERT_BULLETIN_VALIDATOR = bip -> {
+    private final Consumer<BulletinInsertParam> INSERT_ITEM_VALIDATOR = bip -> {
         if (isNull(bip))
             throw new BlueException(EMPTY_PARAM);
         bip.asserts();
@@ -190,7 +190,7 @@ public class BulletinServiceImpl implements BulletinService {
     /**
      * is a bulletin exist?
      */
-    private final Function<BulletinUpdateParam, Bulletin> UPDATE_BULLETIN_VALIDATOR_AND_ORIGIN_RETURNER = bup -> {
+    private final Function<BulletinUpdateParam, Bulletin> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = bup -> {
         if (isNull(bup))
             throw new BlueException(EMPTY_PARAM);
         bup.asserts();
@@ -216,7 +216,7 @@ public class BulletinServiceImpl implements BulletinService {
     /**
      * for bulletin
      */
-    public static final BiFunction<BulletinUpdateParam, Bulletin, Boolean> UPDATE_BULLETIN_VALIDATOR = (p, t) -> {
+    public static final BiFunction<BulletinUpdateParam, Bulletin, Boolean> UPDATE_ITEM_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
 
@@ -286,7 +286,7 @@ public class BulletinServiceImpl implements BulletinService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
-        INSERT_BULLETIN_VALIDATOR.accept(bulletinInsertParam);
+        INSERT_ITEM_VALIDATOR.accept(bulletinInsertParam);
         Bulletin bulletin = BULLETIN_INSERT_PARAM_2_BULLETIN_CONVERTER.apply(bulletinInsertParam);
 
         bulletin.setId(blueIdentityProcessor.generate(Bulletin.class));
@@ -317,15 +317,18 @@ public class BulletinServiceImpl implements BulletinService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
-        Bulletin bulletin = UPDATE_BULLETIN_VALIDATOR_AND_ORIGIN_RETURNER.apply(bulletinUpdateParam);
+        Bulletin bulletin = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(bulletinUpdateParam);
 
         List<Integer> changedTypes = new LinkedList<>();
         changedTypes.add(bulletin.getType());
 
-        Boolean changed = UPDATE_BULLETIN_VALIDATOR.apply(bulletinUpdateParam, bulletin);
+        Boolean changed = UPDATE_ITEM_VALIDATOR.apply(bulletinUpdateParam, bulletin);
         if (changed != null && !changed)
             throw new BlueException(DATA_HAS_NOT_CHANGED);
         changedTypes.add(bulletin.getType());
+
+        bulletin.setUpdater(operatorId);
+        bulletin.setUpdateTime(TIME_STAMP_GETTER.get());
 
         changedTypes.forEach(CACHE_DELETER);
         bulletinMapper.updateByPrimaryKeySelective(bulletin);

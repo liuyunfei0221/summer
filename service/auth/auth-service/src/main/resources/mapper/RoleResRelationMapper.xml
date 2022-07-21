@@ -7,23 +7,18 @@
         <result column="role_id" jdbcType="BIGINT" property="roleId"/>
         <result column="res_id" jdbcType="BIGINT" property="resId"/>
         <result column="create_time" jdbcType="BIGINT" property="createTime"/>
-        <result column="update_time" jdbcType="BIGINT" property="updateTime"/>
         <result column="creator" jdbcType="BIGINT" property="creator"/>
-        <result column="updater" jdbcType="BIGINT" property="updater"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id
-        , role_id, res_id, create_time, update_time, creator, updater
+        , role_id, res_id, create_time, creator
     </sql>
 
     <insert id="insert" parameterType="com.blue.auth.repository.entity.RoleResRelation">
-        insert into role_res_relation (id, role_id, res_id,
-                                       create_time, update_time, creator,
-                                       updater)
+        insert into role_res_relation (id, role_id, res_id, create_time, creator)
         values (#{id,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}, #{resId,jdbcType=BIGINT},
-                #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT}, #{creator,jdbcType=BIGINT},
-                #{updater,jdbcType=BIGINT})
+                #{createTime,jdbcType=BIGINT}, #{creator,jdbcType=BIGINT})
     </insert>
 
     <insert id="insertSelective" parameterType="com.blue.auth.repository.entity.RoleResRelation">
@@ -41,14 +36,8 @@
             <if test="createTime != null">
                 create_time,
             </if>
-            <if test="updateTime != null">
-                update_time,
-            </if>
             <if test="creator != null">
                 creator,
-            </if>
-            <if test="updater != null">
-                updater,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -64,22 +53,15 @@
             <if test="createTime != null">
                 #{createTime,jdbcType=BIGINT},
             </if>
-            <if test="updateTime != null">
-                #{updateTime,jdbcType=BIGINT},
-            </if>
             <if test="creator != null">
                 #{creator,jdbcType=BIGINT},
-            </if>
-            <if test="updater != null">
-                #{updater,jdbcType=BIGINT},
             </if>
         </trim>
     </insert>
 
     <insert id="insertBatch" parameterType="java.util.List">
         <if test="list != null and list.size > 0">
-            INSERT INTO role_res_relation (
-            id, role_id, res_id, create_time, update_time, creator, updater)
+            INSERT INTO role_res_relation (id, role_id, res_id, create_time, creator)
             values
             <foreach collection="list" index="index" item="item" separator=",">
                 (
@@ -87,9 +69,7 @@
                 #{item.roleId,jdbcType=BIGINT},
                 #{item.resId,jdbcType=BIGINT},
                 #{item.createTime,jdbcType=BIGINT},
-                #{item.updateTime,jdbcType=BIGINT},
-                #{item.creator,jdbcType=BIGINT},
-                #{item.updater,jdbcType=BIGINT}
+                #{item.creator,jdbcType=BIGINT}
                 )
             </foreach>
         </if>
@@ -100,9 +80,7 @@
         set role_id     = #{roleId,jdbcType=BIGINT},
             res_id      = #{resId,jdbcType=BIGINT},
             create_time = #{createTime,jdbcType=BIGINT},
-            update_time = #{updateTime,jdbcType=BIGINT},
-            creator     = #{creator,jdbcType=BIGINT},
-            updater     = #{updater,jdbcType=BIGINT}
+            creator     = #{creator,jdbcType=BIGINT}
         where id = #{id,jdbcType=BIGINT}
     </update>
 
@@ -118,14 +96,8 @@
             <if test="createTime != null">
                 create_time = #{createTime,jdbcType=BIGINT},
             </if>
-            <if test="updateTime != null">
-                update_time = #{updateTime,jdbcType=BIGINT},
-            </if>
             <if test="creator != null">
                 creator = #{creator,jdbcType=BIGINT},
-            </if>
-            <if test="updater != null">
-                updater = #{updater,jdbcType=BIGINT},
             </if>
         </set>
         where id = #{id,jdbcType=BIGINT}

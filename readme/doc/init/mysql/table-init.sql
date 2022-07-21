@@ -58,9 +58,7 @@ CREATE TABLE `role_res_relation`
     `role_id`     bigint NOT NULL COMMENT 'role id',
     `res_id`      bigint NOT NULL COMMENT 'resource id',
     `create_time` bigint NOT NULL COMMENT 'data create time',
-    `update_time` bigint NOT NULL COMMENT 'data update time',
     `creator`     bigint NOT NULL COMMENT 'creator id',
-    `updater`     bigint NOT NULL COMMENT 'updater id',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_role_res`(`role_id`,`res_id`) USING BTREE,
     UNIQUE KEY `idx_res_role`(`res_id`,`role_id`) USING BTREE
@@ -79,9 +77,7 @@ CREATE TABLE `member_role_relation_0`
     `member_id`   bigint NOT NULL COMMENT 'member id',
     `role_id`     bigint NOT NULL COMMENT 'role id',
     `create_time` bigint NOT NULL COMMENT 'data create time',
-    `update_time` bigint NOT NULL COMMENT 'data update time',
     `creator`     bigint NOT NULL COMMENT 'creator id',
-    `updater`     bigint NOT NULL COMMENT 'updater id',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member_role`(`member_id`,`role_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member and role relation 0';
@@ -92,9 +88,7 @@ CREATE TABLE `member_role_relation_1`
     `member_id`   bigint NOT NULL COMMENT 'member id',
     `role_id`     bigint NOT NULL COMMENT 'role id',
     `create_time` bigint NOT NULL COMMENT 'data create time',
-    `update_time` bigint NOT NULL COMMENT 'data update time',
     `creator`     bigint NOT NULL COMMENT 'creator id',
-    `updater`     bigint NOT NULL COMMENT 'updater id',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member_role`(`member_id`,`role_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member and role relation 1';
@@ -743,7 +737,7 @@ CREATE TABLE `reward`
     UNIQUE KEY `idx_name_type`(`name`,`type`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of marketing reward';
 
-CREATE TABLE `sign_reward_today_relation`
+CREATE TABLE `reward_date_relation`
 (
     `id`          bigint  NOT NULL COMMENT 'id',
     `reward_id`   bigint  NOT NULL COMMENT 'reward id',

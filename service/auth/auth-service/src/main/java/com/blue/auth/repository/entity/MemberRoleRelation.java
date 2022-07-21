@@ -20,11 +20,7 @@ public final class MemberRoleRelation implements Serializable {
 
     private Long createTime;
 
-    private Long updateTime;
-
     private Long creator;
-
-    private Long updater;
 
     public Long getId() {
         return id;
@@ -58,28 +54,12 @@ public final class MemberRoleRelation implements Serializable {
         this.createTime = createTime;
     }
 
-    public Long getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Long updateTime) {
-        this.updateTime = updateTime;
-    }
-
     public Long getCreator() {
         return creator;
     }
 
     public void setCreator(Long creator) {
         this.creator = creator;
-    }
-
-    public Long getUpdater() {
-        return updater;
-    }
-
-    public void setUpdater(Long updater) {
-        this.updater = updater;
     }
 
     @Override
@@ -89,9 +69,7 @@ public final class MemberRoleRelation implements Serializable {
                 ", memberId=" + memberId +
                 ", roleId=" + roleId +
                 ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
                 ", creator=" + creator +
-                ", updater=" + updater +
                 '}';
     }
 

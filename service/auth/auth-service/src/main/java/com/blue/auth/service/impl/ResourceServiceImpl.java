@@ -31,8 +31,7 @@ import java.util.stream.Stream;
 import static com.blue.auth.converter.AuthModelConverters.*;
 import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
 import static com.blue.basic.common.base.BlueChecker.*;
-import static com.blue.basic.common.base.CommonFunctions.GSON;
-import static com.blue.basic.common.base.CommonFunctions.REST_URI_ASSERTER;
+import static com.blue.basic.common.base.CommonFunctions.*;
 import static com.blue.basic.common.base.ConditionSortProcessor.process;
 import static com.blue.basic.common.base.ConstantProcessor.assertResourceType;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
@@ -135,7 +134,7 @@ public class ResourceServiceImpl implements ResourceService {
     /**
      * is a resource exist?
      */
-    private final Consumer<ResourceInsertParam> INSERT_RESOURCE_VALIDATOR = rip -> {
+    private final Consumer<ResourceInsertParam> INSERT_ITEM_VALIDATOR = rip -> {
         if (isNull(rip))
             throw new BlueException(EMPTY_PARAM);
         rip.asserts();
@@ -151,7 +150,7 @@ public class ResourceServiceImpl implements ResourceService {
     /**
      * is a resource exist?
      */
-    private final Function<ResourceUpdateParam, Resource> UPDATE_RESOURCE_VALIDATOR_AND_ORIGIN_RETURNER = rup -> {
+    private final Function<ResourceUpdateParam, Resource> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = rup -> {
         if (isNull(rup))
             throw new BlueException(EMPTY_PARAM);
         rup.asserts();
@@ -191,7 +190,7 @@ public class ResourceServiceImpl implements ResourceService {
     /**
      * for resource
      */
-    public static final BiFunction<ResourceUpdateParam, Resource, Boolean> UPDATE_RESOURCE_VALIDATOR = (p, t) -> {
+    public static final BiFunction<ResourceUpdateParam, Resource, Boolean> UPDATE_ITEM_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
 
@@ -285,7 +284,7 @@ public class ResourceServiceImpl implements ResourceService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
-        INSERT_RESOURCE_VALIDATOR.accept(resourceInsertParam);
+        INSERT_ITEM_VALIDATOR.accept(resourceInsertParam);
         Resource resource = RESOURCE_INSERT_PARAM_2_RESOURCE_CONVERTER.apply(resourceInsertParam);
 
         resource.setId(blueIdentityProcessor.generate(Resource.class));
@@ -314,9 +313,12 @@ public class ResourceServiceImpl implements ResourceService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
-        Resource resource = UPDATE_RESOURCE_VALIDATOR_AND_ORIGIN_RETURNER.apply(resourceUpdateParam);
-        if (!UPDATE_RESOURCE_VALIDATOR.apply(resourceUpdateParam, resource))
+        Resource resource = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(resourceUpdateParam);
+        if (!UPDATE_ITEM_VALIDATOR.apply(resourceUpdateParam, resource))
             throw new BlueException(DATA_HAS_NOT_CHANGED);
+
+        resource.setUpdater(operatorId);
+        resource.setUpdateTime(TIME_STAMP_GETTER.get());
 
         CACHE_DELETER.accept(RESOURCES.key);
         resourceMapper.updateByPrimaryKeySelective(resource);

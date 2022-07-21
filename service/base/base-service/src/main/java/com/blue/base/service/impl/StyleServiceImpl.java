@@ -311,6 +311,9 @@ public class StyleServiceImpl implements StyleService {
             throw new BlueException(DATA_HAS_NOT_CHANGED);
         changedTypes.add(style.getType());
 
+        style.setUpdater(operatorId);
+        style.setUpdateTime(TIME_STAMP_GETTER.get());
+
         styleMapper.updateByPrimaryKeySelective(style);
         changedTypes.forEach(CACHE_DELETER);
 

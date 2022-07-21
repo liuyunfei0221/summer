@@ -65,13 +65,6 @@ public interface RewardService {
     Mono<Reward> getRewardMono(Long id);
 
     /**
-     * select all rewards
-     *
-     * @return
-     */
-    Mono<List<Reward>> selectReward();
-
-    /**
      * select rewards by ids
      *
      * @param ids
@@ -86,6 +79,22 @@ public interface RewardService {
      * @return
      */
     Mono<List<Reward>> selectRewardMonoByIds(List<Long> ids);
+
+    /**
+     * select reward info by ids
+     *
+     * @param ids
+     * @return
+     */
+    List<RewardInfo> selectRewardInfoByIds(List<Long> ids);
+
+    /**
+     * select reward info mono by ids
+     *
+     * @param ids
+     * @return
+     */
+    Mono<List<RewardInfo>> selectRewardInfoMonoByIds(List<Long> ids);
 
     /**
      * select reward by page and condition

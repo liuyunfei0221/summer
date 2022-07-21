@@ -212,7 +212,7 @@ public class AreaServiceImpl implements AreaService {
     /**
      * is an area exist?
      */
-    private final Consumer<AreaInsertParam> INSERT_AREA_VALIDATOR = param -> {
+    private final Consumer<AreaInsertParam> INSERT_ITEM_VALIDATOR = param -> {
         if (isNull(param))
             throw new BlueException(EMPTY_PARAM);
         param.asserts();
@@ -228,7 +228,7 @@ public class AreaServiceImpl implements AreaService {
     /**
      * area insert param -> area
      */
-    public final Function<AreaInsertParam, Area> AREA_INSERT_PARAM_2_AREA_CONVERTER = param -> {
+    private final Function<AreaInsertParam, Area> AREA_INSERT_PARAM_2_AREA_CONVERTER = param -> {
         if (isNull(param))
             throw new BlueException(EMPTY_PARAM);
         param.asserts();
@@ -256,7 +256,7 @@ public class AreaServiceImpl implements AreaService {
     /**
      * is an area exist?
      */
-    private final Function<AreaUpdateParam, Area> UPDATE_AREA_VALIDATOR_AND_ORIGIN_RETURNER = param -> {
+    private final Function<AreaUpdateParam, Area> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = param -> {
         if (isNull(param))
             throw new BlueException(EMPTY_PARAM);
         param.asserts();
@@ -284,7 +284,7 @@ public class AreaServiceImpl implements AreaService {
     /**
      * for area
      */
-    public final BiFunction<AreaUpdateParam, Area, Boolean> UPDATE_AREA_VALIDATOR = (p, t) -> {
+    public final BiFunction<AreaUpdateParam, Area, Boolean> UPDATE_ITEM_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
         if (!p.getId().equals(t.getId()))
@@ -347,7 +347,7 @@ public class AreaServiceImpl implements AreaService {
     public Mono<AreaInfo> insertArea(AreaInsertParam areaInsertParam) {
         LOGGER.info("Mono<AreaInfo> insertArea(AreaInsertParam areaInsertParam), areaInsertParam = {}", areaInsertParam);
 
-        INSERT_AREA_VALIDATOR.accept(areaInsertParam);
+        INSERT_ITEM_VALIDATOR.accept(areaInsertParam);
         Area area = AREA_INSERT_PARAM_2_AREA_CONVERTER.apply(areaInsertParam);
 
         return areaRepository.insert(area)
@@ -369,12 +369,13 @@ public class AreaServiceImpl implements AreaService {
     public Mono<AreaInfo> updateArea(AreaUpdateParam areaUpdateParam) {
         LOGGER.info("Mono<AreaInfo> updateArea(AreaUpdateParam areaUpdateParam), areaUpdateParam = {}", areaUpdateParam);
 
-        Area area = UPDATE_AREA_VALIDATOR_AND_ORIGIN_RETURNER.apply(areaUpdateParam);
+        Area area = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(areaUpdateParam);
 
-        Boolean changed = UPDATE_AREA_VALIDATOR.apply(areaUpdateParam, area);
+        Boolean changed = UPDATE_ITEM_VALIDATOR.apply(areaUpdateParam, area);
         if (changed != null && !changed)
             throw new BlueException(DATA_HAS_NOT_CHANGED);
 
+        area.setUpdateTime(TIME_STAMP_GETTER.get());
         return areaRepository.save(area)
                 .publishOn(scheduler)
                 .map(AREA_2_AREA_INFO_CONVERTER)

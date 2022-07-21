@@ -134,6 +134,7 @@ public class RoleServiceImpl implements RoleService {
             synchronizedProcessor.handleSupByOrderedWithSetter(
                     NULLABLE_DEFAULT_ROLE_REDIS_SUP, BlueChecker::isNotNull, DEFAULT_ROLE_DB_SUP, DEFAULT_ROLE_REDIS_SETTER);
 
+
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(RoleSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
@@ -163,7 +164,7 @@ public class RoleServiceImpl implements RoleService {
     /**
      * is a role exist?
      */
-    private final Consumer<RoleInsertParam> INSERT_ROLE_VALIDATOR = rip -> {
+    private final Consumer<RoleInsertParam> INSERT_ITEM_VALIDATOR = rip -> {
         if (isNull(rip))
             throw new BlueException(EMPTY_PARAM);
         rip.asserts();
@@ -178,7 +179,7 @@ public class RoleServiceImpl implements RoleService {
     /**
      * is a role exist?
      */
-    private final Function<RoleUpdateParam, Role> UPDATE_ROLE_VALIDATOR_AND_ORIGIN_RETURNER = rup -> {
+    private final Function<RoleUpdateParam, Role> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = rup -> {
         if (isNull(rup))
             throw new BlueException(EMPTY_PARAM);
         rup.asserts();
@@ -212,7 +213,7 @@ public class RoleServiceImpl implements RoleService {
     /**
      * for role
      */
-    public static final BiFunction<RoleUpdateParam, Role, Boolean> UPDATE_ROLE_VALIDATOR = (p, t) -> {
+    public static final BiFunction<RoleUpdateParam, Role, Boolean> UPDATE_ITEM_VALIDATOR = (p, t) -> {
         if (!p.getId().equals(t.getId()))
             throw new BlueException(BAD_REQUEST);
 
@@ -253,7 +254,7 @@ public class RoleServiceImpl implements RoleService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
-        INSERT_ROLE_VALIDATOR.accept(roleInsertParam);
+        INSERT_ITEM_VALIDATOR.accept(roleInsertParam);
         Role role = ROLE_INSERT_PARAM_2_ROLE_CONVERTER.apply(roleInsertParam);
 
         role.setId(blueIdentityProcessor.generate(Role.class));
@@ -281,9 +282,12 @@ public class RoleServiceImpl implements RoleService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
-        Role role = UPDATE_ROLE_VALIDATOR_AND_ORIGIN_RETURNER.apply(roleUpdateParam);
-        if (!UPDATE_ROLE_VALIDATOR.apply(roleUpdateParam, role))
+        Role role = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(roleUpdateParam);
+        if (!UPDATE_ITEM_VALIDATOR.apply(roleUpdateParam, role))
             throw new BlueException(DATA_HAS_NOT_CHANGED);
+
+        role.setUpdater(operatorId);
+        role.setUpdateTime(TIME_STAMP_GETTER.get());
 
         CACHE_DELETER.accept(ROLES.key);
         roleMapper.updateByPrimaryKeySelective(role);

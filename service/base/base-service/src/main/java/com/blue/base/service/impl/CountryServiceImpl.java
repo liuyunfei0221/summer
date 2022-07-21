@@ -143,7 +143,7 @@ public class CountryServiceImpl implements CountryService {
     /**
      * is a country exist?
      */
-    private final Consumer<CountryInsertParam> INSERT_COUNTRY_VALIDATOR = param -> {
+    private final Consumer<CountryInsertParam> INSERT_ITEM_VALIDATOR = param -> {
         if (isNull(param))
             throw new BlueException(EMPTY_PARAM);
         param.asserts();
@@ -212,7 +212,7 @@ public class CountryServiceImpl implements CountryService {
     /**
      * is a country exist?
      */
-    private final Function<CountryUpdateParam, Country> UPDATE_COUNTRY_VALIDATOR_AND_ORIGIN_RETURNER = param -> {
+    private final Function<CountryUpdateParam, Country> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = param -> {
         if (isNull(param))
             throw new BlueException(EMPTY_PARAM);
         param.asserts();
@@ -260,7 +260,7 @@ public class CountryServiceImpl implements CountryService {
     /**
      * for country
      */
-    public final BiFunction<CountryUpdateParam, Country, Boolean> UPDATE_COUNTRY_VALIDATOR = (p, t) -> {
+    public final BiFunction<CountryUpdateParam, Country, Boolean> UPDATE_ITEM_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
         if (!p.getId().equals(t.getId()))
@@ -348,7 +348,7 @@ public class CountryServiceImpl implements CountryService {
     public Mono<CountryInfo> insertCountry(CountryInsertParam countryInsertParam) {
         LOGGER.info("Mono<CountryInfo> insertCountry(CountryInsertParam countryInsertParam), countryInsertParam = {}", countryInsertParam);
 
-        INSERT_COUNTRY_VALIDATOR.accept(countryInsertParam);
+        INSERT_ITEM_VALIDATOR.accept(countryInsertParam);
         Country country = COUNTRY_INSERT_PARAM_2_COUNTRY_CONVERTER.apply(countryInsertParam);
 
         return countryRepository.insert(country)
@@ -370,12 +370,13 @@ public class CountryServiceImpl implements CountryService {
     public Mono<CountryInfo> updateCountry(CountryUpdateParam countryUpdateParam) {
         LOGGER.info("Mono<CountryInfo> updateCountry(CountryUpdateParam countryUpdateParam), countryUpdateParam = {}", countryUpdateParam);
 
-        Country country = UPDATE_COUNTRY_VALIDATOR_AND_ORIGIN_RETURNER.apply(countryUpdateParam);
+        Country country = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(countryUpdateParam);
 
-        Boolean changed = UPDATE_COUNTRY_VALIDATOR.apply(countryUpdateParam, country);
+        Boolean changed = UPDATE_ITEM_VALIDATOR.apply(countryUpdateParam, country);
         if (changed != null && !changed)
             throw new BlueException(DATA_HAS_NOT_CHANGED);
 
+        country.setUpdateTime(TIME_STAMP_GETTER.get());
         return countryRepository.save(country)
                 .publishOn(scheduler)
                 .map(COUNTRY_2_COUNTRY_INFO_CONVERTER)

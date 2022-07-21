@@ -393,83 +393,65 @@ VALUES (1, 2, 'blue', 'blue', 0, 0, UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 
 -- blue admin res
-INSERT INTO `auth`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                       `updater`)
+INSERT INTO `auth`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `creator`)
 SELECT id + 1000000,
        1,
        id,
        UNIX_TIMESTAMP(),
-       UNIX_TIMESTAMP(),
-       1,
        1
 FROM `auth`.`resource`;
 
 
 -- admin res
-INSERT INTO `auth`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                       `updater`)
+INSERT INTO `auth`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `creator`)
 SELECT id + 2000000,
        2,
        id,
        UNIX_TIMESTAMP(),
-       UNIX_TIMESTAMP(),
-       1,
        1
 FROM `auth`.`resource`
 WHERE `type` = 2;
 
 
 -- manager res
-INSERT INTO `auth`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                       `updater`)
+INSERT INTO `auth`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `creator`)
 SELECT id + 3000000,
        3,
        id,
        UNIX_TIMESTAMP(),
-       UNIX_TIMESTAMP(),
-       1,
        1
 FROM `auth`.`resource`
 WHERE `type` = 2;
 
 
 -- tester res
-INSERT INTO `auth`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                       `updater`)
+INSERT INTO `auth`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `creator`)
 SELECT id + 4000000,
        4,
        id,
        UNIX_TIMESTAMP(),
-       UNIX_TIMESTAMP(),
-       1,
        1
 FROM `auth`.`resource`
 WHERE `type` = 2;
 
 
 -- customer res
-INSERT INTO `auth`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                       `updater`)
+INSERT INTO `auth`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `creator`)
 SELECT id + 5000000,
        5,
        id,
        UNIX_TIMESTAMP(),
-       UNIX_TIMESTAMP(),
-       1,
        1
 FROM `auth`.`resource`
 WHERE `type` = 2;
 
 
 -- member res
-INSERT INTO `auth`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `update_time`, `creator`,
-                                       `updater`)
+INSERT INTO `auth`.`role_res_relation`(`id`, `role_id`, `res_id`, `create_time`, `creator`)
 SELECT id + 6000000,
        6,
        id,
        UNIX_TIMESTAMP(),
-       UNIX_TIMESTAMP(),
-       1,
        1
 FROM `auth`.`resource`
 WHERE `type` = 1;

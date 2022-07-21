@@ -98,17 +98,13 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
         if (existRelationOpt.isPresent())
             throw new BlueException(MEMBER_ALREADY_HAS_A_ROLE);
 
-        Long timeStamp = TIME_STAMP_GETTER.get();
-
         MemberRoleRelation memberRoleRelation = new MemberRoleRelation();
 
         memberRoleRelation.setId(blueIdentityProcessor.generate(MemberRoleRelation.class));
         memberRoleRelation.setMemberId(memberId);
         memberRoleRelation.setRoleId(roleId);
-        memberRoleRelation.setCreateTime(timeStamp);
-        memberRoleRelation.setUpdateTime(timeStamp);
+        memberRoleRelation.setCreateTime(TIME_STAMP_GETTER.get());
         memberRoleRelation.setCreator(operatorId);
-        memberRoleRelation.setUpdater(operatorId);
 
         return memberRoleRelationMapper.insertSelective(memberRoleRelation);
     }
@@ -139,9 +135,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
                     memberRoleRelation.setMemberId(memberId);
                     memberRoleRelation.setRoleId(roleId);
                     memberRoleRelation.setCreateTime(timeStamp);
-                    memberRoleRelation.setUpdateTime(timeStamp);
                     memberRoleRelation.setCreator(operatorId);
-                    memberRoleRelation.setUpdater(operatorId);
 
                     return memberRoleRelation;
                 }).collect(toList());

@@ -92,7 +92,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
     /**
      * is a config exist?
      */
-    private final Consumer<QrCodeConfigInsertParam> INSERT_CONFIG_VALIDATOR = param -> {
+    private final Consumer<QrCodeConfigInsertParam> INSERT_ITEM_VALIDATOR = param -> {
         if (isNull(param))
             throw new BlueException(EMPTY_PARAM);
         param.asserts();
@@ -141,7 +141,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
     /**
      * is a config exist?
      */
-    private final Function<QrCodeConfigUpdateParam, QrCodeConfig> UPDATE_CONFIG_VALIDATOR_AND_ORIGIN_RETURNER = param -> {
+    private final Function<QrCodeConfigUpdateParam, QrCodeConfig> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = param -> {
         if (isNull(param))
             throw new BlueException(EMPTY_PARAM);
         param.asserts();
@@ -314,7 +314,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
         LOGGER.info("Mono<QrCodeConfigInfo> insertQrCodeConfig(QrCodeConfigInsertParam qrCodeConfigInsertParam, Long operatorId), qrCodeConfigInsertParam = {}, operatorId = {}",
                 qrCodeConfigInsertParam, operatorId);
 
-        INSERT_CONFIG_VALIDATOR.accept(qrCodeConfigInsertParam);
+        INSERT_ITEM_VALIDATOR.accept(qrCodeConfigInsertParam);
         QrCodeConfig qrCodeConfig = CONFIG_INSERT_PARAM_2_CONFIG_CONVERTER.apply(qrCodeConfigInsertParam, operatorId);
 
         return qrCodeConfigRepository.insert(qrCodeConfig)
@@ -334,10 +334,12 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
         LOGGER.info("Mono<QrCodeConfigInfo> updateQrCodeConfig(QrCodeConfigUpdateParam qrCodeConfigUpdateParam, Long operatorId), qrCodeConfigUpdateParam = {}, operatorId = {]",
                 qrCodeConfigUpdateParam, operatorId);
 
-        QrCodeConfig qrCodeConfig = UPDATE_CONFIG_VALIDATOR_AND_ORIGIN_RETURNER.apply(qrCodeConfigUpdateParam);
-
+        QrCodeConfig qrCodeConfig = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(qrCodeConfigUpdateParam);
         if (!validateAndPackageConfigForUpdate(qrCodeConfigUpdateParam, qrCodeConfig, operatorId))
             throw new BlueException(DATA_HAS_NOT_CHANGED);
+
+        qrCodeConfig.setUpdater(operatorId);
+        qrCodeConfig.setUpdateTime(TIME_STAMP_GETTER.get());
 
         return qrCodeConfigRepository.save(qrCodeConfig)
                 .publishOn(scheduler)

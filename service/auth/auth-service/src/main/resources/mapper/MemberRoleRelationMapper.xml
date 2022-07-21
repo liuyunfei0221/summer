@@ -7,23 +7,18 @@
         <result column="member_id" jdbcType="BIGINT" property="memberId"/>
         <result column="role_id" jdbcType="BIGINT" property="roleId"/>
         <result column="create_time" jdbcType="BIGINT" property="createTime"/>
-        <result column="update_time" jdbcType="BIGINT" property="updateTime"/>
         <result column="creator" jdbcType="BIGINT" property="creator"/>
-        <result column="updater" jdbcType="BIGINT" property="updater"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id
-        , member_id, role_id, create_time, update_time, creator, updater
+        , member_id, role_id, create_time, creator
     </sql>
 
     <insert id="insert" parameterType="com.blue.auth.repository.entity.MemberRoleRelation">
-        insert into member_role_relation (id, member_id, role_id,
-                                          create_time, update_time, creator,
-                                          updater)
+        insert into member_role_relation (id, member_id, role_id, create_time, creator)
         values (#{id,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT},
-                #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT}, #{creator,jdbcType=BIGINT},
-                #{updater,jdbcType=BIGINT})
+                #{createTime,jdbcType=BIGINT}, #{creator,jdbcType=BIGINT})
     </insert>
 
     <insert id="insertSelective" parameterType="com.blue.auth.repository.entity.MemberRoleRelation">
@@ -41,14 +36,8 @@
             <if test="createTime != null">
                 create_time,
             </if>
-            <if test="updateTime != null">
-                update_time,
-            </if>
             <if test="creator != null">
                 creator,
-            </if>
-            <if test="updater != null">
-                updater,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -64,14 +53,8 @@
             <if test="createTime != null">
                 #{createTime,jdbcType=BIGINT},
             </if>
-            <if test="updateTime != null">
-                #{updateTime,jdbcType=BIGINT},
-            </if>
             <if test="creator != null">
                 #{creator,jdbcType=BIGINT},
-            </if>
-            <if test="updater != null">
-                #{updater,jdbcType=BIGINT},
             </if>
         </trim>
     </insert>
@@ -81,9 +64,7 @@
         set member_id   = #{memberId,jdbcType=BIGINT},
             role_id     = #{roleId,jdbcType=BIGINT},
             create_time = #{createTime,jdbcType=BIGINT},
-            update_time = #{updateTime,jdbcType=BIGINT},
-            creator     = #{creator,jdbcType=BIGINT},
-            updater     = #{updater,jdbcType=BIGINT}
+            creator     = #{creator,jdbcType=BIGINT}
         where id = #{id,jdbcType=BIGINT}
     </update>
 
@@ -99,14 +80,8 @@
             <if test="createTime != null">
                 create_time = #{createTime,jdbcType=BIGINT},
             </if>
-            <if test="updateTime != null">
-                update_time = #{updateTime,jdbcType=BIGINT},
-            </if>
             <if test="creator != null">
                 creator = #{creator,jdbcType=BIGINT},
-            </if>
-            <if test="updater != null">
-                updater = #{updater,jdbcType=BIGINT},
             </if>
         </set>
         where id = #{id,jdbcType=BIGINT}
@@ -129,9 +104,7 @@
                 #{item.memberId,jdbcType=BIGINT},
                 #{item.roleId,jdbcType=BIGINT},
                 #{item.createTime,jdbcType=BIGINT},
-                #{item.updateTime,jdbcType=BIGINT},
-                #{item.creator,jdbcType=BIGINT},
-                #{item.updater,jdbcType=BIGINT}
+                #{item.creator,jdbcType=BIGINT}
                 )
             </foreach>
         </if>

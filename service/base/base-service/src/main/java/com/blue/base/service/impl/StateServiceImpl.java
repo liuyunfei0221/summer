@@ -195,7 +195,7 @@ public class StateServiceImpl implements StateService {
     /**
      * is a state exist?
      */
-    private final Consumer<StateInsertParam> INSERT_STATE_VALIDATOR = param -> {
+    private final Consumer<StateInsertParam> INSERT_ITEM_VALIDATOR = param -> {
         if (isNull(param))
             throw new BlueException(EMPTY_PARAM);
         param.asserts();
@@ -240,7 +240,7 @@ public class StateServiceImpl implements StateService {
     /**
      * is a state exist?
      */
-    private final Function<StateUpdateParam, State> UPDATE_STATE_VALIDATOR_AND_ORIGIN_RETURNER = param -> {
+    private final Function<StateUpdateParam, State> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = param -> {
         if (isNull(param))
             throw new BlueException(EMPTY_PARAM);
         param.asserts();
@@ -267,7 +267,7 @@ public class StateServiceImpl implements StateService {
     /**
      * for state
      */
-    public final BiFunction<StateUpdateParam, State, Boolean> UPDATE_STATE_VALIDATOR = (p, t) -> {
+    public final BiFunction<StateUpdateParam, State, Boolean> UPDATE_ITEM_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
         if (!p.getId().equals(t.getId()))
@@ -336,7 +336,7 @@ public class StateServiceImpl implements StateService {
     public Mono<StateInfo> insertState(StateInsertParam stateInsertParam) {
         LOGGER.info("Mono<StateInfo> insertState(StateInsertParam stateInsertParam), stateInsertParam = {}", stateInsertParam);
 
-        INSERT_STATE_VALIDATOR.accept(stateInsertParam);
+        INSERT_ITEM_VALIDATOR.accept(stateInsertParam);
         State state = STATE_INSERT_PARAM_2_STATE_CONVERTER.apply(stateInsertParam);
 
         return stateRepository.insert(state)
@@ -358,14 +358,15 @@ public class StateServiceImpl implements StateService {
     public Mono<StateInfo> updateState(StateUpdateParam stateUpdateParam) {
         LOGGER.info("Mono<StateInfo> updateState(StateUpdateParam stateUpdateParam), stateUpdateParam = {}", stateUpdateParam);
 
-        State state = UPDATE_STATE_VALIDATOR_AND_ORIGIN_RETURNER.apply(stateUpdateParam);
+        State state = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(stateUpdateParam);
 
         Long originalCountryId = state.getCountryId();
 
-        Boolean changed = UPDATE_STATE_VALIDATOR.apply(stateUpdateParam, state);
+        Boolean changed = UPDATE_ITEM_VALIDATOR.apply(stateUpdateParam, state);
         if (changed != null && !changed)
             throw new BlueException(DATA_HAS_NOT_CHANGED);
 
+        state.setUpdateTime(TIME_STAMP_GETTER.get());
         return stateRepository.save(state)
                 .publishOn(scheduler)
                 .map(STATE_2_STATE_INFO_CONVERTER)
