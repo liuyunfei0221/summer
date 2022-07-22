@@ -1693,7 +1693,7 @@
 					"response": []
 				},
 				{
-					"name": "查询权限信息",
+					"name": "查询聚合权限信息",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -1704,7 +1704,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiI5ODY0MDJkYmM3NTkwN2RlNGVkNWRjMDE3OWVmZmYxNDk4MGQwMDA3N2FmNmNkNGI4ZDYzYzU5ZDVkMGZhODRjMzMxODZmODBhODg1N2FjYjdmZjUzMWI0OGYzNDgxZTc4YzIwZGExYzIyMDA1ODkwM2MwMTFiZWY5MDRlZDE2ZCIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDE5NTk0NDM1NTM4NDUyNDlfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQxOTU5NDQzNTUzODQ1MjQ5IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjU3ODcwMTgwIiwibmJmIjoxNjU3ODcwMTgwLCJ0IjoialJBTUdwdmpROWsiLCJlYXMiOjE2NjU2NDYxODA2MTUsImV4cCI6MTY2NTY0NjE4MCwiaWF0IjoxNjU3ODcwMTgwLCJqdGkiOiJOaXBRTmZXNGpOSTl5TFZmbUx1dG1PcDNIVFQ1c25pWSJ9.oZ1uTb2EKeCT194n3XDmohbW3hAEo7FHlJC_Vbas53KRhB0XltfIAx-6nTlGI8sRX35mvlI9bUESdeiGvzjbkw",
+								"value": "eyJraWQiOiIwMTBjMjBmYzg5NWI1MzNmYzViZTgxYzk1ZGJhMzUxZTAzNGZlZGE4OWRlNjI3MWE3MTE3YWI0OTMzNTgxYjg1MDI3ZTg4OWI2MzlkYzVkY2Y4YTZiOGE0ZTViZDhiY2UwYTIyOGRkNTdkOTAxODRhNzRjMTIyMTA5YTFjODhkZSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDI2MjI2Mjk0NTQwMjA2MTFfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQyNjIyNjI5NDU0MDIwNjExIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjU4NDk1MDQ1IiwibmJmIjoxNjU4NDk1MDQ1LCJ0Ijoia3E4RUEzc0VVUzkiLCJlYXMiOjE2NjYyNzEwNDU1MzYsImV4cCI6MTY2NjI3MTA0NSwiaWF0IjoxNjU4NDk1MDQ1LCJqdGkiOiI5TGNRa2lBc3RzVlNjM1JDdThtbzZQMnViUlJpZ1N3SiJ9._ESfr0V3rZdqrZHHDGFWNOl_stHRvNINIrmpqnVvzl2u2u7h3NRxo50zD-1XSanz4LDbMfZefSEC6_wahep0Nw",
 								"type": "text"
 							}
 						],
@@ -1718,6 +1718,37 @@
 								"blue-auth",
 								"auth",
 								"authority"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "查询详细权限信息",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiIwMTBjMjBmYzg5NWI1MzNmYzViZTgxYzk1ZGJhMzUxZTAzNGZlZGE4OWRlNjI3MWE3MTE3YWI0OTMzNTgxYjg1MDI3ZTg4OWI2MzlkYzVkY2Y4YTZiOGE0ZTViZDhiY2UwYTIyOGRkNTdkOTAxODRhNzRjMTIyMTA5YTFjODhkZSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDI2MjI2Mjk0NTQwMjA2MTFfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQyNjIyNjI5NDU0MDIwNjExIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjU4NDk1MDQ1IiwibmJmIjoxNjU4NDk1MDQ1LCJ0Ijoia3E4RUEzc0VVUzkiLCJlYXMiOjE2NjYyNzEwNDU1MzYsImV4cCI6MTY2NjI3MTA0NSwiaWF0IjoxNjU4NDk1MDQ1LCJqdGkiOiI5TGNRa2lBc3RzVlNjM1JDdThtbzZQMnViUlJpZ1N3SiJ9._ESfr0V3rZdqrZHHDGFWNOl_stHRvNINIrmpqnVvzl2u2u7h3NRxo50zD-1XSanz4LDbMfZefSEC6_wahep0Nw",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:11000/blue-auth/auth/authorities",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-auth",
+								"auth",
+								"authorities"
 							]
 						}
 					},
@@ -2229,13 +2260,13 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiNjJiNjM0YzJlNTIwZDQ2MWYzMzU5NTk2NzAxYmUzNDRmZDc2MDEzNjY0MmVmZjNkZDA1YTk0MDA4YmEyYzg0MWQzMzgyNzc4MDlkYzliMjg2MzRkZGNjMThlZGJkODk5MWY3NzZjZGY4OWYzYmZlMDczMGU3MjM4MmY4YzhkNzkiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTgxMDQyMyIsIm5iZiI6MTY1NTgxMDQyMywidCI6ImFyMEU3bXFEUkRzIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5NzQ1MjkzNDIzNDc2NzM3X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNTg2NDIzNzAwLCJpIjoiMzk3NDUyOTM0MjM0NzY3MzciLCJleHAiOjE2NjM1ODY0MjMsImlhdCI6MTY1NTgxMDQyMywianRpIjoidTgzN3ozc0VFUkpVZk5nY2hOanF6QklSMER0MGtJZGUiLCJuIjoiUFZBUiJ9.SwXmwpe4PtHF2gb4H8xii1P3Ed-t4z6V2NZob7M3Ee2MsxioQRDTOR43V5NdOxke8snmvyQhdgdt2lrCnvwEDQ",
+								"value": "eyJraWQiOiI4ZGI2MDBhOGY5N2RhYjYwN2EwODA0YzI4NzE1OGY3Y2UxM2NlOTU0YTFjNzc0YWVjMWY0YWJhYzY5NTI2MGMxMWY4OTEyZTczNjgwZmM0ZWJlMjYxNjU4OTY1Zjg0ZmRkYTE4ZGUwY2NhMmVjMzNjNDY3MWMzZTU3ZWFiMTIxYyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDI2MjI2Mjk0NTQwMjA2MDlfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQyNjIyNjI5NDU0MDIwNjA5IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjU4NDg1ODY3IiwibmJmIjoxNjU4NDg1ODY3LCJ0IjoidXdHaXVJVGlQdnQiLCJlYXMiOjE2NjYyNjE4Njc1NjcsImV4cCI6MTY2NjI2MTg2NywiaWF0IjoxNjU4NDg1ODY3LCJqdGkiOiI5VngySXdZQ1hLc3BGNEJON1k5Q2NqOENvYkdyTkh5YSJ9.douotpn_gYGdK5uJx1pyhjluD9w9CiS6jEPkaaBlH1DOgC6u5Fpa8qzvSLdavm1BMl8LfD3H8zyRDlBmhCAW3g",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"memberId\":39749042929937001,\r\n    \"roleId\":4\r\n}"
+							"raw": "{\r\n    \"memberId\":42622629454020610,\r\n    \"roleId\":6\r\n}"
 						},
 						"url": {
 							"raw": "127.0.0.1:11000/blue-auth/manager/relation/mem-role-insert",
@@ -2380,7 +2411,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMmRlODFkNTA2MmI5MTAyOTY4NTlhMmEyMDAwZWY1ZDBhOWE4OGNlMDliNWQxYzA4NTdkM2I5NjhlYzJhZDQ4OGY1NTIxMDI3NDM5YmZkZThlYzFkNDdhMzRkOTAwODg5ODZjMTM4NTI0Yjc0MjBiN2U3YTUzYmZlOTY2NWVmNDciLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTgxNjg3NiIsIm5iZiI6MTY1NTgxNjg3NiwidCI6ImNtWUxJcUVPaXdUIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5NzQ5MDQyOTI5OTM3MDAxX0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNTkyODc2Mzg2LCJpIjoiMzk3NDkwNDI5Mjk5MzcwMDEiLCJleHAiOjE2NjM1OTI4NzYsImlhdCI6MTY1NTgxNjg3NiwianRpIjoiWXVEdk95ZUtOYTNycFlmQUxRUFZFVEZRSFhjNGp5cTciLCJuIjoiUFZBUiJ9.18W38i43zFLezElSE4mTbipczrKSABHmMYVhvaaYOSo-ilTud6q3FBGodzXGcBvulYfoZFNzBEcY0MDGhOWQkg",
+								"value": "eyJraWQiOiJiZTZmY2UyNWNmNmNjYTNjZmQxYmQ4NzdkOTgxNzUyNmVhM2FjZWY4MWI0NDc4MzNiMzY5OTNiZGYyMzFhNTRlYmE1ZmM1NmJjYWY4MmMxYTE1MDk1YjQ5OWQzNTZiMTg3MWY3ZDlhODgyYjVlZWU1NzZjYWM5MWZhZjBiMTBiYSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDI2MjI2Mjk0NTQwMjA2MTBfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQyNjIyNjI5NDU0MDIwNjEwIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjU4NDg2MjY4IiwibmJmIjoxNjU4NDg2MjY4LCJ0IjoidmVjMFdBTHBHdUMiLCJlYXMiOjE2NjYyNjIyNjgwODIsImV4cCI6MTY2NjI2MjI2OCwiaWF0IjoxNjU4NDg2MjY4LCJqdGkiOiI2YTZoWkY0TVdrc1YxWWJMNUY0azIxdHpqMHljVnBaNCJ9.4KzW1-1LlQDx1XTTniNvbmjoTWmjRwxAcFvNiT-8yIAayYCBu61ub2TbkrU_yLX5f5TeDn4tAZu5NEsEhikhmQ",
 								"type": "text"
 							}
 						],
@@ -3634,12 +3665,12 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiJiNTgyYzRkYzgzOGQyYjYzMTViMGJkY2I2MWI3Yzk1YjhhNTZjMzg1ZjA3ZDc5YjEyM2RjZjgwMDY3NTU2OWZkMjIxNDYzMjgyMmZjMWIzMmQzMzJlMzIwNzdlNGIyMDkxZWJkYmE1YjdiMDhhMTk3MDM5ZWZjYjUzMGJhYmVlYSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDI0MzQyMjEwNDk5MDUxNTVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQyNDM0MjIxMDQ5OTA1MTU1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjU4MzE4ODg0IiwibmJmIjoxNjU4MzE4ODg0LCJ0IjoiNkQ5RjB6Uzg3T2oiLCJlYXMiOjE2NjYwOTQ4ODQ3NjAsImV4cCI6MTY2NjA5NDg4NCwiaWF0IjoxNjU4MzE4ODg0LCJqdGkiOiJ0QUdlbGtNVXh1RjhSWXI5eW1CMm11VW5JdGNwQzhzTSJ9.1ht-U1OcPgN2MDfR6CiDAT4HiBQMwnHQ9QCvUlxuE4EPsoGKEod8g8rdpaAqtMnnEegJOCBnxe_G9m9WmLtB3Q",
+								"value": "eyJraWQiOiI4ZGI2MDBhOGY5N2RhYjYwN2EwODA0YzI4NzE1OGY3Y2UxM2NlOTU0YTFjNzc0YWVjMWY0YWJhYzY5NTI2MGMxMWY4OTEyZTczNjgwZmM0ZWJlMjYxNjU4OTY1Zjg0ZmRkYTE4ZGUwY2NhMmVjMzNjNDY3MWMzZTU3ZWFiMTIxYyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDI2MjI2Mjk0NTQwMjA2MDlfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQyNjIyNjI5NDU0MDIwNjA5IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjU4NDg1ODY3IiwibmJmIjoxNjU4NDg1ODY3LCJ0IjoidXdHaXVJVGlQdnQiLCJlYXMiOjE2NjYyNjE4Njc1NjcsImV4cCI6MTY2NjI2MTg2NywiaWF0IjoxNjU4NDg1ODY3LCJqdGkiOiI5VngySXdZQ1hLc3BGNEJON1k5Q2NqOENvYkdyTkh5YSJ9.douotpn_gYGdK5uJx1pyhjluD9w9CiS6jEPkaaBlH1DOgC6u5Fpa8qzvSLdavm1BMl8LfD3H8zyRDlBmhCAW3g",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "localhost:11000/blue-marketing/manager/reward/42444771637067777",
+							"raw": "localhost:11000/blue-marketing/manager/reward/8",
 							"host": [
 								"localhost"
 							],
@@ -3648,7 +3679,216 @@
 								"blue-marketing",
 								"manager",
 								"reward",
-								"42444771637067777"
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台查询每日奖励配置",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiI4ZGI2MDBhOGY5N2RhYjYwN2EwODA0YzI4NzE1OGY3Y2UxM2NlOTU0YTFjNzc0YWVjMWY0YWJhYzY5NTI2MGMxMWY4OTEyZTczNjgwZmM0ZWJlMjYxNjU4OTY1Zjg0ZmRkYTE4ZGUwY2NhMmVjMzNjNDY3MWMzZTU3ZWFiMTIxYyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDI2MjI2Mjk0NTQwMjA2MDlfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQyNjIyNjI5NDU0MDIwNjA5IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjU4NDg1ODY3IiwibmJmIjoxNjU4NDg1ODY3LCJ0IjoidXdHaXVJVGlQdnQiLCJlYXMiOjE2NjYyNjE4Njc1NjcsImV4cCI6MTY2NjI2MTg2NywiaWF0IjoxNjU4NDg1ODY3LCJqdGkiOiI5VngySXdZQ1hLc3BGNEJON1k5Q2NqOENvYkdyTkh5YSJ9.douotpn_gYGdK5uJx1pyhjluD9w9CiS6jEPkaaBlH1DOgC6u5Fpa8qzvSLdavm1BMl8LfD3H8zyRDlBmhCAW3g",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":100,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"rewardId\":null,\r\n        \"year\":null,\r\n        \"month\":null,\r\n        \"day\":31,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"DESC\"\r\n    }\r\n}"
+						},
+						"url": {
+							"raw": "localhost:11000/blue-marketing/manager/relations",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-marketing",
+								"manager",
+								"relations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台查询目标月份每日奖励配置",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiI4ZGI2MDBhOGY5N2RhYjYwN2EwODA0YzI4NzE1OGY3Y2UxM2NlOTU0YTFjNzc0YWVjMWY0YWJhYzY5NTI2MGMxMWY4OTEyZTczNjgwZmM0ZWJlMjYxNjU4OTY1Zjg0ZmRkYTE4ZGUwY2NhMmVjMzNjNDY3MWMzZTU3ZWFiMTIxYyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDI2MjI2Mjk0NTQwMjA2MDlfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQyNjIyNjI5NDU0MDIwNjA5IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjU4NDg1ODY3IiwibmJmIjoxNjU4NDg1ODY3LCJ0IjoidXdHaXVJVGlQdnQiLCJlYXMiOjE2NjYyNjE4Njc1NjcsImV4cCI6MTY2NjI2MTg2NywiaWF0IjoxNjU4NDg1ODY3LCJqdGkiOiI5VngySXdZQ1hLc3BGNEJON1k5Q2NqOENvYkdyTkh5YSJ9.douotpn_gYGdK5uJx1pyhjluD9w9CiS6jEPkaaBlH1DOgC6u5Fpa8qzvSLdavm1BMl8LfD3H8zyRDlBmhCAW3g",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"year\":2022,\r\n    \"month\":8\r\n}"
+						},
+						"url": {
+							"raw": "localhost:11000/blue-marketing/manager/date/relations",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-marketing",
+								"manager",
+								"date",
+								"relations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台新增每日奖励配置",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiI4ZGI2MDBhOGY5N2RhYjYwN2EwODA0YzI4NzE1OGY3Y2UxM2NlOTU0YTFjNzc0YWVjMWY0YWJhYzY5NTI2MGMxMWY4OTEyZTczNjgwZmM0ZWJlMjYxNjU4OTY1Zjg0ZmRkYTE4ZGUwY2NhMmVjMzNjNDY3MWMzZTU3ZWFiMTIxYyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDI2MjI2Mjk0NTQwMjA2MDlfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQyNjIyNjI5NDU0MDIwNjA5IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjU4NDg1ODY3IiwibmJmIjoxNjU4NDg1ODY3LCJ0IjoidXdHaXVJVGlQdnQiLCJlYXMiOjE2NjYyNjE4Njc1NjcsImV4cCI6MTY2NjI2MTg2NywiaWF0IjoxNjU4NDg1ODY3LCJqdGkiOiI5VngySXdZQ1hLc3BGNEJON1k5Q2NqOENvYkdyTkh5YSJ9.douotpn_gYGdK5uJx1pyhjluD9w9CiS6jEPkaaBlH1DOgC6u5Fpa8qzvSLdavm1BMl8LfD3H8zyRDlBmhCAW3g",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rewardId\":31,\r\n    \"year\":2022,\r\n    \"month\":6,\r\n    \"day\":2\r\n}"
+						},
+						"url": {
+							"raw": "localhost:11000/blue-marketing/manager/relation",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-marketing",
+								"manager",
+								"relation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台批量新增目标月每日奖励配置",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiI4ZGI2MDBhOGY5N2RhYjYwN2EwODA0YzI4NzE1OGY3Y2UxM2NlOTU0YTFjNzc0YWVjMWY0YWJhYzY5NTI2MGMxMWY4OTEyZTczNjgwZmM0ZWJlMjYxNjU4OTY1Zjg0ZmRkYTE4ZGUwY2NhMmVjMzNjNDY3MWMzZTU3ZWFiMTIxYyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDI2MjI2Mjk0NTQwMjA2MDlfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQyNjIyNjI5NDU0MDIwNjA5IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjU4NDg1ODY3IiwibmJmIjoxNjU4NDg1ODY3LCJ0IjoidXdHaXVJVGlQdnQiLCJlYXMiOjE2NjYyNjE4Njc1NjcsImV4cCI6MTY2NjI2MTg2NywiaWF0IjoxNjU4NDg1ODY3LCJqdGkiOiI5VngySXdZQ1hLc3BGNEJON1k5Q2NqOENvYkdyTkh5YSJ9.douotpn_gYGdK5uJx1pyhjluD9w9CiS6jEPkaaBlH1DOgC6u5Fpa8qzvSLdavm1BMl8LfD3H8zyRDlBmhCAW3g",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"year\":2022,\r\n    \"month\":8,\r\n    \"dayRelations\":{\r\n        \"1\":8,\r\n        \"2\":8,\r\n        \"3\":8,\r\n        \"4\":8,\r\n        \"5\":8,\r\n        \"6\":8,\r\n        \"7\":8,\r\n        \"8\":8,\r\n        \"9\":8,\r\n        \"10\":8,\r\n        \"11\":8,\r\n        \"12\":8,\r\n        \"14\":8,\r\n        \"15\":8,\r\n        \"16\":8,\r\n        \"17\":8,\r\n        \"18\":8,\r\n        \"19\":8,\r\n        \"20\":8,\r\n        \"21\":8,\r\n        \"22\":8,\r\n        \"23\":8,\r\n        \"24\":8,\r\n        \"25\":8,\r\n        \"26\":8,\r\n        \"27\":8,\r\n        \"28\":8,\r\n        \"29\":8,\r\n        \"30\":8\r\n    }\r\n}"
+						},
+						"url": {
+							"raw": "localhost:11000/blue-marketing/manager/date/relation",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-marketing",
+								"manager",
+								"date",
+								"relation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台修改每日奖励配置",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiI4ZGI2MDBhOGY5N2RhYjYwN2EwODA0YzI4NzE1OGY3Y2UxM2NlOTU0YTFjNzc0YWVjMWY0YWJhYzY5NTI2MGMxMWY4OTEyZTczNjgwZmM0ZWJlMjYxNjU4OTY1Zjg0ZmRkYTE4ZGUwY2NhMmVjMzNjNDY3MWMzZTU3ZWFiMTIxYyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDI2MjI2Mjk0NTQwMjA2MDlfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQyNjIyNjI5NDU0MDIwNjA5IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjU4NDg1ODY3IiwibmJmIjoxNjU4NDg1ODY3LCJ0IjoidXdHaXVJVGlQdnQiLCJlYXMiOjE2NjYyNjE4Njc1NjcsImV4cCI6MTY2NjI2MTg2NywiaWF0IjoxNjU4NDg1ODY3LCJqdGkiOiI5VngySXdZQ1hLc3BGNEJON1k5Q2NqOENvYkdyTkh5YSJ9.douotpn_gYGdK5uJx1pyhjluD9w9CiS6jEPkaaBlH1DOgC6u5Fpa8qzvSLdavm1BMl8LfD3H8zyRDlBmhCAW3g",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":42626055764189695,\r\n    \"rewardId\":8,\r\n    \"year\":2022,\r\n    \"month\":6,\r\n    \"day\":8\r\n}"
+						},
+						"url": {
+							"raw": "localhost:11000/blue-marketing/manager/relation",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-marketing",
+								"manager",
+								"relation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台删除每日奖励配置",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiI4ZGI2MDBhOGY5N2RhYjYwN2EwODA0YzI4NzE1OGY3Y2UxM2NlOTU0YTFjNzc0YWVjMWY0YWJhYzY5NTI2MGMxMWY4OTEyZTczNjgwZmM0ZWJlMjYxNjU4OTY1Zjg0ZmRkYTE4ZGUwY2NhMmVjMzNjNDY3MWMzZTU3ZWFiMTIxYyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDI2MjI2Mjk0NTQwMjA2MDlfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQyNjIyNjI5NDU0MDIwNjA5IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjU4NDg1ODY3IiwibmJmIjoxNjU4NDg1ODY3LCJ0IjoidXdHaXVJVGlQdnQiLCJlYXMiOjE2NjYyNjE4Njc1NjcsImV4cCI6MTY2NjI2MTg2NywiaWF0IjoxNjU4NDg1ODY3LCJqdGkiOiI5VngySXdZQ1hLc3BGNEJON1k5Q2NqOENvYkdyTkh5YSJ9.douotpn_gYGdK5uJx1pyhjluD9w9CiS6jEPkaaBlH1DOgC6u5Fpa8qzvSLdavm1BMl8LfD3H8zyRDlBmhCAW3g",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:11000/blue-marketing/manager/relation/42629450935828493",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-marketing",
+								"manager",
+								"relation",
+								"42629450935828493"
 							]
 						}
 					},

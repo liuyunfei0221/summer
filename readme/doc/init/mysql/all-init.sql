@@ -192,9 +192,7 @@ CREATE TABLE `member_role_relation_0`
     `member_id`   bigint NOT NULL COMMENT 'member id',
     `role_id`     bigint NOT NULL COMMENT 'role id',
     `create_time` bigint NOT NULL COMMENT 'data create time',
-    `update_time` bigint NOT NULL COMMENT 'data update time',
     `creator`     bigint NOT NULL COMMENT 'creator id',
-    `updater`     bigint NOT NULL COMMENT 'updater id',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member_role`(`member_id`,`role_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member and role relation 0';
@@ -205,9 +203,7 @@ CREATE TABLE `member_role_relation_1`
     `member_id`   bigint NOT NULL COMMENT 'member id',
     `role_id`     bigint NOT NULL COMMENT 'role id',
     `create_time` bigint NOT NULL COMMENT 'data create time',
-    `update_time` bigint NOT NULL COMMENT 'data update time',
     `creator`     bigint NOT NULL COMMENT 'creator id',
-    `updater`     bigint NOT NULL COMMENT 'updater id',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member_role`(`member_id`,`role_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member and role relation 1';
@@ -332,7 +328,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
 -- base manage
 
        (110001, 'POST', 'blue-base', '/manager/countries', '', b'1', b'1', b'1', b'1', b'1', 2,
-        'country list', 'country list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+        'country page of manager', 'country page of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (110002, 'POST', 'blue-base', '/manager/country', '', b'1', b'1', b'1', b'1', b'1', 2,
         'insert country', 'insert country', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (110003, 'PUT', 'blue-base', '/manager/country', '', b'1', b'1', b'1', b'1', b'1', 2,
@@ -341,7 +337,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
         'delete country', 'delete country', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
        (110005, 'POST', 'blue-base', '/manager/states', '', b'1', b'1', b'1', b'1', b'1', 2,
-        'state list', 'state list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+        'state page of manager', 'state page of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (110006, 'POST', 'blue-base', '/manager/state', '', b'1', b'1', b'1', b'1', b'1', 2,
         'insert state', 'insert state', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (110007, 'PUT', 'blue-base', '/manager/state', '', b'1', b'1', b'1', b'1', b'1', 2,
@@ -350,7 +346,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
         'delete state', 'delete state', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
        (110009, 'POST', 'blue-base', '/manager/cities', '', b'1', b'1', b'1', b'1', b'1', 2,
-        'city list', 'city list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+        'city page of manager', 'city page of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (110010, 'POST', 'blue-base', '/manager/city', '', b'1', b'1', b'1', b'1', b'1', 2,
         'insert city', 'insert city', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (110011, 'PUT', 'blue-base', '/manager/city', '', b'1', b'1', b'1', b'1', b'1', 2,
@@ -359,7 +355,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
         'delete city', 'delete city', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
        (110013, 'POST', 'blue-base', '/manager/areas', '', b'1', b'1', b'1', b'1', b'1', 2,
-        'area list', 'area list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+        'area page of manager', 'area page of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (110014, 'POST', 'blue-base', '/manager/area', '', b'1', b'1', b'1', b'1', b'1', 2,
         'insert area', 'insert area', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (110015, 'PUT', 'blue-base', '/manager/area', '', b'1', b'1', b'1', b'1', b'1', 2,
@@ -377,7 +373,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
         'i18n element', 'i18n element', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
        (110021, 'POST', 'blue-base', '/manager/styles', '', b'1', b'1', b'1', b'1', b'1', 2,
-        'style list of manager', 'style list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+        'style page of manager', 'style page of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (110022, 'POST', 'blue-base', '/manager/style', '', b'1', b'1', b'1', b'1', b'1', 2,
         'insert style', 'insert style', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (110023, 'PUT', 'blue-base', '/manager/style', '', b'1', b'1', b'1', b'1', b'1', 2,
@@ -421,8 +417,10 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
         'insert security question', 'insert security question', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (160011, 'POST', 'blue-auth', '/auth/questions', '', b'1', b'1', b'1', b'0', b'1', 1,
         'insert security questions', 'insert security questions', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (160012, 'GET', 'blue-auth', '/auth/authority', '', b'1', b'1', b'1', b'0', b'1', 1,
-        'query authority', 'query authority', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (160012, 'GET', 'blue-auth', '/auth/authorities', '', b'1', b'1', b'1', b'0', b'1', 1,
+        'query authorities', 'query authorities', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (160013, 'GET', 'blue-auth', '/auth/authority', '', b'1', b'1', b'1', b'0', b'1', 1,
+        'get authority', 'get authority', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- auth manage
 
@@ -430,7 +428,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
         'invalidate member auth', 'invalidate member auth', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
        (170002, 'POST', 'blue-auth', '/manager/resources', '', b'1', b'1', b'1', b'1', b'1', 2,
-        'resource list', 'resource list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+        'resource page', 'resource page', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (170003, 'POST', 'blue-auth', '/manager/resource', '', b'1', b'1', b'1', b'1', b'1', 2,
         'insert resource', 'insert resource', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (170004, 'PUT', 'blue-auth', '/manager/resource', '', b'1', b'1', b'1', b'1', b'1', 2,
@@ -441,7 +439,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
         'resource auth', 'resource auth', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
        (170007, 'POST', 'blue-auth', '/manager/roles', '', b'1', b'1', b'1', b'1', b'1', 2,
-        'role list', 'role list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+        'role page', 'role page', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (170008, 'POST', 'blue-auth', '/manager/role', '', b'1', b'1', b'1', b'1', b'1', 2,
         'insert role', 'insert role', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (170009, 'PUT', 'blue-auth', '/manager/role', '', b'1', b'1', b'1', b'1', b'1', 2,
@@ -505,17 +503,17 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
 -- member manage
 
        (190001, 'POST', 'blue-member', '/manager/basics', '', b'1', b'1', b'1', b'1', b'1', 2,
-        'member basic list', 'member basic list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+        'member basic page of manager', 'member basic page of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (190002, 'POST', 'blue-member', '/manager/details', '', b'1', b'1', b'1', b'1', b'1', 2,
         'member detail list', 'member detail list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (190003, 'POST', 'blue-member', '/manager/realnames', '', b'1', b'1', b'1', b'1', b'1', 2,
-        'member realname list', 'member realname list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+        'member realname page of manager', 'member realname page of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (190004, 'POST', 'blue-member', '/manager/authorities', '', b'1', b'1', b'1', b'1', b'1', 2,
         'authority list', 'authority list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (190005, 'POST', 'blue-member', '/manager/addresses', '', b'1', b'1', b'1', b'1', b'1', 2,
-        'select address for manager', 'select address for manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+        'select address page for manager', 'select address page for manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (190006, 'POST', 'blue-member', '/manager/cards', '', b'1', b'1', b'1', b'1', b'1', 2,
-        'select card for manager', 'select card for manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+        'select card page for manager', 'select card page for manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- finance api
        (200001, 'GET', 'blue-finance', '/balance', '', b'1', b'1', b'1', b'0', b'1', 1,
@@ -574,12 +572,12 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
 -- media manage
 
        (230006, 'POST', 'blue-media', '/manager/attachments', '', b'1', b'1', b'1', b'0', b'1', 2,
-        'attachment list of manager', 'attachment list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+        'attachment page of manager', 'attachment page of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (230007, 'POST', 'blue-media', '/manager/downloadHistories', '', b'1', b'1', b'1', b'0', b'1', 2,
         'download history list of manager', 'download history list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
         1),
        (230008, 'POST', 'blue-media', '/manager/qrCodeConfigs', '', b'1', b'1', b'1', b'1', b'1', 2,
-        ' qr code config list of manager', ' qr code config list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+        ' qr code config page of manager', ' qr code config page of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (230009, 'POST', 'blue-media', '/manager/qrCodeConfig', '', b'1', b'1', b'1', b'1', b'1', 2,
         'insert qr code config', 'insert qr code config', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (230010, 'PUT', 'blue-media', '/manager/qrCodeConfig', '', b'1', b'1', b'1', b'1', b'1', 2,
@@ -592,18 +590,17 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
 
        (250001, 'GET', 'blue-portal', '/bulletins/{type}', '', b'0', b'1', b'1', b'0', b'1', 1,
         'bulletin list of api', 'bulletin list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-
-       (250003, 'GET', 'blue-portal', '/formatter/{formatter}.html', '', b'1', b'1', b'1', b'0', b'1', 1,
+       (250002, 'GET', 'blue-portal', '/formatter/{formatter}.html', '', b'1', b'1', b'1', b'0', b'1', 1,
         'formatter test', 'formatter test', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (250004, 'GET', 'blue-portal', '/fallBack', '', b'0', b'1', b'1', b'0', b'1', 1,
+       (250003, 'GET', 'blue-portal', '/fallBack', '', b'0', b'1', b'1', b'0', b'1', 1,
         'GET fallback', 'GET fallback', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (250005, 'POST', 'blue-portal', '/fallBack', '', b'0', b'1', b'1', b'1', b'1', 1,
+       (250004, 'POST', 'blue-portal', '/fallBack', '', b'0', b'1', b'1', b'1', b'1', 1,
         'POST fallback', 'POST fallback', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- portal manage
 
        (260001, 'POST', 'blue-portal', '/manager/bulletins', '', b'1', b'1', b'1', b'0', b'1', 2,
-        'bulletin list of manager', 'bulletin list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+        'bulletin page of manager', 'bulletin page of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (260002, 'POST', 'blue-portal', '/manager/bulletin', '', b'1', b'1', b'1', b'1', b'1', 2,
         'insert portal', 'insert portal', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (260003, 'PUT', 'blue-portal', '/manager/bulletin', '', b'1', b'1', b'1', b'1', b'1', 2,
@@ -618,12 +615,12 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
        (270002, 'GET', 'blue-marketing', '/signIn', '', b'1', b'1', b'1', b'0', b'1', 1,
         'query sign in record by month', 'query sign in record by month', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (270003, 'POST', 'blue-marketing', '/eventRecords', '', b'1', b'1', b'1', b'0', b'1', 1,
-        'event record list of api', 'event record list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+        'event record page of api', 'event record page of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- marketing manage
 
        (280001, 'POST', 'blue-marketing', '/manager/rewards', '', b'1', b'1', b'1', b'1', b'1', 2,
-        'reward list of manager', 'reward list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+        'reward page of manager', 'reward page of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (280002, 'POST', 'blue-marketing', '/manager/reward', '', b'1', b'1', b'1', b'1', b'1', 2,
         'insert reward', 'insert reward', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (280003, 'PUT', 'blue-marketing', '/manager/reward', '', b'1', b'1', b'1', b'1', b'1', 2,
@@ -633,6 +630,21 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
        (280005, 'POST', 'blue-marketing', '/manager/eventRecords', '', b'1', b'1', b'1', b'0', b'1', 2,
         'event record list of manager', 'event record list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
         1),
+
+       (280006, 'POST', 'blue-marketing', '/manager/relations', '', b'1', b'1', b'1', b'1', b'1', 2,
+        'reward date rel page of manager', 'reward date rel page of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (280007, 'POST', 'blue-marketing', '/manager/date/relations', '', b'1', b'1', b'1', b'1', b'1', 2,
+        'reward date rel list of manager by date', 'reward date rel list of manager by date', UNIX_TIMESTAMP(),
+        UNIX_TIMESTAMP(), 1, 1),
+       (280008, 'POST', 'blue-marketing', '/manager/relation', '', b'1', b'1', b'1', b'1', b'1', 2,
+        'insert relation', 'insert relation', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (280009, 'POST', 'blue-marketing', '/manager/date/relation', '', b'1', b'1', b'1', b'1', b'1', 2,
+        'insert relations by date', 'insert relations by date', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (280010, 'PUT', 'blue-marketing', '/manager/relation', '', b'1', b'1', b'1', b'1', b'1', 2,
+        'update relation', 'update relation', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (280011, 'DELETE', 'blue-marketing', '/manager/relation/{id}', '', b'1', b'1', b'1', b'1', b'1', 2,
+        'delete relation', 'delete relation', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+
 
 -- shine api
 

@@ -40,7 +40,7 @@ public interface RewardDateRelationService {
      * @param operatorId
      * @return
      */
-    Mono<List<RewardDateRelationInfo>> insertRewardDateRelationMonoByYearAndMonth(RewardDateRelationBatchInsertParam rewardDateRelationBatchInsertParam, Long operatorId);
+    List<RewardDateRelationInfo> insertRewardDateRelationMonoByYearAndMonth(RewardDateRelationBatchInsertParam rewardDateRelationBatchInsertParam, Long operatorId);
 
     /**
      * update a exist relation
@@ -58,6 +58,14 @@ public interface RewardDateRelationService {
      * @return
      */
     RewardDateRelationInfo deleteRewardDateRelation(Long id);
+
+    /**
+     * delete relation by reward id
+     *
+     * @param rewardId
+     * @return
+     */
+    Integer deleteRewardDateRelationByRewardId(Long rewardId);
 
     /**
      * select relation by id

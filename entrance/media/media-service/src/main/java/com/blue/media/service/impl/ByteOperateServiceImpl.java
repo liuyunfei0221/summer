@@ -47,7 +47,7 @@ import static com.blue.basic.constant.common.BlueBoolean.TRUE;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_WRITE;
 import static com.blue.basic.constant.common.BlueHeader.CONTENT_DISPOSITION;
 import static com.blue.basic.constant.common.ResponseElement.*;
-import static com.blue.basic.constant.common.SpecialPrefix.CONTENT_DISPOSITION_FILE_NAME_PREFIX;
+import static com.blue.basic.constant.common.BluePrefix.CONTENT_DISPOSITION_FILE_NAME_PREFIX;
 import static com.blue.basic.constant.common.Status.VALID;
 import static com.blue.basic.constant.common.Symbol.SCHEME_SEPARATOR;
 import static com.blue.media.converter.MediaModelConverters.ATTACHMENTS_2_ATTACHMENT_UPLOAD_INFOS_CONVERTER;

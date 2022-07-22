@@ -190,9 +190,7 @@ CREATE TABLE `member_role_relation_0`
     `member_id`   bigint NOT NULL COMMENT 'member id',
     `role_id`     bigint NOT NULL COMMENT 'role id',
     `create_time` bigint NOT NULL COMMENT 'data create time',
-    `update_time` bigint NOT NULL COMMENT 'data update time',
     `creator`     bigint NOT NULL COMMENT 'creator id',
-    `updater`     bigint NOT NULL COMMENT 'updater id',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member_role`(`member_id`,`role_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member and role relation 0';
@@ -203,9 +201,7 @@ CREATE TABLE `member_role_relation_1`
     `member_id`   bigint NOT NULL COMMENT 'member id',
     `role_id`     bigint NOT NULL COMMENT 'role id',
     `create_time` bigint NOT NULL COMMENT 'data create time',
-    `update_time` bigint NOT NULL COMMENT 'data update time',
     `creator`     bigint NOT NULL COMMENT 'creator id',
-    `updater`     bigint NOT NULL COMMENT 'updater id',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member_role`(`member_id`,`role_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member and role relation 1';

@@ -1,9 +1,6 @@
 package com.blue.auth.service.inter;
 
-import com.blue.auth.api.model.AccessAssert;
-import com.blue.auth.api.model.AccessAsserted;
-import com.blue.auth.api.model.AuthorityBaseOnRole;
-import com.blue.auth.api.model.MemberPayload;
+import com.blue.auth.api.model.*;
 import com.blue.auth.model.MemberAccess;
 import com.blue.auth.model.MemberAuth;
 import com.blue.basic.model.common.Access;
@@ -139,12 +136,28 @@ public interface AuthService {
     Mono<String> updateSecKeyByAccess(Access access);
 
     /**
+     * get member's authorities by access
+     *
+     * @param access
+     * @return
+     */
+    Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByAccess(Access access);
+
+    /**
+     * get member's authorities by member id
+     *
+     * @param memberId
+     * @return
+     */
+    Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByMemberId(Long memberId);
+
+    /**
      * get member's authority by access
      *
      * @param access
      * @return
      */
-    Mono<List<AuthorityBaseOnRole>> getAuthoritiesMonoByAccess(Access access);
+    Mono<MemberAuthority> getAuthorityMonoByAccess(Access access);
 
     /**
      * get member's authority by member id
@@ -152,6 +165,6 @@ public interface AuthService {
      * @param memberId
      * @return
      */
-    Mono<List<AuthorityBaseOnRole>> getAuthoritiesMonoByMemberId(Long memberId);
+    Mono<MemberAuthority> getAuthorityMonoByMemberId(Long memberId);
 
 }

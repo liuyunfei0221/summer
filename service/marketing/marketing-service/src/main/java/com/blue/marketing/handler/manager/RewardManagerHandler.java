@@ -4,6 +4,7 @@ import com.blue.basic.model.common.BlueResponse;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.marketing.model.RewardInsertParam;
 import com.blue.marketing.model.RewardUpdateParam;
+import com.blue.marketing.service.inter.MarketingControlService;
 import com.blue.marketing.service.inter.RewardService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -29,9 +30,12 @@ import static reactor.core.publisher.Mono.*;
 @Component
 public final class RewardManagerHandler {
 
+    private final MarketingControlService marketingControlService;
+
     private final RewardService rewardService;
 
-    public RewardManagerHandler(RewardService rewardService) {
+    public RewardManagerHandler(MarketingControlService marketingControlService, RewardService rewardService) {
+        this.marketingControlService = marketingControlService;
         this.rewardService = rewardService;
     }
 
@@ -45,7 +49,7 @@ public final class RewardManagerHandler {
         return zip(serverRequest.bodyToMono(RewardInsertParam.class)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
-                .flatMap(tuple2 -> just(rewardService.insertReward(tuple2.getT1(), tuple2.getT2().getId())))
+                .flatMap(tuple2 -> marketingControlService.insertReward(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(ri, serverRequest), BlueResponse.class));
@@ -61,7 +65,7 @@ public final class RewardManagerHandler {
         return zip(serverRequest.bodyToMono(RewardUpdateParam.class)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
-                .flatMap(tuple2 -> just(rewardService.updateReward(tuple2.getT1(), tuple2.getT2().getId())))
+                .flatMap(tuple2 -> marketingControlService.updateReward(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(ri, serverRequest), BlueResponse.class));
@@ -75,7 +79,7 @@ public final class RewardManagerHandler {
      */
     public Mono<ServerResponse> delete(ServerRequest serverRequest) {
         return getLongVariableReact(serverRequest, ID.key)
-                .flatMap(id -> just(rewardService.deleteReward(id)))
+                .flatMap(marketingControlService::deleteReward)
                 .flatMap(ri ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(ri, serverRequest), BlueResponse.class));

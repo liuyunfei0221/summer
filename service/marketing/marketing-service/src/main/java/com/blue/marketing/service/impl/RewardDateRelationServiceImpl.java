@@ -10,7 +10,6 @@ import com.blue.marketing.api.model.RewardDateRelationManagerInfo;
 import com.blue.marketing.api.model.RewardInfo;
 import com.blue.marketing.constant.RewardDateRelationSortAttribute;
 import com.blue.marketing.constant.RewardSortAttribute;
-import com.blue.marketing.event.producer.RewardsRefreshProducer;
 import com.blue.marketing.model.RewardDateRelationBatchInsertParam;
 import com.blue.marketing.model.RewardDateRelationCondition;
 import com.blue.marketing.model.RewardDateRelationInsertParam;
@@ -22,7 +21,6 @@ import com.blue.marketing.repository.mapper.RewardDateRelationMapper;
 import com.blue.marketing.service.inter.RewardDateRelationService;
 import com.blue.marketing.service.inter.RewardService;
 import com.blue.member.api.model.MemberBasicInfo;
-import com.blue.redisson.component.SynchronizedProcessor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
@@ -34,6 +32,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
@@ -42,10 +41,8 @@ import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.common.base.ConditionSortProcessor.process;
 import static com.blue.basic.constant.common.BlueCommonThreshold.*;
 import static com.blue.basic.constant.common.ResponseElement.*;
-import static com.blue.basic.constant.common.SummerAttr.EMPTY_EVENT;
-import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION;
-import static com.blue.basic.constant.common.SyncKeyPrefix.REWARD_DATE_REL_UPDATE_PRE;
 import static com.blue.marketing.converter.MarketingModelConverters.*;
+import static java.lang.Integer.parseInt;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -68,22 +65,16 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
 
     private RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer;
 
-    private final SynchronizedProcessor synchronizedProcessor;
-
     private final BlueIdentityProcessor blueIdentityProcessor;
-
-    private final RewardsRefreshProducer rewardsRefreshProducer;
 
     private RewardService rewardService;
 
     private RewardDateRelationMapper rewardDateRelationMapper;
 
-    public RewardDateRelationServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, SynchronizedProcessor synchronizedProcessor, BlueIdentityProcessor blueIdentityProcessor,
-                                         RewardsRefreshProducer rewardsRefreshProducer, RewardService rewardService, RewardDateRelationMapper rewardDateRelationMapper) {
+    public RewardDateRelationServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BlueIdentityProcessor blueIdentityProcessor,
+                                         RewardService rewardService, RewardDateRelationMapper rewardDateRelationMapper) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
-        this.synchronizedProcessor = synchronizedProcessor;
         this.blueIdentityProcessor = blueIdentityProcessor;
-        this.rewardsRefreshProducer = rewardsRefreshProducer;
         this.rewardService = rewardService;
         this.rewardDateRelationMapper = rewardDateRelationMapper;
     }
@@ -125,7 +116,7 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
             throw new BlueException(INVALID_PARAM);
 
         if (isNotNull(rewardDateRelationMapper.selectByUnique(year, month, day)))
-            throw new BlueException(REWARD_NAME_ALREADY_EXIST);
+            throw new BlueException(DATA_ALREADY_EXIST);
     };
 
     private final Function<RewardDateRelationUpdateParam, RewardDateRelation> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = rup -> {
@@ -145,7 +136,7 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
                 .map(RewardDateRelation::getId)
                 .ifPresent(rid -> {
                     if (!id.equals(rid))
-                        throw new BlueException(REWARD_NAME_ALREADY_EXIST);
+                        throw new BlueException(DATA_ALREADY_EXIST);
                 });
 
         return rewardDateRelation;
@@ -179,16 +170,13 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
         }
 
         Integer day = p.getDay();
-        if (isNotNull(year) && !year.equals(t.getYear())) {
+        if (isNotNull(day) && !day.equals(t.getDay())) {
             t.setDay(day);
             alteration = true;
         }
 
         return alteration;
     };
-
-    private static final BiFunction<Integer, Integer, String> REWARD_DATE_REL_UPDATE_KEY_WRAPPER = (year, month) ->
-            REWARD_DATE_REL_UPDATE_PRE.prefix + year + PAR_CONCATENATION.identity + month;
 
     private final Function<List<RewardDateRelation>, Mono<List<RewardDateRelationManagerInfo>>> REWARD_DATE_REL_MANAGER_INFO_CONVERTER = relations -> {
         LOGGER.info("Function<List<RewardDateRelation>,Mono<List<RewardDateRelationManagerInfo>>> REWARD_DATE_REL_MANAGER_INFO_CONVERTER, relations = {}", relations);
@@ -235,9 +223,7 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
         rewardDateRelation.setCreator(operatorId);
         rewardDateRelation.setUpdater(operatorId);
 
-        synchronizedProcessor.handleTaskWithLock(REWARD_DATE_REL_UPDATE_KEY_WRAPPER.apply(rewardDateRelation.getYear(), rewardDateRelation.getMonth()), () ->
-                rewardDateRelationMapper.insert(rewardDateRelation));
-        rewardsRefreshProducer.send(EMPTY_EVENT);
+        rewardDateRelationMapper.insert(rewardDateRelation);
 
         return REWARD_DATE_REL_2_REWARD_DATE_REL_INFO_CONVERTER.apply(rewardDateRelation, REWARD_2_REWARD_INFO_CONVERTER.apply(reward));
     }
@@ -250,8 +236,9 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
      * @return
      */
     @Override
-    public Mono<List<RewardDateRelationInfo>> insertRewardDateRelationMonoByYearAndMonth(RewardDateRelationBatchInsertParam rewardDateRelationBatchInsertParam, Long operatorId) {
-        LOGGER.info("Mono<List<RewardDateRelationInfo>> insertRewardDateRelationMonoByYearAndMonth(RewardDateRelationBatchInsertParam rewardDateRelationBatchInsertParam, Long operatorId), rewardDateRelationBatchInsertParam = {}, operatorId = {}",
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
+    public List<RewardDateRelationInfo> insertRewardDateRelationMonoByYearAndMonth(RewardDateRelationBatchInsertParam rewardDateRelationBatchInsertParam, Long operatorId) {
+        LOGGER.info("List<RewardDateRelationInfo> insertRewardDateRelationMonoByYearAndMonth(RewardDateRelationBatchInsertParam rewardDateRelationBatchInsertParam, Long operatorId), rewardDateRelationBatchInsertParam = {}, operatorId = {}",
                 rewardDateRelationBatchInsertParam, operatorId);
         if (isNull(rewardDateRelationBatchInsertParam))
             throw new BlueException(EMPTY_PARAM);
@@ -262,7 +249,13 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
 
         Integer year = rewardDateRelationBatchInsertParam.getYear();
         Integer month = rewardDateRelationBatchInsertParam.getMonth();
-        Map<Integer, Long> dayRelations = rewardDateRelationBatchInsertParam.getDayRelations();
+
+        Map<Integer, Long> dayRelations;
+        try {
+            dayRelations = rewardDateRelationBatchInsertParam.getDayRelations().entrySet().stream().collect(Collectors.toMap(entry -> parseInt(entry.getKey()), Map.Entry::getValue, (a, b) -> a));
+        } catch (Exception e) {
+            throw new BlueException(INVALID_PARAM);
+        }
 
         int minDayOfMonth = ((int) MAX_DAY_OF_MONTH.value);
         int maxDayOfMonth = ((int) MIN_DAY_OF_MONTH.value);
@@ -285,6 +278,17 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
         if (maxDayOfMonth > dayOfMonth || dayRelations.size() > dayOfMonth)
             throw new BlueException(INVALID_PARAM);
 
+        Set<Long> rewardIdSet = new HashSet<>(dayRelations.values());
+
+        if (this.selectRewardDateRelationByYearAndMonth(year, month).stream().map(RewardDateRelation::getDay).anyMatch(dayRelations::containsKey))
+            throw new BlueException(DATA_ALREADY_EXIST);
+
+        List<RewardInfo> rewardInfos = rewardService.selectRewardInfoByIds(new ArrayList<>(rewardIdSet));
+        if (rewardIdSet.size() != rewardInfos.size())
+            throw new BlueException(DATA_NOT_EXIST);
+
+        Map<Long, RewardInfo> rewardInfoIdAndNameMapping = rewardInfos.parallelStream().collect(toMap(RewardInfo::getId, ri -> ri, (a, b) -> a));
+
         Long stamp = TIME_STAMP_GETTER.get();
         List<RewardDateRelation> relations = dayRelations.entrySet().stream()
                 .map(entry -> {
@@ -303,24 +307,10 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
                     return relation;
                 }).collect(toList());
 
-        Set<Long> rewardIdSet = new HashSet<>(dayRelations.values());
+        rewardDateRelationMapper.insertBatch(relations);
 
-        return synchronizedProcessor.handleSupWithLock(REWARD_DATE_REL_UPDATE_KEY_WRAPPER.apply(year, month), () -> {
-            if (this.selectRewardDateRelationByYearAndMonth(year, month).stream().map(RewardDateRelation::getDay).anyMatch(dayRelations::containsKey))
-                throw new BlueException(DATA_ALREADY_EXIST);
-
-            List<RewardInfo> rewardInfos = rewardService.selectRewardInfoByIds(new ArrayList<>(rewardIdSet));
-            if (rewardIdSet.size() != rewardInfos.size())
-                throw new BlueException(DATA_NOT_EXIST);
-
-            Map<Long, RewardInfo> rewardInfoIdAndNameMapping = rewardInfos.parallelStream().collect(toMap(RewardInfo::getId, ri -> ri, (a, b) -> a));
-
-            rewardDateRelationMapper.insertBatch(relations);
-            rewardsRefreshProducer.send(EMPTY_EVENT);
-
-            return just(relations.stream().map(relation -> REWARD_DATE_REL_2_REWARD_DATE_REL_INFO_CONVERTER.apply(relation,
-                    rewardInfoIdAndNameMapping.get(relation.getRewardId()))).collect(toList()));
-        });
+        return relations.stream().map(relation -> REWARD_DATE_REL_2_REWARD_DATE_REL_INFO_CONVERTER.apply(relation,
+                rewardInfoIdAndNameMapping.get(relation.getRewardId()))).collect(toList());
     }
 
     /**
@@ -349,9 +339,7 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
                 .map(REWARD_2_REWARD_INFO_CONVERTER)
                 .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
 
-        synchronizedProcessor.handleTaskWithLock(REWARD_DATE_REL_UPDATE_KEY_WRAPPER.apply(rewardDateRelation.getYear(), rewardDateRelation.getMonth()), () ->
-                rewardDateRelationMapper.updateByPrimaryKeySelective(rewardDateRelation));
-        rewardsRefreshProducer.send(EMPTY_EVENT);
+        rewardDateRelationMapper.updateByPrimaryKeySelective(rewardDateRelation);
 
         return REWARD_DATE_REL_2_REWARD_DATE_REL_INFO_CONVERTER.apply(rewardDateRelation, rewardInfo);
     }
@@ -377,12 +365,26 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
         if (rewardDateRelation.getYear().equals(now.getYear()) && rewardDateRelation.getMonth().equals(now.getMonthValue()))
             throw new BlueException(UNSUPPORTED_OPERATE);
 
-        synchronizedProcessor.handleTaskWithLock(REWARD_DATE_REL_UPDATE_KEY_WRAPPER.apply(rewardDateRelation.getYear(), rewardDateRelation.getMonth()), () ->
-                rewardDateRelationMapper.deleteByPrimaryKey(id));
-        rewardsRefreshProducer.send(EMPTY_EVENT);
+        rewardDateRelationMapper.deleteByPrimaryKey(id);
 
         return REWARD_DATE_REL_2_REWARD_DATE_REL_INFO_CONVERTER.apply(rewardDateRelation, rewardService.getReward(rewardDateRelation.getRewardId())
                 .map(REWARD_2_REWARD_INFO_CONVERTER).orElse(null));
+    }
+
+    /**
+     * delete relation by reward id
+     *
+     * @param rewardId
+     * @return
+     */
+    @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
+    public Integer deleteRewardDateRelationByRewardId(Long rewardId) {
+        LOGGER.info("Integer deleteRewardDateRelationByRewardId(Long rewardId), rewardId = {}", rewardId);
+        if (isInvalidIdentity(rewardId))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return rewardDateRelationMapper.deleteByRewardId(rewardId);
     }
 
     /**

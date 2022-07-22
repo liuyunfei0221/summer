@@ -24,12 +24,12 @@ public class RewardDateRelationBatchInsertParam implements Serializable, Asserte
 
     private Integer month;
 
-    Map<Integer, Long> dayRelations;
+    Map<String, Long> dayRelations;
 
     public RewardDateRelationBatchInsertParam() {
     }
 
-    public RewardDateRelationBatchInsertParam(Integer year, Integer month, Map<Integer, Long> dayRelations) {
+    public RewardDateRelationBatchInsertParam(Integer year, Integer month, Map<String, Long> dayRelations) {
         this.year = year;
         this.month = month;
         this.dayRelations = dayRelations;
@@ -61,11 +61,11 @@ public class RewardDateRelationBatchInsertParam implements Serializable, Asserte
         this.month = month;
     }
 
-    public Map<Integer, Long> getDayRelations() {
+    public Map<String, Long> getDayRelations() {
         return dayRelations;
     }
 
-    public void setDayRelations(Map<Integer, Long> dayRelations) {
+    public void setDayRelations(Map<String, Long> dayRelations) {
         this.dayRelations = dayRelations;
     }
 

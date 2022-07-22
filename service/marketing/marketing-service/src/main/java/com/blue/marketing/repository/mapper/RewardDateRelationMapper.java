@@ -24,6 +24,8 @@ public interface RewardDateRelationMapper {
 
     int deleteByPrimaryKey(Long id);
 
+    int deleteByRewardId(Long rewardId);
+
     RewardDateRelation selectByPrimaryKey(Long id);
 
     List<RewardDateRelation> selectByYearAndMonth(@Param("year") Integer year, @Param("month") Integer month);

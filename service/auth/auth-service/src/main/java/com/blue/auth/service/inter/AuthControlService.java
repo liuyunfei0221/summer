@@ -202,7 +202,7 @@ public interface AuthControlService {
     Mono<Boolean> insertSecurityQuestions(List<SecurityQuestionInsertParam> securityQuestionInsertParams, Long memberId);
 
     /**
-     * get member's authority by access
+     * select member's authority by access
      *
      * @param access
      * @return
@@ -210,12 +210,28 @@ public interface AuthControlService {
     Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByAccess(Access access);
 
     /**
-     * get member's authority by member id
+     * select member's authority by member id
      *
      * @param memberId
      * @return
      */
     Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByMemberId(Long memberId);
+
+    /**
+     * get member's authority by access
+     *
+     * @param access
+     * @return
+     */
+    Mono<MemberAuthority> getAuthorityMonoByAccess(Access access);
+
+    /**
+     * get member's authority by member id
+     *
+     * @param memberId
+     * @return
+     */
+    Mono<MemberAuthority> getAuthorityMonoByMemberId(Long memberId);
 
     /**
      * insert a new role

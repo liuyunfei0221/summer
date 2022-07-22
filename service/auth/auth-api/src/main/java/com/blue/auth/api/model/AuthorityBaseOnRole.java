@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Authority base on role
+ * Authorities base on role
  *
  * @author liuyunfei
  */

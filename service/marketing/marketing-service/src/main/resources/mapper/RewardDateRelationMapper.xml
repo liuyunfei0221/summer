@@ -140,6 +140,12 @@
         where id = #{id,jdbcType=BIGINT}
     </delete>
 
+    <delete id="deleteByRewardId" parameterType="java.lang.Long">
+        delete
+        from reward_date_relation
+        where reward_id = #{rewardId,jdbcType=BIGINT}
+    </delete>
+
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -160,12 +166,11 @@
 
     <select id="countByYearAndMonth" resultType="java.lang.Long">
         SELECT COUNT(*)
-        FROM
-        reward_date_relation FORCE INDEX(idx_date)
+        FROM reward_date_relation FORCE INDEX(idx_date)
         WHERE
-        year = #{year, jdbcType=SMALLINT}
-        AND
-        month = #{month, jdbcType=TINYINT}
+            year = #{year, jdbcType=SMALLINT}
+          AND
+            month = #{month, jdbcType=TINYINT}
     </select>
 
     <insert id="insertBatch" parameterType="java.util.List">

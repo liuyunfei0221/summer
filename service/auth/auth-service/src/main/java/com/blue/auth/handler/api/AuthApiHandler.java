@@ -204,10 +204,26 @@ public final class AuthApiHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> selectAuthority(ServerRequest serverRequest) {
+    public Mono<ServerResponse> selectAuthorities(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
                         authControlService.selectAuthoritiesMonoByAccess(acc)
+                                .flatMap(authorities ->
+                                        ok().contentType(APPLICATION_JSON)
+                                                .body(success(authorities, serverRequest)
+                                                        , BlueResponse.class)));
+    }
+
+    /**
+     * get authority info
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> getAuthority(ServerRequest serverRequest) {
+        return getAccessReact(serverRequest)
+                .flatMap(acc ->
+                        authControlService.getAuthorityMonoByAccess(acc)
                                 .flatMap(authority ->
                                         ok().contentType(APPLICATION_JSON)
                                                 .body(success(authority, serverRequest)

@@ -3,6 +3,7 @@ package com.blue.basic.common.message;
 import com.blue.basic.common.base.BlueChecker;
 import com.blue.basic.common.base.PropertiesProcessor;
 import com.blue.basic.constant.common.ElementKey;
+import org.springframework.core.io.Resource;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.util.Logger;
 
@@ -11,15 +12,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
 import java.util.stream.Stream;
 
 import static com.blue.basic.common.base.BlueChecker.isNotNull;
 import static com.blue.basic.common.base.FileGetter.getFiles;
 import static com.blue.basic.common.base.CommonFunctions.getAcceptLanguages;
+import static com.blue.basic.common.base.FileGetter.getResources;
+import static com.blue.basic.constant.common.BluePrefix.CLASS_PATH_PREFIX;
+import static com.blue.basic.constant.common.BlueSuffix.PROP;
 import static com.blue.basic.constant.common.ElementKey.DEFAULT;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.basic.constant.common.SummerAttr.LANGUAGE;
@@ -54,9 +55,24 @@ public final class ElementProcessor {
 
     private static volatile Map<String, Map<String, String>> I_18_N;
 
-    private static final Consumer<String> ELEMENT_LOADER = uri -> {
-        List<File> files = getFiles(uri, true).stream().filter(Objects::nonNull).collect(toList());
+    private static final Consumer<String> CLASS_PATH_ELEMENT_LOADER = location -> {
+        List<Resource> resources = getResources(location, PROP.suffix);
+        LOGGER.info("resources = {}", resources);
 
+        if (resources.size() != ofNullable(MessageProcessor.supportLanguages()).map(List::size).orElse(0))
+            LOGGER.warn("size of element languages support and size of message languages support are different");
+
+        //noinspection UnnecessaryLocalVariable
+        Map<String, Map<String, String>> i18n = resources.stream()
+                .collect(toMap(f -> lowerCase(PRE_NAME_PARSER.apply(f.getFilename())),
+                        PropertiesProcessor::parseProp, (a, b) -> a));
+
+        I_18_N = i18n;
+        LOGGER.info("I_18_N = {}", I_18_N);
+    };
+
+    private static final Consumer<String> FILE_ELEMENT_LOADER = location -> {
+        List<File> files = getFiles(location, true).stream().filter(Objects::nonNull).collect(toList());
         LOGGER.info("files = {}", files);
 
         if (files.size() != ofNullable(MessageProcessor.supportLanguages()).map(List::size).orElse(0))
@@ -68,6 +84,18 @@ public final class ElementProcessor {
                         PropertiesProcessor::parseProp, (a, b) -> a));
 
         I_18_N = i18n;
+        LOGGER.info("I_18_N = {}", I_18_N);
+    };
+
+    private static final Predicate<String> CLASS_PATH_PRE = location ->
+            startsWith(location, CLASS_PATH_PREFIX.prefix);
+
+    private static final Consumer<String> ELEMENT_LOADER = location -> {
+        if (CLASS_PATH_PRE.test(location)) {
+            CLASS_PATH_ELEMENT_LOADER.accept(location);
+        } else {
+            FILE_ELEMENT_LOADER.accept(location);
+        }
     };
 
     private static final Function<List<String>, Map<String, String>> ELEMENT_GETTER = languages -> {

@@ -774,14 +774,36 @@ public class AuthControlServiceImpl implements AuthControlService {
     }
 
     /**
-     * get member's authority by access
+     * select member's authority by access
      *
      * @param access
      * @return
      */
     @Override
     public Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByAccess(Access access) {
-        return authService.getAuthoritiesMonoByAccess(access);
+        return authService.selectAuthoritiesMonoByAccess(access);
+    }
+
+    /**
+     * select member's authority by member id
+     *
+     * @param memberId
+     * @return
+     */
+    @Override
+    public Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByMemberId(Long memberId) {
+        return authService.selectAuthoritiesMonoByMemberId(memberId);
+    }
+
+    /**
+     * get member's authority by access
+     *
+     * @param access
+     * @return
+     */
+    @Override
+    public Mono<MemberAuthority> getAuthorityMonoByAccess(Access access) {
+        return authService.getAuthorityMonoByAccess(access);
     }
 
     /**
@@ -791,8 +813,8 @@ public class AuthControlServiceImpl implements AuthControlService {
      * @return
      */
     @Override
-    public Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByMemberId(Long memberId) {
-        return authService.getAuthoritiesMonoByMemberId(memberId);
+    public Mono<MemberAuthority> getAuthorityMonoByMemberId(Long memberId) {
+        return authService.getAuthorityMonoByMemberId(memberId);
     }
 
     /**

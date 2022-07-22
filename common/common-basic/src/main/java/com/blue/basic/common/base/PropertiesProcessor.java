@@ -1,5 +1,6 @@
 package com.blue.basic.common.base;
 
+import org.springframework.core.io.Resource;
 import reactor.util.Logger;
 
 import java.io.File;
@@ -12,7 +13,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import static com.blue.basic.common.base.BlueChecker.isNotNull;
-import static com.blue.basic.common.base.FileGetter.getFiles;
+import static com.blue.basic.common.base.FileGetter.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -40,9 +41,30 @@ public final class PropertiesProcessor {
         if (isNotNull(file) && file.isFile() && file.canRead()) {
             try (InputStream inputStream = new FileInputStream(file)) {
                 prop.load(inputStream);
-                LOGGER.info("Properties loadProp(File file), prop = {}", prop);
+                LOGGER.info("Properties loadProp(File file), file = {}, prop = {}", file, prop);
             } catch (IOException e) {
-                LOGGER.error("Properties loadProp(File file) failed, e = {0}", e);
+                LOGGER.error("Properties loadProp(File file) failed, file = {}, e = {}", file, e);
+            }
+        }
+
+        return prop;
+    }
+
+    /**
+     * load prop
+     *
+     * @param resource
+     * @return
+     */
+    public static Properties loadProp(Resource resource) {
+        Properties prop = new Properties();
+
+        if (isNotNull(resource) && resource.exists()) {
+            try {
+                prop.load(resource.getInputStream());
+                LOGGER.info("Properties loadProp(Resource resource), resource = {}, prop = {}", resource, prop);
+            } catch (IOException e) {
+                LOGGER.error("Properties loadProp(Resource resource) failed, resource = {}, e = {}", resource, e);
             }
         }
 
@@ -62,6 +84,20 @@ public final class PropertiesProcessor {
     }
 
     /**
+     * convert resource to map
+     *
+     * @param resource
+     * @return
+     */
+    public static Map<String, String> parseProp(Resource resource) {
+        return ofNullable(resource)
+                .filter(Resource::exists)
+                .map(PropertiesProcessor::loadProp)
+                .map(PropertiesProcessor::parseProp)
+                .orElseGet(Collections::emptyMap);
+    }
+
+    /**
      * convert prop to map
      *
      * @param file
@@ -76,31 +112,65 @@ public final class PropertiesProcessor {
     }
 
     /**
-     * find props by uri
+     * find props by class path
      *
-     * @param uri
-     * @param recursive
+     * @param location
+     * @param prefix
      * @return
      */
-    public static List<Properties> getProps(String uri, boolean recursive) {
-        return getFiles(uri, recursive).stream().map(PropertiesProcessor::loadProp).collect(toList());
+    public static List<Properties> getPropsByClassPath(String location, String prefix) {
+        return getResources(location, prefix).stream().map(PropertiesProcessor::loadProp).collect(toList());
     }
 
     /**
-     * find props by uri
+     * find props by class path
      *
-     * @param propName
+     * @param location
      * @return
      */
-    public static Properties loadProps(String propName) {
-        Properties properties = new Properties();
-        try (InputStream inputStream = PropertiesProcessor.class.getClassLoader().getResourceAsStream(propName)) {
-            properties.load(inputStream);
-        } catch (Exception e) {
-            throw new RuntimeException("propName load failed, e = " + e);
-        }
+    public static List<Properties> getPropsByClassPath(String location) {
+        return getResources(location).stream().map(PropertiesProcessor::loadProp).collect(toList());
+    }
 
-        return properties;
+    /**
+     * find prop by class path
+     *
+     * @param location
+     * @return
+     */
+    public static Properties getPropByClassPath(String location) {
+        return loadProp(getResource(location));
+    }
+
+    /**
+     * find props by file
+     *
+     * @param location
+     * @param recursive
+     * @return
+     */
+    public static List<Properties> getPropsByFile(String location, boolean recursive) {
+        return getFiles(location, recursive).stream().map(PropertiesProcessor::loadProp).collect(toList());
+    }
+
+    /**
+     * find props by file
+     *
+     * @param location
+     * @return
+     */
+    public static List<Properties> getPropsByFile(String location) {
+        return getFiles(location).stream().map(PropertiesProcessor::loadProp).collect(toList());
+    }
+
+    /**
+     * find props by file
+     *
+     * @param location
+     * @return
+     */
+    public static Properties getPropByFile(String location) {
+        return loadProp(getFile(location));
     }
 
 }

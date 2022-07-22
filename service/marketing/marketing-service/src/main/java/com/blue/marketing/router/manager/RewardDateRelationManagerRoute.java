@@ -1,6 +1,6 @@
 package com.blue.marketing.router.manager;
 
-import com.blue.marketing.handler.manager.RewardManagerHandler;
+import com.blue.marketing.handler.manager.RewardDateRelationManagerHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RequestPredicate;
@@ -15,24 +15,26 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
- * reward manager route
+ * reward date relation manager route
  *
  * @author liuyunfei
  */
 @Configuration
-public class RewardManagerRoute {
+public class RewardDateRelationManagerRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> rewardManagerRouter(RewardManagerHandler rewardManagerHandler) {
+    RouterFunction<ServerResponse> rewardDateRelationManagerRouter(RewardDateRelationManagerHandler rewardDateRelationManagerHandler) {
 
         RequestPredicate pathPredicate = path("/blue-marketing/manager");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/reward", accept(APPLICATION_JSON), rewardManagerHandler::insert)
-                .PUT("/reward", accept(APPLICATION_JSON), rewardManagerHandler::update)
-                .DELETE("/reward/{" + ID.key + "}", rewardManagerHandler::delete)
-                .POST("/rewards", accept(APPLICATION_JSON), rewardManagerHandler::select)
+                .POST("/relation", accept(APPLICATION_JSON), rewardDateRelationManagerHandler::insert)
+                .POST("/date/relation", accept(APPLICATION_JSON), rewardDateRelationManagerHandler::insertByDate)
+                .PUT("/relation", accept(APPLICATION_JSON), rewardDateRelationManagerHandler::update)
+                .DELETE("/relation/{" + ID.key + "}", rewardDateRelationManagerHandler::delete)
+                .POST("/relations", accept(APPLICATION_JSON), rewardDateRelationManagerHandler::select)
+                .POST("/date/relations", accept(APPLICATION_JSON), rewardDateRelationManagerHandler::selectByDate)
                 .build();
 
         return nest(pathPredicate, routerFunction);

@@ -1,13 +1,14 @@
 package com.blue.auth.api.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * resource info for rest
  *
  * @author liuyunfei
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
 public final class ResourceInfo implements Serializable {
 
     private static final long serialVersionUID = 7791643860296140833L;
@@ -211,6 +212,19 @@ public final class ResourceInfo implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ResourceInfo that = (ResourceInfo) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     @Override

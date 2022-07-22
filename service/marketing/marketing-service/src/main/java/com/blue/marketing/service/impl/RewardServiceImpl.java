@@ -8,7 +8,6 @@ import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.marketing.api.model.RewardInfo;
 import com.blue.marketing.api.model.RewardManagerInfo;
 import com.blue.marketing.constant.RewardSortAttribute;
-import com.blue.marketing.event.producer.RewardsRefreshProducer;
 import com.blue.marketing.model.RewardCondition;
 import com.blue.marketing.model.RewardInsertParam;
 import com.blue.marketing.model.RewardUpdateParam;
@@ -38,7 +37,6 @@ import static com.blue.basic.common.base.ConstantProcessor.assertResourceType;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
 import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
 import static com.blue.basic.constant.common.ResponseElement.*;
-import static com.blue.basic.constant.common.SummerAttr.EMPTY_EVENT;
 import static com.blue.basic.constant.common.Symbol.DATABASE_WILDCARD;
 import static com.blue.marketing.converter.MarketingModelConverters.*;
 import static java.util.Collections.emptyList;
@@ -65,16 +63,12 @@ public class RewardServiceImpl implements RewardService {
 
     private final BlueIdentityProcessor blueIdentityProcessor;
 
-    private final RewardsRefreshProducer rewardsRefreshProducer;
-
     private RewardMapper rewardMapper;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public RewardServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BlueIdentityProcessor blueIdentityProcessor,
-                             RewardsRefreshProducer rewardsRefreshProducer, RewardMapper rewardMapper) {
+    public RewardServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BlueIdentityProcessor blueIdentityProcessor, RewardMapper rewardMapper) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.blueIdentityProcessor = blueIdentityProcessor;
-        this.rewardsRefreshProducer = rewardsRefreshProducer;
         this.rewardMapper = rewardMapper;
     }
 
@@ -228,7 +222,6 @@ public class RewardServiceImpl implements RewardService {
         reward.setUpdateTime(TIME_STAMP_GETTER.get());
 
         rewardMapper.updateByPrimaryKeySelective(reward);
-        rewardsRefreshProducer.send(EMPTY_EVENT);
 
         return REWARD_2_REWARD_INFO_CONVERTER.apply(reward);
     }

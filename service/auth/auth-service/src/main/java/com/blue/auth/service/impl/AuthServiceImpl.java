@@ -491,6 +491,24 @@ public class AuthServiceImpl implements AuthService {
     };
 
     /**
+     * to simple converter
+     */
+    private static final Function<List<AuthorityBaseOnRole>, Mono<MemberAuthority>> AUTHS_2_AUTH_CONVERTER = authorities -> {
+        if (isEmpty(authorities))
+            return error(() -> new BlueException(UNAUTHORIZED));
+
+        List<RoleInfo> roleInfos = new ArrayList<>(authorities.size());
+        Set<ResourceInfo> resources = new HashSet<>();
+
+        for (AuthorityBaseOnRole authority : authorities) {
+            roleInfos.add(authority.getRole());
+            resources.addAll(authority.getResources());
+        }
+
+        return just(new MemberAuthority(roleInfos, resources));
+    };
+
+    /**
      * init
      */
     @PostConstruct
@@ -843,8 +861,8 @@ public class AuthServiceImpl implements AuthService {
      * @return
      */
     @Override
-    public Mono<List<AuthorityBaseOnRole>> getAuthoritiesMonoByAccess(Access access) {
-        LOGGER.info("Mono<List<AuthorityBaseOnRole>> getAuthoritiesMonoByAccess(Access access), access = {}", access);
+    public Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByAccess(Access access) {
+        LOGGER.info("Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByAccess(Access access), access = {}", access);
         return isNotNull(access) ?
                 AUTHORITIES_MONO_BY_ROLE_ID_GETTER.apply(access.getRoleIds())
                 :
@@ -858,13 +876,37 @@ public class AuthServiceImpl implements AuthService {
      * @return
      */
     @Override
-    public Mono<List<AuthorityBaseOnRole>> getAuthoritiesMonoByMemberId(Long memberId) {
-        LOGGER.info("Mono<List<AuthorityBaseOnRole>> getAuthoritiesMonoByMemberId(Long memberId), memberId = {}", memberId);
+    public Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByMemberId(Long memberId) {
+        LOGGER.info("Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByMemberId(Long memberId), memberId = {}", memberId);
         return isValidIdentity(memberId) ?
                 memberRoleRelationService.selectRoleIdsMonoByMemberId(memberId)
                         .flatMap(AUTHORITIES_MONO_BY_ROLE_ID_GETTER)
                 :
                 error(() -> new BlueException(INVALID_IDENTITY));
+    }
+
+    /**
+     * get member's authority by access
+     *
+     * @param access
+     * @return
+     */
+    @Override
+    public Mono<MemberAuthority> getAuthorityMonoByAccess(Access access) {
+        LOGGER.info("Mono<MemberAuthority> getAuthorityMonoByAccess(Access access), access = {}", access);
+        return this.selectAuthoritiesMonoByAccess(access).flatMap(AUTHS_2_AUTH_CONVERTER);
+    }
+
+    /**
+     * get member's authority by member id
+     *
+     * @param memberId
+     * @return
+     */
+    @Override
+    public Mono<MemberAuthority> getAuthorityMonoByMemberId(Long memberId) {
+        LOGGER.info("Mono<MemberAuthority> getAuthorityMonoByMemberId(Long memberId), memberId = {}", memberId);
+        return this.selectAuthoritiesMonoByMemberId(memberId).flatMap(AUTHS_2_AUTH_CONVERTER);
     }
 
 }

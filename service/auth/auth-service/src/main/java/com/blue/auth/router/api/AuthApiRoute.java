@@ -38,7 +38,8 @@ public class AuthApiRoute {
                 .PUT("/credential", accept(APPLICATION_JSON), authApiHandler::credentialModify)
                 .POST("/question", accept(APPLICATION_JSON), authApiHandler::insertSecurityQuestion)
                 .POST("/questions", accept(APPLICATION_JSON), authApiHandler::insertSecurityQuestions)
-                .GET("/authority", authApiHandler::selectAuthority)
+                .GET("/authorities", authApiHandler::selectAuthorities)
+                .GET("/authority", authApiHandler::getAuthority)
                 .build();
 
         return nest(pathPredicate, routerFunction);

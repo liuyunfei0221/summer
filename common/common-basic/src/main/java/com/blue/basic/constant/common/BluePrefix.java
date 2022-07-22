@@ -5,7 +5,12 @@ package com.blue.basic.constant.common;
  *
  * @author liuyunfei
  */
-public enum SpecialPrefix {
+public enum BluePrefix {
+
+    /**
+     * class path
+     */
+    CLASS_PATH_PREFIX("classpath"),
 
     /**
      * attachment name prefix for content disposition
@@ -17,7 +22,7 @@ public enum SpecialPrefix {
      */
     public final String prefix;
 
-    SpecialPrefix(String prefix) {
+    BluePrefix(String prefix) {
         this.prefix = prefix;
     }
 

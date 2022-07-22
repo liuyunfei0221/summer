@@ -4,6 +4,7 @@ import com.blue.basic.common.base.BlueChecker;
 import com.blue.basic.constant.common.ElementKey;
 import com.blue.basic.model.message.LanguageInfo;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.springframework.core.io.Resource;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.util.Logger;
 
@@ -15,10 +16,13 @@ import java.util.function.*;
 
 import static com.blue.basic.common.base.BlueChecker.isNotNull;
 import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.CommonFunctions.getAcceptLanguages;
 import static com.blue.basic.common.base.FileGetter.getFiles;
+import static com.blue.basic.common.base.FileGetter.getResources;
 import static com.blue.basic.common.base.PropertiesProcessor.parseProp;
 import static com.blue.basic.common.message.ElementProcessor.resolveToValues;
-import static com.blue.basic.common.base.CommonFunctions.getAcceptLanguages;
+import static com.blue.basic.constant.common.BluePrefix.CLASS_PATH_PREFIX;
+import static com.blue.basic.constant.common.BlueSuffix.PROP;
 import static com.blue.basic.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.basic.constant.common.SummerAttr.LANGUAGE;
@@ -71,11 +75,67 @@ public final class MessageProcessor {
                     .filter(e -> isDigits(e.getKey()))
                     .collect(toMap(e -> parseInt(e.getKey()), Map.Entry::getValue, (a, b) -> a));
 
-    private static final Consumer<String> MESSAGES_LOADER = uri -> {
-        List<File> files = getFiles(uri, true);
-        int size = files.size();
+    private static final Consumer<String> CLASS_PATH_MESSAGES_LOADER = location -> {
+        List<Resource> resources = getResources(location, PROP.suffix);
+        LOGGER.info("resources = {}", resources);
 
+        int size = resources.size();
+
+        Map<Integer, LanguageInfo> infoMap = new HashMap<>(size);
+        Map<String, Map<Integer, String>> i18n = new HashMap<>(size);
+        LanguageInfo defaultLanguageInfo = null;
+
+        Map<String, String> messages;
+        String identity;
+        LanguageInfo languageInfo;
+
+        for (Resource r : resources) {
+            if (isNull(r))
+                continue;
+
+            messages = parseProp(r);
+            identity = LANGUAGE_IDENTITY_PARSER.apply(r.getFilename());
+
+            languageInfo = new LanguageInfo(ofNullable(messages.get(LANGUAGE_NAME_KEY)).orElse(EMPTY_DATA.value),
+                    identity, ofNullable(messages.get(LANGUAGE_ICON_KEY)).orElse(EMPTY_DATA.value));
+
+            infoMap.put(LANGUAGE_PRIORITY_PARSER.apply(messages), languageInfo);
+
+            i18n.put(lowerCase(identity), MESSAGES_CONVERTER.apply(messages));
+
+            if (DEFAULT_LANGUAGE.equals(ofNullable(languageInfo.getIdentity()).map(String::toLowerCase).orElse(EMPTY_DATA.value)))
+                defaultLanguageInfo = languageInfo;
+        }
+
+        List<LanguageInfo> supportLanguages = infoMap.entrySet().stream()
+                .sorted((a, b) -> {
+                    if (DEFAULT_LANGUAGE.equals(lowerCase(a.getValue().getIdentity())))
+                        return MIN_VALUE;
+
+                    if (DEFAULT_LANGUAGE.equals(lowerCase(b.getValue().getIdentity())))
+                        return MAX_VALUE;
+
+                    return a.getKey().compareTo(b.getKey());
+                })
+                .map(Map.Entry::getValue).collect(toList());
+
+        if (isNull(defaultLanguageInfo))
+            throw new RuntimeException("DEFAULT_LANGUAGE_INFO can't be null");
+
+        I_18_N = i18n;
+        SUPPORT_LANGUAGES = supportLanguages;
+        DEFAULT_LANGUAGE_INFO = defaultLanguageInfo;
+
+        LOGGER.info("I_18_N = {}", I_18_N);
+        LOGGER.info("SUPPORT_LANGUAGES = {}", SUPPORT_LANGUAGES);
+        LOGGER.info("DEFAULT_LANGUAGE_INFO = {}", DEFAULT_LANGUAGE_INFO);
+    };
+
+    private static final Consumer<String> FILE_MESSAGES_LOADER = location -> {
+        List<File> files = getFiles(location, true);
         LOGGER.info("files = {}", files);
+
+        int size = files.size();
 
         Map<Integer, LanguageInfo> infoMap = new HashMap<>(size);
         Map<String, Map<Integer, String>> i18n = new HashMap<>(size);
@@ -125,6 +185,17 @@ public final class MessageProcessor {
         LOGGER.info("I_18_N = {}", I_18_N);
         LOGGER.info("SUPPORT_LANGUAGES = {}", SUPPORT_LANGUAGES);
         LOGGER.info("DEFAULT_LANGUAGE_INFO = {}", DEFAULT_LANGUAGE_INFO);
+    };
+
+    private static final Predicate<String> CLASS_PATH_PRE = location ->
+            startsWith(location, CLASS_PATH_PREFIX.prefix);
+
+    private static final Consumer<String> MESSAGES_LOADER = location -> {
+        if (CLASS_PATH_PRE.test(location)) {
+            CLASS_PATH_MESSAGES_LOADER.accept(location);
+        } else {
+            FILE_MESSAGES_LOADER.accept(location);
+        }
     };
 
     private static final Function<List<String>, Map<Integer, String>> MESSAGES_GETTER = languages -> {

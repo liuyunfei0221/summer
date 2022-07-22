@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
 import static com.blue.basic.common.base.BlueChecker.isBlank;
-import static com.blue.basic.common.base.PropertiesProcessor.loadProps;
+import static com.blue.basic.common.base.PropertiesProcessor.getPropByClassPath;
 import static com.blue.basic.common.base.TimeUnity.convertStrToEpochSecond;
 import static java.time.Clock.system;
 import static java.time.ZoneId.of;
@@ -79,7 +79,7 @@ public final class SummerAttr {
             ONLINE_TIME_STR_KEY = "onlineTime";
 
     static {
-        Properties properties = loadProps(SUMMER_ATTR_URI);
+        Properties properties = getPropByClassPath(SUMMER_ATTR_URI);
 
         String identity = properties.getProperty(IDENTITY_ATTR_KEY);
         if (isBlank(identity))

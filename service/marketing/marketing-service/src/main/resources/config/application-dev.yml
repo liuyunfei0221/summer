@@ -301,7 +301,7 @@ producers:
       enableProxy: false
       proxyServiceUrl:
       proxyProtocol: SNI
-      topic: marketing
+      topic: refreshRewards
       producerName: refreshRewardsProducer000
       accessMode: Shared
       sendTimeoutMillis: 30000
