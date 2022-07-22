@@ -253,7 +253,7 @@ public class SignInServiceImpl implements SignInService {
                                         error(() -> new BlueException(REPEAT_SIGN_IN))
                                 )
                                 .flatMap(signInReward -> {
-                                    MarketingEvent marketingEvent = new MarketingEvent(SIGN_IN_REWARD, memberId,
+                                    MarketingEvent marketingEvent = new MarketingEvent(SIGN_IN_REWARD.identity, memberId,
                                             GSON.toJson(new SignRewardEvent(memberId, year, month, dayOfMonth, signInReward)), TIME_STAMP_GETTER.get());
                                     try {
                                         LOGGER.info("sign in success, marketingEvent = {}", marketingEvent);

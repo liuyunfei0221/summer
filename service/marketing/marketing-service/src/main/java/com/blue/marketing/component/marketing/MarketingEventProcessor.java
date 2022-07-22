@@ -1,6 +1,5 @@
 package com.blue.marketing.component.marketing;
 
-import com.blue.basic.constant.marketing.MarketingEventType;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.marketing.api.model.MarketingEvent;
 import com.blue.marketing.component.marketing.inter.EventHandler;
@@ -33,7 +32,7 @@ public class MarketingEventProcessor implements ApplicationListener<ContextRefre
     /**
      * event type -> event handler
      */
-    private Map<MarketingEventType, EventHandler> eventHandlers;
+    private Map<Integer, EventHandler> eventHandlers;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
@@ -43,11 +42,11 @@ public class MarketingEventProcessor implements ApplicationListener<ContextRefre
             throw new RuntimeException("marketingEventHandlers is empty");
 
         eventHandlers = beansOfType.values().stream()
-                .collect(toMap(EventHandler::targetType, eh -> eh, (a, b) -> a));
+                .collect(toMap(eh -> eh.targetType().identity, eh -> eh, (a, b) -> a));
     }
 
     private final Consumer<MarketingEvent> EVENT_HANDLER = marketingEvent -> {
-        MarketingEventType marketingEventType = marketingEvent.getEventType();
+        Integer marketingEventType = marketingEvent.getEventType();
         if (isNull(marketingEventType))
             throw new BlueException(INVALID_IDENTITY);
 

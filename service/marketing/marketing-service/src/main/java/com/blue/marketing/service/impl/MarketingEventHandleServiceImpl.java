@@ -52,7 +52,7 @@ public class MarketingEventHandleServiceImpl implements MarketingEventHandleServ
         EventRecord eventRecord = new EventRecord();
 
         eventRecord.setId(blueIdentityProcessor.generate(EventRecord.class));
-        eventRecord.setType(ofNullable(marketingEvent.getEventType()).map(type -> type.identity).orElse(MarketingEventType.UNKNOWN.identity));
+        eventRecord.setType(ofNullable(marketingEvent.getEventType()).orElse(MarketingEventType.UNKNOWN.identity));
         eventRecord.setData(marketingEvent.getEvent());
         eventRecord.setCreateTime(marketingEvent.getEventTime());
         eventRecord.setCreator(marketingEvent.getMemberId());

@@ -14,7 +14,10 @@ public final class MarketingEvent implements Serializable {
 
     private static final long serialVersionUID = -3232798896272586812L;
 
-    private MarketingEventType marketingEventType;
+    /**
+     * @see com.blue.basic.constant.marketing.MarketingEventType
+     */
+    private Integer marketingEventType;
 
     private Long memberId;
 
@@ -28,18 +31,18 @@ public final class MarketingEvent implements Serializable {
     public MarketingEvent() {
     }
 
-    public MarketingEvent(MarketingEventType marketingEventType, Long memberId, String event, Long eventTime) {
+    public MarketingEvent(Integer marketingEventType, Long memberId, String event, Long eventTime) {
         this.marketingEventType = marketingEventType;
         this.memberId = memberId;
         this.event = event;
         this.eventTime = eventTime;
     }
 
-    public MarketingEventType getEventType() {
+    public Integer getEventType() {
         return marketingEventType;
     }
 
-    public void setEventType(MarketingEventType marketingEventType) {
+    public void setEventType(Integer marketingEventType) {
         this.marketingEventType = marketingEventType;
     }
 
