@@ -27,6 +27,7 @@
         <module>common-dubbo</module>
         <module>common-es</module>
         <module>common-excel</module>
+        <module>common-hbase</module>
         <module>common-identity</module>
         <module>common-jwt</module>
         <module>common-mail</module>
