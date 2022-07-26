@@ -1,6 +1,6 @@
 package com.blue.gateway.config.blue;
 
-import com.blue.basic.component.executor.api.conf.AbstractExecutorConfParam;
+import com.blue.basic.component.executor.api.conf.ExecutorConfParam;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import reactor.util.Logger;
@@ -16,7 +16,7 @@ import static reactor.util.Loggers.getLogger;
  */
 @Component
 @ConfigurationProperties(prefix = "executor")
-public class BlueExecutorConfig extends AbstractExecutorConfParam {
+public class BlueExecutorConfig extends ExecutorConfParam {
 
     private static final Logger LOGGER = getLogger(BlueExecutorConfig.class);
 

@@ -41,8 +41,7 @@ public final class BlueEsGenerator {
      */
     public static RestClient generateRestClient(EsConf esConf) {
         LOGGER.info("RestClient generateRestClient(EsConf esConf), esConf = {}", esConf);
-
-        confAssert(esConf);
+        assertConf(esConf);
 
         List<Node> nodeList = esConf.getEsNodes()
                 .stream().map(esNode -> {
@@ -122,7 +121,7 @@ public final class BlueEsGenerator {
      *
      * @param conf
      */
-    private static void confAssert(EsConf conf) {
+    private static void assertConf(EsConf conf) {
         if (isNull(conf))
             throw new RuntimeException("conf can't be null");
 

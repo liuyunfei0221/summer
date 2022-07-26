@@ -8,28 +8,21 @@ import java.util.concurrent.RejectedExecutionHandler;
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
-public abstract class AbstractExecutorConfParam implements ExecutorConf {
+public class ExecutorConfParam implements ExecutorConf {
 
-    protected Integer corePoolSize;
+    private Integer corePoolSize;
 
-    protected Integer maximumPoolSize;
+    private Integer maximumPoolSize;
 
-    protected Long keepAliveSeconds;
+    private Long keepAliveSeconds;
 
-    protected Integer blockingQueueCapacity;
+    private Integer blockingQueueCapacity;
 
-    protected String threadNamePre;
+    private String threadNamePre;
 
-    public AbstractExecutorConfParam() {
-    }
+    private RejectedExecutionHandler rejectedExecutionHandler;
 
-    public AbstractExecutorConfParam(Integer corePoolSize, Integer maximumPoolSize, Long keepAliveSeconds,
-                                     Integer blockingQueueCapacity, String threadNamePre) {
-        this.corePoolSize = corePoolSize;
-        this.maximumPoolSize = maximumPoolSize;
-        this.keepAliveSeconds = keepAliveSeconds;
-        this.blockingQueueCapacity = blockingQueueCapacity;
-        this.threadNamePre = threadNamePre;
+    public ExecutorConfParam() {
     }
 
     @Override
@@ -58,7 +51,9 @@ public abstract class AbstractExecutorConfParam implements ExecutorConf {
     }
 
     @Override
-    public abstract RejectedExecutionHandler getRejectedExecutionHandler();
+    public RejectedExecutionHandler getRejectedExecutionHandler() {
+        return rejectedExecutionHandler;
+    }
 
     public void setCorePoolSize(Integer corePoolSize) {
         this.corePoolSize = corePoolSize;
@@ -80,14 +75,19 @@ public abstract class AbstractExecutorConfParam implements ExecutorConf {
         this.threadNamePre = threadNamePre;
     }
 
+    public void setRejectedExecutionHandler(RejectedExecutionHandler rejectedExecutionHandler) {
+        this.rejectedExecutionHandler = rejectedExecutionHandler;
+    }
+
     @Override
     public String toString() {
-        return "ExecutorConfParam{" +
+        return "AbstractExecutorConfParam{" +
                 "corePoolSize=" + corePoolSize +
                 ", maximumPoolSize=" + maximumPoolSize +
                 ", keepAliveSeconds=" + keepAliveSeconds +
                 ", blockingQueueCapacity=" + blockingQueueCapacity +
                 ", threadNamePre='" + threadNamePre + '\'' +
+                ", rejectedExecutionHandler=" + rejectedExecutionHandler +
                 '}';
     }
 

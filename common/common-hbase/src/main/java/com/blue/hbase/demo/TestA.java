@@ -1,7 +1,9 @@
-package com.blue.hbase.api.generator;
+package com.blue.hbase.demo;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.*;
+import org.apache.hadoop.hbase.Cell;
+import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.filter.Filter;
 import org.apache.hadoop.hbase.filter.PrefixFilter;
@@ -11,7 +13,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
-public class Test3 {
+public class TestA {
 
     //    public static Configuration conf;
 //    public static Connection conn;
@@ -89,6 +91,8 @@ public class Test3 {
      */
     public static Connection initHbase() throws IOException {
         Configuration configuration = HBaseConfiguration.create();
+
+
         configuration.set("hbase.zookeeper.quorum", "cloudera01,cloudera02,cloudera03");
         return ConnectionFactory.createConnection(configuration);
     }
@@ -249,7 +253,6 @@ public class Test3 {
                 ColumnFamilyDescriptor columnFamilyDescriptor = ColumnFamilyDescriptorBuilder.newBuilder(col.getBytes(StandardCharsets.UTF_8)).build();
                 tableDescBuilder.setColumnFamily(columnFamilyDescriptor);
             }
-
 
             admin.createTable(tableDescBuilder.build());
             System.out.println(tableName + "创建成功");

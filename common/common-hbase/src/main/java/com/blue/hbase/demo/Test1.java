@@ -1,4 +1,4 @@
-package com.blue.hbase.api.generator;
+package com.blue.hbase.demo;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;

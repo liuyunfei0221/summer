@@ -30,6 +30,12 @@ public final class BlueExecutorGenerator {
     private static final String DEFAULT_THREAD_NAME_PRE = "blue-executor-thread" + PAR_CONCATENATION_DATABASE_URL.identity;
     private static final int RANDOM_LEN = 6;
 
+    /**
+     * generate executor
+     *
+     * @param executorConf
+     * @return
+     */
     public static ExecutorService generateExecutorService(ExecutorConf executorConf) {
         LOGGER.info("ExecutorService executorService(ExecutorConf executorConf), executorConf = {}", executorConf);
         assertConf(executorConf);
@@ -38,39 +44,43 @@ public final class BlueExecutorGenerator {
                 .map(p -> p + PAR_CONCATENATION_DATABASE_URL.identity)
                 .orElse(DEFAULT_THREAD_NAME_PRE);
 
+        RejectedExecutionHandler rejectedExecutionHandler = executorConf.getRejectedExecutionHandler();
+
+        if (isNull(rejectedExecutionHandler))
+            rejectedExecutionHandler = (r, executor) -> {
+                LOGGER.warn("Trigger the thread pool rejection strategy and hand it over to the calling thread for execution");
+                r.run();
+            };
+
         return new ThreadPoolExecutor(executorConf.getCorePoolSize(),
                 executorConf.getMaximumPoolSize(),
                 executorConf.getKeepAliveSeconds(), SECONDS,
                 new ArrayBlockingQueue<>(executorConf.getBlockingQueueCapacity()),
                 new AffinityThreadFactory(threadNamePre + randomAlphabetic(RANDOM_LEN), DIFFERENT_CORE),
-                executorConf.getRejectedExecutionHandler());
+                rejectedExecutionHandler);
     }
 
     /**
      * assert conf
      *
-     * @param executorConf
+     * @param conf
      */
-    private static void assertConf(ExecutorConf executorConf) {
-        Integer corePoolSize = executorConf.getCorePoolSize();
+    private static void assertConf(ExecutorConf conf) {
+        Integer corePoolSize = conf.getCorePoolSize();
         if (isNull(corePoolSize) || corePoolSize < 1)
             throw new RuntimeException("corePoolSize can't be null or less than 1");
 
-        Integer maximumPoolSize = executorConf.getMaximumPoolSize();
+        Integer maximumPoolSize = conf.getMaximumPoolSize();
         if (isNull(maximumPoolSize) || maximumPoolSize < 1 || maximumPoolSize < corePoolSize)
             throw new RuntimeException("maximumPoolSize can't be null or less than 1 or less than corePoolSize");
 
-        Long keepAliveSeconds = executorConf.getKeepAliveSeconds();
+        Long keepAliveSeconds = conf.getKeepAliveSeconds();
         if (isNull(keepAliveSeconds) || keepAliveSeconds < 1L)
             throw new RuntimeException("keepAliveSeconds can't be null or less than 1");
 
-        Integer blockingQueueCapacity = executorConf.getBlockingQueueCapacity();
+        Integer blockingQueueCapacity = conf.getBlockingQueueCapacity();
         if (isNull(blockingQueueCapacity) || blockingQueueCapacity < 1)
             throw new RuntimeException("blockingQueueCapacity can't be null or less than 1");
-
-        RejectedExecutionHandler rejectedExecutionHandler = executorConf.getRejectedExecutionHandler();
-        if (isNull(rejectedExecutionHandler))
-            throw new RuntimeException("rejectedExecutionHandler can't be null");
     }
 
 }
