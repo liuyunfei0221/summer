@@ -24,6 +24,8 @@ public class AuthDeploy {
 
     private Long localExpiresMillis;
 
+    private Long millisLeftToHandleExpire;
+
     private Integer refresherCorePoolSize;
 
     private Integer refresherMaximumPoolSize;
@@ -45,6 +47,8 @@ public class AuthDeploy {
     private transient String signKey;
 
     private transient List<String> gammaSecrets;
+
+    private Integer gammaLength;
 
     public AuthDeploy() {
     }
@@ -87,6 +91,14 @@ public class AuthDeploy {
 
     public void setLocalExpiresMillis(Long localExpiresMillis) {
         this.localExpiresMillis = localExpiresMillis;
+    }
+
+    public Long getMillisLeftToHandleExpire() {
+        return millisLeftToHandleExpire;
+    }
+
+    public void setMillisLeftToHandleExpire(Long millisLeftToHandleExpire) {
+        this.millisLeftToHandleExpire = millisLeftToHandleExpire;
     }
 
     public Integer getRefresherCorePoolSize() {
@@ -177,6 +189,14 @@ public class AuthDeploy {
         this.gammaSecrets = gammaSecrets;
     }
 
+    public Integer getGammaLength() {
+        return gammaLength;
+    }
+
+    public void setGammaLength(Integer gammaLength) {
+        this.gammaLength = gammaLength;
+    }
+
     @Override
     public String toString() {
         return "AuthDeploy{" +
@@ -185,6 +205,7 @@ public class AuthDeploy {
                 ", globalRefreshExpiresMillis=" + globalRefreshExpiresMillis +
                 ", localCacheCapacity=" + localCacheCapacity +
                 ", localExpiresMillis=" + localExpiresMillis +
+                ", millisLeftToHandleExpire=" + millisLeftToHandleExpire +
                 ", refresherCorePoolSize=" + refresherCorePoolSize +
                 ", refresherMaximumPoolSize=" + refresherMaximumPoolSize +
                 ", refresherKeepAliveSeconds=" + refresherKeepAliveSeconds +
@@ -196,6 +217,7 @@ public class AuthDeploy {
                 ", batchExpireQueueCapacity=" + batchExpireQueueCapacity +
                 ", signKey='" + signKey + '\'' +
                 ", gammaSecrets=" + ":)" +
+                ", gammaLength=" + gammaLength +
                 '}';
     }
 

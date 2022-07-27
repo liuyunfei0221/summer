@@ -53,7 +53,8 @@ public final class RegionInfosInvalidProducer implements BlueLifecycle {
 
     @Override
     public void stop() {
-        this.regionInfosInvalidProducer.shutdown();
+        this.regionInfosInvalidProducer.flush();
+        this.regionInfosInvalidProducer.close();
         LOGGER.warn("regionInfosInvalidProducer shutdown...");
     }
 

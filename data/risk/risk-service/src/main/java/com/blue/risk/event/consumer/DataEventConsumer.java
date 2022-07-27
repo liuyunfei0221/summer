@@ -2,7 +2,8 @@ package com.blue.risk.event.consumer;
 
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.common.DataEvent;
-import com.blue.pulsar.common.BluePulsarConsumer;
+import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
+import com.blue.pulsar.common.BluePulsarListener;
 import com.blue.risk.config.blue.BlueConsumerConfig;
 import com.blue.risk.service.inter.RiskService;
 import reactor.util.Logger;
@@ -11,7 +12,7 @@ import javax.annotation.PostConstruct;
 import java.util.function.Consumer;
 
 import static com.blue.basic.constant.common.BlueTopic.REQUEST_EVENT;
-import static com.blue.pulsar.api.generator.BluePulsarConsumerGenerator.generateConsumer;
+import static com.blue.pulsar.api.generator.BluePulsarListenerGenerator.generateListener;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
 import static java.util.Optional.ofNullable;
@@ -32,7 +33,7 @@ public final class DataEventConsumer implements BlueLifecycle {
 
     private final BlueConsumerConfig blueConsumerConfig;
 
-    private BluePulsarConsumer<DataEvent> dataEventConsumer;
+    private BluePulsarListener<DataEvent> dataEventConsumer;
 
     public DataEventConsumer(RiskService riskService, BlueConsumerConfig blueConsumerConfig) {
         this.riskService = riskService;
@@ -54,7 +55,7 @@ public final class DataEventConsumer implements BlueLifecycle {
                             LOGGER.info("Mono<Void> analyzeEvent(DataEvent dataEvent), de = {}", de);
                         });
 
-        this.dataEventConsumer = generateConsumer(blueConsumerConfig.getByKey(REQUEST_EVENT.name), dataEventDataConsumer);
+        this.dataEventConsumer = BluePulsarListenerGenerator.generateListener(blueConsumerConfig.getByKey(REQUEST_EVENT.name), dataEventDataConsumer);
     }
 
     @Override

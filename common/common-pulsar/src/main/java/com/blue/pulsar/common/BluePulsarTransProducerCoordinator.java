@@ -1,16 +1,9 @@
-package com.blue.pulsar.api.generator;
+package com.blue.pulsar.common;
 
 import com.blue.pulsar.api.conf.ClientConf;
-import com.blue.pulsar.api.conf.ProducerConf;
-import com.blue.pulsar.common.BlueTransPulsarProducer;
-import org.apache.pulsar.client.api.BatcherBuilder;
-import org.apache.pulsar.client.api.MessageRouter;
 import org.apache.pulsar.client.api.PulsarClient;
-import org.apache.pulsar.client.api.interceptor.ProducerInterceptor;
 import org.apache.pulsar.client.api.transaction.Transaction;
 
-import java.io.Serializable;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -22,13 +15,23 @@ import static com.blue.pulsar.utils.PulsarCommonsGenerator.generateClient;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "unused"})
+@SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces"})
 public final class BluePulsarTransProducerCoordinator {
 
     private final PulsarClient pulsarClient;
 
     public BluePulsarTransProducerCoordinator(ClientConf conf) {
+        if (conf == null)
+            throw new RuntimeException("conf can't be null");
+
         this.pulsarClient = generateClient(conf);
+    }
+
+    public BluePulsarTransProducerCoordinator(PulsarClient pulsarClient) {
+        if (pulsarClient == null)
+            throw new RuntimeException("pulsarClient can't be null");
+
+        this.pulsarClient = pulsarClient;
     }
 
     /**
@@ -131,61 +134,6 @@ public final class BluePulsarTransProducerCoordinator {
      */
     public CompletableFuture<Void> abortTransactionAsync(Transaction transaction) {
         return transaction.abort();
-    }
-
-    /**
-     * generate producer
-     *
-     * @param conf
-     * @param clz
-     * @param <T>
-     * @return
-     */
-    public <T extends Serializable> BlueTransPulsarProducer<T> generateProducer(ProducerConf conf, Class<T> clz) {
-        return new BlueTransPulsarProducer<>(conf, pulsarClient, clz, null, null, null);
-    }
-
-    /**
-     * generate producer
-     *
-     * @param conf
-     * @param clz
-     * @param <T>
-     * @return
-     */
-    public <T extends Serializable> BlueTransPulsarProducer<T> generateProducer(ProducerConf conf, Class<T> clz, MessageRouter messageRouter) {
-        return new BlueTransPulsarProducer<>(conf, pulsarClient, clz, messageRouter, null, null);
-    }
-
-    /**
-     * generate producer
-     *
-     * @param conf
-     * @param clz
-     * @param messageRouter
-     * @param batcherBuilder
-     * @param <T>
-     * @return
-     */
-    public <T extends Serializable> BlueTransPulsarProducer<T> generateProducer(ProducerConf conf, Class<T> clz, MessageRouter messageRouter,
-                                                                                BatcherBuilder batcherBuilder) {
-        return new BlueTransPulsarProducer<>(conf, pulsarClient, clz, messageRouter, batcherBuilder, null);
-    }
-
-    /**
-     * generate producer
-     *
-     * @param conf
-     * @param clz
-     * @param messageRouter
-     * @param batcherBuilder
-     * @param interceptors
-     * @param <T>
-     * @return
-     */
-    public <T extends Serializable> BlueTransPulsarProducer<T> generateProducer(ProducerConf conf, Class<T> clz, MessageRouter messageRouter,
-                                                                                BatcherBuilder batcherBuilder, List<ProducerInterceptor> interceptors) {
-        return new BlueTransPulsarProducer<>(conf, pulsarClient, clz, messageRouter, batcherBuilder, interceptors);
     }
 
 }

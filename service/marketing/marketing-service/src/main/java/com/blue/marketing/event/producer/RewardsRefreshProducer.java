@@ -53,7 +53,8 @@ public final class RewardsRefreshProducer implements BlueLifecycle {
 
     @Override
     public void stop() {
-        this.rewardsRefreshProducer.shutdown();
+        this.rewardsRefreshProducer.flush();
+        this.rewardsRefreshProducer.close();
         LOGGER.warn("rewardsRefreshProducer shutdown...");
     }
 

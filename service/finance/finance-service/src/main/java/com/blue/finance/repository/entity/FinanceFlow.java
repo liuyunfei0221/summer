@@ -1,5 +1,7 @@
 package com.blue.finance.repository.entity;
 
+import org.springframework.data.annotation.Id;
+
 import java.io.Serializable;
 
 /**
@@ -12,6 +14,7 @@ public class FinanceFlow implements Serializable {
 
     private static final long serialVersionUID = -7927905031672744480L;
 
+    @Id
     private Long id;
 
     private Long memberId;

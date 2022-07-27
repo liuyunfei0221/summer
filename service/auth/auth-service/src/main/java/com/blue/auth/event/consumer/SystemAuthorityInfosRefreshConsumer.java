@@ -4,14 +4,15 @@ import com.blue.auth.config.blue.BlueConsumerConfig;
 import com.blue.auth.service.inter.AuthControlService;
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.common.EmptyEvent;
-import com.blue.pulsar.common.BluePulsarConsumer;
+import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
+import com.blue.pulsar.common.BluePulsarListener;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
 import java.util.function.Consumer;
 
 import static com.blue.basic.constant.common.BlueTopic.SYSTEM_AUTHORITY_INFOS_REFRESH;
-import static com.blue.pulsar.api.generator.BluePulsarConsumerGenerator.generateConsumer;
+import static com.blue.pulsar.api.generator.BluePulsarListenerGenerator.generateListener;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
 import static java.util.Optional.ofNullable;
@@ -30,7 +31,7 @@ public final class SystemAuthorityInfosRefreshConsumer implements BlueLifecycle 
 
     private final AuthControlService authControlService;
 
-    private BluePulsarConsumer<EmptyEvent> systemAuthorityInfosRefreshConsumer;
+    private BluePulsarListener<EmptyEvent> systemAuthorityInfosRefreshConsumer;
 
     public SystemAuthorityInfosRefreshConsumer(BlueConsumerConfig blueConsumerConfig, AuthControlService authControlService) {
         this.blueConsumerConfig = blueConsumerConfig;
@@ -48,7 +49,7 @@ public final class SystemAuthorityInfosRefreshConsumer implements BlueLifecycle 
                                     .subscribe(v -> LOGGER.info("controlService.refreshSystemAuthorityInfos()"));
                         });
 
-        this.systemAuthorityInfosRefreshConsumer = generateConsumer(blueConsumerConfig.getByKey(SYSTEM_AUTHORITY_INFOS_REFRESH.name), systemAuthorityInfosRefreshDataConsumer);
+        this.systemAuthorityInfosRefreshConsumer = BluePulsarListenerGenerator.generateListener(blueConsumerConfig.getByKey(SYSTEM_AUTHORITY_INFOS_REFRESH.name), systemAuthorityInfosRefreshDataConsumer);
     }
 
     @Override

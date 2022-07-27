@@ -161,32 +161,29 @@ public final class AccessBatchExpireProcessor {
     /**
      * params asserter
      */
-    private static final Consumer<KeyExpireEvent> DATA_ASSERTER = keyExpireEvent -> {
-        if (isNull(keyExpireEvent))
-            throw new RuntimeException("keyExpireEvent can't be null");
-
-        if (isBlank(keyExpireEvent.getKey()))
+    private static void assertParams(String key, Long expiresMillis, ChronoUnit unit) {
+        if (isBlank(key))
             throw new RuntimeException("key can't be null or ''");
 
-        Long expire = keyExpireEvent.getExpire();
-        if (isNull(expire) || expire < 1L)
-            throw new RuntimeException("expire can't be null or less than 1");
+        if (isNull(expiresMillis) || expiresMillis < 1L)
+            throw new RuntimeException("expiresMillis can't be null or less than 1");
 
-        if (isNull(keyExpireEvent.getUnit()))
+        if (isNull(unit))
             throw new RuntimeException("unit can't be null");
-    };
+    }
 
     /**
-     * timeout for refresh
+     * refresh expire
      *
-     * @param keyExpireEvent
-     * @return
+     * @param key
+     * @param expiresMillis
+     * @param unit
      */
-    public void expireKey(KeyExpireEvent keyExpireEvent) {
-        LOGGER.info("expireKey(KeyExpireEvent keyExpireEvent), keyExpireEvent = {}", keyExpireEvent);
-        DATA_ASSERTER.accept(keyExpireEvent);
+    public void expireKey(String key, Long expiresMillis, ChronoUnit unit) {
+        LOGGER.info("void expireKey(String key, Long expiresMillis, ChronoUnit unit), key = {}, expiresMillis = {}, unit = {}", key, expiresMillis, unit);
+        assertParams(key, expiresMillis, unit);
 
-        ASYNC_ELEMENT_PUTTER.accept(keyExpireEvent);
+        ASYNC_ELEMENT_PUTTER.accept(new KeyExpireEvent(key, expiresMillis, unit));
     }
 
 }

@@ -4,14 +4,15 @@ import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.common.EmptyEvent;
 import com.blue.marketing.config.blue.BlueConsumerConfig;
 import com.blue.marketing.service.inter.SignInService;
-import com.blue.pulsar.common.BluePulsarConsumer;
+import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
+import com.blue.pulsar.common.BluePulsarListener;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
 import java.util.function.Consumer;
 
 import static com.blue.basic.constant.common.BlueTopic.REWARDS_REFRESH;
-import static com.blue.pulsar.api.generator.BluePulsarConsumerGenerator.generateConsumer;
+import static com.blue.pulsar.api.generator.BluePulsarListenerGenerator.generateListener;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
 import static java.util.Optional.ofNullable;
@@ -30,7 +31,7 @@ public final class RewardsRefreshConsumer implements BlueLifecycle {
 
     private final SignInService signInService;
 
-    private BluePulsarConsumer<EmptyEvent> rewardsRefreshConsumer;
+    private BluePulsarListener<EmptyEvent> rewardsRefreshConsumer;
 
     public RewardsRefreshConsumer(BlueConsumerConfig blueConsumerConfig, SignInService signInService) {
         this.blueConsumerConfig = blueConsumerConfig;
@@ -48,7 +49,7 @@ public final class RewardsRefreshConsumer implements BlueLifecycle {
                                     .subscribe(v -> LOGGER.info("signInService.refreshDayRewards()"));
                         });
 
-        this.rewardsRefreshConsumer = generateConsumer(blueConsumerConfig.getByKey(REWARDS_REFRESH.name), rewardsRefreshDataConsumer);
+        this.rewardsRefreshConsumer = BluePulsarListenerGenerator.generateListener(blueConsumerConfig.getByKey(REWARDS_REFRESH.name), rewardsRefreshDataConsumer);
     }
 
     @Override

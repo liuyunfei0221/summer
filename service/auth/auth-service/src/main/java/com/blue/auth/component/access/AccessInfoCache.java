@@ -1,11 +1,11 @@
 package com.blue.auth.component.access;
 
-import com.blue.auth.event.producer.AccessExpireProducer;
-import com.blue.basic.model.common.KeyExpireEvent;
+import com.blue.auth.model.AccessInfo;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.caffeine.api.conf.CaffeineConf;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.github.benmanes.caffeine.cache.Cache;
+import com.google.gson.JsonSyntaxException;
 import net.openhft.affinity.AffinityThreadFactory;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import reactor.core.publisher.Mono;
@@ -15,12 +15,16 @@ import reactor.util.Logger;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.*;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static com.blue.basic.common.base.BlueChecker.*;
-import static com.blue.basic.constant.common.ResponseElement.*;
+import static com.blue.basic.common.base.CommonFunctions.GSON;
+import static com.blue.basic.common.base.CommonFunctions.MILLIS_STAMP_SUP;
+import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.basic.constant.common.ResponseElement.UNAUTHORIZED;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
@@ -28,7 +32,6 @@ import static java.time.temporal.ChronoUnit.MILLIS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static net.openhft.affinity.AffinityStrategies.SAME_CORE;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
-import static org.springframework.util.StringUtils.hasText;
 import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
@@ -44,7 +47,7 @@ public final class AccessInfoCache {
 
     private ReactiveStringRedisTemplate reactiveStringRedisTemplate;
 
-    private AccessExpireProducer accessExpireProducer;
+    private AccessBatchExpireProcessor accessBatchExpireProcessor;
 
     private Scheduler scheduler;
 
@@ -53,7 +56,12 @@ public final class AccessInfoCache {
     /**
      * global expire millis
      */
-    private Long globalExpiresMillis;
+    private long globalExpiresMillis;
+
+    /**
+     * to handle expire
+     */
+    private long differenceToHandleExpire;
 
     /**
      * millis
@@ -73,16 +81,15 @@ public final class AccessInfoCache {
     private static final String THREAD_NAME_PRE = "AccessInfoCache-thread- ";
     private static final int RANDOM_LEN = 4;
 
-    public AccessInfoCache(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AccessExpireProducer accessExpireProducer,
-                           Scheduler scheduler, Integer refresherCorePoolSize, Integer refresherMaximumPoolSize, Long refresherKeepAliveSeconds,
-                           Integer refresherBlockingQueueCapacity, Long globalExpiresMillis, Long localExpiresMillis, Integer capacity) {
+    public AccessInfoCache(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AccessBatchExpireProcessor accessBatchExpireProcessor, Scheduler scheduler,
+                           Integer refresherCorePoolSize, Integer refresherMaximumPoolSize, Long refresherKeepAliveSeconds,
+                           Integer refresherBlockingQueueCapacity, Long globalExpiresMillis, Long localExpiresMillis, Long millisLeftToHandleExpire, Integer capacity) {
 
-        assertConf(reactiveStringRedisTemplate, accessExpireProducer,
-                refresherCorePoolSize, refresherMaximumPoolSize, refresherKeepAliveSeconds,
-                refresherBlockingQueueCapacity, globalExpiresMillis, localExpiresMillis, capacity);
+        assertConf(reactiveStringRedisTemplate, accessBatchExpireProcessor, refresherCorePoolSize, refresherMaximumPoolSize, refresherKeepAliveSeconds,
+                refresherBlockingQueueCapacity, globalExpiresMillis, localExpiresMillis, millisLeftToHandleExpire, capacity);
 
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
-        this.accessExpireProducer = accessExpireProducer;
+        this.accessBatchExpireProcessor = accessBatchExpireProcessor;
         this.scheduler = scheduler;
 
         ThreadFactory threadFactory = new AffinityThreadFactory(THREAD_NAME_PRE + randomAlphabetic(RANDOM_LEN), SAME_CORE);
@@ -96,6 +103,8 @@ public final class AccessInfoCache {
                 refresherKeepAliveSeconds, SECONDS, new ArrayBlockingQueue<>(refresherBlockingQueueCapacity), threadFactory, rejectedExecutionHandler);
 
         this.globalExpiresMillis = globalExpiresMillis;
+        this.differenceToHandleExpire = globalExpiresMillis - millisLeftToHandleExpire;
+
         this.globalExpireDuration = Duration.of(globalExpiresMillis, UNIT);
 
         CaffeineConf caffeineConf = new CaffeineConfParams(capacity, Duration.of(localExpiresMillis, MILLIS),
@@ -104,21 +113,26 @@ public final class AccessInfoCache {
         this.cache = generateCache(caffeineConf);
     }
 
+    private final Predicate<Long> EXPIRE_PRE = loginMillisTimeStamp ->
+            (MILLIS_STAMP_SUP.get() > (loginMillisTimeStamp + differenceToHandleExpire));
+
     /**
-     * redis accessInfo refresher
+     * redis accessInfo expire
      */
-    private final Consumer<String> REDIS_ACCESS_REFRESHER = keyId -> {
+    private final BiConsumer<String, AccessInfo> ACCESS_EXPIRE_PROCESSOR = (keyId, accessInfo) -> {
         try {
             this.executorService.execute(() -> {
-                if (hasText(keyId)) {
-                    accessExpireProducer.send(new KeyExpireEvent(keyId, globalExpiresMillis, UNIT));
-                    LOGGER.warn("REDIS_ACCESS_REFRESHER -> SUCCESS, keyId = {}", keyId);
+                if (isNotBlank(keyId) && isNotNull(accessInfo)) {
+                    if (EXPIRE_PRE.test(accessInfo.getLoginMillisTimeStamp()))
+                        accessBatchExpireProcessor.expireKey(keyId, globalExpiresMillis, UNIT);
+
+                    LOGGER.warn("ACCESS_EXPIRE_PROCESSOR -> SUCCESS, keyId = {}", keyId);
                 } else {
-                    LOGGER.error("keyId or accessInfo is empty, keyId = {}", keyId);
+                    LOGGER.error("keyId or accessInfo is empty, keyId = {}, accessInfo = {}", keyId, accessInfo);
                 }
             });
         } catch (Exception e) {
-            LOGGER.error("REDIS_ACCESS_REFRESHER error, e = {}", e);
+            LOGGER.error("ACCESS_EXPIRE_PROCESSOR error, e = {}", e);
         }
     };
 
@@ -131,10 +145,9 @@ public final class AccessInfoCache {
         return reactiveStringRedisTemplate.opsForValue().get(keyId)
                 .publishOn(scheduler)
                 .flatMap(accessInfo -> {
-                    if (!EMPTY_DATA.value.equals(accessInfo)) {
+                    if (!EMPTY_DATA.value.equals(accessInfo))
                         cache.put(keyId, accessInfo);
-                        REDIS_ACCESS_REFRESHER.accept(keyId);
-                    }
+
                     return just(accessInfo);
                 });
     };
@@ -152,15 +165,15 @@ public final class AccessInfoCache {
     };
 
     /**
-     * cache accessInfo getter
+     * cache accessInfo setter
      */
-    private final BiFunction<String, String, Mono<Boolean>> ACCESS_SETTER_WITH_CACHE = (keyId, accessInfo) -> {
-        LOGGER.info("ACCESS_SETTER_WITH_CACHE, keyId = {},accessInfo = {}", keyId, accessInfo);
-        if (isBlank(keyId) || isBlank(accessInfo))
+    private final BiFunction<String, AccessInfo, Mono<Boolean>> ACCESS_SETTER_WITH_CACHE = (keyId, accessInfo) -> {
+        LOGGER.info("ACCESS_SETTER_WITH_CACHE, keyId = {}, accessInfo = {}", keyId, accessInfo);
+        if (isBlank(keyId) || isNull(accessInfo))
             return error(() -> new BlueException(BAD_REQUEST));
 
         return reactiveStringRedisTemplate.opsForValue()
-                .set(keyId, accessInfo, globalExpireDuration)
+                .set(keyId, GSON.toJson(accessInfo), globalExpireDuration)
                 .publishOn(scheduler)
                 .onErrorResume(throwable -> {
                     LOGGER.error("setAccessInfo(String keyId, String accessInfo) failed, throwable = {}", throwable);
@@ -170,14 +183,33 @@ public final class AccessInfoCache {
     };
 
     /**
+     * accessInfo parser
+     */
+    private final Function<String, AccessInfo> ACCESS_INFO_PARSER = authInfoStr -> {
+        try {
+            return GSON.fromJson(authInfoStr, AccessInfo.class);
+        } catch (JsonSyntaxException e) {
+            throw new BlueException(UNAUTHORIZED);
+        }
+    };
+
+    /**
      * get accessInfo value by keyId
      *
      * @param keyId
      * @return
      */
-    public Mono<String> getAccessInfo(String keyId) {
+    public Mono<AccessInfo> getAccessInfo(String keyId) {
         return isNotBlank(keyId) ?
                 ACCESS_GETTER_WITH_CACHE.apply(keyId).publishOn(scheduler)
+                        .switchIfEmpty(defer(() -> error(() -> new BlueException(UNAUTHORIZED))))
+                        .flatMap(v ->
+                                isNotBlank(v) ?
+                                        just(ACCESS_INFO_PARSER.apply(v))
+                                                .doOnSuccess(accessInfo ->
+                                                        ACCESS_EXPIRE_PROCESSOR.accept(keyId, accessInfo))
+                                        :
+                                        error(() -> new BlueException(UNAUTHORIZED)))
                 :
                 error(() -> new BlueException(UNAUTHORIZED));
     }
@@ -188,8 +220,8 @@ public final class AccessInfoCache {
      * @param keyId
      * @param accessInfo
      */
-    public Mono<Boolean> setAccessInfo(String keyId, String accessInfo) {
-        LOGGER.info("setAccessInfo(), keyId = {},accessInfo = {}", keyId, accessInfo);
+    public Mono<Boolean> setAccessInfo(String keyId, AccessInfo accessInfo) {
+        LOGGER.info("setAccessInfo(), keyId = {}, accessInfo = {}", keyId, accessInfo);
         return ACCESS_SETTER_WITH_CACHE.apply(keyId, accessInfo);
     }
 
@@ -229,14 +261,14 @@ public final class AccessInfoCache {
     /**
      * assert conf
      */
-    private static void assertConf(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AccessExpireProducer accessExpireProducer,
-                                   Integer refresherCorePoolSize, Integer refresherMaximumPoolSize, Long refresherKeepAliveSeconds,
-                                   Integer refresherBlockingQueueCapacity, Long globalExpiresMillis, Long localExpiresMillis, Integer capacity) {
+    private static void assertConf(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AccessBatchExpireProcessor accessBatchExpireProcessor, Integer refresherCorePoolSize,
+                                   Integer refresherMaximumPoolSize, Long refresherKeepAliveSeconds, Integer refresherBlockingQueueCapacity,
+                                   Long globalExpiresMillis, Long localExpiresMillis, Long millisLeftToHandleExpire, Integer capacity) {
         if (isNull(reactiveStringRedisTemplate))
             throw new RuntimeException("reactiveStringRedisTemplate can't be null");
 
-        if (isNull(accessExpireProducer))
-            throw new RuntimeException("authExpireProducer can't be null");
+        if (isNull(accessBatchExpireProcessor))
+            throw new RuntimeException("accessBatchExpireProcessor can't be null");
 
         if (isNull(refresherCorePoolSize) || refresherCorePoolSize < 1)
             throw new RuntimeException("refresherCorePoolSize can't be null or less than 1");
@@ -258,6 +290,12 @@ public final class AccessInfoCache {
 
         if (localExpiresMillis > globalExpiresMillis)
             throw new RuntimeException("localExpiresSecond can't be null or greater than globalExpiresSecond");
+
+        if (isNull(millisLeftToHandleExpire) || millisLeftToHandleExpire < 1)
+            throw new RuntimeException("millisLeftToHandleExpire can't be null or less than 1");
+
+        if (globalExpiresMillis <= millisLeftToHandleExpire)
+            throw new RuntimeException("globalExpiresMillis can't be less than  or equals millisLeftToHandleExpire");
 
         if (isNull(capacity) || capacity < 1)
             throw new RuntimeException("capacity can't be null or less than 1");

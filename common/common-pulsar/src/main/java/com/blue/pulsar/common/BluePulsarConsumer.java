@@ -1,27 +1,19 @@
 package com.blue.pulsar.common;
 
 import com.blue.pulsar.api.conf.ConsumerConf;
-import net.openhft.affinity.AffinityThreadFactory;
 import org.apache.pulsar.client.api.*;
+import org.apache.pulsar.client.api.transaction.Transaction;
 import org.slf4j.Logger;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static com.blue.pulsar.utils.PulsarCommonsGenerator.generateClient;
 import static com.blue.pulsar.utils.PulsarCommonsGenerator.generateConsumer;
-import static java.lang.Thread.onSpinWait;
-import static java.util.Optional.ofNullable;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static net.openhft.affinity.AffinityStrategies.SAME_CORE;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -29,315 +21,375 @@ import static org.slf4j.LoggerFactory.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "FieldCanBeLocal", "AlibabaAvoidManuallyCreateThread", "JavaDoc"})
-public final class BluePulsarConsumer<T extends Serializable> {
+@SuppressWarnings({"JavaDoc", "unused"})
+public final class BluePulsarConsumer<T extends Serializable> implements Consumer<T> {
 
     private static final Logger LOGGER = getLogger(BluePulsarConsumer.class);
 
-    private final PulsarClient pulsarClient;
-
     private final org.apache.pulsar.client.api.Consumer<T> pulsarConsumer;
 
-    private final PulsarConsumerTask task;
-
-    private final List<Thread> workingThreadHolder;
-
-    private static final String THREAD_NAME_PREFIX = "consumer working thread for topics ";
-
-    /**
-     * consumers holder
-     */
-    private final Map<Boolean, BiFunction<Consumer<Message<T>>, org.apache.pulsar.client.api.Consumer<T>,
-            Consumer<Message<T>>>> ACK_CONSUMER_GENERATOR_HOLDER = new HashMap<>(4);
-    private final Map<Boolean, BiFunction<Consumer<Message<T>>, org.apache.pulsar.client.api.Consumer<T>,
-            Consumer<Messages<T>>>> ACK_BATCH_CONSUMER_GENERATOR_HOLDER = new HashMap<>(4);
-
-    /**
-     * get consumer generator by actType
-     */
-    private final Function<Boolean, BiFunction<Consumer<Message<T>>, org.apache.pulsar.client.api.Consumer<T>,
-            Consumer<Message<T>>>> ACK_CONSUMER_GENERATOR = ackType -> {
-        if (ackType != null)
-            return ACK_CONSUMER_GENERATOR_HOLDER.get(ackType);
-
-        throw new RuntimeException("data or params can't be null");
-    };
-    private final Function<Boolean, BiFunction<Consumer<Message<T>>, org.apache.pulsar.client.api.Consumer<T>,
-            Consumer<Messages<T>>>> ACK_BATCH_CONSUMER_GENERATOR = ackType -> {
-        if (ackType != null)
-            return ACK_BATCH_CONSUMER_GENERATOR_HOLDER.get(ackType);
-
-        throw new RuntimeException("data or params can't be null");
-    };
-
-    /**
-     * constructor
-     *
-     * @param conf
-     * @param consumer
-     * @param messageListener
-     * @param consumerEventListener
-     * @param interceptors
-     * @param keySharedPolicy
-     */
-    public BluePulsarConsumer(ConsumerConf conf, Consumer<T> consumer, MessageListener<T> messageListener, ConsumerEventListener consumerEventListener,
+    public BluePulsarConsumer(ConsumerConf conf, java.util.function.Consumer<T> consumer, MessageListener<T> messageListener, ConsumerEventListener consumerEventListener,
                               List<ConsumerInterceptor<T>> interceptors, KeySharedPolicy keySharedPolicy) {
-        this.pulsarClient = generateClient(conf);
-        this.pulsarConsumer = generateConsumer(pulsarClient, conf, consumer, messageListener, consumerEventListener, interceptors, keySharedPolicy);
-
-        ACK_CONSUMER_GENERATOR_HOLDER.put(true, NEGATIVE_ACKNOWLEDGE_CONSUMER_GENERATOR);
-        ACK_CONSUMER_GENERATOR_HOLDER.put(false, AUTO_ACKNOWLEDGE_CONSUMER_GENERATOR);
-        ACK_BATCH_CONSUMER_GENERATOR_HOLDER.put(true, NEGATIVE_ACKNOWLEDGE_BATCH_CONSUMER_GENERATOR);
-        ACK_BATCH_CONSUMER_GENERATOR_HOLDER.put(false, AUTO_ACKNOWLEDGE_BATCH_CONSUMER_GENERATOR);
-
-        this.task = new PulsarConsumerTask(pulsarConsumer, consumer, conf.getEnableBatchReceive(), conf.getPollDurationMills(), conf.getEnableNegativeAcknowledge());
-
-        int workingThreads = conf.getWorkingThreads();
-        workingThreadHolder = new ArrayList<>(workingThreads);
-
-        ThreadFactory threadFactory = new AffinityThreadFactory(THREAD_NAME_PREFIX + conf.getTopics(), SAME_CORE);
-
-        Thread thread;
-        for (int i = 0; i < workingThreads; i++) {
-            thread = threadFactory.newThread(this.task);
-            thread.setDaemon(true);
-            workingThreadHolder.add(thread);
-        }
+        this.pulsarConsumer = generateConsumer(generateClient(conf), conf, consumer, messageListener, consumerEventListener, interceptors, keySharedPolicy);
     }
 
-    /**
-     * wait for thread terminate
-     */
-    private void blockUntilWorkingDone() {
-        while (workingThreadHolder.stream().anyMatch(t -> !Thread.State.TERMINATED.equals(t.getState())))
-            onSpinWait();
+    @Override
+    public String getTopic() {
+        return pulsarConsumer.getTopic();
     }
 
-    /**
-     * begin
-     */
-    @SuppressWarnings("AlibabaAvoidManuallyCreateThread")
-    public void run() {
+    @Override
+    public String getSubscription() {
+        return pulsarConsumer.getSubscription();
+    }
+
+    @Override
+    public void unsubscribe() {
         try {
-            new Thread(() ->
-                    workingThreadHolder.forEach(Thread::start)
-            ).start();
-            LOGGER.info("consumers working threads start ... , threads count = {}", workingThreadHolder.size());
-        } catch (Exception e) {
-            LOGGER.info("consumers working threads start failed, cause e = {0}", e);
-            throw new RuntimeException("consumers working threads start failed, cause e = " + e);
-        }
-    }
-
-    /**
-     * stop
-     */
-    public void shutdown() {
-        try {
-            task.shutdown();
-            blockUntilWorkingDone();
             pulsarConsumer.unsubscribe();
+        } catch (PulsarClientException e) {
+            LOGGER.error("unsubscribe failed, e = {0}", e);
+            throw new RuntimeException("unsubscribe failed");
+        }
+    }
+
+    @Override
+    public CompletableFuture<Void> unsubscribeAsync() {
+        return pulsarConsumer.unsubscribeAsync();
+    }
+
+    @Override
+    public Message<T> receive() {
+        try {
+            return pulsarConsumer.receive();
+        } catch (PulsarClientException e) {
+            LOGGER.error("receive failed, e = {0}", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public CompletableFuture<Message<T>> receiveAsync() {
+        return pulsarConsumer.receiveAsync();
+    }
+
+    @Override
+    public Message<T> receive(int timeout, TimeUnit unit) {
+        try {
+            return pulsarConsumer.receive(timeout, unit);
+        } catch (PulsarClientException e) {
+            LOGGER.error("receive failed, timeout = {}, unit = {}, e = {}", timeout, unit, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Messages<T> batchReceive() {
+        try {
+            return pulsarConsumer.batchReceive();
+        } catch (PulsarClientException e) {
+            LOGGER.error("batchReceive failed, e = {0}", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public CompletableFuture<Messages<T>> batchReceiveAsync() {
+        return pulsarConsumer.batchReceiveAsync();
+    }
+
+    @Override
+    public void acknowledge(Message<?> message) {
+        try {
+            pulsarConsumer.acknowledge(message);
+        } catch (PulsarClientException e) {
+            LOGGER.error("acknowledge failed, message = {}, e = {}", message, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void acknowledge(MessageId messageId) {
+        try {
+            pulsarConsumer.acknowledge(messageId);
+        } catch (PulsarClientException e) {
+            LOGGER.error("acknowledge failed, messageId = {}, e = {}", messageId, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void acknowledge(Messages<?> messages) {
+        try {
+            pulsarConsumer.acknowledge(messages);
+        } catch (PulsarClientException e) {
+            LOGGER.error("acknowledge failed, messages = {}, e = {}", messages, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void acknowledge(List<MessageId> messageIdList) {
+        try {
+            pulsarConsumer.acknowledge(messageIdList);
+        } catch (PulsarClientException e) {
+            LOGGER.error("acknowledge failed, messageIdList = {}, e = {}", messageIdList, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void negativeAcknowledge(Message<?> message) {
+        pulsarConsumer.negativeAcknowledge(message);
+    }
+
+    @Override
+    public void negativeAcknowledge(MessageId messageId) {
+        pulsarConsumer.negativeAcknowledge(messageId);
+    }
+
+    @Override
+    public void negativeAcknowledge(Messages<?> messages) {
+        pulsarConsumer.negativeAcknowledge(messages);
+    }
+
+    @Override
+    public void reconsumeLater(Message<?> message, long delayTime, TimeUnit unit) {
+        try {
+            pulsarConsumer.reconsumeLater(message, delayTime, unit);
+        } catch (PulsarClientException e) {
+            LOGGER.error("reconsumeLater failed, message = {}, delayTime = {}, unit = {}, e = {}", message, delayTime, unit, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void reconsumeLater(Message<?> message, Map<String, String> customProperties, long delayTime, TimeUnit unit) {
+        try {
+            pulsarConsumer.reconsumeLater(message, customProperties, delayTime, unit);
+        } catch (PulsarClientException e) {
+            LOGGER.error("reconsumeLater failed, message = {}, customProperties = {}, delayTime = {}, unit = {}, e = {}", message, customProperties, delayTime, unit, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void reconsumeLater(Messages<?> messages, long delayTime, TimeUnit unit) {
+        try {
+            pulsarConsumer.reconsumeLater(messages, delayTime, unit);
+        } catch (PulsarClientException e) {
+            LOGGER.error("reconsumeLater failed, messages = {}, delayTime = {}, unit = {}, e = {}", messages, delayTime, unit, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void acknowledgeCumulative(Message<?> message) {
+        try {
+            pulsarConsumer.acknowledgeCumulative(message);
+        } catch (PulsarClientException e) {
+            LOGGER.error("acknowledgeCumulative failed, messages = {}, e = {}", message, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void acknowledgeCumulative(MessageId messageId) {
+        try {
+            pulsarConsumer.acknowledgeCumulative(messageId);
+        } catch (PulsarClientException e) {
+            LOGGER.error("acknowledgeCumulative failed, messageId = {}, e = {}", messageId, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public CompletableFuture<Void> acknowledgeCumulativeAsync(MessageId messageId, Transaction txn) {
+        return pulsarConsumer.acknowledgeCumulativeAsync(messageId, txn);
+    }
+
+    @Override
+    public void reconsumeLaterCumulative(Message<?> message, long delayTime, TimeUnit unit) {
+        try {
+            pulsarConsumer.reconsumeLaterCumulative(message, delayTime, unit);
+        } catch (PulsarClientException e) {
+            LOGGER.error("reconsumeLaterCumulative failed, message = {}, delayTime = {}, unit = {}, e = {}", message, delayTime, unit, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public CompletableFuture<Void> acknowledgeAsync(Message<?> message) {
+        return pulsarConsumer.acknowledgeAsync(message);
+    }
+
+    @Override
+    public CompletableFuture<Void> acknowledgeAsync(MessageId messageId) {
+        return pulsarConsumer.acknowledgeAsync(messageId);
+    }
+
+    @Override
+    public CompletableFuture<Void> acknowledgeAsync(MessageId messageId, Transaction txn) {
+        return pulsarConsumer.acknowledgeAsync(messageId, txn);
+    }
+
+    @Override
+    public CompletableFuture<Void> acknowledgeAsync(Messages<?> messages) {
+        return pulsarConsumer.acknowledgeAsync(messages);
+    }
+
+    @Override
+    public CompletableFuture<Void> acknowledgeAsync(List<MessageId> messageIdList) {
+        return pulsarConsumer.acknowledgeAsync(messageIdList);
+    }
+
+    @Override
+    public CompletableFuture<Void> reconsumeLaterAsync(Message<?> message, long delayTime, TimeUnit unit) {
+        return pulsarConsumer.reconsumeLaterAsync(message, delayTime, unit);
+    }
+
+    @Override
+    public CompletableFuture<Void> reconsumeLaterAsync(Message<?> message, Map<String, String> customProperties, long delayTime, TimeUnit unit) {
+        return pulsarConsumer.reconsumeLaterAsync(message, customProperties, delayTime, unit);
+    }
+
+    @Override
+    public CompletableFuture<Void> reconsumeLaterAsync(Messages<?> messages, long delayTime, TimeUnit unit) {
+        return pulsarConsumer.reconsumeLaterAsync(messages, delayTime, unit);
+    }
+
+    @Override
+    public CompletableFuture<Void> acknowledgeCumulativeAsync(Message<?> message) {
+        return pulsarConsumer.acknowledgeCumulativeAsync(message);
+    }
+
+    @Override
+    public CompletableFuture<Void> acknowledgeCumulativeAsync(MessageId messageId) {
+        return pulsarConsumer.acknowledgeCumulativeAsync(messageId);
+    }
+
+    @Override
+    public CompletableFuture<Void> reconsumeLaterCumulativeAsync(Message<?> message, long delayTime, TimeUnit unit) {
+        return pulsarConsumer.reconsumeLaterCumulativeAsync(message, delayTime, unit);
+    }
+
+    @Override
+    public CompletableFuture<Void> reconsumeLaterCumulativeAsync(Message<?> message, Map<String, String> customProperties, long delayTime, TimeUnit unit) {
+        return pulsarConsumer.reconsumeLaterCumulativeAsync(message, customProperties, delayTime, unit);
+    }
+
+    @Override
+    public ConsumerStats getStats() {
+        return pulsarConsumer.getStats();
+    }
+
+    @Override
+    public void close() {
+        try {
             pulsarConsumer.close();
-            pulsarClient.close();
-            LOGGER.warn("consumer shutdown ...");
-        } catch (Exception e) {
-            LOGGER.error("consumer shutdown failed, cause e = {0}", e);
-            throw new RuntimeException("consumer shutdown failed, cause e = {}", e);
+        } catch (PulsarClientException e) {
+            LOGGER.error("close failed, e = {0}", e);
+            throw new RuntimeException(e);
         }
     }
 
-    /**
-     * pulsar consumer task
-     */
-    @SuppressWarnings({"FieldCanBeLocal", "JavaDoc"})
-    private final class PulsarConsumerTask implements Runnable {
+    @Override
+    public CompletableFuture<Void> closeAsync() {
+        return pulsarConsumer.closeAsync();
+    }
 
-        private final Logger LOGGER = getLogger(PulsarConsumerTask.class);
+    @Override
+    public boolean hasReachedEndOfTopic() {
+        return pulsarConsumer.hasReachedEndOfTopic();
+    }
 
-        private final TimeUnit POLL_DURATION_UNIT = MILLISECONDS;
+    @Override
+    public void redeliverUnacknowledgedMessages() {
+        pulsarConsumer.redeliverUnacknowledgedMessages();
+    }
 
-        private volatile boolean running = true;
-
-        private final org.apache.pulsar.client.api.Consumer<T> pulsarConsumer;
-
-        private Consumer<T> consumer;
-
-        private final boolean enableBatchReceive;
-
-        private final Integer POLL_DURATION_MILLS;
-
-        private final Consumer<Message<T>> EVENT_CONSUMER;
-        private final Consumer<Messages<T>> EVENTS_CONSUMER;
-
-        private final Consumer<Message<T>> MESSAGE_CONSUMER = message -> {
-            T data = message.getValue();
-            ofNullable(data).ifPresent(consumer);
-            LOGGER.info("MESSAGE_CONSUMER handle message success: message = {}, data = {}", message, data);
-        };
-
-        /**
-         * constructor
-         *
-         * @param pulsarConsumer
-         * @param consumer
-         * @param pollDurationMills
-         * @param enableNegativeAcknowledge
-         */
-        private PulsarConsumerTask(org.apache.pulsar.client.api.Consumer<T> pulsarConsumer, Consumer<T> consumer, boolean enableBatchReceive,
-                                   int pollDurationMills, boolean enableNegativeAcknowledge) {
-            this.pulsarConsumer = pulsarConsumer;
-            this.consumer = consumer;
-            this.enableBatchReceive = enableBatchReceive;
-            this.POLL_DURATION_MILLS = pollDurationMills;
-            this.EVENT_CONSUMER = ACK_CONSUMER_GENERATOR.apply(enableNegativeAcknowledge).apply(MESSAGE_CONSUMER, pulsarConsumer);
-            this.EVENTS_CONSUMER = ACK_BATCH_CONSUMER_GENERATOR.apply(enableNegativeAcknowledge).apply(MESSAGE_CONSUMER, pulsarConsumer);
-        }
-
-        private void handle() {
-            Message<T> message = null;
-            while (running)
-                try {
-                    if ((message = pulsarConsumer.receive(POLL_DURATION_MILLS, POLL_DURATION_UNIT)) != null)
-                        EVENT_CONSUMER.accept(message);
-                } catch (PulsarClientException e) {
-                    LOGGER.error("handle() received failed, message = {}, e = {}", message, e);
-                    onSpinWait();
-                }
-        }
-
-        private void handleBatch() {
-            Messages<T> messages = null;
-            while (running)
-                try {
-                    if ((messages = pulsarConsumer.batchReceive()) != null)
-                        EVENTS_CONSUMER.accept(messages);
-                } catch (PulsarClientException e) {
-                    LOGGER.error(" handleBatch() received failed, messages = {}, e = {}", messages, e);
-                    onSpinWait();
-                }
-        }
-
-        @Override
-        public void run() {
-            if (enableBatchReceive) {
-                handleBatch();
-            } else {
-                handle();
-            }
-        }
-
-        /**
-         * stop
-         */
-        void shutdown() {
-            try {
-                running = false;
-            } catch (Exception e) {
-                LOGGER.error("task shutdown failed, e = {0}", e);
-            }
+    @Override
+    public void seek(MessageId messageId) {
+        try {
+            pulsarConsumer.seek(messageId);
+        } catch (PulsarClientException e) {
+            LOGGER.error("seek failed, messageId = {}, e = {}", messageId, e);
+            throw new RuntimeException(e);
         }
     }
 
-    /**
-     * manual ack -> Handling events/not enabling automatic confirmation/manually resetting the offset !!! Manually resetting the offset may cause the problem of repeated consumption of data. If necessary,
-     * please do idempotent processing on the consumer business side by yourself
-     */
-    private final BiFunction<
-            Consumer<Message<T>>, org.apache.pulsar.client.api.Consumer<T>,
-            Consumer<Message<T>>> NEGATIVE_ACKNOWLEDGE_CONSUMER_GENERATOR =
-            (msgConsumer, pulsarConsumer) ->
-                    message -> {
-                        if (message != null)
-                            try {
-                                msgConsumer.accept(message);
-                                try {
-                                    pulsarConsumer.acknowledge(message);
-                                } catch (PulsarClientException e) {
-                                    LOGGER.error("NEGATIVE_ACKNOWLEDGE_CONSUMER_GENERATOR acknowledge failed: message = {}", message);
-                                }
-                            } catch (Exception e) {
-                                LOGGER.error("NEGATIVE_ACKNOWLEDGE_CONSUMER failed: message = {}, e = {}", message, e);
-                                try {
-                                    pulsarConsumer.negativeAcknowledge(message);
-                                } catch (Exception exception) {
-                                    LOGGER.error("negativeAcknowledge failed: message = {}", message);
-                                }
-                            }
-                    };
+    @Override
+    public void seek(long timestamp) {
+        try {
+            pulsarConsumer.seek(timestamp);
+        } catch (PulsarClientException e) {
+            LOGGER.error("seek failed, timestamp = {}, e = {}", timestamp, e);
+            throw new RuntimeException(e);
+        }
+    }
 
-    /**
-     * auto ack -> Handling events/enabling automatic confirmation/automatically handle offsets/need to manually capture specific consumption exceptions and compensate
-     */
-    private final BiFunction<
-            Consumer<Message<T>>, org.apache.pulsar.client.api.Consumer<T>,
-            Consumer<Message<T>>> AUTO_ACKNOWLEDGE_CONSUMER_GENERATOR =
-            (msgConsumer, pulsarConsumer) ->
-                    message -> {
-                        if (message != null)
-                            try {
-                                msgConsumer.accept(message);
-                            } catch (Exception e) {
-                                LOGGER.error("AUTO_ACKNOWLEDGE_CONSUMER failed: message = {}, e = {}", message, e);
-                            } finally {
-                                try {
-                                    pulsarConsumer.acknowledge(message);
-                                } catch (Exception exception) {
-                                    LOGGER.error("AUTO_ACKNOWLEDGE_CONSUMER_GENERATOR acknowledge failed: message = {}", message);
-                                }
-                            }
-                    };
+    @Override
+    public void seek(Function<String, Object> function) {
+        try {
+            pulsarConsumer.seek(function);
+        } catch (PulsarClientException e) {
+            LOGGER.error("seek failed, function = {}, e = {}", function, e);
+            throw new RuntimeException(e);
+        }
+    }
 
-    /**
-     * manual ack -> Handling events/not enabling automatic confirmation/manually resetting the offset !!! Manually resetting the offset may cause the problem of repeated consumption of data. If necessary,
-     * please do idempotent processing on the consumer business side by yourself
-     */
-    private final BiFunction<
-            Consumer<Message<T>>, org.apache.pulsar.client.api.Consumer<T>,
-            Consumer<Messages<T>>> NEGATIVE_ACKNOWLEDGE_BATCH_CONSUMER_GENERATOR =
-            (msgConsumer, pulsarConsumer) ->
-                    messages -> {
-                        if (messages != null && messages.size() > 0)
-                            try {
-                                for (Message<T> message : messages) {
-                                    msgConsumer.accept(message);
-                                }
-                                try {
-                                    pulsarConsumer.acknowledge(messages);
-                                } catch (PulsarClientException e) {
-                                    LOGGER.error("NEGATIVE_ACKNOWLEDGE_CONSUMER_GENERATOR acknowledge failed: messages = {}", messages);
-                                }
-                            } catch (Exception e) {
-                                LOGGER.error("NEGATIVE_ACKNOWLEDGE_CONSUMER failed: messages = {}, e = {}", messages, e);
-                                try {
-                                    pulsarConsumer.negativeAcknowledge(messages);
-                                } catch (Exception exception) {
-                                    LOGGER.error("negativeAcknowledge failed: messages = {}", messages);
-                                }
-                            }
-                    };
+    @Override
+    public CompletableFuture<Void> seekAsync(Function<String, Object> function) {
+        return pulsarConsumer.seekAsync(function);
+    }
 
-    /**
-     * auto ack -> Handling events/enabling automatic confirmation/automatically handle offsets/need to manually capture specific consumption exceptions and compensate
-     */
-    private final BiFunction<
-            Consumer<Message<T>>, org.apache.pulsar.client.api.Consumer<T>,
-            Consumer<Messages<T>>> AUTO_ACKNOWLEDGE_BATCH_CONSUMER_GENERATOR =
-            (msgConsumer, pulsarConsumer) ->
-                    messages -> {
-                        if (messages != null && messages.size() > 0)
-                            try {
-                                for (Message<T> message : messages) {
-                                    msgConsumer.accept(message);
-                                }
-                            } catch (Exception e) {
-                                LOGGER.error("AUTO_ACKNOWLEDGE_CONSUMER failed: messages = {}, e = {}", messages, e);
-                            } finally {
-                                try {
-                                    pulsarConsumer.acknowledge(messages);
-                                } catch (Exception exception) {
-                                    LOGGER.error("AUTO_ACKNOWLEDGE_CONSUMER_GENERATOR acknowledge failed: messages = {}", messages);
-                                }
-                            }
-                    };
+    @Override
+    public CompletableFuture<Void> seekAsync(MessageId messageId) {
+        return pulsarConsumer.seekAsync(messageId);
+    }
 
+    @Override
+    public CompletableFuture<Void> seekAsync(long timestamp) {
+        return pulsarConsumer.seekAsync(timestamp);
+    }
+
+    @Override
+    public MessageId getLastMessageId() {
+        try {
+            return pulsarConsumer.getLastMessageId();
+        } catch (PulsarClientException e) {
+            LOGGER.error("getLastMessageId failed, e = {0}", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public CompletableFuture<MessageId> getLastMessageIdAsync() {
+        return pulsarConsumer.getLastMessageIdAsync();
+    }
+
+    @Override
+    public boolean isConnected() {
+        return pulsarConsumer.isConnected();
+    }
+
+    @Override
+    public String getConsumerName() {
+        return pulsarConsumer.getConsumerName();
+    }
+
+    @Override
+    public void pause() {
+        pulsarConsumer.pause();
+    }
+
+    @Override
+    public void resume() {
+        pulsarConsumer.resume();
+    }
+
+    @Override
+    public long getLastDisconnectedTimestamp() {
+        return pulsarConsumer.getLastDisconnectedTimestamp();
+    }
 }

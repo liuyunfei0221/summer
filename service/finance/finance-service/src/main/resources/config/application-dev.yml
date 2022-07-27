@@ -151,6 +151,55 @@ identity:
   paddingScheduledDelayMillis: 15000
 
 
+mongo:
+  addressAttrs:
+    - address: 172.16.204.75
+      port: 27017
+  auth: false
+  authBase: admin
+  userName:
+  password:
+  database: finance
+  retryReads: false
+  retryWrites: false
+  applicationName: blue-auth
+  uuidRepresentation: JAVA_LEGACY
+  socketConnectTimeoutMillis: 60000
+  socketReadTimeoutMillis: 60000
+  socketReceiveBufferSize: 10000
+  socketSendBufferSize: 256
+  clusterConnectionMode: SINGLE
+  clusterType: STANDALONE
+  clusterLocalThresholdMillis: 60000
+  serverSelectionTimeoutMillis: 60000
+  poolMaxSize: 12
+  poolMinSize: 2
+  poolMaxWaitTimeMillis: 60000
+  poolMaxConnectionLifeTimeMillis: 60000
+  poolMaxConnectionIdleTimeMillis: 60000
+  poolMaintenanceInitialDelayMillis: 60000
+  poolMaintenanceFrequencyMillis: 60000
+
+
+es:
+  esNodes:
+    - server:
+        host: 172.16.204.75
+        port: 9200
+        schema: http
+      boundServers: [ ]
+      name: blue-es
+      version: 8.3.2
+      roles: [ ]
+      attributes: [ ]
+
+  defaultHeaders:
+  pathPrefix: /
+  strictDeprecationMode: false
+  metaHeaderEnabled: false
+  compressionEnabled: false
+
+
 dynamicapi:
   path: /blue-finance/dynamic
   blockingMillis: 5000

@@ -37,7 +37,7 @@ public class RewardsDeploy {
 
     @Override
     public String toString() {
-        return "BlockingDeploy{" +
+        return "RewardsDeploy{" +
                 "maxBlockingMillis=" + maxBlockingMillis +
                 ", maxBackup=" + maxBackup +
                 '}';

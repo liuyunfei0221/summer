@@ -2,7 +2,7 @@ package com.blue.auth.service.impl;
 
 import com.blue.auth.api.model.*;
 import com.blue.auth.component.access.AccessInfoCache;
-import com.blue.auth.config.deploy.SessionKeyDeploy;
+import com.blue.auth.config.deploy.AuthDeploy;
 import com.blue.auth.event.producer.InvalidLocalAccessProducer;
 import com.blue.auth.model.AccessInfo;
 import com.blue.auth.model.MemberAccess;
@@ -31,8 +31,6 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
-import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -56,7 +54,6 @@ import static java.lang.String.valueOf;
 import static java.util.Collections.*;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import static java.util.stream.Collectors.*;
 import static java.util.stream.Stream.of;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
@@ -100,7 +97,7 @@ public class AuthServiceImpl implements AuthService {
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public AuthServiceImpl(RefreshInfoService refreshInfoService, JwtProcessor<MemberPayload> jwtProcessor, AccessInfoCache accessInfoCache, StringRedisTemplate stringRedisTemplate,
                            RoleService roleService, ResourceService resourceService, RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService,
-                           InvalidLocalAccessProducer invalidLocalAccessProducer, ExecutorService executorService, SynchronizedProcessor synchronizedProcessor, SessionKeyDeploy sessionKeyDeploy) {
+                           InvalidLocalAccessProducer invalidLocalAccessProducer, ExecutorService executorService, SynchronizedProcessor synchronizedProcessor, AuthDeploy authDeploy) {
         this.refreshInfoService = refreshInfoService;
         this.jwtProcessor = jwtProcessor;
         this.accessInfoCache = accessInfoCache;
@@ -113,11 +110,11 @@ public class AuthServiceImpl implements AuthService {
         this.executorService = executorService;
         this.synchronizedProcessor = synchronizedProcessor;
 
-        this.randomIdLen = sessionKeyDeploy.getRanLen();
+        this.gammaLength = authDeploy.getGammaLength();
         this.refreshExpiresMillis = this.jwtProcessor.getRefreshExpiresMillis();
     }
 
-    private int randomIdLen;
+    private int gammaLength;
 
     private long refreshExpiresMillis;
 
@@ -162,17 +159,6 @@ public class AuthServiceImpl implements AuthService {
      * resource key -> resource
      */
     private volatile Map<String, Resource> keyAndResourceMapping = emptyMap();
-
-    /**
-     * accessInfo parser
-     */
-    private final Function<String, AccessInfo> ACCESS_INFO_PARSER = authInfoStr -> {
-        try {
-            return GSON.fromJson(authInfoStr, AccessInfo.class);
-        } catch (JsonSyntaxException e) {
-            throw new BlueException(UNAUTHORIZED);
-        }
-    };
 
     /**
      * get resource by resKey
@@ -287,11 +273,27 @@ public class AuthServiceImpl implements AuthService {
         assertDeviceType(deviceType, false);
 
         return just(new MemberPayload(
-                randomAlphanumeric(randomIdLen),
+                randomAlphanumeric(gammaLength),
                 genSessionKeyId(memberId, credentialType, deviceType),
                 valueOf(memberId),
                 credentialType, deviceType,
                 valueOf(TIME_STAMP_GETTER.get())));
+    }
+
+    /**
+     * convert access
+     *
+     * @param memberPayload
+     * @param roleIds
+     * @param keyPair
+     * @return
+     */
+    private static AccessInfo genAccessInfo(MemberPayload memberPayload, List<Long> roleIds, KeyPair keyPair) {
+        if (isNull(memberPayload) || isEmpty(roleIds) || isNull(keyPair))
+            throw new BlueException(BAD_REQUEST);
+
+        return new AccessInfo(memberPayload.getGamma(), roleIds, keyPair.getPubKey(),
+                SECOND_STAMP_2_MILLIS_STAMP.apply(parseLong(memberPayload.getLoginTime())));
     }
 
     /**
@@ -304,16 +306,16 @@ public class AuthServiceImpl implements AuthService {
 
         String jwt = jwtProcessor.create(memberPayload);
         KeyPair keyPair = initKeyPair();
-        String authInfoJson = GSON.toJson(new AccessInfo(jwt, roleIds, keyPair.getPubKey()));
+        AccessInfo accessInfo = genAccessInfo(memberPayload, roleIds, keyPair);
 
-        return accessInfoCache.setAccessInfo(memberPayload.getKeyId(), authInfoJson)
+        return accessInfoCache.setAccessInfo(memberPayload.getKeyId(), accessInfo)
                 .flatMap(b -> {
-                    LOGGER.info("authInfoJson = {}, keyPair = {}", authInfoJson, keyPair);
+                    LOGGER.info("accessInfo = {}, keyPair = {}", accessInfo, keyPair);
                     if (b)
                         return just(new MemberAccess(jwt, keyPair.getPriKey()));
 
-                    LOGGER.error("authInfoCache.setAuthInfo(memberPayload.getKeyId(), authInfoJson), failed, memberPayload = {}, roleIds = {}, keyPair = {}, authInfoJson = {}", memberPayload, roleIds, keyPair, authInfoJson);
-                    return error(() -> new RuntimeException("accessInfoCache.setAccessInfo(memberPayload.getKeyId(), authInfoJson) failed"));
+                    LOGGER.error("authInfoCache.setAuthInfo(memberPayload.getKeyId(), authInfoJson), failed, memberPayload = {}, roleIds = {}, keyPair = {}, accessInfo = {}", memberPayload, roleIds, keyPair, accessInfo);
+                    return error(() -> new RuntimeException("accessInfoCache.setAccessInfo(memberPayload.getKeyId(), accessInfo) failed"));
                 });
     };
 
@@ -325,7 +327,7 @@ public class AuthServiceImpl implements AuthService {
 
         return ACCESS_GENERATOR.apply(memberPayload, roleIds)
                 .flatMap(access -> {
-                    memberPayload.setGamma(randomAlphanumeric(randomIdLen));
+                    memberPayload.setGamma(randomAlphanumeric(gammaLength));
 
                     return refreshInfoService.insertRefreshInfo(new RefreshInfo(memberPayload.getKeyId(), memberPayload.getGamma(), memberPayload.getId(),
                                     memberPayload.getCredentialType().intern(), memberPayload.getDeviceType().intern(), memberPayload.getLoginTime(), REFRESH_EXPIRE_AT_GETTER.get()))
@@ -401,11 +403,12 @@ public class AuthServiceImpl implements AuthService {
             accessInfo.setPubKey(pubKey);
 
         try {
-            stringRedisTemplate.opsForValue()
-                    .set(keyId, GSON.toJson(accessInfo), Duration.of(ofNullable(stringRedisTemplate.getExpire(keyId, SECONDS)).orElse(0L), ChronoUnit.SECONDS));
+            Boolean refreshed = accessInfoCache.setAccessInfo(keyId, accessInfo)
+                    .flatMap(b ->
+                            b ? this.invalidateLocalAccessByKeyId(keyId) : just(false)
+                    ).toFuture().join();
 
-            Boolean localAddressInvalid = this.invalidateLocalAccessByKeyId(keyId).toFuture().join();
-            LOGGER.info("this.invalidateLocalAccessByKeyId(keyId).toFuture().join(), localAddressInvalid = {}", localAddressInvalid);
+            LOGGER.info("this.invalidateLocalAccessByKeyId(keyId).toFuture().join(), refreshed = {}", refreshed);
         } catch (Exception e) {
             LOGGER.error("invalidLocalAuthProducer send failed, keyId = {}, e = {}", keyId, e);
         }
@@ -605,18 +608,13 @@ public class AuthServiceImpl implements AuthService {
                     if (!resource.getAuthenticate())
                         return NO_AUTH_REQUIRED_RES_GEN.apply(resource);
 
-                    String jwt = aa.getAuthentication();
-                    MemberPayload memberPayload = jwtProcessor.parse(jwt);
-
+                    MemberPayload memberPayload = jwtProcessor.parse(aa.getAuthentication());
                     return accessInfoCache.getAccessInfo(memberPayload.getKeyId())
                             .switchIfEmpty(defer(() -> error(() -> new BlueException(UNAUTHORIZED))))
-                            .flatMap(v -> {
-                                if (isBlank(v))
+                            .flatMap(accessInfo -> {
+                                if (!memberPayload.getGamma().equals(accessInfo.getGamma()))
                                     return error(() -> new BlueException(UNAUTHORIZED));
 
-                                AccessInfo accessInfo = ACCESS_INFO_PARSER.apply(v);
-                                if (!jwt.equals(accessInfo.getJwt()))
-                                    return error(() -> new BlueException(UNAUTHORIZED));
                                 if (!AUTHORIZATION_RES_CHECKER.apply(accessInfo.getRoleIds(), resourceKey))
                                     return error(() -> new BlueException(FORBIDDEN.status, FORBIDDEN.code, FORBIDDEN.message));
 

@@ -5,14 +5,15 @@ import com.blue.marketing.api.model.MarketingEvent;
 import com.blue.marketing.config.blue.BlueConsumerConfig;
 import com.blue.marketing.repository.entity.EventRecord;
 import com.blue.marketing.service.inter.MarketingEventHandleService;
-import com.blue.pulsar.common.BluePulsarConsumer;
+import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
+import com.blue.pulsar.common.BluePulsarListener;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
 import java.util.function.Consumer;
 
 import static com.blue.basic.constant.common.BlueTopic.MARKETING;
-import static com.blue.pulsar.api.generator.BluePulsarConsumerGenerator.generateConsumer;
+import static com.blue.pulsar.api.generator.BluePulsarListenerGenerator.generateListener;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
 import static java.util.Optional.ofNullable;
@@ -32,7 +33,7 @@ public final class MarketingEventConsumer implements BlueLifecycle {
 
     private final BlueConsumerConfig blueConsumerConfig;
 
-    private BluePulsarConsumer<MarketingEvent> marketingConsumer;
+    private BluePulsarListener<MarketingEvent> marketingConsumer;
 
     public MarketingEventConsumer(MarketingEventHandleService marketingEventHandleService, BlueConsumerConfig blueConsumerConfig) {
         this.marketingEventHandleService = marketingEventHandleService;
@@ -48,7 +49,7 @@ public final class MarketingEventConsumer implements BlueLifecycle {
                             LOGGER.info("marketingEventHandleService.handleEvent(marketingEvent), me = {}. eventRecord = {}", me, eventRecord);
                         });
 
-        this.marketingConsumer = generateConsumer(blueConsumerConfig.getByKey(MARKETING.name), marketingDataConsumer);
+        this.marketingConsumer = BluePulsarListenerGenerator.generateListener(blueConsumerConfig.getByKey(MARKETING.name), marketingDataConsumer);
     }
 
     @Override

@@ -18,11 +18,6 @@ public enum BlueTopic {
     REQUEST_EVENT("requestEvent"),
 
     /**
-     * Refresh the certification expiration time
-     */
-    ACCESS_EXPIRE("accessExpire"),
-
-    /**
      * invalid local access
      */
     INVALID_LOCAL_ACCESS("invalidLocalAccess"),

@@ -19,9 +19,9 @@ public final class AccessInfo implements Serializable {
     private static final long serialVersionUID = -4570565004686061550L;
 
     /**
-     * json web token
+     * random gamma
      */
-    private String jwt;
+    private String gamma;
 
     /**
      * role id
@@ -33,31 +33,39 @@ public final class AccessInfo implements Serializable {
      */
     private String pubKey;
 
+    /**
+     * login time stamp
+     */
+    private Long loginMillisTimeStamp;
+
     public AccessInfo() {
     }
 
-    public AccessInfo(String jwt, List<Long> roleIds, String pubKey) {
-        if (isBlank(jwt))
+    public AccessInfo(String gamma, List<Long> roleIds, String pubKey, Long loginMillisTimeStamp) {
+        if (isBlank(gamma))
             throw new BlueException(BAD_REQUEST);
         if (isInvalidIdentities(roleIds))
             throw new BlueException(BAD_REQUEST);
         if (isBlank(pubKey))
             throw new BlueException(BAD_REQUEST);
-
-        this.jwt = jwt;
-        this.roleIds = roleIds;
-        this.pubKey = pubKey;
-    }
-
-    public String getJwt() {
-        return jwt;
-    }
-
-    public void setJwt(String jwt) {
-        if (isBlank(jwt))
+        if (isNull(loginMillisTimeStamp))
             throw new BlueException(BAD_REQUEST);
 
-        this.jwt = jwt;
+        this.gamma = gamma;
+        this.roleIds = roleIds;
+        this.pubKey = pubKey;
+        this.loginMillisTimeStamp = loginMillisTimeStamp;
+    }
+
+    public String getGamma() {
+        return gamma;
+    }
+
+    public void setGamma(String gamma) {
+        if (isBlank(gamma))
+            throw new BlueException(BAD_REQUEST);
+
+        this.gamma = gamma;
     }
 
     public List<Long> getRoleIds() {
@@ -82,12 +90,21 @@ public final class AccessInfo implements Serializable {
         this.pubKey = pubKey;
     }
 
+    public Long getLoginMillisTimeStamp() {
+        return loginMillisTimeStamp;
+    }
+
+    public void setLoginMillisTimeStamp(Long loginMillisTimeStamp) {
+        this.loginMillisTimeStamp = loginMillisTimeStamp;
+    }
+
     @Override
     public String toString() {
         return "AccessInfo{" +
-                "jwt='" + jwt + '\'' +
+                "gamma='" + gamma + '\'' +
                 ", roleIds=" + roleIds +
                 ", pubKey='" + pubKey + '\'' +
+                ", loginMillisTimeStamp=" + loginMillisTimeStamp +
                 '}';
     }
 

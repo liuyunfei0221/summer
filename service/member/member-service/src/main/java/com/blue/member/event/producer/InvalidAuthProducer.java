@@ -53,7 +53,8 @@ public final class InvalidAuthProducer implements BlueLifecycle {
 
     @Override
     public void stop() {
-        this.invalidAuthProducer.shutdown();
+        this.invalidAuthProducer.flush();
+        this.invalidAuthProducer.close();
         LOGGER.warn("invalidAuthProducer shutdown...");
     }
 

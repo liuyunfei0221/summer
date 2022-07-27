@@ -4,14 +4,15 @@ import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.base.config.blue.BlueConsumerConfig;
 import com.blue.basic.model.common.EmptyEvent;
 import com.blue.base.service.inter.RegionControlService;
-import com.blue.pulsar.common.BluePulsarConsumer;
+import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
+import com.blue.pulsar.common.BluePulsarListener;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
 import java.util.function.Consumer;
 
 import static com.blue.basic.constant.common.BlueTopic.REGION_INFOS_INVALID;
-import static com.blue.pulsar.api.generator.BluePulsarConsumerGenerator.generateConsumer;
+import static com.blue.pulsar.api.generator.BluePulsarListenerGenerator.generateListener;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
 import static java.util.Optional.ofNullable;
@@ -30,7 +31,7 @@ public final class RegionInfosInvalidConsumer implements BlueLifecycle {
 
     private final RegionControlService regionControlService;
 
-    private BluePulsarConsumer<EmptyEvent> regionInfosInvalidConsumer;
+    private BluePulsarListener<EmptyEvent> regionInfosInvalidConsumer;
 
     public RegionInfosInvalidConsumer(BlueConsumerConfig blueConsumerConfig, RegionControlService regionControlService) {
         this.blueConsumerConfig = blueConsumerConfig;
@@ -48,7 +49,7 @@ public final class RegionInfosInvalidConsumer implements BlueLifecycle {
                                     .subscribe(v -> LOGGER.info("controlService.invalidAllCache()"));
                         });
 
-        this.regionInfosInvalidConsumer = generateConsumer(blueConsumerConfig.getByKey(REGION_INFOS_INVALID.name), regionInfosInvalidConsumerDataConsumer);
+        this.regionInfosInvalidConsumer = BluePulsarListenerGenerator.generateListener(blueConsumerConfig.getByKey(REGION_INFOS_INVALID.name), regionInfosInvalidConsumerDataConsumer);
     }
 
     @Override

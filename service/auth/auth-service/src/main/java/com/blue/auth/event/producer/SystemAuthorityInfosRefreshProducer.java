@@ -53,7 +53,8 @@ public final class SystemAuthorityInfosRefreshProducer implements BlueLifecycle 
 
     @Override
     public void stop() {
-        this.authorityInfosRefreshProducer.shutdown();
+        this.authorityInfosRefreshProducer.flush();
+        this.authorityInfosRefreshProducer.close();
         LOGGER.warn("authorityInfosRefreshProducer shutdown...");
     }
 

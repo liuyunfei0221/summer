@@ -208,6 +208,9 @@ public class CommonFunctions {
      */
     public static final Supplier<Long> MILLIS_STAMP_SUP = () -> now(CLOCK).toEpochMilli();
 
+    public static final UnaryOperator<Long> SECOND_STAMP_2_MILLIS_STAMP = seconds -> isNull(seconds) ? seconds * 1000L : 0L;
+    public static final UnaryOperator<Long> MILLIS_STAMP_2_SECOND_STAMP = millis -> isNull(millis) ? millis / 1000L : 0L;
+
     /**
      * resource key generator for request
      */

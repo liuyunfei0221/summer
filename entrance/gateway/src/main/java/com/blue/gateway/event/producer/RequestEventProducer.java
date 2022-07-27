@@ -54,7 +54,8 @@ public final class RequestEventProducer implements BlueLifecycle {
 
     @Override
     public void stop() {
-        this.requestEventProducer.shutdown();
+        this.requestEventProducer.flush();
+        this.requestEventProducer.close();
         LOGGER.warn("requestEventProducer shutdown...");
     }
 

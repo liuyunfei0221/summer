@@ -53,7 +53,8 @@ public final class InvalidLocalAccessProducer implements BlueLifecycle {
 
     @Override
     public void stop() {
-        this.invalidLocalAccessProducer.shutdown();
+        this.invalidLocalAccessProducer.flush();
+        this.invalidLocalAccessProducer.close();
         LOGGER.warn("invalidLocalAccessProducer shutdown...");
     }
 

@@ -54,7 +54,8 @@ public final class MarketingEventProducer implements BlueLifecycle {
 
     @Override
     public void stop() {
-        this.marketingEventProducer.shutdown();
+        this.marketingEventProducer.flush();
+        this.marketingEventProducer.close();
         LOGGER.warn("marketingEventProducer shutdown...");
     }
 

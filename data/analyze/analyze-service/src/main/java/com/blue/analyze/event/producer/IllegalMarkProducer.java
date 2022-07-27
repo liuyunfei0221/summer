@@ -54,7 +54,8 @@ public final class IllegalMarkProducer implements BlueLifecycle {
 
     @Override
     public void stop() {
-        this.illegalMarkProducer.shutdown();
+        this.illegalMarkProducer.flush();
+        this.illegalMarkProducer.close();
         LOGGER.warn("illegalMarkProducer shutdown...");
     }
 
