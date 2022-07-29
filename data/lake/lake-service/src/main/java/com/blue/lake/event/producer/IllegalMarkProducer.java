@@ -1,7 +1,7 @@
 package com.blue.lake.event.producer;
 
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
-import com.blue.basic.model.common.IllegalMarkEvent;
+import com.blue.basic.model.event.IllegalMarkEvent;
 import com.blue.lake.config.blue.BlueProducerConfig;
 import com.blue.pulsar.common.BluePulsarProducer;
 import org.apache.pulsar.client.api.MessageId;

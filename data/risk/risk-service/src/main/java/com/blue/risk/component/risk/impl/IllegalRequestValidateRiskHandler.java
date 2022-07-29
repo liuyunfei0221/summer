@@ -1,7 +1,7 @@
 package com.blue.risk.component.risk.impl;
 
-import com.blue.basic.model.common.DataEvent;
-import com.blue.basic.model.common.IllegalMarkEvent;
+import com.blue.basic.model.event.DataEvent;
+import com.blue.basic.model.event.IllegalMarkEvent;
 import com.blue.risk.component.risk.inter.RiskHandler;
 import com.blue.risk.event.producer.IllegalMarkProducer;
 import org.springframework.stereotype.Component;

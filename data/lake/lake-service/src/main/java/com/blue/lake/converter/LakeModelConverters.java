@@ -2,7 +2,7 @@ package com.blue.lake.converter;
 
 import com.blue.basic.common.access.AccessProcessor;
 import com.blue.basic.common.base.BlueChecker;
-import com.blue.basic.model.common.DataEvent;
+import com.blue.basic.model.event.DataEvent;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.lake.config.deploy.NestingResponseDeploy;
 import com.blue.lake.repository.entity.OptEvent;

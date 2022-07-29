@@ -1,7 +1,7 @@
 package com.blue.marketing.event.consumer;
 
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
-import com.blue.basic.model.common.EmptyEvent;
+import com.blue.basic.model.event.EmptyEvent;
 import com.blue.marketing.config.blue.BlueConsumerConfig;
 import com.blue.marketing.service.inter.SignInService;
 import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
@@ -12,7 +12,6 @@ import javax.annotation.PostConstruct;
 import java.util.function.Consumer;
 
 import static com.blue.basic.constant.common.BlueTopic.REWARDS_REFRESH;
-import static com.blue.pulsar.api.generator.BluePulsarListenerGenerator.generateListener;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
 import static java.util.Optional.ofNullable;

@@ -1,7 +1,7 @@
 package com.blue.event.component.illegal;
 
 import com.blue.basic.common.base.BlueChecker;
-import com.blue.basic.model.common.IllegalMarkEvent;
+import com.blue.basic.model.event.IllegalMarkEvent;
 import com.blue.event.config.deploy.RiskControlDeploy;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.stereotype.Component;

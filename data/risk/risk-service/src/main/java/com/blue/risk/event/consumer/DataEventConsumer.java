@@ -1,7 +1,7 @@
 package com.blue.risk.event.consumer;
 
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
-import com.blue.basic.model.common.DataEvent;
+import com.blue.basic.model.event.DataEvent;
 import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
 import com.blue.pulsar.common.BluePulsarListener;
 import com.blue.risk.config.blue.BlueConsumerConfig;
@@ -12,7 +12,6 @@ import javax.annotation.PostConstruct;
 import java.util.function.Consumer;
 
 import static com.blue.basic.constant.common.BlueTopic.REQUEST_EVENT;
-import static com.blue.pulsar.api.generator.BluePulsarListenerGenerator.generateListener;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
 import static java.util.Optional.ofNullable;

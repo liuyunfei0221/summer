@@ -3,7 +3,7 @@ package com.blue.event.service.impl;
 import com.blue.auth.api.model.MemberPayload;
 import com.blue.basic.common.base.BlueChecker;
 import com.blue.basic.model.common.Access;
-import com.blue.basic.model.common.DataEvent;
+import com.blue.basic.model.event.DataEvent;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.event.component.event.RequestEventReporter;
 import com.blue.event.service.inter.EventReportService;

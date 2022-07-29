@@ -1,7 +1,7 @@
 package com.blue.risk.service.inter;
 
 
-import com.blue.basic.model.common.DataEvent;
+import com.blue.basic.model.event.DataEvent;
 import reactor.core.publisher.Mono;
 
 /**

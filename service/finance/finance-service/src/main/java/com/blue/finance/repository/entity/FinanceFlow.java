@@ -21,6 +21,10 @@ public class FinanceFlow implements Serializable {
 
     private Long orderId;
 
+    private String orderNo;
+
+    private String flowNo;
+
     /**
      * @see com.blue.basic.constant.finance.FlowType
      */
@@ -37,11 +41,7 @@ public class FinanceFlow implements Serializable {
 
     private Long amountAfterChanged;
 
-    private Integer status;
-
     private Long createTime;
-
-    private Long updateTime;
 
     public Long getId() {
         return id;
@@ -65,6 +65,22 @@ public class FinanceFlow implements Serializable {
 
     public void setOrderId(Long orderId) {
         this.orderId = orderId;
+    }
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
+
+    public String getFlowNo() {
+        return flowNo;
+    }
+
+    public void setFlowNo(String flowNo) {
+        this.flowNo = flowNo;
     }
 
     public Integer getType() {
@@ -107,14 +123,6 @@ public class FinanceFlow implements Serializable {
         this.amountAfterChanged = amountAfterChanged;
     }
 
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
     public Long getCreateTime() {
         return createTime;
     }
@@ -123,28 +131,20 @@ public class FinanceFlow implements Serializable {
         this.createTime = createTime;
     }
 
-    public Long getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Long updateTime) {
-        this.updateTime = updateTime;
-    }
-
     @Override
     public String toString() {
         return "FinanceFlow{" +
                 "id=" + id +
                 ", memberId=" + memberId +
                 ", orderId=" + orderId +
+                ", orderNo='" + orderNo + '\'' +
+                ", flowNo='" + flowNo + '\'' +
                 ", type=" + type +
                 ", changeType=" + changeType +
                 ", amountChanged=" + amountChanged +
                 ", amountBeforeChanged=" + amountBeforeChanged +
                 ", amountAfterChanged=" + amountAfterChanged +
-                ", status=" + status +
                 ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
                 '}';
     }
 

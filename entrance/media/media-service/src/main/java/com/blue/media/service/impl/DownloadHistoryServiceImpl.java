@@ -5,6 +5,7 @@ import com.blue.basic.model.common.PageModelResponse;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.media.api.model.AttachmentDetailInfo;
 import com.blue.media.api.model.DownloadHistoryInfo;
+import com.blue.media.constant.ColumnName;
 import com.blue.media.constant.DownloadHistorySortAttribute;
 import com.blue.media.model.DownloadHistoryCondition;
 import com.blue.media.remote.consumer.RpcMemberBasicServiceConsumer;
@@ -32,7 +33,6 @@ import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.media.constant.ColumnName.CREATE_TIME;
-import static com.blue.media.constant.ColumnName.ID;
 import static com.blue.media.converter.MediaModelConverters.downloadHistoryToDownloadHistoryInfo;
 import static com.blue.mongo.common.SortConverter.convert;
 import static java.util.Collections.emptyList;
@@ -43,8 +43,7 @@ import static java.util.stream.Collectors.toMap;
 import static org.springframework.data.domain.Sort.unsorted;
 import static org.springframework.data.mongodb.core.query.Criteria.byExample;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static reactor.core.publisher.Mono.just;
-import static reactor.core.publisher.Mono.zip;
+import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -98,7 +97,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
     private static final Function<DownloadHistoryCondition, Query> CONDITION_PROCESSOR = condition -> {
         Query query = new Query();
 
-        if (condition == null){
+        if (condition == null) {
             query.with(SORTER_CONVERTER.apply(new DownloadHistoryCondition()));
             return query;
         }
@@ -129,18 +128,10 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
     @Override
     public Mono<DownloadHistory> insertDownloadHistory(DownloadHistory downloadHistory) {
         LOGGER.info("Mono<DownloadHistory> insert(DownloadHistory downloadHistory), downloadHistory = {}", downloadHistory);
-        return downloadHistoryRepository.insert(downloadHistory).publishOn(scheduler);
-    }
+        if (isNull(downloadHistory))
+            return error(() -> new BlueException(EMPTY_PARAM));
 
-    /**
-     * get download history by id
-     *
-     * @param id
-     * @return
-     */
-    @Override
-    public Optional<DownloadHistory> getDownloadHistory(Long id) {
-        return ofNullable(this.getDownloadHistoryMono(id).toFuture().join());
+        return downloadHistoryRepository.insert(downloadHistory).publishOn(scheduler);
     }
 
     /**
@@ -159,6 +150,21 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
     }
 
     /**
+     * get download history by id
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Optional<DownloadHistory> getDownloadHistory(Long id) {
+        LOGGER.info("Optional<DownloadHistory> getDownloadHistory(Long id), id = {}", id);
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return ofNullable(this.getDownloadHistoryMono(id).toFuture().join());
+    }
+
+    /**
      * select download history by page and memberId
      *
      * @param limit
@@ -170,12 +176,12 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
     public Mono<List<DownloadHistory>> selectDownloadHistoryMonoByLimitAndMemberId(Long limit, Long rows, Long memberId) {
         LOGGER.info("Mono<List<DownloadHistory>> selectDownloadHistoryMonoByLimitAndMemberId(Long limit, Long rows, Long memberId), limit = {}, rows = {}, memberId = {}", limit, rows, memberId);
         if (isInvalidLimit(limit) || isInvalidRows(rows) || isInvalidIdentity(memberId))
-            throw new BlueException(INVALID_PARAM);
+            return error(() -> new BlueException(INVALID_PARAM));
 
         DownloadHistory probe = new DownloadHistory();
         probe.setCreator(memberId);
 
-        return downloadHistoryRepository.findAll(Example.of(probe), Sort.by(Sort.Order.desc(ID.name)))
+        return downloadHistoryRepository.findAll(Example.of(probe), Sort.by(Sort.Order.desc(ColumnName.ID.name)))
                 .publishOn(scheduler)
                 .skip(limit).take(rows)
                 .collectList();
@@ -191,7 +197,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
     public Mono<Long> countDownloadHistoryMonoByMemberId(Long memberId) {
         LOGGER.info("Mono<Long> countDownloadHistoryMonoByMemberId(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
-            throw new BlueException(INVALID_IDENTITY);
+            return error(() -> new BlueException(INVALID_PARAM));
 
         DownloadHistory probe = new DownloadHistory();
         probe.setCreator(memberId);
@@ -211,9 +217,9 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
         LOGGER.info("Mono<PageModelResponse<DownloadHistoryInfo>> selectDownloadHistoryInfoByPageAndMemberId(PageModelRequest<Void> pageModelRequest, Long memberId), pageModelDTO = {}, memberId = {}",
                 pageModelRequest, memberId);
         if (isNull(pageModelRequest))
-            throw new BlueException(EMPTY_PARAM);
+            return error(() -> new BlueException(EMPTY_PARAM));
         if (isInvalidIdentity(memberId))
-            throw new BlueException(INVALID_IDENTITY);
+            return error(() -> new BlueException(INVALID_IDENTITY));
 
         return zip(
                 selectDownloadHistoryMonoByLimitAndMemberId(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberId),
@@ -250,7 +256,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
         LOGGER.info("Mono<List<DownloadHistory>> selectDownloadHistoryMonoByLimitAndQuery(Long limit, Long rows, Query query), " +
                 "limit = {}, rows = {}, query = {}", limit, rows, query);
         if (limit == null || limit < 0 || rows == null || rows == 0)
-            throw new BlueException(INVALID_PARAM);
+            return error(() -> new BlueException(INVALID_PARAM));
 
         Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
         listQuery.skip(limit).limit(rows.intValue());
@@ -281,7 +287,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
         LOGGER.info("Mono<PageModelResponse<DownloadHistoryInfo>> selectDownloadHistoryInfoPageMonoByPageAndCondition(PageModelRequest<DownloadHistoryCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
-            throw new BlueException(EMPTY_PARAM);
+            return error(() -> new BlueException(EMPTY_PARAM));
 
         Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
 

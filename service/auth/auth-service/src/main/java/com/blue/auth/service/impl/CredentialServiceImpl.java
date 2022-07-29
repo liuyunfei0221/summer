@@ -78,6 +78,135 @@ public class CredentialServiceImpl implements CredentialService {
     };
 
     /**
+     * insert a new role
+     *
+     * @param credential
+     * @return
+     */
+    @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
+    public void insertCredential(Credential credential) {
+        LOGGER.info("void insertCredential(Credential credential, Long operatorId), credential = {}", credential);
+        Long memberId;
+        if (isNull(credential) || isInvalidIdentity(memberId = credential.getMemberId()))
+            throw new BlueException(EMPTY_PARAM);
+
+        String type = credential.getType();
+        assertCredentialType(type, false);
+
+        Optional<Credential> existOptional = this.getCredentialByMemberIdAndType(memberId, type);
+        if (existOptional.isPresent())
+            throw new BlueException(DATA_ALREADY_EXIST);
+
+        credential.setId(blueIdentityProcessor.generate(Credential.class));
+
+        credentialMapper.insert(credential);
+        LOGGER.info("insert credential = {}", credential);
+    }
+
+    /**
+     * insert credential batch
+     *
+     * @param credentials
+     * @return
+     */
+    @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
+    public void insertCredentials(List<Credential> credentials) {
+        LOGGER.info("void insertCredentials(List<Credential> credentials), credential = {}", credentials);
+        if (isEmpty(credentials))
+            return;
+
+        CREDENTIALS_ASSERTER.accept(credentials);
+
+        credentials.parallelStream()
+                .forEach(c -> c.setId(blueIdentityProcessor.generate(Credential.class)));
+
+        credentialMapper.insertBatch(credentials);
+        LOGGER.info("insert batch credentials = {}", credentials);
+    }
+
+    /**
+     * update a exist role
+     *
+     * @param credential
+     * @return
+     */
+    @Override
+    public void updateCredential(Credential credential) {
+        LOGGER.info("void updateCredential(Credential credential), credential = {}", credential);
+        if (isNull(credential))
+            throw new BlueException(EMPTY_PARAM);
+        if (isInvalidIdentity(credential.getId()))
+            throw new BlueException(INVALID_IDENTITY);
+
+        credentialMapper.updateByPrimaryKeySelective(credential);
+    }
+
+    /**
+     * insert credential
+     *
+     * @param credential
+     * @return
+     */
+    @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
+    public void updateCredentialByIds(String credential, List<Long> ids) {
+        LOGGER.info("void updateCredentialByIds(String credential, List<Long> ids), credential = {}, ids = {}", credential, ids);
+        if (isBlank(credential) || isEmpty(ids))
+            throw new BlueException(EMPTY_PARAM);
+        if (isNotEmpty(credentialMapper.selectByCredentials(singletonList(credential))))
+            throw new BlueException(DATA_ALREADY_EXIST);
+
+        credentialMapper.updateCredentialByIds(credential, TIME_STAMP_GETTER.get(), ids);
+        LOGGER.info("update batch credential = {}", credential);
+    }
+
+    /**
+     * delete credential
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public void deleteCredential(Long id) {
+        LOGGER.info("void deleteCredentialById(Long id), id = {}", id);
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
+
+        credentialMapper.deleteByPrimaryKey(id);
+    }
+
+    /**
+     * update access
+     *
+     * @param memberId
+     * @param credentialTypes
+     * @param access
+     * @return
+     */
+    @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
+    public boolean updateAccess(Long memberId, List<String> credentialTypes, String access) {
+        LOGGER.info("Boolean updateAccess(Long memberId, VerifyType verifyType, String access), memberId = {}, credentialTypes = {}, access = {}", memberId, credentialTypes, ":)");
+
+        if (isBlank(access))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access can't be blank");
+        if (access.length() > ACS_LEN_MAX.value)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access length is too long");
+        if (access.length() < ACS_LEN_MIN.value)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access length is too short");
+        if (isEmpty(credentialTypes))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "credentialTypes is empty");
+
+        int updates = credentialMapper.updateAccessByMemberAndTypes(encryptAccess(access), VALID.status, TIME_STAMP_GETTER.get(), memberId, credentialTypes);
+
+        LOGGER.info("updates = {}", updates);
+
+        return updates > 0;
+    }
+
+    /**
      * get by credential and type
      *
      * @param credential
@@ -215,135 +344,6 @@ public class CredentialServiceImpl implements CredentialService {
     public Mono<List<CredentialInfo>> selectCredentialInfoMonoByMemberIdAndTypes(Long memberId, List<String> credentialTypes) {
         return this.selectCredentialMonoByMemberIdAndTypes(memberId, credentialTypes)
                 .map(cs -> cs.stream().map(CREDENTIAL_2_CREDENTIAL_INFO_CONVERTER).collect(toList()));
-    }
-
-    /**
-     * insert a new role
-     *
-     * @param credential
-     * @return
-     */
-    @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public void insertCredential(Credential credential) {
-        LOGGER.info("void insertCredential(Credential credential, Long operatorId), credential = {}", credential);
-        Long memberId;
-        if (isNull(credential) || isInvalidIdentity(memberId = credential.getMemberId()))
-            throw new BlueException(EMPTY_PARAM);
-
-        String type = credential.getType();
-        assertCredentialType(type, false);
-
-        Optional<Credential> existOptional = this.getCredentialByMemberIdAndType(memberId, type);
-        if (existOptional.isPresent())
-            throw new BlueException(DATA_ALREADY_EXIST);
-
-        credential.setId(blueIdentityProcessor.generate(Credential.class));
-
-        credentialMapper.insert(credential);
-        LOGGER.info("insert credential = {}", credential);
-    }
-
-    /**
-     * insert credential batch
-     *
-     * @param credentials
-     * @return
-     */
-    @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public void insertCredentials(List<Credential> credentials) {
-        LOGGER.info("void insertCredentials(List<Credential> credentials), credential = {}", credentials);
-        if (isEmpty(credentials))
-            return;
-
-        CREDENTIALS_ASSERTER.accept(credentials);
-
-        credentials.parallelStream()
-                .forEach(c -> c.setId(blueIdentityProcessor.generate(Credential.class)));
-
-        credentialMapper.insertBatch(credentials);
-        LOGGER.info("insert batch credentials = {}", credentials);
-    }
-
-    /**
-     * update a exist role
-     *
-     * @param credential
-     * @return
-     */
-    @Override
-    public void updateCredential(Credential credential) {
-        LOGGER.info("void updateCredential(Credential credential), credential = {}", credential);
-        if (isNull(credential))
-            throw new BlueException(EMPTY_PARAM);
-        if (isInvalidIdentity(credential.getId()))
-            throw new BlueException(INVALID_IDENTITY);
-
-        credentialMapper.updateByPrimaryKeySelective(credential);
-    }
-
-    /**
-     * insert credential
-     *
-     * @param credential
-     * @return
-     */
-    @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public void updateCredentialByIds(String credential, List<Long> ids) {
-        LOGGER.info("void updateCredentialByIds(String credential, List<Long> ids), credential = {}, ids = {}", credential, ids);
-        if (isBlank(credential) || isEmpty(ids))
-            throw new BlueException(EMPTY_PARAM);
-        if (isNotEmpty(credentialMapper.selectByCredentials(singletonList(credential))))
-            throw new BlueException(DATA_ALREADY_EXIST);
-
-        credentialMapper.updateCredentialByIds(credential, TIME_STAMP_GETTER.get(), ids);
-        LOGGER.info("update batch credential = {}", credential);
-    }
-
-    /**
-     * delete credential
-     *
-     * @param id
-     * @return
-     */
-    @Override
-    public void deleteCredential(Long id) {
-        LOGGER.info("void deleteCredentialById(Long id), id = {}", id);
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
-
-        credentialMapper.deleteByPrimaryKey(id);
-    }
-
-    /**
-     * update access
-     *
-     * @param memberId
-     * @param credentialTypes
-     * @param access
-     * @return
-     */
-    @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public boolean updateAccess(Long memberId, List<String> credentialTypes, String access) {
-        LOGGER.info("Boolean updateAccess(Long memberId, VerifyType verifyType, String access), memberId = {}, credentialTypes = {}, access = {}", memberId, credentialTypes, ":)");
-
-        if (isBlank(access))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access can't be blank");
-        if (access.length() > ACS_LEN_MAX.value)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access length is too long");
-        if (access.length() < ACS_LEN_MIN.value)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access length is too short");
-        if (isEmpty(credentialTypes))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "credentialTypes is empty");
-
-        int updates = credentialMapper.updateAccessByMemberAndTypes(encryptAccess(access), VALID.status, TIME_STAMP_GETTER.get(), memberId, credentialTypes);
-
-        LOGGER.info("updates = {}", updates);
-
-        return updates > 0;
     }
 
 }

@@ -1,8 +1,8 @@
 package com.blue.gateway.config.filter.global;
 
 import com.blue.basic.constant.common.BlueHeader;
-import com.blue.basic.model.common.DataEvent;
 import com.blue.basic.model.common.ExceptionElement;
+import com.blue.basic.model.event.DataEvent;
 import com.blue.gateway.component.event.RequestEventReporter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.function.BiConsumer;
 
-import static com.blue.basic.common.base.CommonFunctions.*;
 import static com.blue.basic.common.base.CommonFunctions.*;
 import static com.blue.basic.constant.common.BlueDataAttrKey.*;
 import static com.blue.basic.constant.common.BlueHeader.AUTHORIZATION;

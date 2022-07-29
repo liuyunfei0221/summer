@@ -1,6 +1,6 @@
 package com.blue.risk.service.impl;
 
-import com.blue.basic.model.common.DataEvent;
+import com.blue.basic.model.event.DataEvent;
 import com.blue.risk.component.risk.inter.RiskHandler;
 import com.blue.risk.service.inter.RiskService;
 import org.springframework.context.ApplicationContext;

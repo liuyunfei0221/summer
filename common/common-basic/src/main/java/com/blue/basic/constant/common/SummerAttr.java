@@ -1,6 +1,6 @@
 package com.blue.basic.constant.common;
 
-import com.blue.basic.model.common.EmptyEvent;
+import com.blue.basic.model.event.EmptyEvent;
 
 import java.time.Clock;
 import java.time.format.DateTimeFormatter;

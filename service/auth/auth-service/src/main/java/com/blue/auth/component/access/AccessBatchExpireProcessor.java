@@ -1,6 +1,6 @@
 package com.blue.auth.component.access;
 
-import com.blue.basic.model.common.KeyExpireEvent;
+import com.blue.basic.model.event.KeyExpireEvent;
 import net.openhft.affinity.AffinityThreadFactory;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;

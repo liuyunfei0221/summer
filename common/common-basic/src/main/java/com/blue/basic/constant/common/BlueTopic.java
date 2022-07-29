@@ -33,6 +33,16 @@ public enum BlueTopic {
     SYSTEM_AUTHORITY_INFOS_REFRESH("systemAuthorityInfosRefresh"),
 
     /**
+     * finance flow
+     */
+    FINANCE_FLOW("financeFlow"),
+
+    /**
+     * order summary
+     */
+    ORDER_SUMMARY("orderSummary"),
+
+    /**
      * Region infos invalid
      */
     REGION_INFOS_INVALID("regionInfosInvalid"),

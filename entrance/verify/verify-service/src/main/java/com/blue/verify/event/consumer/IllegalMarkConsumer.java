@@ -1,7 +1,7 @@
 package com.blue.verify.event.consumer;
 
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
-import com.blue.basic.model.common.IllegalMarkEvent;
+import com.blue.basic.model.event.IllegalMarkEvent;
 import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
 import com.blue.pulsar.common.BluePulsarListener;
 import com.blue.verify.component.illegal.IllegalAsserter;
@@ -13,7 +13,6 @@ import javax.annotation.PostConstruct;
 import java.util.function.Consumer;
 
 import static com.blue.basic.constant.common.BlueTopic.ILLEGAL_MARK;
-import static com.blue.pulsar.api.generator.BluePulsarListenerGenerator.generateListener;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
 import static reactor.core.publisher.Mono.just;

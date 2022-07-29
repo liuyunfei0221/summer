@@ -16,6 +16,56 @@ import java.util.Optional;
 public interface CredentialService {
 
     /**
+     * insert credential
+     *
+     * @param credential
+     * @return
+     */
+    void insertCredential(Credential credential);
+
+    /**
+     * insert credential batch
+     *
+     * @param credentials
+     * @return
+     */
+    void insertCredentials(List<Credential> credentials);
+
+    /**
+     * update a exist role
+     *
+     * @param credential
+     * @return
+     */
+    void updateCredential(Credential credential);
+
+    /**
+     * batch update credential by ids
+     *
+     * @param credential
+     * @param ids
+     */
+    void updateCredentialByIds(String credential, List<Long> ids);
+
+    /**
+     * delete credential
+     *
+     * @param id
+     * @return
+     */
+    void deleteCredential(Long id);
+
+    /**
+     * update access
+     *
+     * @param memberId
+     * @param credentialTypes
+     * @param access
+     * @return
+     */
+    boolean updateAccess(Long memberId, List<String> credentialTypes, String access);
+
+    /**
      * get by credential and type
      *
      * @param credential
@@ -104,55 +154,5 @@ public interface CredentialService {
      * @return
      */
     Mono<List<CredentialInfo>> selectCredentialInfoMonoByMemberIdAndTypes(Long memberId, List<String> credentialTypes);
-
-    /**
-     * insert credential
-     *
-     * @param credential
-     * @return
-     */
-    void insertCredential(Credential credential);
-
-    /**
-     * insert credential batch
-     *
-     * @param credentials
-     * @return
-     */
-    void insertCredentials(List<Credential> credentials);
-
-    /**
-     * update a exist role
-     *
-     * @param credential
-     * @return
-     */
-    void updateCredential(Credential credential);
-
-    /**
-     * batch update credential by ids
-     *
-     * @param credential
-     * @param ids
-     */
-    void updateCredentialByIds(String credential, List<Long> ids);
-
-    /**
-     * delete credential
-     *
-     * @param id
-     * @return
-     */
-    void deleteCredential(Long id);
-
-    /**
-     * update access
-     *
-     * @param memberId
-     * @param credentialTypes
-     * @param access
-     * @return
-     */
-    boolean updateAccess(Long memberId, List<String> credentialTypes, String access);
 
 }

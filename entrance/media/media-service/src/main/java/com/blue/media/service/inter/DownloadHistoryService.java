@@ -28,20 +28,20 @@ public interface DownloadHistoryService {
     Mono<DownloadHistory> insertDownloadHistory(DownloadHistory downloadHistory);
 
     /**
-     * get download history by id
-     *
-     * @param id
-     * @return
-     */
-    Optional<DownloadHistory> getDownloadHistory(Long id);
-
-    /**
      * get download history mono by id
      *
      * @param id
      * @return
      */
     Mono<DownloadHistory> getDownloadHistoryMono(Long id);
+
+    /**
+     * get download history by id
+     *
+     * @param id
+     * @return
+     */
+    Optional<DownloadHistory> getDownloadHistory(Long id);
 
     /**
      * select download history by page and memberId

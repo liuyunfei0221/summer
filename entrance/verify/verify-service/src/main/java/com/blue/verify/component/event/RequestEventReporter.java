@@ -1,6 +1,6 @@
 package com.blue.verify.component.event;
 
-import com.blue.basic.model.common.DataEvent;
+import com.blue.basic.model.event.DataEvent;
 import com.blue.verify.event.producer.RequestEventProducer;
 import org.springframework.stereotype.Component;
 import reactor.util.Logger;

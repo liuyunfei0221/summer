@@ -463,4 +463,262 @@ dubbo:
     check: false
 
 
+producers:
+  configs:
+    financeFlow:
+      services: [ 172.16.204.75:6650 ]
+      enableTls: false
+      tlsTrustCertsFilePath:
+      tlsCertFilePath:
+      tlsKeyFilePath:
+      tlsAllowInsecureConnection:
+      tlsHostnameVerificationEnable:
+      listenerName:
+      operationTimeoutMillis: 30000
+      statsIntervalMillis: 60000
+      ioThreads: 1
+      listenerThreads: 1
+      connectionsPerBroker: 1
+      useTcpNoDelay: true
+      memoryLimitKiloBytes: 512
+      maxConcurrentLookupRequests: 60
+      maxLookupRequest: 50000
+      maxLookupRedirects: 3
+      maxNumberOfRejectedRequestPerConnection: 50
+      keepAliveIntervalMillis: 30000
+      connectionTimeoutMillis: 60000
+      startingBackoffIntervalMillis: 300
+      maxBackoffIntervalMillis: 600
+      enableBusyWait: false
+      clockZoneId: Asia/Shanghai
+      enableTransaction: false
+      enableProxy: false
+      proxyServiceUrl:
+      proxyProtocol: SNI
+      topic: financeFlow
+      producerName: financeFlowProducer000
+      accessMode: Shared
+      sendTimeoutMillis: 30000
+      maxPendingMessages: 1000
+      blockIfQueueFull: false
+      messageRoutingMode: RoundRobinPartition
+      compressionType: NONE
+      enableBatching: true
+      enableChunking: false
+      batchingMaxPublishDelayMillis: 1000
+      roundRobinRouterBatchingPartitionSwitchFrequency: 2
+      batchingMaxMessages: 512
+      batchingMaxBytes: 512
+      initialSequenceId: 0
+      autoUpdatePartitions: true
+      autoUpdatePartitionsIntervalMillis: 30000
+      enableMultiSchema: false
+      hashingSchemes: [ JavaStringHash ]
+      enableEncrypt: false
+      encryptionKey:
+      producerCryptoFailureAction: FAIL
+    orderSummary:
+      services: [ 172.16.204.75:6650 ]
+      enableTls: false
+      tlsTrustCertsFilePath:
+      tlsCertFilePath:
+      tlsKeyFilePath:
+      tlsAllowInsecureConnection:
+      tlsHostnameVerificationEnable:
+      listenerName:
+      operationTimeoutMillis: 30000
+      statsIntervalMillis: 60000
+      ioThreads: 1
+      listenerThreads: 1
+      connectionsPerBroker: 1
+      useTcpNoDelay: true
+      memoryLimitKiloBytes: 512
+      maxConcurrentLookupRequests: 60
+      maxLookupRequest: 50000
+      maxLookupRedirects: 3
+      maxNumberOfRejectedRequestPerConnection: 50
+      keepAliveIntervalMillis: 30000
+      connectionTimeoutMillis: 60000
+      startingBackoffIntervalMillis: 300
+      maxBackoffIntervalMillis: 600
+      enableBusyWait: false
+      clockZoneId: Asia/Shanghai
+      enableTransaction: false
+      enableProxy: false
+      proxyServiceUrl:
+      proxyProtocol: SNI
+      topic: orderSync
+      producerName: orderSyncProducer000
+      accessMode: Shared
+      sendTimeoutMillis: 30000
+      maxPendingMessages: 1000
+      blockIfQueueFull: false
+      messageRoutingMode: RoundRobinPartition
+      compressionType: NONE
+      enableBatching: true
+      enableChunking: false
+      batchingMaxPublishDelayMillis: 1000
+      roundRobinRouterBatchingPartitionSwitchFrequency: 2
+      batchingMaxMessages: 512
+      batchingMaxBytes: 512
+      initialSequenceId: 0
+      autoUpdatePartitions: true
+      autoUpdatePartitionsIntervalMillis: 30000
+      enableMultiSchema: false
+      hashingSchemes: [ JavaStringHash ]
+      enableEncrypt: false
+      encryptionKey:
+      producerCryptoFailureAction: FAIL
+
+
+consumers:
+  configs:
+    financeFlow:
+      services: [ 172.16.204.75:6650 ]
+      enableTls: false
+      tlsTrustCertsFilePath:
+      tlsCertFilePath:
+      tlsKeyFilePath:
+      tlsAllowInsecureConnection:
+      tlsHostnameVerificationEnable:
+      listenerName:
+      operationTimeoutMillis: 30000
+      statsIntervalMillis: 60
+      ioThreads: 1
+      listenerThreads: 1
+      connectionsPerBroker: 2
+      useTcpNoDelay: true
+      memoryLimitKiloBytes: 1024
+      maxConcurrentLookupRequests: 60
+      maxLookupRequest: 1000
+      maxLookupRedirects: 2
+      maxNumberOfRejectedRequestPerConnection: 50
+      keepAliveIntervalMillis: 30000
+      connectionTimeoutMillis: 10000
+      startingBackoffIntervalMillis: 1000
+      maxBackoffIntervalMillis: 30000
+      enableBusyWait: true
+      clockZoneId: Asia/Shanghai
+      enableTransaction: false
+      enableProxy: false
+      proxyServiceUrl:
+      proxyProtocol: SNI
+      topics: [ financeFlow ]
+      topicsPattern:
+      subscriptionName: financeFlowSubscription
+      ackTimeoutMillis: 2000
+      enableAckReceipt: true
+      ackTimeoutTickTimeMillis: 1000
+      negativeAckRedeliveryDelayMillis: 100
+      subscriptionType: Failover
+      subscriptionMode: Durable
+      receiverQueueSize: 1000
+      acknowledgementsGroupTimeMillis: 100
+      replicateSubscriptionState: false
+      maxTotalReceiverQueueSizeAcrossPartitions: 5
+      consumerName: financeFlowConsumer000
+      readCompacted: false
+      patternAutoDiscoveryPeriodMillis: 1
+      priorityLevel: 0
+      subscriptionInitialPosition: Latest
+      regexSubscriptionMode: PersistentOnly
+      autoUpdatePartitions: true
+      autoUpdatePartitionsIntervalMillis: 30000
+      batchReceivePolicy: DEFAULT_POLICY
+      enableRetry: true
+      enableBatchIndexAcknowledgment: false
+      maxPendingChunkedMessage: 10
+      autoAckOldestChunkedMessageOnQueueFull: true
+      expireTimeOfIncompleteChunkedMessageMillis: 2000
+      poolMessages: false
+      enableEncrypt: false
+      encryptionKey:
+      consumerCryptoFailureAction: FAIL
+      enableDeadLetter: true
+      deadLetterTopic: financeFlow
+      retryLetterTopic: financeFlow
+      maxRedeliverCount: 1000
+      startMessageIdInclusive: false
+      enableBatchReceive: false
+      batchReceiveMaxNumMessages: -1
+      batchReceiveMaxNumBytes: 10485760
+      batchReceiveTimeoutMillis: 100
+      pollDurationMills: 1000
+      workingThreads: 2
+      enableNegativeAcknowledge: true
+    orderSummary:
+      services: [ 172.16.204.75:6650 ]
+      enableTls: false
+      tlsTrustCertsFilePath:
+      tlsCertFilePath:
+      tlsKeyFilePath:
+      tlsAllowInsecureConnection:
+      tlsHostnameVerificationEnable:
+      listenerName:
+      operationTimeoutMillis: 30000
+      statsIntervalMillis: 60
+      ioThreads: 1
+      listenerThreads: 1
+      connectionsPerBroker: 2
+      useTcpNoDelay: true
+      memoryLimitKiloBytes: 1024
+      maxConcurrentLookupRequests: 60
+      maxLookupRequest: 1000
+      maxLookupRedirects: 2
+      maxNumberOfRejectedRequestPerConnection: 50
+      keepAliveIntervalMillis: 30000
+      connectionTimeoutMillis: 10000
+      startingBackoffIntervalMillis: 1000
+      maxBackoffIntervalMillis: 30000
+      enableBusyWait: true
+      clockZoneId: Asia/Shanghai
+      enableTransaction: false
+      enableProxy: false
+      proxyServiceUrl:
+      proxyProtocol: SNI
+      topics: [ orderSync ]
+      topicsPattern:
+      subscriptionName: orderSyncSubscription
+      ackTimeoutMillis: 2000
+      enableAckReceipt: true
+      ackTimeoutTickTimeMillis: 1000
+      negativeAckRedeliveryDelayMillis: 100
+      subscriptionType: Failover
+      subscriptionMode: Durable
+      receiverQueueSize: 1000
+      acknowledgementsGroupTimeMillis: 100
+      replicateSubscriptionState: false
+      maxTotalReceiverQueueSizeAcrossPartitions: 5
+      consumerName: orderSyncConsumer000
+      readCompacted: false
+      patternAutoDiscoveryPeriodMillis: 1
+      priorityLevel: 0
+      subscriptionInitialPosition: Latest
+      regexSubscriptionMode: PersistentOnly
+      autoUpdatePartitions: true
+      autoUpdatePartitionsIntervalMillis: 30000
+      batchReceivePolicy: DEFAULT_POLICY
+      enableRetry: true
+      enableBatchIndexAcknowledgment: false
+      maxPendingChunkedMessage: 10
+      autoAckOldestChunkedMessageOnQueueFull: true
+      expireTimeOfIncompleteChunkedMessageMillis: 2000
+      poolMessages: false
+      enableEncrypt: false
+      encryptionKey:
+      consumerCryptoFailureAction: FAIL
+      enableDeadLetter: true
+      deadLetterTopic: orderSync
+      retryLetterTopic: orderSync
+      maxRedeliverCount: 1000
+      startMessageIdInclusive: false
+      enableBatchReceive: false
+      batchReceiveMaxNumMessages: -1
+      batchReceiveMaxNumBytes: 10485760
+      batchReceiveTimeoutMillis: 100
+      pollDurationMills: 1000
+      workingThreads: 2
+      enableNegativeAcknowledge: true
+
+
 debug: false

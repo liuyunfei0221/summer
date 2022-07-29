@@ -1,4 +1,4 @@
-package com.blue.basic.model.common;
+package com.blue.auth.event.model;
 
 import java.io.Serializable;
 

@@ -2,8 +2,8 @@ package com.blue.auth.event.consumer;
 
 import com.blue.auth.component.access.AccessInfoCache;
 import com.blue.auth.config.blue.BlueConsumerConfig;
+import com.blue.auth.event.model.InvalidLocalAccessEvent;
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
-import com.blue.basic.model.common.InvalidLocalAccessEvent;
 import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
 import com.blue.pulsar.common.BluePulsarListener;
 import reactor.util.Logger;
@@ -12,7 +12,6 @@ import javax.annotation.PostConstruct;
 import java.util.function.Consumer;
 
 import static com.blue.basic.constant.common.BlueTopic.INVALID_LOCAL_ACCESS;
-import static com.blue.pulsar.api.generator.BluePulsarListenerGenerator.generateListener;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
 import static java.util.Optional.ofNullable;

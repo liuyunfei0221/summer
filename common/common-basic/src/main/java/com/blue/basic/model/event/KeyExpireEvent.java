@@ -1,4 +1,4 @@
-package com.blue.basic.model.common;
+package com.blue.basic.model.event;
 
 import com.blue.basic.model.exps.BlueException;
 

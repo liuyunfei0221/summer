@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * page data
+ * page data model
  *
  * @author liuyunfei
  */

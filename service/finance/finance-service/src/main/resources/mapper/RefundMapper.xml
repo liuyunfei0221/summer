@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress SqlNoDataSourceInspection, SqlDialectInspection -->
+<mapper namespace="com.blue.finance.repository.mapper.RefundMapper">
+    <resultMap id="BaseResultMap" type="com.blue.finance.repository.entity.Refund">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="order_id" jdbcType="BIGINT" property="orderId"/>
+        <result column="article_id" jdbcType="BIGINT" property="articleId"/>
+        <result column="reference_id" jdbcType="BIGINT" property="referenceId"/>
+        <result column="member_id" jdbcType="BIGINT" property="memberId"/>
+        <result column="order_no" jdbcType="VARCHAR" property="orderNo"/>
+        <result column="flow_no" jdbcType="VARCHAR" property="flowNo"/>
+        <result column="type" jdbcType="TINYINT" property="type"/>
+        <result column="amount" jdbcType="BIGINT" property="amount"/>
+        <result column="reason" jdbcType="VARCHAR" property="reason"/>
+        <result column="extra" jdbcType="VARCHAR" property="extra"/>
+        <result column="detail" jdbcType="VARCHAR" property="detail"/>
+        <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="create_time" jdbcType="BIGINT" property="createTime"/>
+        <result column="update_time" jdbcType="BIGINT" property="updateTime"/>
+        <result column="complete_time" jdbcType="BIGINT" property="completeTime"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        , order_id, article_id, reference_id, member_id, order_no, flow_no, type, amount,
+    reason, extra, detail, status, create_time, update_time, complete_time
+    </sql>
+
+    <insert id="insert" parameterType="com.blue.finance.repository.entity.Refund">
+        insert into refund (id, order_id, article_id,
+                            reference_id, member_id, order_no,
+                            flow_no, type, amount,
+                            reason, extra, detail,
+                            status, create_time, update_time,
+                            complete_time)
+        values (#{id,jdbcType=BIGINT}, #{orderId,jdbcType=BIGINT}, #{articleId,jdbcType=BIGINT},
+                #{referenceId,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{orderNo,jdbcType=VARCHAR},
+                #{flowNo,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, #{amount,jdbcType=BIGINT},
+                #{reason,jdbcType=VARCHAR}, #{extra,jdbcType=VARCHAR}, #{detail,jdbcType=VARCHAR},
+                #{status,jdbcType=TINYINT}, #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT},
+                #{completeTime,jdbcType=BIGINT})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.blue.finance.repository.entity.Refund">
+        insert into refund
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="orderId != null">
+                order_id,
+            </if>
+            <if test="articleId != null">
+                article_id,
+            </if>
+            <if test="referenceId != null">
+                reference_id,
+            </if>
+            <if test="memberId != null">
+                member_id,
+            </if>
+            <if test="orderNo != null">
+                order_no,
+            </if>
+            <if test="flowNo != null">
+                flow_no,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="amount != null">
+                amount,
+            </if>
+            <if test="reason != null">
+                reason,
+            </if>
+            <if test="extra != null">
+                extra,
+            </if>
+            <if test="detail != null">
+                detail,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="completeTime != null">
+                complete_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="orderId != null">
+                #{orderId,jdbcType=BIGINT},
+            </if>
+            <if test="articleId != null">
+                #{articleId,jdbcType=BIGINT},
+            </if>
+            <if test="referenceId != null">
+                #{referenceId,jdbcType=BIGINT},
+            </if>
+            <if test="memberId != null">
+                #{memberId,jdbcType=BIGINT},
+            </if>
+            <if test="orderNo != null">
+                #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="flowNo != null">
+                #{flowNo,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=TINYINT},
+            </if>
+            <if test="amount != null">
+                #{amount,jdbcType=BIGINT},
+            </if>
+            <if test="reason != null">
+                #{reason,jdbcType=VARCHAR},
+            </if>
+            <if test="extra != null">
+                #{extra,jdbcType=VARCHAR},
+            </if>
+            <if test="detail != null">
+                #{detail,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=BIGINT},
+            </if>
+            <if test="completeTime != null">
+                #{completeTime,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.blue.finance.repository.entity.Refund">
+        update refund
+        set order_id      = #{orderId,jdbcType=BIGINT},
+            article_id    = #{articleId,jdbcType=BIGINT},
+            reference_id  = #{referenceId,jdbcType=BIGINT},
+            member_id     = #{memberId,jdbcType=BIGINT},
+            order_no      = #{orderNo,jdbcType=VARCHAR},
+            flow_no       = #{flowNo,jdbcType=VARCHAR},
+            type          = #{type,jdbcType=TINYINT},
+            amount        = #{amount,jdbcType=BIGINT},
+            reason        = #{reason,jdbcType=VARCHAR},
+            extra         = #{extra,jdbcType=VARCHAR},
+            detail        = #{detail,jdbcType=VARCHAR},
+            status        = #{status,jdbcType=TINYINT},
+            create_time   = #{createTime,jdbcType=BIGINT},
+            update_time   = #{updateTime,jdbcType=BIGINT},
+            complete_time = #{completeTime,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.blue.finance.repository.entity.Refund">
+        update refund
+        <set>
+            <if test="orderId != null">
+                order_id = #{orderId,jdbcType=BIGINT},
+            </if>
+            <if test="articleId != null">
+                article_id = #{articleId,jdbcType=BIGINT},
+            </if>
+            <if test="referenceId != null">
+                reference_id = #{referenceId,jdbcType=BIGINT},
+            </if>
+            <if test="memberId != null">
+                member_id = #{memberId,jdbcType=BIGINT},
+            </if>
+            <if test="orderNo != null">
+                order_no = #{orderNo,jdbcType=VARCHAR},
+            </if>
+            <if test="flowNo != null">
+                flow_no = #{flowNo,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=TINYINT},
+            </if>
+            <if test="amount != null">
+                amount = #{amount,jdbcType=BIGINT},
+            </if>
+            <if test="reason != null">
+                reason = #{reason,jdbcType=VARCHAR},
+            </if>
+            <if test="extra != null">
+                extra = #{extra,jdbcType=VARCHAR},
+            </if>
+            <if test="detail != null">
+                detail = #{detail,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=BIGINT},
+            </if>
+            <if test="completeTime != null">
+                complete_time = #{completeTime,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from refund
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from refund
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+</mapper>
