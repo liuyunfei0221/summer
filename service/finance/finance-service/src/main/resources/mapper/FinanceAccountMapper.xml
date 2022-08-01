@@ -156,4 +156,16 @@
         member_id = #{memberId,jdbcType=VARCHAR}
     </select>
 
+    <select id="selectByIds" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        finance_account
+        WHERE
+        id IN
+        <foreach collection="ids" open="(" close=")" separator="," item="id" index="index">
+            #{id,jdbcType=BIGINT}
+        </foreach>
+    </select>
+
 </mapper>

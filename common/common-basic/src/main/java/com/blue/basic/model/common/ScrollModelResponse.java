@@ -11,7 +11,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public final class ScrollModelResponse<T extends Serializable, A extends Serializable> implements Serializable {
 
-    private static final long serialVersionUID = 4100451335116609251L;
+    private static final long serialVersionUID = 4330371876098134823L;
 
     /**
      * data element list

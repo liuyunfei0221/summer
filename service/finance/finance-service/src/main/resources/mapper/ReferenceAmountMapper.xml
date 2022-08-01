@@ -33,6 +33,29 @@
                 #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT})
     </insert>
 
+    <insert id="insertBatch" parameterType="java.util.List">
+        <if test="list != null and list.size > 0">
+            INSERT INTO reference_amount (id, order_id, member_id,type, reference_id, amount,
+            extra, detail, status,create_time, update_time)
+            values
+            <foreach collection="list" index="index" item="item" separator=",">
+                (
+                #{item.id,jdbcType=BIGINT},
+                #{item.orderId,jdbcType=BIGINT},
+                #{item.memberId,jdbcType=BIGINT},
+                #{item.type,jdbcType=TINYINT},
+                #{item.referenceId,jdbcType=BIGINT},
+                #{item.amount,jdbcType=BIGINT},
+                #{item.extra,jdbcType=VARCHAR},
+                #{item.detail,jdbcType=VARCHAR},
+                #{item.status,jdbcType=TINYINT},
+                #{item.createTime,jdbcType=BIGINT},
+                #{item.updateTime,jdbcType=BIGINT}
+                )
+            </foreach>
+        </if>
+    </insert>
+
     <insert id="insertSelective" parameterType="com.blue.finance.repository.entity.ReferenceAmount">
         insert into reference_amount
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -170,6 +193,27 @@
         <include refid="Base_Column_List"/>
         from reference_amount
         where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="getByOrderId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        reference_amount FORCE INDEX(idx_order)
+        WHERE
+        order_id = #{orderId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectByIds" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        reference_amount
+        WHERE
+        id IN
+        <foreach collection="ids" open="(" close=")" separator="," item="id" index="index">
+            #{id,jdbcType=BIGINT}
+        </foreach>
     </select>
 
 </mapper>

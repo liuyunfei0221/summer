@@ -2,7 +2,7 @@ package com.blue.finance.event.consumer;
 
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.finance.config.blue.BlueConsumerConfig;
-import com.blue.finance.model.OrderSummary;
+import com.blue.finance.repository.entity.OrderSummary;
 import com.blue.finance.service.inter.OrderSummaryService;
 import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
 import com.blue.pulsar.common.BluePulsarListener;

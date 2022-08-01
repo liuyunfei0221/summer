@@ -1,8 +1,4 @@
-package com.blue.finance.model;
-
-import com.blue.finance.repository.entity.Order;
-import com.blue.finance.repository.entity.OrderArticle;
-import com.blue.finance.repository.entity.ReferenceAmount;
+package com.blue.finance.repository.entity;
 
 import java.io.Serializable;
 import java.util.List;

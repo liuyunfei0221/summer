@@ -1,6 +1,9 @@
 package com.blue.finance.repository.mapper;
 
 import com.blue.finance.repository.entity.Order;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * order dao
@@ -21,5 +24,7 @@ public interface OrderMapper {
     int deleteByPrimaryKey(Long id);
 
     Order selectByPrimaryKey(Long id);
+
+    List<Order> selectByIds(@Param("ids") List<Long> ids);
 
 }

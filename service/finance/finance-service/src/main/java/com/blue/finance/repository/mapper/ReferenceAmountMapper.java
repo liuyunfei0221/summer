@@ -1,6 +1,9 @@
 package com.blue.finance.repository.mapper;
 
 import com.blue.finance.repository.entity.ReferenceAmount;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * reference amount dao
@@ -12,6 +15,8 @@ public interface ReferenceAmountMapper {
 
     int insert(ReferenceAmount record);
 
+    int insertBatch(@Param("list") List<ReferenceAmount> list);
+
     int insertSelective(ReferenceAmount record);
 
     int updateByPrimaryKey(ReferenceAmount record);
@@ -21,5 +26,9 @@ public interface ReferenceAmountMapper {
     int deleteByPrimaryKey(Long id);
 
     ReferenceAmount selectByPrimaryKey(Long id);
+
+    List<ReferenceAmount> getByOrderId(@Param("orderId") Long orderId);
+
+    List<ReferenceAmount> selectByIds(@Param("ids") List<Long> ids);
 
 }

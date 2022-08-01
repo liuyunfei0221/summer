@@ -3,6 +3,8 @@ package com.blue.finance.repository.mapper;
 import com.blue.finance.repository.entity.FinanceAccount;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 /**
  * finance account dao
  *
@@ -25,4 +27,5 @@ public interface FinanceAccountMapper {
 
     FinanceAccount getByMemberId(@Param("memberId") Long memberId);
 
+    List<FinanceAccount> selectByIds(@Param("ids") List<Long> ids);
 }

@@ -3,7 +3,7 @@ package com.blue.finance.service.inter;
 import com.blue.basic.model.common.Pit;
 import com.blue.basic.model.common.ScrollModelRequest;
 import com.blue.basic.model.common.ScrollModelResponse;
-import com.blue.finance.model.OrderSummary;
+import com.blue.finance.repository.entity.OrderSummary;
 import reactor.core.publisher.Mono;
 
 import java.util.List;

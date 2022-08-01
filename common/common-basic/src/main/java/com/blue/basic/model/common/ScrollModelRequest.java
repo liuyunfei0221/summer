@@ -21,7 +21,7 @@ public final class ScrollModelRequest<T extends Serializable> implements Seriali
     private static final long MAX_ROWS_PER_REQ = MAX_ROWS.value;
 
     /**
-     * nums per page
+     * nums per request
      */
     private Long rows;
 
@@ -35,7 +35,7 @@ public final class ScrollModelRequest<T extends Serializable> implements Seriali
 
     public ScrollModelRequest(Long rows, T identity) {
         if (isNull(rows) || rows < 1L || rows > MAX_ROWS_PER_REQ)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "page can't be less than 1, max rows per page can't be greater than " + MAX_ROWS.value);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "rows can't be less than 1, max rows per request can't be greater than " + MAX_ROWS.value);
 
         this.rows = rows;
         this.identity = identity;
@@ -47,7 +47,7 @@ public final class ScrollModelRequest<T extends Serializable> implements Seriali
 
     public void setRows(Long rows) {
         if (isNull(rows) || rows < 1L || rows > MAX_ROWS_PER_REQ)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "page can't be less than 1, max rows per page can't be greater than " + MAX_ROWS.value);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "rows can't be less than 1, max rows per request can't be greater than " + MAX_ROWS.value);
 
         this.rows = rows;
     }
