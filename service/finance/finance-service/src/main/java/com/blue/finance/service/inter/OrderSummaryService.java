@@ -26,20 +26,20 @@ public interface OrderSummaryService {
     Mono<OrderSummary> insertOrderSummaryAsync(OrderSummary orderSummary);
 
     /**
-     * insert order summary
-     *
-     * @param orderSummary
-     * @return
-     */
-    Mono<OrderSummary> insertOrderSummary(OrderSummary orderSummary);
-
-    /**
      * update order summary async
      *
      * @param orderSummary
      * @return
      */
     Mono<OrderSummary> updateOrderSummaryAsync(OrderSummary orderSummary);
+
+    /**
+     * insert order summary
+     *
+     * @param orderSummary
+     * @return
+     */
+    Mono<OrderSummary> insertOrderSummary(OrderSummary orderSummary);
 
     /**
      * update order summary

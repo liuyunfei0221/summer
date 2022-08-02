@@ -6,6 +6,7 @@ import com.blue.basic.model.common.ScrollModelResponse;
 import com.blue.finance.repository.entity.OrderSummary;
 import com.blue.finance.service.inter.OrderSummaryService;
 import com.blue.identity.component.BlueIdentityProcessor;
+import org.apache.hadoop.hbase.client.AsyncConnection;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
@@ -26,8 +27,11 @@ public class OrderSummaryServiceImpl implements OrderSummaryService {
 
     private final BlueIdentityProcessor blueIdentityProcessor;
 
-    public OrderSummaryServiceImpl(BlueIdentityProcessor blueIdentityProcessor) {
+    private final AsyncConnection asyncConnection;
+
+    public OrderSummaryServiceImpl(BlueIdentityProcessor blueIdentityProcessor, AsyncConnection asyncConnection) {
         this.blueIdentityProcessor = blueIdentityProcessor;
+        this.asyncConnection = asyncConnection;
     }
 
     /**
@@ -42,17 +46,6 @@ public class OrderSummaryServiceImpl implements OrderSummaryService {
     }
 
     /**
-     * insert order summary
-     *
-     * @param orderSummary
-     * @return
-     */
-    @Override
-    public Mono<OrderSummary> insertOrderSummary(OrderSummary orderSummary) {
-        return null;
-    }
-
-    /**
      * update order summary async
      *
      * @param orderSummary
@@ -60,6 +53,17 @@ public class OrderSummaryServiceImpl implements OrderSummaryService {
      */
     @Override
     public Mono<OrderSummary> updateOrderSummaryAsync(OrderSummary orderSummary) {
+        return null;
+    }
+
+    /**
+     * insert order summary
+     *
+     * @param orderSummary
+     * @return
+     */
+    @Override
+    public Mono<OrderSummary> insertOrderSummary(OrderSummary orderSummary) {
         return null;
     }
 

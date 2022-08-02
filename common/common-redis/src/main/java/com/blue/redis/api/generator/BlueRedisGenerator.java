@@ -121,7 +121,7 @@ public final class BlueRedisGenerator {
      *
      * @param conf
      */
-    private static void confAsserter(RedisConf conf) {
+    private static void assertConf(RedisConf conf) {
         if (isNull(conf))
             throw new RuntimeException("conf can't be null");
 
@@ -135,7 +135,7 @@ public final class BlueRedisGenerator {
      * @return
      */
     public static RedisConfiguration generateConfiguration(RedisConf redisConf) {
-        confAsserter(redisConf);
+        assertConf(redisConf);
 
         return CONF_GENERATOR.apply(redisConf);
     }
@@ -147,7 +147,7 @@ public final class BlueRedisGenerator {
      * @return
      */
     public static GenericObjectPoolConfig<ReactiveRedisConnection> generateGenericObjectPoolConfig(RedisConf redisConf) {
-        confAsserter(redisConf);
+        assertConf(redisConf);
 
         GenericObjectPoolConfig<ReactiveRedisConnection> genericObjectPoolConfig = new GenericObjectPoolConfig<>();
 
@@ -170,7 +170,7 @@ public final class BlueRedisGenerator {
      * @return
      */
     public static ClientOptions generateClientOptions(RedisConf redisConf) {
-        confAsserter(redisConf);
+        assertConf(redisConf);
 
         ClientOptions.Builder coBuilder = ClientOptions.builder()
                 .disconnectedBehavior(ClientOptions.DisconnectedBehavior.REJECT_COMMANDS);
@@ -212,7 +212,7 @@ public final class BlueRedisGenerator {
      * @return
      */
     public static LettuceClientConfiguration generateLettuceClientConfiguration(RedisConf redisConf, GenericObjectPoolConfig<ReactiveRedisConnection> genericObjectPoolConfig, ClientOptions clientOptions) {
-        confAsserter(redisConf);
+        assertConf(redisConf);
         if (isNull(genericObjectPoolConfig))
             throw new RuntimeException("genericObjectPoolConfig can't be null");
         if (isNull(clientOptions))
@@ -239,7 +239,7 @@ public final class BlueRedisGenerator {
      * @return
      */
     public static LettuceConnectionFactory generateConnectionFactory(RedisConf redisConf, RedisConfiguration redisConfiguration, LettuceClientConfiguration lettuceClientConfiguration) {
-        confAsserter(redisConf);
+        assertConf(redisConf);
         if (isNull(redisConfiguration))
             throw new RuntimeException("redisConfiguration can't be null");
         if (isNull(lettuceClientConfiguration))
@@ -272,7 +272,7 @@ public final class BlueRedisGenerator {
      * @return
      */
     public static ReactiveStringRedisTemplate generateReactiveStringRedisTemplate(RedisConf redisConf, ReactiveRedisConnectionFactory reactiveRedisConnectionFactory) {
-        confAsserter(redisConf);
+        assertConf(redisConf);
         if (isNull(reactiveRedisConnectionFactory))
             throw new RuntimeException("reactiveRedisConnectionFactory can't be null");
 
@@ -295,7 +295,7 @@ public final class BlueRedisGenerator {
      * @return
      */
     public static RedisTemplate<Object, Object> generateObjectRedisTemplate(RedisConf redisConf, RedisConnectionFactory redisConnectionFactory) {
-        confAsserter(redisConf);
+        assertConf(redisConf);
         if (isNull(redisConnectionFactory))
             throw new RuntimeException("redisConnectionFactory can't be null");
 
@@ -322,7 +322,7 @@ public final class BlueRedisGenerator {
      * @return
      */
     public static <T> RedisTemplate<String, T> generateGenericsRedisTemplate(RedisConf redisConf, RedisConnectionFactory redisConnectionFactory, Class<T> clz) {
-        confAsserter(redisConf);
+        assertConf(redisConf);
         if (isNull(redisConnectionFactory))
             throw new RuntimeException("redisConnectionFactory can't be null");
         if (isNull(clz))
@@ -354,7 +354,7 @@ public final class BlueRedisGenerator {
      * @return
      */
     public static <T> ReactiveRedisTemplate<String, T> generateReactiveRedisTemplate(RedisConf redisConf, ReactiveRedisConnectionFactory reactiveRedisConnectionFactory, Class<T> clz) {
-        confAsserter(redisConf);
+        assertConf(redisConf);
         if (isNull(reactiveRedisConnectionFactory))
             throw new RuntimeException("reactiveRedisConnectionFactory can't be null");
         if (isNull(clz))
@@ -376,7 +376,7 @@ public final class BlueRedisGenerator {
      * @return
      */
     public static <T> CacheManager generateCacheManager(RedisConf redisConf, RedisConnectionFactory redisConnectionFactory) {
-        confAsserter(redisConf);
+        assertConf(redisConf);
         if (isNull(redisConnectionFactory))
             throw new RuntimeException("redisConnectionFactory can't be null");
 
@@ -398,7 +398,7 @@ public final class BlueRedisGenerator {
      * @return
      */
     private static RedisConfiguration generateClusterConfiguration(RedisConf redisConf) {
-        confAsserter(redisConf);
+        assertConf(redisConf);
 
         RedisClusterConfiguration redisClusterConfiguration = new RedisClusterConfiguration();
         try {
@@ -425,7 +425,7 @@ public final class BlueRedisGenerator {
      * @return
      */
     private static RedisConfiguration generateStandConfiguration(RedisConf redisConf) {
-        confAsserter(redisConf);
+        assertConf(redisConf);
 
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
 

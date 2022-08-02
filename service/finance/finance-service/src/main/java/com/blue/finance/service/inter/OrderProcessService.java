@@ -2,10 +2,10 @@ package com.blue.finance.service.inter;
 
 import com.blue.finance.api.model.OrderInfo;
 import com.blue.finance.repository.entity.Order;
-import reactor.core.publisher.Mono;
+import com.blue.finance.repository.entity.OrderArticle;
+import com.blue.finance.repository.entity.ReferenceAmount;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * order service
@@ -19,17 +19,21 @@ public interface OrderProcessService {
      * insert order
      *
      * @param order
+     * @param orderArticles
+     * @param referenceAmounts
      * @return
      */
-    OrderInfo insertOrder(Order order);
+    OrderInfo insertOrder(Order order, List<OrderArticle> orderArticles, List<ReferenceAmount> referenceAmounts);
 
     /**
-     * update a exist order
+     * update order
      *
      * @param order
+     * @param orderArticles
+     * @param referenceAmounts
      * @return
      */
-    OrderInfo updateOrder(Order order);
+    OrderInfo updateOrder(Order order, List<OrderArticle> orderArticles, List<ReferenceAmount> referenceAmounts);
 
     /**
      * delete order
@@ -38,37 +42,5 @@ public interface OrderProcessService {
      * @return
      */
     Boolean deleteOrder(Long id);
-
-    /**
-     * get order by id
-     *
-     * @param id
-     * @return
-     */
-    Optional<OrderInfo> getOrderInfo(Long id);
-
-    /**
-     * get order mono by role id
-     *
-     * @param id
-     * @return
-     */
-    Mono<OrderInfo> getOrderInfoMono(Long id);
-
-    /**
-     * select orders by ids
-     *
-     * @param ids
-     * @return
-     */
-    List<Order> selectOrderByIds(List<Long> ids);
-
-    /**
-     * select orders mono by ids
-     *
-     * @param ids
-     * @return
-     */
-    Mono<List<Order>> selectOrderMonoByIds(List<Long> ids);
 
 }
