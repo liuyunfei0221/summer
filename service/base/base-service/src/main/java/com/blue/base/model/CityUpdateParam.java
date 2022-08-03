@@ -47,8 +47,9 @@ public final class CityUpdateParam extends CityInsertParam {
     public String toString() {
         return "CityUpdateParam{" +
                 "id=" + id +
-                ", stateId=" + super.getStateId() +
-                ", name='" + super.getName() + '\'' +
+                ", stateId=" + stateId +
+                ", name='" + name + '\'' +
                 '}';
     }
+
 }

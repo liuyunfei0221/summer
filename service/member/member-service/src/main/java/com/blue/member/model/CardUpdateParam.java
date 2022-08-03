@@ -11,7 +11,7 @@ import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
-public class CardUpdateParam extends CardInsertParam {
+public final class CardUpdateParam extends CardInsertParam {
 
     private static final long serialVersionUID = -3441737574837229266L;
 
@@ -44,11 +44,11 @@ public class CardUpdateParam extends CardInsertParam {
     public String toString() {
         return "CardUpdateParam{" +
                 "id=" + id +
-                ", name='" + super.getName() + '\'' +
-                ", detail='" + super.getDetail() + '\'' +
-                ", coverId=" + super.getCoverId() +
-                ", contentId=" + super.getContentId() +
-                ", extra='" + super.getExtra() + '\'' +
+                ", name='" + name + '\'' +
+                ", detail='" + detail + '\'' +
+                ", coverId=" + coverId +
+                ", contentId=" + contentId +
+                ", extra='" + extra + '\'' +
                 '}';
     }
 

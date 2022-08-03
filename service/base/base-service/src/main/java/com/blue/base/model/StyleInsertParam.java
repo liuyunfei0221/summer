@@ -19,11 +19,11 @@ public class StyleInsertParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = -1360908773352526780L;
 
-    private String name;
+    protected String name;
 
-    private String attributes;
+    protected String attributes;
 
-    private Integer type;
+    protected Integer type;
 
     public StyleInsertParam() {
     }

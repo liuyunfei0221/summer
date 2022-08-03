@@ -11,7 +11,7 @@ import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
-public class AddressUpdateParam extends AddressInsertParam {
+public final class AddressUpdateParam extends AddressInsertParam {
 
     private static final long serialVersionUID = -1263578787336267342L;
 
@@ -44,15 +44,15 @@ public class AddressUpdateParam extends AddressInsertParam {
     public String toString() {
         return "AddressUpdateParam{" +
                 "id=" + id +
-                ", contact='" + super.getContact() + '\'' +
-                ", gender=" + super.getGender() +
-                ", phone='" + super.getPhone() + '\'' +
-                ", email='" + super.getEmail() + '\'' +
-                ", cityId=" + super.getCityId() +
-                ", areaId=" + super.getAreaId() +
-                ", detail='" + super.getDetail() + '\'' +
-                ", reference='" + super.getReference() + '\'' +
-                ", extra='" + super.getExtra() + '\'' +
+                ", contact='" + contact + '\'' +
+                ", gender=" + gender +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", cityId=" + cityId +
+                ", areaId=" + areaId +
+                ", detail='" + detail + '\'' +
+                ", reference='" + reference + '\'' +
+                ", extra='" + extra + '\'' +
                 '}';
     }
 

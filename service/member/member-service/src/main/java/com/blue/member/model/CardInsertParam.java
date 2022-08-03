@@ -20,21 +20,21 @@ public class CardInsertParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = 7924829796011310024L;
 
-    private String name;
+    protected String name;
 
-    private String detail;
+    protected String detail;
 
     /**
      * cover attachment id
      */
-    private Long coverId;
+    protected Long coverId;
 
     /**
      * content attachment id
      */
-    private Long contentId;
+    protected Long contentId;
 
-    private String extra;
+    protected String extra;
 
     public CardInsertParam() {
     }

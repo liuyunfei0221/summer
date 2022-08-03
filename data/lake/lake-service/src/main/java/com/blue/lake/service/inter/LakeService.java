@@ -20,7 +20,7 @@ public interface LakeService {
      *
      * @param dataEvent
      */
-    void insertEvent(DataEvent dataEvent);
+    Mono<Boolean> insertEvent(DataEvent dataEvent);
 
     /**
      * select by limit

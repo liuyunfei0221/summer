@@ -72,6 +72,7 @@ public class ReferenceAmountServiceImpl implements ReferenceAmountService {
      * @return
      */
     @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public List<ReferenceAmount> insertReferenceAmounts(List<ReferenceAmount> referenceAmounts) {
         LOGGER.info("List<ReferenceAmount> insertReferenceAmounts(List<ReferenceAmount> referenceAmounts), referenceAmounts = {}", referenceAmounts);
         if (isEmpty(referenceAmounts))
@@ -94,6 +95,7 @@ public class ReferenceAmountServiceImpl implements ReferenceAmountService {
      * @return
      */
     @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public Boolean updateReferenceAmount(ReferenceAmount referenceAmount) {
         LOGGER.info("Boolean updateReferenceAmount(ReferenceAmount referenceAmount), referenceAmount = {}", referenceAmount);
         if (isNull(referenceAmount))
@@ -115,6 +117,7 @@ public class ReferenceAmountServiceImpl implements ReferenceAmountService {
      * @return
      */
     @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public Boolean deleteReferenceAmount(Long id) {
         LOGGER.info("Boolean deleteReferenceAmount(Long id), id = {}", id);
         if (isInvalidIdentity(id))

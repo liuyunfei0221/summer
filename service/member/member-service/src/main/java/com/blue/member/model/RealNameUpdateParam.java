@@ -6,7 +6,7 @@ import com.blue.basic.model.exps.BlueException;
 import java.io.Serializable;
 
 import static com.blue.basic.common.base.BlueChecker.isBlank;
-import static com.blue.basic.common.base.ConstantProcessor.assertGenderIdentity;
+import static com.blue.basic.common.base.ConstantProcessor.assertGender;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 
 /**
@@ -15,7 +15,7 @@ import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
-public class RealNameUpdateParam implements Serializable, Asserter {
+public final class RealNameUpdateParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = 4028727042786997123L;
 
@@ -63,7 +63,7 @@ public class RealNameUpdateParam implements Serializable, Asserter {
     public void asserts() {
         if (isBlank(this.realName))
             throw new BlueException(INVALID_PARAM);
-        assertGenderIdentity(this.gender, false);
+        assertGender(this.gender, false);
 
         if (isBlank(this.birthday))
             throw new BlueException(INVALID_PARAM);

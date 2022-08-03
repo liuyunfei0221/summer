@@ -18,29 +18,29 @@ public class CountryInsertParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = -2809095995192275441L;
 
-    private String name;
+    protected String name;
 
-    private String nativeName;
+    protected String nativeName;
 
-    private String numericCode;
+    protected String numericCode;
 
-    private String countryCode;
+    protected String countryCode;
 
-    private String phoneCode;
+    protected String phoneCode;
 
-    private String capital;
+    protected String capital;
 
-    private String currency;
+    protected String currency;
 
-    private String currencySymbol;
+    protected String currencySymbol;
 
-    private String topLevelDomain;
+    protected String topLevelDomain;
 
-    private String region;
+    protected String region;
 
-    private String emoji;
+    protected String emoji;
 
-    private String emojiu;
+    protected String emojiu;
 
     public CountryInsertParam() {
     }

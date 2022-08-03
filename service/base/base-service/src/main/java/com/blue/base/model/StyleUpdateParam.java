@@ -47,9 +47,9 @@ public final class StyleUpdateParam extends StyleInsertParam {
     public String toString() {
         return "StyleUpdateParam{" +
                 "id=" + id +
-                ", name='" + super.getName() + '\'' +
-                ", attributes='" + super.getAttributes() + '\'' +
-                ", type=" + super.getType() +
+                ", name='" + name + '\'' +
+                ", attributes='" + attributes + '\'' +
+                ", type=" + type +
                 '}';
     }
 

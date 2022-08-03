@@ -45,12 +45,12 @@ public final class RewardDateRelationUpdateParam extends RewardDateRelationInser
 
     @Override
     public String toString() {
-        return "RewardDateRelationInsertParam{" +
+        return "RewardDateRelationUpdateParam{" +
                 "id=" + id +
-                ", rewardId=" + super.getRewardId() +
-                ", year=" + super.getYear() +
-                ", month=" + super.getMonth() +
-                ", day=" + super.getDay() +
+                ", rewardId=" + rewardId +
+                ", year=" + year +
+                ", month=" + month +
+                ", day=" + day +
                 '}';
     }
 

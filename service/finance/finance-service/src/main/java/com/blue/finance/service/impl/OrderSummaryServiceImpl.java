@@ -3,16 +3,18 @@ package com.blue.finance.service.impl;
 import com.blue.basic.model.common.Pit;
 import com.blue.basic.model.common.ScrollModelRequest;
 import com.blue.basic.model.common.ScrollModelResponse;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.finance.repository.entity.OrderSummary;
 import com.blue.finance.service.inter.OrderSummaryService;
-import com.blue.identity.component.BlueIdentityProcessor;
-import org.apache.hadoop.hbase.client.AsyncConnection;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.util.List;
 import java.util.Optional;
 
+import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -20,29 +22,41 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "UnusedReturnValue"})
+@Service
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 public class OrderSummaryServiceImpl implements OrderSummaryService {
 
     private static final Logger LOGGER = getLogger(OrderSummaryServiceImpl.class);
 
-    private final BlueIdentityProcessor blueIdentityProcessor;
-
-    private final AsyncConnection asyncConnection;
-
-    public OrderSummaryServiceImpl(BlueIdentityProcessor blueIdentityProcessor, AsyncConnection asyncConnection) {
-        this.blueIdentityProcessor = blueIdentityProcessor;
-        this.asyncConnection = asyncConnection;
-    }
+//    private final BlueIdentityProcessor blueIdentityProcessor;
+//
+//    private final AsyncConnection asyncConnection;
+//
+//    private final RestClient restClient;
+//
+//    private final OrderSummaryProducer orderSummaryProducer;
+//
+//    public OrderSummaryServiceImpl(BlueIdentityProcessor blueIdentityProcessor, AsyncConnection asyncConnection, RestClient restClient, OrderSummaryProducer orderSummaryProducer) {
+//        this.blueIdentityProcessor = blueIdentityProcessor;
+//        this.asyncConnection = asyncConnection;
+//        this.restClient = restClient;
+//        this.orderSummaryProducer = orderSummaryProducer;
+//    }
 
     /**
-     * insert order summary async
+     * insert order summary
      *
      * @param orderSummary
      * @return
      */
     @Override
-    public Mono<OrderSummary> insertOrderSummaryAsync(OrderSummary orderSummary) {
-        return null;
+    public OrderSummary insertOrderSummary(OrderSummary orderSummary) {
+        LOGGER.info("OrderSummary insertOrderSummary(OrderSummary orderSummary), orderSummary = {}", orderSummary);
+        if (isNull(orderSummary))
+            throw new BlueException(INVALID_PARAM);
+
+
+        return orderSummary;
     }
 
     /**
@@ -52,19 +66,14 @@ public class OrderSummaryServiceImpl implements OrderSummaryService {
      * @return
      */
     @Override
-    public Mono<OrderSummary> updateOrderSummaryAsync(OrderSummary orderSummary) {
-        return null;
-    }
+    public OrderSummary updateOrderSummaryAsync(OrderSummary orderSummary) {
+        LOGGER.info("OrderSummary updateOrderSummaryAsync(OrderSummary orderSummary), orderSummary = {}", orderSummary);
 
-    /**
-     * insert order summary
-     *
-     * @param orderSummary
-     * @return
-     */
-    @Override
-    public Mono<OrderSummary> insertOrderSummary(OrderSummary orderSummary) {
-        return null;
+
+//        orderSummaryProducer.send(orderSummary);
+
+
+        return orderSummary;
     }
 
     /**
@@ -74,7 +83,10 @@ public class OrderSummaryServiceImpl implements OrderSummaryService {
      * @return
      */
     @Override
-    public Mono<OrderSummary> updateOrderSummary(OrderSummary orderSummary) {
+    public OrderSummary updateOrderSummary(OrderSummary orderSummary) {
+        LOGGER.info("OrderSummary updateOrderSummary(OrderSummary orderSummary), orderSummary = {}", orderSummary);
+
+
         return null;
     }
 

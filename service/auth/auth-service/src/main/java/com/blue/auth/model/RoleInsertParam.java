@@ -19,11 +19,11 @@ public class RoleInsertParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = -4099297009366670202L;
 
-    private String name;
+    protected String name;
 
-    private String description;
+    protected String description;
 
-    private Integer level;
+    protected Integer level;
 
     public RoleInsertParam() {
     }

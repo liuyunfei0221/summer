@@ -13,6 +13,8 @@ public class OrderSummary implements Serializable {
 
     private static final long serialVersionUID = 3234801680742676200L;
 
+    private Long id;
+
     private Order order;
 
     List<OrderArticle> orderArticles;
@@ -24,11 +26,20 @@ public class OrderSummary implements Serializable {
     public OrderSummary() {
     }
 
-    public OrderSummary(Order order, List<OrderArticle> orderArticles, List<ReferenceAmount> referenceAmounts, Long version) {
+    public OrderSummary(Long id, Order order, List<OrderArticle> orderArticles, List<ReferenceAmount> referenceAmounts, Long version) {
+        this.id = id;
         this.order = order;
         this.orderArticles = orderArticles;
         this.referenceAmounts = referenceAmounts;
         this.version = version;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Order getOrder() {
@@ -66,7 +77,8 @@ public class OrderSummary implements Serializable {
     @Override
     public String toString() {
         return "OrderSummary{" +
-                "order=" + order +
+                "id=" + id +
+                ", order=" + order +
                 ", orderArticles=" + orderArticles +
                 ", referenceAmounts=" + referenceAmounts +
                 ", version=" + version +

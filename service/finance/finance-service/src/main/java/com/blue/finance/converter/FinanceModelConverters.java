@@ -3,7 +3,9 @@ package com.blue.finance.converter;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.finance.api.model.FinanceFlowInfo;
 import com.blue.finance.api.model.FinanceFlowManagerInfo;
+import com.blue.finance.api.model.OrderInfo;
 import com.blue.finance.repository.entity.FinanceFlow;
+import com.blue.finance.repository.entity.Order;
 
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -43,6 +45,17 @@ public final class FinanceModelConverters {
         return new FinanceFlowManagerInfo(financeFlow.getId(), financeFlow.getMemberId(), ofNullable(idAndMemberNameMapping.get(financeFlow.getMemberId())).orElse(EMPTY_DATA.value),
                 financeFlow.getOrderId(), financeFlow.getOrderNo(), financeFlow.getFlowNo(), financeFlow.getType(),
                 financeFlow.getChangeType(), financeFlow.getAmountChanged(), financeFlow.getAmountBeforeChanged(), financeFlow.getAmountAfterChanged(), financeFlow.getCreateTime());
+    };
+
+    /**
+     * order -> order info
+     */
+    public static final Function<Order, OrderInfo> ORDER_2_ORDER_INFO_CONVERTER = order -> {
+        if (isNull(order))
+            throw new BlueException(EMPTY_PARAM);
+
+        return new OrderInfo(order.getId(), order.getMemberId(), order.getOrderNo(), order.getFlowNo(), order.getType(), order.getPaymentType(), order.getAmount(), order.getPayAmount(),
+                order.getExtra(), order.getPaymentExtra(), order.getDetail(), order.getStatus());
     };
 
 }

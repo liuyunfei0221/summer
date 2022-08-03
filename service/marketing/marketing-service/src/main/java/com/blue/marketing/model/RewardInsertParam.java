@@ -19,23 +19,23 @@ public class RewardInsertParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = -4099297009366670202L;
 
-    private String name;
+    protected String name;
 
-    private String detail;
+    protected String detail;
 
-    private String link;
+    protected String link;
 
     /**
      * reward type
      *
      * @see com.blue.basic.constant.marketing.RewardType
      */
-    private Integer type;
+    protected Integer type;
 
     /**
      * reward json
      */
-    private String data;
+    protected String data;
 
     public RewardInsertParam() {
     }

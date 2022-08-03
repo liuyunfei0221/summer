@@ -24,8 +24,8 @@ public class BlueIdentityConfig extends BaseIdentityConfParams {
     }
 
     @Override
-    public Consumer<Long> getMaximumTimeAlarm() {
-        return seconds -> System.err.println("Maximum time to reach " + seconds);
+    public Consumer<Long> getSecondsRecorder() {
+        return null;
     }
 
     @Override
@@ -34,8 +34,8 @@ public class BlueIdentityConfig extends BaseIdentityConfParams {
     }
 
     @Override
-    public Consumer<Long> getSecondsRecorder() {
-        return null;
+    public Consumer<Long> getMaximumTimeAlarm() {
+        return seconds -> System.err.println("Maximum time to reach " + seconds);
     }
 
 }

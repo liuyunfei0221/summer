@@ -105,7 +105,7 @@ public class MemberDetailServiceImpl implements MemberDetailService {
         ofNullable(memberDetailUpdateParam.getName()).filter(BlueChecker::isNotBlank)
                 .ifPresent(memberDetail::setName);
         ofNullable(memberDetailUpdateParam.getGender()).ifPresent(gender -> {
-            assertGenderIdentity(gender, false);
+            assertGender(gender, false);
             memberDetail.setGender(gender);
         });
         ofNullable(memberDetailUpdateParam.getPhone()).filter(BlueChecker::isNotBlank)

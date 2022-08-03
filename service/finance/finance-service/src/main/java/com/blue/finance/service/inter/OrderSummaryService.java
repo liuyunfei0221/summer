@@ -18,12 +18,12 @@ import java.util.Optional;
 public interface OrderSummaryService {
 
     /**
-     * insert order summary async
+     * insert order summary
      *
      * @param orderSummary
      * @return
      */
-    Mono<OrderSummary> insertOrderSummaryAsync(OrderSummary orderSummary);
+    OrderSummary insertOrderSummary(OrderSummary orderSummary);
 
     /**
      * update order summary async
@@ -31,15 +31,7 @@ public interface OrderSummaryService {
      * @param orderSummary
      * @return
      */
-    Mono<OrderSummary> updateOrderSummaryAsync(OrderSummary orderSummary);
-
-    /**
-     * insert order summary
-     *
-     * @param orderSummary
-     * @return
-     */
-    Mono<OrderSummary> insertOrderSummary(OrderSummary orderSummary);
+    OrderSummary updateOrderSummaryAsync(OrderSummary orderSummary);
 
     /**
      * update order summary
@@ -47,7 +39,7 @@ public interface OrderSummaryService {
      * @param orderSummary
      * @return
      */
-    Mono<OrderSummary> updateOrderSummary(OrderSummary orderSummary);
+    OrderSummary updateOrderSummary(OrderSummary orderSummary);
 
     /**
      * get order summary mono by id

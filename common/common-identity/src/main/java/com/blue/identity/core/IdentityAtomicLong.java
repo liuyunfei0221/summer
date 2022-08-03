@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "JavaDoc"})
-public final class IdentityAtomicLong extends AtomicLong {
+final class IdentityAtomicLong extends AtomicLong {
 
     private static final long serialVersionUID = -3415778863941386253L;
 

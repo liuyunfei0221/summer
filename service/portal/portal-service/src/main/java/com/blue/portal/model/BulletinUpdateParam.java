@@ -45,15 +45,15 @@ public final class BulletinUpdateParam extends BulletinInsertParam {
 
     @Override
     public String toString() {
-        return "BulletinInsertParam{" +
+        return "BulletinUpdateParam{" +
                 "id=" + id +
-                ", title='" + super.getTitle() + '\'' +
-                ", content='" + super.getContent() + '\'' +
-                ", link='" + super.getLink() + '\'' +
-                ", type=" + super.getType() +
-                ", priority=" + super.getPriority() +
-                ", activeTime=" + super.getActiveTime() +
-                ", expireTime=" + super.getExpireTime() +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", link='" + link + '\'' +
+                ", type=" + type +
+                ", priority=" + priority +
+                ", activeTime=" + activeTime +
+                ", expireTime=" + expireTime +
                 '}';
     }
 

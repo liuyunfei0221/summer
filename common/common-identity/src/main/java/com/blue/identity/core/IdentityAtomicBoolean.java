@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "JavaDoc"})
-public final class IdentityAtomicBoolean extends AtomicBoolean {
+final class IdentityAtomicBoolean extends AtomicBoolean {
 
     private static final long serialVersionUID = 5201477379823890713L;
 

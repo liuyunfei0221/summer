@@ -4,17 +4,21 @@ import com.blue.auth.component.access.AccessInfoCache;
 import com.blue.auth.config.blue.BlueConsumerConfig;
 import com.blue.auth.event.model.InvalidLocalAccessEvent;
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
 import com.blue.pulsar.common.BluePulsarListener;
+import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
 import java.util.function.Consumer;
 
 import static com.blue.basic.constant.common.BlueTopic.INVALID_LOCAL_ACCESS;
+import static com.blue.basic.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
 import static java.util.Optional.ofNullable;
+import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 
@@ -30,12 +34,15 @@ public final class InvalidLocalAccessConsumer implements BlueLifecycle {
 
     private final BlueConsumerConfig blueConsumerConfig;
 
+    private final Scheduler scheduler;
+
     private final AccessInfoCache accessInfoCache;
 
     private BluePulsarListener<InvalidLocalAccessEvent> invalidLocalAccessConsumer;
 
-    public InvalidLocalAccessConsumer(BlueConsumerConfig blueConsumerConfig, AccessInfoCache accessInfoCache) {
+    public InvalidLocalAccessConsumer(BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, AccessInfoCache accessInfoCache) {
         this.blueConsumerConfig = blueConsumerConfig;
+        this.scheduler = scheduler;
         this.accessInfoCache = accessInfoCache;
     }
 
@@ -44,9 +51,10 @@ public final class InvalidLocalAccessConsumer implements BlueLifecycle {
         Consumer<InvalidLocalAccessEvent> invalidLocalAccessDataConsumer = invalidLocalAccessEvent ->
                 ofNullable(invalidLocalAccessEvent)
                         .map(InvalidLocalAccessEvent::getKeyId)
-                        .ifPresent(keyId -> accessInfoCache.invalidLocalAccessInfo(keyId)
-                                .doOnError(throwable -> LOGGER.info("accessInfoCache.invalidLocalAccessInfo(keyId) failed, keyId = {}, throwable = {}", keyId, throwable))
-                                .subscribe(b -> LOGGER.info("accessInfoCache.invalidLocalAccessInfo(keyId), b = {}, keyId = {}", b, keyId)));
+                        .ifPresent(kid -> just(kid).publishOn(scheduler).map(accessInfoCache::invalidLocalAccessInfo)
+                                .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
+                                .doOnError(throwable -> LOGGER.info("accessInfoCache.invalidLocalAccessInfo(kid) failed, kid = {}, throwable = {}", kid, throwable))
+                                .subscribe(b -> LOGGER.info("accessInfoCache.invalidLocalAccessInfo(kid), b = {}, kid = {}", b, kid)));
 
         this.invalidLocalAccessConsumer = BluePulsarListenerGenerator.generateListener(blueConsumerConfig.getByKey(INVALID_LOCAL_ACCESS.name), invalidLocalAccessDataConsumer);
     }

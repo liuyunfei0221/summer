@@ -26,7 +26,7 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * IdentityProcessor is the Bean of the context.It also provides a simple static method for obtaining ID.
+ * IdentityProcessor is the Bean of the context.It also provides a simple static method for parse ID.
  *
  * @author liuyunfei
  */
@@ -92,7 +92,7 @@ public final class BlueIdentityProcessor {
                         null
                 , identityConf.getPaddingScheduledInitialDelayMillis(), identityConf.getPaddingScheduledDelayMillis());
 
-        LOGGER.info("IdentityProcessor init success, idGenParam = {}", idGenParam);
+        LOGGER.info("BlueIdentityProcessor init success, idGenParam = {}", idGenParam);
     }
 
     /**

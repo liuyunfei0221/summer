@@ -54,7 +54,7 @@ public final class BlueIdentityGenerator {
                 idGenParam.getScheduledExecutorService(), idGenParam.getPaddingScheduledInitialDelayMillis(), idGenParam.getPaddingScheduledDelayMillis(), bufferSize,
                 ofNullable(idGenParam.getPaddingFactor()).filter(f -> f >= MIN_PADDING_FACTOR.threshold && f <= MAX_PADDING_FACTOR.threshold).orElse(DEFAULT_PADDING_FACTOR.threshold)));
 
-        LOGGER.info("Initialized BlueBufferedIdentityGenerator successfully, idGenParam = {}", idGenParam);
+        LOGGER.info("Initialized BlueIdentityGenerator successfully, idGenParam = {}", idGenParam);
     }
 
     /**
@@ -72,7 +72,7 @@ public final class BlueIdentityGenerator {
     }
 
     /**
-     * Parse id attribute
+     * Parse id
      *
      * @param id
      * @return

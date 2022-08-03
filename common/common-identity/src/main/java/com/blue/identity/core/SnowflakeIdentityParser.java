@@ -27,7 +27,6 @@ public final class SnowflakeIdentityParser {
     private static final int DATA_CENTER_RIGHT_SHIFT = BITS_64 - DATA_CENTER.len;
     private static final int SECONDS_RIGHT_SHIFT = DATA_CENTER.len + WORKER.len + SEQUENCE.len;
 
-
     /**
      * Parse id attribute
      *

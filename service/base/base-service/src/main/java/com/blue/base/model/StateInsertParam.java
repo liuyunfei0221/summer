@@ -19,13 +19,13 @@ public class StateInsertParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = 969597394384394829L;
 
-    private Long countryId;
+    protected Long countryId;
 
-    private String name;
+    protected String name;
 
-    private String fipsCode;
+    protected String fipsCode;
 
-    private String stateCode;
+    protected String stateCode;
 
     public StateInsertParam() {
     }

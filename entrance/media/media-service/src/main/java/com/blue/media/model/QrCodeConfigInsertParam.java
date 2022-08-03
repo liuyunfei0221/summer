@@ -20,27 +20,27 @@ public class QrCodeConfigInsertParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = 1231929861874694375L;
 
-    private String name;
+    protected String name;
 
-    private String description;
+    protected String description;
 
     /**
      * unique qr code type
      */
-    private Integer type;
+    protected Integer type;
 
     /**
      * @see com.blue.basic.constant.media.QrCodeGenType
      */
-    private Integer genHandlerType;
+    protected Integer genHandlerType;
 
-    private String domain;
+    protected String domain;
 
-    private String pathToBeFilled;
+    protected String pathToBeFilled;
 
-    private Integer placeholderCount;
+    protected Integer placeholderCount;
 
-    private List<Long> allowedRoles;
+    protected List<Long> allowedRoles;
 
     public QrCodeConfigInsertParam() {
     }

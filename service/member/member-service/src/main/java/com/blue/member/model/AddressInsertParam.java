@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 import static com.blue.basic.common.base.BlueChecker.isBlank;
 import static com.blue.basic.common.base.BlueChecker.isNull;
-import static com.blue.basic.common.base.ConstantProcessor.assertGenderIdentity;
+import static com.blue.basic.common.base.ConstantProcessor.assertGender;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 import static com.blue.basic.constant.member.BlueMemberThreshold.*;
 
@@ -21,26 +21,26 @@ public class AddressInsertParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = -2573029715775428776L;
 
-    private String contact;
+    protected String contact;
 
-    private Integer gender;
+    protected Integer gender;
 
     /**
      * phone format: 8613131693996
      */
-    private String phone;
+    protected String phone;
 
-    private String email;
+    protected String email;
 
-    private Long cityId;
+    protected Long cityId;
 
-    private Long areaId;
+    protected Long areaId;
 
-    private String detail;
+    protected String detail;
 
-    private String reference;
+    protected String reference;
 
-    private String extra;
+    protected String extra;
 
     public AddressInsertParam() {
     }
@@ -61,7 +61,7 @@ public class AddressInsertParam implements Serializable, Asserter {
     public void asserts() {
         if (isBlank(this.contact) || isBlank(this.phone) || isNull(this.cityId) || isBlank(this.detail) || isBlank(this.reference))
             throw new BlueException(INVALID_PARAM);
-        assertGenderIdentity(this.gender, false);
+        assertGender(this.gender, false);
 
         int length = contact.length();
         if (length < CONTACT_LEN_MIN.value || length > CONTACT_LEN_MAX.value)

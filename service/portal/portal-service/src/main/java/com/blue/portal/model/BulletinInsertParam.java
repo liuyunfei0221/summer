@@ -20,22 +20,22 @@ public class BulletinInsertParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = 1404149561470599216L;
 
-    private String title;
+    protected String title;
 
-    private String content;
+    protected String content;
 
-    private String link;
+    protected String link;
 
     /**
      * @see com.blue.basic.constant.portal.BulletinType
      */
-    private Integer type;
+    protected Integer type;
 
-    private Integer priority;
+    protected Integer priority;
 
-    private Long activeTime;
+    protected Long activeTime;
 
-    private Long expireTime;
+    protected Long expireTime;
 
     public BulletinInsertParam() {
     }

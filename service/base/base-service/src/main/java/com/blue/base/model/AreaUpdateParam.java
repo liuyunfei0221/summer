@@ -46,8 +46,9 @@ public final class AreaUpdateParam extends AreaInsertParam {
     public String toString() {
         return "AreaUpdateParam{" +
                 "id=" + id +
-                ", cityId=" + super.getCityId() +
-                ", name='" + super.getName() + '\'' +
+                ", cityId=" + cityId +
+                ", name='" + name + '\'' +
                 '}';
     }
+
 }

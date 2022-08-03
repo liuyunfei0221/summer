@@ -18,10 +18,10 @@ import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 public class AreaInsertParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = -3747454352086271819L;
-    
-    private Long cityId;
 
-    private String name;
+    protected Long cityId;
+
+    protected String name;
 
     public AreaInsertParam() {
     }

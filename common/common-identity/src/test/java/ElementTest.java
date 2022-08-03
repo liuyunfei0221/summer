@@ -5,7 +5,7 @@ public class ElementTest {
 
     public static void main(String[] args) {
 
-        IdentityElement parse = BlueIdentityParser.parse(32128188251340801L);
+        IdentityElement parse = BlueIdentityParser.parse(43721902711111681L);
 
         System.err.println(parse);
 

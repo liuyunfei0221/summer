@@ -20,13 +20,13 @@ public class RewardDateRelationInsertParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = -4099297009366670202L;
 
-    private Long rewardId;
+    protected Long rewardId;
 
-    private Integer year;
+    protected Integer year;
 
-    private Integer month;
+    protected Integer month;
 
-    private Integer day;
+    protected Integer day;
 
     public RewardDateRelationInsertParam() {
     }

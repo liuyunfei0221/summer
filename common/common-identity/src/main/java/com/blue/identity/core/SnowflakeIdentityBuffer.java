@@ -29,7 +29,7 @@ public final class SnowflakeIdentityBuffer {
     private final SnowflakeIdentityGenerator snowflakeIdentityGenerator;
 
     /**
-     * id is valid?
+     * is id valid?
      */
     private static final long INVALID = -1L;
 
@@ -132,7 +132,7 @@ public final class SnowflakeIdentityBuffer {
      */
     private void asyncPaddingWithThreshold(long head, long tail) {
         bufferPadExecutor.submit(() -> {
-            if ((int) (tail - head) < paddingThreshold)
+            if ((tail >= 0L & head >= 0L) && (int) (tail - head) < paddingThreshold)
                 put();
         });
     }

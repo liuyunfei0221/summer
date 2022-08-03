@@ -6,6 +6,7 @@ import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.event.EmptyEvent;
 import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
 import com.blue.pulsar.common.BluePulsarListener;
+import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
@@ -15,6 +16,7 @@ import static com.blue.basic.constant.common.BlueTopic.SYSTEM_AUTHORITY_INFOS_RE
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
 import static java.util.Optional.ofNullable;
+import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -28,12 +30,15 @@ public final class SystemAuthorityInfosRefreshConsumer implements BlueLifecycle 
 
     private final BlueConsumerConfig blueConsumerConfig;
 
+    private final Scheduler scheduler;
+
     private final AuthControlService authControlService;
 
     private BluePulsarListener<EmptyEvent> systemAuthorityInfosRefreshConsumer;
 
-    public SystemAuthorityInfosRefreshConsumer(BlueConsumerConfig blueConsumerConfig, AuthControlService authControlService) {
+    public SystemAuthorityInfosRefreshConsumer(BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, AuthControlService authControlService) {
         this.blueConsumerConfig = blueConsumerConfig;
+        this.scheduler = scheduler;
         this.authControlService = authControlService;
     }
 
@@ -41,12 +46,10 @@ public final class SystemAuthorityInfosRefreshConsumer implements BlueLifecycle 
     private void init() {
         Consumer<EmptyEvent> systemAuthorityInfosRefreshDataConsumer = emptyEvent ->
                 ofNullable(emptyEvent)
-                        .ifPresent(ee -> {
-                            LOGGER.info("systemAuthorityInfosRefreshDataConsumer received");
-                            authControlService.refreshSystemAuthorityInfos()
-                                    .doOnError(throwable -> LOGGER.info("controlService.refreshSystemAuthorityInfos() failed, throwable = {}", throwable))
-                                    .subscribe(v -> LOGGER.info("controlService.refreshSystemAuthorityInfos()"));
-                        });
+                        .ifPresent(ee -> just(ee).publishOn(scheduler)
+                                .then(authControlService.refreshSystemAuthorityInfos())
+                                .doOnError(throwable -> LOGGER.info("authControlService.refreshSystemAuthorityInfos() failed, ee = {}, throwable = {}", ee, throwable))
+                                .subscribe(ig -> LOGGER.info("authControlService.refreshSystemAuthorityInfos(), ig = {}, ee = {}", ig, ee)));
 
         this.systemAuthorityInfosRefreshConsumer = BluePulsarListenerGenerator.generateListener(blueConsumerConfig.getByKey(SYSTEM_AUTHORITY_INFOS_REFRESH.name), systemAuthorityInfosRefreshDataConsumer);
     }

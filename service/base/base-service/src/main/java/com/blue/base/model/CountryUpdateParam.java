@@ -49,20 +49,20 @@ public final class CountryUpdateParam extends CountryInsertParam {
 
     @Override
     public String toString() {
-        return "CityUpdateParam{" +
+        return "CountryUpdateParam{" +
                 "id=" + id +
-                ", name='" + super.getName() + '\'' +
-                ", nativeName='" + super.getNativeName() + '\'' +
-                ", numericCode='" + super.getNumericCode() + '\'' +
-                ", countryCode='" + super.getCountryCode() + '\'' +
-                ", phoneCode='" + super.getPhoneCode() + '\'' +
-                ", capital='" + super.getCapital() + '\'' +
-                ", currency='" + super.getCurrency() + '\'' +
-                ", currencySymbol='" + super.getCurrencySymbol() + '\'' +
-                ", topLevelDomain='" + super.getTopLevelDomain() + '\'' +
-                ", region='" + super.getRegion() + '\'' +
-                ", emoji='" + super.getEmoji() + '\'' +
-                ", emojiu='" + super.getEmojiu() + '\'' +
+                ", name='" + name + '\'' +
+                ", nativeName='" + nativeName + '\'' +
+                ", numericCode='" + numericCode + '\'' +
+                ", countryCode='" + countryCode + '\'' +
+                ", phoneCode='" + phoneCode + '\'' +
+                ", capital='" + capital + '\'' +
+                ", currency='" + currency + '\'' +
+                ", currencySymbol='" + currencySymbol + '\'' +
+                ", topLevelDomain='" + topLevelDomain + '\'' +
+                ", region='" + region + '\'' +
+                ", emoji='" + emoji + '\'' +
+                ", emojiu='" + emojiu + '\'' +
                 '}';
     }
 

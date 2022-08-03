@@ -19,9 +19,9 @@ public class CityInsertParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = 1833652005271327501L;
 
-    private Long stateId;
+    protected Long stateId;
 
-    private String name;
+    protected String name;
 
     public CityInsertParam() {
     }

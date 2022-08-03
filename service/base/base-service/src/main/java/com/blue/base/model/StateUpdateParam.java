@@ -45,12 +45,13 @@ public final class StateUpdateParam extends StateInsertParam {
 
     @Override
     public String toString() {
-        return "CityUpdateParam{" +
+        return "StateUpdateParam{" +
                 "id=" + id +
-                ", countryId=" + super.getCountryId() +
-                ", name='" + super.getName() + '\'' +
-                ", fipsCode='" + super.getFipsCode() + '\'' +
-                ", stateCode='" + super.getStateCode() + '\'' +
+                ", countryId=" + countryId +
+                ", name='" + name + '\'' +
+                ", fipsCode='" + fipsCode + '\'' +
+                ", stateCode='" + stateCode + '\'' +
                 '}';
     }
+
 }

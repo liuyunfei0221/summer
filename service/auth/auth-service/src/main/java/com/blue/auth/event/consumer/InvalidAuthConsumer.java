@@ -4,17 +4,21 @@ import com.blue.auth.config.blue.BlueConsumerConfig;
 import com.blue.auth.service.inter.AuthControlService;
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.event.InvalidAuthEvent;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
 import com.blue.pulsar.common.BluePulsarListener;
+import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
 import java.util.function.Consumer;
 
 import static com.blue.basic.constant.common.BlueTopic.INVALID_AUTH;
+import static com.blue.basic.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
 import static java.util.Optional.ofNullable;
+import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 
@@ -30,12 +34,15 @@ public final class InvalidAuthConsumer implements BlueLifecycle {
 
     private final BlueConsumerConfig blueConsumerConfig;
 
+    private final Scheduler scheduler;
+
     private final AuthControlService authControlService;
 
     private BluePulsarListener<InvalidAuthEvent> invalidAuthConsumer;
 
-    public InvalidAuthConsumer(BlueConsumerConfig blueConsumerConfig, AuthControlService authControlService) {
+    public InvalidAuthConsumer(BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, AuthControlService authControlService) {
         this.blueConsumerConfig = blueConsumerConfig;
+        this.scheduler = scheduler;
         this.authControlService = authControlService;
     }
 
@@ -44,9 +51,10 @@ public final class InvalidAuthConsumer implements BlueLifecycle {
         Consumer<InvalidAuthEvent> invalidAuthDataConsumer = invalidLocalAuthEvent ->
                 ofNullable(invalidLocalAuthEvent)
                         .map(InvalidAuthEvent::getMemberId)
-                        .ifPresent(memberId -> authControlService.invalidateAuthByMemberId(memberId)
-                                .doOnError(throwable -> LOGGER.info("controlService.invalidateAuthByMemberId(memberId) failed, memberId = {}, throwable = {}", memberId, throwable))
-                                .subscribe(b -> LOGGER.info("controlService.invalidateAuthByMemberId(memberId), b = {}, memberId = {}", b, memberId)));
+                        .ifPresent(mid -> just(mid).publishOn(scheduler).map(authControlService::invalidateAuthByMemberId)
+                                .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
+                                .doOnError(throwable -> LOGGER.info("authControlService.invalidateAuthByMemberId(mid) failed, mid = {}, throwable = {}", mid, throwable))
+                                .subscribe(b -> LOGGER.info("authControlService.invalidateAuthByMemberId(mid), b = {}, mid = {}", b, mid)));
 
         this.invalidAuthConsumer = BluePulsarListenerGenerator.generateListener(blueConsumerConfig.getByKey(INVALID_AUTH.name), invalidAuthDataConsumer);
     }

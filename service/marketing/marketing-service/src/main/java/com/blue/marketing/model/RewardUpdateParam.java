@@ -47,11 +47,11 @@ public final class RewardUpdateParam extends RewardInsertParam {
     public String toString() {
         return "RewardUpdateParam{" +
                 "id=" + id +
-                ", name='" + super.getName() + '\'' +
-                ", detail='" + super.getDetail() + '\'' +
-                ", link='" + super.getLink() + '\'' +
-                ", type=" + super.getType() +
-                ", data='" + super.getData() + '\'' +
+                ", name='" + name + '\'' +
+                ", detail='" + detail + '\'' +
+                ", link='" + link + '\'' +
+                ", type=" + type +
+                ", data='" + data + '\'' +
                 '}';
     }
 

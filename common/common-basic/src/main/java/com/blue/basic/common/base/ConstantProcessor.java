@@ -347,7 +347,7 @@ public final class ConstantProcessor {
      *
      * @param identity
      */
-    public static void assertGenderIdentity(Integer identity, boolean nullable) {
+    public static void assertGender(Integer identity, boolean nullable) {
         if (nullable && isNull(identity))
             return;
 

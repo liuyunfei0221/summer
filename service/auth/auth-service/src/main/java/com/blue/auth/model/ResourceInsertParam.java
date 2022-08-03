@@ -25,62 +25,62 @@ public class ResourceInsertParam implements Serializable, Asserter {
     /**
      * request method str/upper
      */
-    private String requestMethod;
+    protected String requestMethod;
 
     /**
      * module/service name
      */
-    private String module;
+    protected String module;
 
     /**
      * resource uri
      */
-    private String uri;
+    protected String uri;
 
     /**
      * relation view
      */
-    private String relationView;
+    protected String relationView;
 
     /**
      * certificate resource?
      */
-    private Boolean authenticate;
+    protected Boolean authenticate;
 
     /**
      * decrypt request param?
      */
-    private Boolean requestUnDecryption;
+    protected Boolean requestUnDecryption;
 
     /**
      * encrypt response result?
      */
-    private Boolean responseUnEncryption;
+    protected Boolean responseUnEncryption;
 
     /**
      * has request body?
      */
-    private Boolean existenceRequestBody;
+    protected Boolean existenceRequestBody;
 
     /**
      * has response body?
      */
-    private Boolean existenceResponseBody;
+    protected Boolean existenceResponseBody;
 
     /**
      * @see com.blue.basic.constant.auth.ResourceType
      */
-    private Integer type;
+    protected Integer type;
 
     /**
      * resource name
      */
-    private String name;
+    protected String name;
 
     /**
      * desc
      */
-    private String description;
+    protected String description;
 
     public ResourceInsertParam() {
     }

@@ -13,7 +13,7 @@ import java.util.function.Function;
 
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.basic.common.base.ConstantProcessor.assertGenderIdentity;
+import static com.blue.basic.common.base.ConstantProcessor.assertGender;
 import static com.blue.basic.common.base.ConstantProcessor.assertSource;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
@@ -56,27 +56,26 @@ public final class MemberModelConverters {
         if (isBlank(name))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank");
 
+        Integer gender = ofNullable(memberRegistryParam.getGender())
+                .orElse(UNKNOWN.identity);
+        assertGender(gender, false);
+
+        String source = ofNullable(memberRegistryParam.getSource())
+                .filter(BlueChecker::isNotBlank).orElse(APP.identity);
+        assertSource(source, false);
+
         Long stamp = TIME_STAMP_GETTER.get();
 
         MemberBasic memberBasic = new MemberBasic();
         memberBasic.setPhone(phone);
         memberBasic.setEmail(email);
-
         memberBasic.setName(name);
-        memberBasic.setIcon(memberRegistryParam.getIcon());
+        memberBasic.setIcon(ofNullable(memberRegistryParam.getIcon()).orElse(EMPTY_DATA.value));
         memberBasic.setQrCode(EMPTY_DATA.value);
-        memberBasic.setGender(ofNullable(memberRegistryParam.getGender())
-                .map(gender -> {
-                    assertGenderIdentity(gender, false);
-                    return gender;
-                }).orElseGet(() -> UNKNOWN.identity));
+        memberBasic.setGender(gender);
+        memberBasic.setProfile(EMPTY_DATA.value);
         memberBasic.setStatus(Status.VALID.status);
-
-        String source = ofNullable(memberRegistryParam.getSource())
-                .filter(BlueChecker::isNotBlank).orElse(APP.identity);
-        assertSource(source, false);
         memberBasic.setSource(source);
-
         memberBasic.setCreateTime(stamp);
         memberBasic.setUpdateTime(stamp);
 

@@ -43,19 +43,19 @@ public final class ResourceUpdateParam extends ResourceInsertParam {
     @Override
     public String toString() {
         return "ResourceUpdateParam{" +
-                "id='" + id + '\'' +
-                ", requestMethod='" + super.getRequestMethod() + '\'' +
-                ", module='" + super.getModule() + '\'' +
-                ", uri='" + super.getUri() + '\'' +
-                ", relationView='" + super.getRelationView() + '\'' +
-                ", authenticate=" + super.getAuthenticate() +
-                ", requestUnDecryption=" + super.getRequestUnDecryption() +
-                ", responseUnEncryption=" + super.getResponseUnEncryption() +
-                ", existenceRequestBody=" + super.getExistenceRequestBody() +
-                ", existenceResponseBody=" + super.getExistenceResponseBody() +
-                ", type=" + super.getType() +
-                ", name='" + super.getName() + '\'' +
-                ", description='" + super.getDescription() + '\'' +
+                "id=" + id +
+                ", requestMethod='" + requestMethod + '\'' +
+                ", module='" + module + '\'' +
+                ", uri='" + uri + '\'' +
+                ", relationView='" + relationView + '\'' +
+                ", authenticate=" + authenticate +
+                ", requestUnDecryption=" + requestUnDecryption +
+                ", responseUnEncryption=" + responseUnEncryption +
+                ", existenceRequestBody=" + existenceRequestBody +
+                ", existenceResponseBody=" + existenceResponseBody +
+                ", type=" + type +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
                 '}';
     }
 

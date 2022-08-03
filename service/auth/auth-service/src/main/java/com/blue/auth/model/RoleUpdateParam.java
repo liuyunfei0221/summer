@@ -47,8 +47,10 @@ public final class RoleUpdateParam extends RoleInsertParam {
     public String toString() {
         return "RoleUpdateParam{" +
                 "id=" + id +
-                ", name='" + super.getName() + '\'' +
-                ", description='" + super.getDescription() + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", level=" + level +
                 '}';
     }
+
 }

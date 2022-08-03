@@ -11,10 +11,13 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 
 import static com.blue.basic.constant.common.BlueCommonThreshold.LIMIT;
 import static com.blue.basic.constant.common.BlueCommonThreshold.ROWS;
 import static com.blue.lake.converter.LakeModelConverters.DATA_EVENT_2_OPT_EVENT;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
+import static reactor.core.publisher.Mono.fromFuture;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
@@ -29,12 +32,15 @@ public class LakeServiceImpl implements LakeService {
 
     private static final Logger LOGGER = getLogger(LakeServiceImpl.class);
 
+    private ExecutorService executorService;
+
     private final OptEventMapper optEventMapper;
 
     private final BlueIdentityProcessor blueIdentityProcessor;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public LakeServiceImpl(OptEventMapper optEventMapper, BlueIdentityProcessor blueIdentityProcessor) {
+    public LakeServiceImpl(ExecutorService executorService, OptEventMapper optEventMapper, BlueIdentityProcessor blueIdentityProcessor) {
+        this.executorService = executorService;
         this.optEventMapper = optEventMapper;
         this.blueIdentityProcessor = blueIdentityProcessor;
     }
@@ -45,15 +51,19 @@ public class LakeServiceImpl implements LakeService {
      * @param dataEvent
      */
     @Override
-    public void insertEvent(DataEvent dataEvent) {
-        LOGGER.info("void insertEvent(DataEvent dataEvent), dataEvent = {}", dataEvent);
+    public Mono<Boolean> insertEvent(DataEvent dataEvent) {
+        LOGGER.info("Mono<Boolean> insertEvent(DataEvent dataEvent), dataEvent = {}", dataEvent);
 
         OptEvent optEvent = DATA_EVENT_2_OPT_EVENT.apply(dataEvent);
         optEvent.setId(blueIdentityProcessor.generate(OptEvent.class));
 
         //TODO delete
         LOGGER.warn("optEvent = {}", optEvent);
-        optEventMapper.insert(optEvent);
+
+        return fromFuture(supplyAsync(() -> {
+            optEventMapper.insert(optEvent);
+            return true;
+        }, executorService));
     }
 
     /**

@@ -94,7 +94,7 @@ public final class SnowflakeIdentityGenerator {
     private ExecutorService executorService;
 
     public SnowflakeIdentityGenerator(SnowIdGenParam snowIdGenParam) {
-        LOGGER.info("BlueIdentityGenerator init, snowIdGenParam = {}", snowIdGenParam);
+        LOGGER.info("SnowflakeIdentityGenerator init, snowIdGenParam = {}", snowIdGenParam);
 
         int timestampBits = TIME_STAMP.len;
         int dataCenterBits = DATA_CENTER.len;
@@ -150,7 +150,7 @@ public final class SnowflakeIdentityGenerator {
 
         ZoneId zoneId = ZoneId.of(TIME_ZONE);
         LOGGER.info(
-                "Initialized BlueIdentityBuffer successfully, snowIdGenParam = {}, dataCenter = {}, worker = {}, " +
+                "Initialized SnowflakeIdentityGenerator successfully, snowIdGenParam = {}, dataCenter = {}, worker = {}, " +
                         "maxStepTimestamp = {}, maxSequence = {}, sequence = {}, stepSeconds = {}, bootTime = {}, lastTime = {}, stepTime = {}",
                 snowIdGenParam, dataCenter, worker, maxStepTimestamp, maxSequence, sequence, this.stepSeconds,
                 ofInstant(ofEpochSecond(bootSeconds), zoneId).format(DATE_TIME_FORMATTER),
@@ -224,8 +224,6 @@ public final class SnowflakeIdentityGenerator {
             LAST_SECONDS_PROCESSOR.accept(timeStamp);
 
         return (timeStamp << timeStampShift) | dataCenterWithWorkerBitsMask | seq;
-
-//        return ((timestamp - twepoch) << timestampLeftShift) | (datacenterId << datacenterIdShift) | (workerId << workerIdShift) | sequence;
     }
 
 }

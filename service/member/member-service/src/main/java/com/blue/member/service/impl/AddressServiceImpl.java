@@ -39,7 +39,7 @@ import java.util.stream.Stream;
 import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.basic.common.base.ConstantProcessor.assertGenderIdentity;
+import static com.blue.basic.common.base.ConstantProcessor.assertGender;
 import static com.blue.basic.constant.common.BlueCommonThreshold.*;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
@@ -225,7 +225,7 @@ public class AddressServiceImpl implements AddressService {
                 .filter(BlueChecker::isNotBlank).ifPresent(address::setContact);
         ofNullable(addressUpdateParam.getGender())
                 .ifPresent(gi -> {
-                    assertGenderIdentity(gi, true);
+                    assertGender(gi, true);
                     address.setGender(gi);
                 });
         ofNullable(addressUpdateParam.getPhone())

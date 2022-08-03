@@ -49,6 +49,15 @@ public final class QrCodeConfigUpdateParam extends QrCodeConfigInsertParam {
     public String toString() {
         return "QrCodeConfigUpdateParam{" +
                 "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", type=" + type +
+                ", genHandlerType=" + genHandlerType +
+                ", domain='" + domain + '\'' +
+                ", pathToBeFilled='" + pathToBeFilled + '\'' +
+                ", placeholderCount=" + placeholderCount +
+                ", allowedRoles=" + allowedRoles +
                 '}';
     }
+
 }
