@@ -23,6 +23,13 @@ public interface LakeService {
     Mono<Boolean> insertEvent(DataEvent dataEvent);
 
     /**
+     * insert events
+     *
+     * @param dataEvents
+     */
+    Mono<Boolean> insertEvents(List<DataEvent> dataEvents);
+
+    /**
      * select by limit
      *
      * @param limitModelRequest

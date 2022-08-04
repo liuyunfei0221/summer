@@ -174,8 +174,8 @@
         role_res_relation FORCE INDEX(idx_role_res)
         WHERE
         role_id IN
-        <foreach collection="roleIds" open="(" close=")" separator="," item="id" index="index">
-            #{id,jdbcType=BIGINT}
+        <foreach collection="roleIds" open="(" close=")" separator="," item="roleId" index="index">
+            #{roleId,jdbcType=BIGINT}
         </foreach>
     </select>
 
@@ -226,7 +226,7 @@
         </foreach>
     </select>
 
-    <select id="selectExistByRoleIdAndResId" resultMap="BaseResultMap">
+    <select id="selectByRoleIdAndResId" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM

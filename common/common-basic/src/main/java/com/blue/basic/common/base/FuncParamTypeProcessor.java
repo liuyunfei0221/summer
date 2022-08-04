@@ -55,6 +55,9 @@ public final class FuncParamTypeProcessor {
     }
 
     private static Class<?> getConsumerLambdaParameterType(Consumer<?> consumer) {
+        if (consumer == null)
+            throw new RuntimeException("consumer can't be null");
+
         Class<?> consumerClass = consumer.getClass();
         Object constantPool = invoke(consumerClass, GET_CONSTANT_POOL_NAME);
 
@@ -70,6 +73,9 @@ public final class FuncParamTypeProcessor {
     }
 
     private static Class<?> getSupplierLambdaParameterType(Supplier<?> supplier) {
+        if (supplier == null)
+            throw new RuntimeException("supplier can't be null");
+
         Class<?> supplierClass = supplier.getClass();
         Object constantPool = invoke(supplierClass, GET_CONSTANT_POOL_NAME);
 
@@ -85,6 +91,9 @@ public final class FuncParamTypeProcessor {
     }
 
     public static Class<?> getConsumerParameterType(Consumer<?> consumer) {
+        if (consumer == null)
+            throw new RuntimeException("consumer can't be null");
+
         for (Type type : consumer.getClass().getGenericInterfaces()) {
             if (type instanceof ParameterizedType && ((ParameterizedType) type).getRawType() == Consumer.class)
                 return getErased(((ParameterizedType) type).getActualTypeArguments()[0]);
@@ -95,6 +104,9 @@ public final class FuncParamTypeProcessor {
     }
 
     public static Class<?> getSupplierParameterType(Supplier<?> supplier) {
+        if (supplier == null)
+            throw new RuntimeException("supplier can't be null");
+
         for (Type type : supplier.getClass().getGenericInterfaces()) {
             if (type instanceof ParameterizedType && ((ParameterizedType) type).getRawType() == Consumer.class)
                 return getErased(((ParameterizedType) type).getActualTypeArguments()[0]);

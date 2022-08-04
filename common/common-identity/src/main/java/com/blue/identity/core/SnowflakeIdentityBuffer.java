@@ -128,23 +128,6 @@ public final class SnowflakeIdentityBuffer {
     }
 
     /**
-     * padding async
-     */
-    private void asyncPaddingWithThreshold(long head, long tail) {
-        bufferPadExecutor.submit(() -> {
-            if ((tail >= 0L & head >= 0L) && (int) (tail - head) < paddingThreshold)
-                put();
-        });
-    }
-
-    /**
-     * padding async
-     */
-    private void asyncPadding() {
-        bufferPadExecutor.submit(this::put);
-    }
-
-    /**
      * put
      */
     private void put() {
@@ -170,6 +153,23 @@ public final class SnowflakeIdentityBuffer {
     }
 
     /**
+     * padding async
+     */
+    private void asyncPadding() {
+        bufferPadExecutor.submit(this::put);
+    }
+
+    /**
+     * padding async
+     */
+    private void asyncPaddingWithThreshold(long head, long tail) {
+        bufferPadExecutor.submit(() -> {
+            if ((int) (tail - head) < paddingThreshold)
+                asyncPadding();
+        });
+    }
+
+    /**
      * take id
      *
      * @return
@@ -183,6 +183,8 @@ public final class SnowflakeIdentityBuffer {
 
         if (nextHead != curHead)
             return slots[index(nextHead)].getAndUpdate(old -> INVALID);
+
+        asyncPadding();
 
         return snowflakeIdentityGenerator.generate();
     }

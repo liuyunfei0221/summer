@@ -37,7 +37,7 @@ public final class MarketingEventConsumer implements BlueLifecycle {
 
     private final MarketingEventHandleService marketingEventHandleService;
 
-    private BluePulsarListener<MarketingEvent> marketingConsumer;
+    private BluePulsarListener<MarketingEvent> pulsarListener;
 
     public MarketingEventConsumer(BlueConsumerConfig blueConsumerConfig, Scheduler schedule,
                                   MarketingEventHandleService marketingEventHandleService) {
@@ -48,14 +48,14 @@ public final class MarketingEventConsumer implements BlueLifecycle {
 
     @PostConstruct
     private void init() {
-        Consumer<MarketingEvent> marketingDataConsumer = marketingEvent ->
+        Consumer<MarketingEvent> dataConsumer = marketingEvent ->
                 ofNullable(marketingEvent)
                         .ifPresent(me -> just(me).publishOn(scheduler).map(marketingEventHandleService::handleEvent)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
                                 .doOnError(throwable -> LOGGER.info("marketingEventHandleService.handleEvent(me) failed, me = {}, throwable = {}", me, throwable))
                                 .subscribe(er -> LOGGER.info("marketingEventHandleService.handleEvent(me), er = {}, me = {}", er, me)));
 
-        this.marketingConsumer = BluePulsarListenerGenerator.generateListener(blueConsumerConfig.getByKey(MARKETING.name), marketingDataConsumer);
+        this.pulsarListener = BluePulsarListenerGenerator.generateListener(blueConsumerConfig.getByKey(MARKETING.name), dataConsumer);
     }
 
     @Override
@@ -70,14 +70,14 @@ public final class MarketingEventConsumer implements BlueLifecycle {
 
     @Override
     public void start() {
-        this.marketingConsumer.run();
-        LOGGER.warn("marketingDataConsumer start...");
+        this.pulsarListener.run();
+        LOGGER.warn("pulsarListener start...");
     }
 
     @Override
     public void stop() {
-        this.marketingConsumer.shutdown();
-        LOGGER.warn("marketingDataConsumer shutdown...");
+        this.pulsarListener.shutdown();
+        LOGGER.warn("pulsarListener shutdown...");
     }
 
 }

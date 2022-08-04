@@ -5,7 +5,6 @@ import com.blue.auth.service.inter.AuthControlService;
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.event.InvalidAuthEvent;
 import com.blue.basic.model.exps.BlueException;
-import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
 import com.blue.pulsar.common.BluePulsarListener;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
@@ -15,6 +14,7 @@ import java.util.function.Consumer;
 
 import static com.blue.basic.constant.common.BlueTopic.INVALID_AUTH;
 import static com.blue.basic.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.pulsar.api.generator.BluePulsarListenerGenerator.generateListener;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
 import static java.util.Optional.ofNullable;
@@ -38,7 +38,7 @@ public final class InvalidAuthConsumer implements BlueLifecycle {
 
     private final AuthControlService authControlService;
 
-    private BluePulsarListener<InvalidAuthEvent> invalidAuthConsumer;
+    private BluePulsarListener<InvalidAuthEvent> pulsarListener;
 
     public InvalidAuthConsumer(BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, AuthControlService authControlService) {
         this.blueConsumerConfig = blueConsumerConfig;
@@ -48,7 +48,7 @@ public final class InvalidAuthConsumer implements BlueLifecycle {
 
     @PostConstruct
     private void init() {
-        Consumer<InvalidAuthEvent> invalidAuthDataConsumer = invalidLocalAuthEvent ->
+        Consumer<InvalidAuthEvent> dataConsumer = invalidLocalAuthEvent ->
                 ofNullable(invalidLocalAuthEvent)
                         .map(InvalidAuthEvent::getMemberId)
                         .ifPresent(mid -> just(mid).publishOn(scheduler).map(authControlService::invalidateAuthByMemberId)
@@ -56,7 +56,7 @@ public final class InvalidAuthConsumer implements BlueLifecycle {
                                 .doOnError(throwable -> LOGGER.info("authControlService.invalidateAuthByMemberId(mid) failed, mid = {}, throwable = {}", mid, throwable))
                                 .subscribe(b -> LOGGER.info("authControlService.invalidateAuthByMemberId(mid), b = {}, mid = {}", b, mid)));
 
-        this.invalidAuthConsumer = BluePulsarListenerGenerator.generateListener(blueConsumerConfig.getByKey(INVALID_AUTH.name), invalidAuthDataConsumer);
+        this.pulsarListener = generateListener(blueConsumerConfig.getByKey(INVALID_AUTH.name), dataConsumer);
     }
 
     @Override
@@ -71,14 +71,14 @@ public final class InvalidAuthConsumer implements BlueLifecycle {
 
     @Override
     public void start() {
-        this.invalidAuthConsumer.run();
-        LOGGER.warn("invalidAuthConsumer start...");
+        this.pulsarListener.run();
+        LOGGER.warn("pulsarListener start...");
     }
 
     @Override
     public void stop() {
-        this.invalidAuthConsumer.shutdown();
-        LOGGER.warn("invalidAuthConsumer shutdown...");
+        this.pulsarListener.shutdown();
+        LOGGER.warn("pulsarListener shutdown...");
     }
 
 }

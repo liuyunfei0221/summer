@@ -34,7 +34,7 @@ public final class RewardsRefreshConsumer implements BlueLifecycle {
 
     private final SignInService signInService;
 
-    private BluePulsarListener<EmptyEvent> rewardsRefreshConsumer;
+    private BluePulsarListener<EmptyEvent> pulsarListener;
 
     public RewardsRefreshConsumer(BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, SignInService signInService) {
         this.blueConsumerConfig = blueConsumerConfig;
@@ -44,14 +44,14 @@ public final class RewardsRefreshConsumer implements BlueLifecycle {
 
     @PostConstruct
     private void init() {
-        Consumer<EmptyEvent> rewardsRefreshDataConsumer = emptyEvent ->
+        Consumer<EmptyEvent> dataConsumer = emptyEvent ->
                 ofNullable(emptyEvent)
                         .ifPresent(ee -> just(ee).publishOn(scheduler)
                                 .then(signInService.refreshDayRewards())
                                 .doOnError(throwable -> LOGGER.info("signInService.refreshDayRewards() failed, ee = {}, throwable = {}", ee, throwable))
                                 .subscribe(ig -> LOGGER.info("signInService.refreshDayRewards(), ig = {}, ee = {}", ig, ee)));
 
-        this.rewardsRefreshConsumer = BluePulsarListenerGenerator.generateListener(blueConsumerConfig.getByKey(REWARDS_REFRESH.name), rewardsRefreshDataConsumer);
+        this.pulsarListener = BluePulsarListenerGenerator.generateListener(blueConsumerConfig.getByKey(REWARDS_REFRESH.name), dataConsumer);
     }
 
     @Override
@@ -66,14 +66,14 @@ public final class RewardsRefreshConsumer implements BlueLifecycle {
 
     @Override
     public void start() {
-        this.rewardsRefreshConsumer.run();
-        LOGGER.warn("rewardsRefreshConsumer start...");
+        this.pulsarListener.run();
+        LOGGER.warn("pulsarListener start...");
     }
 
     @Override
     public void stop() {
-        this.rewardsRefreshConsumer.shutdown();
-        LOGGER.warn("rewardsRefreshConsumer shutdown...");
+        this.pulsarListener.shutdown();
+        LOGGER.warn("pulsarListener shutdown...");
     }
 
 }

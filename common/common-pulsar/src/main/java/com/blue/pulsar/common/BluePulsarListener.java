@@ -29,7 +29,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "FieldCanBeLocal", "AlibabaAvoidManuallyCreateThread", "JavaDoc"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "FieldCanBeLocal", "AlibabaAvoidManuallyCreateThread", "JavaDoc", "DuplicatedCode"})
 public final class BluePulsarListener<T extends Serializable> {
 
     private static final Logger LOGGER = getLogger(BluePulsarListener.class);
@@ -193,8 +193,11 @@ public final class BluePulsarListener<T extends Serializable> {
             Message<T> message = null;
             while (running)
                 try {
-                    if ((message = pulsarConsumer.receive(POLL_DURATION_MILLS, POLL_DURATION_UNIT)) != null)
+                    if ((message = pulsarConsumer.receive(POLL_DURATION_MILLS, POLL_DURATION_UNIT)) != null) {
                         EVENT_CONSUMER.accept(message);
+                    } else {
+                        onSpinWait();
+                    }
                 } catch (PulsarClientException e) {
                     LOGGER.error("handle() received failed, message = {}, e = {}", message, e);
                     onSpinWait();
@@ -205,8 +208,11 @@ public final class BluePulsarListener<T extends Serializable> {
             Messages<T> messages = null;
             while (running)
                 try {
-                    if ((messages = pulsarConsumer.batchReceive()) != null)
+                    if ((messages = pulsarConsumer.batchReceive()) != null && messages.size() > 0) {
                         EVENTS_CONSUMER.accept(messages);
+                    } else {
+                        onSpinWait();
+                    }
                 } catch (PulsarClientException e) {
                     LOGGER.error(" handleBatch() received failed, messages = {}, e = {}", messages, e);
                     onSpinWait();

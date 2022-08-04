@@ -84,7 +84,7 @@ public final class BlueIdentityProcessor {
             r.run();
         }), paddingScheduled,
                 ofNullable(paddingScheduled).orElse(false) ?
-                        new ScheduledThreadPoolExecutor(identityConf.getPaddingScheduledCorePoolSize(), Thread::new, (r, executor) -> {
+                        new ScheduledThreadPoolExecutor(identityConf.getPaddingScheduledCorePoolSize(), threadFactory, (r, executor) -> {
                             LOGGER.error("Timed padding thread rejected");
                             r.run();
                         })

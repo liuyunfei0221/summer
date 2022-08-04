@@ -5,7 +5,6 @@ import com.blue.basic.model.exps.BlueException;
 import com.blue.finance.config.blue.BlueConsumerConfig;
 import com.blue.finance.repository.entity.OrderSummary;
 import com.blue.finance.service.inter.OrderSummaryService;
-import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
 import com.blue.pulsar.common.BluePulsarListener;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
@@ -15,6 +14,7 @@ import java.util.function.Consumer;
 
 import static com.blue.basic.constant.common.BlueTopic.ORDER_SUMMARY;
 import static com.blue.basic.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.pulsar.api.generator.BluePulsarListenerGenerator.generateListener;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
 import static java.util.Optional.ofNullable;
@@ -38,7 +38,7 @@ public final class OrderSummaryConsumer implements BlueLifecycle {
 
     private final OrderSummaryService orderSummaryService;
 
-    private BluePulsarListener<OrderSummary> orderSummaryConsumer;
+    private BluePulsarListener<OrderSummary> pulsarListener;
 
     public OrderSummaryConsumer(BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, OrderSummaryService orderSummaryService) {
         this.blueConsumerConfig = blueConsumerConfig;
@@ -48,14 +48,14 @@ public final class OrderSummaryConsumer implements BlueLifecycle {
 
     @PostConstruct
     private void init() {
-        Consumer<OrderSummary> orderSummaryDataConsumer = orderSummary ->
+        Consumer<OrderSummary> dataConsumer = orderSummary ->
                 ofNullable(orderSummary)
                         .ifPresent(os -> just(os).publishOn(scheduler).map(orderSummaryService::updateOrderSummary)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
                                 .doOnError(throwable -> LOGGER.info("orderSummaryService.refreshOrderSummary(os) failed, os = {}, throwable = {}", os, throwable))
                                 .subscribe(b -> LOGGER.info("orderSummaryService.refreshOrderSummary(os), b = {}, os = {}", b, os)));
 
-        this.orderSummaryConsumer = BluePulsarListenerGenerator.generateListener(blueConsumerConfig.getByKey(ORDER_SUMMARY.name), orderSummaryDataConsumer);
+        this.pulsarListener = generateListener(blueConsumerConfig.getByKey(ORDER_SUMMARY.name), dataConsumer);
     }
 
     @Override
@@ -70,14 +70,14 @@ public final class OrderSummaryConsumer implements BlueLifecycle {
 
     @Override
     public void start() {
-        this.orderSummaryConsumer.run();
-        LOGGER.warn("orderSummaryConsumer start...");
+        this.pulsarListener.run();
+        LOGGER.warn("pulsarListener start...");
     }
 
     @Override
     public void stop() {
-        this.orderSummaryConsumer.shutdown();
-        LOGGER.warn("orderSummaryConsumer shutdown...");
+        this.pulsarListener.shutdown();
+        LOGGER.warn("pulsarListener shutdown...");
     }
 
 }

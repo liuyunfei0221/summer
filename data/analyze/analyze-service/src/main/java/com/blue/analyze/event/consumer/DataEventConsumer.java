@@ -5,7 +5,6 @@ import com.blue.analyze.config.blue.BlueConsumerConfig;
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.event.DataEvent;
 import com.blue.basic.model.exps.BlueException;
-import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
 import com.blue.pulsar.common.BluePulsarListener;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
@@ -15,6 +14,7 @@ import java.util.function.Consumer;
 
 import static com.blue.basic.constant.common.BlueTopic.REQUEST_EVENT;
 import static com.blue.basic.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.pulsar.api.generator.BluePulsarListenerGenerator.generateListener;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
 import static java.util.Optional.ofNullable;
@@ -37,7 +37,7 @@ public final class DataEventConsumer implements BlueLifecycle {
 
     private final StatisticsProcessor statisticsProcessor;
 
-    private BluePulsarListener<DataEvent> dataEventConsumer;
+    private BluePulsarListener<DataEvent> pulsarListener;
 
     public DataEventConsumer(BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, StatisticsProcessor statisticsProcessor) {
         this.blueConsumerConfig = blueConsumerConfig;
@@ -47,14 +47,14 @@ public final class DataEventConsumer implements BlueLifecycle {
 
     @PostConstruct
     private void init() {
-        Consumer<DataEvent> dataEventDataConsumer = dataEvent ->
+        Consumer<DataEvent> dataConsumer = dataEvent ->
                 ofNullable(dataEvent)
                         .ifPresent(de -> just(de).publishOn(scheduler).map(statisticsProcessor::process)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
                                 .doOnError(throwable -> LOGGER.info("statisticsProcessor.process(de) failed, de = {}, throwable = {}", de, throwable))
                                 .subscribe(b -> LOGGER.info("statisticsProcessor.process(de), b = {}, de = {}", b, de)));
 
-        this.dataEventConsumer = BluePulsarListenerGenerator.generateListener(blueConsumerConfig.getByKey(REQUEST_EVENT.name), dataEventDataConsumer);
+        this.pulsarListener = generateListener(blueConsumerConfig.getByKey(REQUEST_EVENT.name), dataConsumer);
     }
 
     @Override
@@ -69,14 +69,14 @@ public final class DataEventConsumer implements BlueLifecycle {
 
     @Override
     public void start() {
-        this.dataEventConsumer.run();
-        LOGGER.warn("dataEventConsumer start...");
+        this.pulsarListener.run();
+        LOGGER.warn("pulsarListener start...");
     }
 
     @Override
     public void stop() {
-        this.dataEventConsumer.shutdown();
-        LOGGER.warn("dataEventConsumer shutdown...");
+        this.pulsarListener.shutdown();
+        LOGGER.warn("pulsarListener shutdown...");
     }
 
 }

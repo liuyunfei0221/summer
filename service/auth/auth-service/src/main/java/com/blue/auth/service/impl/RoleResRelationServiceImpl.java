@@ -25,6 +25,7 @@ import reactor.util.Logger;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
 
 import static com.blue.auth.converter.AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER;
 import static com.blue.auth.converter.AuthModelConverters.ROLE_2_ROLE_INFO_CONVERTER;
@@ -37,6 +38,7 @@ import static com.blue.basic.constant.common.CacheKey.ROLE_RES_RELS;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collector.Characteristics.CONCURRENT;
 import static java.util.stream.Collectors.*;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
@@ -81,12 +83,9 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     /**
      * is a relation exist?
      */
-    private final Consumer<RoleResRelation> INSERT_RELATION_VALIDATOR = relation -> {
+    private final Consumer<RoleResRelation> INSERT_ITEM_VALIDATOR = relation -> {
         if (isNull(relation))
             throw new BlueException(EMPTY_PARAM);
-
-        if (isInvalidIdentity(relation.getId()))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "id is invalid");
 
         Long roleId = relation.getRoleId();
         if (isInvalidIdentity(roleId))
@@ -102,8 +101,38 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         if (isInvalidIdentity(relation.getCreator()))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "creator is invalid");
 
-        if (isNotNull(roleResRelationMapper.selectExistByRoleIdAndResId(roleId, resId)))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "The data base res and role already exists");
+        if (isNotNull(roleResRelationMapper.selectByRoleIdAndResId(roleId, resId)))
+            throw new BlueException(DATA_ALREADY_EXIST.status, DATA_ALREADY_EXIST.code, "The data base res and role already exists");
+    };
+
+    private static final Collector<RoleResRelation, Set<Long>, Set<Long>> RES_ID_SET_COLLECTOR = Collector.of(
+            HashSet::new,
+            (set, rel) -> set.add(rel.getResId()),
+            (a, b) -> {
+                a.addAll(b);
+                return a;
+            }, CONCURRENT);
+
+    /**
+     * is a relation exist?
+     */
+    private final Consumer<List<RoleResRelation>> INSERT_ITEMS_VALIDATOR = relations -> {
+        if (isEmpty(relations))
+            throw new BlueException(EMPTY_PARAM);
+
+        Set<Long> roleIds = new HashSet<>();
+
+        for (RoleResRelation relation : relations) {
+            INSERT_ITEM_VALIDATOR.accept(relation);
+            roleIds.add(relation.getRoleId());
+        }
+
+        Map<Long, Set<Long>> roleIdAndResIdSetMapping = roleResRelationMapper.selectByRoleIds(new ArrayList<>(roleIds))
+                .stream().collect(groupingBy(RoleResRelation::getRoleId, RES_ID_SET_COLLECTOR));
+
+        for (RoleResRelation relation : relations)
+            if (ofNullable(roleIdAndResIdSetMapping.get(relation.getRoleId())).map(set -> set.contains(relation.getResId())).isPresent())
+                throw new BlueException(DATA_ALREADY_EXIST.status, DATA_ALREADY_EXIST.code, "The data base res and role already exists");
     };
 
     private final Consumer<String> CACHE_DELETER = key ->
@@ -166,11 +195,13 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public int insertRelation(RoleResRelation roleResRelation) {
-        LOGGER.info("void insertRelation(RoleResRelation roleResRelation), roleResRelation = {}", roleResRelation);
+        LOGGER.info("int insertRelation(RoleResRelation roleResRelation), roleResRelation = {}", roleResRelation);
         if (isNull(roleResRelation))
             throw new BlueException(EMPTY_PARAM);
 
-        INSERT_RELATION_VALIDATOR.accept(roleResRelation);
+        INSERT_ITEM_VALIDATOR.accept(roleResRelation);
+        if (isInvalidIdentity(roleResRelation.getId()))
+            roleResRelation.setId(blueIdentityProcessor.generate(RoleResRelation.class));
 
         CACHE_DELETER.accept(ROLE_RES_RELS.key);
         int inserted = roleResRelationMapper.insert(roleResRelation);
@@ -188,13 +219,15 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public int insertRelationBatch(List<RoleResRelation> roleResRelations) {
-        LOGGER.info("insertRelationBatch(List<RoleResRelation> roleResRelations), roleResRelations = {}", roleResRelations);
-        if (isEmpty(roleResRelations))
-            throw new BlueException(EMPTY_PARAM);
+        LOGGER.info("int insertRelationBatch(List<RoleResRelation> roleResRelations), roleResRelations = {}", roleResRelations);
+
+        INSERT_ITEMS_VALIDATOR.accept(roleResRelations);
+        for (RoleResRelation roleResRelation : roleResRelations)
+            if (isInvalidIdentity(roleResRelation.getId()))
+                roleResRelation.setId(blueIdentityProcessor.generate(RoleResRelation.class));
 
         CACHE_DELETER.accept(ROLE_RES_RELS.key);
-        int inserted = roleResRelationMapper.insertBatch(roleResRelations.stream().filter(Objects::nonNull)
-                .peek(INSERT_RELATION_VALIDATOR).collect(toList()));
+        int inserted = roleResRelationMapper.insertBatch(roleResRelations);
         CACHE_DELETER.accept(ROLE_RES_RELS.key);
 
         return inserted;

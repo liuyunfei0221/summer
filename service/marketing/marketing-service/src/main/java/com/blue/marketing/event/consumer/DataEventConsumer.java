@@ -34,7 +34,7 @@ public final class DataEventConsumer implements BlueLifecycle {
 
     private final Scheduler scheduler;
 
-    private BluePulsarListener<DataEvent> dataEventConsumer;
+    private BluePulsarListener<DataEvent> pulsarListener;
 
     public DataEventConsumer(BlueConsumerConfig blueConsumerConfig, Scheduler scheduler) {
         this.blueConsumerConfig = blueConsumerConfig;
@@ -43,14 +43,14 @@ public final class DataEventConsumer implements BlueLifecycle {
 
     @PostConstruct
     private void init() {
-        Consumer<DataEvent> dataEventDataConsumer = dataEvent ->
+        Consumer<DataEvent> dataConsumer = dataEvent ->
                 ofNullable(dataEvent)
                         .ifPresent(de -> just(de).publishOn(scheduler).map(a -> a)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
                                 .doOnError(throwable -> LOGGER.info("test(de) failed, ff = {}, throwable = {}", de, throwable))
                                 .subscribe(b -> LOGGER.info("test(de), b = {}, de = {}", b, de)));
 
-        this.dataEventConsumer = BluePulsarListenerGenerator.generateListener(blueConsumerConfig.getByKey(REQUEST_EVENT.name), dataEventDataConsumer);
+        this.pulsarListener = BluePulsarListenerGenerator.generateListener(blueConsumerConfig.getByKey(REQUEST_EVENT.name), dataConsumer);
     }
 
     @Override
@@ -65,14 +65,14 @@ public final class DataEventConsumer implements BlueLifecycle {
 
     @Override
     public void start() {
-        this.dataEventConsumer.run();
-        LOGGER.warn("dataEventConsumer start...");
+        this.pulsarListener.run();
+        LOGGER.warn("pulsarListener start...");
     }
 
     @Override
     public void stop() {
-        this.dataEventConsumer.shutdown();
-        LOGGER.warn("dataEventConsumer shutdown...");
+        this.pulsarListener.shutdown();
+        LOGGER.warn("pulsarListener shutdown...");
     }
 
 }

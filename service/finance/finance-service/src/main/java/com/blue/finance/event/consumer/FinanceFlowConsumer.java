@@ -5,7 +5,6 @@ import com.blue.basic.model.exps.BlueException;
 import com.blue.finance.config.blue.BlueConsumerConfig;
 import com.blue.finance.repository.entity.FinanceFlow;
 import com.blue.finance.service.inter.FinanceFlowService;
-import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
 import com.blue.pulsar.common.BluePulsarListener;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
@@ -15,6 +14,7 @@ import java.util.function.Consumer;
 
 import static com.blue.basic.constant.common.BlueTopic.FINANCE_FLOW;
 import static com.blue.basic.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.pulsar.api.generator.BluePulsarListenerGenerator.generateListener;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
 import static java.util.Optional.ofNullable;
@@ -38,7 +38,7 @@ public final class FinanceFlowConsumer implements BlueLifecycle {
 
     private final FinanceFlowService financeFlowService;
 
-    private BluePulsarListener<FinanceFlow> financeFlowConsumer;
+    private BluePulsarListener<FinanceFlow> pulsarListener;
 
     public FinanceFlowConsumer(BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, FinanceFlowService financeFlowService) {
         this.blueConsumerConfig = blueConsumerConfig;
@@ -48,14 +48,14 @@ public final class FinanceFlowConsumer implements BlueLifecycle {
 
     @PostConstruct
     private void init() {
-        Consumer<FinanceFlow> financeFlowDataConsumer = financeFlow ->
+        Consumer<FinanceFlow> dataConsumer = financeFlow ->
                 ofNullable(financeFlow)
                         .ifPresent(ff -> just(ff).publishOn(scheduler).map(financeFlowService::insertFinanceFlow)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
                                 .doOnError(throwable -> LOGGER.info("financeFlowService.insertFinanceFlow(ff) failed, ff = {}, throwable = {}", ff, throwable))
                                 .subscribe(b -> LOGGER.info("financeFlowService.insertFinanceFlow(ff), b = {}, ff = {}", b, ff)));
 
-        this.financeFlowConsumer = BluePulsarListenerGenerator.generateListener(blueConsumerConfig.getByKey(FINANCE_FLOW.name), financeFlowDataConsumer);
+        this.pulsarListener = generateListener(blueConsumerConfig.getByKey(FINANCE_FLOW.name), dataConsumer);
     }
 
     @Override
@@ -70,14 +70,14 @@ public final class FinanceFlowConsumer implements BlueLifecycle {
 
     @Override
     public void start() {
-        this.financeFlowConsumer.run();
-        LOGGER.warn("financeFlowConsumer start...");
+        this.pulsarListener.run();
+        LOGGER.warn("pulsarListener start...");
     }
 
     @Override
     public void stop() {
-        this.financeFlowConsumer.shutdown();
-        LOGGER.warn("financeFlowConsumer shutdown...");
+        this.pulsarListener.shutdown();
+        LOGGER.warn("pulsarListener shutdown...");
     }
 
 }

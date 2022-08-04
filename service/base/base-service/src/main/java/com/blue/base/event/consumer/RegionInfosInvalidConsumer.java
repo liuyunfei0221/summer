@@ -4,7 +4,6 @@ import com.blue.base.config.blue.BlueConsumerConfig;
 import com.blue.base.service.inter.RegionControlService;
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.event.EmptyEvent;
-import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
 import com.blue.pulsar.common.BluePulsarListener;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
@@ -13,6 +12,7 @@ import javax.annotation.PostConstruct;
 import java.util.function.Consumer;
 
 import static com.blue.basic.constant.common.BlueTopic.REGION_INFOS_INVALID;
+import static com.blue.pulsar.api.generator.BluePulsarListenerGenerator.generateListener;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
 import static java.util.Optional.ofNullable;
@@ -34,7 +34,7 @@ public final class RegionInfosInvalidConsumer implements BlueLifecycle {
 
     private final RegionControlService regionControlService;
 
-    private BluePulsarListener<EmptyEvent> regionInfosInvalidConsumer;
+    private BluePulsarListener<EmptyEvent> pulsarListener;
 
     public RegionInfosInvalidConsumer(BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, RegionControlService regionControlService) {
         this.blueConsumerConfig = blueConsumerConfig;
@@ -44,14 +44,14 @@ public final class RegionInfosInvalidConsumer implements BlueLifecycle {
 
     @PostConstruct
     private void init() {
-        Consumer<EmptyEvent> regionInfosInvalidConsumerDataConsumer = emptyEvent ->
+        Consumer<EmptyEvent> dataConsumer = emptyEvent ->
                 ofNullable(emptyEvent)
                         .ifPresent(ee -> just(ee).publishOn(scheduler)
                                 .then(regionControlService.invalidAllCache())
                                 .doOnError(throwable -> LOGGER.info("regionControlService.invalidAllCache() failed, ee = {}, throwable = {}", ee, throwable))
                                 .subscribe(ig -> LOGGER.info("regionControlService.invalidAllCache(), ig = {}, ee = {}", ig, ee)));
 
-        this.regionInfosInvalidConsumer = BluePulsarListenerGenerator.generateListener(blueConsumerConfig.getByKey(REGION_INFOS_INVALID.name), regionInfosInvalidConsumerDataConsumer);
+        this.pulsarListener = generateListener(blueConsumerConfig.getByKey(REGION_INFOS_INVALID.name), dataConsumer);
     }
 
     @Override
@@ -66,14 +66,14 @@ public final class RegionInfosInvalidConsumer implements BlueLifecycle {
 
     @Override
     public void start() {
-        this.regionInfosInvalidConsumer.run();
-        LOGGER.warn("regionInfosInvalidConsumer start...");
+        this.pulsarListener.run();
+        LOGGER.warn("pulsarListener start...");
     }
 
     @Override
     public void stop() {
-        this.regionInfosInvalidConsumer.shutdown();
-        LOGGER.warn("regionInfosInvalidConsumer shutdown...");
+        this.pulsarListener.shutdown();
+        LOGGER.warn("pulsarListener shutdown...");
     }
 
 }
