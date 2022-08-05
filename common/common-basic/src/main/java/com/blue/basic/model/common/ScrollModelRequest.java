@@ -9,7 +9,7 @@ import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_ROWS;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 
 /**
- * scroll model request params
+ * scroll request model
  *
  * @author liuyunfei
  */
@@ -26,19 +26,19 @@ public final class ScrollModelRequest<T extends Serializable> implements Seriali
     private Long rows;
 
     /**
-     * current identity
+     * cursor
      */
-    private T identity;
+    private T cursor;
 
     public ScrollModelRequest() {
     }
 
-    public ScrollModelRequest(Long rows, T identity) {
+    public ScrollModelRequest(Long rows, T cursor) {
         if (isNull(rows) || rows < 1L || rows > MAX_ROWS_PER_REQ)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "rows can't be less than 1, max rows per request can't be greater than " + MAX_ROWS.value);
 
         this.rows = rows;
-        this.identity = identity;
+        this.cursor = cursor;
     }
 
     public Long getRows() {
@@ -52,19 +52,19 @@ public final class ScrollModelRequest<T extends Serializable> implements Seriali
         this.rows = rows;
     }
 
-    public T getIdentity() {
-        return identity;
+    public T getCursor() {
+        return cursor;
     }
 
-    public void setIdentity(T identity) {
-        this.identity = identity;
+    public void setCursor(T cursor) {
+        this.cursor = cursor;
     }
 
     @Override
     public String toString() {
         return "ScrollModelRequest{" +
                 "rows=" + rows +
-                ", identity=" + identity +
+                ", cursor=" + cursor +
                 '}';
     }
 

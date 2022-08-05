@@ -651,7 +651,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        MemberBasicCondition memberBasicCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
+        MemberBasicCondition memberBasicCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
         return zip(selectMemberBasicMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberBasicCondition), countMemberBasicMonoByCondition(memberBasicCondition))
                 .flatMap(tuple2 -> {

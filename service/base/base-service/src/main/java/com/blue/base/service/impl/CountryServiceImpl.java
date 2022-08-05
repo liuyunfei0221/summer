@@ -582,7 +582,7 @@ public class CountryServiceImpl implements CountryService {
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
+        Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
         return zip(
                 selectCountryMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),

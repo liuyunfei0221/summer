@@ -267,7 +267,7 @@ public class EventRecordServiceImpl implements EventRecordService {
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        EventRecordCondition eventRecordCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
+        EventRecordCondition eventRecordCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
         return zip(selectEventRecordMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), eventRecordCondition), countEventRecordMonoByCondition(eventRecordCondition))
                 .flatMap(tuple2 -> {

@@ -10,7 +10,7 @@ import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 import static java.util.Optional.ofNullable;
 
 /**
- * page model request params
+ * page request model
  *
  * @author liuyunfei
  */
@@ -33,14 +33,14 @@ public final class PageModelRequest<T> implements Serializable {
     private Long rows;
 
     /**
-     * differentiated parameter package
+     * differentiated condition
      */
-    private T param;
+    private T condition;
 
     public PageModelRequest() {
     }
 
-    public PageModelRequest(Long page, Long rows, T param) {
+    public PageModelRequest(Long page, Long rows, T condition) {
         if (isNull(page) || page < 1L)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "page can't be less than 1, max rows per page can't be greater than " + MAX_ROWS.value);
         if (isNull(rows) || rows < 1L || rows > MAX_ROWS_PER_REQ)
@@ -48,7 +48,7 @@ public final class PageModelRequest<T> implements Serializable {
 
         this.page = page;
         this.rows = rows;
-        this.param = param;
+        this.condition = condition;
     }
 
     public Long getPage() {
@@ -77,20 +77,20 @@ public final class PageModelRequest<T> implements Serializable {
         this.rows = rows;
     }
 
-    public T getParam() {
-        return param;
+    public T getCondition() {
+        return condition;
     }
 
-    public void setParam(T param) {
-        this.param = param;
+    public void setCondition(T condition) {
+        this.condition = condition;
     }
 
     @Override
     public String toString() {
-        return "PageModelDTO{" +
+        return "PageModelRequest{" +
                 "page=" + page +
                 ", rows=" + rows +
-                ", param=" + param +
+                ", condition=" + condition +
                 '}';
     }
 

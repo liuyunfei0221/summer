@@ -180,7 +180,7 @@ public class VerifyHistoryServiceImpl implements VerifyHistoryService {
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
+        Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
         return zip(selectVerifyHistoryMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),
                 countVerifyHistoryMonoByQuery(query)

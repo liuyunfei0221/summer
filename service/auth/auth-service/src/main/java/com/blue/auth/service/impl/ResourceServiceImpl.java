@@ -456,7 +456,7 @@ public class ResourceServiceImpl implements ResourceService {
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        ResourceCondition resourceCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
+        ResourceCondition resourceCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
         return zip(selectResourceMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), resourceCondition), countResourceMonoByCondition(resourceCondition))
                 .flatMap(tuple2 -> {

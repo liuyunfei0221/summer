@@ -295,7 +295,7 @@ public class FinanceFlowServiceImpl implements FinanceFlowService {
         if (isNull(pageModelRequest))
             return error(() -> new BlueException(EMPTY_PARAM));
 
-        Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
+        Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
         return zip(selectFinanceFlowMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),
                 countFinanceFlowMonoByQuery(query)

@@ -30,7 +30,7 @@ public final class BlueDistributedLockGenerator {
     private final CuratorFramework client;
 
     public BlueDistributedLockGenerator(DistributedLockConf distributedLockConf) {
-        confAsserter(distributedLockConf);
+        assertConf(distributedLockConf);
 
         CuratorFrameworkFactory.Builder builder = builder()
                 .connectString(distributedLockConf.getConnectString())
@@ -138,7 +138,7 @@ public final class BlueDistributedLockGenerator {
      *
      * @param conf
      */
-    private static void confAsserter(DistributedLockConf conf) {
+    private static void assertConf(DistributedLockConf conf) {
         if (isNull(conf))
             throw new RuntimeException("distributedLockConf can't be null");
 

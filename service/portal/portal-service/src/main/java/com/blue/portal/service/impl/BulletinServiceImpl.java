@@ -472,7 +472,7 @@ public class BulletinServiceImpl implements BulletinService {
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        BulletinCondition bulletinCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
+        BulletinCondition bulletinCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
         return zip(selectBulletinMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), bulletinCondition),
                 countBulletinMonoByCondition(bulletinCondition))

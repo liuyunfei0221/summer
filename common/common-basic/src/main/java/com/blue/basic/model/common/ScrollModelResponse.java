@@ -19,16 +19,16 @@ public final class ScrollModelResponse<T extends Serializable, A extends Seriali
     private List<T> data;
 
     /**
-     * current identity
+     * cursor
      */
-    private A identity;
+    private A cursor;
 
     public ScrollModelResponse() {
     }
 
-    public ScrollModelResponse(List<T> data, A identity) {
+    public ScrollModelResponse(List<T> data, A cursor) {
         this.data = data;
-        this.identity = identity;
+        this.cursor = cursor;
     }
 
     public List<T> getData() {
@@ -39,19 +39,19 @@ public final class ScrollModelResponse<T extends Serializable, A extends Seriali
         this.data = data;
     }
 
-    public A getIdentity() {
-        return identity;
+    public A getCursor() {
+        return cursor;
     }
 
-    public void setIdentity(A identity) {
-        this.identity = identity;
+    public void setCursor(A cursor) {
+        this.cursor = cursor;
     }
 
     @Override
     public String toString() {
         return "ScrollModelResponse{" +
                 "data=" + data +
-                ", identity=" + identity +
+                ", cursor=" + cursor +
                 '}';
     }
 

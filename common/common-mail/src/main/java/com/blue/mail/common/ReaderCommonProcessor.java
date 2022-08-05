@@ -1,4 +1,4 @@
-package com.blue.mail.component;
+package com.blue.mail.common;
 
 import com.blue.mail.api.conf.MailReaderConf;
 import com.sun.mail.util.MailSSLSocketFactory;
@@ -15,9 +15,9 @@ import static reactor.util.Loggers.getLogger;
  * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc"})
-public final class ReaderComponentProcessor {
+public final class ReaderCommonProcessor {
 
-    private static final Logger LOGGER = getLogger(ReaderComponentProcessor.class);
+    private static final Logger LOGGER = getLogger(ReaderCommonProcessor.class);
 
     private static final String PROTOCOL = "imap";
 
@@ -28,7 +28,7 @@ public final class ReaderComponentProcessor {
      * @return
      */
     public static Session generateSession(MailReaderConf conf) {
-        confAsserter(conf);
+        assertConf(conf);
 
         try {
             MailSSLSocketFactory sf = new MailSSLSocketFactory();
@@ -102,7 +102,7 @@ public final class ReaderComponentProcessor {
      *
      * @param conf
      */
-    public static void confAsserter(MailReaderConf conf) {
+    public static void assertConf(MailReaderConf conf) {
         if (isNull(conf))
             throw new RuntimeException("conf can't be null");
 

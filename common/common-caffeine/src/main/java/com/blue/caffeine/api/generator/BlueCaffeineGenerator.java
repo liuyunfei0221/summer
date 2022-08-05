@@ -64,7 +64,7 @@ public final class BlueCaffeineGenerator {
     };
 
     private static final Function<CaffeineConf, Caffeine<Object, Object>> BUILDER_GEN = conf -> {
-        confAsserter(conf);
+        assertConf(conf);
 
         Caffeine<Object, Object> caffeine = newBuilder();
         caffeine.maximumSize(CAP_GETTER.apply(conf.getMaximumSize()));
@@ -125,7 +125,7 @@ public final class BlueCaffeineGenerator {
      *
      * @param conf
      */
-    private static void confAsserter(CaffeineConf conf) {
+    private static void assertConf(CaffeineConf conf) {
         if (isNull(conf))
             throw new RuntimeException("caffeineConf can't be null");
 

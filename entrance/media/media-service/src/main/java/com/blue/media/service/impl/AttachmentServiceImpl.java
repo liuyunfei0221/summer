@@ -346,7 +346,7 @@ public class AttachmentServiceImpl implements AttachmentService {
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
+        Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
         return zip(selectAttachmentMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query), countAttachmentMonoByQuery(query))
                 .flatMap(tuple2 -> {

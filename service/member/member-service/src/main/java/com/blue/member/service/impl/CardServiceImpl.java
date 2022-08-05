@@ -473,7 +473,7 @@ public class CardServiceImpl implements CardService {
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
+        Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
         return zip(selectCardMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query), countCardMonoByQuery(query))
                 .flatMap(tuple2 -> {

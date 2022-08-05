@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 
 import static com.blue.basic.common.base.BlueChecker.isNotNull;
 import static com.blue.basic.common.base.OriginalThrowableGetter.getOriginalThrowable;
-import static com.blue.mail.component.ReaderComponentProcessor.*;
+import static com.blue.mail.common.ReaderCommonProcessor.*;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
 import static java.util.Optional.ofNullable;

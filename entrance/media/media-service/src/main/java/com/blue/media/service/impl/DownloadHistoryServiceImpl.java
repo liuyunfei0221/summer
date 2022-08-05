@@ -275,7 +275,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
         if (isNull(pageModelRequest))
             return error(() -> new BlueException(EMPTY_PARAM));
 
-        Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
+        Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
         return zip(selectDownloadHistoryMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),
                 countDownloadHistoryMonoByQuery(query)

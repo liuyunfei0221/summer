@@ -1,4 +1,4 @@
-package com.blue.mail.component;
+package com.blue.mail.common;
 
 import com.blue.mail.api.conf.MailSenderConf;
 import com.blue.mail.api.conf.SenderAttr;
@@ -34,9 +34,9 @@ import static reactor.util.Loggers.getLogger;
  * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "AlibabaLowerCamelCaseVariableNaming", "DuplicatedCode", "UnusedReturnValue"})
-public final class SenderComponentProcessor {
+public final class SenderCommonProcessor {
 
-    private static final Logger LOGGER = getLogger(SenderComponentProcessor.class);
+    private static final Logger LOGGER = getLogger(SenderCommonProcessor.class);
 
     private static final String DEFAULT_THREAD_NAME_PRE = "blue-mail-sender-thread" + HYPHEN.identity;
     private static final int RANDOM_LEN = 6;
@@ -81,7 +81,7 @@ public final class SenderComponentProcessor {
      * @return
      */
     public static ExecutorService generateExecutorService(MailSenderConf conf) {
-        confAsserter(conf);
+        assertConf(conf);
 
         String threadNamePre = ofNullable(conf.getThreadNamePre())
                 .map(p -> p + HYPHEN.identity)
@@ -149,7 +149,7 @@ public final class SenderComponentProcessor {
      *
      * @param conf
      */
-    public static void confAsserter(MailSenderConf conf) {
+    public static void assertConf(MailSenderConf conf) {
         if (isNull(conf))
             throw new RuntimeException("conf can't be null");
 

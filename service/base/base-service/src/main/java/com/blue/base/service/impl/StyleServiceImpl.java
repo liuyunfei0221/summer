@@ -507,7 +507,7 @@ public class StyleServiceImpl implements StyleService {
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        StyleCondition styleCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
+        StyleCondition styleCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
         return zip(selectStyleMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), styleCondition),
                 countStyleMonoByCondition(styleCondition))

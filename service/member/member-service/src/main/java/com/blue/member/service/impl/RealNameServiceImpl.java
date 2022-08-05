@@ -481,7 +481,7 @@ public class RealNameServiceImpl implements RealNameService {
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        RealNameCondition realNameCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
+        RealNameCondition realNameCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
         return zip(selectRealNameMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), realNameCondition), countRealNameMonoByCondition(realNameCondition))
                 .flatMap(tuple2 -> {

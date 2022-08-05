@@ -518,7 +518,7 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        RewardDateRelationCondition rewardDateRelationCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
+        RewardDateRelationCondition rewardDateRelationCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
         return zip(selectRewardDateRelationMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), rewardDateRelationCondition), countRewardDateRelationMonoByCondition(rewardDateRelationCondition))
                 .flatMap(tuple2 ->

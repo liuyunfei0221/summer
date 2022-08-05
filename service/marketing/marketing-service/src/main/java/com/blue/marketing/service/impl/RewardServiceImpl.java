@@ -373,7 +373,7 @@ public class RewardServiceImpl implements RewardService {
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        RewardCondition rewardCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
+        RewardCondition rewardCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
         return zip(selectRewardMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), rewardCondition), countRewardMonoByCondition(rewardCondition))
                 .flatMap(tuple2 -> {

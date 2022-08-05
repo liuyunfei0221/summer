@@ -37,7 +37,7 @@ public final class BlueMongoGenerator {
      * @return
      */
     public static MongoClientSettings generateMongoClientSettings(MongoConf mongoConf) {
-        confAsserter(mongoConf);
+        assertConf(mongoConf);
 
         MongoClientSettings.Builder builder = MongoClientSettings.builder();
 
@@ -122,7 +122,7 @@ public final class BlueMongoGenerator {
      */
     public static ReactiveMongoTemplate generateReactiveMongoTemplate(MongoClient mongoClient, MongoConf mongoConf) {
         LOGGER.info("generateReactiveMongoTemplate(MongoClient mongoClient, String databaseName), mongoClient = {}, mongoConf = {}", mongoClient, mongoConf);
-        confAsserter(mongoConf);
+        assertConf(mongoConf);
 
         return new ReactiveMongoTemplate(mongoClient, mongoConf.getDatabase());
     }
@@ -132,7 +132,7 @@ public final class BlueMongoGenerator {
      *
      * @param conf
      */
-    private static void confAsserter(MongoConf conf) {
+    private static void assertConf(MongoConf conf) {
         if (isNull(conf))
             throw new RuntimeException("conf can't be null");
 

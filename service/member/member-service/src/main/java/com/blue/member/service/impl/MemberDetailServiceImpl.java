@@ -571,7 +571,7 @@ public class MemberDetailServiceImpl implements MemberDetailService {
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        MemberDetailCondition memberDetailCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
+        MemberDetailCondition memberDetailCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
         return zip(selectMemberDetailMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberDetailCondition), countMemberDetailMonoByCondition(memberDetailCondition))
                 .flatMap(tuple2 -> {

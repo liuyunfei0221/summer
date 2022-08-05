@@ -21,7 +21,7 @@ import static com.blue.basic.common.base.BlueChecker.isNotNull;
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.OriginalThrowableGetter.getOriginalThrowable;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
-import static com.blue.mail.component.SenderComponentProcessor.*;
+import static com.blue.mail.common.SenderCommonProcessor.*;
 import static java.lang.Integer.bitCount;
 import static java.lang.Integer.numberOfLeadingZeros;
 import static java.util.Optional.ofNullable;
@@ -60,7 +60,7 @@ public final class BatchSender {
     private String selector;
 
     public BatchSender(MailSenderConf conf) {
-        confAsserter(conf);
+        assertConf(conf);
 
         this.executorService = generateExecutorService(conf);
 
@@ -88,8 +88,9 @@ public final class BatchSender {
         this.transporters = new Transporter[bufferSize];
 
         int c = 0;
+        Transporter transporter;
         for (int i = 0; i < bufferSize; i++) {
-            Transporter transporter = transporters.get((c++) % transporterSize);
+            transporter = transporters.get((c++) % transporterSize);
             this.executorService.submit(transporter::init);
             this.transporters[i] = transporter;
         }

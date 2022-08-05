@@ -492,7 +492,7 @@ public class RoleServiceImpl implements RoleService {
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        RoleCondition roleCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getParam());
+        RoleCondition roleCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
         return zip(selectRoleMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), roleCondition), countRoleMonoByCondition(roleCondition))
                 .flatMap(tuple2 -> {

@@ -102,7 +102,7 @@ public final class BlueRedissonGenerator {
      * @param config
      */
     private static void configClusterServer(RedissonConf redissonConf, Config config) {
-        confAsserter(redissonConf);
+        assertConf(redissonConf);
 
         ClusterServersConfig serverConfig = config.useClusterServers();
         List<String> nodes = redissonConf.getNodes();
@@ -137,7 +137,7 @@ public final class BlueRedissonGenerator {
      * @param config
      */
     private static void configSingleServer(RedissonConf redissonConf, Config config) {
-        confAsserter(redissonConf);
+        assertConf(redissonConf);
 
         SingleServerConfig serverConfig = config.useSingleServer()
                 .setAddress("redis://" + redissonConf.getHost() + ":" + redissonConf.getPort());
@@ -198,7 +198,7 @@ public final class BlueRedissonGenerator {
      * @return
      */
     public static RedissonClient generateRedissonClient(RedissonConf redissonConf) {
-        confAsserter(redissonConf);
+        assertConf(redissonConf);
 
         Config config = new Config();
 
@@ -230,7 +230,7 @@ public final class BlueRedissonGenerator {
     public static SynchronizedProcessor generateSynchronizedProcessor(RedissonClient redissonClient, RedissonConf redissonConf) {
         if (isNull(redissonClient))
             throw new RuntimeException("redissonClient can't be null");
-        confAsserter(redissonConf);
+        assertConf(redissonConf);
 
         return new SynchronizedProcessor(redissonClient, redissonConf.getMaxTryLockWaitingMillis());
     }
@@ -240,7 +240,7 @@ public final class BlueRedissonGenerator {
      *
      * @param redissonConf
      */
-    private static void confAsserter(RedissonConf redissonConf) {
+    private static void assertConf(RedissonConf redissonConf) {
         if (isNull(redissonConf))
             throw new RuntimeException("redissonConf can't be null");
 
