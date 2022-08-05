@@ -124,7 +124,7 @@ public class AuthServiceImpl implements AuthService {
     public static final String
             SESSION_KEY_PRE = CacheKeyPrefix.SESSION_PRE.prefix,
             PAR_CONCATENATION = Symbol.PAR_CONCATENATION.identity,
-            PATH_SEPARATOR = Symbol.PATH_SEPARATOR.identity;
+            PATH_SEPARATOR = Symbol.SLASH.identity;
 
     private static final List<CredentialType> VALID_CREDENTIAL_TYPES = of(CredentialType.values())
             .filter(lt -> !lt.identity.intern().equals(NOT_LOGGED_IN.identity))

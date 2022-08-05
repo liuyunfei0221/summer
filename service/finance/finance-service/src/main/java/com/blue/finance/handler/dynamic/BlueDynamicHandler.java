@@ -56,7 +56,7 @@ public final class BlueDynamicHandler implements ApplicationListener<ContextRefr
 
     private long maxWaitingForRefresh;
 
-    private static final String PATH_SEPARATOR = Symbol.PATH_SEPARATOR.identity;
+    private static final String PATH_SEPARATOR = Symbol.SLASH.identity;
 
     private static final String PAR_CONCATENATION = Symbol.PAR_CONCATENATION.identity;
 

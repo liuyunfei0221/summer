@@ -192,31 +192,25 @@ public class StateServiceImpl implements StateService {
                 .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a));
     };
 
-    /**
-     * is a state exist?
-     */
-    private final Consumer<StateInsertParam> INSERT_ITEM_VALIDATOR = param -> {
-        if (isNull(param))
+    private final Consumer<StateInsertParam> INSERT_ITEM_VALIDATOR = p -> {
+        if (isNull(p))
             throw new BlueException(EMPTY_PARAM);
-        param.asserts();
+        p.asserts();
 
         State probe = new State();
-        probe.setCountryId(param.getCountryId());
-        probe.setName(param.getName());
+        probe.setCountryId(p.getCountryId());
+        probe.setName(p.getName());
 
         if (ofNullable(stateRepository.count(Example.of(probe)).publishOn(scheduler).toFuture().join()).orElse(0L) > 0L)
             throw new BlueException(STATE_ALREADY_EXIST);
     };
 
-    /**
-     * state insert param -> state
-     */
-    public final Function<StateInsertParam, State> STATE_INSERT_PARAM_2_STATE_CONVERTER = param -> {
-        if (isNull(param))
+    public final Function<StateInsertParam, State> STATE_INSERT_PARAM_2_STATE_CONVERTER = p -> {
+        if (isNull(p))
             throw new BlueException(EMPTY_PARAM);
-        param.asserts();
+        p.asserts();
 
-        Long countryId = param.getCountryId();
+        Long countryId = p.getCountryId();
 
         if (countryService.getCountryById(countryId).isEmpty())
             throw new BlueException(DATA_NOT_EXIST);
@@ -227,9 +221,9 @@ public class StateServiceImpl implements StateService {
 
         state.setId(blueIdentityProcessor.generate(State.class));
         state.setCountryId(countryId);
-        state.setName(param.getName());
-        state.setFipsCode(param.getFipsCode());
-        state.setStateCode(param.getStateCode());
+        state.setName(p.getName());
+        state.setFipsCode(p.getFipsCode());
+        state.setStateCode(p.getStateCode());
         state.setStatus(VALID.status);
         state.setCreateTime(stamp);
         state.setUpdateTime(stamp);
@@ -237,19 +231,16 @@ public class StateServiceImpl implements StateService {
         return state;
     };
 
-    /**
-     * is a state exist?
-     */
-    private final Function<StateUpdateParam, State> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = param -> {
-        if (isNull(param))
+    private final Function<StateUpdateParam, State> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = p -> {
+        if (isNull(p))
             throw new BlueException(EMPTY_PARAM);
-        param.asserts();
+        p.asserts();
 
-        Long id = param.getId();
+        Long id = p.getId();
 
         State probe = new State();
-        probe.setCountryId(param.getCountryId());
-        probe.setName(param.getName());
+        probe.setCountryId(p.getCountryId());
+        probe.setName(p.getName());
 
         List<State> states = ofNullable(stateRepository.findAll(Example.of(probe)).publishOn(scheduler).collectList().toFuture().join())
                 .orElseGet(Collections::emptyList);
@@ -264,9 +255,6 @@ public class StateServiceImpl implements StateService {
         return state;
     };
 
-    /**
-     * for state
-     */
     public final BiFunction<StateUpdateParam, State, Boolean> UPDATE_ITEM_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
@@ -304,21 +292,21 @@ public class StateServiceImpl implements StateService {
         return alteration;
     };
 
-    private static final Function<StateCondition, Query> CONDITION_PROCESSOR = condition -> {
+    private static final Function<StateCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();
 
-        if (condition == null)
+        if (c == null)
             return query;
 
         State probe = new State();
 
-        ofNullable(condition.getId()).ifPresent(probe::setId);
-        ofNullable(condition.getCountryId()).ifPresent(probe::setCountryId);
-        ofNullable(condition.getStatus()).ifPresent(probe::setStatus);
+        ofNullable(c.getId()).ifPresent(probe::setId);
+        ofNullable(c.getCountryId()).ifPresent(probe::setCountryId);
+        ofNullable(c.getStatus()).ifPresent(probe::setStatus);
 
         query.addCriteria(byExample(probe));
 
-        ofNullable(condition.getNameLike()).ifPresent(nameLike ->
+        ofNullable(c.getNameLike()).ifPresent(nameLike ->
                 query.addCriteria(where(NAME.name).regex(compile(PREFIX.element + nameLike + SUFFIX.element, CASE_INSENSITIVE))));
 
         query.with(by(Sort.Order.asc(NAME.name)));

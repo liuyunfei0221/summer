@@ -1,6 +1,8 @@
 package com.blue.mongo.common;
 
 
+import com.blue.basic.model.common.SortCondition;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.mongo.constant.SortSchema;
 import org.springframework.data.domain.Sort;
 
@@ -10,9 +12,12 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static com.blue.basic.common.base.BlueChecker.isNotEmpty;
+import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
+import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
+import static org.springframework.data.domain.Sort.unsorted;
 
 /**
  * sort converter
@@ -43,6 +48,28 @@ public final class SortConverter {
      */
     public static Sort convert(String sort, List<String> attrs) {
         return CONVERTER.apply(sort, attrs);
+    }
+
+    /**
+     * convert to sort
+     *
+     * @param condition
+     * @param sortAttrMapping
+     * @param defaultSortAttr
+     */
+    public static Sort convert(SortCondition condition, Map<String, String> sortAttrMapping, String defaultSortAttr) {
+        if (isNull(condition))
+            return unsorted();
+
+        String sortAttribute = condition.getSortAttribute();
+        if (isBlank(sortAttribute)) {
+            condition.setSortAttribute(defaultSortAttr);
+        } else {
+            if (!sortAttrMapping.containsValue(sortAttribute))
+                throw new BlueException(INVALID_PARAM);
+        }
+
+        return convert(condition.getSortType(), singletonList(condition.getSortAttribute()));
     }
 
 }

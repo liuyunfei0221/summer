@@ -22,7 +22,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.FileGetter.getFile;
-import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION_DATABASE_URL;
+import static com.blue.basic.constant.common.Symbol.HYPHEN;
 import static jakarta.mail.Session.getInstance;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -38,7 +38,7 @@ public final class SenderComponentProcessor {
 
     private static final Logger LOGGER = getLogger(SenderComponentProcessor.class);
 
-    private static final String DEFAULT_THREAD_NAME_PRE = "blue-mail-sender-thread" + PAR_CONCATENATION_DATABASE_URL.identity;
+    private static final String DEFAULT_THREAD_NAME_PRE = "blue-mail-sender-thread" + HYPHEN.identity;
     private static final int RANDOM_LEN = 6;
 
     public static final int MAXIMUM_BUFFER_SIZE = 16;
@@ -84,7 +84,7 @@ public final class SenderComponentProcessor {
         confAsserter(conf);
 
         String threadNamePre = ofNullable(conf.getThreadNamePre())
-                .map(p -> p + PAR_CONCATENATION_DATABASE_URL.identity)
+                .map(p -> p + HYPHEN.identity)
                 .orElse(DEFAULT_THREAD_NAME_PRE);
 
         RejectedExecutionHandler rejectedExecutionHandler = (r, executor) -> {

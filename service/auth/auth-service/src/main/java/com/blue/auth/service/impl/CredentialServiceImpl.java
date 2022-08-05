@@ -54,11 +54,11 @@ public class CredentialServiceImpl implements CredentialService {
         this.credentialMapper = credentialMapper;
     }
 
-    private final Consumer<List<Credential>> CREDENTIALS_ASSERTER = credentials -> {
-        if (isEmpty(credentials))
+    private final Consumer<List<Credential>> CREDENTIALS_ASSERTER = cs -> {
+        if (isEmpty(cs))
             throw new BlueException(EMPTY_PARAM);
 
-        Map<Long, Set<String>> memberIdAndTypes = credentials.stream().collect(groupingBy(Credential::getMemberId))
+        Map<Long, Set<String>> memberIdAndTypes = cs.stream().collect(groupingBy(Credential::getMemberId))
                 .entrySet().stream().collect(toMap(Map.Entry::getKey, e -> e.getValue().stream().map(Credential::getType).collect(toSet())));
 
         List<Credential> existCredentials = credentialMapper.selectByMemberIds(new ArrayList<>(memberIdAndTypes.keySet()));
@@ -67,7 +67,7 @@ public class CredentialServiceImpl implements CredentialService {
             if (memberIdAndTypes.get(credential.getMemberId()).contains(credential.getType()))
                 throw new BlueException(DATA_ALREADY_EXIST);
 
-        Map<String, Set<String>> credentialAndTypes = credentials.stream().collect(groupingBy(Credential::getCredential))
+        Map<String, Set<String>> credentialAndTypes = cs.stream().collect(groupingBy(Credential::getCredential))
                 .entrySet().stream().collect(toMap(Map.Entry::getKey, e -> e.getValue().stream().map(Credential::getType).collect(toSet())));
 
         existCredentials = credentialMapper.selectByCredentials(new ArrayList<>(credentialAndTypes.keySet()));

@@ -6,7 +6,7 @@ import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import static com.blue.basic.common.base.BlueChecker.isNull;
-import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION_DATABASE_URL;
+import static com.blue.basic.constant.common.Symbol.HYPHEN;
 import static java.util.Optional.ofNullable;
 import static net.openhft.affinity.AffinityStrategies.DIFFERENT_CORE;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
@@ -24,7 +24,7 @@ public final class SchedulerGenerator {
 
     private static final Logger LOGGER = getLogger(SchedulerGenerator.class);
 
-    private static final String DEFAULT_THREAD_NAME_PRE = "blue-scheduler-thread" + PAR_CONCATENATION_DATABASE_URL.identity;
+    private static final String DEFAULT_THREAD_NAME_PRE = "blue-scheduler-thread" + HYPHEN.identity;
     private static final int RANDOM_LEN = 6;
 
     public static Scheduler generateScheduler(SchedulerConf schedulerConf) {
@@ -32,7 +32,7 @@ public final class SchedulerGenerator {
         assertConf(schedulerConf);
 
         String threadNamePre = ofNullable(schedulerConf.getThreadNamePre())
-                .map(p -> p + PAR_CONCATENATION_DATABASE_URL.identity)
+                .map(p -> p + HYPHEN.identity)
                 .orElse(DEFAULT_THREAD_NAME_PRE);
 
         return newBoundedElastic(schedulerConf.getThreadCap(), schedulerConf.getQueuedTaskCap(),

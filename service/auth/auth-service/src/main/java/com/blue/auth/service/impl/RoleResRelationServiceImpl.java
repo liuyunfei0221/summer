@@ -80,25 +80,22 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         this.synchronizedProcessor = synchronizedProcessor;
     }
 
-    /**
-     * is a relation exist?
-     */
-    private final Consumer<RoleResRelation> INSERT_ITEM_VALIDATOR = relation -> {
-        if (isNull(relation))
+    private final Consumer<RoleResRelation> INSERT_ITEM_VALIDATOR = r -> {
+        if (isNull(r))
             throw new BlueException(EMPTY_PARAM);
 
-        Long roleId = relation.getRoleId();
+        Long roleId = r.getRoleId();
         if (isInvalidIdentity(roleId))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "roleId is invalid");
 
-        Long resId = relation.getResId();
+        Long resId = r.getResId();
         if (isInvalidIdentity(resId))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "resId is invalid");
 
-        if (isNull(relation.getCreateTime()))
+        if (isNull(r.getCreateTime()))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "createTime is invalid");
 
-        if (isInvalidIdentity(relation.getCreator()))
+        if (isInvalidIdentity(r.getCreator()))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "creator is invalid");
 
         if (isNotNull(roleResRelationMapper.selectByRoleIdAndResId(roleId, resId)))
@@ -113,16 +110,13 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
                 return a;
             }, CONCURRENT);
 
-    /**
-     * is a relation exist?
-     */
-    private final Consumer<List<RoleResRelation>> INSERT_ITEMS_VALIDATOR = relations -> {
-        if (isEmpty(relations))
+    private final Consumer<List<RoleResRelation>> INSERT_ITEMS_VALIDATOR = rs -> {
+        if (isEmpty(rs))
             throw new BlueException(EMPTY_PARAM);
 
         Set<Long> roleIds = new HashSet<>();
 
-        for (RoleResRelation relation : relations) {
+        for (RoleResRelation relation : rs) {
             INSERT_ITEM_VALIDATOR.accept(relation);
             roleIds.add(relation.getRoleId());
         }
@@ -130,7 +124,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         Map<Long, Set<Long>> roleIdAndResIdSetMapping = roleResRelationMapper.selectByRoleIds(new ArrayList<>(roleIds))
                 .stream().collect(groupingBy(RoleResRelation::getRoleId, RES_ID_SET_COLLECTOR));
 
-        for (RoleResRelation relation : relations)
+        for (RoleResRelation relation : rs)
             if (ofNullable(roleIdAndResIdSetMapping.get(relation.getRoleId())).map(set -> set.contains(relation.getResId())).isPresent())
                 throw new BlueException(DATA_ALREADY_EXIST.status, DATA_ALREADY_EXIST.code, "The data base res and role already exists");
     };

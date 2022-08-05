@@ -24,7 +24,7 @@ import static com.blue.basic.common.base.ConstantProcessor.assertAttachmentType;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 import static com.blue.basic.constant.common.ResponseElement.PAYLOAD_TOO_LARGE;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
-import static com.blue.basic.constant.common.Symbol.SCHEME_SEPARATOR;
+import static com.blue.basic.constant.common.Symbol.PERIOD;
 import static com.blue.basic.constant.media.ByteHandlerType.LOCAL_DISK;
 import static com.blue.media.common.MediaCommonFunctions.*;
 import static java.lang.System.currentTimeMillis;
@@ -90,7 +90,7 @@ public final class LocalDiskByteHandler implements ByteHandler {
         if (nameLength > nameLenThreshold)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "media (" + fileName + ") name length can't be greater than " + nameLenThreshold);
 
-        int index = lastIndexOf(fileName, SCHEME_SEPARATOR.identity);
+        int index = lastIndexOf(fileName, PERIOD.identity);
         if (index == -1 || nameLength - 1 == index)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "media (" + fileName + ") has a unknown type");
 

@@ -20,7 +20,7 @@ import static java.util.Optional.ofNullable;
 public final class ConditionSortProcessor {
 
     /**
-     * assert and package attr
+     * assert and package sort attr
      *
      * @param condition
      * @param sortAttrMapping

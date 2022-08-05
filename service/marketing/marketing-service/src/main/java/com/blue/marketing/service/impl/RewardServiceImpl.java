@@ -37,7 +37,7 @@ import static com.blue.basic.common.base.ConstantProcessor.assertResourceType;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
 import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
 import static com.blue.basic.constant.common.ResponseElement.*;
-import static com.blue.basic.constant.common.Symbol.DATABASE_WILDCARD;
+import static com.blue.basic.constant.common.Symbol.PERCENT;
 import static com.blue.marketing.converter.MarketingModelConverters.*;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -75,15 +75,15 @@ public class RewardServiceImpl implements RewardService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(RewardSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final UnaryOperator<RewardCondition> CONDITION_PROCESSOR = condition -> {
-        if (isNull(condition))
+    private static final UnaryOperator<RewardCondition> CONDITION_PROCESSOR = c -> {
+        if (isNull(c))
             return new RewardCondition();
 
-        process(condition, SORT_ATTRIBUTE_MAPPING, RewardSortAttribute.ID.column);
-        ofNullable(condition.getNameLike())
-                .filter(StringUtils::hasText).ifPresent(nameLike -> condition.setNameLike(DATABASE_WILDCARD.identity + nameLike + DATABASE_WILDCARD.identity));
+        process(c, SORT_ATTRIBUTE_MAPPING, RewardSortAttribute.ID.column);
+        ofNullable(c.getNameLike())
+                .filter(StringUtils::hasText).ifPresent(nameLike -> c.setNameLike(PERCENT.identity + nameLike + PERCENT.identity));
 
-        return condition;
+        return c;
     };
 
     private static final Function<List<Reward>, List<Long>> OPERATORS_GETTER = rewards -> {
@@ -97,28 +97,28 @@ public class RewardServiceImpl implements RewardService {
         return new ArrayList<>(operatorIds);
     };
 
-    private final Consumer<RewardInsertParam> INSERT_ITEM_VALIDATOR = rip -> {
-        if (isNull(rip))
+    private final Consumer<RewardInsertParam> INSERT_ITEM_VALIDATOR = p -> {
+        if (isNull(p))
             throw new BlueException(EMPTY_PARAM);
-        rip.asserts();
+        p.asserts();
 
-        if (isNotNull(rewardMapper.selectByUnique(rip.getName(), rip.getType())))
+        if (isNotNull(rewardMapper.selectByUnique(p.getName(), p.getType())))
             throw new BlueException(REWARD_NAME_ALREADY_EXIST);
     };
 
-    private final Function<RewardUpdateParam, Reward> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = rup -> {
-        if (isNull(rup))
+    private final Function<RewardUpdateParam, Reward> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = p -> {
+        if (isNull(p))
             throw new BlueException(EMPTY_PARAM);
-        rup.asserts();
+        p.asserts();
 
-        Long id = rup.getId();
+        Long id = p.getId();
 
         Reward reward = rewardMapper.selectByPrimaryKey(id);
         if (isNull(reward))
             throw new BlueException(DATA_NOT_EXIST);
 
         ofNullable(rewardMapper.selectByUnique(
-                ofNullable(rup.getName()).filter(BlueChecker::isNotBlank).orElseGet(reward::getName), rup.getType())
+                ofNullable(p.getName()).filter(BlueChecker::isNotBlank).orElseGet(reward::getName), p.getType())
         )
                 .map(Reward::getId)
                 .ifPresent(rid -> {

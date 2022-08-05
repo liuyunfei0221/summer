@@ -62,11 +62,11 @@ public class CommonFunctions {
      * symbols
      */
     public static final String
-            PATH_SEPARATOR = Symbol.PATH_SEPARATOR.identity,
-            WILDCARD = Symbol.WILDCARD.identity,
+            PATH_SEPARATOR = Symbol.SLASH.identity,
+            WILDCARD = Symbol.ASTERISK.identity,
             PAR_CONCATENATION = Symbol.PAR_CONCATENATION.identity,
-            SCHEME_SEPARATOR = Symbol.SCHEME_SEPARATOR.identity,
-            URL_PAR_SEPARATOR = Symbol.URL_PAR_SEPARATOR.identity,
+            SCHEME_SEPARATOR = Symbol.PERIOD.identity,
+            URL_PAR_SEPARATOR = Symbol.QUESTION_MARK.identity,
             UNKNOWN = Symbol.UNKNOWN.identity;
 
     /**
@@ -113,7 +113,7 @@ public class CommonFunctions {
     /**
      * default language
      */
-    public static final String DEFAULT_LANGUAGE = lowerCase(LANGUAGE.replace(PAR_CONCATENATION, PAR_CONCATENATION_DATABASE_URL.identity));
+    public static final String DEFAULT_LANGUAGE = lowerCase(LANGUAGE.replace(PAR_CONCATENATION, HYPHEN.identity));
 
     /**
      * default languages
@@ -228,7 +228,7 @@ public class CommonFunctions {
      * header value getter
      */
     public static final UnaryOperator<String> HEADER_VALUE_CONVERTER = headerValue -> {
-        int idx = indexOf(headerValue, PAIR_SEPARATOR.identity);
+        int idx = indexOf(headerValue, SEMICOLON.identity);
         return idx == NON_EXIST_INDEX ? headerValue : substring(headerValue, 0, idx);
     };
 
@@ -582,7 +582,7 @@ public class CommonFunctions {
 
         String ip = headers.firstHeader(X_FORWARDED_FOR);
         if (VALID_IP_PRE.test(ip))
-            return split(ip, LIST_ELEMENT_SEPARATOR.identity)[0];
+            return split(ip, COMMA.identity)[0];
 
         ip = headers.firstHeader(PROXY_CLIENT_IP);
         if (VALID_IP_PRE.test(ip))
@@ -623,7 +623,7 @@ public class CommonFunctions {
         String ip = headers.getFirst(X_FORWARDED_FOR);
         if (VALID_IP_PRE.test(ip))
             //noinspection ConstantConditions
-            return split(ip, LIST_ELEMENT_SEPARATOR.identity)[0];
+            return split(ip, COMMA.identity)[0];
 
         ip = headers.getFirst(PROXY_CLIENT_IP);
         if (VALID_IP_PRE.test(ip))

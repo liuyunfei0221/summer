@@ -14,7 +14,7 @@ import static com.blue.basic.common.base.ConstantProcessor.getResourceTypeByIden
 import static com.blue.basic.constant.common.Default.NOT_DEFAULT;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
-import static com.blue.basic.constant.common.Symbol.PATH_SEPARATOR;
+import static com.blue.basic.constant.common.Symbol.SLASH;
 import static java.util.Optional.ofNullable;
 
 /**
@@ -113,7 +113,7 @@ public final class AuthModelConverters {
         String module = resource.getModule().intern();
         String relativeUri = resource.getUri().intern();
 
-        return new ResourceInfo(resource.getId(), resource.getRequestMethod().intern(), module, relativeUri, (PATH_SEPARATOR.identity.intern() + module + relativeUri).intern(), resource.getRelationView(),
+        return new ResourceInfo(resource.getId(), resource.getRequestMethod().intern(), module, relativeUri, (SLASH.identity.intern() + module + relativeUri).intern(), resource.getRelationView(),
                 resource.getAuthenticate(), resource.getRequestUnDecryption(), resource.getResponseUnEncryption(), resource.getExistenceRequestBody(), resource.getExistenceResponseBody(),
                 resource.getType(), resource.getName(), resource.getDescription());
     };
@@ -132,7 +132,7 @@ public final class AuthModelConverters {
         String module = resource.getModule().intern();
         String relativeUri = resource.getUri().intern();
 
-        return new ResourceManagerInfo(resource.getId(), resource.getRequestMethod().intern(), module, relativeUri, (PATH_SEPARATOR.identity.intern() + module + relativeUri).intern(), resource.getRelationView(), resource.getAuthenticate(),
+        return new ResourceManagerInfo(resource.getId(), resource.getRequestMethod().intern(), module, relativeUri, (SLASH.identity.intern() + module + relativeUri).intern(), resource.getRelationView(), resource.getAuthenticate(),
                 resource.getRequestUnDecryption(), resource.getResponseUnEncryption(), resource.getExistenceRequestBody(), resource.getExistenceResponseBody(), getResourceTypeByIdentity(resource.getType()).disc.intern(),
                 resource.getName(), resource.getDescription(), resource.getCreateTime(), resource.getUpdateTime(), resource.getCreator(), ofNullable(idAndMemberNameMapping.get(resource.getCreator())).orElse(EMPTY_DATA.value),
                 resource.getUpdater(), ofNullable(idAndMemberNameMapping.get(resource.getUpdater())).orElse(EMPTY_DATA.value));

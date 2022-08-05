@@ -140,68 +140,62 @@ public class CountryServiceImpl implements CountryService {
                 .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a));
     };
 
-    /**
-     * is a country exist?
-     */
-    private final Consumer<CountryInsertParam> INSERT_ITEM_VALIDATOR = param -> {
-        if (isNull(param))
+    private final Consumer<CountryInsertParam> INSERT_ITEM_VALIDATOR = p -> {
+        if (isNull(p))
             throw new BlueException(EMPTY_PARAM);
-        param.asserts();
+        p.asserts();
 
         Country probe = new Country();
 
-        probe.setName(param.getName());
+        probe.setName(p.getName());
         if (ofNullable(countryRepository.count(Example.of(probe)).publishOn(scheduler).toFuture().join()).orElse(0L) > 0L)
             throw new BlueException(COUNTRY_NAME_ALREADY_EXIST);
 
         probe.setName(null);
-        probe.setNativeName(param.getNativeName());
+        probe.setNativeName(p.getNativeName());
         if (ofNullable(countryRepository.count(Example.of(probe)).publishOn(scheduler).toFuture().join()).orElse(0L) > 0L)
             throw new BlueException(COUNTRY_NATIVE_NAME_ALREADY_EXIST);
 
         probe.setNativeName(null);
-        probe.setNumericCode(param.getNumericCode());
+        probe.setNumericCode(p.getNumericCode());
         if (ofNullable(countryRepository.count(Example.of(probe)).publishOn(scheduler).toFuture().join()).orElse(0L) > 0L)
             throw new BlueException(COUNTRY_NUMERIC_CODE_ALREADY_EXIST);
 
         probe.setNumericCode(null);
-        probe.setCountryCode(param.getCountryCode());
+        probe.setCountryCode(p.getCountryCode());
         if (ofNullable(countryRepository.count(Example.of(probe)).publishOn(scheduler).toFuture().join()).orElse(0L) > 0L)
             throw new BlueException(COUNTRY_CODE_ALREADY_EXIST);
 
         probe.setCountryCode(null);
-        probe.setPhoneCode(param.getPhoneCode());
+        probe.setPhoneCode(p.getPhoneCode());
         if (ofNullable(countryRepository.count(Example.of(probe)).publishOn(scheduler).toFuture().join()).orElse(0L) > 0L)
             throw new BlueException(COUNTRY_PHONE_CODE_ALREADY_EXIST);
     };
 
-    /**
-     * state insert param -> state
-     */
-    public final Function<CountryInsertParam, Country> COUNTRY_INSERT_PARAM_2_COUNTRY_CONVERTER = param -> {
-        if (isNull(param))
+    public final Function<CountryInsertParam, Country> COUNTRY_INSERT_PARAM_2_COUNTRY_CONVERTER = p -> {
+        if (isNull(p))
             throw new BlueException(EMPTY_PARAM);
-        param.asserts();
+        p.asserts();
 
         Long stamp = TIME_STAMP_GETTER.get();
 
         Country country = new Country();
 
         country.setId(blueIdentityProcessor.generate(Country.class));
-        country.setName(param.getName());
-        country.setNativeName(param.getNativeName());
-        country.setNumericCode(param.getNumericCode());
-        country.setCountryCode(param.getCountryCode());
-        country.setPhoneCode(param.getPhoneCode());
-        country.setCapital(param.getCapital());
-        country.setCurrency(param.getCurrency());
-        country.setCurrencySymbol(param.getCurrencySymbol());
-        country.setTopLevelDomain(param.getTopLevelDomain());
+        country.setName(p.getName());
+        country.setNativeName(p.getNativeName());
+        country.setNumericCode(p.getNumericCode());
+        country.setCountryCode(p.getCountryCode());
+        country.setPhoneCode(p.getPhoneCode());
+        country.setCapital(p.getCapital());
+        country.setCurrency(p.getCurrency());
+        country.setCurrencySymbol(p.getCurrencySymbol());
+        country.setTopLevelDomain(p.getTopLevelDomain());
 
         //TODO
-        country.setRegion(param.getRegion());
-        country.setEmoji(param.getEmoji());
-        country.setEmojiu(param.getEmojiu());
+        country.setRegion(p.getRegion());
+        country.setEmoji(p.getEmoji());
+        country.setEmojiu(p.getEmojiu());
         country.setStatus(VALID.status);
         country.setCreateTime(stamp);
         country.setUpdateTime(stamp);
@@ -209,15 +203,12 @@ public class CountryServiceImpl implements CountryService {
         return country;
     };
 
-    /**
-     * is a country exist?
-     */
-    private final Function<CountryUpdateParam, Country> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = param -> {
-        if (isNull(param))
+    private final Function<CountryUpdateParam, Country> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = p -> {
+        if (isNull(p))
             throw new BlueException(EMPTY_PARAM);
-        param.asserts();
+        p.asserts();
 
-        Long id = param.getId();
+        Long id = p.getId();
 
         Country country = countryRepository.findById(id).publishOn(scheduler).toFuture().join();
         if (isNull(country))
@@ -225,31 +216,31 @@ public class CountryServiceImpl implements CountryService {
 
         Country probe = new Country();
 
-        probe.setName(param.getName());
+        probe.setName(p.getName());
         if (ofNullable(countryRepository.findAll(Example.of(probe)).publishOn(scheduler).collectList().toFuture().join())
                 .orElseGet(Collections::emptyList).stream().anyMatch(c -> !id.equals(c.getId())))
             throw new BlueException(COUNTRY_NAME_ALREADY_EXIST);
 
         probe.setName(null);
-        probe.setNativeName(param.getNativeName());
+        probe.setNativeName(p.getNativeName());
         if (ofNullable(countryRepository.findAll(Example.of(probe)).publishOn(scheduler).collectList().toFuture().join())
                 .orElseGet(Collections::emptyList).stream().anyMatch(c -> !id.equals(c.getId())))
             throw new BlueException(COUNTRY_NATIVE_NAME_ALREADY_EXIST);
 
         probe.setNativeName(null);
-        probe.setNumericCode(param.getNumericCode());
+        probe.setNumericCode(p.getNumericCode());
         if (ofNullable(countryRepository.findAll(Example.of(probe)).publishOn(scheduler).collectList().toFuture().join())
                 .orElseGet(Collections::emptyList).stream().anyMatch(c -> !id.equals(c.getId())))
             throw new BlueException(COUNTRY_NUMERIC_CODE_ALREADY_EXIST);
 
         probe.setNumericCode(null);
-        probe.setCountryCode(param.getCountryCode());
+        probe.setCountryCode(p.getCountryCode());
         if (ofNullable(countryRepository.findAll(Example.of(probe)).publishOn(scheduler).collectList().toFuture().join())
                 .orElseGet(Collections::emptyList).stream().anyMatch(c -> !id.equals(c.getId())))
             throw new BlueException(COUNTRY_CODE_ALREADY_EXIST);
 
         probe.setCountryCode(null);
-        probe.setPhoneCode(param.getPhoneCode());
+        probe.setPhoneCode(p.getPhoneCode());
         if (ofNullable(countryRepository.findAll(Example.of(probe)).publishOn(scheduler).collectList().toFuture().join())
                 .orElseGet(Collections::emptyList).stream().anyMatch(c -> !id.equals(c.getId())))
             throw new BlueException(COUNTRY_PHONE_CODE_ALREADY_EXIST);
@@ -257,9 +248,6 @@ public class CountryServiceImpl implements CountryService {
         return country;
     };
 
-    /**
-     * for country
-     */
     public final BiFunction<CountryUpdateParam, Country, Boolean> UPDATE_ITEM_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
@@ -301,36 +289,36 @@ public class CountryServiceImpl implements CountryService {
         return alteration;
     };
 
-    private static final Function<CountryCondition, Query> CONDITION_PROCESSOR = condition -> {
+    private static final Function<CountryCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();
 
-        if (condition == null)
+        if (c == null)
             return query;
 
         Country probe = new Country();
 
-        ofNullable(condition.getId()).ifPresent(probe::setId);
-        ofNullable(condition.getCurrency()).ifPresent(probe::setCurrency);
-        ofNullable(condition.getCurrencySymbol()).ifPresent(probe::setCurrencySymbol);
-        ofNullable(condition.getStatus()).ifPresent(probe::setStatus);
+        ofNullable(c.getId()).ifPresent(probe::setId);
+        ofNullable(c.getCurrency()).ifPresent(probe::setCurrency);
+        ofNullable(c.getCurrencySymbol()).ifPresent(probe::setCurrencySymbol);
+        ofNullable(c.getStatus()).ifPresent(probe::setStatus);
 
         query.addCriteria(byExample(probe));
 
-        ofNullable(condition.getNameLike()).ifPresent(nameLike ->
+        ofNullable(c.getNameLike()).ifPresent(nameLike ->
                 query.addCriteria(where(NAME.name).regex(compile(PREFIX.element + nameLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(condition.getNativeNameLike()).ifPresent(nativeNameLike ->
+        ofNullable(c.getNativeNameLike()).ifPresent(nativeNameLike ->
                 query.addCriteria(where(NATIVE_NAME.name).regex(compile(PREFIX.element + nativeNameLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(condition.getNumericCodeLike()).ifPresent(numericCodeLike ->
+        ofNullable(c.getNumericCodeLike()).ifPresent(numericCodeLike ->
                 query.addCriteria(where(NUMERIC_CODE.name).regex(compile(PREFIX.element + numericCodeLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(condition.getCountryCodeLike()).ifPresent(countryCodeLike ->
+        ofNullable(c.getCountryCodeLike()).ifPresent(countryCodeLike ->
                 query.addCriteria(where(COUNTRY_CODE.name).regex(compile(PREFIX.element + countryCodeLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(condition.getPhoneCodeLike()).ifPresent(phoneCodeLike ->
+        ofNullable(c.getPhoneCodeLike()).ifPresent(phoneCodeLike ->
                 query.addCriteria(where(PHONE_CODE.name).regex(compile(PREFIX.element + phoneCodeLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(condition.getCapitalLike()).ifPresent(capitalLike ->
+        ofNullable(c.getCapitalLike()).ifPresent(capitalLike ->
                 query.addCriteria(where(CAPITAL.name).regex(compile(PREFIX.element + capitalLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(condition.getTopLevelDomainLike()).ifPresent(topLevelDomainLike ->
+        ofNullable(c.getTopLevelDomainLike()).ifPresent(topLevelDomainLike ->
                 query.addCriteria(where(TOP_LEVEL_DOMAIN.name).regex(compile(PREFIX.element + topLevelDomainLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(condition.getRegionLike()).ifPresent(regionLike ->
+        ofNullable(c.getRegionLike()).ifPresent(regionLike ->
                 query.addCriteria(where(REGION.name).regex(compile(PREFIX.element + regionLike + SUFFIX.element, CASE_INSENSITIVE))));
 
         query.with(by(Sort.Order.asc(NAME.name)));

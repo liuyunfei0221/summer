@@ -26,12 +26,12 @@ public enum Symbol {
     /**
      * database conf params concatenation
      */
-    PAR_CONCATENATION_DATABASE_CONF("?"),
+    QUESTION_MARK("?"),
 
     /**
      * database url params concatenation
      */
-    PAR_CONCATENATION_DATABASE_URL("-"),
+    HYPHEN("-"),
 
     /**
      * special params concatenation
@@ -41,42 +41,37 @@ public enum Symbol {
     /**
      * wildcard
      */
-    WILDCARD("*"),
+    ASTERISK("*"),
 
     /**
      * db wildcard
      */
-    DATABASE_WILDCARD("%"),
+    PERCENT("%"),
 
     /**
      * element separator
      */
-    LIST_ELEMENT_SEPARATOR(","),
+    COMMA(","),
 
     /**
      * path separator
      */
-    PATH_SEPARATOR("/"),
+    SLASH("/"),
 
     /**
      * schema separator
      */
-    SCHEME_SEPARATOR("."),
-
-    /**
-     * url parameter separator
-     */
-    URL_PAR_SEPARATOR("?"),
+    PERIOD("."),
 
     /**
      * key-value separator
      */
-    KEY_VALUE_SEPARATOR(":"),
+    COLON(":"),
 
     /**
      * pair separator
      */
-    PAIR_SEPARATOR(";"),
+    SEMICOLON(";"),
 
     /**
      * open brace

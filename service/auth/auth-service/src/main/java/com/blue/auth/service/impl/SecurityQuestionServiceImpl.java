@@ -53,27 +53,24 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
 
     private long maxQuestion;
 
-    /**
-     * security question validator
-     */
-    private final BiConsumer<List<SecurityQuestion>, Long> QUESTIONS_VALIDATOR = (questions, memberId) -> {
-        if (isEmpty(questions))
+    private final BiConsumer<List<SecurityQuestion>, Long> QUESTIONS_VALIDATOR = (qs, mid) -> {
+        if (isEmpty(qs))
             throw new BlueException(EMPTY_PARAM);
-        int questionSize = questions.size();
+        int questionSize = qs.size();
         if (questionSize >= maxQuestion)
             throw new BlueException(DATA_ALREADY_EXIST);
 
-        List<SecurityQuestion> existSecurityQuestions = securityQuestionMapper.selectByMemberId(memberId);
+        List<SecurityQuestion> existSecurityQuestions = securityQuestionMapper.selectByMemberId(mid);
         int existSize = existSecurityQuestions.size();
 
         if ((existSize + questionSize) > maxQuestion)
             throw new BlueException(DATA_ALREADY_EXIST);
 
         Set<String> questionsStrSet = existSecurityQuestions.stream().map(SecurityQuestion::getQuestion).collect(toSet());
-        if (questions.stream().map(SecurityQuestion::getQuestion).anyMatch(questionsStrSet::contains))
+        if (qs.stream().map(SecurityQuestion::getQuestion).anyMatch(questionsStrSet::contains))
             throw new BlueException(DATA_ALREADY_EXIST);
 
-        questions.forEach(q -> q.setMemberId(memberId));
+        qs.forEach(q -> q.setMemberId(mid));
     };
 
     /**

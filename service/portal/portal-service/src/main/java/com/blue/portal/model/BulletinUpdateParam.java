@@ -29,7 +29,6 @@ public final class BulletinUpdateParam extends BulletinInsertParam {
     public void asserts() {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
-        super.asserts();
     }
 
     public Long getId() {

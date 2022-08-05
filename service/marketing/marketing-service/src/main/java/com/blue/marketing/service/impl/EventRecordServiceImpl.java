@@ -67,13 +67,13 @@ public class EventRecordServiceImpl implements EventRecordService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(EventRecordSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final UnaryOperator<EventRecordCondition> CONDITION_PROCESSOR = condition -> {
-        if (isNull(condition))
+    private static final UnaryOperator<EventRecordCondition> CONDITION_PROCESSOR = c -> {
+        if (isNull(c))
             return new EventRecordCondition();
 
-        process(condition, SORT_ATTRIBUTE_MAPPING, EventRecordSortAttribute.ID.column);
+        process(c, SORT_ATTRIBUTE_MAPPING, EventRecordSortAttribute.ID.column);
 
-        return condition;
+        return c;
     };
 
     /**

@@ -36,11 +36,9 @@ import static com.blue.media.constant.ColumnName.CREATE_TIME;
 import static com.blue.media.converter.MediaModelConverters.downloadHistoryToDownloadHistoryInfo;
 import static com.blue.mongo.common.SortConverter.convert;
 import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static org.springframework.data.domain.Sort.unsorted;
 import static org.springframework.data.mongodb.core.query.Criteria.byExample;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static reactor.core.publisher.Mono.*;
@@ -79,42 +77,30 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(DownloadHistorySortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final Function<DownloadHistoryCondition, Sort> SORTER_CONVERTER = condition -> {
-        if (isNull(condition))
-            return unsorted();
+    private static final Function<DownloadHistoryCondition, Sort> SORTER_CONVERTER = c ->
+            convert(c, SORT_ATTRIBUTE_MAPPING, DownloadHistorySortAttribute.ID.column);
 
-        String sortAttribute = condition.getSortAttribute();
-        if (isBlank(sortAttribute)) {
-            condition.setSortAttribute(DownloadHistorySortAttribute.ID.column);
-        } else {
-            if (!SORT_ATTRIBUTE_MAPPING.containsValue(sortAttribute))
-                throw new BlueException(INVALID_PARAM);
-        }
-
-        return convert(condition.getSortType(), singletonList(condition.getSortAttribute()));
-    };
-
-    private static final Function<DownloadHistoryCondition, Query> CONDITION_PROCESSOR = condition -> {
+    private static final Function<DownloadHistoryCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();
 
-        if (condition == null) {
+        if (c == null) {
             query.with(SORTER_CONVERTER.apply(new DownloadHistoryCondition()));
             return query;
         }
 
         DownloadHistory probe = new DownloadHistory();
 
-        ofNullable(condition.getId()).ifPresent(probe::setId);
-        ofNullable(condition.getAttachmentId()).ifPresent(probe::setAttachmentId);
-        ofNullable(condition.getCreator()).ifPresent(probe::setCreator);
-        ofNullable(condition.getCreateTimeBegin()).ifPresent(createTimeBegin ->
+        ofNullable(c.getId()).ifPresent(probe::setId);
+        ofNullable(c.getAttachmentId()).ifPresent(probe::setAttachmentId);
+        ofNullable(c.getCreator()).ifPresent(probe::setCreator);
+        ofNullable(c.getCreateTimeBegin()).ifPresent(createTimeBegin ->
                 query.addCriteria(where(CREATE_TIME.name).gte(createTimeBegin)));
-        ofNullable(condition.getCreateTimeEnd()).ifPresent(createTimeEnd ->
+        ofNullable(c.getCreateTimeEnd()).ifPresent(createTimeEnd ->
                 query.addCriteria(where(CREATE_TIME.name).lte(createTimeEnd)));
 
         query.addCriteria(byExample(probe));
 
-        query.with(SORTER_CONVERTER.apply(condition));
+        query.with(SORTER_CONVERTER.apply(c));
 
         return query;
     };

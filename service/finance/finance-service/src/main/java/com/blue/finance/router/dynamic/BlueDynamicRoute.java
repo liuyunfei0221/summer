@@ -15,7 +15,7 @@ import java.util.function.UnaryOperator;
 
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.ConstantProcessor.getMediaTypeByIdentity;
-import static com.blue.basic.constant.common.Symbol.PATH_SEPARATOR;
+import static com.blue.basic.constant.common.Symbol.SLASH;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 import static org.springframework.web.reactive.function.server.RequestPredicates.path;
@@ -65,31 +65,31 @@ public class BlueDynamicRoute {
 
         switch (requestMethod) {
             case "GET":
-                routeBuilder.GET((PATH_SEPARATOR.identity + uriPlaceholder).intern(), handlerFunction);
+                routeBuilder.GET((SLASH.identity + uriPlaceholder).intern(), handlerFunction);
                 break;
 
             case "HEAD":
-                routeBuilder.HEAD((PATH_SEPARATOR.identity + uriPlaceholder).intern(), handlerFunction);
+                routeBuilder.HEAD((SLASH.identity + uriPlaceholder).intern(), handlerFunction);
                 break;
 
             case "POST":
-                routeBuilder.POST((PATH_SEPARATOR.identity + uriPlaceholder).intern(), MEDIA_TYPE_PREDICATE_GENERATOR.apply(dynamicResource.getContentType().intern()), handlerFunction);
+                routeBuilder.POST((SLASH.identity + uriPlaceholder).intern(), MEDIA_TYPE_PREDICATE_GENERATOR.apply(dynamicResource.getContentType().intern()), handlerFunction);
                 break;
 
             case "PUT":
-                routeBuilder.PUT((PATH_SEPARATOR.identity + uriPlaceholder).intern(), MEDIA_TYPE_PREDICATE_GENERATOR.apply(dynamicResource.getContentType().intern()), handlerFunction);
+                routeBuilder.PUT((SLASH.identity + uriPlaceholder).intern(), MEDIA_TYPE_PREDICATE_GENERATOR.apply(dynamicResource.getContentType().intern()), handlerFunction);
                 break;
 
             case "PATCH":
-                routeBuilder.PATCH((PATH_SEPARATOR.identity + uriPlaceholder).intern(), MEDIA_TYPE_PREDICATE_GENERATOR.apply(dynamicResource.getContentType().intern()), handlerFunction);
+                routeBuilder.PATCH((SLASH.identity + uriPlaceholder).intern(), MEDIA_TYPE_PREDICATE_GENERATOR.apply(dynamicResource.getContentType().intern()), handlerFunction);
                 break;
 
             case "DELETE":
-                routeBuilder.DELETE((PATH_SEPARATOR.identity + uriPlaceholder).intern(), MEDIA_TYPE_PREDICATE_GENERATOR.apply(dynamicResource.getContentType().intern()), handlerFunction);
+                routeBuilder.DELETE((SLASH.identity + uriPlaceholder).intern(), MEDIA_TYPE_PREDICATE_GENERATOR.apply(dynamicResource.getContentType().intern()), handlerFunction);
                 break;
 
             case "OPTIONS":
-                routeBuilder.OPTIONS((PATH_SEPARATOR.identity + uriPlaceholder).intern(), handlerFunction);
+                routeBuilder.OPTIONS((SLASH.identity + uriPlaceholder).intern(), handlerFunction);
                 break;
 
             default:

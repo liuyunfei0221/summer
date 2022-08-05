@@ -69,10 +69,10 @@ public class MemberInfoQrCodeGenHandler implements QrCodeGenHandler {
         String path = String.format(pathToBeFilled, placeholders);
         String domain = qrCodeConfigInfo.getDomain();
 
-        String content = domain + PATH_SEPARATOR.identity + path;
+        String content = domain + SLASH.identity + path;
         String descName = "E:\\tempFile\\disc\\qr\\" + memberId + "\\"
-                + memberId + PAR_CONCATENATION_DATABASE_URL.identity + BlueRandomGenerator.generate(RandomType.ALPHABETIC, 6)
-                + SCHEME_SEPARATOR.identity + qrCoder.getFileType();
+                + memberId + HYPHEN.identity + BlueRandomGenerator.generate(RandomType.ALPHABETIC, 6)
+                + PERIOD.identity + qrCoder.getFileType();
 
         return byteOperateService.upload(qrCoder.generateCodeWithoutLogo(content), QR_CODE.identity, memberId, EMPTY_DATA.value, descName)
                 .flatMap(aui ->

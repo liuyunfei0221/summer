@@ -51,13 +51,11 @@ import static com.blue.mongo.common.SortConverter.convert;
 import static com.blue.mongo.constant.LikeElement.PREFIX;
 import static com.blue.mongo.constant.LikeElement.SUFFIX;
 import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static org.springframework.data.domain.Sort.unsorted;
 import static org.springframework.data.mongodb.core.query.Criteria.byExample;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static reactor.core.publisher.Flux.fromIterable;
@@ -104,9 +102,6 @@ public class CardServiceImpl implements CardService {
 
     private final long MAX_ADDRESS;
 
-    private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(CardSortAttribute.values())
-            .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
-
     private Mono<Card> packageCoverAndContent(Long coverId, Long contentId, Card card) {
         if (isInvalidIdentity(contentId) || isNull(card))
             throw new BlueException(EMPTY_PARAM);
@@ -144,109 +139,100 @@ public class CardServiceImpl implements CardService {
                 });
     }
 
-    private final BiFunction<CardInsertParam, Long, Mono<Card>> CARD_INSERT_PARAM_2_MEMBER_ADDRESS = (cardInsertParam, memberId) -> {
-        if (isNull(cardInsertParam))
+    private final BiFunction<CardInsertParam, Long, Mono<Card>> CARD_INSERT_PARAM_2_CARD = (p, mid) -> {
+        if (isNull(p))
             throw new BlueException(EMPTY_PARAM);
-        cardInsertParam.asserts();
-        if (isInvalidIdentity(memberId))
+        p.asserts();
+        if (isInvalidIdentity(mid))
             throw new BlueException(UNAUTHORIZED);
 
         Card card = new Card();
 
         card.setId(blueIdentityProcessor.generate(Card.class));
-        card.setMemberId(memberId);
-        card.setName(cardInsertParam.getName());
-        card.setDetail(cardInsertParam.getDetail());
-        card.setExtra(cardInsertParam.getExtra());
+        card.setMemberId(mid);
+        card.setName(p.getName());
+        card.setDetail(p.getDetail());
+        card.setExtra(p.getExtra());
         card.setStatus(VALID.status);
 
         Long stamp = TIME_STAMP_GETTER.get();
         card.setCreateTime(stamp);
         card.setUpdateTime(stamp);
 
-        Long coverId = cardInsertParam.getCoverId();
-        Long contentId = cardInsertParam.getContentId();
+        Long coverId = p.getCoverId();
+        Long contentId = p.getContentId();
 
         return packageCoverAndContent(coverId, contentId, card);
     };
 
-    private final BiFunction<CardUpdateParam, Card, Mono<Card>> CARD_UPDATE_PARAM_2_MEMBER_ADDRESS = (cardUpdateParam, card) -> {
-        if (isNull(cardUpdateParam) || isNull(card))
+    private final BiFunction<CardUpdateParam, Card, Mono<Card>> CARD_UPDATE_PARAM_2_CARD = (p, t) -> {
+        if (isNull(p) || isNull(t))
             throw new BlueException(EMPTY_PARAM);
-        cardUpdateParam.asserts();
+        p.asserts();
 
-        ofNullable(cardUpdateParam.getName())
-                .filter(BlueChecker::isNotBlank).ifPresent(card::setName);
-        ofNullable(cardUpdateParam.getDetail())
-                .filter(BlueChecker::isNotBlank).ifPresent(card::setDetail);
-        ofNullable(cardUpdateParam.getExtra())
-                .filter(BlueChecker::isNotBlank).ifPresent(card::setExtra);
+        ofNullable(p.getName())
+                .filter(BlueChecker::isNotBlank).ifPresent(t::setName);
+        ofNullable(p.getDetail())
+                .filter(BlueChecker::isNotBlank).ifPresent(t::setDetail);
+        ofNullable(p.getExtra())
+                .filter(BlueChecker::isNotBlank).ifPresent(t::setExtra);
 
-        card.setUpdateTime(TIME_STAMP_GETTER.get());
+        t.setUpdateTime(TIME_STAMP_GETTER.get());
 
-        Long coverId = cardUpdateParam.getCoverId();
-        Long contentId = cardUpdateParam.getContentId();
+        Long coverId = p.getCoverId();
+        Long contentId = p.getContentId();
 
-        if (card.getCoverId().equals(contentId) && card.getContentId().equals(contentId))
-            return just(card);
+        if (t.getCoverId().equals(contentId) && t.getContentId().equals(contentId))
+            return just(t);
 
-        return packageCoverAndContent(coverId, contentId, card);
+        return packageCoverAndContent(coverId, contentId, t);
     };
 
     private static final Function<Long, String> CARD_UPDATE_SYNC_KEY_GEN = memberId -> CARD_UPDATE_PRE.prefix + memberId;
 
-    private static final Function<CardCondition, Sort> SORTER_CONVERTER = condition -> {
-        if (isNull(condition))
-            return unsorted();
+    private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(CardSortAttribute.values())
+            .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-        String sortAttribute = condition.getSortAttribute();
-        if (isBlank(sortAttribute)) {
-            condition.setSortAttribute(CardSortAttribute.ID.column);
-        } else {
-            if (!SORT_ATTRIBUTE_MAPPING.containsValue(sortAttribute))
-                throw new BlueException(INVALID_PARAM);
-        }
+    private static final Function<CardCondition, Sort> SORTER_CONVERTER = c ->
+            convert(c, SORT_ATTRIBUTE_MAPPING, CardSortAttribute.ID.column);
 
-        return convert(condition.getSortType(), singletonList(condition.getSortAttribute()));
-    };
-
-    private static final Function<CardCondition, Query> CONDITION_PROCESSOR = condition -> {
+    private static final Function<CardCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();
 
-        if (condition == null){
+        if (isNull(c)) {
             query.with(SORTER_CONVERTER.apply(new CardCondition()));
             return query;
         }
 
         Card probe = new Card();
 
-        ofNullable(condition.getId()).ifPresent(probe::setId);
-        ofNullable(condition.getMemberId()).ifPresent(probe::setMemberId);
-        ofNullable(condition.getNameLike()).filter(BlueChecker::isNotBlank).ifPresent(nameLike ->
+        ofNullable(c.getId()).ifPresent(probe::setId);
+        ofNullable(c.getMemberId()).ifPresent(probe::setMemberId);
+        ofNullable(c.getNameLike()).filter(BlueChecker::isNotBlank).ifPresent(nameLike ->
                 query.addCriteria(where(NAME.name).regex(compile(PREFIX.element + nameLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(condition.getDetailLike()).filter(BlueChecker::isNotBlank).ifPresent(detailLike ->
+        ofNullable(c.getDetailLike()).filter(BlueChecker::isNotBlank).ifPresent(detailLike ->
                 query.addCriteria(where(DETAIL.name).regex(compile(PREFIX.element + detailLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(condition.getCoverId()).ifPresent(probe::setCoverId);
-        ofNullable(condition.getCoverLinkLike()).filter(BlueChecker::isNotBlank).ifPresent(coverLinkLike ->
+        ofNullable(c.getCoverId()).ifPresent(probe::setCoverId);
+        ofNullable(c.getCoverLinkLike()).filter(BlueChecker::isNotBlank).ifPresent(coverLinkLike ->
                 query.addCriteria(where(COVER_LINK.name).regex(compile(PREFIX.element + coverLinkLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(condition.getContentId()).ifPresent(probe::setContentId);
-        ofNullable(condition.getContentLinkLike()).filter(BlueChecker::isNotBlank).ifPresent(contentLinkLike ->
+        ofNullable(c.getContentId()).ifPresent(probe::setContentId);
+        ofNullable(c.getContentLinkLike()).filter(BlueChecker::isNotBlank).ifPresent(contentLinkLike ->
                 query.addCriteria(where(CONTENT_LINK.name).regex(compile(PREFIX.element + contentLinkLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(condition.getStatus()).ifPresent(probe::setStatus);
+        ofNullable(c.getStatus()).ifPresent(probe::setStatus);
 
-        ofNullable(condition.getCreateTimeBegin()).ifPresent(createTimeBegin ->
+        ofNullable(c.getCreateTimeBegin()).ifPresent(createTimeBegin ->
                 query.addCriteria(where(CREATE_TIME.name).gte(createTimeBegin)));
-        ofNullable(condition.getCreateTimeEnd()).ifPresent(createTimeEnd ->
+        ofNullable(c.getCreateTimeEnd()).ifPresent(createTimeEnd ->
                 query.addCriteria(where(CREATE_TIME.name).lte(createTimeEnd)));
 
-        ofNullable(condition.getUpdateTimeBegin()).ifPresent(updateTimeBegin ->
+        ofNullable(c.getUpdateTimeBegin()).ifPresent(updateTimeBegin ->
                 query.addCriteria(where(UPDATE_TIME.name).gte(updateTimeBegin)));
-        ofNullable(condition.getUpdateTimeEnd()).ifPresent(updateTimeEnd ->
+        ofNullable(c.getUpdateTimeEnd()).ifPresent(updateTimeEnd ->
                 query.addCriteria(where(UPDATE_TIME.name).lte(updateTimeEnd)));
 
         query.addCriteria(byExample(probe));
 
-        query.with(SORTER_CONVERTER.apply(condition));
+        query.with(SORTER_CONVERTER.apply(c));
 
         return query;
     };
@@ -279,7 +265,7 @@ public class CardServiceImpl implements CardService {
                                 if (count >= MAX_ADDRESS)
                                     return error(new BlueException(DATA_ALREADY_EXIST));
 
-                                return CARD_INSERT_PARAM_2_MEMBER_ADDRESS.apply(cardInsertParam, memberId);
+                                return CARD_INSERT_PARAM_2_CARD.apply(cardInsertParam, memberId);
                             })
                             .flatMap(cardRepository::insert)
                             .flatMap(c -> just(CARD_2_CARD_INFO.apply(c)));
@@ -311,7 +297,7 @@ public class CardServiceImpl implements CardService {
                             if (!card.getMemberId().equals(memberId))
                                 return error(new BlueException(DATA_NOT_BELONG_TO_YOU));
 
-                            return CARD_UPDATE_PARAM_2_MEMBER_ADDRESS.apply(cardUpdateParam, card);
+                            return CARD_UPDATE_PARAM_2_CARD.apply(cardUpdateParam, card);
                         })
                         .flatMap(cardRepository::save)
                         .flatMap(c -> just(CARD_2_CARD_INFO.apply(c))));

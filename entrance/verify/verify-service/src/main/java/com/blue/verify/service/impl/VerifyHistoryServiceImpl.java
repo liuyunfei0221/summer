@@ -30,10 +30,8 @@ import static com.blue.mongo.common.SortConverter.convert;
 import static com.blue.verify.constant.ColumnName.CREATE_TIME;
 import static com.blue.verify.converter.VerifyModelConverters.VERIFY_HISTORIES_2_VERIFY_HISTORY_INFOS_CONVERTER;
 import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
-import static org.springframework.data.domain.Sort.unsorted;
 import static org.springframework.data.mongodb.core.query.Criteria.byExample;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static reactor.core.publisher.Mono.just;
@@ -66,46 +64,34 @@ public class VerifyHistoryServiceImpl implements VerifyHistoryService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(VerifyHistorySortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final Function<VerifyHistoryCondition, Sort> SORTER_CONVERTER = condition -> {
-        if (isNull(condition))
-            return unsorted();
+    private static final Function<VerifyHistoryCondition, Sort> SORTER_CONVERTER = c ->
+            convert(c, SORT_ATTRIBUTE_MAPPING, VerifyHistorySortAttribute.ID.column);
 
-        String sortAttribute = condition.getSortAttribute();
-        if (isBlank(sortAttribute)) {
-            condition.setSortAttribute(VerifyHistorySortAttribute.ID.column);
-        } else {
-            if (!SORT_ATTRIBUTE_MAPPING.containsValue(sortAttribute))
-                throw new BlueException(INVALID_PARAM);
-        }
-
-        return convert(condition.getSortType(), singletonList(condition.getSortAttribute()));
-    };
-
-    private static final Function<VerifyHistoryCondition, Query> CONDITION_PROCESSOR = condition -> {
+    private static final Function<VerifyHistoryCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();
 
-        if (condition == null){
+        if (c == null) {
             query.with(SORTER_CONVERTER.apply(new VerifyHistoryCondition()));
             return query;
         }
 
         VerifyHistory probe = new VerifyHistory();
 
-        ofNullable(condition.getId()).ifPresent(probe::setId);
-        ofNullable(condition.getVerifyType()).filter(BlueChecker::isNotBlank).ifPresent(probe::setVerifyType);
-        ofNullable(condition.getBusinessType()).filter(BlueChecker::isNotBlank).ifPresent(probe::setBusinessType);
-        ofNullable(condition.getDestination()).filter(BlueChecker::isNotBlank).ifPresent(probe::setDestination);
-        ofNullable(condition.getVerify()).filter(BlueChecker::isNotBlank).ifPresent(probe::setVerify);
-        ofNullable(condition.getRequestIp()).filter(BlueChecker::isNotBlank).ifPresent(probe::setRequestIp);
+        ofNullable(c.getId()).ifPresent(probe::setId);
+        ofNullable(c.getVerifyType()).filter(BlueChecker::isNotBlank).ifPresent(probe::setVerifyType);
+        ofNullable(c.getBusinessType()).filter(BlueChecker::isNotBlank).ifPresent(probe::setBusinessType);
+        ofNullable(c.getDestination()).filter(BlueChecker::isNotBlank).ifPresent(probe::setDestination);
+        ofNullable(c.getVerify()).filter(BlueChecker::isNotBlank).ifPresent(probe::setVerify);
+        ofNullable(c.getRequestIp()).filter(BlueChecker::isNotBlank).ifPresent(probe::setRequestIp);
 
-        ofNullable(condition.getCreateTimeBegin()).ifPresent(createTimeBegin ->
+        ofNullable(c.getCreateTimeBegin()).ifPresent(createTimeBegin ->
                 query.addCriteria(where(CREATE_TIME.name).gte(createTimeBegin)));
-        ofNullable(condition.getCreateTimeEnd()).ifPresent(createTimeEnd ->
+        ofNullable(c.getCreateTimeEnd()).ifPresent(createTimeEnd ->
                 query.addCriteria(where(CREATE_TIME.name).lte(createTimeEnd)));
 
         query.addCriteria(byExample(probe));
 
-        query.with(SORTER_CONVERTER.apply(condition));
+        query.with(SORTER_CONVERTER.apply(c));
 
         return query;
     };

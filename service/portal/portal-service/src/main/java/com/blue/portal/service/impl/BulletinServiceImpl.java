@@ -45,7 +45,7 @@ import static com.blue.basic.common.base.ConstantProcessor.assertBulletinType;
 import static com.blue.basic.constant.common.CacheKeyPrefix.BULLETINS_PRE;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.Status.VALID;
-import static com.blue.basic.constant.common.Symbol.DATABASE_WILDCARD;
+import static com.blue.basic.constant.common.Symbol.PERCENT;
 import static com.blue.basic.constant.portal.BulletinType.POPULAR;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
@@ -106,104 +106,98 @@ public class BulletinServiceImpl implements BulletinService {
 
     private static Cache<Integer, List<BulletinInfo>> LOCAL_CACHE;
 
-    private static final Function<Integer, String> BULLETIN_CACHE_KEY_GENERATOR = type -> BULLETINS_PRE.prefix + type;
+    private static final Function<Integer, String> BULLETIN_CACHE_KEY_GENERATOR = t -> BULLETINS_PRE.prefix + t;
 
-    private final Consumer<Integer> REDIS_CACHE_DELETER = type ->
-            stringRedisTemplate.delete(BULLETIN_CACHE_KEY_GENERATOR.apply(type));
+    private final Consumer<Integer> REDIS_CACHE_DELETER = t ->
+            stringRedisTemplate.delete(BULLETIN_CACHE_KEY_GENERATOR.apply(t));
 
-    private final Consumer<Integer> CACHE_DELETER = type -> {
-        REDIS_CACHE_DELETER.accept(type);
-        LOCAL_CACHE.invalidate(type);
+    private final Consumer<Integer> CACHE_DELETER = t -> {
+        REDIS_CACHE_DELETER.accept(t);
+        LOCAL_CACHE.invalidate(t);
     };
 
-    private final Function<Integer, List<BulletinInfo>> BULLETIN_INFOS_DB_GETTER = type ->
+    private final Function<Integer, List<BulletinInfo>> BULLETIN_INFOS_DB_GETTER = t ->
             BULLETINS_2_BULLETIN_INFOS_CONVERTER.apply(
-                    bulletinMapper.selectAllByCondition(TIME_STAMP_GETTER.get(), type, VALID.status));
+                    bulletinMapper.selectAllByCondition(TIME_STAMP_GETTER.get(), t, VALID.status));
 
-    private final Function<Integer, List<BulletinInfo>> BULLETIN_INFOS_REDIS_GETTER = type ->
-            ofNullable(stringRedisTemplate.opsForList().range(ofNullable(type).map(BULLETIN_CACHE_KEY_GENERATOR)
+    private final Function<Integer, List<BulletinInfo>> BULLETIN_INFOS_REDIS_GETTER = t ->
+            ofNullable(stringRedisTemplate.opsForList().range(ofNullable(t).map(BULLETIN_CACHE_KEY_GENERATOR)
                     .orElseGet(() -> BULLETIN_CACHE_KEY_GENERATOR.apply(POPULAR.identity)), 0, -1))
                     .filter(BlueChecker::isNotEmpty)
                     .map(sl -> sl.stream().map(s -> GSON.fromJson(s, BulletinInfo.class)).collect(toList()))
                     .orElseGet(Collections::emptyList);
 
-    private final BiConsumer<Integer, List<BulletinInfo>> BULLETIN_INFOS_REDIS_SETTER = (type, bulletinInfos) -> {
-        String cacheKey = BULLETIN_CACHE_KEY_GENERATOR.apply(type);
-        REDIS_CACHE_DELETER.accept(type);
-        stringRedisTemplate.opsForList().rightPushAll(cacheKey, bulletinInfos.stream().map(GSON::toJson).collect(toList()));
+    private final BiConsumer<Integer, List<BulletinInfo>> BULLETIN_INFOS_REDIS_SETTER = (t, bis) -> {
+        String cacheKey = BULLETIN_CACHE_KEY_GENERATOR.apply(t);
+        REDIS_CACHE_DELETER.accept(t);
+        stringRedisTemplate.opsForList().rightPushAll(cacheKey, bis.stream().map(GSON::toJson).collect(toList()));
         stringRedisTemplate.expire(cacheKey, expireDuration);
     };
 
-    private final Function<Integer, List<BulletinInfo>> BULLETIN_INFOS_WITH_REDIS_CACHE_GETTER = type ->
-            synchronizedProcessor.handleSupByOrderedWithSetter(() -> BULLETIN_INFOS_REDIS_GETTER.apply(type),
-                    BlueChecker::isNotEmpty, () -> BULLETIN_INFOS_DB_GETTER.apply(type),
-                    bulletinInfos -> BULLETIN_INFOS_REDIS_SETTER.accept(type, bulletinInfos));
+    private final Function<Integer, List<BulletinInfo>> BULLETIN_INFOS_WITH_REDIS_CACHE_GETTER = t ->
+            synchronizedProcessor.handleSupByOrderedWithSetter(() -> BULLETIN_INFOS_REDIS_GETTER.apply(t),
+                    BlueChecker::isNotEmpty, () -> BULLETIN_INFOS_DB_GETTER.apply(t),
+                    bulletinInfos -> BULLETIN_INFOS_REDIS_SETTER.accept(t, bulletinInfos));
 
-    private final Function<Integer, List<BulletinInfo>> BULLETIN_INFOS_WITH_ALL_CACHE_GETTER = type -> {
-        if (isNull(type))
+    private final Function<Integer, List<BulletinInfo>> BULLETIN_INFOS_WITH_ALL_CACHE_GETTER = t -> {
+        if (isNull(t))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "type can't be null");
 
-        return LOCAL_CACHE.get(type, BULLETIN_INFOS_WITH_REDIS_CACHE_GETTER);
+        return LOCAL_CACHE.get(t, BULLETIN_INFOS_WITH_REDIS_CACHE_GETTER);
     };
 
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(BulletinSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final UnaryOperator<BulletinCondition> CONDITION_PROCESSOR = condition -> {
-        if (isNull(condition))
+    private static final UnaryOperator<BulletinCondition> CONDITION_PROCESSOR = c -> {
+        if (isNull(c))
             return new BulletinCondition();
 
-        process(condition, SORT_ATTRIBUTE_MAPPING, BulletinSortAttribute.ID.column);
+        process(c, SORT_ATTRIBUTE_MAPPING, BulletinSortAttribute.ID.column);
 
-        ofNullable(condition.getTitleLike())
-                .filter(StringUtils::hasText).ifPresent(titleLike -> condition.setTitleLike(DATABASE_WILDCARD.identity + titleLike + DATABASE_WILDCARD.identity));
-        ofNullable(condition.getLinkLike())
-                .filter(StringUtils::hasText).ifPresent(linkLike -> condition.setLinkLike(DATABASE_WILDCARD.identity + linkLike + DATABASE_WILDCARD.identity));
+        ofNullable(c.getTitleLike())
+                .filter(StringUtils::hasText).ifPresent(titleLike -> c.setTitleLike(PERCENT.identity + titleLike + PERCENT.identity));
+        ofNullable(c.getLinkLike())
+                .filter(StringUtils::hasText).ifPresent(linkLike -> c.setLinkLike(PERCENT.identity + linkLike + PERCENT.identity));
 
-        return condition;
+        return c;
     };
 
-    private static final Function<List<Bulletin>, List<Long>> OPERATORS_GETTER = bulletins -> {
-        Set<Long> operatorIds = new HashSet<>(bulletins.size());
+    private static final Function<List<Bulletin>, List<Long>> OPERATORS_GETTER = bs -> {
+        Set<Long> oIds = new HashSet<>(bs.size());
 
-        for (Bulletin b : bulletins) {
-            operatorIds.add(b.getCreator());
-            operatorIds.add(b.getUpdater());
+        for (Bulletin b : bs) {
+            oIds.add(b.getCreator());
+            oIds.add(b.getUpdater());
         }
 
-        return new ArrayList<>(operatorIds);
+        return new ArrayList<>(oIds);
     };
 
-    /**
-     * is a bulletin exist?
-     */
-    private final Consumer<BulletinInsertParam> INSERT_ITEM_VALIDATOR = bip -> {
-        if (isNull(bip))
+    private final Consumer<BulletinInsertParam> INSERT_ITEM_VALIDATOR = p -> {
+        if (isNull(p))
             throw new BlueException(EMPTY_PARAM);
-        bip.asserts();
+        p.asserts();
 
-        if (isNotNull(bulletinMapper.selectByTitle(bip.getTitle())))
+        if (isNotNull(bulletinMapper.selectByTitle(p.getTitle())))
             throw new BlueException(RESOURCE_NAME_ALREADY_EXIST);
     };
 
-    /**
-     * is a bulletin exist?
-     */
-    private final Function<BulletinUpdateParam, Bulletin> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = bup -> {
-        if (isNull(bup))
+    private final Function<BulletinUpdateParam, Bulletin> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = p -> {
+        if (isNull(p))
             throw new BlueException(EMPTY_PARAM);
-        bup.asserts();
+        p.asserts();
 
-        Long id = bup.getId();
+        Long id = p.getId();
 
-        ofNullable(bup.getTitle())
+        ofNullable(p.getTitle())
                 .filter(BlueChecker::isNotBlank)
                 .map(bulletinMapper::selectByTitle)
                 .map(Bulletin::getId)
                 .ifPresent(eid -> {
                     if (!id.equals(eid))
-                        throw new BlueException(BULLETIN_TITLE_ALREADY_EXIST, new String[]{bup.getTitle()});
+                        throw new BlueException(BULLETIN_TITLE_ALREADY_EXIST, new String[]{p.getTitle()});
                 });
 
         Bulletin bulletin = bulletinMapper.selectByPrimaryKey(id);
@@ -213,9 +207,6 @@ public class BulletinServiceImpl implements BulletinService {
         return bulletin;
     };
 
-    /**
-     * for bulletin
-     */
     public static final BiFunction<BulletinUpdateParam, Bulletin, Boolean> UPDATE_ITEM_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);

@@ -100,20 +100,20 @@ public class MemberAuthServiceImpl implements MemberAuthService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(MemberBasicSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final UnaryOperator<MemberBasicCondition> CONDITION_PROCESSOR = condition -> {
-        if (isNull(condition))
+    private static final UnaryOperator<MemberBasicCondition> CONDITION_PROCESSOR = c -> {
+        if (isNull(c))
             return new MemberBasicCondition();
 
-        condition.setSortAttribute(
-                ofNullable(condition.getSortAttribute())
+        c.setSortAttribute(
+                ofNullable(c.getSortAttribute())
                         .filter(BlueChecker::isNotBlank)
                         .map(SORT_ATTRIBUTE_MAPPING::get)
                         .filter(BlueChecker::isNotBlank)
                         .orElseThrow(() -> new BlueException(INVALID_PARAM)));
 
-        condition.setSortType(getSortTypeByIdentity(condition.getSortType()).identity);
+        c.setSortType(getSortTypeByIdentity(c.getSortType()).identity);
 
-        return condition;
+        return c;
     };
 
 

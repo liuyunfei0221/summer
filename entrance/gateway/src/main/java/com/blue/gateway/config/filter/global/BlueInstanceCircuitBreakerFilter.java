@@ -88,7 +88,7 @@ public final class BlueInstanceCircuitBreakerFilter implements GlobalFilter, Ord
      * unknown host, concat host and port
      */
     private static final String UNKNOWN_HOST = Symbol.UNKNOWN.identity,
-            KEY_VALUE_SEPARATOR = Symbol.KEY_VALUE_SEPARATOR.identity;
+            KEY_VALUE_SEPARATOR = Symbol.COLON.identity;
 
     /**
      * server instance name generator

@@ -38,7 +38,7 @@ import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
 import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
 import static com.blue.basic.constant.common.CacheKey.RESOURCES;
 import static com.blue.basic.constant.common.ResponseElement.*;
-import static com.blue.basic.constant.common.Symbol.DATABASE_WILDCARD;
+import static com.blue.basic.constant.common.Symbol.PERCENT;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -101,29 +101,29 @@ public class ResourceServiceImpl implements ResourceService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(ResourceSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final UnaryOperator<ResourceCondition> CONDITION_PROCESSOR = condition -> {
-        if (isNull(condition))
+    private static final UnaryOperator<ResourceCondition> CONDITION_PROCESSOR = c -> {
+        if (isNull(c))
             return new ResourceCondition();
 
-        process(condition, SORT_ATTRIBUTE_MAPPING, ResourceSortAttribute.ID.column);
+        process(c, SORT_ATTRIBUTE_MAPPING, ResourceSortAttribute.ID.column);
 
-        ofNullable(condition.getRequestMethod())
-                .filter(StringUtils::hasText).map(String::toUpperCase).ifPresent(condition::setRequestMethod);
-        ofNullable(condition.getModule())
-                .filter(StringUtils::hasText).map(String::toLowerCase).ifPresent(condition::setModule);
+        ofNullable(c.getRequestMethod())
+                .filter(StringUtils::hasText).map(String::toUpperCase).ifPresent(c::setRequestMethod);
+        ofNullable(c.getModule())
+                .filter(StringUtils::hasText).map(String::toLowerCase).ifPresent(c::setModule);
 
-        ofNullable(condition.getUriLike())
-                .filter(StringUtils::hasText).map(String::toLowerCase).ifPresent(uriLike -> condition.setUriLike(DATABASE_WILDCARD.identity + uriLike + DATABASE_WILDCARD.identity));
-        ofNullable(condition.getNameLike())
-                .filter(StringUtils::hasText).ifPresent(nameLike -> condition.setNameLike(DATABASE_WILDCARD.identity + nameLike + DATABASE_WILDCARD.identity));
+        ofNullable(c.getUriLike())
+                .filter(StringUtils::hasText).map(String::toLowerCase).ifPresent(uriLike -> c.setUriLike(PERCENT.identity + uriLike + PERCENT.identity));
+        ofNullable(c.getNameLike())
+                .filter(StringUtils::hasText).ifPresent(nameLike -> c.setNameLike(PERCENT.identity + nameLike + PERCENT.identity));
 
-        return condition;
+        return c;
     };
 
-    private static final Function<List<Resource>, List<Long>> OPERATORS_GETTER = resources -> {
-        Set<Long> operatorIds = new HashSet<>(resources.size());
+    private static final Function<List<Resource>, List<Long>> OPERATORS_GETTER = rs -> {
+        Set<Long> operatorIds = new HashSet<>(rs.size());
 
-        for (Resource r : resources) {
+        for (Resource r : rs) {
             operatorIds.add(r.getCreator());
             operatorIds.add(r.getUpdater());
         }
@@ -131,33 +131,27 @@ public class ResourceServiceImpl implements ResourceService {
         return new ArrayList<>(operatorIds);
     };
 
-    /**
-     * is a resource exist?
-     */
-    private final Consumer<ResourceInsertParam> INSERT_ITEM_VALIDATOR = rip -> {
-        if (isNull(rip))
+    private final Consumer<ResourceInsertParam> INSERT_ITEM_VALIDATOR = p -> {
+        if (isNull(p))
             throw new BlueException(EMPTY_PARAM);
-        rip.asserts();
+        p.asserts();
 
-        if (isNotNull(resourceMapper.selectByName(rip.getName())))
+        if (isNotNull(resourceMapper.selectByName(p.getName())))
             throw new BlueException(RESOURCE_NAME_ALREADY_EXIST);
 
-        if (isNotNull(resourceMapper.selectByUnique(rip.getRequestMethod().toUpperCase(),
-                rip.getModule().toLowerCase(), rip.getName().toLowerCase())))
+        if (isNotNull(resourceMapper.selectByUnique(p.getRequestMethod().toUpperCase(),
+                p.getModule().toLowerCase(), p.getName().toLowerCase())))
             throw new BlueException(RESOURCE_FEATURE_ALREADY_EXIST);
     };
 
-    /**
-     * is a resource exist?
-     */
-    private final Function<ResourceUpdateParam, Resource> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = rup -> {
-        if (isNull(rup))
+    private final Function<ResourceUpdateParam, Resource> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = p -> {
+        if (isNull(p))
             throw new BlueException(EMPTY_PARAM);
-        rup.asserts();
+        p.asserts();
 
-        Long id = rup.getId();
+        Long id = p.getId();
 
-        ofNullable(rup.getName())
+        ofNullable(p.getName())
                 .filter(BlueChecker::isNotBlank)
                 .map(resourceMapper::selectByName)
                 .map(Resource::getId)
@@ -171,9 +165,9 @@ public class ResourceServiceImpl implements ResourceService {
             throw new BlueException(DATA_NOT_EXIST);
 
         ofNullable(resourceMapper.selectByUnique(
-                ofNullable(rup.getRequestMethod()).filter(BlueChecker::isNotBlank).map(String::trim).map(String::toUpperCase).orElseGet(resource::getRequestMethod),
-                ofNullable(rup.getModule()).filter(BlueChecker::isNotBlank).map(String::trim).map(String::toLowerCase).orElseGet(resource::getModule),
-                ofNullable(rup.getUri()).filter(BlueChecker::isNotBlank).map(String::trim).map(String::toLowerCase).map(uri -> {
+                ofNullable(p.getRequestMethod()).filter(BlueChecker::isNotBlank).map(String::trim).map(String::toUpperCase).orElseGet(resource::getRequestMethod),
+                ofNullable(p.getModule()).filter(BlueChecker::isNotBlank).map(String::trim).map(String::toLowerCase).orElseGet(resource::getModule),
+                ofNullable(p.getUri()).filter(BlueChecker::isNotBlank).map(String::trim).map(String::toLowerCase).map(uri -> {
                     REST_URI_ASSERTER.accept(uri);
                     return uri;
                 }).orElseGet(resource::getUri))
@@ -187,9 +181,6 @@ public class ResourceServiceImpl implements ResourceService {
         return resource;
     };
 
-    /**
-     * for resource
-     */
     public static final BiFunction<ResourceUpdateParam, Resource, Boolean> UPDATE_ITEM_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);

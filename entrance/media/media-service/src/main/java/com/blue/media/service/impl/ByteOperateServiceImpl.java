@@ -49,7 +49,7 @@ import static com.blue.basic.constant.common.BlueHeader.CONTENT_DISPOSITION;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.BluePrefix.CONTENT_DISPOSITION_FILE_NAME_PREFIX;
 import static com.blue.basic.constant.common.Status.VALID;
-import static com.blue.basic.constant.common.Symbol.SCHEME_SEPARATOR;
+import static com.blue.basic.constant.common.Symbol.PERIOD;
 import static com.blue.media.converter.MediaModelConverters.ATTACHMENTS_2_ATTACHMENT_UPLOAD_INFOS_CONVERTER;
 import static com.blue.media.converter.MediaModelConverters.ATTACHMENT_2_ATTACHMENT_UPLOAD_INFO_CONVERTER;
 import static java.lang.Integer.parseInt;
@@ -112,7 +112,7 @@ public class ByteOperateServiceImpl implements ByteOperateService {
     private static String ATTR_NAME;
     private static String TYPE_NAME;
 
-    private final BiFunction<FileUploadResult, Long, Attachment> ATTACHMENT_CONVERTER = (fur, memberId) -> {
+    private final BiFunction<FileUploadResult, Long, Attachment> ATTACHMENT_CONVERTER = (fur, mid) -> {
         Attachment attachment = new Attachment();
 
         attachment.setId(blueIdentityProcessor.generate(Attachment.class));
@@ -121,11 +121,11 @@ public class ByteOperateServiceImpl implements ByteOperateService {
         attachment.setType(fur.getType());
         attachment.setLink(destination);
         attachment.setName(fur.getResource());
-        attachment.setFileType(substring(destination, lastIndexOf(destination, SCHEME_SEPARATOR.identity) + 1));
+        attachment.setFileType(substring(destination, lastIndexOf(destination, PERIOD.identity) + 1));
         attachment.setSize(fur.getLength());
         attachment.setStatus(VALID.status);
         attachment.setCreateTime(TIME_STAMP_GETTER.get());
-        attachment.setCreator(memberId);
+        attachment.setCreator(mid);
 
         return attachment;
     };

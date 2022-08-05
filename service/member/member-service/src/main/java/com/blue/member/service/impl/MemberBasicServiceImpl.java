@@ -195,15 +195,15 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         return result;
     };
 
-    private final BiFunction<Long, Long, Mono<Tuple2<MemberBasic, AttachmentInfo>>> MEMBER_WITH_ATTACHMENT_GETTER = (memberId, attachmentId) -> {
-        if (isInvalidIdentity(memberId))
+    private final BiFunction<Long, Long, Mono<Tuple2<MemberBasic, AttachmentInfo>>> MEMBER_WITH_ATTACHMENT_GETTER = (mid, aid) -> {
+        if (isInvalidIdentity(mid))
             throw new BlueException(UNAUTHORIZED);
-        if (isInvalidIdentity(attachmentId))
+        if (isInvalidIdentity(aid))
             throw new BlueException(INVALID_IDENTITY);
 
-        return zip(justOrEmpty(memberBasicMapper.selectByPrimaryKey(memberId))
+        return zip(justOrEmpty(memberBasicMapper.selectByPrimaryKey(mid))
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST)))),
-                rpcAttachmentServiceConsumer.getAttachmentInfoByPrimaryKey(attachmentId)
+                rpcAttachmentServiceConsumer.getAttachmentInfoByPrimaryKey(aid)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST)))));
     };
 
@@ -233,13 +233,13 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(MemberBasicSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final UnaryOperator<MemberBasicCondition> CONDITION_PROCESSOR = condition -> {
-        if (isNull(condition))
+    private static final UnaryOperator<MemberBasicCondition> CONDITION_PROCESSOR = c -> {
+        if (isNull(c))
             return new MemberBasicCondition();
 
-        process(condition, SORT_ATTRIBUTE_MAPPING, MemberBasicSortAttribute.ID.column);
+        process(c, SORT_ATTRIBUTE_MAPPING, MemberBasicSortAttribute.ID.column);
 
-        return condition;
+        return c;
     };
 
     /**

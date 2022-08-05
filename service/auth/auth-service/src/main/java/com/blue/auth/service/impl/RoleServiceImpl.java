@@ -41,7 +41,7 @@ import static com.blue.basic.constant.common.CacheKey.ROLES;
 import static com.blue.basic.constant.common.Default.DEFAULT;
 import static com.blue.basic.constant.common.Default.NOT_DEFAULT;
 import static com.blue.basic.constant.common.ResponseElement.*;
-import static com.blue.basic.constant.common.Symbol.DATABASE_WILDCARD;
+import static com.blue.basic.constant.common.Symbol.PERCENT;
 import static java.util.Collections.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -138,22 +138,22 @@ public class RoleServiceImpl implements RoleService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(RoleSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final UnaryOperator<RoleCondition> CONDITION_PROCESSOR = condition -> {
-        if (isNull(condition))
+    private static final UnaryOperator<RoleCondition> CONDITION_PROCESSOR = c -> {
+        if (isNull(c))
             return new RoleCondition();
 
-        process(condition, SORT_ATTRIBUTE_MAPPING, RoleSortAttribute.ID.column);
+        process(c, SORT_ATTRIBUTE_MAPPING, RoleSortAttribute.ID.column);
 
-        ofNullable(condition.getNameLike())
-                .filter(StringUtils::hasText).ifPresent(nameLike -> condition.setNameLike(DATABASE_WILDCARD.identity + nameLike + DATABASE_WILDCARD.identity));
+        ofNullable(c.getNameLike())
+                .filter(StringUtils::hasText).ifPresent(nameLike -> c.setNameLike(PERCENT.identity + nameLike + PERCENT.identity));
 
-        return condition;
+        return c;
     };
 
-    private static final Function<List<Role>, List<Long>> OPERATORS_GETTER = roles -> {
-        Set<Long> operatorIds = new HashSet<>(roles.size());
+    private static final Function<List<Role>, List<Long>> OPERATORS_GETTER = rs -> {
+        Set<Long> operatorIds = new HashSet<>(rs.size());
 
-        for (Role r : roles) {
+        for (Role r : rs) {
             operatorIds.add(r.getCreator());
             operatorIds.add(r.getUpdater());
         }
@@ -161,32 +161,26 @@ public class RoleServiceImpl implements RoleService {
         return new ArrayList<>(operatorIds);
     };
 
-    /**
-     * is a role exist?
-     */
-    private final Consumer<RoleInsertParam> INSERT_ITEM_VALIDATOR = rip -> {
-        if (isNull(rip))
+    private final Consumer<RoleInsertParam> INSERT_ITEM_VALIDATOR = p -> {
+        if (isNull(p))
             throw new BlueException(EMPTY_PARAM);
-        rip.asserts();
+        p.asserts();
 
-        if (isNotNull(roleMapper.selectByName(rip.getName())))
+        if (isNotNull(roleMapper.selectByName(p.getName())))
             throw new BlueException(ROLE_NAME_ALREADY_EXIST);
 
-        if (isNotNull(roleMapper.selectByLevel(rip.getLevel())))
+        if (isNotNull(roleMapper.selectByLevel(p.getLevel())))
             throw new BlueException(ROLE_LEVEL_ALREADY_EXIST);
     };
 
-    /**
-     * is a role exist?
-     */
-    private final Function<RoleUpdateParam, Role> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = rup -> {
-        if (isNull(rup))
+    private final Function<RoleUpdateParam, Role> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = p -> {
+        if (isNull(p))
             throw new BlueException(EMPTY_PARAM);
-        rup.asserts();
+        p.asserts();
 
-        Long id = rup.getId();
+        Long id = p.getId();
 
-        ofNullable(rup.getName())
+        ofNullable(p.getName())
                 .filter(BlueChecker::isNotBlank)
                 .map(roleMapper::selectByName)
                 .map(Role::getId)
@@ -195,7 +189,7 @@ public class RoleServiceImpl implements RoleService {
                         throw new BlueException(ROLE_NAME_ALREADY_EXIST);
                 });
 
-        ofNullable(rup.getLevel())
+        ofNullable(p.getLevel())
                 .map(roleMapper::selectByLevel)
                 .map(Role::getId)
                 .ifPresent(eid -> {
@@ -210,9 +204,6 @@ public class RoleServiceImpl implements RoleService {
         return role;
     };
 
-    /**
-     * for role
-     */
     public static final BiFunction<RoleUpdateParam, Role, Boolean> UPDATE_ITEM_VALIDATOR = (p, t) -> {
         if (!p.getId().equals(t.getId()))
             throw new BlueException(BAD_REQUEST);

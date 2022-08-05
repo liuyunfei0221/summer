@@ -52,12 +52,10 @@ import static com.blue.mongo.common.SortConverter.convert;
 import static com.blue.mongo.constant.LikeElement.PREFIX;
 import static com.blue.mongo.constant.LikeElement.SUFFIX;
 import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toMap;
-import static org.springframework.data.domain.Sort.unsorted;
 import static org.springframework.data.mongodb.core.query.Criteria.byExample;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static reactor.core.publisher.Flux.fromIterable;
@@ -104,14 +102,11 @@ public class AddressServiceImpl implements AddressService {
 
     private final long MAX_ADDRESS;
 
-    private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(AddressSortAttribute.values())
-            .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
-
-    private final BiConsumer<Long, Address> ADDRESS_AREA_PACKAGER = (areaId, address) -> {
-        if (isInvalidIdentity(areaId) || isNull(address))
+    private final BiConsumer<Long, Address> ADDRESS_AREA_PACKAGER = (aid, address) -> {
+        if (isInvalidIdentity(aid) || isNull(address))
             return;
 
-        AreaRegion areaRegion = rpcAreaServiceConsumer.getAreaRegionById(areaId)
+        AreaRegion areaRegion = rpcAreaServiceConsumer.getAreaRegionById(aid)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .toFuture().join();
 
@@ -140,11 +135,11 @@ public class AddressServiceImpl implements AddressService {
                 });
     };
 
-    private final BiConsumer<Long, Address> ADDRESS_CITY_PACKAGER = (cityId, address) -> {
-        if (isInvalidIdentity(cityId) || isNull(address))
+    private final BiConsumer<Long, Address> ADDRESS_CITY_PACKAGER = (cid, address) -> {
+        if (isInvalidIdentity(cid) || isNull(address))
             return;
 
-        CityRegion cityRegion = rpcCityServiceConsumer.getCityRegionById(cityId)
+        CityRegion cityRegion = rpcCityServiceConsumer.getCityRegionById(cid)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .toFuture().join();
 
@@ -170,41 +165,41 @@ public class AddressServiceImpl implements AddressService {
         address.setArea(EMPTY_DATA.value);
     };
 
-    private void packageAddressRegion(Long areaId, Long cityId, Address address) {
+    private void packageAddressRegion(Long aid, Long cid, Address address) {
         if (isNull(address))
             throw new BlueException(EMPTY_PARAM);
-        if (isInvalidIdentity(areaId) && isInvalidIdentity(cityId))
+        if (isInvalidIdentity(aid) && isInvalidIdentity(cid))
             throw new BlueException(EMPTY_PARAM);
 
-        if (isValidIdentity(areaId)) {
-            ADDRESS_AREA_PACKAGER.accept(areaId, address);
+        if (isValidIdentity(aid)) {
+            ADDRESS_AREA_PACKAGER.accept(aid, address);
         } else {
-            ADDRESS_CITY_PACKAGER.accept(cityId, address);
+            ADDRESS_CITY_PACKAGER.accept(cid, address);
         }
     }
 
-    private final BiFunction<AddressInsertParam, Long, Mono<Address>> ADDRESS_INSERT_PARAM_2_MEMBER_ADDRESS = (addressInsertParam, memberId) -> {
-        if (isNull(addressInsertParam))
+    private final BiFunction<AddressInsertParam, Long, Mono<Address>> ADDRESS_INSERT_PARAM_2_ADDRESS = (p, mid) -> {
+        if (isNull(p))
             throw new BlueException(EMPTY_PARAM);
-        addressInsertParam.asserts();
-        if (isInvalidIdentity(memberId))
+        p.asserts();
+        if (isInvalidIdentity(mid))
             throw new BlueException(UNAUTHORIZED);
 
         Address address = new Address();
 
-        packageAddressRegion(addressInsertParam.getAreaId(), addressInsertParam.getCityId(), address);
+        packageAddressRegion(p.getAreaId(), p.getCityId(), address);
 
         address.setId(blueIdentityProcessor.generate(Address.class));
 
-        address.setMemberId(memberId);
+        address.setMemberId(mid);
 
-        address.setContact(addressInsertParam.getContact());
-        address.setGender(addressInsertParam.getGender());
-        address.setPhone(addressInsertParam.getPhone());
-        address.setEmail(addressInsertParam.getEmail());
-        address.setDetail(addressInsertParam.getDetail());
-        address.setReference(addressInsertParam.getReference());
-        address.setExtra(addressInsertParam.getExtra());
+        address.setContact(p.getContact());
+        address.setGender(p.getGender());
+        address.setPhone(p.getPhone());
+        address.setEmail(p.getEmail());
+        address.setDetail(p.getDetail());
+        address.setReference(p.getReference());
+        address.setExtra(p.getExtra());
         address.setStatus(VALID.status);
 
         Long stamp = TIME_STAMP_GETTER.get();
@@ -214,95 +209,86 @@ public class AddressServiceImpl implements AddressService {
         return just(address);
     };
 
-    private final BiFunction<AddressUpdateParam, Address, Mono<Address>> ADDRESS_UPDATE_PARAM_2_MEMBER_ADDRESS = (addressUpdateParam, address) -> {
-        if (isNull(addressUpdateParam) || isNull(address))
+    private final BiFunction<AddressUpdateParam, Address, Mono<Address>> ADDRESS_UPDATE_PARAM_2_ADDRESS = (p, t) -> {
+        if (isNull(p) || isNull(t))
             throw new BlueException(EMPTY_PARAM);
-        addressUpdateParam.asserts();
+        p.asserts();
 
-        packageAddressRegion(addressUpdateParam.getAreaId(), addressUpdateParam.getCityId(), address);
+        packageAddressRegion(p.getAreaId(), p.getCityId(), t);
 
-        ofNullable(addressUpdateParam.getContact())
-                .filter(BlueChecker::isNotBlank).ifPresent(address::setContact);
-        ofNullable(addressUpdateParam.getGender())
+        ofNullable(p.getContact())
+                .filter(BlueChecker::isNotBlank).ifPresent(t::setContact);
+        ofNullable(p.getGender())
                 .ifPresent(gi -> {
                     assertGender(gi, true);
-                    address.setGender(gi);
+                    t.setGender(gi);
                 });
-        ofNullable(addressUpdateParam.getPhone())
-                .filter(BlueChecker::isNotBlank).ifPresent(address::setPhone);
-        ofNullable(addressUpdateParam.getEmail())
-                .filter(BlueChecker::isNotBlank).ifPresent(address::setEmail);
-        ofNullable(addressUpdateParam.getDetail())
-                .filter(BlueChecker::isNotBlank).ifPresent(address::setDetail);
-        ofNullable(addressUpdateParam.getReference())
-                .filter(BlueChecker::isNotBlank).ifPresent(address::setReference);
-        ofNullable(addressUpdateParam.getExtra())
-                .filter(BlueChecker::isNotBlank).ifPresent(address::setExtra);
+        ofNullable(p.getPhone())
+                .filter(BlueChecker::isNotBlank).ifPresent(t::setPhone);
+        ofNullable(p.getEmail())
+                .filter(BlueChecker::isNotBlank).ifPresent(t::setEmail);
+        ofNullable(p.getDetail())
+                .filter(BlueChecker::isNotBlank).ifPresent(t::setDetail);
+        ofNullable(p.getReference())
+                .filter(BlueChecker::isNotBlank).ifPresent(t::setReference);
+        ofNullable(p.getExtra())
+                .filter(BlueChecker::isNotBlank).ifPresent(t::setExtra);
 
-        address.setUpdateTime(TIME_STAMP_GETTER.get());
+        t.setUpdateTime(TIME_STAMP_GETTER.get());
 
-        return just(address);
+        return just(t);
     };
 
     private static final Function<Long, String> ADDRESS_UPDATE_SYNC_KEY_GEN = memberId -> ADDRESS_UPDATE_PRE.prefix + memberId;
 
-    private static final Function<AddressCondition, Sort> SORTER_CONVERTER = condition -> {
-        if (isNull(condition))
-            return unsorted();
+    private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(AddressSortAttribute.values())
+            .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-        String sortAttribute = condition.getSortAttribute();
-        if (isBlank(sortAttribute)) {
-            condition.setSortAttribute(AddressSortAttribute.ID.column);
-        } else {
-            if (!SORT_ATTRIBUTE_MAPPING.containsValue(sortAttribute))
-                throw new BlueException(INVALID_PARAM);
-        }
+    private static final Function<AddressCondition, Sort> SORTER_CONVERTER = c ->
+            convert(c, SORT_ATTRIBUTE_MAPPING, AddressSortAttribute.ID.column);
 
-        return convert(condition.getSortType(), singletonList(condition.getSortAttribute()));
-    };
-
-    private static final Function<AddressCondition, Query> CONDITION_PROCESSOR = condition -> {
+    private static final Function<AddressCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();
 
-        if (condition == null){
+        if (isNull(c)) {
             query.with(SORTER_CONVERTER.apply(new AddressCondition()));
             return query;
         }
 
         Address probe = new Address();
 
-        ofNullable(condition.getId()).ifPresent(probe::setId);
-        ofNullable(condition.getMemberId()).ifPresent(probe::setMemberId);
-        ofNullable(condition.getMemberNameLike()).filter(BlueChecker::isNotBlank).ifPresent(memberNameLike ->
+        ofNullable(c.getId()).ifPresent(probe::setId);
+        ofNullable(c.getMemberId()).ifPresent(probe::setMemberId);
+        ofNullable(c.getMemberNameLike()).filter(BlueChecker::isNotBlank).ifPresent(memberNameLike ->
                 query.addCriteria(where(MEMBER_NAME.name).regex(compile(PREFIX.element + memberNameLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(condition.getGender()).ifPresent(probe::setGender);
-        ofNullable(condition.getPhoneLike()).filter(BlueChecker::isNotBlank).ifPresent(phoneLike ->
+        ofNullable(c.getGender()).ifPresent(probe::setGender);
+        ofNullable(c.getPhoneLike()).filter(BlueChecker::isNotBlank).ifPresent(phoneLike ->
                 query.addCriteria(where(PHONE.name).regex(compile(PREFIX.element + phoneLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(condition.getEmailLike()).filter(BlueChecker::isNotBlank).ifPresent(emailLike ->
+        ofNullable(c.getEmailLike()).filter(BlueChecker::isNotBlank).ifPresent(emailLike ->
                 query.addCriteria(where(EMAIL.name).regex(compile(PREFIX.element + emailLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(condition.getCountryId()).ifPresent(probe::setCountryId);
-        ofNullable(condition.getStateId()).ifPresent(probe::setStateId);
-        ofNullable(condition.getCityId()).ifPresent(probe::setCityId);
-        ofNullable(condition.getAreaId()).ifPresent(probe::setAreaId);
-        ofNullable(condition.getDetailLike()).filter(BlueChecker::isNotBlank).ifPresent(detailLike ->
+        ofNullable(c.getCountryId()).ifPresent(probe::setCountryId);
+        ofNullable(c.getStateId()).ifPresent(probe::setStateId);
+        ofNullable(c.getCityId()).ifPresent(probe::setCityId);
+        ofNullable(c.getAreaId()).ifPresent(probe::setAreaId);
+        ofNullable(c.getDetailLike()).filter(BlueChecker::isNotBlank).ifPresent(detailLike ->
                 query.addCriteria(where(DETAIL.name).regex(compile(PREFIX.element + detailLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(condition.getReferenceLike()).filter(BlueChecker::isNotBlank).ifPresent(referenceLike ->
+        ofNullable(c.getReferenceLike()).filter(BlueChecker::isNotBlank).ifPresent(referenceLike ->
                 query.addCriteria(where(REFERENCE.name).regex(compile(PREFIX.element + referenceLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(condition.getStatus()).ifPresent(probe::setStatus);
+        ofNullable(c.getStatus()).ifPresent(probe::setStatus);
 
-        ofNullable(condition.getCreateTimeBegin()).ifPresent(createTimeBegin ->
+        ofNullable(c.getCreateTimeBegin()).ifPresent(createTimeBegin ->
                 query.addCriteria(where(CREATE_TIME.name).gte(createTimeBegin)));
-        ofNullable(condition.getCreateTimeEnd()).ifPresent(createTimeEnd ->
+        ofNullable(c.getCreateTimeEnd()).ifPresent(createTimeEnd ->
                 query.addCriteria(where(CREATE_TIME.name).lte(createTimeEnd)));
 
-        ofNullable(condition.getUpdateTimeBegin()).ifPresent(updateTimeBegin ->
+        ofNullable(c.getUpdateTimeBegin()).ifPresent(updateTimeBegin ->
                 query.addCriteria(where(UPDATE_TIME.name).gte(updateTimeBegin)));
-        ofNullable(condition.getUpdateTimeEnd()).ifPresent(updateTimeEnd ->
+        ofNullable(c.getUpdateTimeEnd()).ifPresent(updateTimeEnd ->
                 query.addCriteria(where(UPDATE_TIME.name).lte(updateTimeEnd)));
 
         query.addCriteria(byExample(probe));
 
-        query.with(SORTER_CONVERTER.apply(condition));
+        query.with(SORTER_CONVERTER.apply(c));
 
         return query;
     };
@@ -335,7 +321,7 @@ public class AddressServiceImpl implements AddressService {
                                 if (count >= MAX_ADDRESS)
                                     return error(new BlueException(DATA_ALREADY_EXIST));
 
-                                return ADDRESS_INSERT_PARAM_2_MEMBER_ADDRESS.apply(addressInsertParam, memberId);
+                                return ADDRESS_INSERT_PARAM_2_ADDRESS.apply(addressInsertParam, memberId);
                             })
                             .flatMap(addressRepository::insert)
                             .flatMap(a -> just(ADDRESS_2_ADDRESS_INFO.apply(a)));
@@ -367,7 +353,7 @@ public class AddressServiceImpl implements AddressService {
                             if (!address.getMemberId().equals(memberId))
                                 return error(new BlueException(DATA_NOT_BELONG_TO_YOU));
 
-                            return ADDRESS_UPDATE_PARAM_2_MEMBER_ADDRESS.apply(addressUpdateParam, address);
+                            return ADDRESS_UPDATE_PARAM_2_ADDRESS.apply(addressUpdateParam, address);
                         })
                         .flatMap(addressRepository::save)
                         .flatMap(a -> just(ADDRESS_2_ADDRESS_INFO.apply(a))));

@@ -47,7 +47,7 @@ import static com.blue.basic.constant.common.BlueBoolean.FALSE;
 import static com.blue.basic.constant.common.BlueBoolean.TRUE;
 import static com.blue.basic.constant.common.CacheKeyPrefix.ACTIVE_STYLE_PRE;
 import static com.blue.basic.constant.common.ResponseElement.*;
-import static com.blue.basic.constant.common.Symbol.DATABASE_WILDCARD;
+import static com.blue.basic.constant.common.Symbol.PERCENT;
 import static com.blue.basic.constant.common.SyncKeyPrefix.STYLES_CACHE_PRE;
 import static com.blue.base.converter.BaseModelConverters.*;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
@@ -162,16 +162,16 @@ public class StyleServiceImpl implements StyleService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(StyleSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final UnaryOperator<StyleCondition> CONDITION_PROCESSOR = condition -> {
-        if (isNull(condition))
+    private static final UnaryOperator<StyleCondition> CONDITION_PROCESSOR = c -> {
+        if (isNull(c))
             return new StyleCondition();
 
-        process(condition, SORT_ATTRIBUTE_MAPPING, StyleSortAttribute.ID.column);
+        process(c, SORT_ATTRIBUTE_MAPPING, StyleSortAttribute.ID.column);
 
-        ofNullable(condition.getNameLike())
-                .filter(StringUtils::hasText).ifPresent(titleLike -> condition.setNameLike(DATABASE_WILDCARD.identity + titleLike + DATABASE_WILDCARD.identity));
+        ofNullable(c.getNameLike())
+                .filter(StringUtils::hasText).ifPresent(titleLike -> c.setNameLike(PERCENT.identity + titleLike + PERCENT.identity));
 
-        return condition;
+        return c;
     };
 
     private static final Function<List<Style>, List<Long>> OPERATORS_GETTER = styles -> {
@@ -185,35 +185,29 @@ public class StyleServiceImpl implements StyleService {
         return new ArrayList<>(operatorIds);
     };
 
-    /**
-     * is a style exist?
-     */
-    private final Consumer<StyleInsertParam> INSERT_STYLE_VALIDATOR = sip -> {
-        if (isNull(sip))
+    private final Consumer<StyleInsertParam> INSERT_STYLE_VALIDATOR = p -> {
+        if (isNull(p))
             throw new BlueException(EMPTY_PARAM);
-        sip.asserts();
+        p.asserts();
 
-        if (isNotNull(styleMapper.selectByName(sip.getName())))
+        if (isNotNull(styleMapper.selectByName(p.getName())))
             throw new BlueException(RESOURCE_NAME_ALREADY_EXIST);
     };
 
-    /**
-     * is a style exist?
-     */
-    private final Function<StyleUpdateParam, Style> UPDATE_STYLE_VALIDATOR_AND_ORIGIN_RETURNER = sup -> {
-        if (isNull(sup))
+    private final Function<StyleUpdateParam, Style> UPDATE_STYLE_VALIDATOR_AND_ORIGIN_RETURNER = p -> {
+        if (isNull(p))
             throw new BlueException(EMPTY_PARAM);
-        sup.asserts();
+        p.asserts();
 
-        Long id = sup.getId();
+        Long id = p.getId();
 
-        ofNullable(sup.getName())
+        ofNullable(p.getName())
                 .filter(BlueChecker::isNotBlank)
                 .map(styleMapper::selectByName)
                 .map(Style::getId)
                 .ifPresent(eid -> {
                     if (!id.equals(eid))
-                        throw new BlueException(STYLE_NAME_ALREADY_EXIST, new String[]{sup.getName()});
+                        throw new BlueException(STYLE_NAME_ALREADY_EXIST, new String[]{p.getName()});
                 });
 
         Style style = styleMapper.selectByPrimaryKey(id);
@@ -223,9 +217,6 @@ public class StyleServiceImpl implements StyleService {
         return style;
     };
 
-    /**
-     * for style
-     */
     public static final BiFunction<StyleUpdateParam, Style, Boolean> UPDATE_STYLE_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
@@ -255,7 +246,6 @@ public class StyleServiceImpl implements StyleService {
 
         return alteration;
     };
-
 
     /**
      * insert style

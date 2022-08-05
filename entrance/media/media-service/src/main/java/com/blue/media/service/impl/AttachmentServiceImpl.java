@@ -40,13 +40,11 @@ import static com.blue.mongo.common.SortConverter.convert;
 import static com.blue.mongo.constant.LikeElement.PREFIX;
 import static com.blue.mongo.constant.LikeElement.SUFFIX;
 import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static org.springframework.data.domain.Sort.unsorted;
 import static org.springframework.data.mongodb.core.query.Criteria.byExample;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static reactor.core.publisher.Flux.fromIterable;
@@ -84,45 +82,33 @@ public class AttachmentServiceImpl implements AttachmentService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(AttachmentSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final Function<AttachmentCondition, Sort> SORTER_CONVERTER = condition -> {
-        if (isNull(condition))
-            return unsorted();
+    private static final Function<AttachmentCondition, Sort> SORTER_CONVERTER = c ->
+            convert(c, SORT_ATTRIBUTE_MAPPING, AttachmentSortAttribute.ID.column);
 
-        String sortAttribute = condition.getSortAttribute();
-        if (isBlank(sortAttribute)) {
-            condition.setSortAttribute(AttachmentSortAttribute.ID.column);
-        } else {
-            if (!SORT_ATTRIBUTE_MAPPING.containsValue(sortAttribute))
-                throw new BlueException(INVALID_PARAM);
-        }
-
-        return convert(condition.getSortType(), singletonList(condition.getSortAttribute()));
-    };
-
-    private static final Function<AttachmentCondition, Query> CONDITION_PROCESSOR = condition -> {
+    private static final Function<AttachmentCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();
 
-        if (condition == null){
+        if (c == null) {
             query.with(SORTER_CONVERTER.apply(new AttachmentCondition()));
             return query;
         }
 
         Attachment probe = new Attachment();
 
-        ofNullable(condition.getId()).ifPresent(probe::setId);
-        ofNullable(condition.getLinkLike()).filter(BlueChecker::isNotBlank).ifPresent(linkLike ->
+        ofNullable(c.getId()).ifPresent(probe::setId);
+        ofNullable(c.getLinkLike()).filter(BlueChecker::isNotBlank).ifPresent(linkLike ->
                 query.addCriteria(where(LINK.name).regex(compile(PREFIX.element + linkLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(condition.getNameLike()).filter(BlueChecker::isNotBlank).ifPresent(nameLike ->
+        ofNullable(c.getNameLike()).filter(BlueChecker::isNotBlank).ifPresent(nameLike ->
                 query.addCriteria(where(NAME.name).regex(compile(PREFIX.element + nameLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(condition.getFileType()).filter(BlueChecker::isNotBlank).ifPresent(probe::setFileType);
-        ofNullable(condition.getCreateTimeBegin()).ifPresent(createTimeBegin ->
+        ofNullable(c.getFileType()).filter(BlueChecker::isNotBlank).ifPresent(probe::setFileType);
+        ofNullable(c.getCreateTimeBegin()).ifPresent(createTimeBegin ->
                 query.addCriteria(where(CREATE_TIME.name).gte(createTimeBegin)));
-        ofNullable(condition.getCreateTimeEnd()).ifPresent(createTimeEnd ->
+        ofNullable(c.getCreateTimeEnd()).ifPresent(createTimeEnd ->
                 query.addCriteria(where(CREATE_TIME.name).lte(createTimeEnd)));
 
         query.addCriteria(byExample(probe));
 
-        query.with(SORTER_CONVERTER.apply(condition));
+        query.with(SORTER_CONVERTER.apply(c));
 
         return query;
     };

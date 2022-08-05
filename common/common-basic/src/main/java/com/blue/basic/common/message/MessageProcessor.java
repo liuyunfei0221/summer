@@ -47,7 +47,7 @@ public final class MessageProcessor {
 
     private static final Logger LOGGER = getLogger(MessageProcessor.class);
 
-    private static final String DEFAULT_LANGUAGE = lowerCase(replace(LANGUAGE, PAR_CONCATENATION.identity, PAR_CONCATENATION_DATABASE_URL.identity));
+    private static final String DEFAULT_LANGUAGE = lowerCase(replace(LANGUAGE, PAR_CONCATENATION.identity, HYPHEN.identity));
     private static final int DEFAULT_CODE = INTERNAL_SERVER_ERROR.code;
     private static final String DEFAULT_MESSAGE = INTERNAL_SERVER_ERROR.message;
 
@@ -60,8 +60,8 @@ public final class MessageProcessor {
     private static volatile LanguageInfo DEFAULT_LANGUAGE_INFO;
 
     private static final UnaryOperator<String> LANGUAGE_IDENTITY_PARSER = n -> {
-        int idx = lastIndexOf(n, SCHEME_SEPARATOR.identity);
-        return replace(idx >= 0 ? (idx > 0 ? substring(n, 0, idx) : EMPTY_DATA.value) : n, PAR_CONCATENATION.identity, PAR_CONCATENATION_DATABASE_URL.identity);
+        int idx = lastIndexOf(n, PERIOD.identity);
+        return replace(idx >= 0 ? (idx > 0 ? substring(n, 0, idx) : EMPTY_DATA.value) : n, PAR_CONCATENATION.identity, HYPHEN.identity);
     };
 
     private static final Function<Map<String, String>, Integer> LANGUAGE_PRIORITY_PARSER = map ->

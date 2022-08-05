@@ -23,7 +23,7 @@ import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.FileGetter.getFile;
 import static com.blue.basic.common.base.FileGetter.getResource;
 import static com.blue.basic.constant.common.BluePrefix.CLASS_PATH_PREFIX;
-import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION_DATABASE_URL;
+import static com.blue.basic.constant.common.Symbol.HYPHEN;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static net.openhft.affinity.AffinityStrategies.DIFFERENT_CORE;
@@ -43,7 +43,7 @@ public final class BlueHbaseGenerator {
 
     private static final Logger LOGGER = getLogger(BlueHbaseGenerator.class);
 
-    private static final String DEFAULT_THREAD_NAME_PRE = "blue-hbase-executor-thread" + PAR_CONCATENATION_DATABASE_URL.identity;
+    private static final String DEFAULT_THREAD_NAME_PRE = "blue-hbase-executor-thread" + HYPHEN.identity;
     private static final int RANDOM_LEN = 6;
 
     private static final Predicate<String> CLASS_PATH_PRE = location ->
@@ -66,7 +66,7 @@ public final class BlueHbaseGenerator {
         assertConf(hbaseConf);
 
         String threadNamePre = ofNullable(hbaseConf.getThreadNamePre())
-                .map(p -> p + PAR_CONCATENATION_DATABASE_URL.identity)
+                .map(p -> p + HYPHEN.identity)
                 .orElse(DEFAULT_THREAD_NAME_PRE);
 
         RejectedExecutionHandler rejectedExecutionHandler = (r, executor) -> {

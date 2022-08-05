@@ -6,7 +6,6 @@ import com.blue.basic.model.common.PageModelResponse;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.media.api.model.QrCodeConfigInfo;
-import com.blue.media.constant.AttachmentSortAttribute;
 import com.blue.media.constant.QrCodeConfigSortAttribute;
 import com.blue.media.model.QrCodeCondition;
 import com.blue.media.model.QrCodeConfigInsertParam;
@@ -45,13 +44,11 @@ import static com.blue.mongo.common.SortConverter.convert;
 import static com.blue.mongo.constant.LikeElement.PREFIX;
 import static com.blue.mongo.constant.LikeElement.SUFFIX;
 import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static org.springframework.data.domain.Sort.unsorted;
 import static org.springframework.data.mongodb.core.query.Criteria.byExample;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static reactor.core.publisher.Mono.*;
@@ -89,67 +86,58 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
         this.scheduler = scheduler;
     }
 
-    /**
-     * is a config exist?
-     */
-    private final Consumer<QrCodeConfigInsertParam> INSERT_ITEM_VALIDATOR = param -> {
-        if (isNull(param))
+    private final Consumer<QrCodeConfigInsertParam> INSERT_ITEM_VALIDATOR = p -> {
+        if (isNull(p))
             throw new BlueException(EMPTY_PARAM);
-        param.asserts();
+        p.asserts();
 
         QrCodeConfig probe = new QrCodeConfig();
 
-        probe.setType(param.getType());
-        probe.setName(param.getName());
+        probe.setType(p.getType());
+        probe.setName(p.getName());
 
         if (ofNullable(qrCodeConfigRepository.count(Example.of(probe)).publishOn(scheduler).toFuture().join()).orElse(0L) > 0L)
             throw new BlueException(DATA_ALREADY_EXIST);
     };
 
-    /**
-     * config insert param -> config
-     */
-    public final BiFunction<QrCodeConfigInsertParam, Long, QrCodeConfig> CONFIG_INSERT_PARAM_2_CONFIG_CONVERTER = (param, operatorId) -> {
-        if (isNull(param))
+    public final BiFunction<QrCodeConfigInsertParam, Long, QrCodeConfig> CONFIG_INSERT_PARAM_2_CONFIG_CONVERTER = (p, oid) -> {
+        if (isNull(p))
             throw new BlueException(EMPTY_PARAM);
-        if (isInvalidIdentity(operatorId))
+        if (isInvalidIdentity(oid))
             throw new BlueException(EMPTY_PARAM);
-        param.asserts();
+        p.asserts();
 
         QrCodeConfig qrCodeConfig = new QrCodeConfig();
 
         qrCodeConfig.setId(blueIdentityProcessor.generate(QrCodeConfig.class));
-        qrCodeConfig.setName(param.getName());
-        qrCodeConfig.setDescription(param.getDescription());
-        qrCodeConfig.setType(param.getType());
-        qrCodeConfig.setGenHandlerType(param.getGenHandlerType());
-        qrCodeConfig.setDomain(param.getDomain());
-        qrCodeConfig.setPathToBeFilled(param.getPathToBeFilled());
-        qrCodeConfig.setPlaceholderCount(param.getPlaceholderCount());
-        qrCodeConfig.setAllowedRoles(param.getAllowedRoles());
+        qrCodeConfig.setName(p.getName());
+        qrCodeConfig.setDescription(p.getDescription());
+        qrCodeConfig.setType(p.getType());
+        qrCodeConfig.setGenHandlerType(p.getGenHandlerType());
+        qrCodeConfig.setDomain(p.getDomain());
+        qrCodeConfig.setPathToBeFilled(p.getPathToBeFilled());
+        qrCodeConfig.setPlaceholderCount(p.getPlaceholderCount());
+        qrCodeConfig.setAllowedRoles(p.getAllowedRoles());
 
         qrCodeConfig.setStatus(VALID.status);
         Long stamp = TIME_STAMP_GETTER.get();
         qrCodeConfig.setCreateTime(stamp);
         qrCodeConfig.setUpdateTime(stamp);
-        qrCodeConfig.setCreator(operatorId);
-        qrCodeConfig.setUpdater(operatorId);
+        qrCodeConfig.setCreator(oid);
+        qrCodeConfig.setUpdater(oid);
 
         return qrCodeConfig;
     };
 
-    /**
-     * is a config exist?
-     */
-    private final Function<QrCodeConfigUpdateParam, QrCodeConfig> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = param -> {
-        if (isNull(param))
+    private final Function<QrCodeConfigUpdateParam, QrCodeConfig> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = p -> {
+        if (isNull(p))
             throw new BlueException(EMPTY_PARAM);
-        param.asserts();
+        p.asserts();
 
-        Long id = param.getId();
+        Long id = p.getId();
 
         QrCodeConfig probe = new QrCodeConfig();
-        probe.setType(param.getType());
+        probe.setType(p.getType());
 
         List<QrCodeConfig> configs = ofNullable(qrCodeConfigRepository.findAll(Example.of(probe)).collectList()
                 .publishOn(scheduler).toFuture().join())
@@ -168,69 +156,57 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(QrCodeConfigSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final Function<QrCodeCondition, Sort> SORTER_CONVERTER = condition -> {
-        if (isNull(condition))
-            return unsorted();
+    private static final Function<QrCodeCondition, Sort> SORTER_CONVERTER = c ->
+            convert(c, SORT_ATTRIBUTE_MAPPING, QrCodeConfigSortAttribute.ID.column);
 
-        String sortAttribute = condition.getSortAttribute();
-        if (isBlank(sortAttribute)) {
-            condition.setSortAttribute(AttachmentSortAttribute.ID.column);
-        } else {
-            if (!SORT_ATTRIBUTE_MAPPING.containsValue(sortAttribute))
-                throw new BlueException(INVALID_PARAM);
-        }
-
-        return convert(condition.getSortType(), singletonList(condition.getSortAttribute()));
-    };
-
-    private static final Function<QrCodeCondition, Query> CONDITION_PROCESSOR = condition -> {
+    private static final Function<QrCodeCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();
 
-        if (condition == null){
+        if (c == null) {
             query.with(SORTER_CONVERTER.apply(new QrCodeCondition()));
             return query;
         }
 
         QrCodeConfig probe = new QrCodeConfig();
 
-        ofNullable(condition.getId()).ifPresent(probe::setId);
-        ofNullable(condition.getType()).ifPresent(probe::setType);
-        ofNullable(condition.getGenHandlerType()).ifPresent(probe::setGenHandlerType);
-        ofNullable(condition.getPlaceholderCount()).ifPresent(probe::setPlaceholderCount);
-        ofNullable(condition.getStatus()).ifPresent(probe::setStatus);
-        ofNullable(condition.getCreator()).ifPresent(probe::setCreator);
-        ofNullable(condition.getUpdater()).ifPresent(probe::setUpdater);
+        ofNullable(c.getId()).ifPresent(probe::setId);
+        ofNullable(c.getType()).ifPresent(probe::setType);
+        ofNullable(c.getGenHandlerType()).ifPresent(probe::setGenHandlerType);
+        ofNullable(c.getPlaceholderCount()).ifPresent(probe::setPlaceholderCount);
+        ofNullable(c.getStatus()).ifPresent(probe::setStatus);
+        ofNullable(c.getCreator()).ifPresent(probe::setCreator);
+        ofNullable(c.getUpdater()).ifPresent(probe::setUpdater);
 
         query.addCriteria(byExample(probe));
 
-        ofNullable(condition.getNameLike()).ifPresent(nameLike ->
+        ofNullable(c.getNameLike()).ifPresent(nameLike ->
                 query.addCriteria(where(NAME.name).regex(compile(PREFIX.element + nameLike + SUFFIX.element, CASE_INSENSITIVE))));
 
-        ofNullable(condition.getDescriptionLike()).ifPresent(descriptionLike ->
+        ofNullable(c.getDescriptionLike()).ifPresent(descriptionLike ->
                 query.addCriteria(where(DESCRIPTION.name).regex(compile(PREFIX.element + descriptionLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(condition.getDomainLike()).ifPresent(domainLike ->
+        ofNullable(c.getDomainLike()).ifPresent(domainLike ->
                 query.addCriteria(where(DOMAIN.name).regex(compile(PREFIX.element + domainLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(condition.getPathToBeFilledLike()).ifPresent(pathToBeFilledLike ->
+        ofNullable(c.getPathToBeFilledLike()).ifPresent(pathToBeFilledLike ->
                 query.addCriteria(where(PATH_TO_BE_FILLED.name).regex(compile(PREFIX.element + pathToBeFilledLike + SUFFIX.element, CASE_INSENSITIVE))));
 
-        ofNullable(condition.getCreateTimeBegin()).ifPresent(createTimeBegin ->
+        ofNullable(c.getCreateTimeBegin()).ifPresent(createTimeBegin ->
                 query.addCriteria(where(CREATE_TIME.name).gte(createTimeBegin)));
-        ofNullable(condition.getCreateTimeEnd()).ifPresent(createTimeEnd ->
+        ofNullable(c.getCreateTimeEnd()).ifPresent(createTimeEnd ->
                 query.addCriteria(where(CREATE_TIME.name).lte(createTimeEnd)));
-        ofNullable(condition.getUpdateTimeBegin()).ifPresent(updateTimeBegin ->
+        ofNullable(c.getUpdateTimeBegin()).ifPresent(updateTimeBegin ->
                 query.addCriteria(where(UPDATE_TIME.name).gte(updateTimeBegin)));
-        ofNullable(condition.getUpdateTimeEnd()).ifPresent(updateTimeEnd ->
+        ofNullable(c.getUpdateTimeEnd()).ifPresent(updateTimeEnd ->
                 query.addCriteria(where(UPDATE_TIME.name).lte(updateTimeEnd)));
 
-        query.with(SORTER_CONVERTER.apply(condition));
+        query.with(SORTER_CONVERTER.apply(c));
 
         return query;
     };
 
-    private static final Function<List<QrCodeConfig>, List<Long>> OPERATORS_GETTER = configs -> {
-        Set<Long> operatorIds = new HashSet<>(configs.size());
+    private static final Function<List<QrCodeConfig>, List<Long>> OPERATORS_GETTER = cs -> {
+        Set<Long> operatorIds = new HashSet<>(cs.size());
 
-        for (QrCodeConfig c : configs) {
+        for (QrCodeConfig c : cs) {
             operatorIds.add(c.getCreator());
             operatorIds.add(c.getUpdater());
         }

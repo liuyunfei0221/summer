@@ -42,14 +42,14 @@ public class FinanceControlServiceImpl implements FinanceControlService {
         this.blueIdentityProcessor = blueIdentityProcessor;
     }
 
-    private final Function<Long, FinanceAccount> INIT_FINANCE_ACCT_GEN = memberId -> {
-        if (isInvalidIdentity(memberId))
+    private final Function<Long, FinanceAccount> INIT_FINANCE_ACCT_GEN = mid -> {
+        if (isInvalidIdentity(mid))
             throw new BlueException(INVALID_IDENTITY);
 
         FinanceAccount financeAccount = new FinanceAccount();
 
         financeAccount.setId(blueIdentityProcessor.generate(FinanceAccount.class));
-        financeAccount.setMemberId(memberId);
+        financeAccount.setMemberId(mid);
         financeAccount.setBalance(0L);
         financeAccount.setFrozen(0L);
         financeAccount.setIncome(0L);

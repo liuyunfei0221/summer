@@ -23,7 +23,7 @@ import static com.blue.basic.constant.common.BlueDataAttrKey.*;
 import static com.blue.basic.constant.common.CacheKeyPrefix.ILLEGAL_IP_PRE;
 import static com.blue.basic.constant.common.CacheKeyPrefix.ILLEGAL_JWT_PRE;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
-import static com.blue.basic.constant.common.Symbol.WILDCARD;
+import static com.blue.basic.constant.common.Symbol.ASTERISK;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Optional.ofNullable;
 import static reactor.core.publisher.Mono.just;
@@ -57,7 +57,7 @@ public final class IllegalAsserter {
     }
 
     private static final String
-            ALL_RESOURCE = WILDCARD.identity,
+            ALL_RESOURCE = ASTERISK.identity,
             ILLEGAL_IP_PREFIX = ILLEGAL_IP_PRE.prefix,
             ILLEGAL_JWT_PREFIX = ILLEGAL_JWT_PRE.prefix;
 

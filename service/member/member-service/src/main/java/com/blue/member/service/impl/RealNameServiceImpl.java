@@ -73,43 +73,43 @@ public class RealNameServiceImpl implements RealNameService {
         this.blueIdentityProcessor = blueIdentityProcessor;
     }
 
-    private final Function<Long, RealName> REAL_NAME_INITIALIZER_WITHOUT_EXIST_VALIDATE = memberId -> {
-        if (isInvalidIdentity(memberId))
+    private final Function<Long, RealName> REAL_NAME_INITIALIZER_WITHOUT_EXIST_VALIDATE = mid -> {
+        if (isInvalidIdentity(mid))
             throw new BlueException(INVALID_IDENTITY);
 
         RealName realName = new RealName();
 
         realName.setId(blueIdentityProcessor.generate(RealName.class));
-        realName.setMemberId(memberId);
+        realName.setMemberId(mid);
         realName.setStatus(INVALID.status);
 
-        Long timeStamp = TIME_STAMP_GETTER.get();
-        realName.setCreateTime(timeStamp);
-        realName.setUpdateTime(timeStamp);
+        Long stamp = TIME_STAMP_GETTER.get();
+        realName.setCreateTime(stamp);
+        realName.setUpdateTime(stamp);
 
         return realName;
     };
 
-    private final BiConsumer<RealNameUpdateParam, RealName> ATTR_PACKAGER = (realNameUpdateParam, realName) -> {
-        if (isNull(realNameUpdateParam) || isNull(realName))
+    private final BiConsumer<RealNameUpdateParam, RealName> ATTR_PACKAGER = (p, t) -> {
+        if (isNull(p) || isNull(t))
             throw new BlueException(EMPTY_PARAM);
-        realNameUpdateParam.asserts();
+        p.asserts();
 
-        realName.setRealName(realNameUpdateParam.getRealName());
-        realName.setGender(realNameUpdateParam.getGender());
-        realName.setBirthday(realNameUpdateParam.getBirthday());
-        realName.setNationality(realNameUpdateParam.getNationality());
-        realName.setEthnic(realNameUpdateParam.getEthnic());
-        realName.setIdCardNo(realNameUpdateParam.getIdCardNo());
-        realName.setResidenceAddress(realNameUpdateParam.getResidenceAddress());
-        realName.setIssuingAuthority(realNameUpdateParam.getIssuingAuthority());
-        realName.setSinceDate(realNameUpdateParam.getSinceDate());
-        realName.setExpireDate(realNameUpdateParam.getExpireDate());
+        t.setRealName(p.getRealName());
+        t.setGender(p.getGender());
+        t.setBirthday(p.getBirthday());
+        t.setNationality(p.getNationality());
+        t.setEthnic(p.getEthnic());
+        t.setIdCardNo(p.getIdCardNo());
+        t.setResidenceAddress(p.getResidenceAddress());
+        t.setIssuingAuthority(p.getIssuingAuthority());
+        t.setSinceDate(p.getSinceDate());
+        t.setExpireDate(p.getExpireDate());
 
-        ofNullable(realNameUpdateParam.getExtra()).filter(BlueChecker::isNotBlank)
-                .ifPresent(realName::setExtra);
-        realName.setStatus(VALID.status);
-        realName.setUpdateTime(TIME_STAMP_GETTER.get());
+        ofNullable(p.getExtra()).filter(BlueChecker::isNotBlank)
+                .ifPresent(t::setExtra);
+        t.setStatus(VALID.status);
+        t.setUpdateTime(TIME_STAMP_GETTER.get());
     };
 
     private final Consumer<RealName> REAL_NAME_INFO_VALIDATOR = realName -> {
@@ -121,13 +121,13 @@ public class RealNameServiceImpl implements RealNameService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(RealNameSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final UnaryOperator<RealNameCondition> CONDITION_PROCESSOR = condition -> {
-        if (isNull(condition))
+    private static final UnaryOperator<RealNameCondition> CONDITION_PROCESSOR = c -> {
+        if (isNull(c))
             return new RealNameCondition();
 
-        process(condition, SORT_ATTRIBUTE_MAPPING, RealNameSortAttribute.ID.column);
+        process(c, SORT_ATTRIBUTE_MAPPING, RealNameSortAttribute.ID.column);
 
-        return condition;
+        return c;
     };
 
     /**

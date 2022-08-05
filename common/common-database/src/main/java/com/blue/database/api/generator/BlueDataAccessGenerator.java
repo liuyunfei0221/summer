@@ -78,7 +78,7 @@ public final class BlueDataAccessGenerator {
             throw new RuntimeException("username can't be blank");
 
         hikariConfig.setDriverClassName(driverClassName);
-        hikariConfig.setJdbcUrl(url + ofNullable(shardAttr.getDataBaseConf()).map(c -> PAR_CONCATENATION_DATABASE_CONF.identity + c).orElse(EMPTY_DATA.value));
+        hikariConfig.setJdbcUrl(url + ofNullable(shardAttr.getDataBaseConf()).map(c -> QUESTION_MARK.identity + c).orElse(EMPTY_DATA.value));
         hikariConfig.setUsername(username);
         ofNullable(shardAttr.getPassword()).ifPresent(hikariConfig::setPassword);
 
@@ -392,7 +392,7 @@ public final class BlueDataAccessGenerator {
 
                                         TableRuleConfiguration conf = new TableRuleConfiguration(logicTableName,
                                                 parseForceDbName(shardingLogicDataBaseName, dataCenterToDatabaseMappings, tableAttr.getDataCenter()) +
-                                                        SCHEME_SEPARATOR.identity +
+                                                        PERIOD.identity +
                                                         parseForceTableName(logicTableName, workerToTableMappings, tableAttr.getWorker()));
                                         conf.setDatabaseShardingStrategyConfig(noneShardingStrategyConfiguration);
                                         conf.setTableShardingStrategyConfig(noneShardingStrategyConfiguration);
@@ -448,7 +448,7 @@ public final class BlueDataAccessGenerator {
             ShardingStrategyConfiguration noneShardingStrategyConfiguration = new NoneShardingStrategyConfiguration();
             shardingRuleConfiguration.getTableRuleConfigs().addAll(
                     singleTables.stream().distinct().map(tableName -> {
-                        TableRuleConfiguration conf = new TableRuleConfiguration(tableName, singleDataBaseName + SCHEME_SEPARATOR.identity + tableName);
+                        TableRuleConfiguration conf = new TableRuleConfiguration(tableName, singleDataBaseName + PERIOD.identity + tableName);
                         conf.setDatabaseShardingStrategyConfig(noneShardingStrategyConfiguration);
                         conf.setTableShardingStrategyConfig(noneShardingStrategyConfiguration);
 
@@ -473,7 +473,7 @@ public final class BlueDataAccessGenerator {
         if (isBlank(url = attr.getUrl()))
             throw new RuntimeException("url can't be blank");
 
-        if ((urlParts = url.split(PATH_SEPARATOR.identity)).length < MIN_VALID_DB_URL_PARTS_LEN)
+        if ((urlParts = url.split(SLASH.identity)).length < MIN_VALID_DB_URL_PARTS_LEN)
             throw new RuntimeException("invalid url, url = " + url);
 
         if (isBlank(dataBaseName = urlParts[urlParts.length - 1]))
