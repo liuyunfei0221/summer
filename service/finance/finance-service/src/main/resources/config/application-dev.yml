@@ -201,7 +201,7 @@ es:
         schema: http
       boundServers: [ ]
       name: blue-es
-      version: 8.3.2
+      version: 8.3.3
       roles: [ ]
       attributes: [ ]
 
