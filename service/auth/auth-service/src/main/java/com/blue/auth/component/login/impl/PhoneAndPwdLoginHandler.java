@@ -2,6 +2,7 @@ package com.blue.auth.component.login.impl;
 
 import com.blue.auth.component.login.inter.LoginHandler;
 import com.blue.auth.model.LoginParam;
+import com.blue.auth.model.SessionInfo;
 import com.blue.auth.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.auth.repository.entity.Credential;
 import com.blue.auth.service.inter.AuthService;
@@ -23,7 +24,6 @@ import static com.blue.auth.common.AccessEncoder.matchAccess;
 import static com.blue.auth.constant.LoginAttribute.ACCESS;
 import static com.blue.auth.constant.LoginAttribute.IDENTITY;
 import static com.blue.basic.common.base.BlueChecker.*;
-import static com.blue.basic.common.base.CommonFunctions.GSON;
 import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.constant.auth.CredentialType.PHONE_PWD;
 import static com.blue.basic.constant.auth.ExtraKey.NEW_MEMBER;
@@ -93,15 +93,14 @@ public class PhoneAndPwdLoginHandler implements LoginHandler {
                 ).flatMap(rpcMemberBasicServiceConsumer::getMemberBasicInfoByPrimaryKey)
                 .flatMap(mbi -> {
                     MEMBER_STATUS_ASSERTER.accept(mbi);
-                    return authService.generateAuthMono(mbi.getId(), PHONE_PWD.identity, loginParam.getDeviceType().intern());
-                })
-                .flatMap(ma -> ok().contentType(APPLICATION_JSON)
-                        .header(AUTHORIZATION.name, ma.getAuth())
-                        .header(SECRET.name, ma.getSecKey())
-                        .header(REFRESH.name, ma.getRefresh())
-                        .header(RESPONSE_EXTRA.name, GSON.toJson(EXTRA_INFO))
-                        .body(success(serverRequest)
-                                , BlueResponse.class));
+                    return authService.generateAuthMono(mbi.getId(), PHONE_PWD.identity, loginParam.getDeviceType().intern())
+                            .flatMap(ma -> ok().contentType(APPLICATION_JSON)
+                                    .header(AUTHORIZATION.name, ma.getAuth())
+                                    .header(SECRET.name, ma.getSecKey())
+                                    .header(REFRESH.name, ma.getRefresh())
+                                    .body(success(new SessionInfo(mbi, EXTRA_INFO), serverRequest)
+                                            , BlueResponse.class));
+                });
     }
 
     @Override
