@@ -78,6 +78,16 @@ public enum BlueCommonThreshold {
     BLUE_ID(0L),
 
     /**
+     * account number minimum
+     */
+    ACCOUNT_LEN_MIN(9L),
+
+    /**
+     * account number maximum
+     */
+    ACCOUNT_LEN_MAX(22L),
+
+    /**
      * phone number minimum
      */
     PHONE_LEN_MIN(11L),

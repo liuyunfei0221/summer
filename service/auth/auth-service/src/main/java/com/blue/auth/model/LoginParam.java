@@ -20,7 +20,7 @@ public final class LoginParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = 1819262766642404008L;
 
-    private static final int ENTRIES_SIZE = 4;
+    private static final int ENTRIES_SIZE = 8;
     private static final float LOAD_FACTOR = 1.0f;
 
     /**

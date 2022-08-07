@@ -5,6 +5,8 @@
 
     <resultMap id="BaseResultMap" type="com.blue.member.repository.entity.MemberBasic">
         <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="account" jdbcType="VARCHAR" property="account"
+                typeHandler="com.blue.database.type.StringColumnEncodeTypeHandler"/>
         <result column="phone" jdbcType="VARCHAR" property="phone"
                 typeHandler="com.blue.database.type.StringColumnEncodeTypeHandler"/>
         <result column="email" jdbcType="VARCHAR" property="email"
@@ -24,13 +26,14 @@
 
     <sql id="Base_Column_List">
         id
-        , phone, email, name, icon, qr_code, gender, `profile`, source, status, create_time, update_time
+        ,account, phone, email, name, icon, qr_code, gender, `profile`, source, status, create_time, update_time
     </sql>
 
     <insert id="insert" parameterType="com.blue.member.repository.entity.MemberBasic">
-        insert into member_basic (id, phone, email, name, icon, qr_code,
+        insert into member_basic (id, account, phone, email, name, icon, qr_code,
                                   gender, `profile`, source, status, create_time, update_time)
         values (#{id,jdbcType=BIGINT},
+                #{account,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
                 #{phone,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
                 #{email,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
                 #{name,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
@@ -45,6 +48,9 @@
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
+            </if>
+            <if test="account != null">
+                account,
             </if>
             <if test="phone != null">
                 phone,
@@ -84,6 +90,9 @@
             <if test="id != null">
                 #{id,jdbcType=BIGINT},
             </if>
+            <if test="account != null">
+                #{account,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+            </if>
             <if test="phone != null">
                 #{phone,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
@@ -122,7 +131,8 @@
 
     <update id="updateByPrimaryKey" parameterType="com.blue.member.repository.entity.MemberBasic">
         update member_basic
-        set phone       = #{phone,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+        set account     = #{account,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+            phone       = #{phone,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             email       = #{email,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             name        = #{name,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             icon        = #{icon,jdbcType=VARCHAR},
@@ -139,6 +149,9 @@
     <update id="updateByPrimaryKeySelective" parameterType="com.blue.member.repository.entity.MemberBasic">
         update member_basic
         <set>
+            <if test="account != null">
+                account = #{account,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
+            </if>
             <if test="phone != null">
                 phone = #{phone,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler},
             </if>
@@ -218,6 +231,15 @@
         where id = #{id,jdbcType=BIGINT}
     </select>
 
+    <select id="selectByAccount" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        member_basic FORCE INDEX(idx_account)
+        WHERE
+        `account` = #{account,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler}
+    </select>
+
     <select id="selectByPhone" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
@@ -263,6 +285,11 @@
                 <if test="memberBasicCondition.id != null">
                     AND
                     id = #{memberBasicCondition.id,jdbcType=BIGINT}
+                </if>
+                <if test="memberBasicCondition.account != null and memberBasicCondition.account != ''">
+                    AND
+                    account =
+                    #{memberBasicCondition.account,jdbcType=VARCHAR,typeHandler=com.blue.database.type.StringColumnEncodeTypeHandler}
                 </if>
                 <if test="memberBasicCondition.phone != null and memberBasicCondition.phone != ''">
                     AND

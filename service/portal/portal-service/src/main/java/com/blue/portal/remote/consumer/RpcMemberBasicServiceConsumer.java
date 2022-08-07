@@ -26,6 +26,7 @@ public class RpcMemberBasicServiceConsumer {
             methods = {
                     @Method(name = "getMemberBasicInfoByPrimaryKey", async = true),
                     @Method(name = "selectMemberBasicInfoByIds", async = true),
+                    @Method(name = "getMemberBasicInfoByAccount", async = true),
                     @Method(name = "getMemberBasicInfoByPhone", async = true),
                     @Method(name = "getMemberBasicInfoByEmail", async = true)
             })
@@ -55,6 +56,16 @@ public class RpcMemberBasicServiceConsumer {
      */
     public Mono<List<MemberBasicInfo>> selectMemberBasicInfoByIds(List<Long> ids) {
         return fromFuture(rpcMemberBasicService.selectMemberBasicInfoByIds(ids)).publishOn(scheduler);
+    }
+
+    /**
+     * get member basic info by member's account
+     *
+     * @param account
+     * @return
+     */
+    public Mono<MemberBasicInfo> getMemberBasicInfoByAccount(String account) {
+        return fromFuture(rpcMemberBasicService.getMemberBasicInfoByAccount(account)).publishOn(scheduler);
     }
 
     /**

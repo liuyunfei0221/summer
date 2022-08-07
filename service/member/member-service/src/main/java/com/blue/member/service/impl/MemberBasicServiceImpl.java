@@ -208,6 +208,13 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     };
 
     private final Consumer<MemberBasic> MEMBER_EXIST_VALIDATOR = mb -> {
+        ofNullable(mb.getAccount())
+                .filter(BlueChecker::isNotBlank)
+                .ifPresent(account -> {
+                    if (isNotNull(memberBasicMapper.selectByAccount(account)))
+                        throw new BlueException(ACCOUNT_ALREADY_EXIST);
+                });
+
         ofNullable(mb.getPhone())
                 .filter(BlueChecker::isNotBlank)
                 .ifPresent(phone -> {
@@ -461,6 +468,21 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     }
 
     /**
+     * query member by account
+     *
+     * @param account
+     * @return
+     */
+    @Override
+    public Optional<MemberBasic> getMemberBasicByAccount(String account) {
+        LOGGER.info("Optional<MemberBasic> getMemberBasicByAccount(String account), account = {}", account);
+        if (isBlank(account))
+            throw new BlueException(BAD_REQUEST);
+
+        return ofNullable(memberBasicMapper.selectByAccount(account));
+    }
+
+    /**
      * query member by phone
      *
      * @param phone
@@ -488,6 +510,21 @@ public class MemberBasicServiceImpl implements MemberBasicService {
             throw new BlueException(BAD_REQUEST);
 
         return ofNullable(memberBasicMapper.selectByEmail(email));
+    }
+
+    /**
+     * query member mono by account
+     *
+     * @param account
+     * @return
+     */
+    @Override
+    public Mono<MemberBasic> getMemberBasicMonoByAccount(String account) {
+        LOGGER.info("Mono<MemberBasic> getMemberBasicMonoByAccount(String account), phone = {}", account);
+        if (isBlank(account))
+            throw new BlueException(BAD_REQUEST);
+
+        return justOrEmpty(memberBasicMapper.selectByAccount(account));
     }
 
     /**

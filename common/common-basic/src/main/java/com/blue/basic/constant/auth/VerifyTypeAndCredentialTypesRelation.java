@@ -5,8 +5,7 @@ import com.blue.basic.constant.verify.VerifyType;
 import java.util.Set;
 
 import static com.blue.basic.constant.auth.CredentialType.*;
-import static com.blue.basic.constant.verify.VerifyType.MAIL;
-import static com.blue.basic.constant.verify.VerifyType.SMS;
+import static com.blue.basic.constant.verify.VerifyType.*;
 
 /**
  * verify type with credential types relation
@@ -14,6 +13,11 @@ import static com.blue.basic.constant.verify.VerifyType.SMS;
  * @author liuyunfei
  */
 public enum VerifyTypeAndCredentialTypesRelation {
+
+    /**
+     * image with credential types
+     */
+    IMAGE_VT_AND_CTS(IMAGE, Set.of(ACCOUNT_PWD)),
 
     /**
      * sms with credential types

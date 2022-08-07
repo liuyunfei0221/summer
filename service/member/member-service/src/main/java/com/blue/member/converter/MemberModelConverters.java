@@ -36,6 +36,14 @@ public final class MemberModelConverters {
         if (isNull(memberRegistryParam))
             throw new BlueException(EMPTY_PARAM);
 
+        String account = memberRegistryParam.getAccount();
+        if (isNotBlank(account)) {
+            if (account.length() > BlueCommonThreshold.ACCOUNT_LEN_MAX.value)
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "account length is too long");
+            if (account.length() < BlueCommonThreshold.ACCOUNT_LEN_MIN.value)
+                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "account length is too short");
+        }
+
         String phone = memberRegistryParam.getPhone();
         if (isNotBlank(phone)) {
             if (phone.length() > BlueCommonThreshold.PHONE_LEN_MAX.value)
@@ -67,6 +75,7 @@ public final class MemberModelConverters {
         Long stamp = TIME_STAMP_GETTER.get();
 
         MemberBasic memberBasic = new MemberBasic();
+        memberBasic.setAccount(account);
         memberBasic.setPhone(phone);
         memberBasic.setEmail(email);
         memberBasic.setName(name);

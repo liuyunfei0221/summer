@@ -138,7 +138,7 @@ public final class AuthApiHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> credentialSettingUp(ServerRequest serverRequest) {
+    public Mono<ServerResponse> insertCredential(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(CredentialSettingUpParam.class)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
@@ -155,7 +155,7 @@ public final class AuthApiHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> credentialModify(ServerRequest serverRequest) {
+    public Mono<ServerResponse> updateCredential(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(CredentialModifyParam.class)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))

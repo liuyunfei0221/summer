@@ -19,7 +19,7 @@ import static com.blue.basic.constant.common.Status.VALID;
 import static java.util.stream.Collectors.toSet;
 
 /**
- * generate credential by phone
+ * collect member basic attr by email
  *
  * @author liuyunfei
  */

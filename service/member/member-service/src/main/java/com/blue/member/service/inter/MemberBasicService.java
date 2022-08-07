@@ -89,6 +89,14 @@ public interface MemberBasicService {
     Mono<MemberBasic> getMemberBasicMono(Long id);
 
     /**
+     * query member by account
+     *
+     * @param account
+     * @return
+     */
+    Optional<MemberBasic> getMemberBasicByAccount(String account);
+
+    /**
      * query member by phone
      *
      * @param phone
@@ -103,6 +111,14 @@ public interface MemberBasicService {
      * @return
      */
     Optional<MemberBasic> getMemberBasicByEmail(String email);
+
+    /**
+     * query member mono by account
+     *
+     * @param account
+     * @return
+     */
+    Mono<MemberBasic> getMemberBasicMonoByAccount(String account);
 
     /**
      * query member mono by phone

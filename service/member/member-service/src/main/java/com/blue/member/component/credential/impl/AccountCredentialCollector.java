@@ -18,19 +18,19 @@ import static com.blue.basic.constant.common.Status.VALID;
 import static java.util.stream.Collectors.toSet;
 
 /**
- * collect member basic attr by phone
+ * collect member basic attr by account
  *
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces", "JavadocDeclaration", "DuplicatedCode", "JavaDoc"})
-public final class PhoneCredentialCollector implements CredentialCollector {
+public final class AccountCredentialCollector implements CredentialCollector {
 
     private static final Set<String> TAR_TYPES = Stream.of(
-            PHONE_VERIFY_AUTO_REGISTER, LOCAL_PHONE_AUTO_REGISTER, WECHAT_AUTO_REGISTER, MINI_PRO_AUTO_REGISTER, PHONE_PWD
+            ACCOUNT_PWD
     ).map(t -> t.identity).collect(toSet());
 
     private static final BiFunction<String, String, Integer> STATUS_GETTER = (type, access) ->
-            !PHONE_PWD.identity.equals(type) || isNotBlank(access) ? VALID.status : INVALID.status;
+            !EMAIL_PWD.identity.equals(type) || isNotBlank(access) ? VALID.status : INVALID.status;
 
     /**
      * collect credential
@@ -47,13 +47,13 @@ public final class PhoneCredentialCollector implements CredentialCollector {
         if (isNull(memberBasic))
             return;
 
-        String phone = memberBasic.getPhone();
-        if (isBlank(phone))
+        String account = memberBasic.getAccount();
+        if (isBlank(account))
             return;
 
-        String tarAccess = isNotNull(access) ? access : EMPTY_DATA.value;
+        String tarAccess = access != null ? access : EMPTY_DATA.value;
         TAR_TYPES.stream()
-                .map(type -> new CredentialInfo(phone, type, tarAccess, STATUS_GETTER.apply(type, tarAccess), "from registry"))
+                .map(type -> new CredentialInfo(account, type, tarAccess, STATUS_GETTER.apply(type, tarAccess), "from registry"))
                 .forEach(credentials::add);
     }
 
@@ -71,7 +71,7 @@ public final class PhoneCredentialCollector implements CredentialCollector {
 
         for (String type : credentialTypes)
             if (TAR_TYPES.contains(type)) {
-                memberBasic.setPhone(credential);
+                memberBasic.setAccount(credential);
                 return;
             }
     }

@@ -21,6 +21,8 @@ public final class MemberRegistryParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = 8543617230220651524L;
 
+    private String account;
+
     private String phone;
 
     private String phoneVerify;
@@ -50,7 +52,7 @@ public final class MemberRegistryParam implements Serializable, Asserter {
 
     @Override
     public void asserts() {
-        if (isBlank(this.phone) || isBlank(this.email) || isBlank(this.access) || isBlank(this.name))
+        if (isBlank(this.account) || isBlank(this.phone) || isBlank(this.email) || isBlank(this.access) || isBlank(this.name))
             throw new BlueException(BAD_REQUEST);
 
         if (isBlank(this.phoneVerify) || isBlank(this.emailVerify))
@@ -62,6 +64,14 @@ public final class MemberRegistryParam implements Serializable, Asserter {
             if (this.access.length() < BlueCommonThreshold.ACS_LEN_MIN.value)
                 throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access length is too short");
         }
+    }
+
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
     }
 
     public String getPhone() {
@@ -139,7 +149,8 @@ public final class MemberRegistryParam implements Serializable, Asserter {
     @Override
     public String toString() {
         return "MemberRegistryParam{" +
-                "phone='" + phone + '\'' +
+                "account='" + account + '\'' +
+                ", phone='" + phone + '\'' +
                 ", phoneVerify='" + phoneVerify + '\'' +
                 ", email='" + email + '\'' +
                 ", emailVerify='" + emailVerify + '\'' +

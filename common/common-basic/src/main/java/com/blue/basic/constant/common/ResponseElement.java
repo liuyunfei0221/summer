@@ -54,9 +54,10 @@ public enum ResponseElement {
     //<editor-fold desc="member">
     MEMBER_NOT_HAS_A_ROLE(HttpStatus.BAD_REQUEST.value(), 400100001, "Member not has a role"),
     MEMBER_ALREADY_HAS_A_ROLE(HttpStatus.BAD_REQUEST.value(), 400100002, "Member already has a role"),
-    PHONE_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400100003, "The phone number already exists"),
-    EMAIL_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400100004, "The email already exists"),
-    NAME_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400100005, "The name already exists"),
+    ACCOUNT_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400100003, "The account already exists"),
+    PHONE_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400100004, "The phone number already exists"),
+    EMAIL_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400100005, "The email already exists"),
+    NAME_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400100006, "The name already exists"),
     //</editor-fold>
 
 

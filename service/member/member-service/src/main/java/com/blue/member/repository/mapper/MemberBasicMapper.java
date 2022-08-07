@@ -35,6 +35,14 @@ public interface MemberBasicMapper {
     MemberBasic selectByPrimaryKey(Long id);
 
     /**
+     * select by account
+     *
+     * @param account
+     * @return
+     */
+    MemberBasic selectByAccount(@Param("account") String account);
+
+    /**
      * select by phone
      *
      * @param phone

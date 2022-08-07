@@ -392,80 +392,80 @@ CREATE TABLE `order_1`
 
 CREATE TABLE `order_article_0`
 (
-    `id`          bigint  NOT NULL COMMENT 'id',
-    `order_id`    bigint  NOT NULL COMMENT 'order id',
-    `article_id`  bigint  NOT NULL COMMENT 'article id',
-    `member_id`   bigint  NOT NULL COMMENT 'member id',
-    `amount`      bigint  NOT NULL COMMENT 'article amount/fen',
-    `quantity`    bigint  NOT NULL COMMENT 'article quantity',
-    `extra`       varchar(256) DEFAULT NULL COMMENT 'article extra',
-    `detail`      varchar(256) DEFAULT NULL COMMENT 'article detail',
-    `status`      tinyint NOT NULL COMMENT 'order article status: 1-valid, 0-invalid',
-    `order_version`       bigint       DEFAULT '1' COMMENT 'order version',
-    `create_time` bigint  NOT NULL COMMENT 'data create time',
-    `update_time` bigint  NOT NULL COMMENT 'data update time',
+    `id`            bigint  NOT NULL COMMENT 'id',
+    `order_id`      bigint  NOT NULL COMMENT 'order id',
+    `article_id`    bigint  NOT NULL COMMENT 'article id',
+    `member_id`     bigint  NOT NULL COMMENT 'member id',
+    `amount`        bigint  NOT NULL COMMENT 'article amount/fen',
+    `quantity`      bigint  NOT NULL COMMENT 'article quantity',
+    `extra`         varchar(256) DEFAULT NULL COMMENT 'article extra',
+    `detail`        varchar(256) DEFAULT NULL COMMENT 'article detail',
+    `status`        tinyint NOT NULL COMMENT 'order article status: 1-valid, 0-invalid',
+    `order_version` bigint       DEFAULT '1' COMMENT 'order version',
+    `create_time`   bigint  NOT NULL COMMENT 'data create time',
+    `update_time`   bigint  NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    KEY           `idx_order`(`order_id`) USING BTREE,
-    KEY           `idx_member`(`member_id`) USING BTREE,
-    KEY           `idx_create_time`(`create_time`) USING BTREE
+    KEY             `idx_order`(`order_id`) USING BTREE,
+    KEY             `idx_member`(`member_id`) USING BTREE,
+    KEY             `idx_create_time`(`create_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of order article 0';
 
 CREATE TABLE `order_article_1`
 (
-    `id`          bigint  NOT NULL COMMENT 'id',
-    `order_id`    bigint  NOT NULL COMMENT 'order id',
-    `article_id`  bigint  NOT NULL COMMENT 'article id',
-    `member_id`   bigint  NOT NULL COMMENT 'member id',
-    `amount`      bigint  NOT NULL COMMENT 'article amount/fen',
-    `quantity`    bigint  NOT NULL COMMENT 'article quantity',
-    `extra`       varchar(256) DEFAULT NULL COMMENT 'article extra',
-    `detail`      varchar(256) DEFAULT NULL COMMENT 'article detail',
-    `status`      tinyint NOT NULL COMMENT 'order article status: 1-valid, 0-invalid',
-    `order_version`       bigint       DEFAULT '1' COMMENT 'order version',
-    `create_time` bigint  NOT NULL COMMENT 'data create time',
-    `update_time` bigint  NOT NULL COMMENT 'data update time',
+    `id`            bigint  NOT NULL COMMENT 'id',
+    `order_id`      bigint  NOT NULL COMMENT 'order id',
+    `article_id`    bigint  NOT NULL COMMENT 'article id',
+    `member_id`     bigint  NOT NULL COMMENT 'member id',
+    `amount`        bigint  NOT NULL COMMENT 'article amount/fen',
+    `quantity`      bigint  NOT NULL COMMENT 'article quantity',
+    `extra`         varchar(256) DEFAULT NULL COMMENT 'article extra',
+    `detail`        varchar(256) DEFAULT NULL COMMENT 'article detail',
+    `status`        tinyint NOT NULL COMMENT 'order article status: 1-valid, 0-invalid',
+    `order_version` bigint       DEFAULT '1' COMMENT 'order version',
+    `create_time`   bigint  NOT NULL COMMENT 'data create time',
+    `update_time`   bigint  NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    KEY           `idx_order`(`order_id`) USING BTREE,
-    KEY           `idx_member`(`member_id`) USING BTREE,
-    KEY           `idx_create_time`(`create_time`) USING BTREE
+    KEY             `idx_order`(`order_id`) USING BTREE,
+    KEY             `idx_member`(`member_id`) USING BTREE,
+    KEY             `idx_create_time`(`create_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of order article 1';
 
 CREATE TABLE `reference_amount_0`
 (
-    `id`           bigint  NOT NULL COMMENT 'id',
-    `order_id`     bigint  NOT NULL COMMENT 'order id',
-    `member_id`    bigint  NOT NULL COMMENT 'member id',
-    `type`         tinyint NOT NULL COMMENT 'amount type',
-    `reference_id` bigint       DEFAULT '0' COMMENT 'reference id',
-    `amount`       bigint  NOT NULL COMMENT 'reference amount/fen',
-    `extra`        varchar(256) DEFAULT NULL COMMENT 'reference extra',
-    `detail`       varchar(256) DEFAULT NULL COMMENT 'amount detail',
-    `status`       tinyint NOT NULL COMMENT 'reference amount status: 1-valid, 0-invalid',
-    `order_version`       bigint       DEFAULT '1' COMMENT 'order version',
-    `create_time`  bigint  NOT NULL COMMENT 'data create time',
-    `update_time`  bigint  NOT NULL COMMENT 'data update time',
+    `id`            bigint  NOT NULL COMMENT 'id',
+    `order_id`      bigint  NOT NULL COMMENT 'order id',
+    `member_id`     bigint  NOT NULL COMMENT 'member id',
+    `type`          tinyint NOT NULL COMMENT 'amount type',
+    `reference_id`  bigint       DEFAULT '0' COMMENT 'reference id',
+    `amount`        bigint  NOT NULL COMMENT 'reference amount/fen',
+    `extra`         varchar(256) DEFAULT NULL COMMENT 'reference extra',
+    `detail`        varchar(256) DEFAULT NULL COMMENT 'amount detail',
+    `status`        tinyint NOT NULL COMMENT 'reference amount status: 1-valid, 0-invalid',
+    `order_version` bigint       DEFAULT '1' COMMENT 'order version',
+    `create_time`   bigint  NOT NULL COMMENT 'data create time',
+    `update_time`   bigint  NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    KEY            `idx_order`(`order_id`) USING BTREE,
-    KEY            `idx_member`(`member_id`) USING BTREE
+    KEY             `idx_order`(`order_id`) USING BTREE,
+    KEY             `idx_member`(`member_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of reference amount 0';
 
 CREATE TABLE `reference_amount_1`
 (
-    `id`           bigint  NOT NULL COMMENT 'id',
-    `order_id`     bigint  NOT NULL COMMENT 'order id',
-    `member_id`    bigint  NOT NULL COMMENT 'member id',
-    `type`         tinyint NOT NULL COMMENT 'amount type',
-    `reference_id` bigint       DEFAULT '0' COMMENT 'reference id',
-    `amount`       bigint  NOT NULL COMMENT 'reference amount/fen',
-    `extra`        varchar(256) DEFAULT NULL COMMENT 'reference extra',
-    `detail`       varchar(256) DEFAULT NULL COMMENT 'amount detail',
-    `status`       tinyint NOT NULL COMMENT 'reference amount status: 1-valid, 0-invalid',
-    `order_version`       bigint       DEFAULT '1' COMMENT 'order version',
-    `create_time`  bigint  NOT NULL COMMENT 'data create time',
-    `update_time`  bigint  NOT NULL COMMENT 'data update time',
+    `id`            bigint  NOT NULL COMMENT 'id',
+    `order_id`      bigint  NOT NULL COMMENT 'order id',
+    `member_id`     bigint  NOT NULL COMMENT 'member id',
+    `type`          tinyint NOT NULL COMMENT 'amount type',
+    `reference_id`  bigint       DEFAULT '0' COMMENT 'reference id',
+    `amount`        bigint  NOT NULL COMMENT 'reference amount/fen',
+    `extra`         varchar(256) DEFAULT NULL COMMENT 'reference extra',
+    `detail`        varchar(256) DEFAULT NULL COMMENT 'amount detail',
+    `status`        tinyint NOT NULL COMMENT 'reference amount status: 1-valid, 0-invalid',
+    `order_version` bigint       DEFAULT '1' COMMENT 'order version',
+    `create_time`   bigint  NOT NULL COMMENT 'data create time',
+    `update_time`   bigint  NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    KEY            `idx_order`(`order_id`) USING BTREE,
-    KEY            `idx_member`(`member_id`) USING BTREE
+    KEY             `idx_order`(`order_id`) USING BTREE,
+    KEY             `idx_member`(`member_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of reference amount 1';
 
 CREATE TABLE `refund_0`
@@ -737,80 +737,80 @@ CREATE TABLE `order_1`
 
 CREATE TABLE `order_article_0`
 (
-    `id`          bigint  NOT NULL COMMENT 'id',
-    `order_id`    bigint  NOT NULL COMMENT 'order id',
-    `article_id`  bigint  NOT NULL COMMENT 'article id',
-    `member_id`   bigint  NOT NULL COMMENT 'member id',
-    `amount`      bigint  NOT NULL COMMENT 'article amount/fen',
-    `quantity`    bigint  NOT NULL COMMENT 'article quantity',
-    `extra`       varchar(256) DEFAULT NULL COMMENT 'article extra',
-    `detail`      varchar(256) DEFAULT NULL COMMENT 'article detail',
-    `status`      tinyint NOT NULL COMMENT 'order article status: 1-valid, 0-invalid',
-    `order_version`       bigint       DEFAULT '1' COMMENT 'order version',
-    `create_time` bigint  NOT NULL COMMENT 'data create time',
-    `update_time` bigint  NOT NULL COMMENT 'data update time',
+    `id`            bigint  NOT NULL COMMENT 'id',
+    `order_id`      bigint  NOT NULL COMMENT 'order id',
+    `article_id`    bigint  NOT NULL COMMENT 'article id',
+    `member_id`     bigint  NOT NULL COMMENT 'member id',
+    `amount`        bigint  NOT NULL COMMENT 'article amount/fen',
+    `quantity`      bigint  NOT NULL COMMENT 'article quantity',
+    `extra`         varchar(256) DEFAULT NULL COMMENT 'article extra',
+    `detail`        varchar(256) DEFAULT NULL COMMENT 'article detail',
+    `status`        tinyint NOT NULL COMMENT 'order article status: 1-valid, 0-invalid',
+    `order_version` bigint       DEFAULT '1' COMMENT 'order version',
+    `create_time`   bigint  NOT NULL COMMENT 'data create time',
+    `update_time`   bigint  NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    KEY           `idx_order`(`order_id`) USING BTREE,
-    KEY           `idx_member`(`member_id`) USING BTREE,
-    KEY           `idx_create_time`(`create_time`) USING BTREE
+    KEY             `idx_order`(`order_id`) USING BTREE,
+    KEY             `idx_member`(`member_id`) USING BTREE,
+    KEY             `idx_create_time`(`create_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of order article 0';
 
 CREATE TABLE `order_article_1`
 (
-    `id`          bigint  NOT NULL COMMENT 'id',
-    `order_id`    bigint  NOT NULL COMMENT 'order id',
-    `article_id`  bigint  NOT NULL COMMENT 'article id',
-    `member_id`   bigint  NOT NULL COMMENT 'member id',
-    `amount`      bigint  NOT NULL COMMENT 'article amount/fen',
-    `quantity`    bigint  NOT NULL COMMENT 'article quantity',
-    `extra`       varchar(256) DEFAULT NULL COMMENT 'article extra',
-    `detail`      varchar(256) DEFAULT NULL COMMENT 'article detail',
-    `status`      tinyint NOT NULL COMMENT 'order article status: 1-valid, 0-invalid',
-    `order_version`       bigint       DEFAULT '1' COMMENT 'order version',
-    `create_time` bigint  NOT NULL COMMENT 'data create time',
-    `update_time` bigint  NOT NULL COMMENT 'data update time',
+    `id`            bigint  NOT NULL COMMENT 'id',
+    `order_id`      bigint  NOT NULL COMMENT 'order id',
+    `article_id`    bigint  NOT NULL COMMENT 'article id',
+    `member_id`     bigint  NOT NULL COMMENT 'member id',
+    `amount`        bigint  NOT NULL COMMENT 'article amount/fen',
+    `quantity`      bigint  NOT NULL COMMENT 'article quantity',
+    `extra`         varchar(256) DEFAULT NULL COMMENT 'article extra',
+    `detail`        varchar(256) DEFAULT NULL COMMENT 'article detail',
+    `status`        tinyint NOT NULL COMMENT 'order article status: 1-valid, 0-invalid',
+    `order_version` bigint       DEFAULT '1' COMMENT 'order version',
+    `create_time`   bigint  NOT NULL COMMENT 'data create time',
+    `update_time`   bigint  NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    KEY           `idx_order`(`order_id`) USING BTREE,
-    KEY           `idx_member`(`member_id`) USING BTREE,
-    KEY           `idx_create_time`(`create_time`) USING BTREE
+    KEY             `idx_order`(`order_id`) USING BTREE,
+    KEY             `idx_member`(`member_id`) USING BTREE,
+    KEY             `idx_create_time`(`create_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of order article 1';
 
 CREATE TABLE `reference_amount_0`
 (
-    `id`           bigint  NOT NULL COMMENT 'id',
-    `order_id`     bigint  NOT NULL COMMENT 'order id',
-    `member_id`    bigint  NOT NULL COMMENT 'member id',
-    `type`         tinyint NOT NULL COMMENT 'amount type',
-    `reference_id` bigint       DEFAULT '0' COMMENT 'reference id',
-    `amount`       bigint  NOT NULL COMMENT 'reference amount/fen',
-    `extra`        varchar(256) DEFAULT NULL COMMENT 'reference extra',
-    `detail`       varchar(256) DEFAULT NULL COMMENT 'amount detail',
-    `status`       tinyint NOT NULL COMMENT 'reference amount status: 1-valid, 0-invalid',
-    `order_version`       bigint       DEFAULT '1' COMMENT 'order version',
-    `create_time`  bigint  NOT NULL COMMENT 'data create time',
-    `update_time`  bigint  NOT NULL COMMENT 'data update time',
+    `id`            bigint  NOT NULL COMMENT 'id',
+    `order_id`      bigint  NOT NULL COMMENT 'order id',
+    `member_id`     bigint  NOT NULL COMMENT 'member id',
+    `type`          tinyint NOT NULL COMMENT 'amount type',
+    `reference_id`  bigint       DEFAULT '0' COMMENT 'reference id',
+    `amount`        bigint  NOT NULL COMMENT 'reference amount/fen',
+    `extra`         varchar(256) DEFAULT NULL COMMENT 'reference extra',
+    `detail`        varchar(256) DEFAULT NULL COMMENT 'amount detail',
+    `status`        tinyint NOT NULL COMMENT 'reference amount status: 1-valid, 0-invalid',
+    `order_version` bigint       DEFAULT '1' COMMENT 'order version',
+    `create_time`   bigint  NOT NULL COMMENT 'data create time',
+    `update_time`   bigint  NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    KEY            `idx_order`(`order_id`) USING BTREE,
-    KEY            `idx_member`(`member_id`) USING BTREE
+    KEY             `idx_order`(`order_id`) USING BTREE,
+    KEY             `idx_member`(`member_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of reference amount 0';
 
 CREATE TABLE `reference_amount_1`
 (
-    `id`           bigint  NOT NULL COMMENT 'id',
-    `order_id`     bigint  NOT NULL COMMENT 'order id',
-    `member_id`    bigint  NOT NULL COMMENT 'member id',
-    `type`         tinyint NOT NULL COMMENT 'amount type',
-    `reference_id` bigint       DEFAULT '0' COMMENT 'reference id',
-    `amount`       bigint  NOT NULL COMMENT 'reference amount/fen',
-    `extra`        varchar(256) DEFAULT NULL COMMENT 'reference extra',
-    `detail`       varchar(256) DEFAULT NULL COMMENT 'amount detail',
-    `status`       tinyint NOT NULL COMMENT 'reference amount status: 1-valid, 0-invalid',
-    `order_version`       bigint       DEFAULT '1' COMMENT 'order version',
-    `create_time`  bigint  NOT NULL COMMENT 'data create time',
-    `update_time`  bigint  NOT NULL COMMENT 'data update time',
+    `id`            bigint  NOT NULL COMMENT 'id',
+    `order_id`      bigint  NOT NULL COMMENT 'order id',
+    `member_id`     bigint  NOT NULL COMMENT 'member id',
+    `type`          tinyint NOT NULL COMMENT 'amount type',
+    `reference_id`  bigint       DEFAULT '0' COMMENT 'reference id',
+    `amount`        bigint  NOT NULL COMMENT 'reference amount/fen',
+    `extra`         varchar(256) DEFAULT NULL COMMENT 'reference extra',
+    `detail`        varchar(256) DEFAULT NULL COMMENT 'amount detail',
+    `status`        tinyint NOT NULL COMMENT 'reference amount status: 1-valid, 0-invalid',
+    `order_version` bigint       DEFAULT '1' COMMENT 'order version',
+    `create_time`   bigint  NOT NULL COMMENT 'data create time',
+    `update_time`   bigint  NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    KEY            `idx_order`(`order_id`) USING BTREE,
-    KEY            `idx_member`(`member_id`) USING BTREE
+    KEY             `idx_order`(`order_id`) USING BTREE,
+    KEY             `idx_member`(`member_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of reference amount 1';
 
 CREATE TABLE `refund_0`
@@ -1162,6 +1162,7 @@ member_0;
 CREATE TABLE `member_basic_0`
 (
     `id`          bigint NOT NULL COMMENT 'id',
+    `account`     varchar(256) DEFAULT '' COMMENT 'account',
     `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
@@ -1174,6 +1175,7 @@ CREATE TABLE `member_basic_0`
     `create_time` bigint NOT NULL COMMENT 'data create time',
     `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
+    KEY           `idx_account`(`account`) USING BTREE,
     KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_email`(`email`) USING BTREE,
     KEY           `idx_name`(`name`) USING BTREE,
@@ -1183,6 +1185,7 @@ CREATE TABLE `member_basic_0`
 CREATE TABLE `member_basic_1`
 (
     `id`          bigint NOT NULL COMMENT 'id',
+    `account`     varchar(256) DEFAULT '' COMMENT 'account',
     `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
@@ -1195,6 +1198,7 @@ CREATE TABLE `member_basic_1`
     `create_time` bigint NOT NULL COMMENT 'data create time',
     `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
+    KEY           `idx_account`(`account`) USING BTREE,
     KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_email`(`email`) USING BTREE,
     KEY           `idx_name`(`name`) USING BTREE,
@@ -1359,6 +1363,7 @@ member_1;
 CREATE TABLE `member_basic_0`
 (
     `id`          bigint NOT NULL COMMENT 'id',
+    `account`     varchar(256) DEFAULT '' COMMENT 'account',
     `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
@@ -1371,6 +1376,7 @@ CREATE TABLE `member_basic_0`
     `create_time` bigint NOT NULL COMMENT 'data create time',
     `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
+    KEY           `idx_account`(`account`) USING BTREE,
     KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_email`(`email`) USING BTREE,
     KEY           `idx_name`(`name`) USING BTREE,
@@ -1380,6 +1386,7 @@ CREATE TABLE `member_basic_0`
 CREATE TABLE `member_basic_1`
 (
     `id`          bigint NOT NULL COMMENT 'id',
+    `account`     varchar(256) DEFAULT '' COMMENT 'account',
     `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
@@ -1392,6 +1399,7 @@ CREATE TABLE `member_basic_1`
     `create_time` bigint NOT NULL COMMENT 'data create time',
     `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
+    KEY           `idx_account`(`account`) USING BTREE,
     KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_email`(`email`) USING BTREE,
     KEY           `idx_name`(`name`) USING BTREE,
