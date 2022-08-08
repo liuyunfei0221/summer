@@ -7,7 +7,7 @@ import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 
 /**
- * member, role, login info for generate member auth
+ * member, role, session info for generate member auth
  *
  * @author liuyunfei
  */

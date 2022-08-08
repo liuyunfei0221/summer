@@ -30,7 +30,7 @@ public class RpcMemberAuthProvider implements RpcMemberAuthService {
     }
 
     /**
-     * member register for auto registry or third party login
+     * member register for auto registry or third party session
      *
      * @param memberRegistryParam
      * @return

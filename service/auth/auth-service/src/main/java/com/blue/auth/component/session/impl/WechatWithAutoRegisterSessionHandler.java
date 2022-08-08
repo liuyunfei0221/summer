@@ -1,8 +1,10 @@
-package com.blue.auth.component.login.impl;
+package com.blue.auth.component.session.impl;
 
 import com.blue.auth.api.model.CredentialInfo;
-import com.blue.auth.component.login.inter.LoginHandler;
+import com.blue.auth.component.session.inter.SessionHandler;
 import com.blue.auth.model.LoginParam;
+import com.blue.auth.model.MemberAuth;
+import com.blue.auth.model.SessionInfo;
 import com.blue.auth.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.auth.remote.consumer.RpcWechatServiceConsumer;
 import com.blue.auth.service.inter.AuthService;
@@ -45,8 +47,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
-import static reactor.core.publisher.Mono.defer;
-import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -55,9 +56,9 @@ import static reactor.util.Loggers.getLogger;
  * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "DuplicatedCode", "AlibabaRemoveCommentedCode", "FieldCanBeLocal", "unused"})
-public class WechatWithAutoRegisterLoginHandler implements LoginHandler {
+public class WechatWithAutoRegisterSessionHandler implements SessionHandler {
 
-    private static final Logger LOGGER = getLogger(WechatWithAutoRegisterLoginHandler.class);
+    private static final Logger LOGGER = getLogger(WechatWithAutoRegisterSessionHandler.class);
 
     private final RpcWechatServiceConsumer rpcWechatServiceConsumer;
 
@@ -71,8 +72,8 @@ public class WechatWithAutoRegisterLoginHandler implements LoginHandler {
 
     private final AuthService authService;
 
-    public WechatWithAutoRegisterLoginHandler(RpcWechatServiceConsumer rpcWechatServiceConsumer, RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, AutoRegisterService autoRegisterService,
-                                              CredentialService credentialService, RoleService roleService, AuthService authService) {
+    public WechatWithAutoRegisterSessionHandler(RpcWechatServiceConsumer rpcWechatServiceConsumer, RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, AutoRegisterService autoRegisterService,
+                                                CredentialService credentialService, RoleService roleService, AuthService authService) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.rpcWechatServiceConsumer = rpcWechatServiceConsumer;
         this.autoRegisterService = autoRegisterService;
@@ -100,7 +101,7 @@ public class WechatWithAutoRegisterLoginHandler implements LoginHandler {
 
     @Override
     public Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest) {
-        LOGGER.info("WechatWithAutoRegisterLoginHandler -> Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest), loginParam = {}", loginParam);
+        LOGGER.info("WechatWithAutoRegisterLoginHandler -> Mono<ServerResponse> session(LoginParam loginParam, ServerRequest serverRequest), loginParam = {}", loginParam);
         if (isNull(loginParam))
             throw new BlueException(EMPTY_PARAM);
 
@@ -121,23 +122,25 @@ public class WechatWithAutoRegisterLoginHandler implements LoginHandler {
                     return rpcMemberBasicServiceConsumer.getMemberBasicInfoByPrimaryKey(credential.getMemberId())
                             .flatMap(mbi -> {
                                 MEMBER_STATUS_ASSERTER.accept(mbi);
-                                return authService.generateAuthMono(mbi.getId(), WECHAT_AUTO_REGISTER.identity, loginParam.getDeviceType().intern());
+                                return zip(authService.generateAuthMono(mbi.getId(), WECHAT_AUTO_REGISTER.identity, loginParam.getDeviceType().intern()), just(mbi));
                             });
                 })
                 .switchIfEmpty(defer(() -> {
                     extra.put(NEW_MEMBER.key, true);
                     return just(roleService.getDefaultRole().getId())
                             .flatMap(roleId -> just(autoRegisterService.autoRegisterMemberInfo(CREDENTIALS_GENERATOR.apply(phone), roleId, source))
-                                    .flatMap(mbi -> authService.generateAuthMono(mbi.getId(), singletonList(roleId), WECHAT_AUTO_REGISTER.identity, loginParam.getDeviceType().intern())));
+                                    .flatMap(mbi -> zip(authService.generateAuthMono(mbi.getId(), singletonList(roleId), WECHAT_AUTO_REGISTER.identity, loginParam.getDeviceType().intern()), just(mbi))));
                 }))
-                .flatMap(ma ->
-                        ok().contentType(APPLICATION_JSON)
-                                .header(AUTHORIZATION.name, ma.getAuth())
-                                .header(SECRET.name, ma.getSecKey())
-                                .header(REFRESH.name, ma.getRefresh())
-                                .header(RESPONSE_EXTRA.name, GSON.toJson(extra))
-                                .body(success(serverRequest)
-                                        , BlueResponse.class));
+                .flatMap(tuple2 -> {
+                    MemberAuth ma = tuple2.getT1();
+                    return ok().contentType(APPLICATION_JSON)
+                            .header(AUTHORIZATION.name, ma.getAuth())
+                            .header(SECRET.name, ma.getSecKey())
+                            .header(REFRESH.name, ma.getRefresh())
+                            .header(RESPONSE_EXTRA.name, GSON.toJson(extra))
+                            .body(success(new SessionInfo(tuple2.getT2(), extra), serverRequest)
+                                    , BlueResponse.class);
+                });
     }
 
     @Override

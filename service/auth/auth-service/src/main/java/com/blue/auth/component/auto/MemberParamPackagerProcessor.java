@@ -22,7 +22,7 @@ import static java.util.stream.Collectors.toMap;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * login processor
+ * session processor
  *
  * @author liuyunfei
  */
@@ -33,7 +33,7 @@ public class MemberParamPackagerProcessor implements ApplicationListener<Context
     private static final Logger LOGGER = getLogger(MemberParamPackagerProcessor.class);
 
     /**
-     * credential type -> login handler
+     * credential type -> session handler
      */
     private Map<String, MemberParamByAutoLoginPackager> packagers;
 

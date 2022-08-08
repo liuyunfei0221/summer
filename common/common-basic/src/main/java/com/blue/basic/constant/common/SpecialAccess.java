@@ -15,9 +15,9 @@ import static java.util.Collections.singletonList;
 public enum SpecialAccess {
 
     /**
-     * visitor not login
+     * visitor not session
      */
-    VISITOR(new Access(NOT_LOGGED_IN_MEMBER_ID.value, singletonList(NOT_LOGGED_IN_ROLE_ID.value), NOT_LOGGED_IN.identity, UNKNOWN.identity, NOT_LOGGED_IN_TIME.value), "visitor not login");
+    VISITOR(new Access(NOT_LOGGED_IN_MEMBER_ID.value, singletonList(NOT_LOGGED_IN_ROLE_ID.value), NOT_LOGGED_IN.identity, UNKNOWN.identity, NOT_LOGGED_IN_TIME.value), "visitor not session");
 
     public final Access access;
 

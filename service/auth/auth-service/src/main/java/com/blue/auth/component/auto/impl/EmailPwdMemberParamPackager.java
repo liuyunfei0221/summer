@@ -13,7 +13,7 @@ import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 
 /**
- * packager for login by email and pwd
+ * packager for session by email and pwd
  *
  * @author liuyunfei
  */

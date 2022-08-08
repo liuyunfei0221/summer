@@ -1,9 +1,11 @@
-package com.blue.auth.component.login;
+package com.blue.auth.component.session;
 
-import com.blue.auth.component.login.inter.LoginHandler;
+import com.blue.auth.component.session.inter.SessionHandler;
 import com.blue.auth.model.LoginParam;
 import com.blue.auth.remote.consumer.RpcVerifyHandleServiceConsumer;
+import com.blue.auth.service.inter.AuthService;
 import com.blue.basic.constant.auth.CredentialType;
+import com.blue.basic.model.common.BlueResponse;
 import com.blue.basic.model.exps.BlueException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
@@ -21,28 +23,37 @@ import java.util.stream.Stream;
 
 import static com.blue.auth.constant.LoginAttribute.VERIFICATION_CODE;
 import static com.blue.auth.constant.LoginAttribute.VERIFICATION_KEY;
+import static com.blue.basic.common.base.AccessGetter.getAccessReact;
 import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.common.base.CommonFunctions.success;
+import static com.blue.basic.constant.common.BlueHeader.AUTHORIZATION;
 import static com.blue.basic.constant.common.ResponseElement.*;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.basic.constant.verify.BusinessType.CREDENTIAL_ACCESS_LOGIN;
 import static com.blue.basic.constant.verify.VerifyType.IMAGE;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.*;
 
 /**
- * login processor
+ * session processor
  *
  * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Component
-public class LoginProcessor implements ApplicationListener<ContextRefreshedEvent> {
+public class SessionProcessor implements ApplicationListener<ContextRefreshedEvent> {
 
     private RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer;
 
-    public LoginProcessor(RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer) {
+    private final AuthService authService;
+
+    public SessionProcessor(RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer, AuthService authService) {
         this.rpcVerifyHandleServiceConsumer = rpcVerifyHandleServiceConsumer;
+        this.authService = authService;
     }
 
     private static final Set<String> ALLOW_ACCESS_LTS = Stream.of(CredentialType.values())
@@ -67,21 +78,21 @@ public class LoginProcessor implements ApplicationListener<ContextRefreshedEvent
     };
 
     /**
-     * credential type -> login handler
+     * credential type -> session handler
      */
-    private Map<String, LoginHandler> loginHandlers;
+    private Map<String, SessionHandler> sessionHandlers;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         ApplicationContext applicationContext = contextRefreshedEvent.getApplicationContext();
-        Map<String, LoginHandler> beansOfType = applicationContext.getBeansOfType(LoginHandler.class);
+        Map<String, SessionHandler> beansOfType = applicationContext.getBeansOfType(SessionHandler.class);
         if (isEmpty(beansOfType))
-            throw new RuntimeException("loginHandlers is empty");
+            throw new RuntimeException("sessionHandlers is empty");
 
-        loginHandlers = beansOfType.values().stream().collect(toMap(lh -> lh.targetType().identity, lh -> lh, (a, b) -> a));
+        sessionHandlers = beansOfType.values().stream().collect(toMap(lh -> lh.targetType().identity, lh -> lh, (a, b) -> a));
     }
 
-    private final Function<ServerRequest, Mono<ServerResponse>> loginHandler = serverRequest ->
+    private final Function<ServerRequest, Mono<ServerResponse>> sessionHandler = serverRequest ->
             serverRequest.bodyToMono(LoginParam.class)
                     .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                     .flatMap(lp -> {
@@ -89,7 +100,7 @@ public class LoginProcessor implements ApplicationListener<ContextRefreshedEvent
                         return ACCESS_VERIFY_VALIDATOR.apply(credentialType, lp)
                                 .flatMap(validate ->
                                         validate ?
-                                                ofNullable(loginHandlers.get(credentialType))
+                                                ofNullable(sessionHandlers.get(credentialType))
                                                         .map(h -> h.login(lp, serverRequest))
                                                         .orElseThrow(() -> new BlueException(INVALID_PARAM))
                                                 :
@@ -97,13 +108,48 @@ public class LoginProcessor implements ApplicationListener<ContextRefreshedEvent
                     });
 
     /**
-     * login
+     * session
      *
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> login(ServerRequest serverRequest) {
-        return loginHandler.apply(serverRequest);
+    public Mono<ServerResponse> insertSession(ServerRequest serverRequest) {
+        return sessionHandler.apply(serverRequest);
+    }
+
+    /**
+     * logout
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> deleteSession(ServerRequest serverRequest) {
+        return getAccessReact(serverRequest)
+                .flatMap(acc ->
+                        authService.invalidateAuthByAccess(acc)
+                                .flatMap(success ->
+                                        ok().contentType(APPLICATION_JSON)
+                                                .header(AUTHORIZATION.name, EMPTY_DATA.value)
+                                                .body(
+                                                        success(serverRequest)
+                                                        , BlueResponse.class)));
+    }
+
+    /**
+     * logout everywhere
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> deleteSessions(ServerRequest serverRequest) {
+        return getAccessReact(serverRequest)
+                .flatMap(acc ->
+                        authService.invalidateAuthByMemberId(acc.getId())
+                                .flatMap(success ->
+                                        ok().contentType(APPLICATION_JSON)
+                                                .header(AUTHORIZATION.name, EMPTY_DATA.value)
+                                                .body(success(serverRequest)
+                                                        , BlueResponse.class)));
     }
 
 }

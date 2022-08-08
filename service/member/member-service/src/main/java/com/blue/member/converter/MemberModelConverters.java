@@ -93,7 +93,7 @@ public final class MemberModelConverters {
 
     public static final Function<MemberBasic, MemberBasicInfo> MEMBER_BASIC_2_MEMBER_BASIC_INFO = memberBasic -> {
         if (memberBasic != null)
-            return new MemberBasicInfo(memberBasic.getId(), memberBasic.getPhone(), memberBasic.getEmail(),
+            return new MemberBasicInfo(memberBasic.getId(), memberBasic.getAccount(), memberBasic.getPhone(), memberBasic.getEmail(),
                     memberBasic.getName(), memberBasic.getIcon(), memberBasic.getQrCode(), memberBasic.getGender(), memberBasic.getProfile(),
                     memberBasic.getStatus(), memberBasic.getCreateTime(), memberBasic.getUpdateTime());
 

@@ -1,6 +1,6 @@
-package com.blue.auth.component.login.impl;
+package com.blue.auth.component.session.impl;
 
-import com.blue.auth.component.login.inter.LoginHandler;
+import com.blue.auth.component.session.inter.SessionHandler;
 import com.blue.auth.model.LoginParam;
 import com.blue.basic.constant.auth.CredentialType;
 import com.blue.basic.model.exps.BlueException;
@@ -15,14 +15,14 @@ import static reactor.core.publisher.Mono.error;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * no login handler,for temp visitor
+ * no session handler,for temp visitor
  *
  * @author liuyunfei
  */
 @SuppressWarnings({"DuplicatedCode", "JavaDoc", "unused"})
-public class NoLoginHandler implements LoginHandler {
+public class NoSessionHandler implements SessionHandler {
 
-    private static final Logger LOGGER = getLogger(NoLoginHandler.class);
+    private static final Logger LOGGER = getLogger(NoSessionHandler.class);
 
     /**
      * Whether to support visitors
@@ -33,7 +33,7 @@ public class NoLoginHandler implements LoginHandler {
      */
     @Override
     public Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest) {
-        LOGGER.info("NoLoginHandler -> Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest), loginParam = {}", loginParam);
+        LOGGER.info("NoLoginHandler -> Mono<ServerResponse> session(LoginParam loginParam, ServerRequest serverRequest), loginParam = {}", loginParam);
 
         return error(() -> new BlueException(FORBIDDEN));
     }

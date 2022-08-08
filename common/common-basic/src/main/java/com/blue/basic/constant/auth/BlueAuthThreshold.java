@@ -78,12 +78,12 @@ public enum BlueAuthThreshold {
     SEC_ANSWER_LEN_MAX(256L),
 
     /**
-     * member id for not login
+     * member id for not session
      */
     NOT_LOGGED_IN_MEMBER_ID(0L),
 
     /**
-     * member role id for not login
+     * member role id for not session
      */
     NOT_LOGGED_IN_ROLE_ID(0L),
 
@@ -93,7 +93,7 @@ public enum BlueAuthThreshold {
     UNKNOWN_LOGGED_IN_ROLE_ID(-1L),
 
     /**
-     * login timestamp for not login
+     * session timestamp for not session
      */
     NOT_LOGGED_IN_TIME(0L);
 

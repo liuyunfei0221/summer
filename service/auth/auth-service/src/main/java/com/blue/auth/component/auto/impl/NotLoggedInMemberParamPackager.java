@@ -10,7 +10,7 @@ import static com.blue.basic.constant.auth.CredentialType.NOT_LOGGED_IN;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 
 /**
- * packager for not login
+ * packager for not session
  *
  * @author liuyunfei
  */

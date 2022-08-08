@@ -27,7 +27,7 @@ public class RpcMemberAuthServiceConsumer {
     private RpcMemberAuthService rpcMemberAuthService;
 
     /**
-     * member register for auto registry or third party login
+     * member register for auto registry or third party session
      *
      * @param memberRegistryParam
      * @return

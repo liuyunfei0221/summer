@@ -10,49 +10,49 @@ package com.blue.basic.constant.auth;
 public enum CredentialType {
 
     /**
-     * login with account and password
+     * session with account and password
      */
-    ACCOUNT_PWD("AP", "CLI", true, "APP", "login with account and password"),
+    ACCOUNT_PWD("AP", "CLI", true, "APP", "session with account and password"),
 
     /**
-     * login with phone num and message verify with auto register
+     * session with phone num and message verify with auto register
      */
-    PHONE_VERIFY_AUTO_REGISTER("PVAR", "CLI", false, "APP", "login with phone num and message verify"),
+    PHONE_VERIFY_AUTO_REGISTER("PVAR", "CLI", false, "APP", "session with phone num and message verify"),
 
     /**
-     * login with phone num and password
+     * session with phone num and password
      */
-    PHONE_PWD("PP", "CLI", true, "APP", "login with phone num and password"),
+    PHONE_PWD("PP", "CLI", true, "APP", "session with phone num and password"),
 
     /**
-     * login by local phone num with auto register
+     * session by local phone num with auto register
      */
-    LOCAL_PHONE_AUTO_REGISTER("LPAR", "CLI", false, "APP", "login with local phone no"),
+    LOCAL_PHONE_AUTO_REGISTER("LPAR", "CLI", false, "APP", "session with local phone no"),
 
     /**
-     * login with email address and message verify with auto register
+     * session with email address and message verify with auto register
      */
-    EMAIL_VERIFY_AUTO_REGISTER("EVAR", "CLI", false, "APP", "login with email address and message verify"),
+    EMAIL_VERIFY_AUTO_REGISTER("EVAR", "CLI", false, "APP", "session with email address and message verify"),
 
     /**
-     * login with email and password
+     * session with email and password
      */
-    EMAIL_PWD("EP", "CLI", true, "APP", "login with email and password"),
+    EMAIL_PWD("EP", "CLI", true, "APP", "session with email and password"),
 
     /**
-     * login by wechat
+     * session by wechat
      */
-    WECHAT_AUTO_REGISTER("WEAR", "CLI", false, "WE", "login by wechat"),
+    WECHAT_AUTO_REGISTER("WEAR", "CLI", false, "WE", "session by wechat"),
 
     /**
-     * login by wechar mini pro with auto register
+     * session by wechar mini pro with auto register
      */
-    MINI_PRO_AUTO_REGISTER("MPAR", "MPAR", false, "WE", "login by wechar mini pro"),
+    MINI_PRO_AUTO_REGISTER("MPAR", "MPAR", false, "WE", "session by wechar mini pro"),
 
     /**
-     * not login
+     * not session
      */
-    NOT_LOGGED_IN("NLI", "CLI", false, "NONE", "not login");
+    NOT_LOGGED_IN("NLI", "CLI", false, "NONE", "not session");
 
     /**
      * identity

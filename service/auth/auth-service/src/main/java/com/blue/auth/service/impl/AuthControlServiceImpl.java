@@ -84,7 +84,7 @@ public class AuthControlServiceImpl implements AuthControlService {
 
     private final JwtProcessor<MemberPayload> jwtProcessor;
 
-    private final LoginService loginService;
+    private final SessionService sessionService;
 
     private final AuthService authService;
 
@@ -113,7 +113,7 @@ public class AuthControlServiceImpl implements AuthControlService {
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public AuthControlServiceImpl(RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer, RpcMemberAuthServiceConsumer rpcMemberAuthServiceConsumer,
                                   RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, JwtProcessor<MemberPayload> jwtProcessor,
-                                  LoginService loginService, AuthService authService, RoleService roleService, ResourceService resourceService,
+                                  SessionService sessionService, AuthService authService, RoleService roleService, ResourceService resourceService,
                                   RoleResRelationService roleResRelationService, CredentialService credentialService, CredentialHistoryService credentialHistoryService,
                                   SecurityQuestionService securityQuestionService, MemberRoleRelationService memberRoleRelationService,
                                   SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer, ExecutorService executorService,
@@ -122,7 +122,7 @@ public class AuthControlServiceImpl implements AuthControlService {
         this.rpcMemberAuthServiceConsumer = rpcMemberAuthServiceConsumer;
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.jwtProcessor = jwtProcessor;
-        this.loginService = loginService;
+        this.sessionService = sessionService;
         this.authService = authService;
         this.roleService = roleService;
         this.resourceService = resourceService;
@@ -325,7 +325,7 @@ public class AuthControlServiceImpl implements AuthControlService {
             QUESTION_UPDATE_KEY_WRAPPER = memberId -> QUESTION_INSERT_PRE.prefix + memberId;
 
     /**
-     * login
+     * session
      *
      * @param serverRequest
      * @return
@@ -334,12 +334,12 @@ public class AuthControlServiceImpl implements AuthControlService {
     public Mono<ServerResponse> insertSession(ServerRequest serverRequest) {
         return getIpReact(serverRequest)
                 .flatMap(ip -> {
-                    LOGGER.info("Mono<ServerResponse> login(ServerRequest serverRequest), ip = {}", ip);
+                    LOGGER.info("Mono<ServerResponse> session(ServerRequest serverRequest), ip = {}", ip);
                     return blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(ip), ALLOW, SEND_INTERVAL_MILLIS);
                 })
                 .flatMap(allowed ->
                         allowed ?
-                                loginService.insertSession(serverRequest)
+                                sessionService.insertSession(serverRequest)
                                 :
                                 error(() -> new BlueException(TOO_MANY_REQUESTS)));
     }
@@ -352,7 +352,7 @@ public class AuthControlServiceImpl implements AuthControlService {
      */
     @Override
     public Mono<ServerResponse> deleteSession(ServerRequest serverRequest) {
-        return loginService.deleteSession(serverRequest);
+        return sessionService.deleteSession(serverRequest);
     }
 
     /**
@@ -363,7 +363,7 @@ public class AuthControlServiceImpl implements AuthControlService {
      */
     @Override
     public Mono<ServerResponse> deleteSessions(ServerRequest serverRequest) {
-        return loginService.deleteSessions(serverRequest);
+        return sessionService.deleteSessions(serverRequest);
     }
 
     /**
@@ -535,8 +535,8 @@ public class AuthControlServiceImpl implements AuthControlService {
             rollbackFor = Exception.class, lockRetryInternal = 1, lockRetryTimes = 1, timeoutMills = 30000)
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 30)
-    public MemberBasicInfo credentialSettingUp(CredentialSettingUpParam credentialSettingUpParam, Access access) {
-        LOGGER.info("MemberBasicInfo credentialSettingUp(CredentialSettingUpParam credentialSettingUpParam, Access access), credentialSettingUpParam = {}, access = {}",
+    public MemberBasicInfo insertCredential(CredentialSettingUpParam credentialSettingUpParam, Access access) {
+        LOGGER.info("MemberBasicInfo insertCredential(CredentialSettingUpParam credentialSettingUpParam, Access access), credentialSettingUpParam = {}, access = {}",
                 credentialSettingUpParam, access);
         if (isNull(credentialSettingUpParam))
             throw new BlueException(EMPTY_PARAM);
@@ -580,8 +580,8 @@ public class AuthControlServiceImpl implements AuthControlService {
             rollbackFor = Exception.class, lockRetryInternal = 1, lockRetryTimes = 1, timeoutMills = 30000)
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 30)
-    public MemberBasicInfo credentialModify(CredentialModifyParam credentialModifyParam, Access access) {
-        LOGGER.info("MemberBasicInfo credentialModify(CredentialModifyParam credentialModifyParam, Access access), credentialModifyParam = {}, access = {}",
+    public MemberBasicInfo updateCredential(CredentialModifyParam credentialModifyParam, Access access) {
+        LOGGER.info("MemberBasicInfo updateCredential(CredentialModifyParam credentialModifyParam, Access access), credentialModifyParam = {}, access = {}",
                 credentialModifyParam, access);
         if (isNull(credentialModifyParam))
             throw new BlueException(EMPTY_PARAM);

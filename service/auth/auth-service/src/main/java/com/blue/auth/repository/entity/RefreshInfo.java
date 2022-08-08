@@ -47,7 +47,7 @@ public class RefreshInfo implements Serializable {
     private String deviceType;
 
     /**
-     * login time stamp
+     * session time stamp
      */
     private String loginTime;
 

@@ -8,7 +8,7 @@ import static com.blue.basic.common.base.BlueChecker.isBlank;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 
 /**
- * member auth with sec key and refresh token used for login
+ * member auth with sec key and refresh token used for session
  *
  * @author liuyunfei
  */

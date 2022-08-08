@@ -5,15 +5,15 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 /**
- * login service
+ * session service
  *
  * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused", "UnusedReturnValue"})
-public interface LoginService {
+public interface SessionService {
 
     /**
-     * login
+     * session
      *
      * @param serverRequest
      * @return

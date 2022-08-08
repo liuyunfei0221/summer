@@ -34,7 +34,7 @@ public final class Access implements Serializable {
     private String deviceType;
 
     /**
-     * login timestamp(seconds)
+     * session timestamp(seconds)
      */
     private long loginTime;
 

@@ -19,7 +19,7 @@ import java.util.List;
 public interface AuthControlService {
 
     /**
-     * login
+     * session
      *
      * @param serverRequest
      * @return
@@ -129,7 +129,7 @@ public interface AuthControlService {
      * @param access
      * @return
      */
-    MemberBasicInfo credentialSettingUp(CredentialSettingUpParam credentialSettingUpParam, Access access);
+    MemberBasicInfo insertCredential(CredentialSettingUpParam credentialSettingUpParam, Access access);
 
     /**
      * update exist credential
@@ -138,7 +138,7 @@ public interface AuthControlService {
      * @param access
      * @return
      */
-    MemberBasicInfo credentialModify(CredentialModifyParam credentialModifyParam, Access access);
+    MemberBasicInfo updateCredential(CredentialModifyParam credentialModifyParam, Access access);
 
     /**
      * update member role info by member id

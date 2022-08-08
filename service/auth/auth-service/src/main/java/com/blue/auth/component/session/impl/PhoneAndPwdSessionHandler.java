@@ -1,6 +1,6 @@
-package com.blue.auth.component.login.impl;
+package com.blue.auth.component.session.impl;
 
-import com.blue.auth.component.login.inter.LoginHandler;
+import com.blue.auth.component.session.inter.SessionHandler;
 import com.blue.auth.model.LoginParam;
 import com.blue.auth.model.SessionInfo;
 import com.blue.auth.remote.consumer.RpcMemberBasicServiceConsumer;
@@ -25,7 +25,7 @@ import static com.blue.auth.constant.LoginAttribute.ACCESS;
 import static com.blue.auth.constant.LoginAttribute.IDENTITY;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.success;
-import static com.blue.basic.constant.auth.CredentialType.EMAIL_PWD;
+import static com.blue.basic.constant.auth.CredentialType.PHONE_PWD;
 import static com.blue.basic.constant.auth.ExtraKey.NEW_MEMBER;
 import static com.blue.basic.constant.common.BlueHeader.*;
 import static com.blue.basic.constant.common.ResponseElement.*;
@@ -37,14 +37,14 @@ import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * email and password login handler
+ * phone and password session handler
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "DuplicatedCode", "unused"})
-public class EmailAndPwdLoginHandler implements LoginHandler {
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "unused"})
+public class PhoneAndPwdSessionHandler implements SessionHandler {
 
-    private static final Logger LOGGER = getLogger(EmailAndPwdLoginHandler.class);
+    private static final Logger LOGGER = getLogger(PhoneAndPwdSessionHandler.class);
 
     private final RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer;
 
@@ -52,7 +52,7 @@ public class EmailAndPwdLoginHandler implements LoginHandler {
 
     private final AuthService authService;
 
-    public EmailAndPwdLoginHandler(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, CredentialService credentialService, AuthService authService) {
+    public PhoneAndPwdSessionHandler(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, CredentialService credentialService, AuthService authService) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.credentialService = credentialService;
         this.authService = authService;
@@ -71,17 +71,17 @@ public class EmailAndPwdLoginHandler implements LoginHandler {
 
     @Override
     public Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest) {
-        LOGGER.info("EmailAndPwdLoginHandler -> Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest), loginParam = {}", loginParam);
+        LOGGER.info("PhoneAndPwdLoginHandler -> Mono<ServerResponse> session(LoginParam loginParam, ServerRequest serverRequest), loginParam = {}", loginParam);
         if (isNull(loginParam))
             throw new BlueException(EMPTY_PARAM);
 
-        String email = loginParam.getData(IDENTITY.key);
+        String phone = loginParam.getData(IDENTITY.key);
         String access = loginParam.getData(ACCESS.key);
 
-        if (isBlank(email) || isBlank(access))
+        if (isBlank(phone) || isBlank(access))
             throw new BlueException(INVALID_ACCT_OR_PWD);
 
-        return credentialService.getCredentialMonoByCredentialAndType(email, EMAIL_PWD.identity)
+        return credentialService.getCredentialMonoByCredentialAndType(phone, PHONE_PWD.identity)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INVALID_ACCT_OR_PWD))))
                 .flatMap(credential ->
                         just(ofNullable(credential)
@@ -93,7 +93,7 @@ public class EmailAndPwdLoginHandler implements LoginHandler {
                 ).flatMap(rpcMemberBasicServiceConsumer::getMemberBasicInfoByPrimaryKey)
                 .flatMap(mbi -> {
                     MEMBER_STATUS_ASSERTER.accept(mbi);
-                    return authService.generateAuthMono(mbi.getId(), EMAIL_PWD.identity, loginParam.getDeviceType().intern())
+                    return authService.generateAuthMono(mbi.getId(), PHONE_PWD.identity, loginParam.getDeviceType().intern())
                             .flatMap(ma -> ok().contentType(APPLICATION_JSON)
                                     .header(AUTHORIZATION.name, ma.getAuth())
                                     .header(SECRET.name, ma.getSecKey())
@@ -105,7 +105,7 @@ public class EmailAndPwdLoginHandler implements LoginHandler {
 
     @Override
     public CredentialType targetType() {
-        return EMAIL_PWD;
+        return PHONE_PWD;
     }
 
 }

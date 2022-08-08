@@ -5,7 +5,7 @@ import com.blue.basic.constant.auth.CredentialType;
 import com.blue.member.api.model.MemberRegistryParam;
 
 /**
- * member register param by auto login packager interface
+ * member register param by auto session packager interface
  *
  * @author liuyunfei
  */

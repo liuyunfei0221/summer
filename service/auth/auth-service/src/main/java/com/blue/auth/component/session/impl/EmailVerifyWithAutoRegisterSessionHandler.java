@@ -1,8 +1,10 @@
-package com.blue.auth.component.login.impl;
+package com.blue.auth.component.session.impl;
 
 import com.blue.auth.api.model.CredentialInfo;
-import com.blue.auth.component.login.inter.LoginHandler;
+import com.blue.auth.component.session.inter.SessionHandler;
 import com.blue.auth.model.LoginParam;
+import com.blue.auth.model.MemberAuth;
+import com.blue.auth.model.SessionInfo;
 import com.blue.auth.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.auth.remote.consumer.RpcVerifyHandleServiceConsumer;
 import com.blue.auth.service.inter.AuthService;
@@ -57,9 +59,9 @@ import static reactor.util.Loggers.getLogger;
  * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "DuplicatedCode", "unused"})
-public class EmailVerifyWithAutoRegisterLoginHandler implements LoginHandler {
+public class EmailVerifyWithAutoRegisterSessionHandler implements SessionHandler {
 
-    private static final Logger LOGGER = getLogger(EmailVerifyWithAutoRegisterLoginHandler.class);
+    private static final Logger LOGGER = getLogger(EmailVerifyWithAutoRegisterSessionHandler.class);
 
     private final RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer;
 
@@ -73,9 +75,9 @@ public class EmailVerifyWithAutoRegisterLoginHandler implements LoginHandler {
 
     private final AuthService authService;
 
-    public EmailVerifyWithAutoRegisterLoginHandler(RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer, RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer,
-                                                   AutoRegisterService autoRegisterService, CredentialService credentialService,
-                                                   RoleService roleService, AuthService authService) {
+    public EmailVerifyWithAutoRegisterSessionHandler(RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer, RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer,
+                                                     AutoRegisterService autoRegisterService, CredentialService credentialService,
+                                                     RoleService roleService, AuthService authService) {
         this.rpcVerifyHandleServiceConsumer = rpcVerifyHandleServiceConsumer;
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.autoRegisterService = autoRegisterService;
@@ -100,7 +102,7 @@ public class EmailVerifyWithAutoRegisterLoginHandler implements LoginHandler {
 
     @Override
     public Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest) {
-        LOGGER.info("EmailVerifyWithAutoRegisterLoginHandler -> Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest), loginParam = {}", loginParam);
+        LOGGER.info("EmailVerifyWithAutoRegisterLoginHandler -> Mono<ServerResponse> session(LoginParam loginParam, ServerRequest serverRequest), loginParam = {}", loginParam);
         if (isNull(loginParam))
             throw new BlueException(EMPTY_PARAM);
 
@@ -124,23 +126,26 @@ public class EmailVerifyWithAutoRegisterLoginHandler implements LoginHandler {
                                             return rpcMemberBasicServiceConsumer.getMemberBasicInfoByPrimaryKey(credential.getMemberId())
                                                     .flatMap(mbi -> {
                                                         MEMBER_STATUS_ASSERTER.accept(mbi);
-                                                        return authService.generateAuthMono(mbi.getId(), EMAIL_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern());
+                                                        return zip(authService.generateAuthMono(mbi.getId(), EMAIL_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern()), just(mbi));
                                                     });
                                         })
                                         .switchIfEmpty(defer(() -> {
                                             extra.put(NEW_MEMBER.key, true);
                                             return just(roleService.getDefaultRole().getId())
                                                     .flatMap(roleId -> just(autoRegisterService.autoRegisterMemberInfo(CREDENTIALS_GENERATOR.apply(email), roleId, source))
-                                                            .flatMap(mbi -> authService.generateAuthMono(mbi.getId(), singletonList(roleId), EMAIL_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern())));
+                                                            .flatMap(mbi ->
+                                                                    zip(authService.generateAuthMono(mbi.getId(), singletonList(roleId), EMAIL_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern()), just(mbi))));
                                         }))
-                                        .flatMap(ma ->
-                                                ok().contentType(APPLICATION_JSON)
-                                                        .header(AUTHORIZATION.name, ma.getAuth())
-                                                        .header(SECRET.name, ma.getSecKey())
-                                                        .header(REFRESH.name, ma.getRefresh())
-                                                        .header(RESPONSE_EXTRA.name, GSON.toJson(extra))
-                                                        .body(success(serverRequest)
-                                                                , BlueResponse.class))
+                                        .flatMap(tuple2 -> {
+                                            MemberAuth ma = tuple2.getT1();
+                                            return ok().contentType(APPLICATION_JSON)
+                                                    .header(AUTHORIZATION.name, ma.getAuth())
+                                                    .header(SECRET.name, ma.getSecKey())
+                                                    .header(REFRESH.name, ma.getRefresh())
+                                                    .header(RESPONSE_EXTRA.name, GSON.toJson(extra))
+                                                    .body(success(new SessionInfo(tuple2.getT2(), extra), serverRequest)
+                                                            , BlueResponse.class);
+                                        })
                                 :
                                 error(() -> new BlueException(VERIFY_IS_INVALID))
                 );

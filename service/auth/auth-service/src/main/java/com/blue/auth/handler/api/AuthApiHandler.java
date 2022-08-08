@@ -36,7 +36,7 @@ public final class AuthApiHandler {
     }
 
     /**
-     * login from client
+     * session from client
      *
      * @param serverRequest
      * @return
@@ -143,7 +143,7 @@ public final class AuthApiHandler {
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 ->
-                        just(authControlService.credentialSettingUp(tuple2.getT1(), tuple2.getT2())))
+                        just(authControlService.insertCredential(tuple2.getT1(), tuple2.getT2())))
                 .flatMap(mbi ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(mbi, serverRequest), BlueResponse.class));
@@ -160,7 +160,7 @@ public final class AuthApiHandler {
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 ->
-                        just(authControlService.credentialModify(tuple2.getT1(), tuple2.getT2())))
+                        just(authControlService.updateCredential(tuple2.getT1(), tuple2.getT2())))
                 .flatMap(mbi ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(mbi, serverRequest), BlueResponse.class));

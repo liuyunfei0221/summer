@@ -34,7 +34,7 @@ public final class AccessInfo implements Serializable {
     private String pubKey;
 
     /**
-     * login time stamp
+     * session time stamp
      */
     private Long loginMillisTimeStamp;
 

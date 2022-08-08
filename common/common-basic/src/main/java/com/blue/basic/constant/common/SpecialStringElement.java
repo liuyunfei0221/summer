@@ -8,7 +8,7 @@ package com.blue.basic.constant.common;
 public enum SpecialStringElement {
 
     /**
-     * special secKey is not login
+     * special secKey is not session
      */
     EMPTY_DATA("");
 

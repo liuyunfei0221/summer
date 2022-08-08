@@ -13,7 +13,7 @@ import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 
 /**
- * packager for login by WeChat
+ * packager for session by WeChat
  *
  * @author liuyunfei
  */

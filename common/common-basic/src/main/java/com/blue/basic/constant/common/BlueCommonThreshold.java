@@ -63,12 +63,12 @@ public enum BlueCommonThreshold {
     LDAP_WRITE(10000000L),
 
     /**
-     * phone number/email length minimum for member login
+     * phone number/email length minimum for member session
      */
     ID_LEN_MIN(8L),
 
     /**
-     * phone number/email length maximum for member login
+     * phone number/email length maximum for member session
      */
     ID_LEN_MAX(64L),
 
@@ -143,12 +143,12 @@ public enum BlueCommonThreshold {
     SEC_ANSWER_LEN_MAX(256L),
 
     /**
-     * member id for not login
+     * member id for not session
      */
     NOT_LOGGED_IN_MEMBER_ID(0L),
 
     /**
-     * member role id for not login
+     * member role id for not session
      */
     NOT_LOGGED_IN_ROLE_ID(0L),
 
@@ -158,7 +158,7 @@ public enum BlueCommonThreshold {
     UNKNOWN_LOGGED_IN_ROLE_ID(-1L),
 
     /**
-     * login timestamp for not login
+     * session timestamp for not session
      */
     NOT_LOGGED_IN_TIME(0L),
 

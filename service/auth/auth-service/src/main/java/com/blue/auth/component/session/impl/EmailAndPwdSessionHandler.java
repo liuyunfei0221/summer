@@ -1,6 +1,6 @@
-package com.blue.auth.component.login.impl;
+package com.blue.auth.component.session.impl;
 
-import com.blue.auth.component.login.inter.LoginHandler;
+import com.blue.auth.component.session.inter.SessionHandler;
 import com.blue.auth.model.LoginParam;
 import com.blue.auth.model.SessionInfo;
 import com.blue.auth.remote.consumer.RpcMemberBasicServiceConsumer;
@@ -25,7 +25,6 @@ import static com.blue.auth.constant.LoginAttribute.ACCESS;
 import static com.blue.auth.constant.LoginAttribute.IDENTITY;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.success;
-import static com.blue.basic.constant.auth.CredentialType.ACCOUNT_PWD;
 import static com.blue.basic.constant.auth.CredentialType.EMAIL_PWD;
 import static com.blue.basic.constant.auth.ExtraKey.NEW_MEMBER;
 import static com.blue.basic.constant.common.BlueHeader.*;
@@ -38,14 +37,14 @@ import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * account and password login handler
+ * email and password session handler
  *
  * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "DuplicatedCode", "unused"})
-public class AccountAndPwdLoginHandler implements LoginHandler {
+public class EmailAndPwdSessionHandler implements SessionHandler {
 
-    private static final Logger LOGGER = getLogger(AccountAndPwdLoginHandler.class);
+    private static final Logger LOGGER = getLogger(EmailAndPwdSessionHandler.class);
 
     private final RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer;
 
@@ -53,7 +52,7 @@ public class AccountAndPwdLoginHandler implements LoginHandler {
 
     private final AuthService authService;
 
-    public AccountAndPwdLoginHandler(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, CredentialService credentialService, AuthService authService) {
+    public EmailAndPwdSessionHandler(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, CredentialService credentialService, AuthService authService) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.credentialService = credentialService;
         this.authService = authService;
@@ -72,17 +71,17 @@ public class AccountAndPwdLoginHandler implements LoginHandler {
 
     @Override
     public Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest) {
-        LOGGER.info("AccountAndPwdLoginHandler -> Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest), loginParam = {}", loginParam);
+        LOGGER.info("EmailAndPwdLoginHandler -> Mono<ServerResponse> session(LoginParam loginParam, ServerRequest serverRequest), loginParam = {}", loginParam);
         if (isNull(loginParam))
             throw new BlueException(EMPTY_PARAM);
 
-        String account = loginParam.getData(IDENTITY.key);
+        String email = loginParam.getData(IDENTITY.key);
         String access = loginParam.getData(ACCESS.key);
 
-        if (isBlank(account) || isBlank(access))
+        if (isBlank(email) || isBlank(access))
             throw new BlueException(INVALID_ACCT_OR_PWD);
 
-        return credentialService.getCredentialMonoByCredentialAndType(account, ACCOUNT_PWD.identity)
+        return credentialService.getCredentialMonoByCredentialAndType(email, EMAIL_PWD.identity)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INVALID_ACCT_OR_PWD))))
                 .flatMap(credential ->
                         just(ofNullable(credential)
@@ -94,7 +93,7 @@ public class AccountAndPwdLoginHandler implements LoginHandler {
                 ).flatMap(rpcMemberBasicServiceConsumer::getMemberBasicInfoByPrimaryKey)
                 .flatMap(mbi -> {
                     MEMBER_STATUS_ASSERTER.accept(mbi);
-                    return authService.generateAuthMono(mbi.getId(), ACCOUNT_PWD.identity, loginParam.getDeviceType().intern())
+                    return authService.generateAuthMono(mbi.getId(), EMAIL_PWD.identity, loginParam.getDeviceType().intern())
                             .flatMap(ma -> ok().contentType(APPLICATION_JSON)
                                     .header(AUTHORIZATION.name, ma.getAuth())
                                     .header(SECRET.name, ma.getSecKey())

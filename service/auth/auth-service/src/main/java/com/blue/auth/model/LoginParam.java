@@ -11,7 +11,7 @@ import static com.blue.basic.common.base.ConstantProcessor.assertCredentialType;
 import static com.blue.basic.common.base.ConstantProcessor.assertDeviceType;
 
 /**
- * login info
+ * session info
  *
  * @author liuyunfei
  */

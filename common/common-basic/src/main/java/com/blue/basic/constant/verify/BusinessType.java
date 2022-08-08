@@ -22,24 +22,24 @@ public enum BusinessType {
     REGISTER("REG", Set.of(SMS, MAIL)),
 
     /**
-     * login by credential and access
+     * session by credential and access
      */
     CREDENTIAL_ACCESS_LOGIN("CAL", Set.of(IMAGE)),
 
     /**
-     * sms verify login with auto register
+     * sms verify session with auto register
      */
     PHONE_VERIFY_LOGIN_WITH_AUTO_REGISTER("PVL_WAR", Set.of(SMS, MAIL)),
 
     /**
-     * email verify login with auto register
+     * email verify session with auto register
      */
     EMAIL_VERIFY_LOGIN_WITH_AUTO_REGISTER("EVL_WAR", Set.of(SMS, MAIL)),
 
     /**
      * setting up credential
      */
-    CREDENTIAL_SETTING_UP("CSU", Set.of(SMS, MAIL)),
+    CREDENTIAL_SETTING_UP("CSU", Set.of(IMAGE, SMS, MAIL)),
 
     /**
      * update credential

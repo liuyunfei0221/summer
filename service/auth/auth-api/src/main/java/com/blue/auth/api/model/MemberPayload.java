@@ -43,7 +43,7 @@ public final class MemberPayload implements Serializable {
     private final String deviceType;
 
     /**
-     * login time stamp
+     * session time stamp
      */
     private final String loginTime;
 

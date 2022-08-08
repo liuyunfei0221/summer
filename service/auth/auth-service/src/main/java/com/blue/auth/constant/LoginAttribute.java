@@ -1,7 +1,7 @@
 package com.blue.auth.constant;
 
 /**
- * login attr keys
+ * session attr keys
  *
  * @author liuyunfei
  */
@@ -18,30 +18,30 @@ public enum LoginAttribute {
      */
     VERIFICATION_CODE("verificationCode"),
 
-    //for login by client
+    //for session by client
     /**
-     * account/phone/email for login by client
+     * account/phone/email for session by client
      */
     IDENTITY("identity"),
 
     /**
-     * password/message verify for login by client
+     * password/message verify for session by client
      */
     ACCESS("access"),
 
-    //for login by mini pro
+    //for session by mini pro
     /**
-     * user encrypted data for login by mini pro
+     * user encrypted data for session by mini pro
      */
     ENCRYPTED_DATA("encryptedData"),
 
     /**
-     * encrypt algorithm iv for login by mini pro
+     * encrypt algorithm iv for session by mini pro
      */
     IV("iv"),
 
     /**
-     * js code for login by mini pro
+     * js code for session by mini pro
      */
     JS_CODE("jsCode");
 
