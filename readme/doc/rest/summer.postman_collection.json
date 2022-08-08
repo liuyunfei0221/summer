@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "602da696-7594-405f-81e8-6fca3565b264",
+		"_postman_id": "140cdc90-6b2a-48fb-a3e2-f651087e9642",
 		"name": "summer",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "11135497"
@@ -4741,7 +4741,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"5165558\"\r\n    }\r\n}"
+							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"9288550\"\r\n    }\r\n}"
 						},
 						"url": {
 							"raw": "localhost:11000/blue-auth/auth/session",
@@ -4770,7 +4770,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiI5NjFhZWU0NzFmZjBiZGQ3ZjBlYzdmMzZkMzE4ZTNjNDc3MjZlZGU2Zjk1MzQ5M2E4ZDhlYzU0NmUyMWI5MWFmODIyZGJjMTVjMWFmNjc1YTlkMjRhMjdmMGZmNDY3YzYyMTM1ZmU2NzJkNDkxNjVkMzc4MTU4OGQxMTllNmJiNSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDI0MzQyMjEwNDk5MDUxNTRfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQyNDM0MjIxMDQ5OTA1MTU0IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjU4MzE2NDAzIiwibmJmIjoxNjU4MzE2NDAzLCJ0IjoiWGNGNG9yalVBV3QiLCJlYXMiOjE2NjYwOTI0MDM3ODIsImV4cCI6MTY2NjA5MjQwMywiaWF0IjoxNjU4MzE2NDAzLCJqdGkiOiI5cHo0ek0zMFJUZnV5ODRLZjh3TzBTN3V6dFZSbWowdCJ9.0vGYxAJ8SL_9k5480STWwQUYGRGTFpGlHjQHYg3j4__PHg5htuXC5hDjk4UvFOi3aycSbYxYW2QLk_pBYFI03g",
+								"value": "eyJraWQiOiIxYzM4MmYwZWY4YjFjZjEwZmVmZGRmNzUwNzgyZjA4NzFkODcwNGE0MGUzYjRiNTE4ZmNiYmU1NjVlOTM5OTUzNzQ5NzA0MTgxOGY3OWJmN2E0YTg0NzhhZjMyNDgyNDM4YTk3ZDBhNDEwZWNkYjI5YWUyZDhjNDM2ZmI0ZGFjMiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDMwODQ3NTkzNDUxMzU2MTdfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQzMDg0NzU5MzQ1MTM1NjE3IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjU4OTIwNDgwIiwibmJmIjoxNjU4OTIwNDgwLCJ0IjoiWEV5elExeWMzQjkiLCJlYXMiOjE2NjY2OTY0ODA4MDIsImV4cCI6MTY2NjY5NjQ4MCwiaWF0IjoxNjU4OTIwNDgwLCJqdGkiOiI2RDBKNzFUMFFtaUZTTmFIbkpuNllJZFBZa1F5NzVSUCJ9.3l66UBn8NeIJA8v-T0T6kmaJARzofhlKq5SKhnsPglHj9osESjvCdXlbzLPuD3rWsxHJmXK50AABtI7CRjJeyQ",
 								"type": "text"
 							},
 							{
@@ -4825,6 +4825,71 @@
 				},
 				{
 					"name": "添加邮箱认证方式",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYTQyNWNjMzU0YjM1ZmZkYzVkY2M0NmM1NTg1NzMyZjU4MThkNTEwZjM3MGEzY2Y4ZDAxYjkyMzE5NTYxMWI0ZmYzMjQwZTJkNTVlNTczOTY0ZjI0NjMxNWFjYjhlZGMyMjc4NTE2Zjg5NjJmMmIxMjg5NTFjMjA0NjhmOTJmNWEiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NjA2MjQyNSIsIm5iZiI6MTY1NjA2MjQyNSwidCI6ImdrODc2U3VGR2RvIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5ODM5NTI4MjI3MTc2NDQ5X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzODM4NDI1OTUyLCJpIjoiMzk4Mzk1MjgyMjcxNzY0NDkiLCJleHAiOjE2NjM4Mzg0MjUsImlhdCI6MTY1NjA2MjQyNSwianRpIjoiSUw3b1BYamIwNjFYRzZVcDBUcjhiZ3lkNUFKT3M2ZlEiLCJuIjoiUFZBUiJ9.Apzohg4ssePu5y8X9FllMY6zW81PiYRNA-Pfl8tsLp7HPbs43xRLr85ryhbQ9F8CbgHL2KWGLgyctZYlX8_xkw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"verifyType\":\"MAIL\",\r\n    \"credential\":\"liuyunfei0221@outloot.com\",\r\n    \"verificationCode\":\"3964839\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:11000/blue-auth/auth/credential",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-auth",
+								"auth",
+								"credential"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "获取添加账号认证方式验证码",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"verifyType\":\"MAIL\",\r\n    \"businessType\":\"CSU\",\r\n    \"destination\":\"liuyunfei0221@outloot.com\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:15000/blue-verify/verify/generate",
+							"host": [
+								"localhost"
+							],
+							"port": "15000",
+							"path": [
+								"blue-verify",
+								"verify",
+								"generate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "添加账号认证方式",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -5293,6 +5358,29 @@
 								"blue-member",
 								"registry"
 							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "other",
+			"item": [
+				{
+					"name": "ES状态",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "172.16.204.75:9200",
+							"host": [
+								"172",
+								"16",
+								"204",
+								"75"
+							],
+							"port": "9200"
 						}
 					},
 					"response": []
