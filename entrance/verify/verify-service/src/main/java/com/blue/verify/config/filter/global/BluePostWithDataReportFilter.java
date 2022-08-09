@@ -88,7 +88,7 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
 
         dataEvent.setStamp(TIME_STAMP_GETTER.get());
 
-        EVENT_PACKAGER.accept(attributes, dataEvent);
+        EVENT_ATTR_PACKAGER.accept(attributes, dataEvent);
     }
 
     private Mono<String> getResponseBodyAndReport(ServerHttpResponse response, HttpStatus responseHttpStatus, Publisher<? extends DataBuffer> body, DataEvent dataEvent) {

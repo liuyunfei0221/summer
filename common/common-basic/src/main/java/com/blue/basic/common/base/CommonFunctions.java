@@ -319,9 +319,9 @@ public class CommonFunctions {
             .map(ak -> ak.key).filter(k -> !ATTR_KEYS_NOT_PACKAGE.contains(k)).collect(toList());
 
     /**
-     * package info to event
+     * package attr info to event
      */
-    public static final BiConsumer<Map<String, Object>, DataEvent> EVENT_PACKAGER = (attributes, dataEvent) -> {
+    public static final BiConsumer<Map<String, Object>, DataEvent> EVENT_ATTR_PACKAGER = (attributes, dataEvent) -> {
         if (isNotNull(attributes) && isNotNull(dataEvent))
             ATTR_KEYS_TO_PACKAGE.forEach(key -> ofNullable(attributes.get(key)).map(String::valueOf)
                     .ifPresent(metadata -> dataEvent.addData(key, metadata)));

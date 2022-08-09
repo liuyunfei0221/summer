@@ -36,11 +36,12 @@ public final class ConditionSortProcessor {
             condition.setSortType(DESC.identity);
 
         String sortAttribute = condition.getSortAttribute();
-        if (isBlank(sortAttribute) || isEmpty(sortAttrMapping))
+        if (isNotBlank(sortAttribute) && isNotEmpty(sortAttrMapping)) {
+            condition.setSortAttribute(ofNullable(sortAttrMapping.get(sortAttribute))
+                    .orElseThrow(() -> new BlueException(INVALID_PARAM)));
+        } else {
             condition.setSortAttribute(isNotBlank(defaultSortAttr) ? defaultSortAttr : null);
-
-        condition.setSortAttribute(ofNullable(sortAttrMapping.get(sortAttribute))
-                .orElseThrow(() -> new BlueException(INVALID_PARAM)));
+        }
     }
 
 }

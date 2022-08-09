@@ -1,5 +1,8 @@
 package com.blue.es.api.generator;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.json.jackson.JacksonJsonpMapper;
+import co.elastic.clients.transport.rest_client.RestClientTransport;
 import com.blue.es.api.conf.EsConf;
 import com.blue.es.api.conf.EsNode;
 import com.blue.es.api.conf.Server;
@@ -12,6 +15,7 @@ import org.elasticsearch.client.RestClientBuilder;
 import reactor.util.Logger;
 
 import java.util.*;
+import java.util.function.Function;
 
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static java.util.Optional.ofNullable;
@@ -33,14 +37,8 @@ public final class BlueEsGenerator {
 
     private static final String DEFAULT_PATH_PREFIX = "/";
 
-    /**
-     * generate client
-     *
-     * @param esConf
-     * @return
-     */
-    public static RestClient generateRestClient(EsConf esConf) {
-        LOGGER.info("RestClient generateRestClient(EsConf esConf), esConf = {}", esConf);
+    private static final Function<EsConf, RestClient> REST_CLIENT_GENERATOR = esConf -> {
+        LOGGER.info("Function<EsConf,RestClient> REST_CLIENT_GENERATOR, esConf = {}", esConf);
         assertConf(esConf);
 
         List<Node> nodeList = esConf.getEsNodes()
@@ -104,6 +102,21 @@ public final class BlueEsGenerator {
                 .ifPresent(builder::setNodeSelector);
 
         return builder.build();
+    };
+
+    /**
+     * generate client
+     *
+     * @param esConf
+     * @return
+     */
+    public static ElasticsearchClient generateElasticsearchClient(EsConf esConf) {
+        LOGGER.info("ElasticsearchClient generateElasticsearchClient(EsConf esConf), esConf = {}", esConf);
+        if (isNull(esConf))
+            throw new RuntimeException("esConf can't be null");
+
+        return new ElasticsearchClient(new RestClientTransport(REST_CLIENT_GENERATOR.apply(esConf),
+                new JacksonJsonpMapper(), esConf.getTransportOptions()), esConf.getTransportOptions());
     }
 
     /**

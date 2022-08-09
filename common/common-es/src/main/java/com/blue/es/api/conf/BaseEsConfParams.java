@@ -1,5 +1,6 @@
 package com.blue.es.api.conf;
 
+import co.elastic.clients.transport.TransportOptions;
 import org.elasticsearch.client.NodeSelector;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
@@ -70,6 +71,9 @@ public abstract class BaseEsConfParams implements EsConf {
 
     @Override
     public abstract NodeSelector getNodeSelector();
+
+    @Override
+    public abstract TransportOptions getTransportOptions();
 
     public void setEsNodes(List<EsNode> esNodes) {
         this.esNodes = esNodes;

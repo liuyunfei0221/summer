@@ -156,7 +156,7 @@ public final class BluePreWithErrorReportFilter implements WebFilter, Ordered {
                     dataEvent.setDataEventOpType(CLICK.identity);
 
                     dataEvent.setStamp(TIME_STAMP_GETTER.get());
-                    EVENT_PACKAGER.accept(attributes, dataEvent);
+                    EVENT_ATTR_PACKAGER.accept(attributes, dataEvent);
                     report(throwable, request, dataEvent);
 
                     if (WITH_REQUEST_BODY_PRE.test(HEADER_VALUE_GETTER.apply(request.getHeaders(), HttpHeaders.CONTENT_TYPE))) {

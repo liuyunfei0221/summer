@@ -1,5 +1,6 @@
 package com.blue.finance.config.blue;
 
+import co.elastic.clients.transport.TransportOptions;
 import com.blue.es.api.conf.BaseEsConfParams;
 import org.elasticsearch.client.NodeSelector;
 import org.elasticsearch.client.RestClient;
@@ -33,6 +34,11 @@ public class BlueEsConfig extends BaseEsConfParams {
 
     @Override
     public NodeSelector getNodeSelector() {
+        return null;
+    }
+
+    @Override
+    public TransportOptions getTransportOptions() {
         return null;
     }
 }

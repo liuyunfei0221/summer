@@ -1,12 +1,12 @@
 package com.blue.es.ioc;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import com.blue.es.api.conf.EsConf;
-import org.elasticsearch.client.RestClient;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 
-import static com.blue.es.api.generator.BlueEsGenerator.generateRestClient;
+import static com.blue.es.api.generator.BlueEsGenerator.generateElasticsearchClient;
 
 /**
  * es configuration
@@ -18,8 +18,8 @@ import static com.blue.es.api.generator.BlueEsGenerator.generateRestClient;
 public class BlueEsConfiguration {
 
     @Bean
-    RestClient restClient(EsConf esConf) {
-        return generateRestClient(esConf);
+    ElasticsearchClient elasticsearchClient(EsConf esConf) {
+        return generateElasticsearchClient(esConf);
     }
 
 }

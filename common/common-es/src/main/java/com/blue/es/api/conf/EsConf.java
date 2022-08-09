@@ -1,5 +1,6 @@
 package com.blue.es.api.conf;
 
+import co.elastic.clients.transport.TransportOptions;
 import org.elasticsearch.client.NodeSelector;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
@@ -33,4 +34,6 @@ public interface EsConf {
     Boolean getCompressionEnabled();
 
     NodeSelector getNodeSelector();
+
+    TransportOptions getTransportOptions();
 }

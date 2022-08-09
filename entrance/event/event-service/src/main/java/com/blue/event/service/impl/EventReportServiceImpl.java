@@ -15,7 +15,7 @@ import reactor.util.Logger;
 
 import static com.blue.basic.common.access.AccessProcessor.accessToJson;
 import static com.blue.basic.common.base.BlueChecker.isNotBlank;
-import static com.blue.basic.common.base.CommonFunctions.EVENT_PACKAGER;
+import static com.blue.basic.common.base.CommonFunctions.EVENT_ATTR_PACKAGER;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.constant.common.BlueCommonThreshold.UNKNOWN_LOGGED_IN_ROLE_ID;
 import static com.blue.basic.constant.common.BlueDataAttrKey.ACCESS;
@@ -94,7 +94,7 @@ public class EventReportServiceImpl implements EventReportService {
                                         .filter(BlueChecker::isNotBlank)
                                         .ifPresent(dataEvent::setDataEventOpType);
 
-                                EVENT_PACKAGER.accept(eventData, dataEvent);
+                                EVENT_ATTR_PACKAGER.accept(eventData, dataEvent);
                                 return just(dataEvent);
                             }).flatMap(de -> {
                                 requestEventReporter.report(de);
