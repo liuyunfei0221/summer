@@ -1,21 +1,19 @@
 package com.blue.finance.service.impl;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch.core.IndexResponse;
 import com.blue.basic.model.common.Pit;
 import com.blue.basic.model.common.ScrollModelRequest;
 import com.blue.basic.model.common.ScrollModelResponse;
 import com.blue.basic.model.exps.BlueException;
-import com.blue.finance.repository.entity.Order;
+import com.blue.finance.event.producer.OrderSummaryProducer;
 import com.blue.finance.repository.entity.OrderSummary;
 import com.blue.finance.service.inter.OrderSummaryService;
 import com.blue.identity.component.BlueIdentityProcessor;
+import org.apache.hadoop.hbase.client.AsyncConnection;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,54 +27,24 @@ import static reactor.util.Loggers.getLogger;
  * @author liuyunfei
  */
 @Service
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection"})
 public class OrderSummaryServiceImpl implements OrderSummaryService {
 
     private static final Logger LOGGER = getLogger(OrderSummaryServiceImpl.class);
 
-//    private final BlueIdentityProcessor blueIdentityProcessor;
-//
-//    private final AsyncConnection asyncConnection;
-//
-//    private final ElasticsearchClient elasticsearchClient;
-//
-//    private final OrderSummaryProducer orderSummaryProducer;
-//
-//    public OrderSummaryServiceImpl(BlueIdentityProcessor blueIdentityProcessor, AsyncConnection asyncConnection, ElasticsearchClient elasticsearchClient, OrderSummaryProducer orderSummaryProducer) {
-//        this.blueIdentityProcessor = blueIdentityProcessor;
-//        this.asyncConnection = asyncConnection;
-//        this.elasticsearchClient = elasticsearchClient;
-//        this.orderSummaryProducer = orderSummaryProducer;
-//    }
-
     private final BlueIdentityProcessor blueIdentityProcessor;
+
+    private final AsyncConnection asyncConnection;
 
     private final ElasticsearchClient elasticsearchClient;
 
-    public OrderSummaryServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ElasticsearchClient elasticsearchClient) {
+    private final OrderSummaryProducer orderSummaryProducer;
+
+    public OrderSummaryServiceImpl(BlueIdentityProcessor blueIdentityProcessor, AsyncConnection asyncConnection, ElasticsearchClient elasticsearchClient, OrderSummaryProducer orderSummaryProducer) {
         this.blueIdentityProcessor = blueIdentityProcessor;
+        this.asyncConnection = asyncConnection;
         this.elasticsearchClient = elasticsearchClient;
-    }
-
-    @PostConstruct
-    private void init() {
-
-        try {
-//            CreateIndexResponse response = elasticsearchClient.indices().create(c -> c.index("order-summary"));
-//            System.err.println(response);
-
-            OrderSummary orderSummary = new OrderSummary();
-            orderSummary.setId(blueIdentityProcessor.generate(OrderSummary.class));
-            orderSummary.setOrder(new Order());
-
-            IndexResponse indexResponse = elasticsearchClient.index(i ->
-                    i.index("order-summary")
-                            .id(String.valueOf(blueIdentityProcessor.generate(OrderSummary.class)))
-                            .document(orderSummary));
-            System.err.println(indexResponse);
-        } catch (IOException e) {
-            LOGGER.error("init() failed, e = {0}", e);
-        }
+        this.orderSummaryProducer = orderSummaryProducer;
     }
 
     /**

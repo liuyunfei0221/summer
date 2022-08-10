@@ -24,23 +24,23 @@ public final class ConditionSortProcessor {
      *
      * @param condition
      * @param sortAttrMapping
-     * @param defaultSortAttr
+     * @param defaultSortColumn
      */
-    public static void process(SortCondition condition, Map<String, String> sortAttrMapping, String defaultSortAttr) {
+    public static void process(SortCondition condition, Map<String, String> sortAttrMapping, String defaultSortColumn) {
         if (isNull(condition))
             return;
 
         String sortType = condition.getSortType();
-        assertSortType(sortType, true);
         if (isBlank(sortType))
             condition.setSortType(DESC.identity);
+        assertSortType(sortType, false);
 
         String sortAttribute = condition.getSortAttribute();
         if (isNotBlank(sortAttribute) && isNotEmpty(sortAttrMapping)) {
             condition.setSortAttribute(ofNullable(sortAttrMapping.get(sortAttribute))
                     .orElseThrow(() -> new BlueException(INVALID_PARAM)));
         } else {
-            condition.setSortAttribute(isNotBlank(defaultSortAttr) ? defaultSortAttr : null);
+            condition.setSortAttribute(isNotBlank(defaultSortColumn) ? defaultSortColumn : null);
         }
     }
 

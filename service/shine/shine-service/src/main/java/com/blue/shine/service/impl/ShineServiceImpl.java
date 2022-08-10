@@ -1,5 +1,7 @@
 package com.blue.shine.service.impl;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch.core.IndexResponse;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.shine.api.model.ShineInfo;
 import com.blue.shine.repository.entity.Shine;
@@ -15,9 +17,9 @@ import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static java.util.stream.Collectors.toList;
@@ -43,26 +45,41 @@ public class ShineServiceImpl implements ShineService {
 
     private final Scheduler scheduler;
 
-    public ShineServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ShineRepository shineRepository,
-                            ReactiveMongoTemplate reactiveMongoTemplate, Scheduler scheduler) {
+    private final ElasticsearchClient elasticsearchClient;
+
+    public ShineServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ShineRepository shineRepository, ReactiveMongoTemplate reactiveMongoTemplate, Scheduler scheduler, ElasticsearchClient elasticsearchClient) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.shineRepository = shineRepository;
         this.reactiveMongoTemplate = reactiveMongoTemplate;
         this.scheduler = scheduler;
+        this.elasticsearchClient = elasticsearchClient;
     }
-
 
     @PostConstruct
     private void init() {
+
         Long stamp = TIME_STAMP_GETTER.get();
 
-        Shine s1 = new Shine(blueIdentityProcessor.generate(Shine.class), "title1", "content1", 1, stamp, stamp, 1L, 1L);
-        Shine s2 = new Shine(blueIdentityProcessor.generate(Shine.class), "title2", "content2", 1, stamp, stamp, 2L, 2L);
-        Shine s3 = new Shine(blueIdentityProcessor.generate(Shine.class), "title3", "content3", 2, stamp, stamp, 3L, 3L);
-        Shine s4 = new Shine(blueIdentityProcessor.generate(Shine.class), "title4", "content4", 2, stamp, stamp, 4L, 4L);
-        Shine s5 = new Shine(blueIdentityProcessor.generate(Shine.class), "title5", "content5", 3, stamp, stamp, 5L, 5L);
+        List<Shine> list = new LinkedList<>();
 
-        shineRepository.saveAll(Stream.of(s1, s2, s3, s4, s5).collect(toList())).subscribe(System.err::println);
+        for (int i = 0; i <= 1000; i++) {
+            long id = blueIdentityProcessor.generate(Shine.class);
+            Shine shine = new Shine(id, "title-" + id, "content-" + id, 1, stamp, stamp, 1L, 1L);
+
+            try {
+                IndexResponse indexResponse = elasticsearchClient.index(idx ->
+                        idx.index("shine")
+                                .id(String.valueOf(id))
+                                .document(shine));
+                System.err.println(indexResponse);
+            } catch (Exception e) {
+                LOGGER.error("index() failed, e = {0}", e);
+            }
+
+            list.add(shine);
+        }
+
+        shineRepository.saveAll(list).subscribe(System.err::println);
     }
 
     /**
