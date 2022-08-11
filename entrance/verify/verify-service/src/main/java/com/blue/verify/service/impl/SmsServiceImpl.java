@@ -29,7 +29,7 @@ public class SmsServiceImpl implements SmsService {
     @Override
     public Mono<Boolean> send(String phone, String text) {
 
-        LOGGER.warn("send sms verify, phone = {}, text = {}", phone, text);
+        LOGGER.error("send sms verify, phone = {}, text = {}", phone, text);
 
         return just(true);
     }

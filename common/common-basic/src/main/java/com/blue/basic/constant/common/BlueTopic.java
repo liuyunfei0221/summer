@@ -38,9 +38,14 @@ public enum BlueTopic {
     FINANCE_FLOW("financeFlow"),
 
     /**
-     * order summary
+     * order summary insert
      */
-    ORDER_SUMMARY("orderSummary"),
+    ORDER_SUMMARY_INSERT("orderSummaryInsert"),
+
+    /**
+     * order summary update
+     */
+    ORDER_SUMMARY_UPDATE("orderSummaryUpdate"),
 
     /**
      * Region infos invalid

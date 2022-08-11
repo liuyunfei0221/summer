@@ -16,11 +16,13 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.ConstantProcessor.getBusinessTypeByIdentity;
+import static com.blue.basic.constant.common.BlueCommonThreshold.*;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
@@ -46,6 +48,24 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
         Set<String> verifyTypes = BT_ALLOWED_VTS.get(businessType);
         if (isEmpty(verifyTypes) || !verifyTypes.contains(verifyType))
             throw new BlueException(UNSUPPORTED_OPERATE);
+    };
+
+    private static final int VFK_LEN_MIN = (int) VF_K_LEN_MIN.value,
+            VFK_LEN_MAX = (int) VF_K_LEN_MAX.value;
+
+    private static final int VFV_LEN_MIN = (int) VF_V_LEN_MIN.value,
+            VFV_LEN_MAX = (int) VF_V_LEN_MAX.value;
+
+    private static final Consumer<String> KEY_ASSERTER = key -> {
+        int len;
+        if (isBlank(key) || (len = key.length()) < VFK_LEN_MIN || len > VFK_LEN_MIN)
+            throw new BlueException(INVALID_PARAM);
+    };
+
+    private static final Consumer<String> VERIFY_ASSERTER = verify -> {
+        int len;
+        if (isBlank(verify) || (len = verify.length()) < VFV_LEN_MIN || len > VFV_LEN_MIN)
+            throw new BlueException(INVALID_PARAM);
     };
 
     /**
@@ -96,10 +116,14 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
                 .flatMap(vp -> {
                     String verifyType = vp.getVerifyType();
                     String businessType = vp.getBusinessType();
-
                     ALLOWED_ASSERTER.accept(businessType, verifyType);
+
+                    String destination = vp.getDestination();
+                    if (isNotBlank(destination) && destination.length() > VFK_LEN_MAX)
+                        return error(() -> new BlueException(INVALID_PARAM));
+
                     return ofNullable(verifyHandlers.get(verifyType))
-                            .map(h -> h.handle(getBusinessTypeByIdentity(businessType), vp.getDestination(), serverRequest))
+                            .map(h -> h.handle(getBusinessTypeByIdentity(businessType), destination, serverRequest))
                             .orElseThrow(() -> new BlueException(INVALID_PARAM));
                 });
 
@@ -116,14 +140,13 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
      * @return
      */
     public Mono<Boolean> validate(VerifyType verifyType, BusinessType businessType, String key, String verify, Boolean repeatable) {
-        if (isNotNull(verifyType) && isNotNull(businessType) && isNotBlank(key) && isNotBlank(verify)) {
-            ALLOWED_ASSERTER.accept(businessType.identity, verifyType.identity);
-            return ofNullable(verifyHandlers.get(verifyType.identity))
-                    .map(h -> h.validate(businessType, key, verify, repeatable))
-                    .orElseThrow(() -> new BlueException(INVALID_PARAM));
-        }
+        ALLOWED_ASSERTER.accept(businessType.identity, verifyType.identity);
+        KEY_ASSERTER.accept(key);
+        VERIFY_ASSERTER.accept(verify);
 
-        return error(() -> new BlueException(INVALID_PARAM));
+        return ofNullable(verifyHandlers.get(verifyType.identity))
+                .map(h -> h.validate(businessType, key, verify, repeatable))
+                .orElseThrow(() -> new BlueException(INVALID_PARAM));
     }
 
 }

@@ -12,7 +12,7 @@ import reactor.util.Logger;
 import javax.annotation.PostConstruct;
 import java.util.function.Consumer;
 
-import static com.blue.basic.constant.common.BlueTopic.ORDER_SUMMARY;
+import static com.blue.basic.constant.common.BlueTopic.ORDER_SUMMARY_INSERT;
 import static com.blue.basic.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static com.blue.pulsar.api.generator.BluePulsarListenerGenerator.generateListener;
 import static java.lang.Integer.MAX_VALUE;
@@ -23,14 +23,14 @@ import static reactor.util.Loggers.getLogger;
 
 
 /**
- * order summary consumer
+ * order summary insert consumer
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"unused"})
-public final class OrderSummaryConsumer implements BlueLifecycle {
+@SuppressWarnings({"unused", "DuplicatedCode"})
+public final class OrderSummaryInsertConsumer implements BlueLifecycle {
 
-    private static final Logger LOGGER = getLogger(OrderSummaryConsumer.class);
+    private static final Logger LOGGER = getLogger(OrderSummaryInsertConsumer.class);
 
     private final BlueConsumerConfig blueConsumerConfig;
 
@@ -40,7 +40,7 @@ public final class OrderSummaryConsumer implements BlueLifecycle {
 
     private BluePulsarListener<OrderSummary> pulsarListener;
 
-    public OrderSummaryConsumer(BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, OrderSummaryService orderSummaryService) {
+    public OrderSummaryInsertConsumer(BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, OrderSummaryService orderSummaryService) {
         this.blueConsumerConfig = blueConsumerConfig;
         this.scheduler = scheduler;
         this.orderSummaryService = orderSummaryService;
@@ -50,12 +50,12 @@ public final class OrderSummaryConsumer implements BlueLifecycle {
     private void init() {
         Consumer<OrderSummary> dataConsumer = orderSummary ->
                 ofNullable(orderSummary)
-                        .ifPresent(os -> just(os).publishOn(scheduler).map(orderSummaryService::updateOrderSummary)
+                        .ifPresent(os -> just(os).publishOn(scheduler).map(orderSummaryService::insertOrderSummary)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
-                                .doOnError(throwable -> LOGGER.info("orderSummaryService.refreshOrderSummary(os) failed, os = {}, throwable = {}", os, throwable))
-                                .subscribe(b -> LOGGER.info("orderSummaryService.refreshOrderSummary(os), b = {}, os = {}", b, os)));
+                                .doOnError(throwable -> LOGGER.info("orderSummaryService.insertOrderSummary(os) failed, os = {}, throwable = {}", os, throwable))
+                                .subscribe(b -> LOGGER.info("orderSummaryService.insertOrderSummary(os), b = {}, os = {}", b, os)));
 
-        this.pulsarListener = generateListener(blueConsumerConfig.getByKey(ORDER_SUMMARY.name), dataConsumer);
+        this.pulsarListener = generateListener(blueConsumerConfig.getByKey(ORDER_SUMMARY_INSERT.name), dataConsumer);
     }
 
     @Override

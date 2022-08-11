@@ -71,7 +71,7 @@ public class OrderProcessServiceImpl implements OrderProcessService {
         List<ReferenceAmount> insertedReferenceAmounts = referenceAmountService.insertReferenceAmounts(referenceAmounts);
         LOGGER.info("insertedReferenceAmounts = {}", insertedReferenceAmounts);
 
-        OrderSummary orderSummary = orderSummaryService.insertOrderSummary(new OrderSummary(order.getId(), order, orderArticles, referenceAmounts, order.getVersion()));
+        OrderSummary orderSummary = orderSummaryService.insertOrderSummaryAsync(new OrderSummary(order.getId(), order, orderArticles, referenceAmounts, order.getVersion()));
         LOGGER.info("orderSummary = {}", orderSummary);
 
         return ORDER_2_ORDER_INFO_CONVERTER.apply(insertedOrder);

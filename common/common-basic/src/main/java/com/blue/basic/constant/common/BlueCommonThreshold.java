@@ -115,12 +115,27 @@ public enum BlueCommonThreshold {
     /**
      * password maximum
      */
-    ACS_LEN_MAX(256L),
+    ACS_LEN_MAX(128L),
 
     /**
-     * verify maximum
+     * verify value minimum
      */
-    VFC_LEN_MAX(256L),
+    VF_K_LEN_MIN(4L),
+
+    /**
+     * verify value maximum
+     */
+    VF_K_LEN_MAX(128L),
+
+    /**
+     * verify value minimum
+     */
+    VF_V_LEN_MIN(4L),
+
+    /**
+     * verify value maximum
+     */
+    VF_V_LEN_MAX(128L),
 
     /**
      * security question minimum

@@ -26,12 +26,12 @@ public interface OrderSummaryService {
     OrderSummary insertOrderSummary(OrderSummary orderSummary);
 
     /**
-     * update order summary async
+     * insert order summary async
      *
      * @param orderSummary
      * @return
      */
-    OrderSummary updateOrderSummaryAsync(OrderSummary orderSummary);
+    OrderSummary insertOrderSummaryAsync(OrderSummary orderSummary);
 
     /**
      * update order summary
@@ -40,6 +40,14 @@ public interface OrderSummaryService {
      * @return
      */
     OrderSummary updateOrderSummary(OrderSummary orderSummary);
+
+    /**
+     * update order summary async
+     *
+     * @param orderSummary
+     * @return
+     */
+    OrderSummary updateOrderSummaryAsync(OrderSummary orderSummary);
 
     /**
      * get order summary mono by id

@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * order summary
+ * order summary in hbase
  *
  * @author liuyunfei
  */
@@ -13,6 +13,9 @@ public class OrderSummary implements Serializable {
 
     private static final long serialVersionUID = 3234801680742676200L;
 
+    /**
+     * row key(order id)
+     */
     private Long id;
 
     private Order order;

@@ -195,7 +195,7 @@ public class ImageVerifyHandler implements VerifyHandler {
 
     @Override
     public Mono<ServerResponse> handle(BusinessType businessType, String destination, ServerRequest serverRequest) {
-        String verifyKey = isNotBlank(destination) ? destination : generate(KEY_RANDOM_TYPE, KEY_LEN);
+        String verifyKey = isBlank(destination) ? generate(KEY_RANDOM_TYPE, KEY_LEN) : destination;
 
         return SERVER_REQUEST_IDENTITY_SYNC_KEY_GETTER.apply(serverRequest)
                 .flatMap(identity -> blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(identity), ALLOW, SEND_INTERVAL_MILLIS))
@@ -203,7 +203,7 @@ public class ImageVerifyHandler implements VerifyHandler {
                         allowed ?
                                 this.handle(businessType, verifyKey)
                                         .flatMap(verify -> {
-                                            LOGGER.info("Mono<ServerResponse> handle(String destination), verifyKey = {}, verify = {}", verifyKey, verify);
+                                            LOGGER.warn("Mono<ServerResponse> handle(String destination), verifyKey = {}, verify = {}", verifyKey, verify);
 
                                             return using(FastByteArrayOutputStream::new,
                                                     outputStream -> IMAGE_WRITER.apply(verify, outputStream)

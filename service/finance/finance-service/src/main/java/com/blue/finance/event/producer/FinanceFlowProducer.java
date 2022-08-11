@@ -48,7 +48,7 @@ public final class FinanceFlowProducer implements BlueLifecycle {
 
     @Override
     public void start() {
-        LOGGER.warn("invalidLocalAccessProducer start...");
+        LOGGER.warn("financeFlowProducer start...");
     }
 
     @Override

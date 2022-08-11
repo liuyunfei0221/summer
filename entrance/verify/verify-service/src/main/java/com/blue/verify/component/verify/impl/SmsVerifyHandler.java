@@ -159,13 +159,16 @@ public class SmsVerifyHandler implements VerifyHandler {
                 .flatMap(allowed ->
                         allowed ?
                                 this.handle(businessType, destination)
-                                        .flatMap(verify ->
-                                                ok().contentType(APPLICATION_JSON)
-                                                        .header(VERIFY_KEY.name, destination)
-                                                        .body(success(serverRequest)
-                                                                , BlueResponse.class)
-                                                        .doOnSuccess(ig ->
-                                                                recordVerify(businessType, destination, verify, serverRequest)))
+                                        .flatMap(verify -> {
+                                            LOGGER.warn("Mono<ServerResponse> handle(String destination), verifyKey = {}, verify = {}", destination, verify);
+
+                                            return ok().contentType(APPLICATION_JSON)
+                                                    .header(VERIFY_KEY.name, destination)
+                                                    .body(success(serverRequest)
+                                                            , BlueResponse.class)
+                                                    .doOnSuccess(ig ->
+                                                            recordVerify(businessType, destination, verify, serverRequest));
+                                        })
                                 :
                                 error(() -> new BlueException(TOO_MANY_REQUESTS)));
     }

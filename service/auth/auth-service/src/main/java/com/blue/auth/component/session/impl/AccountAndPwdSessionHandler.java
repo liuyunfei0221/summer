@@ -26,7 +26,6 @@ import static com.blue.auth.constant.LoginAttribute.IDENTITY;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.constant.auth.CredentialType.ACCOUNT_PWD;
-import static com.blue.basic.constant.auth.CredentialType.EMAIL_PWD;
 import static com.blue.basic.constant.auth.ExtraKey.NEW_MEMBER;
 import static com.blue.basic.constant.common.BlueHeader.*;
 import static com.blue.basic.constant.common.ResponseElement.*;
@@ -106,7 +105,7 @@ public class AccountAndPwdSessionHandler implements SessionHandler {
 
     @Override
     public CredentialType targetType() {
-        return EMAIL_PWD;
+        return ACCOUNT_PWD;
     }
 
 }

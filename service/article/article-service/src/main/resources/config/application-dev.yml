@@ -180,7 +180,7 @@ mongo:
 es:
   esNodes:
     - server:
-        host: 127.0.0.1
+        host: localhost
         port: 9200
         schema: http
       boundServers: [ ]
@@ -188,6 +188,7 @@ es:
       version: 8.3.3
       roles: [ ]
       attributes: [ ]
+
   defaultHeaders:
   pathPrefix: /
   strictDeprecationMode: false

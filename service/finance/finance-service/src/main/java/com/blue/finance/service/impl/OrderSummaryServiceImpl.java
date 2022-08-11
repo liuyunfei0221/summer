@@ -5,11 +5,11 @@ import com.blue.basic.model.common.Pit;
 import com.blue.basic.model.common.ScrollModelRequest;
 import com.blue.basic.model.common.ScrollModelResponse;
 import com.blue.basic.model.exps.BlueException;
-import com.blue.finance.event.producer.OrderSummaryProducer;
+import com.blue.finance.event.producer.OrderSummaryInsertProducer;
+import com.blue.finance.event.producer.OrderSummaryUpdateProducer;
 import com.blue.finance.repository.entity.OrderSummary;
 import com.blue.finance.service.inter.OrderSummaryService;
 import com.blue.identity.component.BlueIdentityProcessor;
-import org.apache.hadoop.hbase.client.AsyncConnection;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
@@ -32,19 +32,39 @@ public class OrderSummaryServiceImpl implements OrderSummaryService {
 
     private static final Logger LOGGER = getLogger(OrderSummaryServiceImpl.class);
 
-    private final BlueIdentityProcessor blueIdentityProcessor;
+//    private final BlueIdentityProcessor blueIdentityProcessor;
+//
+//    private final AsyncConnection asyncConnection;
+//
+//    private final ElasticsearchClient elasticsearchClient;
+//
+//    private final OrderSummaryInsertProducer orderSummaryInsertProducer;
+//
+//    private final OrderSummaryUpdateProducer orderSummaryUpdateProducer;
+//
+//    public OrderSummaryServiceImpl(BlueIdentityProcessor blueIdentityProcessor, AsyncConnection asyncConnection, ElasticsearchClient elasticsearchClient,
+//                                   OrderSummaryInsertProducer orderSummaryInsertProducer, OrderSummaryUpdateProducer orderSummaryUpdateProducer) {
+//        this.blueIdentityProcessor = blueIdentityProcessor;
+//        this.asyncConnection = asyncConnection;
+//        this.elasticsearchClient = elasticsearchClient;
+//        this.orderSummaryInsertProducer = orderSummaryInsertProducer;
+//        this.orderSummaryUpdateProducer = orderSummaryUpdateProducer;
+//    }
 
-    private final AsyncConnection asyncConnection;
+    private final BlueIdentityProcessor blueIdentityProcessor;
 
     private final ElasticsearchClient elasticsearchClient;
 
-    private final OrderSummaryProducer orderSummaryProducer;
+    private final OrderSummaryInsertProducer orderSummaryInsertProducer;
 
-    public OrderSummaryServiceImpl(BlueIdentityProcessor blueIdentityProcessor, AsyncConnection asyncConnection, ElasticsearchClient elasticsearchClient, OrderSummaryProducer orderSummaryProducer) {
+    private final OrderSummaryUpdateProducer orderSummaryUpdateProducer;
+
+    public OrderSummaryServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ElasticsearchClient elasticsearchClient,
+                                   OrderSummaryInsertProducer orderSummaryInsertProducer, OrderSummaryUpdateProducer orderSummaryUpdateProducer) {
         this.blueIdentityProcessor = blueIdentityProcessor;
-        this.asyncConnection = asyncConnection;
         this.elasticsearchClient = elasticsearchClient;
-        this.orderSummaryProducer = orderSummaryProducer;
+        this.orderSummaryInsertProducer = orderSummaryInsertProducer;
+        this.orderSummaryUpdateProducer = orderSummaryUpdateProducer;
     }
 
     /**
@@ -64,20 +84,15 @@ public class OrderSummaryServiceImpl implements OrderSummaryService {
     }
 
     /**
-     * update order summary async
+     * insert order summary async
      *
      * @param orderSummary
      * @return
      */
     @Override
-    public OrderSummary updateOrderSummaryAsync(OrderSummary orderSummary) {
-        LOGGER.info("OrderSummary updateOrderSummaryAsync(OrderSummary orderSummary), orderSummary = {}", orderSummary);
+    public OrderSummary insertOrderSummaryAsync(OrderSummary orderSummary) {
 
-
-//        orderSummaryProducer.send(orderSummary);
-
-
-        return orderSummary;
+        return null;
     }
 
     /**
@@ -92,6 +107,23 @@ public class OrderSummaryServiceImpl implements OrderSummaryService {
 
 
         return null;
+    }
+
+    /**
+     * update order summary async
+     *
+     * @param orderSummary
+     * @return
+     */
+    @Override
+    public OrderSummary updateOrderSummaryAsync(OrderSummary orderSummary) {
+        LOGGER.info("OrderSummary updateOrderSummaryAsync(OrderSummary orderSummary), orderSummary = {}", orderSummary);
+
+
+//        orderSummaryProducer.send(orderSummary);
+
+
+        return orderSummary;
     }
 
     /**

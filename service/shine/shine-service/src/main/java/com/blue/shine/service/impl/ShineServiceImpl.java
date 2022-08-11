@@ -1,7 +1,8 @@
 package com.blue.shine.service.impl;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch.core.IndexResponse;
+import co.elastic.clients.elasticsearch.core.BulkResponse;
+import co.elastic.clients.elasticsearch.core.bulk.BulkOperation;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.shine.api.model.ShineInfo;
 import com.blue.shine.repository.entity.Shine;
@@ -17,6 +18,7 @@ import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -60,26 +62,35 @@ public class ShineServiceImpl implements ShineService {
 
         Long stamp = TIME_STAMP_GETTER.get();
 
-        List<Shine> list = new LinkedList<>();
+        List<Shine> elements = new LinkedList<>();
+        List<BulkOperation> bulkOperations = new LinkedList<>();
 
         for (int i = 0; i <= 1000; i++) {
             long id = blueIdentityProcessor.generate(Shine.class);
             Shine shine = new Shine(id, "title-" + id, "content-" + id, 1, stamp, stamp, 1L, 1L);
 
-            try {
-                IndexResponse indexResponse = elasticsearchClient.index(idx ->
-                        idx.index("shine")
-                                .id(String.valueOf(id))
-                                .document(shine));
-                System.err.println(indexResponse);
-            } catch (Exception e) {
-                LOGGER.error("index() failed, e = {0}", e);
-            }
+            elements.add(shine);
+            bulkOperations.add(new BulkOperation.Builder().create(d -> d.document(shine)).build());
 
-            list.add(shine);
+//            try {
+//                IndexResponse indexResponse = elasticsearchClient.index(idx ->
+//                        idx.index("shine")
+//                                .id(String.valueOf(id))
+//                                .document(shine));
+//                System.err.println(indexResponse);
+//            } catch (Exception e) {
+//                LOGGER.error("index() failed, e = {0}", e);
+//            }
         }
 
-        shineRepository.saveAll(list).subscribe(System.err::println);
+        try {
+            BulkResponse bulkResponse = elasticsearchClient.bulk(e -> e.index("shine").operations(bulkOperations));
+            System.err.println(bulkResponse);
+        } catch (IOException e) {
+            LOGGER.error("bulk() failed, e = {0}", e);
+        }
+
+        shineRepository.saveAll(elements).subscribe(System.err::println);
     }
 
     /**

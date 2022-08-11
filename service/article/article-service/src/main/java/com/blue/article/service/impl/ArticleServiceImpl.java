@@ -1,11 +1,11 @@
 package com.blue.article.service.impl;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import com.blue.article.repository.entity.Article;
 import com.blue.article.repository.template.ArticleRepository;
 import com.blue.article.service.inter.ArticleService;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
-import org.elasticsearch.client.RestClient;
 import org.springframework.stereotype.Service;
 import reactor.util.Logger;
 
@@ -30,13 +30,13 @@ public class ArticleServiceImpl implements ArticleService {
 
     private final BlueIdentityProcessor blueIdentityProcessor;
 
-    private final RestClient restClient;
+    private final ElasticsearchClient elasticsearchClient;
 
     private final ArticleRepository articleRepository;
 
-    public ArticleServiceImpl(BlueIdentityProcessor blueIdentityProcessor, RestClient restClient, ArticleRepository articleRepository) {
+    public ArticleServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ElasticsearchClient elasticsearchClient, ArticleRepository articleRepository) {
         this.blueIdentityProcessor = blueIdentityProcessor;
-        this.restClient = restClient;
+        this.elasticsearchClient = elasticsearchClient;
         this.articleRepository = articleRepository;
     }
 
