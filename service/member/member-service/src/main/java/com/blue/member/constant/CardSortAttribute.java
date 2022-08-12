@@ -15,12 +15,12 @@ public enum CardSortAttribute {
     /**
      * createTime
      */
-    CREATE_TIME("createTime", "create_time"),
+    CREATE_TIME("createTime", "createTime"),
 
     /**
      * updateTime
      */
-    UPDATE_TIME("updateTime", "update_time");
+    UPDATE_TIME("updateTime", "updateTime");
 
     public final String attribute;
 

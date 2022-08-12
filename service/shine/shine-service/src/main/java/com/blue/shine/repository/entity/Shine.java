@@ -1,7 +1,6 @@
 package com.blue.shine.repository.entity;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.io.Serializable;
 
@@ -18,10 +17,31 @@ public class Shine implements Serializable {
     @Id
     private Long id;
 
-    @Indexed(unique = true)
     private String title;
 
     private String content;
+
+    private String detail;
+
+    private String contact;
+
+    private String contactDetail;
+
+    private Long countryId;
+
+    private String country;
+
+    private Long stateId;
+
+    private String state;
+
+    private Long cityId;
+
+    private String city;
+
+    private String addressDetail;
+
+    private String extra;
 
     private Integer order;
 
@@ -34,17 +54,6 @@ public class Shine implements Serializable {
     private Long updater;
 
     public Shine() {
-    }
-
-    public Shine(Long id, String title, String content, Integer order, Long createTime, Long updateTime, Long creator, Long updater) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-        this.order = order;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
-        this.creator = creator;
-        this.updater = updater;
     }
 
     public Long getId() {
@@ -69,6 +78,94 @@ public class Shine implements Serializable {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
+    public String getContactDetail() {
+        return contactDetail;
+    }
+
+    public void setContactDetail(String contactDetail) {
+        this.contactDetail = contactDetail;
+    }
+
+    public Long getCountryId() {
+        return countryId;
+    }
+
+    public void setCountryId(Long countryId) {
+        this.countryId = countryId;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public Long getStateId() {
+        return stateId;
+    }
+
+    public void setStateId(Long stateId) {
+        this.stateId = stateId;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public Long getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(Long cityId) {
+        this.cityId = cityId;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getAddressDetail() {
+        return addressDetail;
+    }
+
+    public void setAddressDetail(String addressDetail) {
+        this.addressDetail = addressDetail;
+    }
+
+    public String getExtra() {
+        return extra;
+    }
+
+    public void setExtra(String extra) {
+        this.extra = extra;
     }
 
     public Integer getOrder() {
@@ -117,6 +214,17 @@ public class Shine implements Serializable {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
+                ", detail='" + detail + '\'' +
+                ", contact='" + contact + '\'' +
+                ", contactDetail='" + contactDetail + '\'' +
+                ", countryId=" + countryId +
+                ", country='" + country + '\'' +
+                ", stateId=" + stateId +
+                ", state='" + state + '\'' +
+                ", cityId=" + cityId +
+                ", city='" + city + '\'' +
+                ", addressDetail='" + addressDetail + '\'' +
+                ", extra='" + extra + '\'' +
                 ", order=" + order +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +

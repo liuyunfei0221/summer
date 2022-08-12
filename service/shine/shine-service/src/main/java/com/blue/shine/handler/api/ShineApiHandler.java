@@ -1,6 +1,5 @@
 package com.blue.shine.handler.api;
 
-import com.blue.basic.model.common.BlueResponse;
 import com.blue.shine.service.inter.ShineService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -11,10 +10,7 @@ import reactor.util.Logger;
 import java.util.Map;
 
 import static com.blue.basic.common.base.MetadataGetter.getMetadata;
-import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.common.base.RequestIpGetter.getRequestIp;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -47,11 +43,13 @@ public final class ShineApiHandler {
         Map<String, String> metadata = getMetadata(serverRequest);
         LOGGER.warn("metadata = {}", metadata);
 
-        return shineService.selectShineInfo(ip)
-                .flatMap(si ->
-                        ok()
-                                .contentType(APPLICATION_JSON)
-                                .body(success(si, serverRequest), BlueResponse.class));
+        return null;
+
+//        return shineService.selectShineInfo(ip)
+//                .flatMap(si ->
+//                        ok()
+//                                .contentType(APPLICATION_JSON)
+//                                .body(success(si, serverRequest), BlueResponse.class));
     }
 
 

@@ -102,8 +102,8 @@ public class AddressServiceImpl implements AddressService {
 
     private final long MAX_ADDRESS;
 
-    private final BiConsumer<Long, Address> ADDRESS_AREA_PACKAGER = (aid, address) -> {
-        if (isInvalidIdentity(aid) || isNull(address))
+    private final BiConsumer<Address, Long> ADDRESS_AREA_PACKAGER = (address, aid) -> {
+        if (isNull(address) || isInvalidIdentity(aid))
             return;
 
         AreaRegion areaRegion = rpcAreaServiceConsumer.getAreaRegionById(aid)
@@ -135,8 +135,8 @@ public class AddressServiceImpl implements AddressService {
                 });
     };
 
-    private final BiConsumer<Long, Address> ADDRESS_CITY_PACKAGER = (cid, address) -> {
-        if (isInvalidIdentity(cid) || isNull(address))
+    private final BiConsumer<Address, Long> ADDRESS_CITY_PACKAGER = (address, cid) -> {
+        if (isNull(address) || isInvalidIdentity(cid))
             return;
 
         CityRegion cityRegion = rpcCityServiceConsumer.getCityRegionById(cid)
@@ -165,16 +165,16 @@ public class AddressServiceImpl implements AddressService {
         address.setArea(EMPTY_DATA.value);
     };
 
-    private void packageAddressRegion(Long aid, Long cid, Address address) {
+    private void packageAddressRegion(Address address, Long aid, Long cid) {
         if (isNull(address))
             throw new BlueException(EMPTY_PARAM);
         if (isInvalidIdentity(aid) && isInvalidIdentity(cid))
             throw new BlueException(EMPTY_PARAM);
 
         if (isValidIdentity(aid)) {
-            ADDRESS_AREA_PACKAGER.accept(aid, address);
+            ADDRESS_AREA_PACKAGER.accept(address, aid);
         } else {
-            ADDRESS_CITY_PACKAGER.accept(cid, address);
+            ADDRESS_CITY_PACKAGER.accept(address, cid);
         }
     }
 
@@ -187,7 +187,7 @@ public class AddressServiceImpl implements AddressService {
 
         Address address = new Address();
 
-        packageAddressRegion(p.getAreaId(), p.getCityId(), address);
+        packageAddressRegion(address, p.getAreaId(), p.getCityId());
 
         address.setId(blueIdentityProcessor.generate(Address.class));
 
@@ -214,7 +214,7 @@ public class AddressServiceImpl implements AddressService {
             throw new BlueException(EMPTY_PARAM);
         p.asserts();
 
-        packageAddressRegion(p.getAreaId(), p.getCityId(), t);
+        packageAddressRegion(t, p.getAreaId(), p.getCityId());
 
         ofNullable(p.getContact())
                 .filter(BlueChecker::isNotBlank).ifPresent(t::setContact);
@@ -444,8 +444,8 @@ public class AddressServiceImpl implements AddressService {
      * @return
      */
     @Override
-    public Mono<AddressInfo> selectAddressInfoMonoByPrimaryKeyWithAssert(Long id) {
-        LOGGER.info("Mono<AddressInfo> selectAddressInfoMonoByPrimaryKeyWithAssert(Long id), id = {}", id);
+    public Mono<AddressInfo> getAddressInfoMonoByPrimaryKeyWithAssert(Long id) {
+        LOGGER.info("Mono<AddressInfo> getAddressInfoMonoByPrimaryKeyWithAssert(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 

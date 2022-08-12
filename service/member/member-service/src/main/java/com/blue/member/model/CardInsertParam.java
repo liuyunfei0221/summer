@@ -5,8 +5,9 @@ import com.blue.basic.model.exps.BlueException;
 
 import java.io.Serializable;
 
-import static com.blue.basic.common.base.BlueChecker.isBlank;
-import static com.blue.basic.common.base.BlueChecker.isInvalidIdentity;
+import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.constant.common.BlueCommonThreshold.DETAIL_LEN_MAX;
+import static com.blue.basic.constant.common.BlueCommonThreshold.DETAIL_LEN_MIN;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 import static com.blue.basic.constant.member.BlueMemberThreshold.*;
 
@@ -49,22 +50,17 @@ public class CardInsertParam implements Serializable, Asserter {
 
     @Override
     public void asserts() {
-        if (isBlank(this.name))
+        int len;
+        if (isBlank(this.name) || (len = this.name.length()) < (int) NAME_LEN_MIN.value || len > (int) NAME_LEN_MAX.value)
             throw new BlueException(INVALID_PARAM);
 
-        int length = name.length();
-        if (length < NAME_LEN_MIN.value || length > NAME_LEN_MAX.value)
-            throw new BlueException(INVALID_PARAM);
-
-        length = detail.length();
-        if (length < ADDR_DETAIL_LEN_MIN.value || length > ADDR_DETAIL_LEN_MAX.value)
+        if (isNotBlank(this.detail) && ((len = this.detail.length()) < (int) DETAIL_LEN_MIN.value || len > (int) DETAIL_LEN_MAX.value))
             throw new BlueException(INVALID_PARAM);
 
         if (isInvalidIdentity(this.contentId))
             throw new BlueException(INVALID_PARAM);
 
-        length = extra.length();
-        if (length < EXTRA_LEN_MIN.value || length > EXTRA_LEN_MAX.value)
+        if (isNotBlank(this.extra) && ((len = this.extra.length()) < (int) EXTRA_LEN_MIN.value || len > (int) EXTRA_LEN_MAX.value))
             throw new BlueException(INVALID_PARAM);
     }
 

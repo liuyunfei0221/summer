@@ -1,11 +1,11 @@
-package com.blue.member.constant;
+package com.blue.shine.constant;
 
 /**
- * address sort columns
+ * shine sort columns
  *
  * @author liuyunfei
  */
-public enum AddressSortAttribute {
+public enum ShineSortAttribute {
 
     /**
      * id
@@ -26,7 +26,7 @@ public enum AddressSortAttribute {
 
     public final String column;
 
-    AddressSortAttribute(String attribute, String column) {
+    ShineSortAttribute(String attribute, String column) {
         this.attribute = attribute;
         this.column = column;
     }

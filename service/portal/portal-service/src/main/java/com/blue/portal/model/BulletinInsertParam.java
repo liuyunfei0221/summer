@@ -8,6 +8,7 @@ import java.io.Serializable;
 import static com.blue.basic.common.base.BlueChecker.isBlank;
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.ConstantProcessor.assertBulletinType;
+import static com.blue.basic.constant.common.BlueCommonThreshold.*;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 
 /**
@@ -53,12 +54,13 @@ public class BulletinInsertParam implements Serializable, Asserter {
 
     @Override
     public void asserts() {
-        if (isBlank(this.title))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "title can't be blank");
-        if (isBlank(this.content))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "content can't be blank");
-        if (isBlank(this.link))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "link can't be blank");
+        int len;
+        if (isBlank(this.title) || (len = this.title.length()) < (int) TITLE_LEN_MIN.value || len > (int) TITLE_LEN_MAX.value)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid title");
+        if (isBlank(this.content) || (len = this.content.length()) < (int) CONTENT_LEN_MIN.value || len > (int) CONTENT_LEN_MAX.value)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid content");
+        if (isBlank(this.link) || (len = this.link.length()) < (int) LINK_LEN_MIN.value || len > (int) LINK_LEN_MAX.value)
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid link");
         assertBulletinType(this.type, false);
         if (isNull(this.priority))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "priority can't be null");

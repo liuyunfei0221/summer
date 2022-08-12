@@ -97,10 +97,10 @@ public class CardServiceImpl implements CardService {
         this.memberBasicService = memberBasicService;
         this.cardRepository = cardRepository;
 
-        this.MAX_ADDRESS = cardDeploy.getMax();
+        this.MAX_CARD = cardDeploy.getMax();
     }
 
-    private final long MAX_ADDRESS;
+    private final long MAX_CARD;
 
     private Mono<Card> packageCoverAndContent(Long coverId, Long contentId, Card card) {
         if (isInvalidIdentity(contentId) || isNull(card))
@@ -262,7 +262,7 @@ public class CardServiceImpl implements CardService {
                             .publishOn(scheduler)
                             .switchIfEmpty(defer(() -> just(0L)))
                             .flatMap(count -> {
-                                if (count >= MAX_ADDRESS)
+                                if (count >= MAX_CARD)
                                     return error(new BlueException(DATA_ALREADY_EXIST));
 
                                 return CARD_INSERT_PARAM_2_CARD.apply(cardInsertParam, memberId);
@@ -388,8 +388,8 @@ public class CardServiceImpl implements CardService {
      * @return
      */
     @Override
-    public Mono<CardInfo> selectCardInfoMonoByPrimaryKeyWithAssert(Long id) {
-        LOGGER.info("Mono<CardInfo> selectCardInfoMonoByPrimaryKeyWithAssert(Long id), id = {}", id);
+    public Mono<CardInfo> getCardInfoMonoByPrimaryKeyWithAssert(Long id) {
+        LOGGER.info("Mono<CardInfo> getCardInfoMonoByPrimaryKeyWithAssert(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 

@@ -5,9 +5,12 @@ import com.blue.basic.model.exps.BlueException;
 
 import java.io.Serializable;
 
-import static com.blue.basic.common.base.BlueChecker.isBlank;
-import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.ConstantProcessor.assertGender;
+import static com.blue.basic.constant.common.BlueCommonThreshold.EMAIL_LEN_MAX;
+import static com.blue.basic.constant.common.BlueCommonThreshold.EMAIL_LEN_MIN;
+import static com.blue.basic.constant.common.BlueCommonThreshold.PHONE_LEN_MAX;
+import static com.blue.basic.constant.common.BlueCommonThreshold.PHONE_LEN_MIN;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 import static com.blue.basic.constant.member.BlueMemberThreshold.*;
 
@@ -59,27 +62,23 @@ public class AddressInsertParam implements Serializable, Asserter {
 
     @Override
     public void asserts() {
-        if (isBlank(this.contact) || isBlank(this.phone) || isNull(this.cityId) || isBlank(this.detail) || isBlank(this.reference))
+        int len;
+        if (isBlank(this.contact) || (len = this.contact.length()) < (int) CONTACT_LEN_MIN.value || len > (int) CONTACT_LEN_MAX.value)
             throw new BlueException(INVALID_PARAM);
+
         assertGender(this.gender, false);
 
-        int length = contact.length();
-        if (length < CONTACT_LEN_MIN.value || length > CONTACT_LEN_MAX.value)
+        if (isBlank(this.phone) || (len = this.phone.length()) < (int) PHONE_LEN_MIN.value || len > (int) PHONE_LEN_MAX.value)
             throw new BlueException(INVALID_PARAM);
-
-        length = phone.length();
-        if (length < PHONE_LEN_MIN.value || length > PHONE_LEN_MAX.value)
+        if (isNotBlank(this.email) || (len = this.email.length()) < (int) EMAIL_LEN_MIN.value || len > (int) EMAIL_LEN_MAX.value)
             throw new BlueException(INVALID_PARAM);
 
         if (isNull(this.cityId))
             throw new BlueException(INVALID_PARAM);
 
-        length = detail.length();
-        if (length < ADDR_DETAIL_LEN_MIN.value || length > ADDR_DETAIL_LEN_MAX.value)
+        if (isNotBlank(this.detail) && ((len = this.detail.length()) < (int) ADDR_DETAIL_LEN_MIN.value || len > (int) ADDR_DETAIL_LEN_MAX.value))
             throw new BlueException(INVALID_PARAM);
-
-        length = reference.length();
-        if (length < REFERENCE_LEN_MIN.value || length > REFERENCE_LEN_MAX.value)
+        if (isNotBlank(this.reference) && ((len = this.reference.length()) < (int) REFERENCE_LEN_MIN.value || len > (int) REFERENCE_LEN_MAX.value))
             throw new BlueException(INVALID_PARAM);
     }
 
