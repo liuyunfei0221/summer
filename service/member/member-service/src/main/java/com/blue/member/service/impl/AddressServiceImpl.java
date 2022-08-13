@@ -317,12 +317,12 @@ public class AddressServiceImpl implements AddressService {
                     return addressRepository.count(Example.of(probe))
                             .publishOn(scheduler)
                             .switchIfEmpty(defer(() -> just(0L)))
-                            .flatMap(count -> {
-                                if (count >= MAX_ADDRESS)
-                                    return error(new BlueException(DATA_ALREADY_EXIST));
-
-                                return ADDRESS_INSERT_PARAM_2_ADDRESS.apply(addressInsertParam, memberId);
-                            })
+                            .flatMap(count ->
+                                    count < MAX_ADDRESS ?
+                                            ADDRESS_INSERT_PARAM_2_ADDRESS.apply(addressInsertParam, memberId)
+                                            :
+                                            error(new BlueException(DATA_ALREADY_EXIST))
+                            )
                             .flatMap(addressRepository::insert)
                             .flatMap(a -> just(ADDRESS_2_ADDRESS_INFO.apply(a)));
                 }
@@ -349,12 +349,12 @@ public class AddressServiceImpl implements AddressService {
                 addressRepository.findById(addressUpdateParam.getId())
                         .publishOn(scheduler)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
-                        .flatMap(address -> {
-                            if (!address.getMemberId().equals(memberId))
-                                return error(new BlueException(DATA_NOT_BELONG_TO_YOU));
-
-                            return ADDRESS_UPDATE_PARAM_2_ADDRESS.apply(addressUpdateParam, address);
-                        })
+                        .flatMap(address ->
+                                address.getMemberId().equals(memberId) ?
+                                        ADDRESS_UPDATE_PARAM_2_ADDRESS.apply(addressUpdateParam, address)
+                                        :
+                                        error(new BlueException(DATA_NOT_BELONG_TO_YOU))
+                        )
                         .flatMap(addressRepository::save)
                         .flatMap(a -> just(ADDRESS_2_ADDRESS_INFO.apply(a))));
     }
@@ -378,13 +378,13 @@ public class AddressServiceImpl implements AddressService {
                 addressRepository.findById(id)
                         .publishOn(scheduler)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
-                        .flatMap(address -> {
-                            if (!address.getMemberId().equals(memberId))
-                                return error(new BlueException(DATA_NOT_BELONG_TO_YOU));
-
-                            return addressRepository.delete(address)
-                                    .then(just(address));
-                        })
+                        .flatMap(address ->
+                                address.getMemberId().equals(memberId) ?
+                                        addressRepository.delete(address)
+                                                .then(just(address))
+                                        :
+                                        error(new BlueException(DATA_NOT_BELONG_TO_YOU))
+                        )
                         .flatMap(a -> just(ADDRESS_2_ADDRESS_INFO.apply(a))));
     }
 
@@ -452,12 +452,12 @@ public class AddressServiceImpl implements AddressService {
         return just(id)
                 .flatMap(this::getAddressMono)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
-                .flatMap(a -> {
-                    if (isInvalidStatus(a.getStatus()))
-                        return error(() -> new BlueException(DATA_NOT_EXIST));
-                    LOGGER.info("a = {}", a);
-                    return just(a);
-                }).flatMap(a ->
+                .flatMap(a ->
+                        isInvalidStatus(a.getStatus()) ?
+                                error(() -> new BlueException(DATA_NOT_EXIST))
+                                :
+                                just(a)
+                ).flatMap(a ->
                         just(ADDRESS_2_ADDRESS_INFO.apply(a))
                 );
     }

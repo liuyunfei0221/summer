@@ -261,12 +261,12 @@ public class CardServiceImpl implements CardService {
                     return cardRepository.count(Example.of(probe))
                             .publishOn(scheduler)
                             .switchIfEmpty(defer(() -> just(0L)))
-                            .flatMap(count -> {
-                                if (count >= MAX_CARD)
-                                    return error(new BlueException(DATA_ALREADY_EXIST));
-
-                                return CARD_INSERT_PARAM_2_CARD.apply(cardInsertParam, memberId);
-                            })
+                            .flatMap(count ->
+                                    count < MAX_CARD ?
+                                            CARD_INSERT_PARAM_2_CARD.apply(cardInsertParam, memberId)
+                                            :
+                                            error(new BlueException(DATA_ALREADY_EXIST))
+                            )
                             .flatMap(cardRepository::insert)
                             .flatMap(c -> just(CARD_2_CARD_INFO.apply(c)));
                 }
@@ -293,12 +293,12 @@ public class CardServiceImpl implements CardService {
                 cardRepository.findById(cardUpdateParam.getId())
                         .publishOn(scheduler)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
-                        .flatMap(card -> {
-                            if (!card.getMemberId().equals(memberId))
-                                return error(new BlueException(DATA_NOT_BELONG_TO_YOU));
-
-                            return CARD_UPDATE_PARAM_2_CARD.apply(cardUpdateParam, card);
-                        })
+                        .flatMap(card ->
+                                card.getMemberId().equals(memberId) ?
+                                        CARD_UPDATE_PARAM_2_CARD.apply(cardUpdateParam, card)
+                                        :
+                                        error(new BlueException(DATA_NOT_BELONG_TO_YOU))
+                        )
                         .flatMap(cardRepository::save)
                         .flatMap(c -> just(CARD_2_CARD_INFO.apply(c))));
     }
@@ -322,13 +322,13 @@ public class CardServiceImpl implements CardService {
                 cardRepository.findById(id)
                         .publishOn(scheduler)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
-                        .flatMap(card -> {
-                            if (!card.getMemberId().equals(memberId))
-                                return error(new BlueException(DATA_NOT_BELONG_TO_YOU));
-
-                            return cardRepository.delete(card)
-                                    .then(just(card));
-                        })
+                        .flatMap(card ->
+                                card.getMemberId().equals(memberId) ?
+                                        cardRepository.delete(card)
+                                                .then(just(card))
+                                        :
+                                        error(new BlueException(DATA_NOT_BELONG_TO_YOU))
+                        )
                         .flatMap(c -> just(CARD_2_CARD_INFO.apply(c))));
     }
 
@@ -396,12 +396,12 @@ public class CardServiceImpl implements CardService {
         return just(id)
                 .flatMap(this::getCardMono)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
-                .flatMap(c -> {
-                    if (isInvalidStatus(c.getStatus()))
-                        return error(() -> new BlueException(DATA_NOT_EXIST));
-                    LOGGER.info("c = {}", c);
-                    return just(c);
-                }).flatMap(c ->
+                .flatMap(c ->
+                        isValidStatus(c.getStatus()) ?
+                                just(c)
+                                :
+                                error(() -> new BlueException(DATA_NOT_EXIST))
+                ).flatMap(c ->
                         just(CARD_2_CARD_INFO.apply(c))
                 );
     }

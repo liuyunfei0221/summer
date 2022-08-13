@@ -162,9 +162,9 @@ public class ShineServiceImpl implements ShineService {
         ofNullable(p.getContact())
                 .filter(BlueChecker::isNotBlank).ifPresent(t::setContact);
         ofNullable(p.getContactDetail())
-                .filter(BlueChecker::isNotBlank).ifPresent(t::setAddressDetail);
+                .filter(BlueChecker::isNotBlank).ifPresent(t::setContactDetail);
         ofNullable(p.getAddressDetail())
-                .filter(BlueChecker::isNotBlank).ifPresent(t::setTitle);
+                .filter(BlueChecker::isNotBlank).ifPresent(t::setAddressDetail);
         ofNullable(p.getExtra())
                 .filter(BlueChecker::isNotBlank).ifPresent(t::setExtra);
         ofNullable(p.getOrder())
