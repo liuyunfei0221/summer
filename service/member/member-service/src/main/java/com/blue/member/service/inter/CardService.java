@@ -78,7 +78,7 @@ public interface CardService {
      * @param id
      * @return
      */
-    Mono<CardInfo> getCardInfoMonoByPrimaryKeyWithAssert(Long id);
+    Mono<CardInfo> getCardInfoMonoWithAssert(Long id);
 
     /**
      * select card info by ids

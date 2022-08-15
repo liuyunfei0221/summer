@@ -33,7 +33,7 @@ public class StateManagerRoute {
                 .POST("/state", accept(APPLICATION_JSON), stateManagerHandler::insert)
                 .PUT("/state", accept(APPLICATION_JSON), stateManagerHandler::update)
                 .DELETE("/state/{" + ID.key + "}", stateManagerHandler::delete)
-                .POST("/states", accept(APPLICATION_JSON), stateManagerHandler::select)
+                .POST("/states", accept(APPLICATION_JSON), stateManagerHandler::page)
                 .build();
 
         return nest(pathPredicate, routerFunction);

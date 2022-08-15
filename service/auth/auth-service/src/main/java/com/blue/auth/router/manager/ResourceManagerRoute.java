@@ -33,7 +33,7 @@ public class ResourceManagerRoute {
                 .POST("/resource", accept(APPLICATION_JSON), resourceManagerHandler::insert)
                 .PUT("/resource", accept(APPLICATION_JSON), resourceManagerHandler::update)
                 .DELETE("/resource/{" + ID.key + "}", resourceManagerHandler::delete)
-                .POST("/resources", accept(APPLICATION_JSON), resourceManagerHandler::select)
+                .POST("/resources", accept(APPLICATION_JSON), resourceManagerHandler::page)
                 .POST("/resource/auth", accept(APPLICATION_JSON), resourceManagerHandler::selectAuthority)
                 .build();
 

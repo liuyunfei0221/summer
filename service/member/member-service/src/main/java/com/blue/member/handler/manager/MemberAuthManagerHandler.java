@@ -37,7 +37,7 @@ public class MemberAuthManagerHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> selectAuthority(ServerRequest serverRequest) {
+    public Mono<ServerResponse> page(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(PAGE_MODEL_FOR_MEMBER_BASIC_CONDITION_TYPE)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                 .flatMap(memberAuthService::selectMemberAuthorityPageMonoByPageAndCondition)

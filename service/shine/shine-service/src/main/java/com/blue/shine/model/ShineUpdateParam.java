@@ -52,7 +52,7 @@ public final class ShineUpdateParam extends ShineInsertParam {
                 ", cityId=" + cityId +
                 ", addressDetail='" + addressDetail + '\'' +
                 ", extra='" + extra + '\'' +
-                ", order=" + order +
+                ", priority=" + priority +
                 '}';
     }
 

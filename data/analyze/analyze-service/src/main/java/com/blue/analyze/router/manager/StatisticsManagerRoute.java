@@ -1,8 +1,7 @@
-package com.blue.analyze.router.api;
+package com.blue.analyze.router.manager;
 
-import com.blue.analyze.handler.api.StatisticsApiHandler;
+import com.blue.analyze.handler.manager.StatisticsManagerHandler;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RequestPredicate;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -14,23 +13,22 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
- * statistics api routers
+ * statistics manager router
  *
  * @author liuyunfei
  */
-@Configuration
-public class StatisticsApiRoute {
+public class StatisticsManagerRoute {
 
     @Bean
     @SuppressWarnings("NullableProblems")
-    RouterFunction<ServerResponse> dataRouter(StatisticsApiHandler statisticsApiHandler) {
+    RouterFunction<ServerResponse> statisticsManagerRouter(StatisticsManagerHandler statisticsManagerHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-analyze/statistics");
+        RequestPredicate pathPredicate = path("/blue-analyze/manager/statistics");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("active/simple", accept(APPLICATION_JSON), statisticsApiHandler::statisticsActiveSimple)
-                .POST("active/merge", accept(APPLICATION_JSON), statisticsApiHandler::statisticsActiveMerge)
-                .POST("active/summary", statisticsApiHandler::statisticsActiveSummary)
+                .POST("active/simple", accept(APPLICATION_JSON), statisticsManagerHandler::statisticsActiveSimple)
+                .POST("active/merge", accept(APPLICATION_JSON), statisticsManagerHandler::statisticsActiveMerge)
+                .POST("active/summary", statisticsManagerHandler::statisticsActiveSummary)
                 .build();
 
         return nest(pathPredicate, routerFunction);

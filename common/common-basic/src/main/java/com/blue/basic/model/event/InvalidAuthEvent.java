@@ -37,6 +37,9 @@ public final class InvalidAuthEvent implements Serializable {
     }
 
     public void setMemberId(Long memberId) {
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(BAD_REQUEST);
+
         this.memberId = memberId;
     }
 

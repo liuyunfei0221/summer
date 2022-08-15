@@ -29,11 +29,11 @@ public final class SystemAuthorityInfosRefreshProducer implements BlueLifecycle 
 
     private final ExecutorService executorService;
 
-    private final BluePulsarProducer<EmptyEvent> authorityInfosRefreshProducer;
+    private final BluePulsarProducer<EmptyEvent> pulsarProducer;
 
     public SystemAuthorityInfosRefreshProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
         this.executorService = executorService;
-        this.authorityInfosRefreshProducer = generateProducer(blueProducerConfig.getByKey(SYSTEM_AUTHORITY_INFOS_REFRESH.name), EmptyEvent.class);
+        this.pulsarProducer = generateProducer(blueProducerConfig.getByKey(SYSTEM_AUTHORITY_INFOS_REFRESH.name), EmptyEvent.class);
     }
 
     @Override
@@ -48,14 +48,14 @@ public final class SystemAuthorityInfosRefreshProducer implements BlueLifecycle 
 
     @Override
     public void start() {
-        LOGGER.warn("invalidLocalAuthProducer start...");
+        LOGGER.warn("pulsarProducer start...");
     }
 
     @Override
     public void stop() {
-        this.authorityInfosRefreshProducer.flush();
-        this.authorityInfosRefreshProducer.close();
-        LOGGER.warn("authorityInfosRefreshProducer shutdown...");
+        this.pulsarProducer.flush();
+        this.pulsarProducer.close();
+        LOGGER.warn("pulsarProducer shutdown...");
     }
 
     /**
@@ -64,10 +64,10 @@ public final class SystemAuthorityInfosRefreshProducer implements BlueLifecycle 
      * @param emptyEvent
      */
     public void send(EmptyEvent emptyEvent) {
-        CompletableFuture<MessageId> future = authorityInfosRefreshProducer.sendAsync(emptyEvent);
-        LOGGER.info("authorityInfosRefreshProducer send, nonValueParam = {}", emptyEvent);
+        CompletableFuture<MessageId> future = pulsarProducer.sendAsync(emptyEvent);
+        LOGGER.info("pulsarProducer send, nonValueParam = {}", emptyEvent);
         Consumer<MessageId> c = messageId ->
-                LOGGER.info("authorityInfosRefreshProducer send success, nonValueParam = {}, messageId = {}", emptyEvent, messageId);
+                LOGGER.info("pulsarProducer send success, nonValueParam = {}, messageId = {}", emptyEvent, messageId);
         future.thenAcceptAsync(c, executorService);
     }
 

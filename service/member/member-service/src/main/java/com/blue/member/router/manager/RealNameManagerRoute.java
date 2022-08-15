@@ -28,7 +28,7 @@ public class RealNameManagerRoute {
         RequestPredicate pathPredicate = path("/blue-member/manager");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/realnames", accept(APPLICATION_JSON), realNameManagerHandler::select)
+                .POST("/realnames", accept(APPLICATION_JSON), realNameManagerHandler::page)
                 .build();
 
         return nest(pathPredicate, routerFunction);

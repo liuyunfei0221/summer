@@ -30,11 +30,11 @@ public final class IllegalMarkProducer implements BlueLifecycle {
 
     private final ExecutorService executorService;
 
-    private final BluePulsarProducer<IllegalMarkEvent> illegalMarkProducer;
+    private final BluePulsarProducer<IllegalMarkEvent> pulsarProducer;
 
     public IllegalMarkProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
         this.executorService = executorService;
-        this.illegalMarkProducer = generateProducer(blueProducerConfig.getByKey(ILLEGAL_MARK.name), IllegalMarkEvent.class);
+        this.pulsarProducer = generateProducer(blueProducerConfig.getByKey(ILLEGAL_MARK.name), IllegalMarkEvent.class);
     }
 
     @Override
@@ -49,14 +49,14 @@ public final class IllegalMarkProducer implements BlueLifecycle {
 
     @Override
     public void start() {
-        LOGGER.warn("illegalMarkProducer start...");
+        LOGGER.warn("pulsarProducer start...");
     }
 
     @Override
     public void stop() {
-        this.illegalMarkProducer.flush();
-        this.illegalMarkProducer.close();
-        LOGGER.warn("illegalMarkProducer shutdown...");
+        this.pulsarProducer.flush();
+        this.pulsarProducer.close();
+        LOGGER.warn("pulsarProducer shutdown...");
     }
 
     /**
@@ -65,11 +65,11 @@ public final class IllegalMarkProducer implements BlueLifecycle {
      * @param illegalMarkEvent
      */
     public void send(IllegalMarkEvent illegalMarkEvent) {
-        CompletableFuture<MessageId> future = illegalMarkProducer.sendAsync(illegalMarkEvent);
+        CompletableFuture<MessageId> future = pulsarProducer.sendAsync(illegalMarkEvent);
 
-        LOGGER.info("illegalMarkProducer send, illegalMarkEvent = {}", illegalMarkEvent);
+        LOGGER.info("pulsarProducer send, illegalMarkEvent = {}", illegalMarkEvent);
         Consumer<MessageId> c = messageId ->
-                LOGGER.info("illegalMarkProducer send success, illegalMarkEvent = {}, messageId = {}", illegalMarkEvent, messageId);
+                LOGGER.info("pulsarProducer send success, illegalMarkEvent = {}, messageId = {}", illegalMarkEvent, messageId);
 
         future.thenAcceptAsync(c, executorService);
     }

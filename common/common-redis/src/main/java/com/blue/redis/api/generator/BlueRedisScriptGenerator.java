@@ -22,13 +22,13 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public final class BlueRedisScriptGenerator {
 
     /**
-     * generate script by file
+     * generate script by location
      *
      * @param location
      * @param clz
      * @return
      */
-    public static <T> RedisScript<T> generateScriptByFile(String location, Class<T> clz) {
+    public static <T> RedisScript<T> generateScriptByLocation(String location, Class<T> clz) {
         if (isBlank(location) || isNull(clz))
             throw new RuntimeException("location can't be blank, clz can't be null");
 

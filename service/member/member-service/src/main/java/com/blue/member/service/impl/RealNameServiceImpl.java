@@ -39,6 +39,7 @@ import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SEL
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.Status.INVALID;
 import static com.blue.basic.constant.common.Status.VALID;
+import static com.blue.member.converter.MemberModelConverters.REAL_NAMES_2_REAL_NAMES_INFO;
 import static com.blue.member.converter.MemberModelConverters.REAL_NAME_2_REAL_NAME_INFO;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -248,12 +249,12 @@ public class RealNameServiceImpl implements RealNameService {
             throw new BlueException(INVALID_IDENTITY);
 
         return getRealNameMono(id)
-                .flatMap(rn -> {
-                    if (isInvalidStatus(rn.getStatus()))
-                        return error(() -> new BlueException(DATA_HAS_BEEN_FROZEN));
-                    LOGGER.info("rn = {}", rn);
-                    return just(rn);
-                }).flatMap(rn ->
+                .flatMap(rn ->
+                        isValidStatus(rn.getStatus()) ?
+                                just(rn)
+                                :
+                                error(() -> new BlueException(DATA_HAS_BEEN_FROZEN))
+                ).flatMap(rn ->
                         just(REAL_NAME_2_REAL_NAME_INFO.apply(rn))
                 );
     }
@@ -298,12 +299,12 @@ public class RealNameServiceImpl implements RealNameService {
             throw new BlueException(INVALID_IDENTITY);
 
         return getRealNameMonoByMemberId(memberId)
-                .flatMap(rn -> {
-                    if (isInvalidStatus(rn.getStatus()))
-                        return error(() -> new BlueException(DATA_HAS_BEEN_FROZEN));
-                    LOGGER.info("rn = {}", rn);
-                    return just(rn);
-                }).flatMap(rn ->
+                .flatMap(rn ->
+                        isValidStatus(rn.getStatus()) ?
+                                just(rn)
+                                :
+                                error(() -> new BlueException(DATA_HAS_BEEN_FROZEN))
+                ).flatMap(rn ->
                         just(REAL_NAME_2_REAL_NAME_INFO.apply(rn))
                 );
     }
@@ -484,17 +485,9 @@ public class RealNameServiceImpl implements RealNameService {
         RealNameCondition realNameCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
         return zip(selectRealNameMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), realNameCondition), countRealNameMonoByCondition(realNameCondition))
-                .flatMap(tuple2 -> {
-                    List<RealName> realNames = tuple2.getT1();
-                    Mono<List<RealNameInfo>> realNameInfosMono = realNames.size() > 0 ?
-                            just(realNames.stream().map(REAL_NAME_2_REAL_NAME_INFO).collect(toList()))
-                            :
-                            just(emptyList());
-
-                    return realNameInfosMono
-                            .flatMap(realNameInfos ->
-                                    just(new PageModelResponse<>(realNameInfos, tuple2.getT2())));
-                });
+                .flatMap(tuple2 ->
+                        just(new PageModelResponse<>(REAL_NAMES_2_REAL_NAMES_INFO.apply(tuple2.getT1()), tuple2.getT2()))
+                );
     }
 
 }

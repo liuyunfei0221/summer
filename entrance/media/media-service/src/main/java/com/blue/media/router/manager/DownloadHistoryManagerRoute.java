@@ -28,7 +28,7 @@ public class DownloadHistoryManagerRoute {
         RequestPredicate pathPredicate = path("/blue-media/manager");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/downloadHistories", accept(APPLICATION_JSON), downloadHistoryManagerHandler::select)
+                .POST("/downloadHistories", accept(APPLICATION_JSON), downloadHistoryManagerHandler::page)
                 .build();
 
         return nest(pathPredicate, routerFunction);

@@ -34,7 +34,7 @@ public class StyleManagerRoute {
                 .PUT("/style", accept(APPLICATION_JSON), styleManagerHandler::update)
                 .DELETE("/style/{" + ID.key + "}", styleManagerHandler::delete)
                 .PUT("/style/active", styleManagerHandler::updateActive)
-                .POST("/styles", accept(APPLICATION_JSON), styleManagerHandler::select)
+                .POST("/styles", accept(APPLICATION_JSON), styleManagerHandler::page)
                 .build();
 
         return nest(pathPredicate, routerFunction);

@@ -1,15 +1,19 @@
 package com.blue.shine.service.impl;
 
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch.core.BulkResponse;
-import co.elastic.clients.elasticsearch.core.bulk.BulkOperation;
+import co.elastic.clients.elasticsearch.ElasticsearchAsyncClient;
+import co.elastic.clients.elasticsearch.core.*;
 import com.blue.base.api.model.CityRegion;
 import com.blue.basic.common.base.BlueChecker;
 import com.blue.basic.model.common.*;
+import com.blue.basic.model.event.IdentityEvent;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.shine.api.model.ShineInfo;
+import com.blue.shine.config.deploy.DefaultPriorityDeploy;
 import com.blue.shine.constant.ShineSortAttribute;
+import com.blue.shine.event.producer.ShineDeleteProducer;
+import com.blue.shine.event.producer.ShineInsertProducer;
+import com.blue.shine.event.producer.ShineUpdateProducer;
 import com.blue.shine.model.ShineCondition;
 import com.blue.shine.model.ShineInsertParam;
 import com.blue.shine.model.ShineUpdateParam;
@@ -21,34 +25,40 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
-import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static com.blue.basic.common.base.BlueChecker.isInvalidIdentity;
-import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
+import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
+import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
+import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.mongo.common.SortConverter.convert;
 import static com.blue.mongo.constant.LikeElement.PREFIX;
 import static com.blue.mongo.constant.LikeElement.SUFFIX;
 import static com.blue.shine.constant.ColumnName.*;
+import static com.blue.shine.converter.ShineModelConverters.SHINES_2_SHINES_INFO;
+import static com.blue.shine.converter.ShineModelConverters.SHINE_2_SHINE_INFO;
+import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.data.mongodb.core.query.Criteria.byExample;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static reactor.core.publisher.Flux.fromIterable;
 import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
@@ -57,7 +67,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc"})
+@SuppressWarnings({"JavaDoc", "SpringJavaInjectionPointsAutowiringInspection", "ConstantConditions"})
 @Service
 public class ShineServiceImpl implements ShineService {
 
@@ -69,23 +79,37 @@ public class ShineServiceImpl implements ShineService {
 
     private final Scheduler scheduler;
 
-    private final ElasticsearchClient elasticsearchClient;
+    private final ElasticsearchAsyncClient elasticsearchAsyncClient;
 
     private RpcCityServiceConsumer rpcCityServiceConsumer;
 
+    private final ShineInsertProducer shineInsertProducer;
+
+    private final ShineUpdateProducer shineUpdateProducer;
+
+    private final ShineDeleteProducer shineDeleteProducer;
+
     private final ShineRepository shineRepository;
 
-    public ShineServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ReactiveMongoTemplate reactiveMongoTemplate, Scheduler scheduler,
-                            ElasticsearchClient elasticsearchClient, RpcCityServiceConsumer rpcCityServiceConsumer, ShineRepository shineRepository) {
+    public ShineServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ReactiveMongoTemplate reactiveMongoTemplate, Scheduler scheduler, ElasticsearchAsyncClient elasticsearchAsyncClient,
+                            RpcCityServiceConsumer rpcCityServiceConsumer, ShineRepository shineRepository, ShineInsertProducer shineInsertProducer, ShineUpdateProducer shineUpdateProducer,
+                            ShineDeleteProducer shineDeleteProducer, DefaultPriorityDeploy defaultPriorityDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.reactiveMongoTemplate = reactiveMongoTemplate;
         this.scheduler = scheduler;
-        this.elasticsearchClient = elasticsearchClient;
+        this.elasticsearchAsyncClient = elasticsearchAsyncClient;
         this.rpcCityServiceConsumer = rpcCityServiceConsumer;
         this.shineRepository = shineRepository;
+        this.shineInsertProducer = shineInsertProducer;
+        this.shineUpdateProducer = shineUpdateProducer;
+        this.shineDeleteProducer = shineDeleteProducer;
+
+        this.DEFAULT_PRIORITY = defaultPriorityDeploy.getPriority();
     }
 
-    private final int DEFAULT_ORDER = 0;
+    private static final String INDEX_NAME = "shine";
+
+    private int DEFAULT_PRIORITY;
 
     private final BiConsumer<Shine, Long> SHINE_CITY_PACKAGER = (shine, cid) -> {
         if (isNull(shine) || isInvalidIdentity(cid))
@@ -134,7 +158,7 @@ public class ShineServiceImpl implements ShineService {
         shine.setContactDetail(p.getContactDetail());
         shine.setAddressDetail(p.getAddressDetail());
         shine.setExtra(p.getExtra());
-        shine.setOrder(ofNullable(p.getOrder()).orElse(DEFAULT_ORDER));
+        shine.setPriority(ofNullable(p.getPriority()).orElse(DEFAULT_PRIORITY));
 
         Long stamp = TIME_STAMP_GETTER.get();
         shine.setCreateTime(stamp);
@@ -167,8 +191,8 @@ public class ShineServiceImpl implements ShineService {
                 .filter(BlueChecker::isNotBlank).ifPresent(t::setAddressDetail);
         ofNullable(p.getExtra())
                 .filter(BlueChecker::isNotBlank).ifPresent(t::setExtra);
-        ofNullable(p.getOrder())
-                .ifPresent(t::setOrder);
+        ofNullable(p.getPriority())
+                .ifPresent(t::setPriority);
 
         t.setUpdateTime(TIME_STAMP_GETTER.get());
 
@@ -208,7 +232,7 @@ public class ShineServiceImpl implements ShineService {
         ofNullable(c.getContactDetailLike()).filter(BlueChecker::isNotBlank).ifPresent(addressDetailLike ->
                 query.addCriteria(where(ADDRESS_DETAIL.name).regex(compile(PREFIX.element + addressDetailLike + SUFFIX.element, CASE_INSENSITIVE))));
         ofNullable(c.getExtra()).filter(BlueChecker::isNotBlank).ifPresent(probe::setExtra);
-        ofNullable(c.getOrder()).ifPresent(probe::setOrder);
+        ofNullable(c.getPriority()).ifPresent(probe::setPriority);
 
         ofNullable(c.getCreateTimeBegin()).ifPresent(createTimeBegin ->
                 query.addCriteria(where(CREATE_TIME.name).gte(createTimeBegin)));
@@ -230,44 +254,6 @@ public class ShineServiceImpl implements ShineService {
         return query;
     };
 
-
-    @PostConstruct
-    private void init() {
-
-        Long stamp = TIME_STAMP_GETTER.get();
-
-        List<Shine> elements = new LinkedList<>();
-        List<BulkOperation> bulkOperations = new LinkedList<>();
-
-        for (int i = 0; i <= 1000; i++) {
-            long id = blueIdentityProcessor.generate(Shine.class);
-//            Shine shine = new Shine(id, "title-" + id, "content-" + id, 1, stamp, stamp, 1L, 1L);
-            Shine shine = new Shine();
-
-            elements.add(shine);
-            bulkOperations.add(new BulkOperation.Builder().create(d -> d.document(shine)).build());
-
-//            try {
-//                IndexResponse indexResponse = elasticsearchClient.index(idx ->
-//                        idx.index("shine")
-//                                .id(String.valueOf(id))
-//                                .document(shine));
-//                System.err.println(indexResponse);
-//            } catch (Exception e) {
-//                LOGGER.error("index() failed, e = {0}", e);
-//            }
-        }
-
-        try {
-            BulkResponse bulkResponse = elasticsearchClient.bulk(e -> e.index("shine").operations(bulkOperations));
-            System.err.println(bulkResponse);
-        } catch (IOException e) {
-            LOGGER.error("bulk() failed, e = {0}", e);
-        }
-
-        shineRepository.saveAll(elements).subscribe(System.err::println);
-    }
-
     /**
      * insert shine
      *
@@ -276,7 +262,56 @@ public class ShineServiceImpl implements ShineService {
      * @return
      */
     public Mono<ShineInfo> insertShine(ShineInsertParam shineInsertParam, Long memberId) {
-        return null;
+        LOGGER.info("Mono<ShineInfo> insertShine(ShineInsertParam shineInsertParam, Long memberId), shineInsertParam = {}, memberId = {}",
+                shineInsertParam, memberId);
+        if (shineInsertParam == null)
+            throw new BlueException(EMPTY_PARAM);
+        shineInsertParam.asserts();
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(UNAUTHORIZED);
+
+        return SHINE_INSERT_PARAM_2_SHINE.apply(shineInsertParam, memberId)
+                .flatMap(shineRepository::insert)
+                .publishOn(scheduler)
+                .flatMap(shine -> {
+                    try {
+                        shineInsertProducer.send(shine);
+                    } catch (Exception e) {
+                        LOGGER.error("shineInsertProducer.send(shine) failed, shine = {}, e = {}", shine, e);
+                    }
+                    return just(shine);
+                })
+                .flatMap(s -> just(SHINE_2_SHINE_INFO.apply(s)));
+    }
+
+    /**
+     * insert shine event
+     *
+     * @param shine
+     * @return
+     */
+    @Override
+    public Mono<Boolean> insertShineEvent(Shine shine) {
+        LOGGER.info("Mono<Boolean> insertShineEvent(Shine shine), shine = {}", shine);
+        if (shine == null)
+            throw new BlueException(EMPTY_PARAM);
+
+        CompletableFuture<IndexResponse> responseFuture = elasticsearchAsyncClient.index(request ->
+                request.index(INDEX_NAME)
+                        .id(String.valueOf(shine.getId()))
+                        .document(shine));
+
+        return fromFuture(responseFuture)
+                .flatMap(indexResponse -> {
+                    LOGGER.info("indexResponse = {}", indexResponse);
+                    return just(true);
+                })
+                .onErrorResume(throwable -> {
+                    LOGGER.info("Mono<Boolean> insertShineEvent(Shine shine) failed, shine = {}, throwable = {}", shine, throwable);
+                    shineInsertProducer.send(shine);
+
+                    return just(false);
+                });
     }
 
     /**
@@ -287,18 +322,122 @@ public class ShineServiceImpl implements ShineService {
      * @return
      */
     public Mono<ShineInfo> updateShine(ShineUpdateParam shineUpdateParam, Long memberId) {
-        return null;
+        LOGGER.info("Mono<ShineInfo> updateShine(ShineUpdateParam shineUpdateParam, Long memberId), shineUpdateParam = {}, memberId = {}", shineUpdateParam, memberId);
+        if (isNull(shineUpdateParam))
+            throw new BlueException(EMPTY_PARAM);
+        shineUpdateParam.asserts();
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(UNAUTHORIZED);
+
+        return shineRepository.findById(shineUpdateParam.getId())
+                .publishOn(scheduler)
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
+                .flatMap(shine ->
+                        SHINE_UPDATE_PARAM_2_SHINE.apply(shineUpdateParam, shine)
+                )
+                .flatMap(shineRepository::save)
+                .publishOn(scheduler)
+                .flatMap(shine -> {
+                    try {
+                        shineUpdateProducer.send(shine);
+                    } catch (Exception e) {
+                        LOGGER.error("shineUpdateProducer.send(shine) failed, shine = {}, e = {}", shine, e);
+                    }
+                    return just(shine);
+                })
+                .flatMap(s -> just(SHINE_2_SHINE_INFO.apply(s)));
+    }
+
+    /**
+     * update shine event
+     *
+     * @param shine
+     * @return
+     */
+    @Override
+    public Mono<Boolean> updateShineEvent(Shine shine) {
+        LOGGER.info("Mono<Boolean> updateShineEvent(Shine shine), shine = {}", shine);
+        if (shine == null)
+            throw new BlueException(EMPTY_PARAM);
+
+        CompletableFuture<UpdateResponse<Shine>> responseFuture = elasticsearchAsyncClient.update(request ->
+                request.index(INDEX_NAME)
+                        .id(String.valueOf(shine.getId()))
+                        .doc(shine), Shine.class);
+
+        return fromFuture(responseFuture)
+                .flatMap(updateResponse -> {
+                    LOGGER.info("updateResponse = {}", updateResponse);
+                    return just(true);
+                })
+                .onErrorResume(throwable -> {
+                    LOGGER.info("Mono<Boolean> updateShineEvent(Shine shine) failed, shine = {}, throwable = {}", shine, throwable);
+                    shineUpdateProducer.send(shine);
+
+                    return just(false);
+                });
     }
 
     /**
      * delete shine
      *
      * @param id
-     * @param memberId
      * @return
      */
-    public Mono<ShineInfo> deleteShine(Long id, Long memberId) {
-        return null;
+    @Override
+    public Mono<ShineInfo> deleteShine(Long id) {
+        LOGGER.info("Mono<ShineInfo> deleteShine(Long id), id = {}", id);
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return shineRepository.findById(id)
+                .publishOn(scheduler)
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
+                .flatMap(s ->
+                        shineRepository.delete(s).publishOn(scheduler).then(just(s))
+                )
+                .flatMap(shine -> {
+                    try {
+                        shineDeleteProducer.send(new IdentityEvent(id));
+                    } catch (Exception e) {
+                        LOGGER.error("shineDeleteProducer.send(identityEvent) failed, id = {}, e = {}", id, e);
+                    }
+                    return just(shine);
+                })
+                .flatMap(a -> just(SHINE_2_SHINE_INFO.apply(a)));
+    }
+
+    /**
+     * delete shine event
+     *
+     * @param identityEvent
+     * @return
+     */
+    @Override
+    public Mono<Boolean> deleteShineEvent(IdentityEvent identityEvent) {
+        LOGGER.info("Mono<Boolean> deleteShineEvent(IdentityEvent identityEvent), identityEvent = {}", identityEvent);
+        if (isNull(identityEvent))
+            throw new BlueException(EMPTY_PARAM);
+
+        Long id = identityEvent.getId();
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
+
+        CompletableFuture<DeleteResponse> responseFuture = elasticsearchAsyncClient.delete(request ->
+                request.index(INDEX_NAME)
+                        .id(String.valueOf(id)));
+
+        return fromFuture(responseFuture)
+                .flatMap(deleteResponse -> {
+                    LOGGER.info("deleteResponse = {}", deleteResponse);
+                    return just(true);
+                })
+                .onErrorResume(throwable -> {
+                    LOGGER.info("Mono<Boolean> deleteShineEvent(IdentityEvent identityEvent) failed, identityEvent = {}, throwable = {}", identityEvent, throwable);
+                    shineDeleteProducer.send(identityEvent);
+
+                    return just(false);
+                });
     }
 
     /**
@@ -308,7 +447,20 @@ public class ShineServiceImpl implements ShineService {
      * @return
      */
     public Mono<Shine> getShineMono(Long id) {
-        return null;
+        LOGGER.info("Mono<Shine> getShineMono(Long id), id = {}", id);
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
+
+        CompletableFuture<GetResponse<Shine>> responseFuture = elasticsearchAsyncClient.get(request ->
+                request.index(INDEX_NAME).id(String.valueOf(id)), Shine.class);
+
+        return fromFuture(responseFuture)
+                .flatMap(getResponse ->
+                        getResponse.found() ?
+                                just(getResponse.source())
+                                :
+                                shineRepository.findById(id).publishOn(scheduler)
+                );
     }
 
     /**
@@ -317,8 +469,17 @@ public class ShineServiceImpl implements ShineService {
      * @param id
      * @return
      */
-    public Mono<ShineInfo> getShineInfoMonoByPrimaryKeyWithAssert(Long id) {
-        return null;
+    public Mono<ShineInfo> getShineInfoMonoWithAssert(Long id) {
+        LOGGER.info("Mono<ShineInfo> getShineInfoMonoWithAssert(Long id), id = {}", id);
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return just(id)
+                .flatMap(this::getShineMono)
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
+                .flatMap(s ->
+                        just(SHINE_2_SHINE_INFO.apply(s))
+                );
     }
 
     /**
@@ -328,7 +489,29 @@ public class ShineServiceImpl implements ShineService {
      * @return
      */
     public Mono<List<ShineInfo>> selectShineInfoMonoByIds(List<Long> ids) {
-        return null;
+        LOGGER.info("Mono<List<AddressInfo>> selectAddressInfoMonoByIds(List<Long> ids), ids = {}", ids);
+        if (isEmpty(ids))
+            return just(emptyList());
+        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+            return error(() -> new BlueException(PAYLOAD_TOO_LARGE));
+        
+        return fromFuture(elasticsearchAsyncClient.search(request ->
+                request.index(INDEX_NAME)
+                        .query(query ->
+                                query.ids(q ->
+                                        q.values(ids.stream().map(String::valueOf).collect(toList())))
+                        ), Shine.class))
+                .map(searchResponse ->
+                        searchResponse.hits().hits().stream().map(hit ->
+                                        SHINE_2_SHINE_INFO.apply(hit.source()))
+                                .collect(toList()))
+                .filter(BlueChecker::isNotEmpty)
+                .switchIfEmpty(defer(() -> fromIterable(allotByMax(ids, (int) DB_SELECT.value, false))
+                        .map(shardIds -> shineRepository.findAllById(shardIds)
+                                .publishOn(scheduler)
+                                .map(SHINE_2_SHINE_INFO))
+                        .reduce(Flux::concat)
+                        .flatMap(Flux::collectList)));
     }
 
     /**
@@ -340,7 +523,15 @@ public class ShineServiceImpl implements ShineService {
      * @return
      */
     public Mono<List<Shine>> selectShineMonoByLimitAndQuery(Long limit, Long rows, Query query) {
-        return null;
+        LOGGER.info("Mono<List<Shine>> selectShineMonoByLimitAndQuery(Long limit, Long rows, Query query), " +
+                "limit = {}, rows = {}, query = {}", limit, rows, query);
+        if (isInvalidLimit(limit) || isInvalidRows(rows))
+            throw new BlueException(INVALID_PARAM);
+
+        Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
+        listQuery.skip(limit).limit(rows.intValue());
+
+        return reactiveMongoTemplate.find(listQuery, Shine.class).publishOn(scheduler).collectList();
     }
 
     /**
@@ -350,7 +541,8 @@ public class ShineServiceImpl implements ShineService {
      * @return
      */
     public Mono<Long> countShineMonoByQuery(Query query) {
-        return null;
+        LOGGER.info("Mono<Long> countAddressMonoByQuery(Query query), query = {}", query);
+        return reactiveMongoTemplate.count(query, Shine.class).publishOn(scheduler);
     }
 
     /**
@@ -360,7 +552,18 @@ public class ShineServiceImpl implements ShineService {
      * @return
      */
     public Mono<PageModelResponse<ShineInfo>> selectShineInfoPageMonoByPageAndCondition(PageModelRequest<ShineCondition> pageModelRequest) {
-        return null;
+        LOGGER.info("Mono<PageModelResponse<AddressInfo>> selectAddressInfoPageMonoByPageAndCondition(PageModelRequest<AddressCondition> pageModelRequest), " +
+                "pageModelRequest = {}", pageModelRequest);
+        if (isNull(pageModelRequest))
+            throw new BlueException(EMPTY_PARAM);
+
+        Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
+
+        return zip(selectShineMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),
+                countShineMonoByQuery(query)
+        ).flatMap(tuple2 ->
+                just(new PageModelResponse<>(SHINES_2_SHINES_INFO.apply(tuple2.getT1()), tuple2.getT2()))
+        );
     }
 
     /**

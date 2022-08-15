@@ -37,13 +37,13 @@ public class AddressManagerHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> select(ServerRequest serverRequest) {
+    public Mono<ServerResponse> page(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(PAGE_MODEL_FOR_ADDRESS_CONDITION_TYPE)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                 .flatMap(addressService::selectAddressInfoPageMonoByPageAndCondition)
-                .flatMap(pma ->
+                .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(pma, serverRequest), BlueResponse.class));
+                                .body(success(pmr, serverRequest), BlueResponse.class));
     }
 
 }

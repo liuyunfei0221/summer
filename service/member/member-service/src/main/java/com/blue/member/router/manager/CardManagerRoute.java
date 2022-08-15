@@ -28,7 +28,7 @@ public class CardManagerRoute {
         RequestPredicate pathPredicate = path("/blue-member/manager");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/cards", accept(APPLICATION_JSON), cardManagerHandler::select)
+                .POST("/cards", accept(APPLICATION_JSON), cardManagerHandler::page)
                 .build();
 
         return nest(pathPredicate, routerFunction);

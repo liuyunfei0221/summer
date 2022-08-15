@@ -28,7 +28,7 @@ public class AddressManagerRoute {
         RequestPredicate pathPredicate = path("/blue-member/manager");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/addresses", accept(APPLICATION_JSON), addressManagerHandler::select)
+                .POST("/addresses", accept(APPLICATION_JSON), addressManagerHandler::page)
                 .build();
 
         return nest(pathPredicate, routerFunction);

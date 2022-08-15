@@ -38,7 +38,7 @@ public final class ShineCondition extends SortCondition implements Serializable 
 
     private String extra;
 
-    private Integer order;
+    private Integer priority;
 
     private Long createTimeBegin;
 
@@ -61,7 +61,7 @@ public final class ShineCondition extends SortCondition implements Serializable 
     }
 
     public ShineCondition(Long id, String titleLike, String contentLike, String detailLike, String contactLike, String contactDetailLike, Long countryId, Long stateId, Long cityId, String addressDetailLike,
-                          String extra, Integer order, Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, Long creator, Long updater, String sortAttribute, String sortType) {
+                          String extra, Integer priority, Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, Long creator, Long updater, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.id = id;
         this.titleLike = titleLike;
@@ -74,7 +74,7 @@ public final class ShineCondition extends SortCondition implements Serializable 
         this.cityId = cityId;
         this.addressDetailLike = addressDetailLike;
         this.extra = extra;
-        this.order = order;
+        this.priority = priority;
         this.createTimeBegin = createTimeBegin;
         this.createTimeEnd = createTimeEnd;
         this.updateTimeBegin = updateTimeBegin;
@@ -171,12 +171,12 @@ public final class ShineCondition extends SortCondition implements Serializable 
         this.extra = extra;
     }
 
-    public Integer getOrder() {
-        return order;
+    public Integer getPriority() {
+        return priority;
     }
 
-    public void setOrder(Integer order) {
-        this.order = order;
+    public void setPriority(Integer priority) {
+        this.priority = priority;
     }
 
     public Long getCreateTimeBegin() {
@@ -241,7 +241,7 @@ public final class ShineCondition extends SortCondition implements Serializable 
                 ", cityId=" + cityId +
                 ", addressDetailLike='" + addressDetailLike + '\'' +
                 ", extra='" + extra + '\'' +
-                ", order=" + order +
+                ", priority=" + priority +
                 ", createTimeBegin=" + createTimeBegin +
                 ", createTimeEnd=" + createTimeEnd +
                 ", updateTimeBegin=" + updateTimeBegin +

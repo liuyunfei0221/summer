@@ -43,7 +43,7 @@ public class Shine implements Serializable {
 
     private String extra;
 
-    private Integer order;
+    private Integer priority;
 
     private Long createTime;
 
@@ -168,12 +168,12 @@ public class Shine implements Serializable {
         this.extra = extra;
     }
 
-    public Integer getOrder() {
-        return order;
+    public Integer getPriority() {
+        return priority;
     }
 
-    public void setOrder(Integer order) {
-        this.order = order;
+    public void setPriority(Integer priority) {
+        this.priority = priority;
     }
 
     public Long getCreateTime() {
@@ -225,7 +225,7 @@ public class Shine implements Serializable {
                 ", city='" + city + '\'' +
                 ", addressDetail='" + addressDetail + '\'' +
                 ", extra='" + extra + '\'' +
-                ", order=" + order +
+                ", priority=" + priority +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", creator=" + creator +

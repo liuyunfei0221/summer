@@ -37,7 +37,7 @@ public class RealNameManagerHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> select(ServerRequest serverRequest) {
+    public Mono<ServerResponse> page(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(PAGE_MODEL_FOR_REAL_NAME_CONDITION_TYPE)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                 .flatMap(realNameService::selectRealNameInfoPageMonoByPageAndCondition)

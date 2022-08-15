@@ -77,7 +77,7 @@ public interface AddressService {
      * @param id
      * @return
      */
-    Mono<AddressInfo> getAddressInfoMonoByPrimaryKeyWithAssert(Long id);
+    Mono<AddressInfo> getAddressInfoMonoWithAssert(Long id);
 
     /**
      * select address info by ids

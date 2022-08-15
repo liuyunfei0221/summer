@@ -47,6 +47,7 @@ import static com.blue.basic.constant.common.Status.VALID;
 import static com.blue.basic.constant.common.SummerAttr.DATE_FORMATTER;
 import static com.blue.basic.constant.common.Symbol.PERCENT;
 import static com.blue.basic.constant.member.MemberThreshold.*;
+import static com.blue.member.converter.MemberModelConverters.MEMBER_DETAILS_2_MEMBER_DETAILS_INFO;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_DETAIL_2_MEMBER_DETAIL_INFO;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -338,12 +339,12 @@ public class MemberDetailServiceImpl implements MemberDetailService {
             throw new BlueException(INVALID_IDENTITY);
 
         return getMemberDetailMono(id)
-                .flatMap(md -> {
-                    if (isInvalidStatus(md.getStatus()))
-                        return error(() -> new BlueException(DATA_HAS_BEEN_FROZEN));
-                    LOGGER.info("md = {}", md);
-                    return just(md);
-                }).flatMap(md ->
+                .flatMap(md ->
+                        isValidStatus(md.getStatus()) ?
+                                just(md)
+                                :
+                                error(() -> new BlueException(DATA_HAS_BEEN_FROZEN))
+                ).flatMap(md ->
                         just(MEMBER_DETAIL_2_MEMBER_DETAIL_INFO.apply(md))
                 );
     }
@@ -388,12 +389,12 @@ public class MemberDetailServiceImpl implements MemberDetailService {
             throw new BlueException(INVALID_IDENTITY);
 
         return getMemberDetailMonoByMemberId(memberId)
-                .flatMap(md -> {
-                    if (isInvalidStatus(md.getStatus()))
-                        return error(() -> new BlueException(DATA_HAS_BEEN_FROZEN));
-                    LOGGER.info("md = {}", md);
-                    return just(md);
-                }).flatMap(md ->
+                .flatMap(md ->
+                        isValidStatus(md.getStatus()) ?
+                                just(md)
+                                :
+                                error(() -> new BlueException(DATA_HAS_BEEN_FROZEN))
+                ).flatMap(md ->
                         just(MEMBER_DETAIL_2_MEMBER_DETAIL_INFO.apply(md))
                 );
     }
@@ -574,17 +575,9 @@ public class MemberDetailServiceImpl implements MemberDetailService {
         MemberDetailCondition memberDetailCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
         return zip(selectMemberDetailMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberDetailCondition), countMemberDetailMonoByCondition(memberDetailCondition))
-                .flatMap(tuple2 -> {
-                    List<MemberDetail> memberDetails = tuple2.getT1();
-                    Mono<List<MemberDetailInfo>> memberDetailInfosMono = memberDetails.size() > 0 ?
-                            just(memberDetails.stream().map(MEMBER_DETAIL_2_MEMBER_DETAIL_INFO).collect(toList()))
-                            :
-                            just(emptyList());
-
-                    return memberDetailInfosMono
-                            .flatMap(memberInfos ->
-                                    just(new PageModelResponse<>(memberInfos, tuple2.getT2())));
-                });
+                .flatMap(tuple2 ->
+                        just(new PageModelResponse<>(MEMBER_DETAILS_2_MEMBER_DETAILS_INFO.apply(tuple2.getT1()), tuple2.getT2()))
+                );
     }
 
 }

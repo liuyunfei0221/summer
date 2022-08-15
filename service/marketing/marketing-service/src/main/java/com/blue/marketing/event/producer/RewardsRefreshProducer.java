@@ -29,11 +29,11 @@ public final class RewardsRefreshProducer implements BlueLifecycle {
 
     private final ExecutorService executorService;
 
-    private final BluePulsarProducer<EmptyEvent> rewardsRefreshProducer;
+    private final BluePulsarProducer<EmptyEvent> pulsarProducer;
 
     public RewardsRefreshProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
         this.executorService = executorService;
-        this.rewardsRefreshProducer = generateProducer(blueProducerConfig.getByKey(REWARDS_REFRESH.name), EmptyEvent.class);
+        this.pulsarProducer = generateProducer(blueProducerConfig.getByKey(REWARDS_REFRESH.name), EmptyEvent.class);
     }
 
     @Override
@@ -48,14 +48,14 @@ public final class RewardsRefreshProducer implements BlueLifecycle {
 
     @Override
     public void start() {
-        LOGGER.warn("rewardsRefreshProducer start...");
+        LOGGER.warn("pulsarProducer start...");
     }
 
     @Override
     public void stop() {
-        this.rewardsRefreshProducer.flush();
-        this.rewardsRefreshProducer.close();
-        LOGGER.warn("rewardsRefreshProducer shutdown...");
+        this.pulsarProducer.flush();
+        this.pulsarProducer.close();
+        LOGGER.warn("pulsarProducer shutdown...");
     }
 
     /**
@@ -64,10 +64,10 @@ public final class RewardsRefreshProducer implements BlueLifecycle {
      * @param emptyEvent
      */
     public void send(EmptyEvent emptyEvent) {
-        CompletableFuture<MessageId> future = rewardsRefreshProducer.sendAsync(emptyEvent);
-        LOGGER.info("rewardsRefreshProducer send, nonValueParam = {}", emptyEvent);
+        CompletableFuture<MessageId> future = pulsarProducer.sendAsync(emptyEvent);
+        LOGGER.info("pulsarProducer send, nonValueParam = {}", emptyEvent);
         Consumer<MessageId> c = messageId ->
-                LOGGER.info("rewardsRefreshProducer send success, nonValueParam = {}, messageId = {}", emptyEvent, messageId);
+                LOGGER.info("pulsarProducer send success, nonValueParam = {}, messageId = {}", emptyEvent, messageId);
         future.thenAcceptAsync(c, executorService);
     }
 

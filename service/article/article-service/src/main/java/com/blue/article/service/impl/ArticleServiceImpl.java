@@ -1,6 +1,6 @@
 package com.blue.article.service.impl;
 
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch.ElasticsearchAsyncClient;
 import com.blue.article.repository.entity.Article;
 import com.blue.article.repository.template.ArticleRepository;
 import com.blue.article.service.inter.ArticleService;
@@ -30,13 +30,13 @@ public class ArticleServiceImpl implements ArticleService {
 
     private final BlueIdentityProcessor blueIdentityProcessor;
 
-    private final ElasticsearchClient elasticsearchClient;
+    private final ElasticsearchAsyncClient elasticsearchAsyncClient;
 
     private final ArticleRepository articleRepository;
 
-    public ArticleServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ElasticsearchClient elasticsearchClient, ArticleRepository articleRepository) {
+    public ArticleServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ElasticsearchAsyncClient elasticsearchAsyncClient, ArticleRepository articleRepository) {
         this.blueIdentityProcessor = blueIdentityProcessor;
-        this.elasticsearchClient = elasticsearchClient;
+        this.elasticsearchAsyncClient = elasticsearchAsyncClient;
         this.articleRepository = articleRepository;
     }
 

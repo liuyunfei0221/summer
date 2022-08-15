@@ -28,7 +28,7 @@ public class AttachmentManagerRoute {
         RequestPredicate pathPredicate = path("/blue-media/manager");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/attachments", accept(APPLICATION_JSON), attachmentManagerHandler::select)
+                .POST("/attachments", accept(APPLICATION_JSON), attachmentManagerHandler::page)
                 .build();
 
         return nest(pathPredicate, routerFunction);

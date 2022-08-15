@@ -40,7 +40,7 @@ public final class ShineInfo implements Serializable {
 
     private String extra;
 
-    private Integer order;
+    private Integer priority;
 
     private Long createTime;
 
@@ -48,7 +48,7 @@ public final class ShineInfo implements Serializable {
     }
 
     public ShineInfo(Long id, String title, String content, String detail, String contact, String contactDetail, Long countryId, String country, Long stateId,
-                     String state, Long cityId, String city, String addressDetail, String extra, Integer order, Long createTime) {
+                     String state, Long cityId, String city, String addressDetail, String extra, Integer priority, Long createTime) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -63,7 +63,7 @@ public final class ShineInfo implements Serializable {
         this.city = city;
         this.addressDetail = addressDetail;
         this.extra = extra;
-        this.order = order;
+        this.priority = priority;
         this.createTime = createTime;
     }
 
@@ -179,12 +179,12 @@ public final class ShineInfo implements Serializable {
         this.extra = extra;
     }
 
-    public Integer getOrder() {
-        return order;
+    public Integer getPriority() {
+        return priority;
     }
 
-    public void setOrder(Integer order) {
-        this.order = order;
+    public void setPriority(Integer priority) {
+        this.priority = priority;
     }
 
     public Long getCreateTime() {
@@ -212,7 +212,7 @@ public final class ShineInfo implements Serializable {
                 ", city='" + city + '\'' +
                 ", addressDetail='" + addressDetail + '\'' +
                 ", extra='" + extra + '\'' +
-                ", order=" + order +
+                ", priority=" + priority +
                 ", createTime=" + createTime +
                 '}';
     }

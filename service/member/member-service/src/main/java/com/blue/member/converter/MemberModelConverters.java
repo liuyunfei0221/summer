@@ -100,6 +100,11 @@ public final class MemberModelConverters {
         throw new BlueException(EMPTY_PARAM);
     };
 
+    public static final Function<List<MemberBasic>, List<MemberBasicInfo>> MEMBER_BASICS_2_MEMBER_BASICS_INFO = mbs ->
+            mbs != null && mbs.size() > 0 ? mbs.stream()
+                    .map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
+                    .collect(toList()) : emptyList();
+
     public static final Function<Address, AddressInfo> ADDRESS_2_ADDRESS_INFO = address -> {
         if (address != null)
             return new AddressInfo(address.getId(), address.getMemberId(), address.getContact(), address.getGender(),
@@ -110,8 +115,8 @@ public final class MemberModelConverters {
         throw new BlueException(EMPTY_PARAM);
     };
 
-    public static final Function<List<Address>, List<AddressInfo>> ADDRESSES_2_ADDRESSES_INFO = mas ->
-            mas != null && mas.size() > 0 ? mas.stream()
+    public static final Function<List<Address>, List<AddressInfo>> ADDRESSES_2_ADDRESSES_INFO = as ->
+            as != null && as.size() > 0 ? as.stream()
                     .map(ADDRESS_2_ADDRESS_INFO)
                     .collect(toList()) : emptyList();
 
@@ -157,6 +162,11 @@ public final class MemberModelConverters {
         throw new BlueException(EMPTY_PARAM);
     };
 
+    public static final Function<List<MemberDetail>, List<MemberDetailInfo>> MEMBER_DETAILS_2_MEMBER_DETAILS_INFO = mds ->
+            mds != null && mds.size() > 0 ? mds.stream()
+                    .map(MEMBER_DETAIL_2_MEMBER_DETAIL_INFO)
+                    .collect(toList()) : emptyList();
+
     public static final Function<RealName, RealNameInfo> REAL_NAME_2_REAL_NAME_INFO = realName -> {
         if (realName != null)
             return new RealNameInfo(
@@ -169,5 +179,10 @@ public final class MemberModelConverters {
 
         throw new BlueException(EMPTY_PARAM);
     };
+
+    public static final Function<List<RealName>, List<RealNameInfo>> REAL_NAMES_2_REAL_NAMES_INFO = rns ->
+            rns != null && rns.size() > 0 ? rns.stream()
+                    .map(REAL_NAME_2_REAL_NAME_INFO)
+                    .collect(toList()) : emptyList();
 
 }

@@ -28,7 +28,7 @@ public class VerifyHistoryManagerRoute {
         RequestPredicate pathPredicate = path("/blue-verify/manager");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/verifyHistories", accept(APPLICATION_JSON), verifyHistoryManagerHandler::select)
+                .POST("/verifyHistories", accept(APPLICATION_JSON), verifyHistoryManagerHandler::page)
                 .build();
 
         return nest(pathPredicate, routerFunction);

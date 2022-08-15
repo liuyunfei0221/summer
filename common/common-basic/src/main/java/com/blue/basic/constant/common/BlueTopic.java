@@ -65,8 +65,22 @@ public enum BlueTopic {
     /**
      * Marketing/Promotional Events
      */
-    MARKETING("marketing");
+    MARKETING("marketing"),
 
+    /**
+     * shine insert event
+     */
+    SHINE_INSERT("shineInsert"),
+
+    /**
+     * shine update event
+     */
+    SHINE_UPDATE("shineUpdate"),
+
+    /**
+     * shine delete event
+     */
+    SHINE_DELETE("shineDelete");
 
     /**
      * topic name

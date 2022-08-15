@@ -33,7 +33,7 @@ public class CityManagerRoute {
                 .POST("/city", accept(APPLICATION_JSON), cityManagerHandler::insert)
                 .PUT("/city", accept(APPLICATION_JSON), cityManagerHandler::update)
                 .DELETE("/city/{" + ID.key + "}", cityManagerHandler::delete)
-                .POST("/cities", accept(APPLICATION_JSON), cityManagerHandler::select)
+                .POST("/cities", accept(APPLICATION_JSON), cityManagerHandler::page)
                 .build();
 
         return nest(pathPredicate, routerFunction);

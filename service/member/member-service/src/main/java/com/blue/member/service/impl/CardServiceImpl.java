@@ -388,8 +388,8 @@ public class CardServiceImpl implements CardService {
      * @return
      */
     @Override
-    public Mono<CardInfo> getCardInfoMonoByPrimaryKeyWithAssert(Long id) {
-        LOGGER.info("Mono<CardInfo> getCardInfoMonoByPrimaryKeyWithAssert(Long id), id = {}", id);
+    public Mono<CardInfo> getCardInfoMonoWithAssert(Long id) {
+        LOGGER.info("Mono<CardInfo> getCardInfoMonoWithAssert(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -400,7 +400,7 @@ public class CardServiceImpl implements CardService {
                         isValidStatus(c.getStatus()) ?
                                 just(c)
                                 :
-                                error(() -> new BlueException(DATA_NOT_EXIST))
+                                error(() -> new BlueException(INVALID_DATA_STATUS))
                 ).flatMap(c ->
                         just(CARD_2_CARD_INFO.apply(c))
                 );

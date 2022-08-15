@@ -1,5 +1,6 @@
 package com.blue.es.api.generator;
 
+import co.elastic.clients.elasticsearch.ElasticsearchAsyncClient;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
@@ -105,18 +106,46 @@ public final class BlueEsGenerator {
     };
 
     /**
+     * generate transport
+     *
+     * @param esConf
+     * @return
+     */
+    public static RestClientTransport generateRestClientTransport(EsConf esConf) {
+        LOGGER.info("RestClientTransport generateRestClientTransport(EsConf esConf), esConf = {}", esConf);
+        if (isNull(esConf))
+            throw new RuntimeException("esConf can't be null");
+
+        return new RestClientTransport(REST_CLIENT_GENERATOR.apply(esConf),
+                new JacksonJsonpMapper(), esConf.getTransportOptions());
+    }
+
+    /**
      * generate client
      *
      * @param esConf
      * @return
      */
-    public static ElasticsearchClient generateElasticsearchClient(EsConf esConf) {
-        LOGGER.info("ElasticsearchClient generateElasticsearchClient(EsConf esConf), esConf = {}", esConf);
-        if (isNull(esConf))
-            throw new RuntimeException("esConf can't be null");
+    public static ElasticsearchClient generateElasticsearchClient(RestClientTransport restClientTransport, EsConf esConf) {
+        LOGGER.info("ElasticsearchClient generateElasticsearchClient(RestClientTransport restClientTransport, EsConf esConf), restClientTransport = {}, esConf = {}", restClientTransport, esConf);
+        if (isNull(restClientTransport) || isNull(esConf))
+            throw new RuntimeException("restClientTransport or esConf can't be null");
 
-        return new ElasticsearchClient(new RestClientTransport(REST_CLIENT_GENERATOR.apply(esConf),
-                new JacksonJsonpMapper(), esConf.getTransportOptions()), esConf.getTransportOptions());
+        return new ElasticsearchClient(restClientTransport, esConf.getTransportOptions());
+    }
+
+    /**
+     * generate async client
+     *
+     * @param esConf
+     * @return
+     */
+    public static ElasticsearchAsyncClient generateElasticsearchAsyncClient(RestClientTransport restClientTransport, EsConf esConf) {
+        LOGGER.info("ElasticsearchAsyncClient generateElasticsearchAsyncClient(RestClientTransport restClientTransport, EsConf esConf), restClientTransport = {}, esConf = {}", restClientTransport, esConf);
+        if (isNull(restClientTransport) || isNull(esConf))
+            throw new RuntimeException("restClientTransport or esConf can't be null");
+
+        return new ElasticsearchAsyncClient(restClientTransport, esConf.getTransportOptions());
     }
 
     /**

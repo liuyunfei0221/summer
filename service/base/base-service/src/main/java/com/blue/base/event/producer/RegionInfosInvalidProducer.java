@@ -29,11 +29,11 @@ public final class RegionInfosInvalidProducer implements BlueLifecycle {
 
     private final ExecutorService executorService;
 
-    private final BluePulsarProducer<EmptyEvent> regionInfosInvalidProducer;
+    private final BluePulsarProducer<EmptyEvent> pulsarProducer;
 
     public RegionInfosInvalidProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
         this.executorService = executorService;
-        this.regionInfosInvalidProducer = generateProducer(blueProducerConfig.getByKey(REGION_INFOS_INVALID.name), EmptyEvent.class);
+        this.pulsarProducer = generateProducer(blueProducerConfig.getByKey(REGION_INFOS_INVALID.name), EmptyEvent.class);
     }
 
     @Override
@@ -48,14 +48,14 @@ public final class RegionInfosInvalidProducer implements BlueLifecycle {
 
     @Override
     public void start() {
-        LOGGER.warn("regionInfosInvalidProducer start...");
+        LOGGER.warn("pulsarProducer start...");
     }
 
     @Override
     public void stop() {
-        this.regionInfosInvalidProducer.flush();
-        this.regionInfosInvalidProducer.close();
-        LOGGER.warn("regionInfosInvalidProducer shutdown...");
+        this.pulsarProducer.flush();
+        this.pulsarProducer.close();
+        LOGGER.warn("pulsarProducer shutdown...");
     }
 
     /**
@@ -64,10 +64,10 @@ public final class RegionInfosInvalidProducer implements BlueLifecycle {
      * @param emptyEvent
      */
     public void send(EmptyEvent emptyEvent) {
-        CompletableFuture<MessageId> future = regionInfosInvalidProducer.sendAsync(emptyEvent);
-        LOGGER.info("regionInfosInvalidProducer send");
+        CompletableFuture<MessageId> future = pulsarProducer.sendAsync(emptyEvent);
+        LOGGER.info("pulsarProducer send");
         Consumer<MessageId> c = messageId ->
-                LOGGER.info("regionInfosInvalidProducer send success, messageId = {}", messageId);
+                LOGGER.info("pulsarProducer send success, messageId = {}", messageId);
         future.thenAcceptAsync(c, executorService);
     }
 

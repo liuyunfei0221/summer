@@ -32,7 +32,7 @@ public class BulletinManagerRoute {
                 .POST("/bulletin", accept(APPLICATION_JSON), bulletinManagerHandler::insert)
                 .PUT("/bulletin", accept(APPLICATION_JSON), bulletinManagerHandler::update)
                 .DELETE("/bulletin/{" + ID.key + "}", bulletinManagerHandler::delete)
-                .POST("/bulletins", accept(APPLICATION_JSON), bulletinManagerHandler::select)
+                .POST("/bulletins", accept(APPLICATION_JSON), bulletinManagerHandler::page)
                 .build();
 
         return nest(pathPredicate, routerFunction);

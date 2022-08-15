@@ -1,6 +1,7 @@
 package com.blue.shine.service.inter;
 
 import com.blue.basic.model.common.*;
+import com.blue.basic.model.event.IdentityEvent;
 import com.blue.shine.api.model.ShineInfo;
 import com.blue.shine.model.ShineCondition;
 import com.blue.shine.model.ShineInsertParam;
@@ -29,6 +30,14 @@ public interface ShineService {
     Mono<ShineInfo> insertShine(ShineInsertParam shineInsertParam, Long memberId);
 
     /**
+     * insert shine event
+     *
+     * @param shine
+     * @return
+     */
+    Mono<Boolean> insertShineEvent(Shine shine);
+
+    /**
      * update exist shine
      *
      * @param shineUpdateParam
@@ -38,13 +47,28 @@ public interface ShineService {
     Mono<ShineInfo> updateShine(ShineUpdateParam shineUpdateParam, Long memberId);
 
     /**
+     * update shine event
+     *
+     * @param shine
+     * @return
+     */
+    Mono<Boolean> updateShineEvent(Shine shine);
+
+    /**
      * delete shine
      *
      * @param id
-     * @param memberId
      * @return
      */
-    Mono<ShineInfo> deleteShine(Long id, Long memberId);
+    Mono<ShineInfo> deleteShine(Long id);
+
+    /**
+     * delete shine event
+     *
+     * @param identityEvent
+     * @return
+     */
+    Mono<Boolean> deleteShineEvent(IdentityEvent identityEvent);
 
     /**
      * query shine mono by id
@@ -60,7 +84,7 @@ public interface ShineService {
      * @param id
      * @return
      */
-    Mono<ShineInfo> getShineInfoMonoByPrimaryKeyWithAssert(Long id);
+    Mono<ShineInfo> getShineInfoMonoWithAssert(Long id);
 
     /**
      * select shine info by ids

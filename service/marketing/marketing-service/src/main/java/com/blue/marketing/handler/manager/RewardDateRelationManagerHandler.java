@@ -109,7 +109,7 @@ public final class RewardDateRelationManagerHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> select(ServerRequest serverRequest) {
+    public Mono<ServerResponse> page(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(PAGE_MODEL_FOR_REWARD_DATE_RELATION_CONDITION_TYPE)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                 .flatMap(rewardDateRelationService::selectRewardManagerInfoPageMonoByPageAndCondition)

@@ -89,13 +89,13 @@ public class StateManagerHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> select(ServerRequest serverRequest) {
+    public Mono<ServerResponse> page(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(PAGE_MODEL_FOR_STATE_CONDITION_TYPE)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                 .flatMap(stateService::selectStatePageMonoByPageAndCondition)
-                .flatMap(pms ->
+                .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(pms, serverRequest), BlueResponse.class));
+                                .body(success(pmr, serverRequest), BlueResponse.class));
     }
 
 }

@@ -444,8 +444,8 @@ public class AddressServiceImpl implements AddressService {
      * @return
      */
     @Override
-    public Mono<AddressInfo> getAddressInfoMonoByPrimaryKeyWithAssert(Long id) {
-        LOGGER.info("Mono<AddressInfo> getAddressInfoMonoByPrimaryKeyWithAssert(Long id), id = {}", id);
+    public Mono<AddressInfo> getAddressInfoMonoWithAssert(Long id) {
+        LOGGER.info("Mono<AddressInfo> getAddressInfoMonoWithAssert(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -454,7 +454,7 @@ public class AddressServiceImpl implements AddressService {
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .flatMap(a ->
                         isInvalidStatus(a.getStatus()) ?
-                                error(() -> new BlueException(DATA_NOT_EXIST))
+                                error(() -> new BlueException(INVALID_DATA_STATUS))
                                 :
                                 just(a)
                 ).flatMap(a ->
@@ -534,14 +534,9 @@ public class AddressServiceImpl implements AddressService {
 
         return zip(selectAddressMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),
                 countAddressMonoByQuery(query)
-        ).flatMap(tuple2 -> {
-            List<Address> addresses = tuple2.getT1();
-
-            return isNotEmpty(addresses) ?
-                    just(new PageModelResponse<>(ADDRESSES_2_ADDRESSES_INFO.apply(addresses), tuple2.getT2()))
-                    :
-                    just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
-        });
+        ).flatMap(tuple2 ->
+                just(new PageModelResponse<>(ADDRESSES_2_ADDRESSES_INFO.apply(tuple2.getT1()), tuple2.getT2()))
+        );
     }
 
 }

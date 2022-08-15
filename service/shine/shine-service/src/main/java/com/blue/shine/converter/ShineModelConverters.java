@@ -21,7 +21,7 @@ public final class ShineModelConverters {
     public static final Function<Shine, ShineInfo> SHINE_2_SHINE_INFO = shine -> {
         if (shine != null)
             return new ShineInfo(shine.getId(), shine.getTitle(), shine.getContent(), shine.getDetail(), shine.getContact(), shine.getContactDetail(), shine.getCountryId(), shine.getCountry(),
-                    shine.getStateId(), shine.getState(), shine.getCityId(), shine.getCity(), shine.getAddressDetail(), shine.getExtra(), shine.getOrder(), shine.getCreateTime());
+                    shine.getStateId(), shine.getState(), shine.getCityId(), shine.getCity(), shine.getAddressDetail(), shine.getExtra(), shine.getPriority(), shine.getCreateTime());
 
         throw new BlueException(EMPTY_PARAM);
     };

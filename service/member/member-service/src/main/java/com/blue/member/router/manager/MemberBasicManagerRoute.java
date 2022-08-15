@@ -27,7 +27,7 @@ public class MemberBasicManagerRoute {
         RequestPredicate pathPredicate = path("/blue-member/manager");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/basics", accept(APPLICATION_JSON), memberBasicManagerHandler::select)
+                .POST("/basics", accept(APPLICATION_JSON), memberBasicManagerHandler::page)
                 .build();
 
         return nest(pathPredicate, routerFunction);

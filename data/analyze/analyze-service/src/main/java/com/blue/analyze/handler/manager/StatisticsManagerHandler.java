@@ -1,4 +1,4 @@
-package com.blue.analyze.handler.api;
+package com.blue.analyze.handler.manager;
 
 import com.blue.analyze.model.MergeSummaryParam;
 import com.blue.analyze.model.SummaryParam;
@@ -18,17 +18,17 @@ import static reactor.core.publisher.Mono.defer;
 import static reactor.core.publisher.Mono.error;
 
 /**
- * statistics api handler
+ * statistics manager handler
  *
  * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
 @Component
-public final class StatisticsApiHandler {
+public final class StatisticsManagerHandler {
 
     private final StatisticsService statisticsService;
 
-    public StatisticsApiHandler(StatisticsService statisticsService) {
+    public StatisticsManagerHandler(StatisticsService statisticsService) {
         this.statisticsService = statisticsService;
     }
 

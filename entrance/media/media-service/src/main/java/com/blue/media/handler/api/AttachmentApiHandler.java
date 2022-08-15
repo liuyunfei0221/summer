@@ -38,7 +38,7 @@ public final class AttachmentApiHandler {
      * @return
      */
     @SuppressWarnings("unchecked")
-    public Mono<ServerResponse> select(ServerRequest serverRequest) {
+    public Mono<ServerResponse> page(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(PageModelRequest.class)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))

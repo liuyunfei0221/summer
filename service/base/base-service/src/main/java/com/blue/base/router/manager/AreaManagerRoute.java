@@ -33,7 +33,7 @@ public class AreaManagerRoute {
                 .POST("/area", accept(APPLICATION_JSON), areaManagerHandler::insert)
                 .PUT("/area", accept(APPLICATION_JSON), areaManagerHandler::update)
                 .DELETE("/area/{" + ID.key + "}", areaManagerHandler::delete)
-                .POST("/areas", accept(APPLICATION_JSON), areaManagerHandler::select)
+                .POST("/areas", accept(APPLICATION_JSON), areaManagerHandler::page)
                 .build();
 
         return nest(pathPredicate, routerFunction);

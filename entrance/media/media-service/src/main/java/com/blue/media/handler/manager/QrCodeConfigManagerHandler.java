@@ -87,13 +87,13 @@ public final class QrCodeConfigManagerHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> select(ServerRequest serverRequest) {
+    public Mono<ServerResponse> page(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(PAGE_MODEL_FOR_QR_CODE_CONFIG_CONDITION_TYPE)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                 .flatMap(qrCodeConfigService::selectQrCodeConfigManagerInfoPageMonoByPageAndCondition)
-                .flatMap(cmr ->
+                .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(cmr), BlueResponse.class));
+                                .body(success(pmr), BlueResponse.class));
     }
 
 }

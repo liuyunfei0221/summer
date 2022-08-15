@@ -49,6 +49,7 @@ import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.Status.VALID;
 import static com.blue.basic.constant.media.AttachmentType.ICON;
 import static com.blue.basic.constant.media.AttachmentType.QR_CODE;
+import static com.blue.member.converter.MemberModelConverters.MEMBER_BASICS_2_MEMBER_BASICS_INFO;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_BASIC_INFO;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.emptyList;
@@ -691,17 +692,9 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         MemberBasicCondition memberBasicCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
         return zip(selectMemberBasicMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberBasicCondition), countMemberBasicMonoByCondition(memberBasicCondition))
-                .flatMap(tuple2 -> {
-                    List<MemberBasic> members = tuple2.getT1();
-                    Mono<List<MemberBasicInfo>> memberInfosMono = members.size() > 0 ?
-                            just(members.stream().map(MEMBER_BASIC_2_MEMBER_BASIC_INFO).collect(toList()))
-                            :
-                            just(emptyList());
-
-                    return memberInfosMono
-                            .flatMap(memberInfos ->
-                                    just(new PageModelResponse<>(memberInfos, tuple2.getT2())));
-                });
+                .flatMap(tuple2 ->
+                        just(new PageModelResponse<>(MEMBER_BASICS_2_MEMBER_BASICS_INFO.apply(tuple2.getT1()), tuple2.getT2()))
+                );
     }
 
 }

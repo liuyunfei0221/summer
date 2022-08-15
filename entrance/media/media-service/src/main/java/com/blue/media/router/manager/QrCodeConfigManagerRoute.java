@@ -33,7 +33,7 @@ public class QrCodeConfigManagerRoute {
                 .POST("/qrCodeConfig", accept(APPLICATION_JSON), qrCodeConfigManagerHandler::insert)
                 .PUT("/qrCodeConfig", accept(APPLICATION_JSON), qrCodeConfigManagerHandler::update)
                 .DELETE("/qrCodeConfig/{" + ID.key + "}", qrCodeConfigManagerHandler::delete)
-                .POST("/qrCodeConfigs", accept(APPLICATION_JSON), qrCodeConfigManagerHandler::select)
+                .POST("/qrCodeConfigs", accept(APPLICATION_JSON), qrCodeConfigManagerHandler::page)
                 .build();
 
         return nest(pathPredicate, routerFunction);

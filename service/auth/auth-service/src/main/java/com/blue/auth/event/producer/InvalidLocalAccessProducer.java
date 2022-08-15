@@ -29,11 +29,11 @@ public final class InvalidLocalAccessProducer implements BlueLifecycle {
 
     private final ExecutorService executorService;
 
-    private final BluePulsarProducer<InvalidLocalAccessEvent> invalidLocalAccessProducer;
+    private final BluePulsarProducer<InvalidLocalAccessEvent> pulsarProducer;
 
     public InvalidLocalAccessProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
         this.executorService = executorService;
-        this.invalidLocalAccessProducer = generateProducer(blueProducerConfig.getByKey(INVALID_LOCAL_ACCESS.name), InvalidLocalAccessEvent.class);
+        this.pulsarProducer = generateProducer(blueProducerConfig.getByKey(INVALID_LOCAL_ACCESS.name), InvalidLocalAccessEvent.class);
     }
 
     @Override
@@ -48,14 +48,14 @@ public final class InvalidLocalAccessProducer implements BlueLifecycle {
 
     @Override
     public void start() {
-        LOGGER.warn("invalidLocalAccessProducer start...");
+        LOGGER.warn("pulsarProducer start...");
     }
 
     @Override
     public void stop() {
-        this.invalidLocalAccessProducer.flush();
-        this.invalidLocalAccessProducer.close();
-        LOGGER.warn("invalidLocalAccessProducer shutdown...");
+        this.pulsarProducer.flush();
+        this.pulsarProducer.close();
+        LOGGER.warn("pulsarProducer shutdown...");
     }
 
     /**
@@ -64,10 +64,10 @@ public final class InvalidLocalAccessProducer implements BlueLifecycle {
      * @param invalidLocalAccessEvent
      */
     public void send(InvalidLocalAccessEvent invalidLocalAccessEvent) {
-        CompletableFuture<MessageId> future = invalidLocalAccessProducer.sendAsync(invalidLocalAccessEvent);
-        LOGGER.info("invalidLocalAccessProducer send, invalidLocalAccessEvent = {}", invalidLocalAccessEvent);
+        CompletableFuture<MessageId> future = pulsarProducer.sendAsync(invalidLocalAccessEvent);
+        LOGGER.info("pulsarProducer send, invalidLocalAccessEvent = {}", invalidLocalAccessEvent);
         Consumer<MessageId> c = messageId ->
-                LOGGER.info("invalidLocalAccessProducer send success, invalidLocalAccessEvent = {}, messageId = {}", invalidLocalAccessEvent, messageId);
+                LOGGER.info("pulsarProducer send success, invalidLocalAccessEvent = {}, messageId = {}", invalidLocalAccessEvent, messageId);
         future.thenAcceptAsync(c, executorService);
     }
 

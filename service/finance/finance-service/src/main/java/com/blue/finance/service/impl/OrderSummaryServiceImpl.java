@@ -1,6 +1,6 @@
 package com.blue.finance.service.impl;
 
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch.ElasticsearchAsyncClient;
 import com.blue.basic.model.common.Pit;
 import com.blue.basic.model.common.ScrollModelRequest;
 import com.blue.basic.model.common.ScrollModelResponse;
@@ -36,33 +36,33 @@ public class OrderSummaryServiceImpl implements OrderSummaryService {
 //
 //    private final AsyncConnection asyncConnection;
 //
-//    private final ElasticsearchClient elasticsearchClient;
+//    private final ElasticsearchAsyncClient elasticsearchAsyncClient;
 //
 //    private final OrderSummaryInsertProducer orderSummaryInsertProducer;
 //
 //    private final OrderSummaryUpdateProducer orderSummaryUpdateProducer;
 //
-//    public OrderSummaryServiceImpl(BlueIdentityProcessor blueIdentityProcessor, AsyncConnection asyncConnection, ElasticsearchClient elasticsearchClient,
+//    public OrderSummaryServiceImpl(BlueIdentityProcessor blueIdentityProcessor, AsyncConnection asyncConnection, ElasticsearchAsyncClient elasticsearchAsyncClient,
 //                                   OrderSummaryInsertProducer orderSummaryInsertProducer, OrderSummaryUpdateProducer orderSummaryUpdateProducer) {
 //        this.blueIdentityProcessor = blueIdentityProcessor;
 //        this.asyncConnection = asyncConnection;
-//        this.elasticsearchClient = elasticsearchClient;
+//        this.elasticsearchAsyncClient = elasticsearchAsyncClient;
 //        this.orderSummaryInsertProducer = orderSummaryInsertProducer;
 //        this.orderSummaryUpdateProducer = orderSummaryUpdateProducer;
 //    }
 
     private final BlueIdentityProcessor blueIdentityProcessor;
 
-    private final ElasticsearchClient elasticsearchClient;
+    private final ElasticsearchAsyncClient elasticsearchAsyncClient;
 
     private final OrderSummaryInsertProducer orderSummaryInsertProducer;
 
     private final OrderSummaryUpdateProducer orderSummaryUpdateProducer;
 
-    public OrderSummaryServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ElasticsearchClient elasticsearchClient,
+    public OrderSummaryServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ElasticsearchAsyncClient elasticsearchAsyncClient,
                                    OrderSummaryInsertProducer orderSummaryInsertProducer, OrderSummaryUpdateProducer orderSummaryUpdateProducer) {
         this.blueIdentityProcessor = blueIdentityProcessor;
-        this.elasticsearchClient = elasticsearchClient;
+        this.elasticsearchAsyncClient = elasticsearchAsyncClient;
         this.orderSummaryInsertProducer = orderSummaryInsertProducer;
         this.orderSummaryUpdateProducer = orderSummaryUpdateProducer;
     }

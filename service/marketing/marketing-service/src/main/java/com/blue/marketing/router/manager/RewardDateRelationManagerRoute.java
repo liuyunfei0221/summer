@@ -33,7 +33,7 @@ public class RewardDateRelationManagerRoute {
                 .POST("/date/relation", accept(APPLICATION_JSON), rewardDateRelationManagerHandler::insertByDate)
                 .PUT("/relation", accept(APPLICATION_JSON), rewardDateRelationManagerHandler::update)
                 .DELETE("/relation/{" + ID.key + "}", rewardDateRelationManagerHandler::delete)
-                .POST("/relations", accept(APPLICATION_JSON), rewardDateRelationManagerHandler::select)
+                .POST("/relations", accept(APPLICATION_JSON), rewardDateRelationManagerHandler::page)
                 .POST("/date/relations", accept(APPLICATION_JSON), rewardDateRelationManagerHandler::selectByDate)
                 .build();
 

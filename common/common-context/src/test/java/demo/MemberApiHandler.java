@@ -39,7 +39,7 @@
 //        return ReactiveContextHolder.getServerHttpRequest()
 //                .flatMap(AccessGetterForReactive::getAccessReact)
 //                .flatMap(ai ->
-//                        memberBasicService.selectMemberInfoMonoByPrimaryKeyWithAssert(ai.getId())
+//                        memberBasicService.selectMemberInfoMonoWithAssert(ai.getId())
 //                                .flatMap(mbi ->
 //                                        ok()
 //                                                .contentType(APPLICATION_JSON)

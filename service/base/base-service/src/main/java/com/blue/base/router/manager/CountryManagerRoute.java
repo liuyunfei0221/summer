@@ -33,7 +33,7 @@ public class CountryManagerRoute {
                 .POST("/country", accept(APPLICATION_JSON), countryManagerHandler::insert)
                 .PUT("/country", accept(APPLICATION_JSON), countryManagerHandler::update)
                 .DELETE("/country/{" + ID.key + "}", countryManagerHandler::delete)
-                .POST("/countries", accept(APPLICATION_JSON), countryManagerHandler::select)
+                .POST("/countries", accept(APPLICATION_JSON), countryManagerHandler::page)
                 .build();
 
         return nest(pathPredicate, routerFunction);

@@ -32,7 +32,7 @@ public class RewardManagerRoute {
                 .POST("/reward", accept(APPLICATION_JSON), rewardManagerHandler::insert)
                 .PUT("/reward", accept(APPLICATION_JSON), rewardManagerHandler::update)
                 .DELETE("/reward/{" + ID.key + "}", rewardManagerHandler::delete)
-                .POST("/rewards", accept(APPLICATION_JSON), rewardManagerHandler::select)
+                .POST("/rewards", accept(APPLICATION_JSON), rewardManagerHandler::page)
                 .build();
 
         return nest(pathPredicate, routerFunction);

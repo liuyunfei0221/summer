@@ -38,12 +38,12 @@ public class ShineInsertParam implements Serializable, Asserter {
 
     protected String extra;
 
-    protected Integer order;
+    protected Integer priority;
 
     public ShineInsertParam() {
     }
 
-    public ShineInsertParam(String title, String content, String detail, String contact, String contactDetail, Long cityId, String addressDetail, String extra, Integer order) {
+    public ShineInsertParam(String title, String content, String detail, String contact, String contactDetail, Long cityId, String addressDetail, String extra, Integer priority) {
         this.title = title;
         this.content = content;
         this.detail = detail;
@@ -52,7 +52,7 @@ public class ShineInsertParam implements Serializable, Asserter {
         this.cityId = cityId;
         this.addressDetail = addressDetail;
         this.extra = extra;
-        this.order = order;
+        this.priority = priority;
     }
 
     @Override
@@ -138,12 +138,12 @@ public class ShineInsertParam implements Serializable, Asserter {
         this.extra = extra;
     }
 
-    public Integer getOrder() {
-        return order;
+    public Integer getPriority() {
+        return priority;
     }
 
-    public void setOrder(Integer order) {
-        this.order = order;
+    public void setPriority(Integer priority) {
+        this.priority = priority;
     }
 
     @Override
@@ -157,7 +157,7 @@ public class ShineInsertParam implements Serializable, Asserter {
                 ", cityId=" + cityId +
                 ", addressDetail='" + addressDetail + '\'' +
                 ", extra='" + extra + '\'' +
-                ", order=" + order +
+                ", priority=" + priority +
                 '}';
     }
 

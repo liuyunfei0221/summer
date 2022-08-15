@@ -30,11 +30,11 @@ public final class MarketingEventProducer implements BlueLifecycle {
 
     private final ExecutorService executorService;
 
-    private final BluePulsarProducer<MarketingEvent> marketingEventProducer;
+    private final BluePulsarProducer<MarketingEvent> pulsarProducer;
 
     public MarketingEventProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
         this.executorService = executorService;
-        this.marketingEventProducer = generateProducer(blueProducerConfig.getByKey(MARKETING.name), MarketingEvent.class);
+        this.pulsarProducer = generateProducer(blueProducerConfig.getByKey(MARKETING.name), MarketingEvent.class);
     }
 
     @Override
@@ -49,14 +49,14 @@ public final class MarketingEventProducer implements BlueLifecycle {
 
     @Override
     public void start() {
-        LOGGER.warn("illegalMarkProducer start...");
+        LOGGER.warn("pulsarProducer start...");
     }
 
     @Override
     public void stop() {
-        this.marketingEventProducer.flush();
-        this.marketingEventProducer.close();
-        LOGGER.warn("marketingEventProducer shutdown...");
+        this.pulsarProducer.flush();
+        this.pulsarProducer.close();
+        LOGGER.warn("pulsarProducer shutdown...");
     }
 
     /**
@@ -65,11 +65,11 @@ public final class MarketingEventProducer implements BlueLifecycle {
      * @param marketingEvent
      */
     public void send(MarketingEvent marketingEvent) {
-        CompletableFuture<MessageId> future = marketingEventProducer.sendAsync(marketingEvent);
+        CompletableFuture<MessageId> future = pulsarProducer.sendAsync(marketingEvent);
 
-        LOGGER.info("marketingEventProducer send, marketingEvent = {}", marketingEvent);
+        LOGGER.info("pulsarProducer send, marketingEvent = {}", marketingEvent);
         Consumer<MessageId> c = messageId ->
-                LOGGER.info("marketingEventProducer send success, marketingEvent = {}, messageId = {}", marketingEvent, messageId);
+                LOGGER.info("pulsarProducer send success, marketingEvent = {}, messageId = {}", marketingEvent, messageId);
 
         future.thenAcceptAsync(c, executorService);
     }

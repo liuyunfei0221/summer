@@ -29,11 +29,11 @@ public final class InvalidAuthProducer implements BlueLifecycle {
 
     private final ExecutorService executorService;
 
-    private final BluePulsarProducer<InvalidAuthEvent> invalidAuthProducer;
+    private final BluePulsarProducer<InvalidAuthEvent> pulsarProducer;
 
     public InvalidAuthProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
         this.executorService = executorService;
-        this.invalidAuthProducer = generateProducer(blueProducerConfig.getByKey(INVALID_AUTH.name), InvalidAuthEvent.class);
+        this.pulsarProducer = generateProducer(blueProducerConfig.getByKey(INVALID_AUTH.name), InvalidAuthEvent.class);
     }
 
     @Override
@@ -48,14 +48,14 @@ public final class InvalidAuthProducer implements BlueLifecycle {
 
     @Override
     public void start() {
-        LOGGER.warn("invalidAuthProducer start...");
+        LOGGER.warn("pulsarProducer start...");
     }
 
     @Override
     public void stop() {
-        this.invalidAuthProducer.flush();
-        this.invalidAuthProducer.close();
-        LOGGER.warn("invalidAuthProducer shutdown...");
+        this.pulsarProducer.flush();
+        this.pulsarProducer.close();
+        LOGGER.warn("pulsarProducer shutdown...");
     }
 
     /**
@@ -64,10 +64,10 @@ public final class InvalidAuthProducer implements BlueLifecycle {
      * @param invalidAuthEvent
      */
     public void send(InvalidAuthEvent invalidAuthEvent) {
-        CompletableFuture<MessageId> future = invalidAuthProducer.sendAsync(invalidAuthEvent);
-        LOGGER.info("invalidAuthProducer send, invalidLocalAuthParam = {}", invalidAuthEvent);
+        CompletableFuture<MessageId> future = pulsarProducer.sendAsync(invalidAuthEvent);
+        LOGGER.info("pulsarProducer send, pulsarProducer = {}", invalidAuthEvent);
         Consumer<MessageId> c = messageId ->
-                LOGGER.info("invalidAuthProducer send success, invalidAuthEvent = {}, messageId = {}", invalidAuthEvent, messageId);
+                LOGGER.info("pulsarProducer send success, invalidAuthEvent = {}, messageId = {}", invalidAuthEvent, messageId);
         future.thenAcceptAsync(c, executorService);
     }
 

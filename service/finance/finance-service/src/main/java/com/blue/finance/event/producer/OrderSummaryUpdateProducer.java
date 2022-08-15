@@ -29,11 +29,11 @@ public final class OrderSummaryUpdateProducer implements BlueLifecycle {
 
     private final ExecutorService executorService;
 
-    private final BluePulsarProducer<OrderSummary> orderSummaryUpdateProducer;
+    private final BluePulsarProducer<OrderSummary> pulsarProducer;
 
     public OrderSummaryUpdateProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
         this.executorService = executorService;
-        this.orderSummaryUpdateProducer = generateProducer(blueProducerConfig.getByKey(ORDER_SUMMARY_UPDATE.name), OrderSummary.class);
+        this.pulsarProducer = generateProducer(blueProducerConfig.getByKey(ORDER_SUMMARY_UPDATE.name), OrderSummary.class);
     }
 
     @Override
@@ -48,14 +48,14 @@ public final class OrderSummaryUpdateProducer implements BlueLifecycle {
 
     @Override
     public void start() {
-        LOGGER.warn("orderSummaryUpdateProducer start...");
+        LOGGER.warn("pulsarProducer start...");
     }
 
     @Override
     public void stop() {
-        this.orderSummaryUpdateProducer.flush();
-        this.orderSummaryUpdateProducer.close();
-        LOGGER.warn("orderSummaryUpdateProducer shutdown...");
+        this.pulsarProducer.flush();
+        this.pulsarProducer.close();
+        LOGGER.warn("pulsarProducer shutdown...");
     }
 
     /**
@@ -64,10 +64,10 @@ public final class OrderSummaryUpdateProducer implements BlueLifecycle {
      * @param orderSummary
      */
     public void send(OrderSummary orderSummary) {
-        CompletableFuture<MessageId> future = orderSummaryUpdateProducer.sendAsync(orderSummary);
-        LOGGER.info("orderSummaryUpdateProducer send, orderSummary = {}", orderSummary);
+        CompletableFuture<MessageId> future = pulsarProducer.sendAsync(orderSummary);
+        LOGGER.info("pulsarProducer send, orderSummary = {}", orderSummary);
         Consumer<MessageId> c = messageId ->
-                LOGGER.info("orderSummaryUpdateProducer send success, orderSummary = {}, messageId = {}", orderSummary, messageId);
+                LOGGER.info("pulsarProducer send success, orderSummary = {}, messageId = {}", orderSummary, messageId);
         future.thenAcceptAsync(c, executorService);
     }
 
