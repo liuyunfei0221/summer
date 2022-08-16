@@ -1,7 +1,7 @@
 package com.blue.template.component;
 
 import com.blue.template.api.conf.UriFileWriterConf;
-import com.blue.template.common.TemplateWriter;
+import com.blue.template.core.TemplateWriter;
 import com.blue.template.model.WriterElement;
 import freemarker.template.Configuration;
 import freemarker.template.Template;

@@ -5,7 +5,7 @@ import com.blue.auth.config.blue.BlueConsumerConfig;
 import com.blue.auth.event.model.InvalidLocalAccessEvent;
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.exps.BlueException;
-import com.blue.pulsar.common.BluePulsarListener;
+import com.blue.pulsar.component.BluePulsarListener;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 

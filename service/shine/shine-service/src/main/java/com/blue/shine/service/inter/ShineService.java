@@ -1,13 +1,15 @@
 package com.blue.shine.service.inter;
 
-import com.blue.basic.model.common.*;
+import com.blue.basic.model.common.PageModelRequest;
+import com.blue.basic.model.common.PageModelResponse;
+import com.blue.basic.model.common.ScrollModelRequest;
+import com.blue.basic.model.common.ScrollModelResponse;
 import com.blue.basic.model.event.IdentityEvent;
 import com.blue.shine.api.model.ShineInfo;
 import com.blue.shine.model.ShineCondition;
 import com.blue.shine.model.ShineInsertParam;
 import com.blue.shine.model.ShineUpdateParam;
 import com.blue.shine.repository.entity.Shine;
-import org.springframework.data.mongodb.core.query.Query;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -95,24 +97,6 @@ public interface ShineService {
     Mono<List<ShineInfo>> selectShineInfoMonoByIds(List<Long> ids);
 
     /**
-     * select shine by page and query
-     *
-     * @param limit
-     * @param rows
-     * @param query
-     * @return
-     */
-    Mono<List<Shine>> selectShineMonoByLimitAndQuery(Long limit, Long rows, Query query);
-
-    /**
-     * count shine by query
-     *
-     * @param query
-     * @return
-     */
-    Mono<Long> countShineMonoByQuery(Query query);
-
-    /**
      * select shine info page by condition
      *
      * @param pageModelRequest
@@ -126,6 +110,6 @@ public interface ShineService {
      * @param scrollModelRequest
      * @return
      */
-    Mono<ScrollModelResponse<ShineInfo, Pit>> selectShineInfoScrollMonoByScrollAndCursor(ScrollModelRequest<Pit> scrollModelRequest);
+    Mono<ScrollModelResponse<ShineInfo, Long>> selectShineInfoScrollMonoByScrollAndCursor(ScrollModelRequest<ShineCondition, Long> scrollModelRequest);
 
 }

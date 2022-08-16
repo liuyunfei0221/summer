@@ -4,7 +4,7 @@ import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.event.DataEvent;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
-import com.blue.pulsar.common.BluePulsarListener;
+import com.blue.pulsar.component.BluePulsarListener;
 import com.blue.risk.config.blue.BlueConsumerConfig;
 import com.blue.risk.service.inter.RiskService;
 import reactor.core.scheduler.Scheduler;

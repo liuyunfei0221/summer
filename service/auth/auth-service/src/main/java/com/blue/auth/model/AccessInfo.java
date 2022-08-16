@@ -48,7 +48,7 @@ public final class AccessInfo implements Serializable {
             throw new BlueException(BAD_REQUEST);
         if (isBlank(pubKey))
             throw new BlueException(BAD_REQUEST);
-        if (isNull(loginMillisTimeStamp))
+        if (isNull(loginMillisTimeStamp) || loginMillisTimeStamp <= 0L)
             throw new BlueException(BAD_REQUEST);
 
         this.gamma = gamma;

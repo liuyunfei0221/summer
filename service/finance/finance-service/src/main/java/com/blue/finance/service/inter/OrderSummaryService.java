@@ -3,6 +3,7 @@ package com.blue.finance.service.inter;
 import com.blue.basic.model.common.Pit;
 import com.blue.basic.model.common.ScrollModelRequest;
 import com.blue.basic.model.common.ScrollModelResponse;
+import com.blue.finance.model.OrderCondition;
 import com.blue.finance.repository.entity.OrderSummary;
 import reactor.core.publisher.Mono;
 
@@ -82,6 +83,6 @@ public interface OrderSummaryService {
      * @param memberId
      * @return
      */
-    Mono<ScrollModelResponse<OrderSummary, Pit>> selectOrderSummaryByScrollAndMemberId(ScrollModelRequest<Pit> pageModelRequest, Long memberId);
+    Mono<ScrollModelResponse<OrderSummary, Pit>> selectOrderSummaryByScrollAndMemberId(ScrollModelRequest<OrderCondition, Pit> pageModelRequest, Long memberId);
 
 }

@@ -3,7 +3,7 @@ package com.blue.analyze.event.producer;
 import com.blue.analyze.config.blue.BlueProducerConfig;
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.event.IllegalMarkEvent;
-import com.blue.pulsar.common.BluePulsarProducer;
+import com.blue.pulsar.component.BluePulsarProducer;
 import org.apache.pulsar.client.api.MessageId;
 import reactor.util.Logger;
 

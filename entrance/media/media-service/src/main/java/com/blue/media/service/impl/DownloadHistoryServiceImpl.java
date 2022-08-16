@@ -5,7 +5,6 @@ import com.blue.basic.model.common.PageModelResponse;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.media.api.model.AttachmentDetailInfo;
 import com.blue.media.api.model.DownloadHistoryInfo;
-import com.blue.media.constant.ColumnName;
 import com.blue.media.constant.DownloadHistorySortAttribute;
 import com.blue.media.model.DownloadHistoryCondition;
 import com.blue.media.remote.consumer.RpcMemberBasicServiceConsumer;
@@ -32,9 +31,10 @@ import java.util.stream.Stream;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
-import static com.blue.media.constant.ColumnName.CREATE_TIME;
+import static com.blue.media.constant.DownloadHistoryColumnName.*;
+import static com.blue.media.constant.DownloadHistorySortAttribute.ID;
 import static com.blue.media.converter.MediaModelConverters.downloadHistoryToDownloadHistoryInfo;
-import static com.blue.mongo.common.SortConverter.convert;
+import static com.blue.mongo.common.MongoSortProcessor.process;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -78,7 +78,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final Function<DownloadHistoryCondition, Sort> SORTER_CONVERTER = c ->
-            convert(c, SORT_ATTRIBUTE_MAPPING, DownloadHistorySortAttribute.ID.column);
+            process(c, SORT_ATTRIBUTE_MAPPING, DownloadHistorySortAttribute.ID.column);
 
     private static final Function<DownloadHistoryCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();
@@ -167,7 +167,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
         DownloadHistory probe = new DownloadHistory();
         probe.setCreator(memberId);
 
-        return downloadHistoryRepository.findAll(Example.of(probe), Sort.by(Sort.Order.desc(ColumnName.ID.name)))
+        return downloadHistoryRepository.findAll(Example.of(probe), Sort.by(Sort.Order.desc(ID.attribute)))
                 .publishOn(scheduler)
                 .skip(limit).take(rows)
                 .collectList();

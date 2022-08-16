@@ -58,13 +58,13 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
 
     private static final Consumer<String> KEY_ASSERTER = key -> {
         int len;
-        if (isBlank(key) || (len = key.length()) < VFK_LEN_MIN || len > VFK_LEN_MIN)
+        if (isBlank(key) || (len = key.length()) < VFK_LEN_MIN || len > VFK_LEN_MAX)
             throw new BlueException(INVALID_PARAM);
     };
 
     private static final Consumer<String> VERIFY_ASSERTER = verify -> {
         int len;
-        if (isBlank(verify) || (len = verify.length()) < VFV_LEN_MIN || len > VFV_LEN_MIN)
+        if (isBlank(verify) || (len = verify.length()) < VFV_LEN_MIN || len > VFV_LEN_MAX)
             throw new BlueException(INVALID_PARAM);
     };
 

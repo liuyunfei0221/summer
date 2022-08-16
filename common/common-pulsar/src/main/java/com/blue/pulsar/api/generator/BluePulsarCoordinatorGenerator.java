@@ -1,8 +1,8 @@
 package com.blue.pulsar.api.generator;
 
 import com.blue.pulsar.api.conf.ClientConf;
-import com.blue.pulsar.common.BluePulsarTransConsumerCoordinator;
-import com.blue.pulsar.common.BluePulsarTransProducerCoordinator;
+import com.blue.pulsar.component.BluePulsarTransConsumerCoordinator;
+import com.blue.pulsar.component.BluePulsarTransProducerCoordinator;
 import org.apache.pulsar.client.api.PulsarClient;
 
 

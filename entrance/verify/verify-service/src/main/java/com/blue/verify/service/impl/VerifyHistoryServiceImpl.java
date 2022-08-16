@@ -26,8 +26,8 @@ import java.util.stream.Stream;
 
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.constant.common.ResponseElement.*;
-import static com.blue.mongo.common.SortConverter.convert;
-import static com.blue.verify.constant.ColumnName.CREATE_TIME;
+import static com.blue.mongo.common.MongoSortProcessor.process;
+import static com.blue.verify.constant.BaseColumnName.CREATE_TIME;
 import static com.blue.verify.converter.VerifyModelConverters.VERIFY_HISTORIES_2_VERIFY_HISTORY_INFOS_CONVERTER;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -65,7 +65,7 @@ public class VerifyHistoryServiceImpl implements VerifyHistoryService {
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final Function<VerifyHistoryCondition, Sort> SORTER_CONVERTER = c ->
-            convert(c, SORT_ATTRIBUTE_MAPPING, VerifyHistorySortAttribute.ID.column);
+            process(c, SORT_ATTRIBUTE_MAPPING, VerifyHistorySortAttribute.ID.column);
 
     private static final Function<VerifyHistoryCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();

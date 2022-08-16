@@ -1,4 +1,4 @@
-import com.blue.identity.api.common.BlueIdentityParser;
+import com.blue.identity.common.BlueIdentityParser;
 import com.blue.identity.model.IdentityElement;
 
 public class ElementTest {

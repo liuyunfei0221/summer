@@ -2,7 +2,7 @@ package com.blue.verify.event.consumer;
 
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.event.IllegalMarkEvent;
-import com.blue.pulsar.common.BluePulsarListener;
+import com.blue.pulsar.component.BluePulsarListener;
 import com.blue.verify.component.illegal.IllegalAsserter;
 import com.blue.verify.config.blue.BlueConsumerConfig;
 import reactor.core.scheduler.Scheduler;

@@ -37,10 +37,11 @@ import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.Status.VALID;
-import static com.blue.media.constant.ColumnName.*;
+import static com.blue.media.constant.QrCodeConfigColumnName.*;
+import static com.blue.media.constant.QrCodeConfigSortAttribute.ID;
 import static com.blue.media.converter.MediaModelConverters.QR_CODE_CONFIG_2_QR_CODE_CONFIG_INFO_CONVERTER;
 import static com.blue.media.converter.MediaModelConverters.qrCodeConfigToQrCodeConfigManagerInfo;
-import static com.blue.mongo.common.SortConverter.convert;
+import static com.blue.mongo.common.MongoSortProcessor.process;
 import static com.blue.mongo.constant.LikeElement.PREFIX;
 import static com.blue.mongo.constant.LikeElement.SUFFIX;
 import static java.util.Collections.emptyList;
@@ -157,7 +158,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final Function<QrCodeCondition, Sort> SORTER_CONVERTER = c ->
-            convert(c, SORT_ATTRIBUTE_MAPPING, QrCodeConfigSortAttribute.ID.column);
+            process(c, SORT_ATTRIBUTE_MAPPING, ID.column);
 
     private static final Function<QrCodeCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();

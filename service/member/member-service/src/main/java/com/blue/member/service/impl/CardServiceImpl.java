@@ -45,9 +45,9 @@ import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.basic.constant.common.Status.VALID;
 import static com.blue.basic.constant.common.SyncKeyPrefix.CARD_UPDATE_PRE;
-import static com.blue.member.constant.ColumnName.*;
+import static com.blue.member.constant.CardColumnName.*;
 import static com.blue.member.converter.MemberModelConverters.*;
-import static com.blue.mongo.common.SortConverter.convert;
+import static com.blue.mongo.common.MongoSortProcessor.process;
 import static com.blue.mongo.constant.LikeElement.PREFIX;
 import static com.blue.mongo.constant.LikeElement.SUFFIX;
 import static java.util.Collections.emptyList;
@@ -194,7 +194,7 @@ public class CardServiceImpl implements CardService {
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final Function<CardCondition, Sort> SORTER_CONVERTER = c ->
-            convert(c, SORT_ATTRIBUTE_MAPPING, CardSortAttribute.ID.column);
+            process(c, SORT_ATTRIBUTE_MAPPING, CardSortAttribute.ID.column);
 
     private static final Function<CardCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();

@@ -3,7 +3,7 @@ package com.blue.shine.event.consumer;
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.event.IdentityEvent;
 import com.blue.basic.model.exps.BlueException;
-import com.blue.pulsar.common.BluePulsarListener;
+import com.blue.pulsar.component.BluePulsarListener;
 import com.blue.shine.config.blue.BlueConsumerConfig;
 import com.blue.shine.service.inter.ShineService;
 import reactor.core.scheduler.Scheduler;

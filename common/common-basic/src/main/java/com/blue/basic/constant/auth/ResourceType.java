@@ -9,19 +9,24 @@ package com.blue.basic.constant.auth;
 public enum ResourceType {
 
     /**
+     * rest for common
+     */
+    COMMON(1, "rest for common"),
+
+    /**
      * rest for client
      */
-    API(1, "rest for client"),
+    API(2, "rest for client"),
 
     /**
      * rest for manager
      */
-    MANAGE(2, "rest for manager"),
+    MANAGE(3, "rest for manager"),
 
     /**
      * rest for open api
      */
-    OPEN(3, "rest for open api");
+    OPEN(4, "rest for open api");
 
     public final int identity;
 

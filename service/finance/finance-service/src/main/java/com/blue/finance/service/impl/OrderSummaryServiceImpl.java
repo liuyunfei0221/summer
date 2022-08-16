@@ -7,6 +7,7 @@ import com.blue.basic.model.common.ScrollModelResponse;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.finance.event.producer.OrderSummaryInsertProducer;
 import com.blue.finance.event.producer.OrderSummaryUpdateProducer;
+import com.blue.finance.model.OrderCondition;
 import com.blue.finance.repository.entity.OrderSummary;
 import com.blue.finance.service.inter.OrderSummaryService;
 import com.blue.identity.component.BlueIdentityProcessor;
@@ -169,7 +170,7 @@ public class OrderSummaryServiceImpl implements OrderSummaryService {
      * @return
      */
     @Override
-    public Mono<ScrollModelResponse<OrderSummary, Pit>> selectOrderSummaryByScrollAndMemberId(ScrollModelRequest<Pit> pageModelRequest, Long memberId) {
+    public Mono<ScrollModelResponse<OrderSummary, Pit>> selectOrderSummaryByScrollAndMemberId(ScrollModelRequest<OrderCondition, Pit> pageModelRequest, Long memberId) {
         return null;
     }
 

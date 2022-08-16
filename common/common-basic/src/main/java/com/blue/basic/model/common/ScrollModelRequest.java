@@ -14,7 +14,7 @@ import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
-public final class ScrollModelRequest<T extends Serializable> implements Serializable {
+public final class ScrollModelRequest<T extends Serializable, A extends Serializable> implements Serializable {
 
     private static final long serialVersionUID = 8775218133394708404L;
 
@@ -26,18 +26,24 @@ public final class ScrollModelRequest<T extends Serializable> implements Seriali
     private Long rows;
 
     /**
+     * differentiated condition
+     */
+    private T condition;
+
+    /**
      * cursor
      */
-    private T cursor;
+    private A cursor;
 
     public ScrollModelRequest() {
     }
 
-    public ScrollModelRequest(Long rows, T cursor) {
+    public ScrollModelRequest(Long rows, T condition, A cursor) {
         if (isNull(rows) || rows < 1L || rows > MAX_ROWS_PER_REQ)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "rows can't be less than 1, max rows per request can't be greater than " + MAX_ROWS.value);
 
         this.rows = rows;
+        this.condition = condition;
         this.cursor = cursor;
     }
 
@@ -52,11 +58,19 @@ public final class ScrollModelRequest<T extends Serializable> implements Seriali
         this.rows = rows;
     }
 
-    public T getCursor() {
+    public T getCondition() {
+        return condition;
+    }
+
+    public void setCondition(T condition) {
+        this.condition = condition;
+    }
+
+    public A getCursor() {
         return cursor;
     }
 
-    public void setCursor(T cursor) {
+    public void setCursor(A cursor) {
         this.cursor = cursor;
     }
 
@@ -64,6 +78,7 @@ public final class ScrollModelRequest<T extends Serializable> implements Seriali
     public String toString() {
         return "ScrollModelRequest{" +
                 "rows=" + rows +
+                ", condition=" + condition +
                 ", cursor=" + cursor +
                 '}';
     }

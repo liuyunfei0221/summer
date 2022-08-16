@@ -2,7 +2,7 @@ package com.blue.template.component;
 
 import com.blue.template.api.conf.StringContentAttr;
 import com.blue.template.api.conf.StringContentWriterConf;
-import com.blue.template.common.TemplateWriter;
+import com.blue.template.core.TemplateWriter;
 import com.blue.template.model.WriterElement;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;

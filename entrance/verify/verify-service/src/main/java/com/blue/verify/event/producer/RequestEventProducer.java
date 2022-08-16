@@ -2,7 +2,7 @@ package com.blue.verify.event.producer;
 
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.event.DataEvent;
-import com.blue.pulsar.common.BluePulsarProducer;
+import com.blue.pulsar.component.BluePulsarProducer;
 import com.blue.verify.config.blue.BlueProducerConfig;
 import org.apache.pulsar.client.api.MessageId;
 import reactor.util.Logger;

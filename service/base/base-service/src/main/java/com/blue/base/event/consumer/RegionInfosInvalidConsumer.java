@@ -4,7 +4,7 @@ import com.blue.base.config.blue.BlueConsumerConfig;
 import com.blue.base.service.inter.RegionControlService;
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.event.EmptyEvent;
-import com.blue.pulsar.common.BluePulsarListener;
+import com.blue.pulsar.component.BluePulsarListener;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 

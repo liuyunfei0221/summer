@@ -5,7 +5,7 @@ import com.blue.basic.model.event.EmptyEvent;
 import com.blue.marketing.config.blue.BlueConsumerConfig;
 import com.blue.marketing.service.inter.SignInService;
 import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
-import com.blue.pulsar.common.BluePulsarListener;
+import com.blue.pulsar.component.BluePulsarListener;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 

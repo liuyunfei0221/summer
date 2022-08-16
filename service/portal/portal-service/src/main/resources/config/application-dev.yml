@@ -241,7 +241,7 @@ dubbo:
     owner: blue
     organization: blue
     shutwait: 20s
-    enable-file-cache: false
+    enable-file-cache: true
   protocol:
     name: dubbo
     host: localhost

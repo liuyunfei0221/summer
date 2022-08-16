@@ -4,7 +4,7 @@ import com.blue.auth.api.component.jwt.api.conf.MemberJwtConf;
 import com.blue.auth.api.model.MemberPayload;
 import com.blue.jwt.api.conf.BaseJwtConfParams;
 import com.blue.jwt.api.generator.BlueJwtProcessorGenerator;
-import com.blue.jwt.common.JwtProcessor;
+import com.blue.jwt.component.JwtProcessor;
 import org.slf4j.Logger;
 
 import java.util.Map;

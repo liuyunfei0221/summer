@@ -21,7 +21,7 @@ import static com.blue.basic.common.base.BlueChecker.isNotNull;
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.OriginalThrowableGetter.getOriginalThrowable;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
-import static com.blue.mail.common.SenderCommonProcessor.*;
+import static com.blue.mail.processor.SenderCommonProcessor.*;
 import static java.lang.Integer.bitCount;
 import static java.lang.Integer.numberOfLeadingZeros;
 import static java.util.Optional.ofNullable;

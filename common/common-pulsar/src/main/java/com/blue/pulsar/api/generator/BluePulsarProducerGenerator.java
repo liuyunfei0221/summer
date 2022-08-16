@@ -1,7 +1,7 @@
 package com.blue.pulsar.api.generator;
 
 import com.blue.pulsar.api.conf.ProducerConf;
-import com.blue.pulsar.common.BluePulsarProducer;
+import com.blue.pulsar.component.BluePulsarProducer;
 import org.apache.pulsar.client.api.BatcherBuilder;
 import org.apache.pulsar.client.api.MessageRouter;
 import org.apache.pulsar.client.api.interceptor.ProducerInterceptor;

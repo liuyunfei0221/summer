@@ -7,7 +7,7 @@ import com.blue.basic.model.event.DataEvent;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.event.component.event.RequestEventReporter;
 import com.blue.event.service.inter.EventReportService;
-import com.blue.jwt.common.JwtProcessor;
+import com.blue.jwt.component.JwtProcessor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Mono;

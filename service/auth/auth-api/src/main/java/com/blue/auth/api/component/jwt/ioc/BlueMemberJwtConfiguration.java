@@ -2,7 +2,7 @@ package com.blue.auth.api.component.jwt.ioc;
 
 import com.blue.auth.api.component.jwt.api.conf.MemberJwtConf;
 import com.blue.auth.api.model.MemberPayload;
-import com.blue.jwt.common.JwtProcessor;
+import com.blue.jwt.component.JwtProcessor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;

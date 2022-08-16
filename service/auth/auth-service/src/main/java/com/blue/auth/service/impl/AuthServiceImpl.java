@@ -21,7 +21,7 @@ import com.blue.basic.constant.common.Symbol;
 import com.blue.basic.model.common.Access;
 import com.blue.basic.model.common.KeyPair;
 import com.blue.basic.model.exps.BlueException;
-import com.blue.jwt.common.JwtProcessor;
+import com.blue.jwt.component.JwtProcessor;
 import com.blue.redisson.api.inter.HandleTask;
 import com.blue.redisson.component.SynchronizedProcessor;
 import com.google.gson.JsonSyntaxException;

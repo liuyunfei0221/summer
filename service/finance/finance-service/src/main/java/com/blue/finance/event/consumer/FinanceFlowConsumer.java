@@ -5,7 +5,7 @@ import com.blue.basic.model.exps.BlueException;
 import com.blue.finance.config.blue.BlueConsumerConfig;
 import com.blue.finance.repository.entity.FinanceFlow;
 import com.blue.finance.service.inter.FinanceFlowService;
-import com.blue.pulsar.common.BluePulsarListener;
+import com.blue.pulsar.component.BluePulsarListener;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 

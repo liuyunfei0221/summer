@@ -1,7 +1,7 @@
 package com.blue.pulsar.api.generator;
 
 import com.blue.pulsar.api.conf.ConsumerConf;
-import com.blue.pulsar.common.BluePulsarConsumer;
+import com.blue.pulsar.component.BluePulsarConsumer;
 import org.apache.pulsar.client.api.ConsumerEventListener;
 import org.apache.pulsar.client.api.ConsumerInterceptor;
 import org.apache.pulsar.client.api.KeySharedPolicy;

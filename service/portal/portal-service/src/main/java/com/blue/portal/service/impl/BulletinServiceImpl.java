@@ -40,7 +40,7 @@ import java.util.stream.Stream;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.GSON;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.basic.common.base.ConditionSortProcessor.process;
+import static com.blue.database.common.ConditionSortProcessor.process;
 import static com.blue.basic.common.base.ConstantProcessor.assertBulletinType;
 import static com.blue.basic.constant.common.CacheKeyPrefix.BULLETINS_PRE;
 import static com.blue.basic.constant.common.ResponseElement.*;

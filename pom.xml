@@ -53,7 +53,7 @@
         <apache.poi.version>5.2.2</apache.poi.version>
         <pulsar.version>2.10.1</pulsar.version>
         <flink.version>1.15.1</flink.version>
-        <affinity.version>3.21ea83</affinity.version>
+        <affinity.version>3.23ea0</affinity.version>
         <slf4j.version>1.7.36</slf4j.version>
         <apollo.version>2.0.1</apollo.version>
         <kaptcha.version>2.3.2</kaptcha.version>

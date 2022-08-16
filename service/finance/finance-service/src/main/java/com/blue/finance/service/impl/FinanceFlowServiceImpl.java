@@ -31,10 +31,10 @@ import java.util.stream.Stream;
 
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.constant.common.ResponseElement.*;
-import static com.blue.finance.constant.ColumnName.*;
+import static com.blue.finance.constant.FinanceFlowColumnName.*;
 import static com.blue.finance.converter.FinanceModelConverters.FINANCE_FLOW_2_FINANCE_FLOW_INFO_CONVERTER;
 import static com.blue.finance.converter.FinanceModelConverters.FINANCE_FLOW_2_FINANCE_FLOW_MANAGER_INFO_CONVERTER;
-import static com.blue.mongo.common.SortConverter.convert;
+import static com.blue.mongo.common.MongoSortProcessor.process;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -81,7 +81,7 @@ public class FinanceFlowServiceImpl implements FinanceFlowService {
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final Function<FinanceFlowCondition, Sort> SORTER_CONVERTER = c ->
-            convert(c, SORT_ATTRIBUTE_MAPPING, FinanceFlowSortAttribute.ID.column);
+            process(c, SORT_ATTRIBUTE_MAPPING, FinanceFlowSortAttribute.ID.column);
 
     private static final Function<FinanceFlowCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();

@@ -5,7 +5,7 @@ import com.blue.basic.model.event.DataEvent;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.lake.config.blue.BlueConsumerConfig;
 import com.blue.lake.service.inter.LakeService;
-import com.blue.pulsar.common.BluePulsarBatchListener;
+import com.blue.pulsar.component.BluePulsarBatchListener;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 

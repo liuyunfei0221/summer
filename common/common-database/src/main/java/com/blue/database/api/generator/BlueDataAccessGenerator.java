@@ -2,8 +2,8 @@ package com.blue.database.api.generator;
 
 import com.blue.basic.common.base.BlueChecker;
 import com.blue.database.api.conf.*;
-import com.blue.database.common.DatabaseShardingAlgorithm;
-import com.blue.database.common.TableShardingAlgorithm;
+import com.blue.database.algorithm.DatabaseShardingAlgorithm;
+import com.blue.database.algorithm.TableShardingAlgorithm;
 import com.blue.identity.api.conf.IdentityConf;
 import com.blue.identity.core.exp.IdentityException;
 import com.zaxxer.hikari.HikariConfig;

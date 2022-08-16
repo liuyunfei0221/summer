@@ -15,7 +15,7 @@ import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.common.base.MetadataGetter.getMetadata;
 import static com.blue.basic.common.base.RequestIpGetter.getRequestIp;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.shine.constant.MemberTypeReference.PAGE_MODEL_FOR_SHINE_CONDITION_TYPE;
+import static com.blue.shine.constant.ShineTypeReference.PAGE_MODEL_FOR_SHINE_CONDITION_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.defer;

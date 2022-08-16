@@ -165,7 +165,7 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:11000/blue-base/states/45",
+							"raw": "localhost:11000/blue-base/states/75",
 							"host": [
 								"localhost"
 							],
@@ -173,7 +173,7 @@
 							"path": [
 								"blue-base",
 								"states",
-								"45"
+								"75"
 							]
 						}
 					},
@@ -217,7 +217,7 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:11000/blue-base/areas/19332",
+							"raw": "localhost:11000/blue-base/areas/4816",
 							"host": [
 								"localhost"
 							],
@@ -225,7 +225,7 @@
 							"path": [
 								"blue-base",
 								"areas",
-								"19332"
+								"4816"
 							]
 						}
 					},
@@ -4516,6 +4516,152 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "后台查询公益信息",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiIxZGMxOWRkZWUyMWNhZmY1NmQwNmRiYjRiMjM0ZjVlYWJmMzI2NzExNWY2NWIzYTExNWVmYzM0YzdmYmZjM2NhNzhlYmIwMTk0ZjlhMzliYmM5YWY1MWMxNTI1ZjM2ZDc3MGU4YTIxZDI3ZjA1OGE0NjNkNWVjOGRmOTQ1ZDFhOSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDQ5NDI2OTQ1NTE2NTAzMDVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ0OTQyNjk0NTUxNjUwMzA1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYwNjU2OTI1IiwibmJmIjoxNjYwNjU2OTI1LCJ0IjoicDZvaWxob3I0WTYiLCJlYXMiOjE2Njg0MzI5MjU0MDUsImV4cCI6MTY2ODQzMjkyNSwiaWF0IjoxNjYwNjU2OTI1LCJqdGkiOiJjeDlXSGN6Y3RJcU1Fejc1bmdmbTFLcTc3TzlhdkFmZSJ9.x0mHiiRTEY878LvtbBbQPTBRJfYqzPbzVxmcHp26UH-zeIKqXR7gXKawQCeM6ViN3hKUtm7KyVYvSf1s9cRipg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":100,\r\n    \"condition\":{\r\n        \"id\":null,\r\n        \"nameLike\":null,\r\n        \"link\":null,\r\n        \"type\":null,\r\n        \"status\":null,\r\n        \"activeTimeBegin\":null,\r\n        \"activeTimeEnd\":null,\r\n        \"expireTimeBegin\":null,\r\n        \"expireTimeEnd\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"DESC\"\r\n    }\r\n}"
+						},
+						"url": {
+							"raw": "localhost:11000/blue-shine/manager/shines",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-shine",
+								"manager",
+								"shines"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台添加公益信息",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiIxZGMxOWRkZWUyMWNhZmY1NmQwNmRiYjRiMjM0ZjVlYWJmMzI2NzExNWY2NWIzYTExNWVmYzM0YzdmYmZjM2NhNzhlYmIwMTk0ZjlhMzliYmM5YWY1MWMxNTI1ZjM2ZDc3MGU4YTIxZDI3ZjA1OGE0NjNkNWVjOGRmOTQ1ZDFhOSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDQ5NDI2OTQ1NTE2NTAzMDVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ0OTQyNjk0NTUxNjUwMzA1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYwNjU2OTI1IiwibmJmIjoxNjYwNjU2OTI1LCJ0IjoicDZvaWxob3I0WTYiLCJlYXMiOjE2Njg0MzI5MjU0MDUsImV4cCI6MTY2ODQzMjkyNSwiaWF0IjoxNjYwNjU2OTI1LCJqdGkiOiJjeDlXSGN6Y3RJcU1Fejc1bmdmbTFLcTc3TzlhdkFmZSJ9.x0mHiiRTEY878LvtbBbQPTBRJfYqzPbzVxmcHp26UH-zeIKqXR7gXKawQCeM6ViN3hKUtm7KyVYvSf1s9cRipg",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "zh-CN",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"标题1\",\r\n    \"content\":\"内容1\",\r\n    \"detail\":\"详情1\",\r\n    \"contact\":\"联系人1\",\r\n    \"contactDetail\":\"联系方式详情1\",\r\n    \"cityId\":4816,\r\n    \"addressDetail\":\"海滩1\",\r\n    \"extra\":\"附加信息1\",\r\n    \"priority\":0\r\n}"
+						},
+						"url": {
+							"raw": "http://127.0.0.1:11000/blue-shine/manager/shine",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "11000",
+							"path": [
+								"blue-shine",
+								"manager",
+								"shine"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台修改公益信息",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiJiNTgyYzRkYzgzOGQyYjYzMTViMGJkY2I2MWI3Yzk1YjhhNTZjMzg1ZjA3ZDc5YjEyM2RjZjgwMDY3NTU2OWZkMjIxNDYzMjgyMmZjMWIzMmQzMzJlMzIwNzdlNGIyMDkxZWJkYmE1YjdiMDhhMTk3MDM5ZWZjYjUzMGJhYmVlYSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDI0MzQyMjEwNDk5MDUxNTVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQyNDM0MjIxMDQ5OTA1MTU1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjU4MzE4ODg0IiwibmJmIjoxNjU4MzE4ODg0LCJ0IjoiNkQ5RjB6Uzg3T2oiLCJlYXMiOjE2NjYwOTQ4ODQ3NjAsImV4cCI6MTY2NjA5NDg4NCwiaWF0IjoxNjU4MzE4ODg0LCJqdGkiOiJ0QUdlbGtNVXh1RjhSWXI5eW1CMm11VW5JdGNwQzhzTSJ9.1ht-U1OcPgN2MDfR6CiDAT4HiBQMwnHQ9QCvUlxuE4EPsoGKEod8g8rdpaAqtMnnEegJOCBnxe_G9m9WmLtB3Q",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":42444771637078652,\r\n    \"name\":\"big big big reward\",\r\n    \"detail\":\"reward reward reward\",\r\n    \"link\":\"www.baidu.com\",\r\n    \"type\":1,\r\n    \"data\":\"{\\\"name\\\":\\\"nothing\\\"}\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:11000/blue-marketing/manager/reward",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-marketing",
+								"manager",
+								"reward"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台删除公益信息",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiI4ZGI2MDBhOGY5N2RhYjYwN2EwODA0YzI4NzE1OGY3Y2UxM2NlOTU0YTFjNzc0YWVjMWY0YWJhYzY5NTI2MGMxMWY4OTEyZTczNjgwZmM0ZWJlMjYxNjU4OTY1Zjg0ZmRkYTE4ZGUwY2NhMmVjMzNjNDY3MWMzZTU3ZWFiMTIxYyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDI2MjI2Mjk0NTQwMjA2MDlfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQyNjIyNjI5NDU0MDIwNjA5IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjU4NDg1ODY3IiwibmJmIjoxNjU4NDg1ODY3LCJ0IjoidXdHaXVJVGlQdnQiLCJlYXMiOjE2NjYyNjE4Njc1NjcsImV4cCI6MTY2NjI2MTg2NywiaWF0IjoxNjU4NDg1ODY3LCJqdGkiOiI5VngySXdZQ1hLc3BGNEJON1k5Q2NqOENvYkdyTkh5YSJ9.douotpn_gYGdK5uJx1pyhjluD9w9CiS6jEPkaaBlH1DOgC6u5Fpa8qzvSLdavm1BMl8LfD3H8zyRDlBmhCAW3g",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:11000/blue-marketing/manager/reward/8",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-marketing",
+								"manager",
+								"reward",
+								"8"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -4741,7 +4887,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"9288550\"\r\n    }\r\n}"
+							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"6387975\"\r\n    }\r\n}"
 						},
 						"url": {
 							"raw": "localhost:11000/blue-auth/auth/session",
@@ -4770,7 +4916,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiIxYzM4MmYwZWY4YjFjZjEwZmVmZGRmNzUwNzgyZjA4NzFkODcwNGE0MGUzYjRiNTE4ZmNiYmU1NjVlOTM5OTUzNzQ5NzA0MTgxOGY3OWJmN2E0YTg0NzhhZjMyNDgyNDM4YTk3ZDBhNDEwZWNkYjI5YWUyZDhjNDM2ZmI0ZGFjMiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDMwODQ3NTkzNDUxMzU2MTdfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQzMDg0NzU5MzQ1MTM1NjE3IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjU4OTIwNDgwIiwibmJmIjoxNjU4OTIwNDgwLCJ0IjoiWEV5elExeWMzQjkiLCJlYXMiOjE2NjY2OTY0ODA4MDIsImV4cCI6MTY2NjY5NjQ4MCwiaWF0IjoxNjU4OTIwNDgwLCJqdGkiOiI2RDBKNzFUMFFtaUZTTmFIbkpuNllJZFBZa1F5NzVSUCJ9.3l66UBn8NeIJA8v-T0T6kmaJARzofhlKq5SKhnsPglHj9osESjvCdXlbzLPuD3rWsxHJmXK50AABtI7CRjJeyQ",
+								"value": "eyJraWQiOiIxZGMxOWRkZWUyMWNhZmY1NmQwNmRiYjRiMjM0ZjVlYWJmMzI2NzExNWY2NWIzYTExNWVmYzM0YzdmYmZjM2NhNzhlYmIwMTk0ZjlhMzliYmM5YWY1MWMxNTI1ZjM2ZDc3MGU4YTIxZDI3ZjA1OGE0NjNkNWVjOGRmOTQ1ZDFhOSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDQ5NDI2OTQ1NTE2NTAzMDVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ0OTQyNjk0NTUxNjUwMzA1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYwNjU2OTI1IiwibmJmIjoxNjYwNjU2OTI1LCJ0IjoicDZvaWxob3I0WTYiLCJlYXMiOjE2Njg0MzI5MjU0MDUsImV4cCI6MTY2ODQzMjkyNSwiaWF0IjoxNjYwNjU2OTI1LCJqdGkiOiJjeDlXSGN6Y3RJcU1Fejc1bmdmbTFLcTc3TzlhdkFmZSJ9.x0mHiiRTEY878LvtbBbQPTBRJfYqzPbzVxmcHp26UH-zeIKqXR7gXKawQCeM6ViN3hKUtm7KyVYvSf1s9cRipg",
 								"type": "text"
 							},
 							{
@@ -4996,7 +5142,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"verifyType\":\"SMS\",\r\n    \"businessType\":\"UPD_ACC\",\r\n    \"destination\":\"18633783158\"\r\n}"
+							"raw": "{\r\n    \"verifyType\":\"SMS\",\r\n    \"businessType\":\"UPD_ACC\",\r\n    \"destination\":\"13131693996\"\r\n}"
 						},
 						"url": {
 							"raw": "localhost:15000/blue-verify/verify/generate",
@@ -5049,7 +5195,37 @@
 					"response": []
 				},
 				{
-					"name": "账号密码登录",
+					"name": "获取密码登录图片验证码",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"verifyType\":\"IMAGE\",\r\n    \"businessType\":\"CAL\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:15000/blue-verify/verify/generate",
+							"host": [
+								"localhost"
+							],
+							"port": "15000",
+							"path": [
+								"blue-verify",
+								"verify",
+								"generate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "手机号密码登录",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -5079,7 +5255,7 @@
 					"response": []
 				},
 				{
-					"name": "获取密码登录图片验证码",
+					"name": "账号密码登录",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -5091,18 +5267,18 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"verifyType\":\"IMAGE\",\r\n    \"businessType\":\"CAL\"\r\n}"
+							"raw": "{\r\n    \"credentialType\":\"PP\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"verificationKey\":\"AnrfjECjY1rEzMBp\",\r\n        \"verificationCode\":\"PQMakXS\",\r\n        \"identity\":\"18633783158\",\r\n        \"access\":\"11111111\"\r\n    }\r\n}"
 						},
 						"url": {
-							"raw": "localhost:15000/blue-verify/verify/generate",
+							"raw": "localhost:11000/blue-auth/auth/login",
 							"host": [
 								"localhost"
 							],
-							"port": "15000",
+							"port": "11000",
 							"path": [
-								"blue-verify",
-								"verify",
-								"generate"
+								"blue-auth",
+								"auth",
+								"login"
 							]
 						}
 					},
@@ -5381,6 +5557,89 @@
 								"75"
 							],
 							"port": "9200"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "172.16.204.75:9200/shine/_settings",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"index\" : {\r\n        \"number_of_replicas\" : 0\r\n    }\r\n}"
+						},
+						"url": {
+							"raw": "172.16.204.75:9200/shine/_settings",
+							"host": [
+								"172",
+								"16",
+								"204",
+								"75"
+							],
+							"port": "9200",
+							"path": [
+								"shine",
+								"_settings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "172.16.204.75:9200/_cluster/reroute",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"commands\": [\r\n        {\r\n            \"allocate\": {\r\n                \"index\": \"shine\",\r\n                \"shard\": 0,\r\n                \"node\": \"node-1\",\r\n                \"allow_primary\": 1\r\n            }\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "172.16.204.75:9200/_cluster/reroute",
+							"host": [
+								"172",
+								"16",
+								"204",
+								"75"
+							],
+							"port": "9200",
+							"path": [
+								"_cluster",
+								"reroute"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "localhost:9200/shine/_search",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:9200/shine/_search",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"shine",
+								"_search"
+							]
 						}
 					},
 					"response": []

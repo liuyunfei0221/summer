@@ -19,7 +19,7 @@ import com.blue.basic.constant.auth.VerifyTypeAndCredentialTypesRelation;
 import com.blue.basic.constant.verify.VerifyType;
 import com.blue.basic.model.common.Access;
 import com.blue.basic.model.exps.BlueException;
-import com.blue.jwt.common.JwtProcessor;
+import com.blue.jwt.component.JwtProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.redis.component.BlueLeakyBucketRateLimiter;
 import com.blue.redisson.component.SynchronizedProcessor;

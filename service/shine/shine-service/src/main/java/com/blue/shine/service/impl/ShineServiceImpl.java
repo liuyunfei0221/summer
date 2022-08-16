@@ -1,10 +1,21 @@
 package com.blue.shine.service.impl;
 
 import co.elastic.clients.elasticsearch.ElasticsearchAsyncClient;
-import co.elastic.clients.elasticsearch.core.*;
+import co.elastic.clients.elasticsearch._types.SortOptions;
+import co.elastic.clients.elasticsearch._types.query_dsl.*;
+import co.elastic.clients.elasticsearch.core.DeleteResponse;
+import co.elastic.clients.elasticsearch.core.GetResponse;
+import co.elastic.clients.elasticsearch.core.IndexResponse;
+import co.elastic.clients.elasticsearch.core.UpdateResponse;
+import co.elastic.clients.elasticsearch.core.search.Hit;
+import co.elastic.clients.elasticsearch.core.search.HitsMetadata;
+import co.elastic.clients.json.JsonData;
 import com.blue.base.api.model.CityRegion;
 import com.blue.basic.common.base.BlueChecker;
-import com.blue.basic.model.common.*;
+import com.blue.basic.model.common.PageModelRequest;
+import com.blue.basic.model.common.PageModelResponse;
+import com.blue.basic.model.common.ScrollModelRequest;
+import com.blue.basic.model.common.ScrollModelResponse;
 import com.blue.basic.model.event.IdentityEvent;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
@@ -21,9 +32,6 @@ import com.blue.shine.remote.consumer.RpcCityServiceConsumer;
 import com.blue.shine.repository.entity.Shine;
 import com.blue.shine.repository.template.ShineRepository;
 import com.blue.shine.service.inter.ShineService;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -44,20 +52,13 @@ import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
 import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
 import static com.blue.basic.constant.common.ResponseElement.*;
-import static com.blue.mongo.common.SortConverter.convert;
-import static com.blue.mongo.constant.LikeElement.PREFIX;
-import static com.blue.mongo.constant.LikeElement.SUFFIX;
-import static com.blue.shine.constant.ColumnName.*;
-import static com.blue.shine.converter.ShineModelConverters.SHINES_2_SHINES_INFO;
+import static com.blue.es.common.EsSortProcessor.process;
+import static com.blue.shine.constant.ShineColumnName.*;
 import static com.blue.shine.converter.ShineModelConverters.SHINE_2_SHINE_INFO;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
-import static java.util.regex.Pattern.CASE_INSENSITIVE;
-import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static org.springframework.data.mongodb.core.query.Criteria.byExample;
-import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static reactor.core.publisher.Flux.fromIterable;
 import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
@@ -75,8 +76,6 @@ public class ShineServiceImpl implements ShineService {
 
     private BlueIdentityProcessor blueIdentityProcessor;
 
-    private final ReactiveMongoTemplate reactiveMongoTemplate;
-
     private final Scheduler scheduler;
 
     private final ElasticsearchAsyncClient elasticsearchAsyncClient;
@@ -91,11 +90,10 @@ public class ShineServiceImpl implements ShineService {
 
     private final ShineRepository shineRepository;
 
-    public ShineServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ReactiveMongoTemplate reactiveMongoTemplate, Scheduler scheduler, ElasticsearchAsyncClient elasticsearchAsyncClient,
+    public ShineServiceImpl(BlueIdentityProcessor blueIdentityProcessor, Scheduler scheduler, ElasticsearchAsyncClient elasticsearchAsyncClient,
                             RpcCityServiceConsumer rpcCityServiceConsumer, ShineRepository shineRepository, ShineInsertProducer shineInsertProducer, ShineUpdateProducer shineUpdateProducer,
                             ShineDeleteProducer shineDeleteProducer, DefaultPriorityDeploy defaultPriorityDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
-        this.reactiveMongoTemplate = reactiveMongoTemplate;
         this.scheduler = scheduler;
         this.elasticsearchAsyncClient = elasticsearchAsyncClient;
         this.rpcCityServiceConsumer = rpcCityServiceConsumer;
@@ -202,57 +200,71 @@ public class ShineServiceImpl implements ShineService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(ShineSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final Function<ShineCondition, Sort> SORTER_CONVERTER = c ->
-            convert(c, SORT_ATTRIBUTE_MAPPING, ShineSortAttribute.ID.column);
+    private static final Function<ShineCondition, SortOptions> SORT_PROCESSOR = c ->
+            process(c, SORT_ATTRIBUTE_MAPPING, ShineSortAttribute.ID.column);
 
     private static final Function<ShineCondition, Query> CONDITION_PROCESSOR = c -> {
-        Query query = new Query();
+        BoolQuery.Builder builder = new BoolQuery.Builder();
 
-        if (isNull(c)) {
-            query.with(SORTER_CONVERTER.apply(new ShineCondition()));
-            return query;
+        if (isNotNull(c)) {
+            ofNullable(c.getId()).filter(BlueChecker::isValidIdentity).ifPresent(id ->
+                    builder.must(TermQuery.of(q -> q.field(ID.name).value(id))._toQuery()));
+
+            ofNullable(c.getTitleLike()).filter(BlueChecker::isNotBlank).ifPresent(titleLike ->
+                    builder.must(MatchQuery.of(q -> q.field(TITLE.name).query(titleLike))._toQuery()));
+
+            ofNullable(c.getContentLike()).filter(BlueChecker::isNotBlank).ifPresent(contentLike ->
+                    builder.must(MatchQuery.of(q -> q.field(CONTENT.name).query(contentLike))._toQuery()));
+
+            ofNullable(c.getDetailLike()).filter(BlueChecker::isNotBlank).ifPresent(detailLike ->
+                    builder.must(MatchQuery.of(q -> q.field(DETAIL.name).query(detailLike))._toQuery()));
+
+            ofNullable(c.getContactLike()).filter(BlueChecker::isNotBlank).ifPresent(contactLike ->
+                    builder.must(MatchQuery.of(q -> q.field(CONTACT.name).query(contactLike))._toQuery()));
+
+            ofNullable(c.getContactDetailLike()).filter(BlueChecker::isNotBlank).ifPresent(contactDetailLike ->
+                    builder.must(MatchQuery.of(q -> q.field(CONTACT_DETAIL.name).query(contactDetailLike))._toQuery()));
+
+            ofNullable(c.getCountryId()).ifPresent(countryId ->
+                    builder.must(TermQuery.of(q -> q.field(COUNTRY_ID.name).value(countryId))._toQuery()));
+
+            ofNullable(c.getStateId()).ifPresent(stateId ->
+                    builder.must(TermQuery.of(q -> q.field(STATE_ID.name).value(stateId))._toQuery()));
+
+            ofNullable(c.getCityId()).ifPresent(cityId ->
+                    builder.must(TermQuery.of(q -> q.field(CITY_ID.name).value(cityId))._toQuery()));
+
+            ofNullable(c.getAddressDetailLike()).filter(BlueChecker::isNotBlank).ifPresent(addressDetailLike ->
+                    builder.must(MatchQuery.of(q -> q.field(ADDRESS_DETAIL.name).query(addressDetailLike))._toQuery()));
+
+            ofNullable(c.getExtra()).filter(BlueChecker::isNotBlank).ifPresent(extra ->
+                    builder.must(TermQuery.of(q -> q.field(EXTRA.name).value(extra))._toQuery()));
+
+            ofNullable(c.getPriority()).ifPresent(priority ->
+                    builder.must(TermQuery.of(q -> q.field(PRIORITY.name).value(priority))._toQuery()));
+
+            ofNullable(c.getCreateTimeBegin()).ifPresent(createTimeBegin ->
+                    builder.must(RangeQuery.of(q -> q.field(CREATE_TIME.name).gte(JsonData.of(createTimeBegin)))._toQuery()));
+
+            ofNullable(c.getCreateTimeEnd()).ifPresent(createTimeEnd ->
+                    builder.must(RangeQuery.of(q -> q.field(CREATE_TIME.name).lte(JsonData.of(createTimeEnd)))._toQuery()));
+
+            ofNullable(c.getUpdateTimeBegin()).ifPresent(updateTimeBegin ->
+                    builder.must(RangeQuery.of(q -> q.field(UPDATE_TIME.name).gte(JsonData.of(updateTimeBegin)))._toQuery()));
+
+            ofNullable(c.getUpdateTimeEnd()).ifPresent(updateTimeEnd ->
+                    builder.must(RangeQuery.of(q -> q.field(UPDATE_TIME.name).lte(JsonData.of(updateTimeEnd)))._toQuery()));
+
+            ofNullable(c.getCreator()).ifPresent(creator ->
+                    builder.must(TermQuery.of(q -> q.field(CREATOR.name).value(creator))._toQuery()));
+
+            ofNullable(c.getUpdater()).ifPresent(updater ->
+                    builder.must(TermQuery.of(q -> q.field(UPDATER.name).value(updater))._toQuery()));
         }
 
-        Shine probe = new Shine();
-
-        ofNullable(c.getId()).ifPresent(probe::setId);
-        ofNullable(c.getTitleLike()).filter(BlueChecker::isNotBlank).ifPresent(titleLike ->
-                query.addCriteria(where(TITLE.name).regex(compile(PREFIX.element + titleLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(c.getContentLike()).filter(BlueChecker::isNotBlank).ifPresent(contentLike ->
-                query.addCriteria(where(CONTENT.name).regex(compile(PREFIX.element + contentLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(c.getDetailLike()).filter(BlueChecker::isNotBlank).ifPresent(detailLike ->
-                query.addCriteria(where(DETAIL.name).regex(compile(PREFIX.element + detailLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(c.getContactLike()).filter(BlueChecker::isNotBlank).ifPresent(contactLike ->
-                query.addCriteria(where(CONTACT.name).regex(compile(PREFIX.element + contactLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(c.getContactDetailLike()).filter(BlueChecker::isNotBlank).ifPresent(contactDetailLike ->
-                query.addCriteria(where(CONTACT_DETAIL.name).regex(compile(PREFIX.element + contactDetailLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(c.getCountryId()).ifPresent(probe::setCountryId);
-        ofNullable(c.getStateId()).ifPresent(probe::setStateId);
-        ofNullable(c.getCityId()).ifPresent(probe::setCityId);
-        ofNullable(c.getContactDetailLike()).filter(BlueChecker::isNotBlank).ifPresent(addressDetailLike ->
-                query.addCriteria(where(ADDRESS_DETAIL.name).regex(compile(PREFIX.element + addressDetailLike + SUFFIX.element, CASE_INSENSITIVE))));
-        ofNullable(c.getExtra()).filter(BlueChecker::isNotBlank).ifPresent(probe::setExtra);
-        ofNullable(c.getPriority()).ifPresent(probe::setPriority);
-
-        ofNullable(c.getCreateTimeBegin()).ifPresent(createTimeBegin ->
-                query.addCriteria(where(CREATE_TIME.name).gte(createTimeBegin)));
-        ofNullable(c.getCreateTimeEnd()).ifPresent(createTimeEnd ->
-                query.addCriteria(where(CREATE_TIME.name).lte(createTimeEnd)));
-
-        ofNullable(c.getUpdateTimeBegin()).ifPresent(updateTimeBegin ->
-                query.addCriteria(where(UPDATE_TIME.name).gte(updateTimeBegin)));
-        ofNullable(c.getUpdateTimeEnd()).ifPresent(updateTimeEnd ->
-                query.addCriteria(where(UPDATE_TIME.name).lte(updateTimeEnd)));
-
-        ofNullable(c.getCreator()).ifPresent(probe::setCreator);
-        ofNullable(c.getUpdater()).ifPresent(probe::setUpdater);
-
-        query.addCriteria(byExample(probe));
-
-        query.with(SORTER_CONVERTER.apply(c));
-
-        return query;
+        return Query.of(b -> b.bool(builder.build()));
     };
+
 
     /**
      * insert shine
@@ -446,6 +458,7 @@ public class ShineServiceImpl implements ShineService {
      * @param id
      * @return
      */
+    @Override
     public Mono<Shine> getShineMono(Long id) {
         LOGGER.info("Mono<Shine> getShineMono(Long id), id = {}", id);
         if (isInvalidIdentity(id))
@@ -469,6 +482,7 @@ public class ShineServiceImpl implements ShineService {
      * @param id
      * @return
      */
+    @Override
     public Mono<ShineInfo> getShineInfoMonoWithAssert(Long id) {
         LOGGER.info("Mono<ShineInfo> getShineInfoMonoWithAssert(Long id), id = {}", id);
         if (isInvalidIdentity(id))
@@ -488,13 +502,14 @@ public class ShineServiceImpl implements ShineService {
      * @param ids
      * @return
      */
+    @Override
     public Mono<List<ShineInfo>> selectShineInfoMonoByIds(List<Long> ids) {
         LOGGER.info("Mono<List<AddressInfo>> selectAddressInfoMonoByIds(List<Long> ids), ids = {}", ids);
         if (isEmpty(ids))
             return just(emptyList());
         if (ids.size() > (int) MAX_SERVICE_SELECT.value)
             return error(() -> new BlueException(PAYLOAD_TOO_LARGE));
-        
+
         return fromFuture(elasticsearchAsyncClient.search(request ->
                 request.index(INDEX_NAME)
                         .query(query ->
@@ -515,55 +530,35 @@ public class ShineServiceImpl implements ShineService {
     }
 
     /**
-     * select shine by page and query
-     *
-     * @param limit
-     * @param rows
-     * @param query
-     * @return
-     */
-    public Mono<List<Shine>> selectShineMonoByLimitAndQuery(Long limit, Long rows, Query query) {
-        LOGGER.info("Mono<List<Shine>> selectShineMonoByLimitAndQuery(Long limit, Long rows, Query query), " +
-                "limit = {}, rows = {}, query = {}", limit, rows, query);
-        if (isInvalidLimit(limit) || isInvalidRows(rows))
-            throw new BlueException(INVALID_PARAM);
-
-        Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
-        listQuery.skip(limit).limit(rows.intValue());
-
-        return reactiveMongoTemplate.find(listQuery, Shine.class).publishOn(scheduler).collectList();
-    }
-
-    /**
-     * count shine by query
-     *
-     * @param query
-     * @return
-     */
-    public Mono<Long> countShineMonoByQuery(Query query) {
-        LOGGER.info("Mono<Long> countAddressMonoByQuery(Query query), query = {}", query);
-        return reactiveMongoTemplate.count(query, Shine.class).publishOn(scheduler);
-    }
-
-    /**
      * select shine info page by condition
      *
      * @param pageModelRequest
      * @return
      */
+    @Override
     public Mono<PageModelResponse<ShineInfo>> selectShineInfoPageMonoByPageAndCondition(PageModelRequest<ShineCondition> pageModelRequest) {
         LOGGER.info("Mono<PageModelResponse<AddressInfo>> selectAddressInfoPageMonoByPageAndCondition(PageModelRequest<AddressCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
+        ShineCondition condition = pageModelRequest.getCondition();
 
-        return zip(selectShineMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),
-                countShineMonoByQuery(query)
-        ).flatMap(tuple2 ->
-                just(new PageModelResponse<>(SHINES_2_SHINES_INFO.apply(tuple2.getT1()), tuple2.getT2()))
-        );
+        return fromFuture(elasticsearchAsyncClient.search(s -> s
+                        .index(INDEX_NAME)
+                        .query(CONDITION_PROCESSOR.apply(condition))
+                        .sort(SORT_PROCESSOR.apply(condition))
+                        .from(pageModelRequest.getLimit().intValue())
+                        .size(pageModelRequest.getRows().intValue())
+                , Shine.class)
+        )
+                .filter(BlueChecker::isNotNull)
+                .flatMap(searchResponse -> {
+                    HitsMetadata<Shine> hits = searchResponse.hits();
+                    return just(new PageModelResponse<>(hits.hits().stream().map(Hit::source).map(SHINE_2_SHINE_INFO).collect(toList()),
+                            hits.total().value()));
+                })
+                .switchIfEmpty(defer(() -> just(new PageModelResponse<>(emptyList(), 0L))));
     }
 
     /**
@@ -572,7 +567,13 @@ public class ShineServiceImpl implements ShineService {
      * @param scrollModelRequest
      * @return
      */
-    public Mono<ScrollModelResponse<ShineInfo, Pit>> selectShineInfoScrollMonoByScrollAndCursor(ScrollModelRequest<Pit> scrollModelRequest) {
+    @Override
+    public Mono<ScrollModelResponse<ShineInfo, Long>> selectShineInfoScrollMonoByScrollAndCursor(ScrollModelRequest<ShineCondition, Long> scrollModelRequest) {
+        LOGGER.info("Mono<ScrollModelResponse<ShineInfo, Long>> selectShineInfoScrollMonoByScrollAndCursor(ScrollModelRequest<ShineCondition, Long> scrollModelRequest), " +
+                "scrollModelRequest = {}", scrollModelRequest);
+        if (isNull(scrollModelRequest))
+            throw new BlueException(EMPTY_PARAM);
+
         return null;
     }
 

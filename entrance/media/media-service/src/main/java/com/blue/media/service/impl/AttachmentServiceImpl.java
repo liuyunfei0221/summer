@@ -33,10 +33,11 @@ import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.constant.common.BlueCommonThreshold.*;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
-import static com.blue.media.constant.ColumnName.*;
+import static com.blue.media.constant.AttachmentColumnName.*;
+import static com.blue.media.constant.AttachmentSortAttribute.ID;
 import static com.blue.media.converter.MediaModelConverters.ATTACHMENT_2_ATTACHMENT_DETAIL_INFO_CONVERTER;
 import static com.blue.media.converter.MediaModelConverters.ATTACHMENT_2_ATTACHMENT_INFO_CONVERTER;
-import static com.blue.mongo.common.SortConverter.convert;
+import static com.blue.mongo.common.MongoSortProcessor.process;
 import static com.blue.mongo.constant.LikeElement.PREFIX;
 import static com.blue.mongo.constant.LikeElement.SUFFIX;
 import static java.util.Collections.emptyList;
@@ -83,7 +84,7 @@ public class AttachmentServiceImpl implements AttachmentService {
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final Function<AttachmentCondition, Sort> SORTER_CONVERTER = c ->
-            convert(c, SORT_ATTRIBUTE_MAPPING, AttachmentSortAttribute.ID.column);
+            process(c, SORT_ATTRIBUTE_MAPPING, AttachmentSortAttribute.ID.column);
 
     private static final Function<AttachmentCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();
@@ -244,7 +245,7 @@ public class AttachmentServiceImpl implements AttachmentService {
         Attachment probe = new Attachment();
         probe.setCreator(memberId);
 
-        return attachmentRepository.findAll(Example.of(probe), Sort.by(Sort.Order.desc(ID.name)))
+        return attachmentRepository.findAll(Example.of(probe), Sort.by(Sort.Order.desc(ID.attribute)))
                 .publishOn(scheduler)
                 .skip(limit).take(rows)
                 .collectList();

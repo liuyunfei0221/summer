@@ -45,10 +45,10 @@ import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.basic.constant.common.Status.VALID;
 import static com.blue.basic.constant.common.SyncKeyPrefix.ADDRESS_UPDATE_PRE;
-import static com.blue.member.constant.ColumnName.*;
+import static com.blue.member.constant.AddressColumnName.*;
 import static com.blue.member.converter.MemberModelConverters.ADDRESSES_2_ADDRESSES_INFO;
 import static com.blue.member.converter.MemberModelConverters.ADDRESS_2_ADDRESS_INFO;
-import static com.blue.mongo.common.SortConverter.convert;
+import static com.blue.mongo.common.MongoSortProcessor.process;
 import static com.blue.mongo.constant.LikeElement.PREFIX;
 import static com.blue.mongo.constant.LikeElement.SUFFIX;
 import static java.util.Collections.emptyList;
@@ -245,7 +245,7 @@ public class AddressServiceImpl implements AddressService {
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final Function<AddressCondition, Sort> SORTER_CONVERTER = c ->
-            convert(c, SORT_ATTRIBUTE_MAPPING, AddressSortAttribute.ID.column);
+            process(c, SORT_ATTRIBUTE_MAPPING, AddressSortAttribute.ID.column);
 
     private static final Function<AddressCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();

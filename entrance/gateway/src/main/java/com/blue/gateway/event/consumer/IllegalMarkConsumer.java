@@ -4,7 +4,7 @@ import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.event.IllegalMarkEvent;
 import com.blue.gateway.component.illegal.IllegalAsserter;
 import com.blue.gateway.config.blue.BlueConsumerConfig;
-import com.blue.pulsar.common.BluePulsarListener;
+import com.blue.pulsar.component.BluePulsarListener;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 

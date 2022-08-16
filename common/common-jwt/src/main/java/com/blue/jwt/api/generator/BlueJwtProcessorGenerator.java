@@ -1,8 +1,8 @@
 package com.blue.jwt.api.generator;
 
 import com.blue.jwt.api.conf.JwtConf;
-import com.blue.jwt.common.BlueJwtProcessor;
-import com.blue.jwt.common.JwtProcessor;
+import com.blue.jwt.component.BlueJwtProcessor;
+import com.blue.jwt.component.JwtProcessor;
 import org.slf4j.Logger;
 
 import static org.slf4j.LoggerFactory.getLogger;

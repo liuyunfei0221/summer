@@ -1,5 +1,6 @@
 package com.blue.basic.component.rest.api.generator;
 
+import com.blue.basic.common.base.BlueChecker;
 import com.blue.basic.component.rest.api.conf.RestConf;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
@@ -17,9 +18,11 @@ import java.time.Duration;
 import java.util.function.Function;
 
 import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.component.rest.constant.DefaultConf.*;
 import static io.netty.channel.ChannelOption.CONNECT_TIMEOUT_MILLIS;
 import static io.netty.channel.ChannelOption.TCP_NODELAY;
 import static java.time.temporal.ChronoUnit.MILLIS;
+import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.springframework.web.reactive.function.client.WebClient.builder;
 import static reactor.util.Loggers.getLogger;
@@ -46,24 +49,36 @@ public final class BlueRestGenerator {
 
         LOGGER.info("WebClient generateWebClient(RestConf restConf), restConf = {}", restConf);
 
-        ConnectionProvider connectionProvider = ConnectionProvider.create(PROVIDER_NAME, restConf.getMaxConnections());
-        LoopResources loopResources = LoopResources.create(RESOURCE_NAME_PREFIX, restConf.getWorkerCount(), DAEMON);
+        ConnectionProvider connectionProvider = ConnectionProvider.create(PROVIDER_NAME,
+                ofNullable(restConf.getMaxConnections()).filter(v -> v > 0).orElse(DEFAULT_MAX_CONNECTIONS));
+        LoopResources loopResources = LoopResources.create(RESOURCE_NAME_PREFIX,
+                ofNullable(restConf.getWorkerCount()).filter(v -> v > 0).orElse(DEFAULT_WORKER_COUNT), DAEMON);
 
         ReactorResourceFactory reactorResourceFactory = new ReactorResourceFactory();
-        reactorResourceFactory.setUseGlobalResources(restConf.getUseGlobalResources());
+        reactorResourceFactory.setUseGlobalResources(ofNullable(restConf.getUseGlobalResources()).orElse(false));
         reactorResourceFactory.setConnectionProvider(connectionProvider);
         reactorResourceFactory.setLoopResources(loopResources);
 
-        Function<HttpClient, HttpClient> mapper = httpClient ->
-                httpClient
-                        .option(CONNECT_TIMEOUT_MILLIS, restConf.getConnectTimeoutMillis())
-                        .option(TCP_NODELAY, restConf.getUseTcpNoDelay())
-                        .protocol(restConf.getProtocols().toArray(HttpProtocol[]::new))
-                        .responseTimeout(Duration.of(restConf.getResponseTimeoutMillis(), MILLIS))
-                        .doOnConnected(
-                                connection -> connection
-                                        .addHandlerFirst(new ReadTimeoutHandler(restConf.getReadTimeoutMillis(), MILLISECONDS))
-                                        .addHandlerFirst(new WriteTimeoutHandler(restConf.getWriteTimeoutMillis(), MILLISECONDS)));
+        Function<HttpClient, HttpClient> mapper = httpClient -> {
+            ofNullable(restConf.getConnectTimeoutMillis())
+                    .ifPresent(connectTimeoutMillis -> httpClient.option(CONNECT_TIMEOUT_MILLIS, connectTimeoutMillis));
+            ofNullable(restConf.getUseTcpNoDelay())
+                    .ifPresent(useTcpNoDelay -> httpClient.option(TCP_NODELAY, useTcpNoDelay));
+            ofNullable(restConf.getProtocols()).filter(BlueChecker::isNotEmpty)
+                    .ifPresent(protocols -> httpClient.protocol(protocols.toArray(HttpProtocol[]::new)));
+            ofNullable(restConf.getResponseTimeoutMillis())
+                    .ifPresent(responseTimeoutMillis -> httpClient.responseTimeout(Duration.of(responseTimeoutMillis, MILLIS)));
+
+            httpClient
+                    .doOnConnected(
+                            connection -> connection
+                                    .addHandlerFirst(new ReadTimeoutHandler(
+                                            ofNullable(restConf.getReadTimeoutMillis()).filter(v -> v > 0).orElse(DEFAULT_READ_TIMEOUT_MILLIS), MILLISECONDS))
+                                    .addHandlerFirst(new WriteTimeoutHandler(
+                                            ofNullable(restConf.getWriteTimeoutMillis()).filter(v -> v > 0).orElse(DEFAULT_WRITE_TIMEOUT_MILLIS), MILLISECONDS)));
+
+            return httpClient;
+        };
 
         ReactorClientHttpConnector reactorClientHttpConnector = new ReactorClientHttpConnector(reactorResourceFactory, mapper);
 
@@ -71,7 +86,7 @@ public final class BlueRestGenerator {
                 .codecs(clientCodecConfigurer ->
                         clientCodecConfigurer
                                 .defaultCodecs()
-                                .maxInMemorySize(restConf.getMaxByteInMemorySize())
+                                .maxInMemorySize(ofNullable(restConf.getMaxByteInMemorySize()).filter(v -> v > 0).orElse(DEFAULT_MAX_BYTE_IN_MEMORY_SIZE))
                 ).build();
 
         return builder()

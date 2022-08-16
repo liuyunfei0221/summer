@@ -2,7 +2,7 @@ package com.blue.shine.event.producer;
 
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.event.IdentityEvent;
-import com.blue.pulsar.common.BluePulsarProducer;
+import com.blue.pulsar.component.BluePulsarProducer;
 import com.blue.shine.config.blue.BlueProducerConfig;
 import org.apache.pulsar.client.api.MessageId;
 import reactor.util.Logger;
