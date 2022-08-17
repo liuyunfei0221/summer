@@ -3,10 +3,7 @@ package com.blue.shine.service.impl;
 import co.elastic.clients.elasticsearch.ElasticsearchAsyncClient;
 import co.elastic.clients.elasticsearch._types.SortOptions;
 import co.elastic.clients.elasticsearch._types.query_dsl.*;
-import co.elastic.clients.elasticsearch.core.DeleteResponse;
-import co.elastic.clients.elasticsearch.core.GetResponse;
-import co.elastic.clients.elasticsearch.core.IndexResponse;
-import co.elastic.clients.elasticsearch.core.UpdateResponse;
+import co.elastic.clients.elasticsearch.core.*;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.elasticsearch.core.search.HitsMetadata;
 import co.elastic.clients.json.JsonData;
@@ -54,6 +51,7 @@ import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SEL
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.es.common.EsSortProcessor.process;
 import static com.blue.shine.constant.ShineColumnName.*;
+import static com.blue.shine.constant.ShineTableName.SHINE;
 import static com.blue.shine.converter.ShineModelConverters.SHINE_2_SHINE_INFO;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -105,7 +103,7 @@ public class ShineServiceImpl implements ShineService {
         this.DEFAULT_PRIORITY = defaultPriorityDeploy.getPriority();
     }
 
-    private static final String INDEX_NAME = "shine";
+    private static final String INDEX_NAME = SHINE.name;
 
     private int DEFAULT_PRIORITY;
 
@@ -544,13 +542,14 @@ public class ShineServiceImpl implements ShineService {
 
         ShineCondition condition = pageModelRequest.getCondition();
 
-        return fromFuture(elasticsearchAsyncClient.search(s -> s
+        return fromFuture(elasticsearchAsyncClient.search(
+                SearchRequest.of(fn -> fn
                         .index(INDEX_NAME)
                         .query(CONDITION_PROCESSOR.apply(condition))
                         .sort(SORT_PROCESSOR.apply(condition))
                         .from(pageModelRequest.getLimit().intValue())
                         .size(pageModelRequest.getRows().intValue())
-                , Shine.class)
+                ), Shine.class)
         )
                 .filter(BlueChecker::isNotNull)
                 .flatMap(searchResponse -> {
