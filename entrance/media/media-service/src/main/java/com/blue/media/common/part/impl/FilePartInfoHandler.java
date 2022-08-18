@@ -34,7 +34,7 @@ public final class FilePartInfoHandler implements PartInfoHandler {
     public Map<String, String> process(Part part) {
 
         FilePart filePart = (FilePart) part;
-        Map<String, String> info = new HashMap<>(8);
+        Map<String, String> info = new HashMap<>(8, 2.0f);
 
         info.put(PART_CLASS.identity, part.getClass().getName());
         info.put(PART_NAME.identity, filePart.name());

@@ -119,7 +119,7 @@ public class MiniProWithAutoRegisterSessionHandler implements SessionHandler {
 
         //TODO
         // like Mono<String> phoneMono = rpcMiniProServiceConsumer.getInfo(encryptedData, iv, jsCode);
-        Map<String, Object> extra = new HashMap<>(2);
+        Map<String, Object> extra = new HashMap<>(2, 2.0f);
         return credentialService.getCredentialMonoByCredentialAndType(phone, MINI_PRO_AUTO_REGISTER.identity)
                 .flatMap(credential -> {
                     extra.put(NEW_MEMBER.key, false);

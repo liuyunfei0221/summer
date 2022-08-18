@@ -29,11 +29,11 @@ public final class MongoSortProcessor {
     private static final Map<String, Function<String, Sort>> MAPPING =
             Stream.of(SortSchema.values()).collect(toMap(e -> e.sortType.identity, e -> e.converter, (a, b) -> a));
 
-    private static final BiFunction<String, String, Sort> CONVERTER = (sort, attr) ->
+    private static final BiFunction<String, String, Sort> PROCESSOR = (sort, attr) ->
             isNotBlank(attr) ?
                     ofNullable(sort)
                             .map(MAPPING::get)
-                            .map(c -> c.apply(attr))
+                            .map(p -> p.apply(attr))
                             .orElse(DEFAULT_SORT)
                     :
                     DEFAULT_SORT;
@@ -46,7 +46,7 @@ public final class MongoSortProcessor {
      * @return
      */
     public static Sort process(String sort, String attr) {
-        return CONVERTER.apply(sort, attr);
+        return PROCESSOR.apply(sort, attr);
     }
 
     /**

@@ -63,7 +63,7 @@ public final class IllegalAsserter {
 
     private final Duration defaultIllegalExpireDuration;
 
-    private static final Map<Boolean, Function<IllegalMarkEvent, Mono<Boolean>>> MARKERS = new HashMap<>(4, 1.0f);
+    private static final Map<Boolean, Function<IllegalMarkEvent, Mono<Boolean>>> MARKERS = new HashMap<>(4, 2.0f);
 
     private static final UnaryOperator<String>
             JWT_KEY_WRAPPER = jwt -> ILLEGAL_JWT_PREFIX + jwt,

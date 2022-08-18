@@ -42,7 +42,7 @@ public final class BluePulsarBatchListener<T extends Serializable> {
      * consumers holder
      */
     private final Map<Boolean, Function<org.apache.pulsar.client.api.Consumer<T>,
-            Consumer<Messages<T>>>> ACK_BATCH_CONSUMER_GENERATOR_HOLDER = new HashMap<>(4);
+            Consumer<Messages<T>>>> ACK_BATCH_CONSUMER_GENERATOR_HOLDER = new HashMap<>(4, 2.0f);
 
     /**
      * get consumer generator by actType

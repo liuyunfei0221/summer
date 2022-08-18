@@ -32,7 +32,7 @@ public class ShineManagerRoute {
                 .POST("/shine", accept(APPLICATION_JSON), shineManagerHandler::insert)
                 .PUT("/shine", accept(APPLICATION_JSON), shineManagerHandler::update)
                 .DELETE("/shine/{" + ID.key + "}", shineManagerHandler::delete)
-                .POST("/shines", accept(APPLICATION_JSON), shineManagerHandler::page)
+                .POST("/shine/page", accept(APPLICATION_JSON), shineManagerHandler::page)
                 .build();
 
         return nest(pathPredicate, routerFunction);

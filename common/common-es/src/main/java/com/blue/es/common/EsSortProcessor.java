@@ -31,11 +31,11 @@ public final class EsSortProcessor {
     private static final Map<String, Function<String, SortOptions>> MAPPING =
             Stream.of(SortSchema.values()).collect(toMap(e -> e.sortType.identity, e -> e.converter, (a, b) -> a));
 
-    private static final BiFunction<String, String, SortOptions> CONVERTER = (sort, attr) ->
+    private static final BiFunction<String, String, SortOptions> PROCESSOR = (sort, attr) ->
             isNotBlank(attr) ?
                     ofNullable(sort)
                             .map(MAPPING::get)
-                            .map(c -> c.apply(attr))
+                            .map(p -> p.apply(attr))
                             .orElse(DEFAULT_SORT_OPTIONS)
                     :
                     DEFAULT_SORT_OPTIONS;
@@ -48,7 +48,7 @@ public final class EsSortProcessor {
      * @return
      */
     public static SortOptions process(String sort, String attr) {
-        return CONVERTER.apply(sort, attr);
+        return PROCESSOR.apply(sort, attr);
     }
 
     /**

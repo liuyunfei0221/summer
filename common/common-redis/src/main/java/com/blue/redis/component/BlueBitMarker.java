@@ -7,10 +7,7 @@ import org.springframework.data.redis.core.script.RedisScript;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -50,7 +47,7 @@ public final class BlueBitMarker {
             FLUX_ELEMENT_INDEX = 0;
     private static final long MARK_BIT = 1L;
 
-    private static final Map<Boolean, Integer> BIT_VALUE_MAPPING = new HashMap<>(4, 1.0f);
+    private static final Map<Boolean, Integer> BIT_VALUE_MAPPING = new HashMap<>(4, 2.0f);
 
     static {
         BIT_VALUE_MAPPING.put(true, BIT_TRUE);
@@ -59,7 +56,7 @@ public final class BlueBitMarker {
 
     private static final RedisScript<Boolean> BIT_SET_SCRIPT = generateScriptByScriptStr(SET_BIT_WITH_EXPIRE.str, Boolean.class);
 
-    private static final Function<String, List<String>> SCRIPT_KEYS_WRAPPER = Arrays::asList;
+    private static final Function<String, List<String>> SCRIPT_KEYS_WRAPPER = Collections::singletonList;
 
     private final BiFunction<String, Integer, Mono<Boolean>> BITMAP_BIT_GETTER = (key, offset) ->
             reactiveStringRedisTemplate.opsForValue().getBit(key, (long) offset).publishOn(scheduler);
@@ -148,7 +145,7 @@ public final class BlueBitMarker {
                         .publishOn(scheduler)
                         .elementAt(FLUX_ELEMENT_INDEX)
                 :
-                error(() -> new BlueException(BAD_REQUEST));
+                error(() -> new BlueException(EMPTY_PARAM));
     }
 
     /**
@@ -162,7 +159,7 @@ public final class BlueBitMarker {
                 reactiveStringRedisTemplate.delete(key)
                         .publishOn(scheduler).flatMap(r -> just(r > 0))
                 :
-                error(() -> new BlueException(BAD_REQUEST));
+                error(() -> new BlueException(EMPTY_PARAM));
     }
 
 }

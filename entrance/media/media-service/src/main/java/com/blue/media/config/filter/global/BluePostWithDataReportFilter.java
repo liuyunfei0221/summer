@@ -187,7 +187,7 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
                 ).build());
     }
 
-    private final Map<String, RequestBodyReporter> REQUEST_BODY_PROCESSOR_HOLDER = new HashMap<>(4, 1.0f);
+    private final Map<String, RequestBodyReporter> REQUEST_BODY_PROCESSOR_HOLDER = new HashMap<>(4, 2.0f);
 
     private final Function<HttpHeaders, RequestBodyReporter> REQUEST_BODY_PROCESSOR_GETTER = headers -> {
         RequestBodyReporter reporter = REQUEST_BODY_PROCESSOR_HOLDER.get(HEADER_VALUE_GETTER.apply(headers, CONTENT_TYPE));

@@ -157,7 +157,7 @@ public class AreaServiceImpl implements AreaService {
     };
 
     private final Function<Long, AreaRegion> AREA_REGION_GETTER = id -> {
-        if (isValidIdentity(id)) {
+        if (isValidIdentity(id))
             return idRegionCache.get(id, i ->
                     just(idAreaCache.get(i, DB_AREA_GETTER_WITH_ASSERT))
                             .flatMap(areaInfo ->
@@ -168,7 +168,6 @@ public class AreaServiceImpl implements AreaService {
                                     ).flatMap(tuple3 ->
                                             just(new AreaRegion(id, tuple3.getT1(), tuple3.getT2(), tuple3.getT3(), areaInfo))))
                             .toFuture().join());
-        }
 
         throw new BlueException(INVALID_IDENTITY);
     };

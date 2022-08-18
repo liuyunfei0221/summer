@@ -81,8 +81,8 @@ public final class MessageProcessor {
 
         int size = resources.size();
 
-        Map<Integer, LanguageInfo> infoMap = new HashMap<>(size);
-        Map<String, Map<Integer, String>> i18n = new HashMap<>(size);
+        Map<Integer, LanguageInfo> infoMap = new HashMap<>(size, 2.0f);
+        Map<String, Map<Integer, String>> i18n = new HashMap<>(size, 2.0f);
         LanguageInfo defaultLanguageInfo = null;
 
         Map<String, String> messages;
@@ -137,8 +137,8 @@ public final class MessageProcessor {
 
         int size = files.size();
 
-        Map<Integer, LanguageInfo> infoMap = new HashMap<>(size);
-        Map<String, Map<Integer, String>> i18n = new HashMap<>(size);
+        Map<Integer, LanguageInfo> infoMap = new HashMap<>(size, 2.0f);
+        Map<String, Map<Integer, String>> i18n = new HashMap<>(size, 2.0f);
         LanguageInfo defaultLanguageInfo = null;
 
         Map<String, String> messages;

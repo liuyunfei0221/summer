@@ -53,8 +53,8 @@ public final class QrCoder {
     private static final int LOGO_AND_FRAME_ROUND_ARCH = 20;
     private static final MultiFormatWriter MULTI_FORMAT_WRITER = new MultiFormatWriter();
 
-    private static final Map<EncodeHintType, Object> ENCODE_CODE_PARAMS = new HashMap<>(4);
-    private static final Map<DecodeHintType, Object> DECODE_CODE_PARAMS = new HashMap<>(4);
+    private static final Map<EncodeHintType, Object> ENCODE_CODE_PARAMS = new HashMap<>(4, 2.0f);
+    private static final Map<DecodeHintType, Object> DECODE_CODE_PARAMS = new HashMap<>(4, 2.0f);
 
     static {
         ENCODE_CODE_PARAMS.put(EncodeHintType.CHARACTER_SET, CHARSET);

@@ -155,7 +155,7 @@ public class CityServiceImpl implements CityService {
     };
 
     private final Function<Long, CityRegion> CITY_REGION_GETTER = id -> {
-        if (isValidIdentity(id)) {
+        if (isValidIdentity(id))
             return idRegionCache.get(id, i ->
                     just(idCityCache.get(i, DB_CITY_GETTER_WITH_ASSERT))
                             .flatMap(cityInfo ->
@@ -166,7 +166,6 @@ public class CityServiceImpl implements CityService {
                                             just(new CityRegion(id, tuple2.getT1(), tuple2.getT2(), cityInfo))))
                             .toFuture().join()
             );
-        }
 
         throw new BlueException(INVALID_IDENTITY);
     };

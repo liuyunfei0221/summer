@@ -96,7 +96,7 @@ public class RegionTestHandler {
                 countryService.getCountryInfoMonoById(45L)
         )
                 .flatMap(tuple4 -> {
-                    Map<Long, Object> res = new HashMap<>(8);
+                    Map<Long, Object> res = new HashMap<>(8, 2.0f);
 
                     AreaRegion areaRegion = tuple4.getT1();
                     CityRegion cityRegion = tuple4.getT2();

@@ -36,7 +36,7 @@ public final class MemberModelConverters {
         if (isNull(memberRegistryParam))
             throw new BlueException(EMPTY_PARAM);
 
-        String account = memberRegistryParam.getAccount();
+        String account = ofNullable(memberRegistryParam.getAccount()).orElse(EMPTY_DATA.value);
         if (isNotBlank(account)) {
             if (account.length() > BlueCommonThreshold.ACCOUNT_LEN_MAX.value)
                 throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "account length is too long");
@@ -44,7 +44,7 @@ public final class MemberModelConverters {
                 throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "account length is too short");
         }
 
-        String phone = memberRegistryParam.getPhone();
+        String phone = ofNullable(memberRegistryParam.getPhone()).orElse(EMPTY_DATA.value);
         if (isNotBlank(phone)) {
             if (phone.length() > BlueCommonThreshold.PHONE_LEN_MAX.value)
                 throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone length is too long");
@@ -52,13 +52,16 @@ public final class MemberModelConverters {
                 throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone length is too short");
         }
 
-        String email = memberRegistryParam.getEmail();
+        String email = ofNullable(memberRegistryParam.getEmail()).orElse(EMPTY_DATA.value);
         if (isNotBlank(email)) {
             if (email.length() > BlueCommonThreshold.EMAIL_LEN_MAX.value)
                 throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email length is too long");
             if (email.length() < BlueCommonThreshold.EMAIL_LEN_MIN.value)
                 throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email length is too short");
         }
+
+        if (isBlank(account) && isBlank(phone) && isBlank(email))
+            throw new BlueException(BAD_REQUEST);
 
         String name = memberRegistryParam.getName();
         if (isBlank(name))

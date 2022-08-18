@@ -106,7 +106,6 @@ public class AttachmentServiceImpl implements AttachmentService {
                 query.addCriteria(where(CREATE_TIME.name).gte(createTimeBegin)));
         ofNullable(c.getCreateTimeEnd()).ifPresent(createTimeEnd ->
                 query.addCriteria(where(CREATE_TIME.name).lte(createTimeEnd)));
-
         query.addCriteria(byExample(probe));
 
         query.with(SORTER_CONVERTER.apply(c));

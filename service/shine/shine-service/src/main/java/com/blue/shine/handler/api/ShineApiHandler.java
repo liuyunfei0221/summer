@@ -15,7 +15,7 @@ import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.common.base.MetadataGetter.getMetadata;
 import static com.blue.basic.common.base.RequestIpGetter.getRequestIp;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.shine.constant.ShineTypeReference.PAGE_MODEL_FOR_SHINE_CONDITION_TYPE;
+import static com.blue.shine.constant.ShineTypeReference.SCROLL_MODEL_FOR_SHINE_CONDITION_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.defer;
@@ -45,19 +45,19 @@ public final class ShineApiHandler {
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> page(ServerRequest serverRequest) {
+    public Mono<ServerResponse> scroll(ServerRequest serverRequest) {
         String ip = getRequestIp(serverRequest);
 
         LOGGER.warn("client ip = {}", ip);
         Map<String, String> metadata = getMetadata(serverRequest);
         LOGGER.warn("metadata = {}", metadata);
 
-        return serverRequest.bodyToMono(PAGE_MODEL_FOR_SHINE_CONDITION_TYPE)
+        return serverRequest.bodyToMono(SCROLL_MODEL_FOR_SHINE_CONDITION_TYPE)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
-                .flatMap(shineService::selectShineInfoPageMonoByPageAndCondition)
-                .flatMap(pmr ->
+                .flatMap(shineService::selectShineInfoScrollMonoByScrollAndCursor)
+                .flatMap(smr ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(pmr, serverRequest), BlueResponse.class));
+                                .body(success(smr, serverRequest), BlueResponse.class));
     }
 
 }

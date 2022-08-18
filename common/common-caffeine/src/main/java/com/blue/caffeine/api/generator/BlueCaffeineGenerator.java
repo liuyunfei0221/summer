@@ -27,7 +27,7 @@ import static java.util.Optional.ofNullable;
 @SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces"})
 public final class BlueCaffeineGenerator {
 
-    private static final Map<ExpireStrategy, BiConsumer<Caffeine<Object, Object>, Duration>> EXPIRE_STRATEGY_PACKAGERS_HOLDER = new HashMap<>(4, 1.0f);
+    private static final Map<ExpireStrategy, BiConsumer<Caffeine<Object, Object>, Duration>> EXPIRE_STRATEGY_PACKAGERS_HOLDER = new HashMap<>(4, 2.0f);
 
     static {
         EXPIRE_STRATEGY_PACKAGERS_HOLDER.put(AFTER_WRITE, Caffeine::expireAfterWrite);

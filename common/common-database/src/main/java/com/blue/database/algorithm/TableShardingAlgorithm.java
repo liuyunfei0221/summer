@@ -31,7 +31,7 @@ public final class TableShardingAlgorithm implements PreciseShardingAlgorithm<Lo
         if (isEmpty(workerToTableMappings))
             throw new IdentityException("workerToTableMappings can't be empty");
 
-        Map<Long, String> workerIdAndDatabaseIndexMapping = new HashMap<>(workerToTableMappings.size());
+        Map<Long, String> workerIdAndDatabaseIndexMapping = new HashMap<>(workerToTableMappings.size(), 2.0f);
         Integer id;
         Integer index;
         for (IdentityToShardingMappingAttr attr : workerToTableMappings) {

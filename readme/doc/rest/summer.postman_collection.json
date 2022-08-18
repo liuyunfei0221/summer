@@ -4488,9 +4488,9 @@
 			"name": "shine",
 			"item": [
 				{
-					"name": "公益信息",
+					"name": "前台滚动查询信息",
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [
 							{
 								"key": "Content-Type",
@@ -4503,15 +4503,20 @@
 								"type": "default"
 							}
 						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":2,\r\n    \"condition\":{\r\n        \"titleLike\":\"\"\r\n    },\r\n    \"cursor\":\"45101494524975387\"\r\n}"
+						},
 						"url": {
-							"raw": "localhost:11000/blue-shine/shine",
+							"raw": "localhost:11000/blue-shine/shine/scroll",
 							"host": [
 								"localhost"
 							],
 							"port": "11000",
 							"path": [
 								"blue-shine",
-								"shine"
+								"shine",
+								"scroll"
 							]
 						}
 					},
@@ -4529,16 +4534,16 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiIxZGMxOWRkZWUyMWNhZmY1NmQwNmRiYjRiMjM0ZjVlYWJmMzI2NzExNWY2NWIzYTExNWVmYzM0YzdmYmZjM2NhNzhlYmIwMTk0ZjlhMzliYmM5YWY1MWMxNTI1ZjM2ZDc3MGU4YTIxZDI3ZjA1OGE0NjNkNWVjOGRmOTQ1ZDFhOSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDQ5NDI2OTQ1NTE2NTAzMDVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ0OTQyNjk0NTUxNjUwMzA1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYwNjU2OTI1IiwibmJmIjoxNjYwNjU2OTI1LCJ0IjoicDZvaWxob3I0WTYiLCJlYXMiOjE2Njg0MzI5MjU0MDUsImV4cCI6MTY2ODQzMjkyNSwiaWF0IjoxNjYwNjU2OTI1LCJqdGkiOiJjeDlXSGN6Y3RJcU1Fejc1bmdmbTFLcTc3TzlhdkFmZSJ9.x0mHiiRTEY878LvtbBbQPTBRJfYqzPbzVxmcHp26UH-zeIKqXR7gXKawQCeM6ViN3hKUtm7KyVYvSf1s9cRipg",
+								"value": "eyJraWQiOiJjMzg5OWQ5NmYyNTMxZDA3OTcwYzAyNDMwOWU0MTZlYjZiN2ZjZmQyODkzNjcwMWM0ZTM2ZjMxZGY3Y2M1NTIzNGUzNjQ5YzAyM2UwZDgzYzg3NWNhYmZiNmQwNmY0MjM4ZjliZWQyNjcxZjE2M2ZhZmQxZjE4ZjFhNjI1YTYxZSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDUxMzEwMjk5NDEzMjE3MjlfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ1MTMxMDI5OTQxMzIxNzI5IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYwODIyMzE5IiwibmJmIjoxNjYwODIyMzE5LCJ0IjoiV2dwRzJ4TmY2SXkiLCJlYXMiOjE2Njg1OTgzMTk5MzcsImV4cCI6MTY2ODU5ODMxOSwiaWF0IjoxNjYwODIyMzE5LCJqdGkiOiJCOXE0cnFHaGlIa2VsdVRLcVlRb2JoTHlHcjNGVEp2YiJ9.YYjpnk-uY5K-jy6-rqvBtQzlicAUokZ-NbpFK9w25roJfkVNy3LTMdzZvOvNls-JHvG-b_GnEBxVxAzUR80_pw",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":100,\r\n    \"condition\":{\r\n        \"id\":null,\r\n        \"nameLike\":null,\r\n        \"link\":null,\r\n        \"type\":null,\r\n        \"status\":null,\r\n        \"activeTimeBegin\":null,\r\n        \"activeTimeEnd\":null,\r\n        \"expireTimeBegin\":null,\r\n        \"expireTimeEnd\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"DESC\"\r\n    }\r\n}"
+							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":2,\r\n    \"condition\":{\r\n        \"titleLike\":\"\"\r\n    }\r\n}"
 						},
 						"url": {
-							"raw": "localhost:11000/blue-shine/manager/shines",
+							"raw": "localhost:11000/blue-shine/manager/shine/page",
 							"host": [
 								"localhost"
 							],
@@ -4546,7 +4551,8 @@
 							"path": [
 								"blue-shine",
 								"manager",
-								"shines"
+								"shine",
+								"page"
 							]
 						}
 					},
@@ -4564,7 +4570,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiIxZGMxOWRkZWUyMWNhZmY1NmQwNmRiYjRiMjM0ZjVlYWJmMzI2NzExNWY2NWIzYTExNWVmYzM0YzdmYmZjM2NhNzhlYmIwMTk0ZjlhMzliYmM5YWY1MWMxNTI1ZjM2ZDc3MGU4YTIxZDI3ZjA1OGE0NjNkNWVjOGRmOTQ1ZDFhOSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDQ5NDI2OTQ1NTE2NTAzMDVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ0OTQyNjk0NTUxNjUwMzA1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYwNjU2OTI1IiwibmJmIjoxNjYwNjU2OTI1LCJ0IjoicDZvaWxob3I0WTYiLCJlYXMiOjE2Njg0MzI5MjU0MDUsImV4cCI6MTY2ODQzMjkyNSwiaWF0IjoxNjYwNjU2OTI1LCJqdGkiOiJjeDlXSGN6Y3RJcU1Fejc1bmdmbTFLcTc3TzlhdkFmZSJ9.x0mHiiRTEY878LvtbBbQPTBRJfYqzPbzVxmcHp26UH-zeIKqXR7gXKawQCeM6ViN3hKUtm7KyVYvSf1s9cRipg",
+								"value": "eyJraWQiOiJjMzg5OWQ5NmYyNTMxZDA3OTcwYzAyNDMwOWU0MTZlYjZiN2ZjZmQyODkzNjcwMWM0ZTM2ZjMxZGY3Y2M1NTIzNGUzNjQ5YzAyM2UwZDgzYzg3NWNhYmZiNmQwNmY0MjM4ZjliZWQyNjcxZjE2M2ZhZmQxZjE4ZjFhNjI1YTYxZSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDUxMzEwMjk5NDEzMjE3MjlfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ1MTMxMDI5OTQxMzIxNzI5IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYwODIyMzE5IiwibmJmIjoxNjYwODIyMzE5LCJ0IjoiV2dwRzJ4TmY2SXkiLCJlYXMiOjE2Njg1OTgzMTk5MzcsImV4cCI6MTY2ODU5ODMxOSwiaWF0IjoxNjYwODIyMzE5LCJqdGkiOiJCOXE0cnFHaGlIa2VsdVRLcVlRb2JoTHlHcjNGVEp2YiJ9.YYjpnk-uY5K-jy6-rqvBtQzlicAUokZ-NbpFK9w25roJfkVNy3LTMdzZvOvNls-JHvG-b_GnEBxVxAzUR80_pw",
 								"type": "text"
 							},
 							{
@@ -4887,7 +4893,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"6387975\"\r\n    }\r\n}"
+							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"0629463\"\r\n    }\r\n}"
 						},
 						"url": {
 							"raw": "localhost:11000/blue-auth/auth/session",
@@ -4916,7 +4922,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiIxZGMxOWRkZWUyMWNhZmY1NmQwNmRiYjRiMjM0ZjVlYWJmMzI2NzExNWY2NWIzYTExNWVmYzM0YzdmYmZjM2NhNzhlYmIwMTk0ZjlhMzliYmM5YWY1MWMxNTI1ZjM2ZDc3MGU4YTIxZDI3ZjA1OGE0NjNkNWVjOGRmOTQ1ZDFhOSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDQ5NDI2OTQ1NTE2NTAzMDVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ0OTQyNjk0NTUxNjUwMzA1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYwNjU2OTI1IiwibmJmIjoxNjYwNjU2OTI1LCJ0IjoicDZvaWxob3I0WTYiLCJlYXMiOjE2Njg0MzI5MjU0MDUsImV4cCI6MTY2ODQzMjkyNSwiaWF0IjoxNjYwNjU2OTI1LCJqdGkiOiJjeDlXSGN6Y3RJcU1Fejc1bmdmbTFLcTc3TzlhdkFmZSJ9.x0mHiiRTEY878LvtbBbQPTBRJfYqzPbzVxmcHp26UH-zeIKqXR7gXKawQCeM6ViN3hKUtm7KyVYvSf1s9cRipg",
+								"value": "eyJraWQiOiJjMzg5OWQ5NmYyNTMxZDA3OTcwYzAyNDMwOWU0MTZlYjZiN2ZjZmQyODkzNjcwMWM0ZTM2ZjMxZGY3Y2M1NTIzNGUzNjQ5YzAyM2UwZDgzYzg3NWNhYmZiNmQwNmY0MjM4ZjliZWQyNjcxZjE2M2ZhZmQxZjE4ZjFhNjI1YTYxZSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDUxMzEwMjk5NDEzMjE3MjlfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ1MTMxMDI5OTQxMzIxNzI5IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYwODIyMzE5IiwibmJmIjoxNjYwODIyMzE5LCJ0IjoiV2dwRzJ4TmY2SXkiLCJlYXMiOjE2Njg1OTgzMTk5MzcsImV4cCI6MTY2ODU5ODMxOSwiaWF0IjoxNjYwODIyMzE5LCJqdGkiOiJCOXE0cnFHaGlIa2VsdVRLcVlRb2JoTHlHcjNGVEp2YiJ9.YYjpnk-uY5K-jy6-rqvBtQzlicAUokZ-NbpFK9w25roJfkVNy3LTMdzZvOvNls-JHvG-b_GnEBxVxAzUR80_pw",
 								"type": "text"
 							},
 							{
@@ -5544,25 +5550,7 @@
 			"name": "other",
 			"item": [
 				{
-					"name": "ES状态",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "172.16.204.75:9200",
-							"host": [
-								"172",
-								"16",
-								"204",
-								"75"
-							],
-							"port": "9200"
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "172.16.204.75:9200/shine/_settings",
+					"name": "设置分片",
 					"request": {
 						"method": "PUT",
 						"header": [
@@ -5594,7 +5582,7 @@
 					"response": []
 				},
 				{
-					"name": "172.16.204.75:9200/_cluster/reroute",
+					"name": "再平衡",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -5626,7 +5614,25 @@
 					"response": []
 				},
 				{
-					"name": "localhost:9200/shine/_search",
+					"name": "ES状态",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "172.16.204.75:9200",
+							"host": [
+								"172",
+								"16",
+								"204",
+								"75"
+							],
+							"port": "9200"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "查询",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -5639,6 +5645,66 @@
 							"path": [
 								"shine",
 								"_search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "获取pit",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"commands\": [\r\n        {\r\n            \"allocate\": {\r\n                \"index\": \"shine\",\r\n                \"shard\": 0,\r\n                \"node\": \"node-1\",\r\n                \"allow_primary\": 1\r\n            }\r\n        }\r\n    ]\r\n}"
+						},
+						"url": {
+							"raw": "172.16.204.75:9200/_cluster/reroute",
+							"host": [
+								"172",
+								"16",
+								"204",
+								"75"
+							],
+							"port": "9200",
+							"path": [
+								"_cluster",
+								"reroute"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "删除pit",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":\"v5HqAwEFc2hpbmUWVmdWV01QTTdRTkdEQ3NPRzFIVDJndwAWTndzUlBsdGNUbEs2cWF5WklOWXZ4dwAAAAAAAAAAOBZYOWQ4VkpQdVJVV19fYUVUZkd5bXBBAAEWVmdWV01QTTdRTkdEQ3NPRzFIVDJndwAA\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:9200/_pit",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"_pit"
 							]
 						}
 					},

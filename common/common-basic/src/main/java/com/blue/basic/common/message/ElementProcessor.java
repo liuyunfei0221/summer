@@ -111,7 +111,7 @@ public final class ElementProcessor {
 
     private static final BiFunction<List<String>, Map<String, String>, Map<String, String>> TARGETS_GETTER = (keys, allElement) -> {
         if (BlueChecker.isNotEmpty(allElement) && BlueChecker.isNotEmpty(keys)) {
-            Map<String, String> res = new HashMap<>(keys.size(), 1.0f);
+            Map<String, String> res = new HashMap<>(keys.size(), 2.0f);
             String value;
             for (String key : keys) {
                 if (isNotBlank(key)) {

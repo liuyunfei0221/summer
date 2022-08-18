@@ -219,7 +219,7 @@ public final class BlueDataAccessGenerator {
         if (totalSize < 1)
             throw new RuntimeException("shardingDatabase can't be null");
 
-        Map<String, DataSource> dataSources = new HashMap<>(totalSize);
+        Map<String, DataSource> dataSources = new HashMap<>(totalSize, 2.0f);
         Set<String> existDatabases = new HashSet<>(totalSize);
         ShardingRuleConfiguration shardingRuleConfiguration = new ShardingRuleConfiguration();
 

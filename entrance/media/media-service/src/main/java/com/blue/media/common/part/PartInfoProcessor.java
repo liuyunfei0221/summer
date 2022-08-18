@@ -90,7 +90,7 @@ public final class PartInfoProcessor {
             }
 
         LOGGER.error("un handled part, part = {}", part);
-        Map<String, String> info = new HashMap<>(4);
+        Map<String, String> info = new HashMap<>(4, 2.0f);
         info.put(PART_CLASS.identity, partClzName);
         info.put(PART_NAME.identity, part.name());
 

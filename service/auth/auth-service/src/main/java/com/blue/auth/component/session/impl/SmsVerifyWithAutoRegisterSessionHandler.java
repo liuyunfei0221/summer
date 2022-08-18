@@ -117,7 +117,7 @@ public class SmsVerifyWithAutoRegisterSessionHandler implements SessionHandler {
                 .filter(BlueChecker::isNotBlank).orElse(APP.identity);
         assertSource(source, false);
 
-        Map<String, Object> extra = new HashMap<>(2);
+        Map<String, Object> extra = new HashMap<>(2, 2.0f);
         return rpcVerifyHandleServiceConsumer.validate(SMS, PHONE_VERIFY_LOGIN_WITH_AUTO_REGISTER, phone, access, true)
                 .flatMap(validate ->
                         validate ?

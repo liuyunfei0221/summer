@@ -648,18 +648,20 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
 
 -- shine api
 
-       (290001, 'GET', 'blue-shine', '/shine', '', b'0', b'1', b'1', b'0', b'1', 1,
+       (290001, 'POST', 'blue-shine', '/shine/scroll', '', b'0', b'1', b'1', b'0', b'1', 1,
         'commonweal information', 'commonweal information', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
--- portal manage
+-- shine manage
 
-       (300001, 'POST', 'blue-shine', '/manager/shines', '', b'1', b'1', b'1', b'0', b'1', 3,
+       (300001, 'POST', 'blue-shine', '/manager/shine/page', '', b'1', b'1', b'1', b'0', b'1', 3,
         'shine page of manager', 'shine page of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (300002, 'POST', 'blue-shine', '/manager/shine', '', b'1', b'1', b'1', b'1', b'1', 3,
+       (300002, 'POST', 'blue-shine', '/manager/shine/scroll', '', b'1', b'1', b'1', b'0', b'1', 3,
+        'shine scroll of manager', 'shine scroll of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (300003, 'POST', 'blue-shine', '/manager/shine', '', b'1', b'1', b'1', b'1', b'1', 3,
         'insert shine', 'insert shine', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (300003, 'PUT', 'blue-shine', '/manager/shine', '', b'1', b'1', b'1', b'1', b'1', 3,
+       (300004, 'PUT', 'blue-shine', '/manager/shine', '', b'1', b'1', b'1', b'1', b'1', 3,
         'update shine', 'update shine', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (300004, 'DELETE', 'blue-shine', '/manager/shine/{id}', '', b'1', b'1', b'1', b'1', b'1', 3,
+       (300005, 'DELETE', 'blue-shine', '/manager/shine/{id}', '', b'1', b'1', b'1', b'1', b'1', 3,
         'delete shine', 'delete shine', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- event api

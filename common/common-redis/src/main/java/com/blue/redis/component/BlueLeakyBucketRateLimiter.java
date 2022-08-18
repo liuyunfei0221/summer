@@ -13,10 +13,12 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 import static com.blue.basic.common.base.BlueChecker.*;
-import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 import static com.blue.redis.api.generator.BlueRedisScriptGenerator.generateScriptByScriptStr;
 import static com.blue.redis.constant.RedisScripts.LEAKY_BUCKET_RATE_LIMITER;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
 import static reactor.core.scheduler.Schedulers.boundedElastic;
@@ -49,7 +51,7 @@ public final class BlueLeakyBucketRateLimiter {
             KEY_PREFIX + key;
 
     private static final Function<String, List<String>> SCRIPT_KEYS_WRAPPER = id ->
-            List.of(KEY_WRAPPER.apply(id));
+            singletonList(KEY_WRAPPER.apply(id));
 
     private final BiFunction<Integer, Long, List<String>> SCRIPT_ARGS_WRAPPER = (allow, ttl) ->
             asList(String.valueOf(allow), String.valueOf(ttl));
@@ -98,7 +100,7 @@ public final class BlueLeakyBucketRateLimiter {
                 reactiveStringRedisTemplate.delete(key).publishOn(scheduler)
                         .flatMap(r -> just(r > 0))
                 :
-                error(() -> new BlueException(BAD_REQUEST));
+                error(() -> new BlueException(EMPTY_PARAM));
     }
 
     /**
@@ -110,10 +112,10 @@ public final class BlueLeakyBucketRateLimiter {
      */
     private void assertParam(String limitKey, Integer allow, Long expiresMillis) {
         if (isBlank(limitKey))
-            throw new RuntimeException("limitKey can't be null");
+            throw new BlueException(INVALID_PARAM);
 
         if (isNull(allow) || isNull(expiresMillis) || allow < 1 || expiresMillis < 1L)
-            throw new RuntimeException("allow and expiresMillis can't be null or less than 1");
+            throw new BlueException(INVALID_PARAM);
     }
 
 }

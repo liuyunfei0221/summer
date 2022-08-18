@@ -77,7 +77,7 @@ public final class BluePreWithErrorReportFilter implements WebFilter, Ordered {
     private static final Predicate<String> WITH_REQUEST_BODY_PRE = contentType ->
             withRequestBodyContentTypes.contains(contentType);
 
-    private final Map<String, RequestBodyReader> REQUEST_BODY_READER_HOLDER = new HashMap<>(4, 1.0f);
+    private final Map<String, RequestBodyReader> REQUEST_BODY_READER_HOLDER = new HashMap<>(4, 2.0f);
 
     private final Function<HttpHeaders, RequestBodyReader> REQUEST_BODY_PROCESSOR_GETTER = headers -> {
         RequestBodyReader processor = REQUEST_BODY_READER_HOLDER.get(HEADER_VALUE_GETTER.apply(headers, HttpHeaders.CONTENT_TYPE));

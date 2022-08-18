@@ -43,9 +43,9 @@ public final class BlueRedissonGenerator {
     private static final String THREAD_NAME_PRE = "redisson-thread- ";
     private static final int RANDOM_LEN = 6;
 
-    private static final Map<ServerMode, Consumer<RedissonConf>> SERVER_MODE_ASSERTERS = new HashMap<>(4, 1.0f);
+    private static final Map<ServerMode, Consumer<RedissonConf>> SERVER_MODE_ASSERTERS = new HashMap<>(4, 2.0f);
 
-    private static final Map<ServerMode, BiConsumer<RedissonConf, Config>> CONF_PACKAGERS = new HashMap<>(4, 1.0f);
+    private static final Map<ServerMode, BiConsumer<RedissonConf, Config>> CONF_PACKAGERS = new HashMap<>(4, 2.0f);
 
     static {
         SERVER_MODE_ASSERTERS.put(CLUSTER, redissonConf -> {

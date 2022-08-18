@@ -127,7 +127,7 @@ public class SignInServiceImpl implements SignInService {
                 .collect(toMap(RewardDateRelation::getDay, r ->
                         REWARD_CONVERTER.apply(rewardMap.get(r.getRewardId())), (a, b) -> b));
 
-        Map<Integer, SignInReward> relationMapping = new HashMap<>(dayOfMonth);
+        Map<Integer, SignInReward> relationMapping = new HashMap<>(dayOfMonth, 2.0f);
         for (int i = 1; i <= dayOfMonth; i++)
             relationMapping.put(i, ofNullable(tempMapping.get(i)).orElseGet(() -> new SignInReward(null)));
 

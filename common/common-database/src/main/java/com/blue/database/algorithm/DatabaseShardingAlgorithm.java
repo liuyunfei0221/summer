@@ -31,7 +31,7 @@ public final class DatabaseShardingAlgorithm implements PreciseShardingAlgorithm
         if (isEmpty(dataCenterToDatabaseMappings))
             throw new IdentityException("dataCenterToDatabaseMappings can't be empty");
 
-        Map<Long, String> dataCenterIdAndDatabaseIndexMapping = new HashMap<>(dataCenterToDatabaseMappings.size());
+        Map<Long, String> dataCenterIdAndDatabaseIndexMapping = new HashMap<>(dataCenterToDatabaseMappings.size(), 2.0f);
         Integer id;
         Integer index;
         for (IdentityToShardingMappingAttr attr : dataCenterToDatabaseMappings) {

@@ -103,7 +103,7 @@ public class VerifyServiceImpl implements VerifyService {
                     :
                     just(false);
 
-    private final Map<Boolean, BiFunction<String, String, Mono<Boolean>>> VALIDATORS = new HashMap<>(4, 1.0f);
+    private final Map<Boolean, BiFunction<String, String, Mono<Boolean>>> VALIDATORS = new HashMap<>(4, 2.0f);
 
     private static final BiFunction<VerifyType, String, String> KEY_WRAPPER = (type, k) -> {
         if (isNotNull(type) && isNotBlank(k) && k.length() <= MAX_KEY_LEN)

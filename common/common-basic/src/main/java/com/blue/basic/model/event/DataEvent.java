@@ -19,7 +19,7 @@ public final class DataEvent implements Serializable {
     private static final long serialVersionUID = -7101856515135840564L;
 
     private static final int ENTRIES_SIZE = BlueDataAttrKey.values().length;
-    private static final float LOAD_FACTOR = 1.0f;
+    private static final float LOAD_FACTOR = 2.0f;
 
     /**
      * event type

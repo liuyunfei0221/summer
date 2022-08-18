@@ -26,6 +26,11 @@ public final class ScrollModelResponse<T extends Serializable, A extends Seriali
     public ScrollModelResponse() {
     }
 
+    public ScrollModelResponse(List<T> data) {
+        this.data = data;
+        this.cursor = null;
+    }
+
     public ScrollModelResponse(List<T> data, A cursor) {
         this.data = data;
         this.cursor = cursor;

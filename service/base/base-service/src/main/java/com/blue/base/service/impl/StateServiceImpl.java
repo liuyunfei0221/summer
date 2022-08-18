@@ -150,7 +150,7 @@ public class StateServiceImpl implements StateService {
     };
 
     private final Function<Long, StateRegion> STATE_REGION_GETTER = id -> {
-        if (isValidIdentity(id)) {
+        if (isValidIdentity(id))
             return idRegionCache.get(id, i ->
                     just(idStateCache.get(i, DB_STATE_GETTER_WITH_ASSERT))
                             .flatMap(stateInfo ->
@@ -159,7 +159,6 @@ public class StateServiceImpl implements StateService {
                             )
                             .toFuture().join()
             );
-        }
 
         throw new BlueException(INVALID_IDENTITY);
     };

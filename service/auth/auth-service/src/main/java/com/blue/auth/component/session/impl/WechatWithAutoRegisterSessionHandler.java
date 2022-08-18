@@ -115,7 +115,7 @@ public class WechatWithAutoRegisterSessionHandler implements SessionHandler {
 
         //TODO
         // like Mono<String> phoneMono = rpcWechatServiceConsumer.getInfo(encryptedData, iv, jsCode);
-        Map<String, Object> extra = new HashMap<>(2);
+        Map<String, Object> extra = new HashMap<>(2, 2.0f);
         return credentialService.getCredentialMonoByCredentialAndType(phone, WECHAT_AUTO_REGISTER.identity)
                 .flatMap(credential -> {
                     extra.put(NEW_MEMBER.key, false);

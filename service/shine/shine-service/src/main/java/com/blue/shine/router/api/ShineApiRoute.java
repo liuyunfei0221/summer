@@ -26,7 +26,7 @@ public class ShineApiRoute {
         RequestPredicate pathPredicate = path("/blue-shine/shine");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .GET("", shineApiHandler::page)
+                .POST("/scroll", shineApiHandler::scroll)
                 .build();
 
         return nest(pathPredicate, routerFunction);

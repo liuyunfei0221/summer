@@ -35,7 +35,7 @@ public final class FormFieldPartInfoHandler implements PartInfoHandler {
     public Map<String, String> process(Part part) {
 
         FormFieldPart formFieldPart = (FormFieldPart) part;
-        Map<String, String> info = new HashMap<>(8);
+        Map<String, String> info = new HashMap<>(8, 2.0f);
 
         info.put(PART_CLASS.identity, part.getClass().getName());
         info.put(PART_NAME.identity, formFieldPart.name());

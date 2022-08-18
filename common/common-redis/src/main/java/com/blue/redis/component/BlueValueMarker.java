@@ -6,7 +6,7 @@ import org.springframework.data.redis.core.script.RedisScript;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -55,7 +55,7 @@ public final class BlueValueMarker {
 
     private static final RedisScript<Boolean> EXPIRE_HLL_OR_WITH_INIT_SCRIPT = generateScriptByScriptStr(EXPIRE_HLL_OR_WITH_INIT.str, Boolean.class);
 
-    private static final Function<String, List<String>> SCRIPT_KEYS_WRAPPER = Arrays::asList;
+    private static final Function<String, List<String>> SCRIPT_KEYS_WRAPPER = Collections::singletonList;
 
     private static final BiFunction<String, Long, Object[]> SCRIPT_ARGS_WRAPPER = (v, expire) ->
             new Object[]{v, String.valueOf(expire)};
@@ -102,7 +102,7 @@ public final class BlueValueMarker {
         return isNotBlank(key) && isNotBlank(value) ?
                 just(stringRedisTemplate.opsForHyperLogLog().add(key, value) > 0L)
                 :
-                error(() -> new BlueException(BAD_REQUEST));
+                error(() -> new BlueException(EMPTY_PARAM));
     }
 
     /**
@@ -117,7 +117,7 @@ public final class BlueValueMarker {
         int len = keys.length;
         return len >= 1 && len < (int) DB_SELECT.value ? just(stringRedisTemplate.opsForHyperLogLog().size(keys))
                 :
-                Mono.error(() -> new BlueException(INVALID_IDENTITY));
+                error(() -> new BlueException(INVALID_IDENTITY));
     }
 
     /**
@@ -148,7 +148,7 @@ public final class BlueValueMarker {
         return isNotBlank(key) ?
                 just(ofNullable(stringRedisTemplate.delete(key)).orElse(false))
                 :
-                error(() -> new BlueException(BAD_REQUEST));
+                error(() -> new BlueException(EMPTY_PARAM));
     }
 
 }

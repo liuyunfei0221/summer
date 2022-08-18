@@ -15,8 +15,12 @@ import com.blue.basic.model.common.ScrollModelRequest;
 import com.blue.basic.model.common.ScrollModelResponse;
 import com.blue.basic.model.event.IdentityEvent;
 import com.blue.basic.model.exps.BlueException;
+import com.blue.caffeine.api.conf.CaffeineConfParams;
+import com.blue.es.common.EsSearchAfterProcessor;
+import com.blue.es.model.PitCursor;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.shine.api.model.ShineInfo;
+import com.blue.shine.config.deploy.CaffeineDeploy;
 import com.blue.shine.config.deploy.DefaultPriorityDeploy;
 import com.blue.shine.constant.ShineSortAttribute;
 import com.blue.shine.event.producer.ShineDeleteProducer;
@@ -29,15 +33,18 @@ import com.blue.shine.remote.consumer.RpcCityServiceConsumer;
 import com.blue.shine.repository.entity.Shine;
 import com.blue.shine.repository.template.ShineRepository;
 import com.blue.shine.service.inter.ShineService;
+import com.github.benmanes.caffeine.cache.Cache;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -49,14 +56,19 @@ import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
 import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
 import static com.blue.basic.constant.common.ResponseElement.*;
+import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
+import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
+import static com.blue.es.common.EsSearchAfterProcessor.packageSearchAfter;
 import static com.blue.es.common.EsSortProcessor.process;
 import static com.blue.shine.constant.ShineColumnName.*;
 import static com.blue.shine.constant.ShineTableName.SHINE;
 import static com.blue.shine.converter.ShineModelConverters.SHINE_2_SHINE_INFO;
+import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.apache.commons.lang3.math.NumberUtils.isDigits;
 import static reactor.core.publisher.Flux.fromIterable;
 import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
@@ -90,7 +102,7 @@ public class ShineServiceImpl implements ShineService {
 
     public ShineServiceImpl(BlueIdentityProcessor blueIdentityProcessor, Scheduler scheduler, ElasticsearchAsyncClient elasticsearchAsyncClient,
                             RpcCityServiceConsumer rpcCityServiceConsumer, ShineRepository shineRepository, ShineInsertProducer shineInsertProducer, ShineUpdateProducer shineUpdateProducer,
-                            ShineDeleteProducer shineDeleteProducer, DefaultPriorityDeploy defaultPriorityDeploy) {
+                            ShineDeleteProducer shineDeleteProducer, ExecutorService executorService, DefaultPriorityDeploy defaultPriorityDeploy, CaffeineDeploy caffeineDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.scheduler = scheduler;
         this.elasticsearchAsyncClient = elasticsearchAsyncClient;
@@ -101,19 +113,38 @@ public class ShineServiceImpl implements ShineService {
         this.shineDeleteProducer = shineDeleteProducer;
 
         this.DEFAULT_PRIORITY = defaultPriorityDeploy.getPriority();
+        this.idRegionCache = generateCache(new CaffeineConfParams(
+                caffeineDeploy.getCityMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
+                AFTER_ACCESS, executorService));
     }
 
     private static final String INDEX_NAME = SHINE.name;
 
     private int DEFAULT_PRIORITY;
 
+    private Cache<Long, CityRegion> idRegionCache;
+
+    private final Function<Long, CityRegion> CITY_REGION_REMOTE_GETTER = id -> {
+        if (isValidIdentity(id))
+            return ofNullable(rpcCityServiceConsumer.getCityRegionById(id)
+                    .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
+                    .toFuture().join()).orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
+
+        throw new BlueException(INVALID_IDENTITY);
+    };
+
+    private final Function<Long, CityRegion> CITY_REGION_GETTER = id -> {
+        if (isValidIdentity(id))
+            return idRegionCache.get(id, CITY_REGION_REMOTE_GETTER);
+
+        throw new BlueException(INVALID_IDENTITY);
+    };
+
     private final BiConsumer<Shine, Long> SHINE_CITY_PACKAGER = (shine, cid) -> {
         if (isNull(shine) || isInvalidIdentity(cid))
             return;
 
-        CityRegion cityRegion = rpcCityServiceConsumer.getCityRegionById(cid)
-                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
-                .toFuture().join();
+        CityRegion cityRegion = CITY_REGION_GETTER.apply(cid);
 
         ofNullable(cityRegion.getCountry())
                 .ifPresent(countryInfo -> {
@@ -202,9 +233,9 @@ public class ShineServiceImpl implements ShineService {
             process(c, SORT_ATTRIBUTE_MAPPING, ShineSortAttribute.ID.column);
 
     private static final Function<ShineCondition, Query> CONDITION_PROCESSOR = c -> {
-        BoolQuery.Builder builder = new BoolQuery.Builder();
-
         if (isNotNull(c)) {
+            BoolQuery.Builder builder = new BoolQuery.Builder();
+
             ofNullable(c.getId()).filter(BlueChecker::isValidIdentity).ifPresent(id ->
                     builder.must(TermQuery.of(q -> q.field(ID.name).value(id))._toQuery()));
 
@@ -258,11 +289,13 @@ public class ShineServiceImpl implements ShineService {
 
             ofNullable(c.getUpdater()).ifPresent(updater ->
                     builder.must(TermQuery.of(q -> q.field(UPDATER.name).value(updater))._toQuery()));
+
+            return Query.of(b -> b.bool(builder.build()));
         }
 
-        return Query.of(b -> b.bool(builder.build()));
+        //TODO error
+        return Query.of(builder -> builder.matchAll(MatchAllQuery.of(b -> b.boost(1.0f))));
     };
-
 
     /**
      * insert shine
@@ -543,7 +576,7 @@ public class ShineServiceImpl implements ShineService {
         ShineCondition condition = pageModelRequest.getCondition();
 
         return fromFuture(elasticsearchAsyncClient.search(
-                SearchRequest.of(fn -> fn
+                SearchRequest.of(builder -> builder
                         .index(INDEX_NAME)
                         .query(CONDITION_PROCESSOR.apply(condition))
                         .sort(SORT_PROCESSOR.apply(condition))
@@ -567,8 +600,58 @@ public class ShineServiceImpl implements ShineService {
      * @return
      */
     @Override
-    public Mono<ScrollModelResponse<ShineInfo, Long>> selectShineInfoScrollMonoByScrollAndCursor(ScrollModelRequest<ShineCondition, Long> scrollModelRequest) {
-        LOGGER.info("Mono<ScrollModelResponse<ShineInfo, Long>> selectShineInfoScrollMonoByScrollAndCursor(ScrollModelRequest<ShineCondition, Long> scrollModelRequest), " +
+    public Mono<ScrollModelResponse<ShineInfo, String>> selectShineInfoScrollMonoByScrollAndCursor(ScrollModelRequest<ShineCondition, String> scrollModelRequest) {
+        LOGGER.info("Mono<ScrollModelResponse<ShineInfo, String>> selectShineInfoScrollMonoByScrollAndCursor(ScrollModelRequest<ShineCondition, String> scrollModelRequest), " +
+                "scrollModelRequest = {}", scrollModelRequest);
+        if (isNull(scrollModelRequest))
+            throw new BlueException(EMPTY_PARAM);
+
+        ofNullable(scrollModelRequest.getCursor())
+                .filter(BlueChecker::isNotBlank)
+                .ifPresent(cursor -> {
+                    if (!isDigits(cursor))
+                        throw new BlueException(INVALID_IDENTITY);
+                });
+
+        ShineCondition condition = scrollModelRequest.getCondition();
+
+        return fromFuture(elasticsearchAsyncClient.search(
+                SearchRequest.of(builder -> {
+                    builder
+                            .index(INDEX_NAME)
+                            .query(CONDITION_PROCESSOR.apply(condition))
+                            .sort(SORT_PROCESSOR.apply(condition))
+                            .from(scrollModelRequest.getFrom().intValue())
+                            .size(scrollModelRequest.getRows().intValue());
+
+                    packageSearchAfter(builder, scrollModelRequest.getCursor());
+
+                    return builder;
+                }), Shine.class)
+        )
+                .filter(BlueChecker::isNotNull)
+                .flatMap(searchResponse ->
+                        ofNullable(searchResponse.hits())
+                                .map(HitsMetadata::hits)
+                                .filter(BlueChecker::isNotEmpty)
+                                .map(EsSearchAfterProcessor::parseSearchAfter)
+                                .map(shineStringDataAndSearchAfter ->
+                                        just(new ScrollModelResponse<>(shineStringDataAndSearchAfter.getData().stream().map(SHINE_2_SHINE_INFO).collect(toList()),
+                                                shineStringDataAndSearchAfter.getSearchAfter()))
+                                ).orElseGet(() -> just(new ScrollModelResponse<>(emptyList())))
+                )
+                .switchIfEmpty(defer(() -> just(new ScrollModelResponse<>(emptyList()))));
+    }
+
+    /**
+     * select shine info scroll by cursor with pit
+     *
+     * @param scrollModelRequest
+     * @return
+     */
+    @Override
+    public Mono<ScrollModelResponse<ShineInfo, PitCursor>> selectShineInfoScrollMonoByScrollAndCursorBaseOnSnapShot(ScrollModelRequest<ShineCondition, PitCursor> scrollModelRequest) {
+        LOGGER.info("Mono<ScrollModelResponse<ShineInfo, PitCursor>> selectShineInfoScrollMonoByScrollAndCursorBaseOnSnapShot(ScrollModelRequest<ShineCondition, PitCursor> scrollModelRequest), " +
                 "scrollModelRequest = {}", scrollModelRequest);
         if (isNull(scrollModelRequest))
             throw new BlueException(EMPTY_PARAM);

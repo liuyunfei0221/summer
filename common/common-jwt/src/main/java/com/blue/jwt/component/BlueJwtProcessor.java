@@ -52,7 +52,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     /**
      * header
      */
-    private static final Map<String, Object> COMMON_HEADER = new HashMap<>(1, 1.0f);
+    private static final Map<String, Object> COMMON_HEADER = new HashMap<>(1, 2.0f);
 
     static {
         COMMON_HEADER.put(HEADER_CONTENT_TYPE_NAME, HEADER_CONTENT_TYPE_VALUE);

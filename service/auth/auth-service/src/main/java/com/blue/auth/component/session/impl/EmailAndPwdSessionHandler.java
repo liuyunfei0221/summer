@@ -63,7 +63,7 @@ public class EmailAndPwdSessionHandler implements SessionHandler {
             throw new BlueException(DATA_HAS_BEEN_FROZEN);
     };
 
-    private static final Map<String, Object> EXTRA_INFO = new HashMap<>(2);
+    private static final Map<String, Object> EXTRA_INFO = new HashMap<>(2, 2.0f);
 
     static {
         EXTRA_INFO.put(NEW_MEMBER.key, false);

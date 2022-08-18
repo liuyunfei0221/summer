@@ -59,9 +59,9 @@ public final class BlueRedisGenerator {
 
     private static final String KEY_VALUE_SEPARATOR = ":";
 
-    private static final Map<ServerMode, Consumer<RedisConf>> SERVER_MODE_ASSERTERS = new HashMap<>(4, 1.0f);
+    private static final Map<ServerMode, Consumer<RedisConf>> SERVER_MODE_ASSERTERS = new HashMap<>(4, 2.0f);
 
-    private static final Map<ServerMode, Function<RedisConf, RedisConfiguration>> CONF_GENERATORS = new HashMap<>(4, 1.0f);
+    private static final Map<ServerMode, Function<RedisConf, RedisConfiguration>> CONF_GENERATORS = new HashMap<>(4, 2.0f);
 
     static {
         SERVER_MODE_ASSERTERS.put(CLUSTER, conf -> {

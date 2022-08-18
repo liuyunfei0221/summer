@@ -13,7 +13,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.blue.basic.common.base.BlueChecker.*;
-import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.redis.api.generator.BlueRedisScriptGenerator.generateScriptByScriptStr;
 import static com.blue.redis.constant.RedisScripts.TOKEN_BUCKET_RATE_LIMITER;
@@ -107,7 +108,7 @@ public final class BlueTokenBucketRateLimiter {
                 reactiveStringRedisTemplate.delete(key)
                         .publishOn(scheduler).flatMap(r -> just(r > 0))
                 :
-                error(() -> new BlueException(BAD_REQUEST));
+                error(() -> new BlueException(EMPTY_PARAM));
     }
 
     /**
@@ -119,10 +120,10 @@ public final class BlueTokenBucketRateLimiter {
      */
     private void assertParam(String limitKey, Integer replenishRate, Integer burstCapacity) {
         if (isBlank(limitKey))
-            throw new RuntimeException("limitKey can't be blank");
+            throw new BlueException(INVALID_PARAM);
 
         if (isNull(replenishRate) || isNull(burstCapacity) || replenishRate < 1 || burstCapacity < replenishRate)
-            throw new RuntimeException("replenishRate and burstCapacity can't be null or less than 1, burstCapacity can't be less than replenishRate");
+            throw new BlueException(INVALID_PARAM);
     }
 
 }

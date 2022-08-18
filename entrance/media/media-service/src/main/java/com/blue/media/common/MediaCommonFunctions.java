@@ -184,7 +184,7 @@ public final class MediaCommonFunctions extends CommonFunctions {
 
         return zip(just(queryParams), formData, multipartData)
                 .map(tuple -> {
-                    Map<String, String> result = new HashMap<>(4, 1.0f);
+                    Map<String, String> result = new HashMap<>(4, 2.0f);
                     tuple.getT1().forEach((key, values) -> addBindStringValue(result, key, values));
                     tuple.getT2().forEach((key, values) -> addBindStringValue(result, key, values));
                     tuple.getT3().forEach((key, values) -> addBindPartValue(result, key, values));
