@@ -1,9 +1,12 @@
 package com.blue.es.model;
 
 import java.io.Serializable;
+import java.util.List;
 
+import static com.blue.basic.common.base.BlueChecker.isNotEmpty;
 import static com.blue.basic.common.base.BlueChecker.isNotNull;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static java.util.Collections.emptyList;
 
 /**
  * es sort processor
@@ -23,37 +26,39 @@ public final class PitCursor implements Serializable {
     /**
      * search after cursor
      */
-    private String cursor;
+    private List<String> searchAfters;
 
     public PitCursor() {
+        this.id = EMPTY_DATA.value;
+        this.searchAfters = emptyList();
     }
 
-    public PitCursor(String id, String cursor) {
+    public PitCursor(String id, List<String> searchAfters) {
         this.id = isNotNull(id) ? id : EMPTY_DATA.value;
-        this.cursor = isNotNull(cursor) ? cursor : EMPTY_DATA.value;
+        this.searchAfters = isNotEmpty(searchAfters) ? searchAfters : emptyList();
     }
 
     public String getId() {
-        return isNotNull(id) ? id : EMPTY_DATA.value;
+        return id;
     }
 
     public void setId(String id) {
-        this.id = isNotNull(id) ? id : EMPTY_DATA.value;
+        this.id = id;
     }
 
-    public String getCursor() {
-        return isNotNull(cursor) ? cursor : EMPTY_DATA.value;
+    public List<String> getSearchAfters() {
+        return searchAfters;
     }
 
-    public void setCursor(String cursor) {
-        this.cursor = isNotNull(cursor) ? cursor : EMPTY_DATA.value;
+    public void setSearchAfters(List<String> searchAfters) {
+        this.searchAfters = searchAfters;
     }
 
     @Override
     public String toString() {
         return "PitCursor{" +
                 "id='" + id + '\'' +
-                ", cursor='" + cursor + '\'' +
+                ", searchAfters=" + searchAfters +
                 '}';
     }
 

@@ -2,6 +2,8 @@ package com.blue.media.service.inter;
 
 import com.blue.basic.model.common.PageModelRequest;
 import com.blue.basic.model.common.PageModelResponse;
+import com.blue.basic.model.common.ScrollModelRequest;
+import com.blue.basic.model.common.ScrollModelResponse;
 import com.blue.media.api.model.AttachmentDetailInfo;
 import com.blue.media.api.model.AttachmentInfo;
 import com.blue.media.model.AttachmentCondition;
@@ -68,31 +70,13 @@ public interface AttachmentService {
     Mono<List<AttachmentDetailInfo>> selectAttachmentDetailInfoMonoByIds(List<Long> ids);
 
     /**
-     * select attachment by limit and member id
+     * select attachment detail info by scroll and member id
      *
-     * @param limit
-     * @param rows
+     * @param scrollModelRequest
      * @param memberId
      * @return
      */
-    Mono<List<Attachment>> selectAttachmentMonoByLimitAndMemberId(Long limit, Long rows, Long memberId);
-
-    /**
-     * count attachment by member id
-     *
-     * @param memberId
-     * @return
-     */
-    Mono<Long> countAttachmentMonoByMemberId(Long memberId);
-
-    /**
-     * select attachment detail info by page and member id
-     *
-     * @param pageModelRequest
-     * @param memberId
-     * @return
-     */
-    Mono<PageModelResponse<AttachmentDetailInfo>> selectAttachmentDetailInfoByPageAndMemberId(PageModelRequest<Void> pageModelRequest, Long memberId);
+    Mono<ScrollModelResponse<AttachmentDetailInfo, String>> selectShineInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<Void, Long> scrollModelRequest, Long memberId);
 
     /**
      * select attachment by page and condition

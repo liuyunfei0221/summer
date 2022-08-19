@@ -245,7 +245,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         if (isNull(c))
             return new MemberBasicCondition();
 
-        process(c, SORT_ATTRIBUTE_MAPPING, MemberBasicSortAttribute.ID.column);
+        process(c, SORT_ATTRIBUTE_MAPPING, MemberBasicSortAttribute.CREATE_TIME.column);
 
         return c;
     };

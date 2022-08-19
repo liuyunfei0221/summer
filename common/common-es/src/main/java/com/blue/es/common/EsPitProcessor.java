@@ -46,11 +46,11 @@ public final class EsPitProcessor {
     /**
      * parse pit id
      *
-     * @param shineSearchResponse
+     * @param searchResponse
      * @return
      */
-    public static String parsePit(SearchResponse<?> shineSearchResponse) {
-        return ofNullable(shineSearchResponse).map(SearchResponse::pitId).filter(BlueChecker::isNotBlank).orElse(EMPTY_DATA.value);
+    public static String parsePit(SearchResponse<?> searchResponse) {
+        return ofNullable(searchResponse).map(SearchResponse::pitId).filter(BlueChecker::isNotBlank).orElse(EMPTY_DATA.value);
     }
 
 }

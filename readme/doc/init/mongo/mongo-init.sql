@@ -90,6 +90,7 @@ db.getCollection("qrCodeConfig").insert( {
     _class: "com.blue.media.repository.entity.QrCodeConfig"
 } );
 db.qrCodeConfig.createIndex({"type":1});
+db.qrCodeConfig.createIndex({"createTime":-1});
 
 
 -- verify

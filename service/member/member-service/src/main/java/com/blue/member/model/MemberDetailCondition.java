@@ -70,7 +70,7 @@ public final class MemberDetailCondition extends SortCondition implements Serial
     private Long updateTimeEnd;
 
     public MemberDetailCondition() {
-        super(MemberDetailSortAttribute.ID.attribute, SortType.DESC.identity);
+        super(MemberDetailSortAttribute.CREATE_TIME.attribute, SortType.DESC.identity);
     }
 
     public MemberDetailCondition(String sortAttribute, String sortType) {

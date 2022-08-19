@@ -2,7 +2,7 @@ package com.blue.finance.model;
 
 import com.blue.basic.constant.common.SortType;
 import com.blue.basic.model.common.SortCondition;
-import com.blue.finance.constant.FinanceFlowSortAttribute;
+import com.blue.finance.constant.OrderSortAttribute;
 
 import java.io.Serializable;
 
@@ -43,7 +43,7 @@ public final class OrderCondition extends SortCondition implements Serializable 
     private Long createTimeEnd;
 
     public OrderCondition() {
-        super(FinanceFlowSortAttribute.ID.attribute, SortType.DESC.identity);
+        super(OrderSortAttribute.ID.attribute, SortType.DESC.identity);
     }
 
     public OrderCondition(String sortAttribute, String sortType) {

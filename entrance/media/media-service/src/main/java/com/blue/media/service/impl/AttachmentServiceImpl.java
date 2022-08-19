@@ -1,8 +1,7 @@
 package com.blue.media.service.impl;
 
 import com.blue.basic.common.base.BlueChecker;
-import com.blue.basic.model.common.PageModelRequest;
-import com.blue.basic.model.common.PageModelResponse;
+import com.blue.basic.model.common.*;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.media.api.model.AttachmentDetailInfo;
 import com.blue.media.api.model.AttachmentInfo;
@@ -13,7 +12,6 @@ import com.blue.media.repository.entity.Attachment;
 import com.blue.media.repository.template.AttachmentRepository;
 import com.blue.media.service.inter.AttachmentService;
 import com.blue.member.api.model.MemberBasicInfo;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
@@ -34,12 +32,14 @@ import static com.blue.basic.constant.common.BlueCommonThreshold.*;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.media.constant.AttachmentColumnName.*;
-import static com.blue.media.constant.AttachmentSortAttribute.ID;
 import static com.blue.media.converter.MediaModelConverters.ATTACHMENT_2_ATTACHMENT_DETAIL_INFO_CONVERTER;
 import static com.blue.media.converter.MediaModelConverters.ATTACHMENT_2_ATTACHMENT_INFO_CONVERTER;
+import static com.blue.mongo.common.MongoSearchAfterProcessor.packageSearchAfter;
+import static com.blue.mongo.common.MongoSearchAfterProcessor.parseSearchAfter;
 import static com.blue.mongo.common.MongoSortProcessor.process;
 import static com.blue.mongo.constant.LikeElement.PREFIX;
 import static com.blue.mongo.constant.LikeElement.SUFFIX;
+import static com.blue.mongo.constant.SortSchema.DESC;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
@@ -84,7 +84,7 @@ public class AttachmentServiceImpl implements AttachmentService {
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final Function<AttachmentCondition, Sort> SORTER_CONVERTER = c ->
-            process(c, SORT_ATTRIBUTE_MAPPING, AttachmentSortAttribute.ID.column);
+            process(c, SORT_ATTRIBUTE_MAPPING, AttachmentSortAttribute.CREATE_TIME.column);
 
     private static final Function<AttachmentCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();
@@ -227,75 +227,40 @@ public class AttachmentServiceImpl implements AttachmentService {
     }
 
     /**
-     * select attachment by page and memberId
+     * select attachment detail info by scroll and member id
      *
-     * @param limit
-     * @param rows
+     * @param scrollModelRequest
      * @param memberId
      * @return
      */
     @Override
-    public Mono<List<Attachment>> selectAttachmentMonoByLimitAndMemberId(Long limit, Long rows, Long memberId) {
-        LOGGER.info("Mono<List<Attachment>> selectAttachmentMonoByLimitAndMemberId(Long limit, Long rows, Long memberId), " +
-                "limit = {}, rows = {}, memberId = {}", limit, rows, memberId);
-        if (isInvalidLimit(limit) || isInvalidRows(rows) || isInvalidIdentity(memberId))
-            throw new BlueException(INVALID_PARAM);
-
-        Attachment probe = new Attachment();
-        probe.setCreator(memberId);
-
-        return attachmentRepository.findAll(Example.of(probe), Sort.by(Sort.Order.desc(ID.attribute)))
-                .publishOn(scheduler)
-                .skip(limit).take(rows)
-                .collectList();
-    }
-
-    /**
-     * count attachment by memberId
-     *
-     * @param memberId
-     * @return
-     */
-    @Override
-    public Mono<Long> countAttachmentMonoByMemberId(Long memberId) {
-        LOGGER.info("Mono<Long> countAttachmentMonoByMemberId(Long memberId), memberId = {}", memberId);
-
-        Attachment probe = new Attachment();
-        probe.setCreator(memberId);
-
-        return attachmentRepository.count(Example.of(probe)).publishOn(scheduler);
-    }
-
-    /**
-     * select attachment info by page and member id
-     *
-     * @param pageModelRequest
-     * @param memberId
-     * @return
-     */
-    @Override
-    public Mono<PageModelResponse<AttachmentDetailInfo>> selectAttachmentDetailInfoByPageAndMemberId(PageModelRequest<Void> pageModelRequest, Long memberId) {
-        LOGGER.info("Mono<PageModelResponse<AttachmentInfo>> selectAttachmentDetailInfoByPageAndMemberId(PageModelRequest<Void> pageModelRequest, Long memberId), " +
-                "pageModelRequest = {}, memberId = {}", pageModelRequest, memberId);
-        if (isNull(pageModelRequest))
+    public Mono<ScrollModelResponse<AttachmentDetailInfo, String>> selectShineInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<Void, Long> scrollModelRequest, Long memberId) {
+        LOGGER.info("Mono<ScrollModelResponse<AttachmentDetailInfo, String>> selectShineInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<Void, Long> scrollModelRequest, Long memberId), " +
+                "scrollModelRequest = {}, memberId = {}", scrollModelRequest, memberId);
+        if (isNull(scrollModelRequest))
             throw new BlueException(EMPTY_PARAM);
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
 
-        return zip(
-                selectAttachmentMonoByLimitAndMemberId(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberId),
-                countAttachmentMonoByMemberId(memberId),
-                rpcMemberBasicServiceConsumer.getMemberBasicInfoByPrimaryKey(memberId)
-        ).flatMap(tuple3 -> {
-            List<Attachment> attachments = tuple3.getT1();
-            String memberName = tuple3.getT3().getName();
+        Query query = new Query();
 
-            return isNotEmpty(attachments) ?
-                    just(attachments.stream().map(a -> ATTACHMENT_2_ATTACHMENT_DETAIL_INFO_CONVERTER.apply(a, memberName)).collect(toList()))
-                            .flatMap(attachmentInfos ->
-                                    just(new PageModelResponse<>(attachmentInfos, tuple3.getT2())))
-                    :
-                    just(new PageModelResponse<>(emptyList(), tuple3.getT2()));
+        Attachment probe = new Attachment();
+        probe.setCreator(memberId);
+
+        query.addCriteria(byExample(probe));
+        packageSearchAfter(query, DESC.sortType.identity, AttachmentSortAttribute.ID.column, scrollModelRequest.getCursor());
+        query.with(process(DESC.sortType.identity, AttachmentSortAttribute.CREATE_TIME.column));
+
+        query.skip(scrollModelRequest.getFrom()).limit(scrollModelRequest.getRows().intValue());
+
+        return zip(reactiveMongoTemplate.find(query, Attachment.class).publishOn(scheduler).collectList()
+                        .map(attachments -> parseSearchAfter(attachments, attachment -> String.valueOf(attachment.getId()))),
+                rpcMemberBasicServiceConsumer.getMemberBasicInfoByPrimaryKey(memberId)
+        ).map(tuple2 -> {
+            DataAndSearchAfter<Attachment, String> dataAndSearchAfter = tuple2.getT1();
+            String memberName = ofNullable(tuple2.getT2().getName()).filter(BlueChecker::isNotBlank).orElse(EMPTY_DATA.value);
+
+            return new ScrollModelResponse<>(dataAndSearchAfter.getData().stream().map(a -> ATTACHMENT_2_ATTACHMENT_DETAIL_INFO_CONVERTER.apply(a, memberName)).collect(toList()), dataAndSearchAfter.getSearchAfter());
         });
     }
 

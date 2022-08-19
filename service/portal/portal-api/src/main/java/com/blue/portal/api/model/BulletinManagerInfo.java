@@ -1,5 +1,10 @@
 package com.blue.portal.api.model;
 
+import com.blue.basic.serializer.IdentityDeserializer;
+import com.blue.basic.serializer.IdentitySerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 
 
@@ -13,6 +18,8 @@ public final class BulletinManagerInfo implements Serializable {
 
     private static final long serialVersionUID = -3619238330427816610L;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long id;
 
     private String title;
@@ -33,18 +40,30 @@ public final class BulletinManagerInfo implements Serializable {
 
     private Integer priority;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long activeTime;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long expireTime;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long createTime;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long updateTime;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long creator;
 
     private String creatorName;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long updater;
 
     private String updaterName;

@@ -1,5 +1,10 @@
 package com.blue.finance.api.model;
 
+import com.blue.basic.serializer.IdentityDeserializer;
+import com.blue.basic.serializer.IdentitySerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 
 /**
@@ -12,10 +17,16 @@ public final class FinanceFlowInfo implements Serializable {
 
     private static final long serialVersionUID = -7716489622474834740L;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long id;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long memberId;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long orderId;
 
     private String orderNo;
@@ -32,12 +43,20 @@ public final class FinanceFlowInfo implements Serializable {
      */
     private Integer changeType;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long amountChanged;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long amountBeforeChanged;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long amountAfterChanged;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long createTime;
 
     public FinanceFlowInfo() {

@@ -2,7 +2,7 @@ package com.blue.member.model;
 
 import com.blue.basic.constant.common.SortType;
 import com.blue.basic.model.common.SortCondition;
-import com.blue.member.constant.MemberDetailSortAttribute;
+import com.blue.member.constant.RealNameSortAttribute;
 
 import java.io.Serializable;
 
@@ -56,7 +56,7 @@ public final class RealNameCondition extends SortCondition implements Serializab
     private Long updateTimeEnd;
 
     public RealNameCondition() {
-        super(MemberDetailSortAttribute.ID.attribute, SortType.DESC.identity);
+        super(RealNameSortAttribute.CREATE_TIME.attribute, SortType.DESC.identity);
     }
 
     public RealNameCondition(String sortAttribute, String sortType) {

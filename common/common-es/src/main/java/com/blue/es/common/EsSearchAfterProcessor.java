@@ -18,7 +18,7 @@ import static java.util.Optional.ofNullable;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavadocDeclaration", "unused"})
+@SuppressWarnings({"JavadocDeclaration", "unused", "DuplicatedCode"})
 public final class EsSearchAfterProcessor {
 
     /**

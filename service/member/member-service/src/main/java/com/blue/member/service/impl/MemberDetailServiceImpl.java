@@ -215,7 +215,7 @@ public class MemberDetailServiceImpl implements MemberDetailService {
         if (isNull(c))
             return new MemberDetailCondition();
 
-        process(c, SORT_ATTRIBUTE_MAPPING, MemberDetailSortAttribute.ID.column);
+        process(c, SORT_ATTRIBUTE_MAPPING, MemberDetailSortAttribute.CREATE_TIME.column);
 
         ofNullable(c.getHobbyLike()).filter(BlueChecker::isNotBlank).ifPresent(hobbyLike ->
                 c.setHobbyLike(PERCENT.identity + hobbyLike + PERCENT.identity));

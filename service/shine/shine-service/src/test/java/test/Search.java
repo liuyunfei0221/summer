@@ -1,11 +1,9 @@
 package test;
 
 import co.elastic.clients.elasticsearch.ElasticsearchAsyncClient;
-import co.elastic.clients.elasticsearch._types.FieldSort;
-import co.elastic.clients.elasticsearch._types.SortOptions;
-import co.elastic.clients.elasticsearch._types.SortOrder;
-import co.elastic.clients.elasticsearch._types.Time;
+import co.elastic.clients.elasticsearch._types.*;
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.MatchAllQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.*;
@@ -19,6 +17,7 @@ import com.blue.es.api.conf.BaseEsConfParams;
 import com.blue.es.api.conf.EsConf;
 import com.blue.es.api.conf.EsNode;
 import com.blue.es.api.conf.Server;
+import com.blue.shine.repository.entity.Shine;
 import org.elasticsearch.client.NodeSelector;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
@@ -48,7 +47,9 @@ public class Search {
     public static void main(String[] args) {
 //        test1();
 //        test2();
-        test3();
+//        test3();
+//        test5();
+        test6();
     }
 
     private static void test1() {
@@ -170,6 +171,46 @@ public class Search {
                 System.err.println();
             }
         }
+    }
+
+    private static void test5() {
+        BoolQuery.Builder builder = new BoolQuery.Builder();
+        builder.must(new Query(new MatchAllQuery.Builder().build()));
+
+        Query query = Query.of(b -> b.bool(builder.build()));
+        SearchRequest searchRequest = SearchRequest.of(b -> b.query(query));
+
+        CompletableFuture<SearchResponse<Shine>> responseFuture = ELASTICSEARCH_ASYNC_CLIENT.search(searchRequest, Shine.class);
+        SearchResponse<Shine> response = responseFuture.join();
+
+        ofNullable(response).ifPresent(System.err::println);
+        ofNullable(response).map(SearchResponse::hits).map(HitsMetadata::hits).ifPresent(System.err::println);
+    }
+
+    private static void test6() {
+        BoolQuery.Builder builder = new BoolQuery.Builder();
+        builder.must(new Query(new MatchAllQuery.Builder().build()));
+//        builder.must(RangeQuery.of(q -> q.field("id").gte(JsonData.of(1L)))._toQuery());
+
+
+        Query query = Query.of(b -> b.bool(builder.build()));
+
+        SortOptions sortOptions = SortOptions.of(b -> b.score(SortOptionsBuilders.score().order(SortOrder.Desc).build()));
+
+        SearchRequest searchRequest = SearchRequest.of(b -> {
+            b.query(query);
+            b.sort(sortOptions);
+
+            packageSearchAfter(b, "45101494524975387");
+            return b;
+        });
+
+
+        CompletableFuture<SearchResponse<Shine>> responseFuture = ELASTICSEARCH_ASYNC_CLIENT.search(searchRequest, Shine.class);
+        SearchResponse<Shine> response = responseFuture.join();
+
+        ofNullable(response).ifPresent(System.err::println);
+        ofNullable(response).map(SearchResponse::hits).map(HitsMetadata::hits).ifPresent(System.err::println);
     }
 
 

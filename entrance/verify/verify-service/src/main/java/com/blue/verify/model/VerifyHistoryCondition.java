@@ -40,7 +40,7 @@ public final class VerifyHistoryCondition extends SortCondition implements Seria
     private Long createTimeEnd;
 
     public VerifyHistoryCondition() {
-        super(VerifyHistorySortAttribute.ID.attribute, SortType.DESC.identity);
+        super(VerifyHistorySortAttribute.CREATE_TIME.attribute, SortType.DESC.identity);
     }
 
     public VerifyHistoryCondition(String sortAttribute, String sortType) {

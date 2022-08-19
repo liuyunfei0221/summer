@@ -1,7 +1,10 @@
 package com.blue.basic.model.common;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
+
+import static java.util.Optional.ofNullable;
 
 /**
  * scroll data model
@@ -37,7 +40,7 @@ public final class ScrollModelResponse<T extends Serializable, A extends Seriali
     }
 
     public List<T> getData() {
-        return data;
+        return ofNullable(data).orElseGet(Collections::emptyList);
     }
 
     public void setData(List<T> data) {

@@ -1,6 +1,11 @@
 package com.blue.marketing.api.model;
 
 
+import com.blue.basic.serializer.IdentityDeserializer;
+import com.blue.basic.serializer.IdentitySerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 
 /**
@@ -13,6 +18,8 @@ public final class RewardInfo implements Serializable {
 
     private static final long serialVersionUID = 5642744602142762972L;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long id;
 
     private String name;

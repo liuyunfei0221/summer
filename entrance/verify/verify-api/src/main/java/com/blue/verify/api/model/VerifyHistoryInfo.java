@@ -1,6 +1,10 @@
 package com.blue.verify.api.model;
 
 import com.blue.basic.constant.verify.BusinessType;
+import com.blue.basic.serializer.IdentityDeserializer;
+import com.blue.basic.serializer.IdentitySerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.io.Serializable;
 
@@ -14,6 +18,8 @@ public final class VerifyHistoryInfo implements Serializable {
 
     private static final long serialVersionUID = -3829756530290630049L;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long id;
 
     /**
@@ -32,6 +38,8 @@ public final class VerifyHistoryInfo implements Serializable {
 
     private String requestIp;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long createTime;
 
     public VerifyHistoryInfo() {

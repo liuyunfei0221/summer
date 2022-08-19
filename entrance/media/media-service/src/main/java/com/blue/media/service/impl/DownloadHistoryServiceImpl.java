@@ -1,7 +1,7 @@
 package com.blue.media.service.impl;
 
-import com.blue.basic.model.common.PageModelRequest;
-import com.blue.basic.model.common.PageModelResponse;
+import com.blue.basic.common.base.BlueChecker;
+import com.blue.basic.model.common.*;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.media.api.model.AttachmentDetailInfo;
 import com.blue.media.api.model.DownloadHistoryInfo;
@@ -13,7 +13,6 @@ import com.blue.media.repository.template.DownloadHistoryRepository;
 import com.blue.media.service.inter.AttachmentService;
 import com.blue.media.service.inter.DownloadHistoryService;
 import com.blue.member.api.model.MemberBasicInfo;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
@@ -31,10 +30,12 @@ import java.util.stream.Stream;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
-import static com.blue.media.constant.DownloadHistoryColumnName.*;
-import static com.blue.media.constant.DownloadHistorySortAttribute.ID;
+import static com.blue.media.constant.DownloadHistoryColumnName.CREATE_TIME;
 import static com.blue.media.converter.MediaModelConverters.downloadHistoryToDownloadHistoryInfo;
+import static com.blue.mongo.common.MongoSearchAfterProcessor.packageSearchAfter;
+import static com.blue.mongo.common.MongoSearchAfterProcessor.parseSearchAfter;
 import static com.blue.mongo.common.MongoSortProcessor.process;
+import static com.blue.mongo.constant.SortSchema.DESC;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -151,81 +152,52 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
     }
 
     /**
-     * select download history by page and memberId
+     * select attachment detail info by scroll and member id
      *
-     * @param limit
-     * @param rows
+     * @param scrollModelRequest
      * @param memberId
      * @return
      */
     @Override
-    public Mono<List<DownloadHistory>> selectDownloadHistoryMonoByLimitAndMemberId(Long limit, Long rows, Long memberId) {
-        LOGGER.info("Mono<List<DownloadHistory>> selectDownloadHistoryMonoByLimitAndMemberId(Long limit, Long rows, Long memberId), limit = {}, rows = {}, memberId = {}", limit, rows, memberId);
-        if (isInvalidLimit(limit) || isInvalidRows(rows) || isInvalidIdentity(memberId))
-            return error(() -> new BlueException(INVALID_PARAM));
+    public Mono<ScrollModelResponse<DownloadHistoryInfo, String>> selectShineInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<Void, Long> scrollModelRequest, Long memberId) {
+        LOGGER.info("Mono<ScrollModelResponse<DownloadHistoryInfo, String>> selectShineInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<Void, Long> scrollModelRequest, Long memberId), " +
+                "scrollModelRequest = {}, memberId = {}", scrollModelRequest, memberId);
+        if (isNull(scrollModelRequest))
+            throw new BlueException(EMPTY_PARAM);
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(INVALID_IDENTITY);
+
+        Query query = new Query();
 
         DownloadHistory probe = new DownloadHistory();
         probe.setCreator(memberId);
 
-        return downloadHistoryRepository.findAll(Example.of(probe), Sort.by(Sort.Order.desc(ID.attribute)))
-                .publishOn(scheduler)
-                .skip(limit).take(rows)
-                .collectList();
-    }
+        query.addCriteria(byExample(probe));
+        packageSearchAfter(query, DESC.sortType.identity, DownloadHistorySortAttribute.ID.column, scrollModelRequest.getCursor());
+        query.with(process(DESC.sortType.identity, DownloadHistorySortAttribute.CREATE_TIME.attribute));
 
-    /**
-     * count download history by memberId
-     *
-     * @param memberId
-     * @return
-     */
-    @Override
-    public Mono<Long> countDownloadHistoryMonoByMemberId(Long memberId) {
-        LOGGER.info("Mono<Long> countDownloadHistoryMonoByMemberId(Long memberId), memberId = {}", memberId);
-        if (isInvalidIdentity(memberId))
-            return error(() -> new BlueException(INVALID_PARAM));
+        query.skip(scrollModelRequest.getFrom()).limit(scrollModelRequest.getRows().intValue());
 
-        DownloadHistory probe = new DownloadHistory();
-        probe.setCreator(memberId);
-
-        return downloadHistoryRepository.count(Example.of(probe)).publishOn(scheduler);
-    }
-
-    /**
-     * select download history info by page and member id
-     *
-     * @param pageModelRequest
-     * @param memberId
-     * @return
-     */
-    @Override
-    public Mono<PageModelResponse<DownloadHistoryInfo>> selectDownloadHistoryInfoByPageAndMemberId(PageModelRequest<Void> pageModelRequest, Long memberId) {
-        LOGGER.info("Mono<PageModelResponse<DownloadHistoryInfo>> selectDownloadHistoryInfoByPageAndMemberId(PageModelRequest<Void> pageModelRequest, Long memberId), pageModelDTO = {}, memberId = {}",
-                pageModelRequest, memberId);
-        if (isNull(pageModelRequest))
-            return error(() -> new BlueException(EMPTY_PARAM));
-        if (isInvalidIdentity(memberId))
-            return error(() -> new BlueException(INVALID_IDENTITY));
-
-        return zip(
-                selectDownloadHistoryMonoByLimitAndMemberId(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberId),
-                countDownloadHistoryMonoByMemberId(memberId),
+        return zip(reactiveMongoTemplate.find(query, DownloadHistory.class).publishOn(scheduler).collectList()
+                        .map(histories -> parseSearchAfter(histories, downloadHistory -> String.valueOf(downloadHistory.getId()))),
                 rpcMemberBasicServiceConsumer.getMemberBasicInfoByPrimaryKey(memberId)
-        ).flatMap(tuple3 -> {
-            List<DownloadHistory> downloadHistories = tuple3.getT1();
-            String memberName = tuple3.getT3().getName();
+        ).flatMap(tuple2 -> {
+            DataAndSearchAfter<DownloadHistory, String> dataAndSearchAfter = tuple2.getT1();
+            List<DownloadHistory> downloadHistories = dataAndSearchAfter.getData();
+
+            String memberName = ofNullable(tuple2.getT2().getName()).filter(BlueChecker::isNotBlank).orElse(EMPTY_DATA.value);
 
             return isNotEmpty(downloadHistories) ?
                     attachmentService.selectAttachmentDetailInfoMonoByIds(downloadHistories.parallelStream().map(DownloadHistory::getAttachmentId).collect(toList()))
                             .flatMap(attachments -> {
-                                Map<Long, String> idAndNameMapping = attachments.parallelStream().collect(toMap(AttachmentDetailInfo::getId, AttachmentDetailInfo::getName, (a, b) -> a));
+                                Map<Long, String> attachmentIdAndAttachmentNameMapping = attachments.parallelStream().collect(toMap(AttachmentDetailInfo::getId, AttachmentDetailInfo::getName, (a, b) -> a));
                                 return just(downloadHistories.stream().map(dh ->
-                                                downloadHistoryToDownloadHistoryInfo(dh, ofNullable(idAndNameMapping.get(dh.getAttachmentId())).orElse(EMPTY_DATA.value), memberName))
+                                                downloadHistoryToDownloadHistoryInfo(dh, ofNullable(attachmentIdAndAttachmentNameMapping.get(dh.getAttachmentId())).orElse(EMPTY_DATA.value), memberName))
                                         .collect(toList()));
                             }).flatMap(downloadHistoryInfo ->
-                                    just(new PageModelResponse<>(downloadHistoryInfo, tuple3.getT2())))
+                                    just(new ScrollModelResponse<>(downloadHistoryInfo, dataAndSearchAfter.getSearchAfter())))
                     :
-                    just(new PageModelResponse<>(emptyList(), tuple3.getT2()));
+                    just(new ScrollModelResponse<>(emptyList(), dataAndSearchAfter.getSearchAfter()));
         });
     }
 

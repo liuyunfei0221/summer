@@ -105,7 +105,7 @@ public class ResourceServiceImpl implements ResourceService {
         if (isNull(c))
             return new ResourceCondition();
 
-        process(c, SORT_ATTRIBUTE_MAPPING, ResourceSortAttribute.ID.column);
+        process(c, SORT_ATTRIBUTE_MAPPING, ResourceSortAttribute.CREATE_TIME.column);
 
         ofNullable(c.getRequestMethod())
                 .filter(StringUtils::hasText).map(String::toUpperCase).ifPresent(c::setRequestMethod);

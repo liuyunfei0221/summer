@@ -548,10 +548,10 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
         'media upload of api', 'media upload of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (220002, 'POST', 'blue-media', '/file/download', '', b'1', b'1', b'1', b'1', b'0', 1,
         'file download of api', 'file download of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (220003, 'POST', 'blue-media', '/attachments', '', b'1', b'1', b'1', b'1', b'1', 1,
-        'attachment list of api', 'attachment list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (220004, 'POST', 'blue-media', '/downloadHistories', '', b'1', b'1', b'1', b'1', b'1', 1,
-        'download history list of api', 'download history list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (220003, 'POST', 'blue-media', '/attachments/scroll', '', b'1', b'1', b'1', b'1', b'1', 1,
+        'attachment scroll list of api', 'attachment scroll list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (220004, 'POST', 'blue-media', '/downloadHistories/scroll', '', b'1', b'1', b'1', b'1', b'1', 1,
+        'download history scroll list of api', 'download history scroll list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (220005, 'POST', 'blue-media', '/qrCode', '', b'1', b'1', b'1', b'1', b'1', 1,
         'generate qr code for api', 'generate qr code for api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
@@ -648,20 +648,23 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
 
 -- shine api
 
-       (290001, 'POST', 'blue-shine', '/shine/scroll', '', b'0', b'1', b'1', b'0', b'1', 1,
+       (290001, 'POST', 'blue-shine', '/shines/scroll', '', b'0', b'1', b'1', b'0', b'1', 1,
         'commonweal information', 'commonweal information', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- shine manage
 
-       (300001, 'POST', 'blue-shine', '/manager/shine/page', '', b'1', b'1', b'1', b'0', b'1', 3,
+       (300001, 'POST', 'blue-shine', '/manager/shines/scroll/snapshot', '', b'1', b'1', b'1', b'0', b'1', 3,
+        'shine scroll on snapshot of manager', 'shine scroll on snapshot of manager', UNIX_TIMESTAMP(),
+        UNIX_TIMESTAMP(), 1, 1),
+       (300002, 'POST', 'blue-shine', '/manager/shines/page', '', b'1', b'1', b'1', b'0', b'1', 3,
         'shine page of manager', 'shine page of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (300002, 'POST', 'blue-shine', '/manager/shine/scroll', '', b'1', b'1', b'1', b'0', b'1', 3,
+       (300003, 'POST', 'blue-shine', '/manager/shine/scroll', '', b'1', b'1', b'1', b'0', b'1', 3,
         'shine scroll of manager', 'shine scroll of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (300003, 'POST', 'blue-shine', '/manager/shine', '', b'1', b'1', b'1', b'1', b'1', 3,
+       (300004, 'POST', 'blue-shine', '/manager/shine', '', b'1', b'1', b'1', b'1', b'1', 3,
         'insert shine', 'insert shine', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (300004, 'PUT', 'blue-shine', '/manager/shine', '', b'1', b'1', b'1', b'1', b'1', 3,
+       (300005, 'PUT', 'blue-shine', '/manager/shine', '', b'1', b'1', b'1', b'1', b'1', 3,
         'update shine', 'update shine', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (300005, 'DELETE', 'blue-shine', '/manager/shine/{id}', '', b'1', b'1', b'1', b'1', b'1', 3,
+       (300006, 'DELETE', 'blue-shine', '/manager/shine/{id}', '', b'1', b'1', b'1', b'1', b'1', 3,
         'delete shine', 'delete shine', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- event api

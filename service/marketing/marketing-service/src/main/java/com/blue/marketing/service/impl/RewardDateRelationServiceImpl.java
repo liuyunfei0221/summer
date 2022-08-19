@@ -9,7 +9,6 @@ import com.blue.marketing.api.model.RewardDateRelationInfo;
 import com.blue.marketing.api.model.RewardDateRelationManagerInfo;
 import com.blue.marketing.api.model.RewardInfo;
 import com.blue.marketing.constant.RewardDateRelationSortAttribute;
-import com.blue.marketing.constant.RewardSortAttribute;
 import com.blue.marketing.model.RewardDateRelationBatchInsertParam;
 import com.blue.marketing.model.RewardDateRelationCondition;
 import com.blue.marketing.model.RewardDateRelationInsertParam;
@@ -38,9 +37,9 @@ import java.util.stream.Stream;
 import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.database.common.ConditionSortProcessor.process;
 import static com.blue.basic.constant.common.BlueCommonThreshold.*;
 import static com.blue.basic.constant.common.ResponseElement.*;
+import static com.blue.database.common.ConditionSortProcessor.process;
 import static com.blue.marketing.converter.MarketingModelConverters.*;
 import static java.lang.Integer.parseInt;
 import static java.util.Collections.emptyList;
@@ -86,7 +85,7 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
         if (isNull(c))
             return new RewardDateRelationCondition();
 
-        process(c, SORT_ATTRIBUTE_MAPPING, RewardSortAttribute.ID.column);
+        process(c, SORT_ATTRIBUTE_MAPPING, RewardDateRelationSortAttribute.ID.column);
 
         return c;
     };

@@ -2,6 +2,7 @@ package test;
 
 import com.blue.basic.common.base.CommonFunctions;
 import com.blue.basic.component.rest.api.conf.RestConfParams;
+import com.blue.shine.model.ShineInsertParam;
 import com.google.gson.Gson;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;

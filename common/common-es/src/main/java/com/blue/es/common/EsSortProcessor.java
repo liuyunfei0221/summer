@@ -2,8 +2,7 @@ package com.blue.es.common;
 
 
 import co.elastic.clients.elasticsearch._types.SortOptions;
-import co.elastic.clients.elasticsearch._types.SortOptionsBuilders;
-import co.elastic.clients.elasticsearch._types.SortOrder;
+import com.blue.basic.common.base.BlueChecker;
 import com.blue.basic.model.common.SortCondition;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.es.constant.SortSchema;
@@ -14,7 +13,8 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static com.blue.basic.common.base.BlueChecker.*;
-import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
+import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
+import static com.blue.es.constant.SortSchema.DESC;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 
@@ -26,19 +26,19 @@ import static java.util.stream.Collectors.toMap;
 @SuppressWarnings({"JavadocDeclaration"})
 public final class EsSortProcessor {
 
-    private static final SortOptions DEFAULT_SORT_OPTIONS = SortOptions.of(builder -> builder.score(SortOptionsBuilders.score().order(SortOrder.Desc).build()));
+    private static final String DEFAULT_SORT = DESC.sortType.identity;
 
     private static final Map<String, Function<String, SortOptions>> MAPPING =
             Stream.of(SortSchema.values()).collect(toMap(e -> e.sortType.identity, e -> e.converter, (a, b) -> a));
 
-    private static final BiFunction<String, String, SortOptions> PROCESSOR = (sort, attr) ->
-            isNotBlank(attr) ?
-                    ofNullable(sort)
-                            .map(MAPPING::get)
-                            .map(p -> p.apply(attr))
-                            .orElse(DEFAULT_SORT_OPTIONS)
-                    :
-                    DEFAULT_SORT_OPTIONS;
+    private static final BiFunction<String, String, SortOptions> PROCESSOR = (sort, attr) -> {
+        if (isNotBlank(attr))
+            return ofNullable(MAPPING.get(ofNullable(sort).filter(BlueChecker::isNotBlank).orElse(DEFAULT_SORT)))
+                    .map(p -> p.apply(attr))
+                    .orElseThrow(() -> new BlueException(INVALID_IDENTITY));
+
+        throw new BlueException(INVALID_IDENTITY);
+    };
 
     /**
      * assert and package sort attr
@@ -59,18 +59,11 @@ public final class EsSortProcessor {
      * @param defaultSortAttr
      */
     public static SortOptions process(SortCondition condition, Map<String, String> sortAttrMapping, String defaultSortAttr) {
-        if (isNull(condition))
-            return DEFAULT_SORT_OPTIONS;
-
-        String sortAttribute = condition.getSortAttribute();
-        if (isBlank(sortAttribute)) {
-            condition.setSortAttribute(defaultSortAttr);
-        } else {
-            if (!sortAttrMapping.containsValue(sortAttribute))
-                throw new BlueException(INVALID_PARAM);
-        }
-
-        return process(condition.getSortType(), condition.getSortAttribute());
+        return isNotNull(condition) ?
+                process(ofNullable(condition.getSortType()).filter(BlueChecker::isNotBlank).orElse(DEFAULT_SORT),
+                        ofNullable(sortAttrMapping).filter(BlueChecker::isNotEmpty).map(sam -> sam.get(condition.getSortAttribute())).filter(BlueChecker::isNotBlank).orElse(defaultSortAttr))
+                :
+                process(DEFAULT_SORT, defaultSortAttr);
     }
 
 }

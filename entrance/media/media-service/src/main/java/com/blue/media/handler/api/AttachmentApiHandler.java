@@ -1,7 +1,6 @@
 package com.blue.media.handler.api;
 
 import com.blue.basic.model.common.BlueResponse;
-import com.blue.basic.model.common.PageModelRequest;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.media.service.inter.AttachmentService;
 import org.springframework.stereotype.Component;
@@ -12,6 +11,7 @@ import reactor.core.publisher.Mono;
 import static com.blue.basic.common.base.AccessGetter.getAccessReact;
 import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.media.constant.MediaTypeReference.SCROLL_MODEL_FOR_ATTACHMENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.*;
@@ -21,7 +21,7 @@ import static reactor.core.publisher.Mono.*;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "ReactiveStreamsUnusedPublisher"})
+@SuppressWarnings({"JavaDoc"})
 @Component
 public final class AttachmentApiHandler {
 
@@ -32,17 +32,16 @@ public final class AttachmentApiHandler {
     }
 
     /**
-     * select attachment by page and current member
+     * select attachment by scroll and current member
      *
      * @param serverRequest
      * @return
      */
-    @SuppressWarnings("unchecked")
-    public Mono<ServerResponse> page(ServerRequest serverRequest) {
-        return zip(serverRequest.bodyToMono(PageModelRequest.class)
+    public Mono<ServerResponse> scroll(ServerRequest serverRequest) {
+        return zip(serverRequest.bodyToMono(SCROLL_MODEL_FOR_ATTACHMENT_TYPE)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
-                .flatMap(tuple2 -> attachmentService.selectAttachmentDetailInfoByPageAndMemberId(tuple2.getT1(), tuple2.getT2().getId()))
+                .flatMap(tuple2 -> attachmentService.selectShineInfoScrollMonoByScrollAndCursorBaseOnMemberId(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(pmr, serverRequest), BlueResponse.class));

@@ -1,5 +1,10 @@
 package com.blue.member.api.model;
 
+import com.blue.basic.serializer.IdentityDeserializer;
+import com.blue.basic.serializer.IdentitySerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 
 /**
@@ -12,6 +17,8 @@ public final class MemberBasicInfo implements Serializable {
 
     private static final long serialVersionUID = -8231116867917923473L;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long id;
 
     private String account;
@@ -38,8 +45,12 @@ public final class MemberBasicInfo implements Serializable {
      */
     private Integer status;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long createTime;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long updateTime;
 
     public MemberBasicInfo() {

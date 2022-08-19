@@ -1,6 +1,7 @@
 package com.blue.mongo.common;
 
 
+import com.blue.basic.common.base.BlueChecker;
 import com.blue.basic.model.common.DataAndSearchAfter;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -15,6 +16,7 @@ import java.util.function.Function;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.mongo.constant.SortSchema.ASC;
 import static com.blue.mongo.constant.SortSchema.DESC;
+import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -26,29 +28,47 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 @SuppressWarnings({"JavadocDeclaration", "unused"})
 public final class MongoSearchAfterProcessor {
 
+    private static final String DEFAULT_SORT = DESC.sortType.identity;
+
     private static final Map<String, BiFunction<String, Object, Criteria>> MAPPING = new HashMap<>(2, 2.0f);
 
     static {
         MAPPING.put(DESC.sortType.identity, (attr, searchAfter) ->
-                isNotBlank(attr) && isNotNull(searchAfter) ? where(attr).lte(searchAfter) : null);
+                isNotBlank(attr) && isNotNull(searchAfter) ? where(attr).lt(searchAfter) : null);
 
         MAPPING.put(ASC.sortType.identity, (attr, searchAfter) ->
-                isNotBlank(attr) && isNotNull(searchAfter) ? where(attr).gte(searchAfter) : null);
+                isNotBlank(attr) && isNotNull(searchAfter) ? where(attr).gt(searchAfter) : null);
     }
 
     private static final Function<String, BiFunction<String, Object, Criteria>> CRITERIA_GENERATOR_GETTER = sort ->
             ofNullable(sort).map(MAPPING::get).orElse(null);
 
+    /**
+     * package search after to query
+     *
+     * @param query
+     * @param sortAttribute
+     * @param searchAfter
+     * @param <A>
+     */
+    public static <A extends Serializable> void packageSearchAfter(Query query, String sortAttribute, A searchAfter) {
+        if (isNotNull(query) && isNotBlank(sortAttribute) && isNotNull(searchAfter))
+            ofNullable(CRITERIA_GENERATOR_GETTER.apply(DEFAULT_SORT)).map(g -> g.apply(sortAttribute, searchAfter))
+                    .ifPresent(query::addCriteria);
+    }
 
     /**
      * package search after to query
      *
      * @param query
+     * @param sort
+     * @param sortAttribute
      * @param searchAfter
+     * @param <A>
      */
     public static <A extends Serializable> void packageSearchAfter(Query query, String sort, String sortAttribute, A searchAfter) {
-        if (isNotNull(query) && isNotBlank(sort) && isNotBlank(sortAttribute) && isNotNull(searchAfter))
-            ofNullable(CRITERIA_GENERATOR_GETTER.apply(sort)).map(g -> g.apply(sortAttribute, searchAfter))
+        if (isNotNull(query) && isNotBlank(sortAttribute) && isNotNull(searchAfter))
+            ofNullable(CRITERIA_GENERATOR_GETTER.apply(ofNullable(sort).filter(BlueChecker::isNotBlank).orElse(DEFAULT_SORT))).map(g -> g.apply(sortAttribute, searchAfter))
                     .ifPresent(query::addCriteria);
     }
 
@@ -63,7 +83,7 @@ public final class MongoSearchAfterProcessor {
      */
     public static <T extends Serializable, A extends Serializable> DataAndSearchAfter<T, A> parseSearchAfter(List<T> data, Function<T, A> searchAfterParser) {
         if (isEmpty(data) || isNull(searchAfterParser))
-            return new DataAndSearchAfter<>();
+            return new DataAndSearchAfter<>(emptyList(), null);
 
         SearchAfterHolder<A> searchAfterHolder = new SearchAfterHolder<>();
 

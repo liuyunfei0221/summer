@@ -2,6 +2,10 @@ package com.blue.finance.api.model;
 
 import com.blue.basic.inter.Asserter;
 import com.blue.basic.model.exps.BlueException;
+import com.blue.basic.serializer.IdentityDeserializer;
+import com.blue.basic.serializer.IdentitySerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.io.Serializable;
 
@@ -22,11 +26,15 @@ public final class WithdrawInfo implements Serializable, Asserter {
     /**
      * withdraw amount
      */
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long amount;
 
     /**
      * bankcard id
      */
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long bankCardId;
 
     /**

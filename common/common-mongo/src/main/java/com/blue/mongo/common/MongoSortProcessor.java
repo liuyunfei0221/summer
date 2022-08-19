@@ -1,8 +1,8 @@
 package com.blue.mongo.common;
 
 
+import com.blue.basic.common.base.BlueChecker;
 import com.blue.basic.model.common.SortCondition;
-import com.blue.basic.model.exps.BlueException;
 import com.blue.mongo.constant.SortSchema;
 import org.springframework.data.domain.Sort;
 
@@ -12,7 +12,6 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static com.blue.basic.common.base.BlueChecker.*;
-import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 
@@ -57,18 +56,11 @@ public final class MongoSortProcessor {
      * @param defaultSortAttr
      */
     public static Sort process(SortCondition condition, Map<String, String> sortAttrMapping, String defaultSortAttr) {
-        if (isNull(condition))
-            return DEFAULT_SORT;
+        return isNotNull(condition) ?
+                process(condition.getSortType(), ofNullable(sortAttrMapping).filter(BlueChecker::isNotEmpty).map(sar -> sar.get(condition.getSortAttribute())).filter(BlueChecker::isNotBlank).orElse(defaultSortAttr))
+                :
+                DEFAULT_SORT;
 
-        String sortAttribute = condition.getSortAttribute();
-        if (isBlank(sortAttribute)) {
-            condition.setSortAttribute(defaultSortAttr);
-        } else {
-            if (!sortAttrMapping.containsValue(sortAttribute))
-                throw new BlueException(INVALID_PARAM);
-        }
-
-        return process(condition.getSortType(), condition.getSortAttribute());
     }
 
 }

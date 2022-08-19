@@ -27,7 +27,7 @@ public class AttachmentApiRoute {
         RequestPredicate pathPredicate = path("/blue-media");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/attachments", accept(APPLICATION_JSON), attachmentApiHandler::page)
+                .POST("/attachments/scroll", accept(APPLICATION_JSON), attachmentApiHandler::scroll)
                 .build();
 
         return nest(pathPredicate, routerFunction);

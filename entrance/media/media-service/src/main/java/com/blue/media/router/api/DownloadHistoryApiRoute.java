@@ -28,7 +28,7 @@ public class DownloadHistoryApiRoute {
         RequestPredicate pathPredicate = path("/blue-media");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/downloadHistories", accept(APPLICATION_JSON), downloadHistoryApiHandler::page)
+                .POST("/downloadHistories/scroll", accept(APPLICATION_JSON), downloadHistoryApiHandler::scroll)
                 .build();
 
         return nest(pathPredicate, routerFunction);

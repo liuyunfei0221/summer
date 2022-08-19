@@ -1,7 +1,16 @@
 package com.blue.basic.model.common;
 
+import com.blue.basic.serializer.IdentityDeserializer;
+import com.blue.basic.serializer.IdentitySerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
+
+import static com.blue.basic.constant.common.BlueCommonThreshold.MIN_COUNT;
+import static java.util.Optional.ofNullable;
 
 /**
  * page data model
@@ -13,6 +22,8 @@ public final class PageModelResponse<T extends Serializable> implements Serializ
 
     private static final long serialVersionUID = -2833276453789009836L;
 
+    private static final long DEFAULT_COUNT = MIN_COUNT.value;
+
     /**
      * data element list
      */
@@ -21,6 +32,8 @@ public final class PageModelResponse<T extends Serializable> implements Serializ
     /**
      * total count
      */
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long count;
 
     public PageModelResponse() {
@@ -32,7 +45,7 @@ public final class PageModelResponse<T extends Serializable> implements Serializ
     }
 
     public List<T> getData() {
-        return data;
+        return ofNullable(data).orElseGet(Collections::emptyList);
     }
 
     public void setData(List<T> data) {
@@ -40,7 +53,7 @@ public final class PageModelResponse<T extends Serializable> implements Serializ
     }
 
     public Long getCount() {
-        return count;
+        return ofNullable(count).orElse(DEFAULT_COUNT);
     }
 
     public void setCount(Long count) {

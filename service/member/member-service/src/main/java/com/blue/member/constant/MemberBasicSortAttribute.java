@@ -8,11 +8,6 @@ package com.blue.member.constant;
 public enum MemberBasicSortAttribute {
 
     /**
-     * id
-     */
-    ID("id", "id"),
-
-    /**
      * createTime
      */
     CREATE_TIME("createTime", "create_time"),

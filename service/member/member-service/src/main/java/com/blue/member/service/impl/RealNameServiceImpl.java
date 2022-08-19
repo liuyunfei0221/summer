@@ -126,7 +126,7 @@ public class RealNameServiceImpl implements RealNameService {
         if (isNull(c))
             return new RealNameCondition();
 
-        process(c, SORT_ATTRIBUTE_MAPPING, RealNameSortAttribute.ID.column);
+        process(c, SORT_ATTRIBUTE_MAPPING, RealNameSortAttribute.CREATE_TIME.column);
 
         return c;
     };

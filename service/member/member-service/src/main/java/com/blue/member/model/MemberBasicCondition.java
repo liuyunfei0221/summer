@@ -49,7 +49,7 @@ public final class MemberBasicCondition extends SortCondition implements Seriali
     private Long updateTimeEnd;
 
     public MemberBasicCondition() {
-        super(MemberBasicSortAttribute.ID.attribute, SortType.DESC.identity);
+        super(MemberBasicSortAttribute.CREATE_TIME.attribute, SortType.DESC.identity);
     }
 
     public MemberBasicCondition(String sortAttribute, String sortType) {

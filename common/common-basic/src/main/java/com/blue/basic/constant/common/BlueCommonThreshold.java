@@ -28,6 +28,11 @@ public enum BlueCommonThreshold {
     MAX_ROWS(100L),
 
     /**
+     * min count per page
+     */
+    MIN_COUNT(0L),
+
+    /**
      * polling interval millis while waiting for other threads to synchronize data
      */
     WAIT_MILLIS_FOR_THREAD_SLEEP(100L),

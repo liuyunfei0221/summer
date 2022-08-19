@@ -8,11 +8,6 @@ package com.blue.verify.constant;
 public enum VerifyHistorySortAttribute {
 
     /**
-     * id
-     */
-    ID("id", "id"),
-
-    /**
      * createTime
      */
     CREATE_TIME("createTime", "createTime");

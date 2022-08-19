@@ -1,5 +1,10 @@
 package com.blue.member.api.model;
 
+import com.blue.basic.serializer.IdentityDeserializer;
+import com.blue.basic.serializer.IdentitySerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 
 /**
@@ -12,8 +17,12 @@ public final class CardDetailInfo implements Serializable {
 
     private static final long serialVersionUID = -4667279788771456871L;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long id;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long memberId;
 
     private String name;
@@ -23,6 +32,8 @@ public final class CardDetailInfo implements Serializable {
     /**
      * cover attachment id
      */
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long coverId;
 
     /**
@@ -33,6 +44,8 @@ public final class CardDetailInfo implements Serializable {
     /**
      * content attachment id
      */
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long contentId;
 
     /**
@@ -42,8 +55,12 @@ public final class CardDetailInfo implements Serializable {
 
     private String extra;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long createTime;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long updateTime;
 
     private String creatorName;

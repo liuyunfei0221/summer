@@ -1,7 +1,7 @@
 package com.blue.marketing.model;
 
 import com.blue.basic.model.common.SortCondition;
-import com.blue.marketing.constant.EventRecordSortAttribute;
+import com.blue.marketing.constant.RewardDateRelationSortAttribute;
 
 import java.io.Serializable;
 
@@ -36,7 +36,7 @@ public final class RewardDateRelationCondition extends SortCondition implements 
     private Long updateTimeEnd;
 
     public RewardDateRelationCondition() {
-        super(EventRecordSortAttribute.ID.attribute, DESC.identity);
+        super(RewardDateRelationSortAttribute.ID.attribute, DESC.identity);
     }
 
     public RewardDateRelationCondition(String sortAttribute, String sortType) {

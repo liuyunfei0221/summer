@@ -16,6 +16,7 @@ import static com.blue.basic.common.base.PathVariableGetter.getLongVariableReact
 import static com.blue.basic.constant.common.PathVariable.ID;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.shine.constant.ShineTypeReference.PAGE_MODEL_FOR_SHINE_CONDITION_TYPE;
+import static com.blue.shine.constant.ShineTypeReference.SCROLL_MODEL_WITH_SNAP_SHOT_FOR_SHINE_CONDITION_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.*;
@@ -53,7 +54,7 @@ public final class ShineManagerHandler {
     }
 
     /**
-     * update reward
+     * update shine
      *
      * @param serverRequest
      * @return
@@ -69,7 +70,7 @@ public final class ShineManagerHandler {
     }
 
     /**
-     * delete reward
+     * delete shine
      *
      * @param serverRequest
      * @return
@@ -83,7 +84,22 @@ public final class ShineManagerHandler {
     }
 
     /**
-     * select reward
+     * select shine
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> scrollBaseOnSnapShot(ServerRequest serverRequest) {
+        return serverRequest.bodyToMono(SCROLL_MODEL_WITH_SNAP_SHOT_FOR_SHINE_CONDITION_TYPE)
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
+                .flatMap(shineService::selectShineInfoScrollMonoByScrollAndCursorBaseOnSnapShot)
+                .flatMap(pmr ->
+                        ok().contentType(APPLICATION_JSON)
+                                .body(success(pmr, serverRequest), BlueResponse.class));
+    }
+
+    /**
+     * select shine
      *
      * @param serverRequest
      * @return

@@ -65,7 +65,7 @@ public class VerifyHistoryServiceImpl implements VerifyHistoryService {
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final Function<VerifyHistoryCondition, Sort> SORTER_CONVERTER = c ->
-            process(c, SORT_ATTRIBUTE_MAPPING, VerifyHistorySortAttribute.ID.column);
+            process(c, SORT_ATTRIBUTE_MAPPING, VerifyHistorySortAttribute.CREATE_TIME.column);
 
     private static final Function<VerifyHistoryCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();

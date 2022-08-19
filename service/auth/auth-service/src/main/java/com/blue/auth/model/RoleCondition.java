@@ -1,6 +1,6 @@
 package com.blue.auth.model;
 
-import com.blue.auth.constant.ResourceSortAttribute;
+import com.blue.auth.constant.RoleSortAttribute;
 import com.blue.basic.model.common.SortCondition;
 
 import java.io.Serializable;
@@ -32,7 +32,7 @@ public final class RoleCondition extends SortCondition implements Serializable {
     private Long updateTimeEnd;
 
     public RoleCondition() {
-        super(ResourceSortAttribute.ID.attribute, DESC.identity);
+        super(RoleSortAttribute.CREATE_TIME.attribute, DESC.identity);
     }
 
     public RoleCondition(String sortAttribute, String sortType) {

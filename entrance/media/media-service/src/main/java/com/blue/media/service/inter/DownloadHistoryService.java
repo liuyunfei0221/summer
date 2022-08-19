@@ -2,6 +2,8 @@ package com.blue.media.service.inter;
 
 import com.blue.basic.model.common.PageModelRequest;
 import com.blue.basic.model.common.PageModelResponse;
+import com.blue.basic.model.common.ScrollModelRequest;
+import com.blue.basic.model.common.ScrollModelResponse;
 import com.blue.media.api.model.DownloadHistoryInfo;
 import com.blue.media.model.DownloadHistoryCondition;
 import com.blue.media.repository.entity.DownloadHistory;
@@ -44,31 +46,13 @@ public interface DownloadHistoryService {
     Optional<DownloadHistory> getDownloadHistory(Long id);
 
     /**
-     * select download history by page and memberId
+     * select attachment detail info by scroll and member id
      *
-     * @param limit
-     * @param rows
+     * @param scrollModelRequest
      * @param memberId
      * @return
      */
-    Mono<List<DownloadHistory>> selectDownloadHistoryMonoByLimitAndMemberId(Long limit, Long rows, Long memberId);
-
-    /**
-     * count download history by memberId
-     *
-     * @param memberId
-     * @return
-     */
-    Mono<Long> countDownloadHistoryMonoByMemberId(Long memberId);
-
-    /**
-     * select download history info by page and member id
-     *
-     * @param pageModelRequest
-     * @param memberId
-     * @return
-     */
-    Mono<PageModelResponse<DownloadHistoryInfo>> selectDownloadHistoryInfoByPageAndMemberId(PageModelRequest<Void> pageModelRequest, Long memberId);
+    Mono<ScrollModelResponse<DownloadHistoryInfo, String>> selectShineInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<Void, Long> scrollModelRequest, Long memberId);
 
     /**
      * select download history by page and query

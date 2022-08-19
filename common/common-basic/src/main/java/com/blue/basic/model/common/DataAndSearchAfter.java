@@ -27,6 +27,8 @@ public final class DataAndSearchAfter<T extends Serializable, A extends Serializ
     private A searchAfter;
 
     public DataAndSearchAfter() {
+        this.data = emptyList();
+        this.searchAfter = null;
     }
 
     public DataAndSearchAfter(List<T> data, A searchAfter) {

@@ -8,11 +8,6 @@ package com.blue.auth.constant;
 public enum CredentialHistorySortAttribute {
 
     /**
-     * id
-     */
-    ID("id", "id"),
-
-    /**
      * createTime
      */
     CREATE_TIME("createTime", "create_time"),

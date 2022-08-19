@@ -20,7 +20,7 @@ import java.util.List;
  *
  * @author liuyunfei
  */
-@SuppressWarnings("JavaDoc")
+@SuppressWarnings({"JavaDoc", "unused"})
 public interface ShineService {
 
     /**
@@ -98,14 +98,6 @@ public interface ShineService {
     Mono<List<ShineInfo>> selectShineInfoMonoByIds(List<Long> ids);
 
     /**
-     * select shine info page by condition
-     *
-     * @param pageModelRequest
-     * @return
-     */
-    Mono<PageModelResponse<ShineInfo>> selectShineInfoPageMonoByPageAndCondition(PageModelRequest<ShineCondition> pageModelRequest);
-
-    /**
      * select shine info scroll by cursor
      *
      * @param scrollModelRequest
@@ -120,5 +112,13 @@ public interface ShineService {
      * @return
      */
     Mono<ScrollModelResponse<ShineInfo, PitCursor>> selectShineInfoScrollMonoByScrollAndCursorBaseOnSnapShot(ScrollModelRequest<ShineCondition, PitCursor> scrollModelRequest);
+
+    /**
+     * select shine info page by condition
+     *
+     * @param pageModelRequest
+     * @return
+     */
+    Mono<PageModelResponse<ShineInfo>> selectShineInfoPageMonoByPageAndCondition(PageModelRequest<ShineCondition> pageModelRequest);
 
 }

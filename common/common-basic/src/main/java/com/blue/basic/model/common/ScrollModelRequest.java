@@ -5,8 +5,9 @@ import com.blue.basic.model.exps.BlueException;
 import java.io.Serializable;
 
 import static com.blue.basic.common.base.BlueChecker.isNull;
-import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_ROWS;
+import static com.blue.basic.constant.common.BlueCommonThreshold.*;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
+import static java.util.Optional.ofNullable;
 
 /**
  * scroll request model
@@ -14,10 +15,11 @@ import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
-public final class ScrollModelRequest<T extends Serializable, A extends Serializable> implements Serializable {
+public final class ScrollModelRequest<T, A extends Serializable> implements Serializable {
 
     private static final long serialVersionUID = 8775218133394708404L;
 
+    private static final long DEFAULT_ROWS = ROWS.value;
     private static final long MAX_ROWS_PER_REQ = MAX_ROWS.value;
 
     private static final Long FROM = 0L;
@@ -54,7 +56,7 @@ public final class ScrollModelRequest<T extends Serializable, A extends Serializ
     }
 
     public Long getRows() {
-        return rows;
+        return ofNullable(rows).orElse(DEFAULT_ROWS);
     }
 
     public void setRows(Long rows) {

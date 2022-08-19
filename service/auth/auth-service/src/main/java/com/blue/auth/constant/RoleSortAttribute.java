@@ -8,11 +8,6 @@ package com.blue.auth.constant;
 public enum RoleSortAttribute {
 
     /**
-     * id
-     */
-    ID("id", "id"),
-
-    /**
      * level
      */
     LEVEL("level", "level"),

@@ -142,7 +142,7 @@ public class RoleServiceImpl implements RoleService {
         if (isNull(c))
             return new RoleCondition();
 
-        process(c, SORT_ATTRIBUTE_MAPPING, RoleSortAttribute.ID.column);
+        process(c, SORT_ATTRIBUTE_MAPPING, RoleSortAttribute.CREATE_TIME.column);
 
         ofNullable(c.getNameLike())
                 .filter(StringUtils::hasText).ifPresent(nameLike -> c.setNameLike(PERCENT.identity + nameLike + PERCENT.identity));

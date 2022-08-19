@@ -23,10 +23,10 @@ public class ShineApiRoute {
     @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> shineApiRouter(ShineApiHandler shineApiHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-shine/shine");
+        RequestPredicate pathPredicate = path("/blue-shine");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/scroll", shineApiHandler::scroll)
+                .POST("/shines/scroll", shineApiHandler::scroll)
                 .build();
 
         return nest(pathPredicate, routerFunction);

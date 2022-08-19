@@ -50,7 +50,7 @@ public final class ResourceCondition extends SortCondition implements Serializab
     private Long updateTimeEnd;
 
     public ResourceCondition() {
-        super(ResourceSortAttribute.ID.attribute, DESC.identity);
+        super(ResourceSortAttribute.CREATE_TIME.attribute, DESC.identity);
     }
 
     public ResourceCondition(String sortAttribute, String sortType) {
