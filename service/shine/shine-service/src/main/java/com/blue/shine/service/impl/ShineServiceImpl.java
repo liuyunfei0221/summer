@@ -24,6 +24,7 @@ import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.shine.api.model.ShineInfo;
 import com.blue.shine.config.deploy.CaffeineDeploy;
 import com.blue.shine.config.deploy.DefaultPriorityDeploy;
+import com.blue.shine.config.deploy.PitDeploy;
 import com.blue.shine.constant.ShineSortAttribute;
 import com.blue.shine.event.producer.ShineDeleteProducer;
 import com.blue.shine.event.producer.ShineInsertProducer;
@@ -109,7 +110,8 @@ public class ShineServiceImpl implements ShineService {
 
     public ShineServiceImpl(BlueIdentityProcessor blueIdentityProcessor, Scheduler scheduler, ElasticsearchAsyncClient elasticsearchAsyncClient,
                             RpcCityServiceConsumer rpcCityServiceConsumer, ShineRepository shineRepository, ShineInsertProducer shineInsertProducer, ShineUpdateProducer shineUpdateProducer,
-                            ShineDeleteProducer shineDeleteProducer, ExecutorService executorService, DefaultPriorityDeploy defaultPriorityDeploy, CaffeineDeploy caffeineDeploy) {
+                            ShineDeleteProducer shineDeleteProducer, ExecutorService executorService, PitDeploy pitDeploy, DefaultPriorityDeploy defaultPriorityDeploy,
+                            CaffeineDeploy caffeineDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.scheduler = scheduler;
         this.elasticsearchAsyncClient = elasticsearchAsyncClient;
@@ -119,15 +121,18 @@ public class ShineServiceImpl implements ShineService {
         this.shineUpdateProducer = shineUpdateProducer;
         this.shineDeleteProducer = shineDeleteProducer;
 
-        this.DEFAULT_PRIORITY = defaultPriorityDeploy.getPriority();
+        this.PIT_TIME = Time.of(builder -> builder.time(pitDeploy.getTime()));
+        this.defaultPriority = defaultPriorityDeploy.getPriority();
         this.idRegionCache = generateCache(new CaffeineConfParams(
                 caffeineDeploy.getCityMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
                 AFTER_ACCESS, executorService));
     }
 
-    private static final String INDEX_NAME = SHINE.name;
+    private final Time PIT_TIME;
 
-    private int DEFAULT_PRIORITY;
+    private int defaultPriority;
+
+    private static final String INDEX_NAME = SHINE.name;
 
     private Cache<Long, CityRegion> idRegionCache;
 
@@ -192,7 +197,7 @@ public class ShineServiceImpl implements ShineService {
         shine.setContactDetail(p.getContactDetail());
         shine.setAddressDetail(p.getAddressDetail());
         shine.setExtra(p.getExtra());
-        shine.setPriority(ofNullable(p.getPriority()).orElse(DEFAULT_PRIORITY));
+        shine.setPriority(ofNullable(p.getPriority()).orElse(defaultPriority));
 
         Long stamp = TIME_STAMP_GETTER.get();
         shine.setCreateTime(stamp);
@@ -620,8 +625,6 @@ public class ShineServiceImpl implements ShineService {
                 )
                 .switchIfEmpty(defer(() -> just(new ScrollModelResponse<>(emptyList()))));
     }
-
-    private static final Time PIT_TIME = Time.of(builder -> builder.time("1m"));
 
     /**
      * select shine info scroll by cursor with pit

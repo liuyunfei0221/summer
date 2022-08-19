@@ -160,6 +160,10 @@ caffeine:
   expiresSecond: 30
 
 
+pit:
+  time: 2m
+
+
 redisson:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
