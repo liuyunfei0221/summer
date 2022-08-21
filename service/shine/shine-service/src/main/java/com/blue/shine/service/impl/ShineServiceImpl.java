@@ -24,6 +24,7 @@ import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.shine.api.model.ShineInfo;
 import com.blue.shine.config.deploy.CaffeineDeploy;
 import com.blue.shine.config.deploy.DefaultPriorityDeploy;
+import com.blue.shine.config.deploy.FuzzinessDeploy;
 import com.blue.shine.config.deploy.PitDeploy;
 import com.blue.shine.constant.ShineSortAttribute;
 import com.blue.shine.event.producer.ShineDeleteProducer;
@@ -110,7 +111,7 @@ public class ShineServiceImpl implements ShineService {
 
     public ShineServiceImpl(BlueIdentityProcessor blueIdentityProcessor, Scheduler scheduler, ElasticsearchAsyncClient elasticsearchAsyncClient,
                             RpcCityServiceConsumer rpcCityServiceConsumer, ShineRepository shineRepository, ShineInsertProducer shineInsertProducer, ShineUpdateProducer shineUpdateProducer,
-                            ShineDeleteProducer shineDeleteProducer, ExecutorService executorService, PitDeploy pitDeploy, DefaultPriorityDeploy defaultPriorityDeploy,
+                            ShineDeleteProducer shineDeleteProducer, ExecutorService executorService, PitDeploy pitDeploy, FuzzinessDeploy fuzzinessDeploy, DefaultPriorityDeploy defaultPriorityDeploy,
                             CaffeineDeploy caffeineDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.scheduler = scheduler;
@@ -122,6 +123,7 @@ public class ShineServiceImpl implements ShineService {
         this.shineDeleteProducer = shineDeleteProducer;
 
         this.PIT_TIME = Time.of(builder -> builder.time(pitDeploy.getTime()));
+        this.fuzziness = String.valueOf(fuzzinessDeploy.getFuzziness());
         this.defaultPriority = defaultPriorityDeploy.getPriority();
         this.idRegionCache = generateCache(new CaffeineConfParams(
                 caffeineDeploy.getCityMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
@@ -129,6 +131,8 @@ public class ShineServiceImpl implements ShineService {
     }
 
     private final Time PIT_TIME;
+
+    private String fuzziness;
 
     private int defaultPriority;
 
@@ -244,68 +248,67 @@ public class ShineServiceImpl implements ShineService {
     private static final Function<ShineCondition, SortOptions> SORT_PROCESSOR = c ->
             process(c, SORT_ATTRIBUTE_MAPPING, ShineSortAttribute.ID.column);
 
-    private static final Function<ShineCondition, Query> CONDITION_PROCESSOR = c -> {
+    private final Function<ShineCondition, Query> CONDITION_PROCESSOR = c -> {
         if (isNotNull(c)) {
             BoolQuery.Builder builder = new BoolQuery.Builder();
 
             ofNullable(c.getId()).filter(BlueChecker::isValidIdentity).ifPresent(id ->
-                    builder.must(TermQuery.of(q -> q.field(ID.name).value(id))._toQuery()));
+                    builder.must(TermQuery.of(b -> b.field(ID.name).value(id))._toQuery()));
 
             ofNullable(c.getTitleLike()).filter(BlueChecker::isNotBlank).ifPresent(titleLike ->
-                    builder.must(MatchQuery.of(q -> q.field(TITLE.name).query(titleLike))._toQuery()));
+                    builder.must(MatchQuery.of(b -> b.field(TITLE.name).query(titleLike))._toQuery()));
 
             ofNullable(c.getContentLike()).filter(BlueChecker::isNotBlank).ifPresent(contentLike ->
-                    builder.must(MatchQuery.of(q -> q.field(CONTENT.name).query(contentLike))._toQuery()));
+                    builder.must(FuzzyQuery.of(b -> b.field(CONTENT.name).value(contentLike).fuzziness(fuzziness))._toQuery()));
 
             ofNullable(c.getDetailLike()).filter(BlueChecker::isNotBlank).ifPresent(detailLike ->
-                    builder.must(MatchQuery.of(q -> q.field(DETAIL.name).query(detailLike))._toQuery()));
+                    builder.must(FuzzyQuery.of(b -> b.field(DETAIL.name).value(detailLike).fuzziness(fuzziness))._toQuery()));
 
             ofNullable(c.getContactLike()).filter(BlueChecker::isNotBlank).ifPresent(contactLike ->
-                    builder.must(MatchQuery.of(q -> q.field(CONTACT.name).query(contactLike))._toQuery()));
+                    builder.must(FuzzyQuery.of(b -> b.field(CONTACT.name).value(contactLike).fuzziness(fuzziness))._toQuery()));
 
             ofNullable(c.getContactDetailLike()).filter(BlueChecker::isNotBlank).ifPresent(contactDetailLike ->
-                    builder.must(MatchQuery.of(q -> q.field(CONTACT_DETAIL.name).query(contactDetailLike))._toQuery()));
+                    builder.must(FuzzyQuery.of(b -> b.field(CONTACT_DETAIL.name).value(contactDetailLike).fuzziness(fuzziness))._toQuery()));
 
             ofNullable(c.getCountryId()).ifPresent(countryId ->
-                    builder.must(TermQuery.of(q -> q.field(COUNTRY_ID.name).value(countryId))._toQuery()));
+                    builder.must(TermQuery.of(b -> b.field(COUNTRY_ID.name).value(countryId))._toQuery()));
 
             ofNullable(c.getStateId()).ifPresent(stateId ->
-                    builder.must(TermQuery.of(q -> q.field(STATE_ID.name).value(stateId))._toQuery()));
+                    builder.must(TermQuery.of(b -> b.field(STATE_ID.name).value(stateId))._toQuery()));
 
             ofNullable(c.getCityId()).ifPresent(cityId ->
-                    builder.must(TermQuery.of(q -> q.field(CITY_ID.name).value(cityId))._toQuery()));
+                    builder.must(TermQuery.of(b -> b.field(CITY_ID.name).value(cityId))._toQuery()));
 
             ofNullable(c.getAddressDetailLike()).filter(BlueChecker::isNotBlank).ifPresent(addressDetailLike ->
-                    builder.must(MatchQuery.of(q -> q.field(ADDRESS_DETAIL.name).query(addressDetailLike))._toQuery()));
+                    builder.must(MatchQuery.of(b -> b.field(ADDRESS_DETAIL.name).query(addressDetailLike))._toQuery()));
 
             ofNullable(c.getExtra()).filter(BlueChecker::isNotBlank).ifPresent(extra ->
-                    builder.must(TermQuery.of(q -> q.field(EXTRA.name).value(extra))._toQuery()));
+                    builder.must(TermQuery.of(b -> b.field(EXTRA.name).value(extra))._toQuery()));
 
             ofNullable(c.getPriority()).ifPresent(priority ->
-                    builder.must(TermQuery.of(q -> q.field(PRIORITY.name).value(priority))._toQuery()));
+                    builder.must(TermQuery.of(b -> b.field(PRIORITY.name).value(priority))._toQuery()));
 
             ofNullable(c.getCreateTimeBegin()).ifPresent(createTimeBegin ->
-                    builder.must(RangeQuery.of(q -> q.field(CREATE_TIME.name).gte(JsonData.of(createTimeBegin)))._toQuery()));
+                    builder.must(RangeQuery.of(b -> b.field(CREATE_TIME.name).gte(JsonData.of(createTimeBegin)))._toQuery()));
 
             ofNullable(c.getCreateTimeEnd()).ifPresent(createTimeEnd ->
-                    builder.must(RangeQuery.of(q -> q.field(CREATE_TIME.name).lte(JsonData.of(createTimeEnd)))._toQuery()));
+                    builder.must(RangeQuery.of(b -> b.field(CREATE_TIME.name).lte(JsonData.of(createTimeEnd)))._toQuery()));
 
             ofNullable(c.getUpdateTimeBegin()).ifPresent(updateTimeBegin ->
-                    builder.must(RangeQuery.of(q -> q.field(UPDATE_TIME.name).gte(JsonData.of(updateTimeBegin)))._toQuery()));
+                    builder.must(RangeQuery.of(b -> b.field(UPDATE_TIME.name).gte(JsonData.of(updateTimeBegin)))._toQuery()));
 
             ofNullable(c.getUpdateTimeEnd()).ifPresent(updateTimeEnd ->
-                    builder.must(RangeQuery.of(q -> q.field(UPDATE_TIME.name).lte(JsonData.of(updateTimeEnd)))._toQuery()));
+                    builder.must(RangeQuery.of(b -> b.field(UPDATE_TIME.name).lte(JsonData.of(updateTimeEnd)))._toQuery()));
 
             ofNullable(c.getCreator()).ifPresent(creator ->
-                    builder.must(TermQuery.of(q -> q.field(CREATOR.name).value(creator))._toQuery()));
+                    builder.must(TermQuery.of(b -> b.field(CREATOR.name).value(creator))._toQuery()));
 
             ofNullable(c.getUpdater()).ifPresent(updater ->
-                    builder.must(TermQuery.of(q -> q.field(UPDATER.name).value(updater))._toQuery()));
+                    builder.must(TermQuery.of(b -> b.field(UPDATER.name).value(updater))._toQuery()));
 
             return Query.of(b -> b.bool(builder.build()));
         }
 
-        //TODO error
         return Query.of(builder -> builder.matchAll(MatchAllQuery.of(b -> b.boost(1.0f))));
     };
 
