@@ -1,7 +1,7 @@
 package com.blue.verify.component.verify.impl;
 
 import com.blue.basic.constant.common.RandomType;
-import com.blue.basic.constant.verify.BusinessType;
+import com.blue.basic.constant.verify.VerifyBusinessType;
 import com.blue.basic.constant.verify.VerifyType;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.captcha.component.CaptchaProcessor;
@@ -128,7 +128,7 @@ public class ImageVerifyHandler implements VerifyHandler {
         return IMAGE_VERIFY_RATE_LIMIT_KEY_PRE.prefix + key;
     };
 
-    private static final BiFunction<BusinessType, String, String> BUSINESS_KEY_WRAPPER = (type, key) -> {
+    private static final BiFunction<VerifyBusinessType, String, String> BUSINESS_KEY_WRAPPER = (type, key) -> {
         if (isNull(type) || isBlank(key))
             throw new RuntimeException("type or key can't be null");
 
@@ -163,17 +163,17 @@ public class ImageVerifyHandler implements VerifyHandler {
     /**
      * recode verify history
      *
-     * @param businessType
+     * @param verifyBusinessType
      * @param destination
      * @param verify
      * @param serverRequest
      */
-    private void recordVerify(BusinessType businessType, String destination, String verify, ServerRequest serverRequest) {
+    private void recordVerify(VerifyBusinessType verifyBusinessType, String destination, String verify, ServerRequest serverRequest) {
         VerifyHistory verifyHistory = new VerifyHistory();
 
         verifyHistory.setId(blueIdentityProcessor.generate(VerifyHistory.class));
         verifyHistory.setVerifyType(IMAGE.identity);
-        verifyHistory.setBusinessType(businessType.identity);
+        verifyHistory.setBusinessType(verifyBusinessType.identity);
         verifyHistory.setDestination(destination);
         verifyHistory.setVerify(verify);
         verifyHistory.setRequestIp(getIp(serverRequest));
@@ -185,23 +185,23 @@ public class ImageVerifyHandler implements VerifyHandler {
     }
 
     @Override
-    public Mono<String> handle(BusinessType businessType, String destination) {
-        LOGGER.info("ImageVerifyHandler -> Mono<String> handle(BusinessType businessType, String destination), businessType = {}, destination = {}", businessType, destination);
-        if (isNull(businessType) || isBlank(destination))
+    public Mono<String> handle(VerifyBusinessType verifyBusinessType, String destination) {
+        LOGGER.info("ImageVerifyHandler -> Mono<String> handle(BusinessType businessType, String destination), businessType = {}, destination = {}", verifyBusinessType, destination);
+        if (isNull(verifyBusinessType) || isBlank(destination))
             throw new BlueException(BAD_REQUEST);
 
-        return verifyService.generate(IMAGE, BUSINESS_KEY_WRAPPER.apply(businessType, destination), VERIFY_LEN, DEFAULT_DURATION);
+        return verifyService.generate(IMAGE, BUSINESS_KEY_WRAPPER.apply(verifyBusinessType, destination), VERIFY_LEN, DEFAULT_DURATION);
     }
 
     @Override
-    public Mono<ServerResponse> handle(BusinessType businessType, String destination, ServerRequest serverRequest) {
+    public Mono<ServerResponse> handle(VerifyBusinessType verifyBusinessType, String destination, ServerRequest serverRequest) {
         String verifyKey = isBlank(destination) ? generate(KEY_RANDOM_TYPE, KEY_LEN) : destination;
 
         return SERVER_REQUEST_IDENTITY_SYNC_KEY_GETTER.apply(serverRequest)
                 .flatMap(identity -> blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(identity), ALLOW, SEND_INTERVAL_MILLIS))
                 .flatMap(allowed ->
                         allowed ?
-                                this.handle(businessType, verifyKey)
+                                this.handle(verifyBusinessType, verifyKey)
                                         .flatMap(verify -> {
                                             LOGGER.warn("Mono<ServerResponse> handle(String destination), verifyKey = {}, verify = {}", verifyKey, verify);
 
@@ -214,7 +214,7 @@ public class ImageVerifyHandler implements VerifyHandler {
                                                                     .header(VERIFY_KEY.name, verifyKey)
                                                                     .body(fromResource(resource))
                                                     ).doOnSuccess(ig ->
-                                                            recordVerify(businessType, destination, verify, serverRequest)
+                                                            recordVerify(verifyBusinessType, destination, verify, serverRequest)
                                                     );
                                         })
                                 :
@@ -222,8 +222,8 @@ public class ImageVerifyHandler implements VerifyHandler {
     }
 
     @Override
-    public Mono<Boolean> validate(BusinessType businessType, String key, String verify, Boolean repeatable) {
-        return verifyService.validate(IMAGE, BUSINESS_KEY_WRAPPER.apply(businessType, key), verify, repeatable);
+    public Mono<Boolean> validate(VerifyBusinessType verifyBusinessType, String key, String verify, Boolean repeatable) {
+        return verifyService.validate(IMAGE, BUSINESS_KEY_WRAPPER.apply(verifyBusinessType, key), verify, repeatable);
     }
 
     @Override

@@ -9,7 +9,7 @@ import static com.blue.basic.constant.verify.VerifyType.*;
  *
  * @author liuyunfei
  */
-public enum BusinessType {
+public enum VerifyBusinessType {
 
     /**
      * turing test
@@ -60,7 +60,7 @@ public enum BusinessType {
 
     public final Set<VerifyType> allowedVerifyTypes;
 
-    BusinessType(String identity, Set<VerifyType> allowedVerifyTypes) {
+    VerifyBusinessType(String identity, Set<VerifyType> allowedVerifyTypes) {
         this.identity = identity;
         this.allowedVerifyTypes = allowedVerifyTypes;
     }

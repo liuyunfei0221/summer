@@ -37,13 +37,13 @@ eureka:
     hostname: ${server.address}
   client:
     service-url:
-      defaultZone: http://blue:LiuZhiyi20200805@172.16.204.75:3000/eureka/
+      defaultZone: http://blue:LiuZhiyi20200805@172.16.204.244:3000/eureka/
     registry-fetch-interval-seconds: 60
 
 
 data:
   shardingDatabases:
-    - url: jdbc:clickhouse://172.16.204.75:8123/ldap_risk_0
+    - url: jdbc:clickhouse://172.16.204.244:8123/ldap_risk_0
       dataBaseConf:
       username: default
       password: 1024
@@ -57,7 +57,7 @@ data:
       readOnly: false
       autoCommit: false
 
-    - url: jdbc:clickhouse://172.16.204.75:8123/ldap_risk_1
+    - url: jdbc:clickhouse://172.16.204.244:8123/ldap_risk_1
       dataBaseConf:
       username: default
       password: 1024
@@ -124,7 +124,7 @@ data:
 
 mongo:
   addressAttrs:
-    - address: 172.16.204.75
+    - address: 172.16.204.244
       port: 27017
   auth: false
   authBase: admin
@@ -172,7 +172,7 @@ identity:
 cache:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  host: 172.16.204.75
+  host: 172.16.204.244
   port: 6379
   password:
   maxRedirects: 4
@@ -220,7 +220,7 @@ scheduler:
 redisson:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  host: 172.16.204.75
+  host: 172.16.204.244
   port: 6379
   password:
   scanInterval: 8000
@@ -252,7 +252,7 @@ redisson:
 producers:
   configs:
     illegalMark:
-      services: [ 172.16.204.75:6650 ]
+      services: [ 172.16.204.244:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -308,7 +308,7 @@ producers:
 consumers:
   configs:
     requestEvent:
-      services: [ 172.16.204.75:6650 ]
+      services: [ 172.16.204.244:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -387,7 +387,7 @@ dubbo:
     id: summer-registry
     client: curator
     protocol: zookeeper
-    address: zookeeper://172.16.204.75
+    address: zookeeper://172.16.204.244
     port: 2181
     username: blue
     password: LiuZhiyi20200805
@@ -396,7 +396,7 @@ dubbo:
     timeout: 60000
     simplified: false
 #  metadata-report:
-#    address: zookeeper://172.16.204.75
+#    address: zookeeper://172.16.204.244
 #    port: 2181
 #    username:
 #    password:

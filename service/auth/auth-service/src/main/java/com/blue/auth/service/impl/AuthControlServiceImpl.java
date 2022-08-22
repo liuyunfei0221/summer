@@ -55,7 +55,7 @@ import static com.blue.basic.constant.common.SyncKey.AUTHORITY_UPDATE_SYNC;
 import static com.blue.basic.constant.common.SyncKey.DEFAULT_ROLE_UPDATE_SYNC;
 import static com.blue.basic.constant.common.SyncKeyPrefix.MEMBER_ROLE_REL_UPDATE_PRE;
 import static com.blue.basic.constant.common.SyncKeyPrefix.QUESTION_INSERT_PRE;
-import static com.blue.basic.constant.verify.BusinessType.*;
+import static com.blue.basic.constant.verify.VerifyBusinessType.*;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.toList;

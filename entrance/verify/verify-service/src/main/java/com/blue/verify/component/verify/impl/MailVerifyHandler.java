@@ -1,6 +1,6 @@
 package com.blue.verify.component.verify.impl;
 
-import com.blue.basic.constant.verify.BusinessType;
+import com.blue.basic.constant.verify.VerifyBusinessType;
 import com.blue.basic.constant.verify.VerifyType;
 import com.blue.basic.model.common.BlueResponse;
 import com.blue.basic.model.exps.BlueException;
@@ -99,7 +99,7 @@ public class MailVerifyHandler implements VerifyHandler {
         return MAIL_VERIFY_RATE_LIMIT_KEY_PRE.prefix + key;
     };
 
-    private static final BiFunction<BusinessType, String, String> BUSINESS_KEY_WRAPPER = (type, key) -> {
+    private static final BiFunction<VerifyBusinessType, String, String> BUSINESS_KEY_WRAPPER = (type, key) -> {
         if (isNull(type) || isBlank(key))
             throw new RuntimeException("type or key can't be null");
 
@@ -109,17 +109,17 @@ public class MailVerifyHandler implements VerifyHandler {
     /**
      * recode verify history
      *
-     * @param businessType
+     * @param verifyBusinessType
      * @param destination
      * @param verify
      * @param serverRequest
      */
-    private void recordVerify(BusinessType businessType, String destination, String verify, ServerRequest serverRequest) {
+    private void recordVerify(VerifyBusinessType verifyBusinessType, String destination, String verify, ServerRequest serverRequest) {
         VerifyHistory verifyHistory = new VerifyHistory();
 
         verifyHistory.setId(blueIdentityProcessor.generate(VerifyHistory.class));
         verifyHistory.setVerifyType(MAIL.identity);
-        verifyHistory.setBusinessType(businessType.identity);
+        verifyHistory.setBusinessType(verifyBusinessType.identity);
         verifyHistory.setDestination(destination);
         verifyHistory.setVerify(verify);
         verifyHistory.setRequestIp(getIp(serverRequest));
@@ -131,9 +131,9 @@ public class MailVerifyHandler implements VerifyHandler {
     }
 
     @Override
-    public Mono<String> handle(BusinessType businessType, String destination) {
-        LOGGER.info("MailVerifyHandler -> Mono<String> handle(BusinessType businessType, String destination), businessType = {}, destination = {}", businessType, destination);
-        if (isNull(businessType) || isBlank(destination))
+    public Mono<String> handle(VerifyBusinessType verifyBusinessType, String destination) {
+        LOGGER.info("MailVerifyHandler -> Mono<String> handle(BusinessType businessType, String destination), businessType = {}, destination = {}", verifyBusinessType, destination);
+        if (isNull(verifyBusinessType) || isBlank(destination))
             throw new BlueException(BAD_REQUEST);
 
         //TODO verify destination/email
@@ -141,7 +141,7 @@ public class MailVerifyHandler implements VerifyHandler {
         return blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(destination), ALLOW, SEND_INTERVAL_MILLIS)
                 .flatMap(allowed ->
                         allowed ?
-                                verifyService.generate(MAIL, BUSINESS_KEY_WRAPPER.apply(businessType, destination), VERIFY_LEN, DEFAULT_DURATION)
+                                verifyService.generate(MAIL, BUSINESS_KEY_WRAPPER.apply(verifyBusinessType, destination), VERIFY_LEN, DEFAULT_DURATION)
                                         .flatMap(verify ->
                                                 mailService.send(destination, verify)
                                                         .flatMap(success -> success ?
@@ -153,12 +153,12 @@ public class MailVerifyHandler implements VerifyHandler {
     }
 
     @Override
-    public Mono<ServerResponse> handle(BusinessType businessType, String destination, ServerRequest serverRequest) {
+    public Mono<ServerResponse> handle(VerifyBusinessType verifyBusinessType, String destination, ServerRequest serverRequest) {
         return SERVER_REQUEST_IP_SYNC_KEY_GETTER.apply(serverRequest)
                 .flatMap(syncIp -> blueLeakyBucketRateLimiter.isAllowed(syncIp, ALLOW, SEND_INTERVAL_MILLIS))
                 .flatMap(allowed ->
                         allowed ?
-                                this.handle(businessType, destination)
+                                this.handle(verifyBusinessType, destination)
                                         .flatMap(verify -> {
                                             LOGGER.warn("Mono<ServerResponse> handle(String destination), verifyKey = {}, verify = {}", destination, verify);
 
@@ -167,15 +167,15 @@ public class MailVerifyHandler implements VerifyHandler {
                                                     .body(success(serverRequest)
                                                             , BlueResponse.class)
                                                     .doOnSuccess(ig ->
-                                                            recordVerify(businessType, destination, verify, serverRequest));
+                                                            recordVerify(verifyBusinessType, destination, verify, serverRequest));
                                         })
                                 :
                                 error(() -> new BlueException(TOO_MANY_REQUESTS)));
     }
 
     @Override
-    public Mono<Boolean> validate(BusinessType businessType, String key, String verify, Boolean repeatable) {
-        return verifyService.validate(MAIL, BUSINESS_KEY_WRAPPER.apply(businessType, key), verify, repeatable);
+    public Mono<Boolean> validate(VerifyBusinessType verifyBusinessType, String key, String verify, Boolean repeatable) {
+        return verifyService.validate(MAIL, BUSINESS_KEY_WRAPPER.apply(verifyBusinessType, key), verify, repeatable);
     }
 
     @Override

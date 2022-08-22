@@ -5,7 +5,6 @@ import co.elastic.clients.elasticsearch._types.SortOptions;
 import co.elastic.clients.elasticsearch._types.Time;
 import co.elastic.clients.elasticsearch._types.query_dsl.*;
 import co.elastic.clients.elasticsearch.core.*;
-import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.elasticsearch.core.search.HitsMetadata;
 import co.elastic.clients.json.JsonData;
 import com.blue.base.api.model.CityRegion;
@@ -17,15 +16,11 @@ import com.blue.basic.model.common.ScrollModelResponse;
 import com.blue.basic.model.event.IdentityEvent;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
-import com.blue.es.common.EsPitSearchAfterProcessor;
-import com.blue.es.common.EsSearchAfterProcessor;
 import com.blue.es.model.PitCursor;
+import com.blue.es.model.QueryAndHighlightColumns;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.shine.api.model.ShineInfo;
-import com.blue.shine.config.deploy.CaffeineDeploy;
-import com.blue.shine.config.deploy.DefaultPriorityDeploy;
-import com.blue.shine.config.deploy.FuzzinessDeploy;
-import com.blue.shine.config.deploy.PitDeploy;
+import com.blue.shine.config.deploy.*;
 import com.blue.shine.constant.ShineSortAttribute;
 import com.blue.shine.event.producer.ShineDeleteProducer;
 import com.blue.shine.event.producer.ShineInsertProducer;
@@ -45,9 +40,7 @@ import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.time.Duration;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.function.BiConsumer;
@@ -67,13 +60,18 @@ import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
 import static com.blue.es.common.EsPitProcessor.packagePit;
 import static com.blue.es.common.EsPitProcessor.parsePit;
 import static com.blue.es.common.EsPitSearchAfterProcessor.packagePitSearchAfter;
+import static com.blue.es.common.EsPitSearchAfterProcessor.parsePitSearchAfter;
 import static com.blue.es.common.EsSearchAfterProcessor.packageSearchAfter;
+import static com.blue.es.common.EsSearchAfterProcessor.parseSearchAfter;
 import static com.blue.es.common.EsSortProcessor.process;
+import static com.blue.es.common.HighlightProcessor.packageHighlight;
+import static com.blue.es.common.HighlightProcessor.parseHighlight;
 import static com.blue.shine.constant.ShineColumnName.*;
 import static com.blue.shine.constant.ShineTableName.SHINE;
 import static com.blue.shine.converter.ShineModelConverters.SHINE_2_SHINE_INFO;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -111,8 +109,8 @@ public class ShineServiceImpl implements ShineService {
 
     public ShineServiceImpl(BlueIdentityProcessor blueIdentityProcessor, Scheduler scheduler, ElasticsearchAsyncClient elasticsearchAsyncClient,
                             RpcCityServiceConsumer rpcCityServiceConsumer, ShineRepository shineRepository, ShineInsertProducer shineInsertProducer, ShineUpdateProducer shineUpdateProducer,
-                            ShineDeleteProducer shineDeleteProducer, ExecutorService executorService, PitDeploy pitDeploy, FuzzinessDeploy fuzzinessDeploy, DefaultPriorityDeploy defaultPriorityDeploy,
-                            CaffeineDeploy caffeineDeploy) {
+                            ShineDeleteProducer shineDeleteProducer, ExecutorService executorService, PitDeploy pitDeploy, FuzzinessDeploy fuzzinessDeploy, HighlightDeploy highlightDeploy,
+                            DefaultPriorityDeploy defaultPriorityDeploy, CaffeineDeploy caffeineDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.scheduler = scheduler;
         this.elasticsearchAsyncClient = elasticsearchAsyncClient;
@@ -123,7 +121,10 @@ public class ShineServiceImpl implements ShineService {
         this.shineDeleteProducer = shineDeleteProducer;
 
         this.PIT_TIME = Time.of(builder -> builder.time(pitDeploy.getTime()));
-        this.fuzziness = String.valueOf(fuzzinessDeploy.getFuzziness());
+        this.fuzziness = ofNullable(fuzzinessDeploy.getFuzziness()).filter(f -> f >= 0 && f <= 2).map(String::valueOf).orElseThrow(() -> new RuntimeException("Invalid Fuzziness"));
+        this.preTags = ofNullable(highlightDeploy.getPreTags()).orElseGet(() -> singletonList(EMPTY_DATA.value));
+        this.postTags = ofNullable(highlightDeploy.getPostTags()).orElseGet(() -> singletonList(EMPTY_DATA.value));
+
         this.defaultPriority = defaultPriorityDeploy.getPriority();
         this.idRegionCache = generateCache(new CaffeineConfParams(
                 caffeineDeploy.getCityMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
@@ -133,6 +134,10 @@ public class ShineServiceImpl implements ShineService {
     private final Time PIT_TIME;
 
     private String fuzziness;
+
+    private final List<String> preTags;
+
+    private final List<String> postTags;
 
     private int defaultPriority;
 
@@ -248,27 +253,69 @@ public class ShineServiceImpl implements ShineService {
     private static final Function<ShineCondition, SortOptions> SORT_PROCESSOR = c ->
             process(c, SORT_ATTRIBUTE_MAPPING, ShineSortAttribute.ID.column);
 
-    private final Function<ShineCondition, Query> CONDITION_PROCESSOR = c -> {
+    private static final Map<String, BiConsumer<List<String>, Shine>> HIGH_LIGHT_PROCESSORS;
+
+    static {
+        HIGH_LIGHT_PROCESSORS = new HashMap<>();
+
+        HIGH_LIGHT_PROCESSORS.put(TITLE.name, (highlights, entity) -> {
+            if (isNotEmpty(highlights) && isNotNull(entity))
+                entity.setTitle(highlights.get(0));
+        });
+
+        HIGH_LIGHT_PROCESSORS.put(CONTENT.name, (highlights, entity) -> {
+            if (isNotEmpty(highlights) && isNotNull(entity))
+                entity.setContent(highlights.get(0));
+        });
+
+        HIGH_LIGHT_PROCESSORS.put(DETAIL.name, (highlights, entity) -> {
+            if (isNotEmpty(highlights) && isNotNull(entity))
+                entity.setDetail(highlights.get(0));
+        });
+
+        HIGH_LIGHT_PROCESSORS.put(CONTACT.name, (highlights, entity) -> {
+            if (isNotEmpty(highlights) && isNotNull(entity))
+                entity.setContact(highlights.get(0));
+        });
+
+        HIGH_LIGHT_PROCESSORS.put(CONTACT_DETAIL.name, (highlights, entity) -> {
+            if (isNotEmpty(highlights) && isNotNull(entity))
+                entity.setContactDetail(highlights.get(0));
+        });
+    }
+
+    private final Function<ShineCondition, QueryAndHighlightColumns> CONDITION_PROCESSOR = c -> {
         if (isNotNull(c)) {
             BoolQuery.Builder builder = new BoolQuery.Builder();
+            List<String> highlightColumns = new LinkedList<>();
 
             ofNullable(c.getId()).filter(BlueChecker::isValidIdentity).ifPresent(id ->
                     builder.must(TermQuery.of(b -> b.field(ID.name).value(id))._toQuery()));
 
-            ofNullable(c.getTitleLike()).filter(BlueChecker::isNotBlank).ifPresent(titleLike ->
-                    builder.must(MatchQuery.of(b -> b.field(TITLE.name).query(titleLike))._toQuery()));
+            ofNullable(c.getTitleLike()).filter(BlueChecker::isNotBlank).ifPresent(titleLike -> {
+                builder.must(FuzzyQuery.of(b -> b.field(TITLE.name).value(titleLike).fuzziness(fuzziness))._toQuery());
+                highlightColumns.add(TITLE.name);
+            });
 
-            ofNullable(c.getContentLike()).filter(BlueChecker::isNotBlank).ifPresent(contentLike ->
-                    builder.must(FuzzyQuery.of(b -> b.field(CONTENT.name).value(contentLike).fuzziness(fuzziness))._toQuery()));
+            ofNullable(c.getContentLike()).filter(BlueChecker::isNotBlank).ifPresent(contentLike -> {
+                builder.must(FuzzyQuery.of(b -> b.field(CONTENT.name).value(contentLike).fuzziness(fuzziness))._toQuery());
+                highlightColumns.add(CONTENT.name);
+            });
 
-            ofNullable(c.getDetailLike()).filter(BlueChecker::isNotBlank).ifPresent(detailLike ->
-                    builder.must(FuzzyQuery.of(b -> b.field(DETAIL.name).value(detailLike).fuzziness(fuzziness))._toQuery()));
+            ofNullable(c.getDetailLike()).filter(BlueChecker::isNotBlank).ifPresent(detailLike -> {
+                builder.must(FuzzyQuery.of(b -> b.field(DETAIL.name).value(detailLike).fuzziness(fuzziness))._toQuery());
+                highlightColumns.add(DETAIL.name);
+            });
 
-            ofNullable(c.getContactLike()).filter(BlueChecker::isNotBlank).ifPresent(contactLike ->
-                    builder.must(FuzzyQuery.of(b -> b.field(CONTACT.name).value(contactLike).fuzziness(fuzziness))._toQuery()));
+            ofNullable(c.getContactLike()).filter(BlueChecker::isNotBlank).ifPresent(contactLike -> {
+                builder.must(FuzzyQuery.of(b -> b.field(CONTACT.name).value(contactLike).fuzziness(fuzziness))._toQuery());
+                highlightColumns.add(CONTACT.name);
+            });
 
-            ofNullable(c.getContactDetailLike()).filter(BlueChecker::isNotBlank).ifPresent(contactDetailLike ->
-                    builder.must(FuzzyQuery.of(b -> b.field(CONTACT_DETAIL.name).value(contactDetailLike).fuzziness(fuzziness))._toQuery()));
+            ofNullable(c.getContactDetailLike()).filter(BlueChecker::isNotBlank).ifPresent(contactDetailLike -> {
+                builder.must(FuzzyQuery.of(b -> b.field(CONTACT_DETAIL.name).value(contactDetailLike).fuzziness(fuzziness))._toQuery());
+                highlightColumns.add(CONTACT_DETAIL.name);
+            });
 
             ofNullable(c.getCountryId()).ifPresent(countryId ->
                     builder.must(TermQuery.of(b -> b.field(COUNTRY_ID.name).value(countryId))._toQuery()));
@@ -306,10 +353,10 @@ public class ShineServiceImpl implements ShineService {
             ofNullable(c.getUpdater()).ifPresent(updater ->
                     builder.must(TermQuery.of(b -> b.field(UPDATER.name).value(updater))._toQuery()));
 
-            return Query.of(b -> b.bool(builder.build()));
+            return new QueryAndHighlightColumns(Query.of(b -> b.bool(builder.build())), highlightColumns);
         }
 
-        return Query.of(builder -> builder.matchAll(MatchAllQuery.of(b -> b.boost(1.0f))));
+        return new QueryAndHighlightColumns(Query.of(builder -> builder.matchAll(MatchAllQuery.of(b -> b.boost(1.0f)))), emptyList());
     };
 
     /**
@@ -600,16 +647,18 @@ public class ShineServiceImpl implements ShineService {
             throw new BlueException(INVALID_IDENTITY);
 
         ShineCondition condition = scrollModelRequest.getCondition();
+        QueryAndHighlightColumns queryAndHighlightColumns = CONDITION_PROCESSOR.apply(condition);
 
         return fromFuture(elasticsearchAsyncClient.search(
                 SearchRequest.of(builder -> {
                     builder
                             .index(INDEX_NAME)
-                            .query(CONDITION_PROCESSOR.apply(condition))
+                            .query(queryAndHighlightColumns.getQuery())
                             .sort(SORT_PROCESSOR.apply(condition))
                             .from(scrollModelRequest.getFrom().intValue())
                             .size(scrollModelRequest.getRows().intValue());
 
+                    packageHighlight(builder, queryAndHighlightColumns.getColumns(), preTags, postTags);
                     packageSearchAfter(builder, searchAfter);
 
                     return builder;
@@ -620,10 +669,9 @@ public class ShineServiceImpl implements ShineService {
                         ofNullable(searchResponse.hits())
                                 .map(HitsMetadata::hits)
                                 .filter(BlueChecker::isNotEmpty)
-                                .map(EsSearchAfterProcessor::parseSearchAfter)
-                                .map(shineStringDataAndSearchAfter ->
-                                        just(new ScrollModelResponse<>(shineStringDataAndSearchAfter.getData().stream().map(SHINE_2_SHINE_INFO).collect(toList()),
-                                                shineStringDataAndSearchAfter.getSearchAfter()))
+                                .map(hits ->
+                                        just(new ScrollModelResponse<>(parseHighlight(hits, HIGH_LIGHT_PROCESSORS).stream().map(SHINE_2_SHINE_INFO).collect(toList()),
+                                                parseSearchAfter(hits)))
                                 ).orElseGet(() -> just(new ScrollModelResponse<>(emptyList())))
                 )
                 .switchIfEmpty(defer(() -> just(new ScrollModelResponse<>(emptyList()))));
@@ -645,6 +693,7 @@ public class ShineServiceImpl implements ShineService {
         PitCursor cursor = scrollModelRequest.getCursor();
 
         ShineCondition condition = scrollModelRequest.getCondition();
+        QueryAndHighlightColumns queryAndHighlightColumns = CONDITION_PROCESSOR.apply(condition);
 
         return just(ofNullable(cursor).map(PitCursor::getId).filter(BlueChecker::isNotBlank).orElse(EMPTY_DATA.value))
                 .filter(BlueChecker::isNotBlank)
@@ -657,11 +706,12 @@ public class ShineServiceImpl implements ShineService {
                         fromFuture(elasticsearchAsyncClient.search(
                                 SearchRequest.of(builder -> {
                                     builder
-                                            .query(CONDITION_PROCESSOR.apply(condition))
+                                            .query(queryAndHighlightColumns.getQuery())
                                             .sort(SORT_PROCESSOR.apply(condition))
                                             .from(scrollModelRequest.getFrom().intValue())
                                             .size(scrollModelRequest.getRows().intValue());
 
+                                    packageHighlight(builder, queryAndHighlightColumns.getColumns(), preTags, postTags);
                                     packagePitSearchAfter(builder, ofNullable(cursor).map(PitCursor::getSearchAfters).filter(BlueChecker::isNotEmpty).orElseGet(Collections::emptyList));
                                     packagePit(builder, id, PIT_TIME);
 
@@ -672,10 +722,9 @@ public class ShineServiceImpl implements ShineService {
                                         ofNullable(searchResponse.hits())
                                                 .map(HitsMetadata::hits)
                                                 .filter(BlueChecker::isNotEmpty)
-                                                .map(EsPitSearchAfterProcessor::parsePitSearchAfter)
-                                                .map(dataAndSearchAfter ->
-                                                        just(new ScrollModelResponse<>(dataAndSearchAfter.getData().stream().map(SHINE_2_SHINE_INFO).collect(toList()),
-                                                                new PitCursor(parsePit(searchResponse), dataAndSearchAfter.getSearchAfters())))
+                                                .map(hits ->
+                                                        just(new ScrollModelResponse<>(parseHighlight(hits, HIGH_LIGHT_PROCESSORS).stream().map(SHINE_2_SHINE_INFO).collect(toList()),
+                                                                new PitCursor(parsePit(searchResponse), parsePitSearchAfter(hits))))
                                                 ).orElseGet(() -> just(new ScrollModelResponse<>(emptyList(), new PitCursor())))
                                 )
                                 .switchIfEmpty(defer(() -> just(new ScrollModelResponse<>(emptyList(), new PitCursor())))));
@@ -695,20 +744,26 @@ public class ShineServiceImpl implements ShineService {
             throw new BlueException(EMPTY_PARAM);
 
         ShineCondition condition = pageModelRequest.getCondition();
+        QueryAndHighlightColumns queryAndHighlightColumns = CONDITION_PROCESSOR.apply(condition);
 
         return fromFuture(elasticsearchAsyncClient.search(
-                SearchRequest.of(builder -> builder
-                        .index(INDEX_NAME)
-                        .query(CONDITION_PROCESSOR.apply(condition))
-                        .sort(SORT_PROCESSOR.apply(condition))
-                        .from(pageModelRequest.getLimit().intValue())
-                        .size(pageModelRequest.getRows().intValue())
-                ), Shine.class)
+                SearchRequest.of(builder -> {
+                    builder
+                            .index(INDEX_NAME)
+                            .query(queryAndHighlightColumns.getQuery())
+                            .sort(SORT_PROCESSOR.apply(condition))
+                            .from(pageModelRequest.getLimit().intValue())
+                            .size(pageModelRequest.getRows().intValue());
+
+                    packageHighlight(builder, queryAndHighlightColumns.getColumns(), preTags, postTags);
+
+                    return builder;
+                }), Shine.class)
         )
                 .filter(BlueChecker::isNotNull)
                 .flatMap(searchResponse -> {
                     HitsMetadata<Shine> hits = searchResponse.hits();
-                    return just(new PageModelResponse<>(hits.hits().stream().map(Hit::source).map(SHINE_2_SHINE_INFO).collect(toList()),
+                    return just(new PageModelResponse<>(parseHighlight(hits.hits(), HIGH_LIGHT_PROCESSORS).stream().map(SHINE_2_SHINE_INFO).collect(toList()),
                             hits.total().value()));
                 })
                 .switchIfEmpty(defer(() -> just(new PageModelResponse<>(emptyList(), 0L))));

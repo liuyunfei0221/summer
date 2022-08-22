@@ -17,6 +17,14 @@ public interface EsConf {
 
     List<EsNode> getEsNodes();
 
+    Boolean getAuth();
+
+    String getUserName();
+
+    String getPassword();
+
+    String getCertPath();
+
     List<DefaultHeader> getDefaultHeaders();
 
     RestClient.FailureListener getFailureListener();

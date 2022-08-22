@@ -44,7 +44,7 @@ import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.basic.constant.common.Status.INVALID;
 import static com.blue.basic.constant.common.Status.VALID;
 import static com.blue.basic.constant.member.SourceType.APP;
-import static com.blue.basic.constant.verify.BusinessType.EMAIL_VERIFY_LOGIN_WITH_AUTO_REGISTER;
+import static com.blue.basic.constant.verify.VerifyBusinessType.EMAIL_VERIFY_LOGIN_WITH_AUTO_REGISTER;
 import static com.blue.basic.constant.verify.VerifyType.MAIL;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;

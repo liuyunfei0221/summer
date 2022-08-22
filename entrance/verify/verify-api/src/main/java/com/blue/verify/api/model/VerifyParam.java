@@ -1,6 +1,6 @@
 package com.blue.verify.api.model;
 
-import com.blue.basic.constant.verify.BusinessType;
+import com.blue.basic.constant.verify.VerifyBusinessType;
 
 import java.io.Serializable;
 
@@ -20,7 +20,7 @@ public final class VerifyParam implements Serializable {
     private String verifyType;
 
     /**
-     * @see BusinessType
+     * @see VerifyBusinessType
      */
     private String businessType;
 

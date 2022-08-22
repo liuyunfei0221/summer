@@ -2,7 +2,6 @@ package com.blue.mongo.common;
 
 
 import com.blue.basic.common.base.BlueChecker;
-import com.blue.basic.model.common.DataAndSearchAfter;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
@@ -16,7 +15,6 @@ import java.util.function.Function;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.mongo.constant.SortSchema.ASC;
 import static com.blue.mongo.constant.SortSchema.DESC;
-import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -81,16 +79,16 @@ public final class MongoSearchAfterProcessor {
      * @param <A>
      * @return
      */
-    public static <T extends Serializable, A extends Serializable> DataAndSearchAfter<T, A> parseSearchAfter(List<T> data, Function<T, A> searchAfterParser) {
+    public static <T extends Serializable, A extends Serializable> A parseSearchAfter(List<T> data, Function<T, A> searchAfterParser) {
         if (isEmpty(data) || isNull(searchAfterParser))
-            return new DataAndSearchAfter<>(emptyList(), null);
+            return null;
 
         SearchAfterHolder<A> searchAfterHolder = new SearchAfterHolder<>();
 
         for (T t : data)
             ofNullable(t).map(searchAfterParser).ifPresent(searchAfter -> searchAfterHolder.searchAfter = searchAfter);
 
-        return new DataAndSearchAfter<>(data, searchAfterHolder.searchAfter);
+        return searchAfterHolder.searchAfter;
     }
 
     /**

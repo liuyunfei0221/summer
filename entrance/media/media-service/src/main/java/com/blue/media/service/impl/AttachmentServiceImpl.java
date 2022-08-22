@@ -253,14 +253,17 @@ public class AttachmentServiceImpl implements AttachmentService {
 
         query.skip(scrollModelRequest.getFrom()).limit(scrollModelRequest.getRows().intValue());
 
-        return zip(reactiveMongoTemplate.find(query, Attachment.class).publishOn(scheduler).collectList()
-                        .map(attachments -> parseSearchAfter(attachments, attachment -> String.valueOf(attachment.getId()))),
+        return zip(reactiveMongoTemplate.find(query, Attachment.class).publishOn(scheduler).collectList(),
                 rpcMemberBasicServiceConsumer.getMemberBasicInfoByPrimaryKey(memberId)
         ).map(tuple2 -> {
-            DataAndSearchAfter<Attachment, String> dataAndSearchAfter = tuple2.getT1();
+            List<Attachment> attachments = tuple2.getT1();
             String memberName = ofNullable(tuple2.getT2().getName()).filter(BlueChecker::isNotBlank).orElse(EMPTY_DATA.value);
 
-            return new ScrollModelResponse<>(dataAndSearchAfter.getData().stream().map(a -> ATTACHMENT_2_ATTACHMENT_DETAIL_INFO_CONVERTER.apply(a, memberName)).collect(toList()), dataAndSearchAfter.getSearchAfter());
+            return isNotEmpty(attachments) ?
+                    new ScrollModelResponse<>(attachments.stream().map(a -> ATTACHMENT_2_ATTACHMENT_DETAIL_INFO_CONVERTER.apply(a, memberName)).collect(toList()),
+                            parseSearchAfter(attachments, attachment -> String.valueOf(attachment.getId())))
+                    :
+                    new ScrollModelResponse<>(emptyList(), "");
         });
     }
 

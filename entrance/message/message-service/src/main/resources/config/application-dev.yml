@@ -37,7 +37,7 @@ eureka:
     hostname: ${server.address}
   client:
     service-url:
-      defaultZone: http://blue:LiuZhiyi20200805@172.16.204.75:3000/eureka/
+      defaultZone: http://blue:LiuZhiyi20200805@172.16.204.244:3000/eureka/
     registry-fetch-interval-seconds: 60
 
 
@@ -57,7 +57,7 @@ web:
 
 data:
   shardingDatabases:
-    - url: jdbc:mysql://172.16.204.75:3306/message_0
+    - url: jdbc:mysql://172.16.204.244:3306/message_0
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -71,7 +71,7 @@ data:
       readOnly: false
       autoCommit: false
 
-    - url: jdbc:mysql://172.16.204.75:3306/message_1
+    - url: jdbc:mysql://172.16.204.244:3306/message_1
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -156,7 +156,7 @@ identity:
 
 mongo:
   addressAttrs:
-    - address: 172.16.204.75
+    - address: 172.16.204.244
       port: 27017
   auth: true
   authBase: admin
@@ -209,7 +209,7 @@ cache:
   nodes: [ 172.18.7.1:6379,172.18.7.1:6380,172.18.7.2:6379,172.18.7.2:6380,172.18.7.3:6379,172.18.7.3:6380 ]
   password: LiuZhiyi20200805
   maxRedirects: 4
-  host: 172.16.204.75
+  host: 172.16.204.244
   port: 6379
   minIdle: 4
   maxIdle: 64

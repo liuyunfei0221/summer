@@ -4,13 +4,12 @@ package com.blue.es.common;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import com.blue.basic.common.base.BlueChecker;
-import com.blue.es.model.EsDataAndSearchAfter;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.blue.basic.common.base.BlueChecker.*;
+import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 
 /**
@@ -39,22 +38,19 @@ public final class EsPitSearchAfterProcessor {
      * @param <T>
      * @return
      */
-    public static <T extends Serializable> EsDataAndSearchAfter<T> parsePitSearchAfter(List<Hit<T>> hits) {
+    public static <T extends Serializable> List<String> parsePitSearchAfter(List<Hit<T>> hits) {
         if (isEmpty(hits))
-            return new EsDataAndSearchAfter<>();
+            return emptyList();
 
-        List<T> data = new ArrayList<>(hits.size());
         SearchAftersHolder searchAfterHolder = new SearchAftersHolder();
 
         for (Hit<T> hit : hits)
             ofNullable(hit)
-                    .ifPresent(h -> {
-                        ofNullable(h.source()).ifPresent(data::add);
-                        ofNullable(h.sort()).filter(BlueChecker::isNotEmpty)
-                                .ifPresent(searchAfters -> searchAfterHolder.searchAfters = searchAfters);
-                    });
+                    .map(Hit::sort)
+                    .filter(BlueChecker::isNotEmpty)
+                    .ifPresent(searchAfters -> searchAfterHolder.searchAfters = searchAfters);
 
-        return new EsDataAndSearchAfter<>(data, searchAfterHolder.searchAfters);
+        return searchAfterHolder.searchAfters;
     }
 
     /**

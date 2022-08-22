@@ -1,6 +1,6 @@
 package com.blue.verify.service.impl;
 
-import com.blue.basic.constant.verify.BusinessType;
+import com.blue.basic.constant.verify.VerifyBusinessType;
 import com.blue.basic.constant.verify.VerifyType;
 import com.blue.verify.component.verify.VerifyProcessor;
 import com.blue.verify.service.inter.VerifyHandleService;
@@ -28,12 +28,12 @@ public class VerifyHandleServiceImpl implements VerifyHandleService {
      * generate verify for api
      *
      * @param verifyType
-     * @param businessType
+     * @param verifyBusinessType
      * @return destination / key
      */
     @Override
-    public Mono<String> generate(VerifyType verifyType, BusinessType businessType, String destination) {
-        return verifyProcessor.handle(verifyType, businessType, destination);
+    public Mono<String> generate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination) {
+        return verifyProcessor.handle(verifyType, verifyBusinessType, destination);
     }
 
     /**
@@ -51,15 +51,15 @@ public class VerifyHandleServiceImpl implements VerifyHandleService {
      * validate verify
      *
      * @param verifyType
-     * @param businessType
+     * @param verifyBusinessType
      * @param key
      * @param verify
      * @param repeatable
      * @return
      */
     @Override
-    public Mono<Boolean> validate(VerifyType verifyType, BusinessType businessType, String key, String verify, Boolean repeatable) {
-        return verifyProcessor.validate(verifyType, businessType, key, verify, repeatable);
+    public Mono<Boolean> validate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String key, String verify, Boolean repeatable) {
+        return verifyProcessor.validate(verifyType, verifyBusinessType, key, verify, repeatable);
     }
 
     /**
@@ -71,7 +71,7 @@ public class VerifyHandleServiceImpl implements VerifyHandleService {
      */
     @Override
     public Mono<Boolean> turingValidate(String key, String verify) {
-        return verifyProcessor.validate(VerifyType.IMAGE, BusinessType.TURING_TEST, key, verify, false);
+        return verifyProcessor.validate(VerifyType.IMAGE, VerifyBusinessType.TURING_TEST, key, verify, false);
     }
 
 }

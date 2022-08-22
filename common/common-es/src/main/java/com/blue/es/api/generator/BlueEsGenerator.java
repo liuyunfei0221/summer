@@ -4,17 +4,30 @@ import co.elastic.clients.elasticsearch.ElasticsearchAsyncClient;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
+import com.blue.basic.common.base.BlueChecker;
 import com.blue.es.api.conf.EsConf;
 import com.blue.es.api.conf.EsNode;
 import com.blue.es.api.conf.Server;
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.message.BasicHeaderElement;
+import org.apache.http.ssl.SSLContexts;
 import org.elasticsearch.client.Node;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import reactor.util.Logger;
 
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.KeyStore;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateFactory;
 import java.util.*;
 import java.util.function.Function;
 
@@ -37,6 +50,11 @@ public final class BlueEsGenerator {
     private static final Logger LOGGER = getLogger(BlueEsGenerator.class);
 
     private static final String DEFAULT_PATH_PREFIX = "/";
+
+    private static final String CERT_TYPE = "X.509";
+    private static final String KEY_STORE_TYPE = "pkcs12";
+    private static final String CA_ALIAS = "ca";
+
 
     private static final Function<EsConf, RestClient> REST_CLIENT_GENERATOR = esConf -> {
         LOGGER.info("Function<EsConf,RestClient> REST_CLIENT_GENERATOR, esConf = {}", esConf);
@@ -79,6 +97,37 @@ public final class BlueEsGenerator {
                 }).collect(toList());
 
         RestClientBuilder builder = RestClient.builder(nodeList.toArray(Node[]::new));
+
+        if (ofNullable(esConf.getAuth()).orElse(false))
+            builder.setHttpClientConfigCallback(httpClientBuilder -> {
+                ofNullable(esConf.getUserName())
+                        .filter(BlueChecker::isNotBlank)
+                        .ifPresent(userName -> {
+                            CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+                            credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(userName, esConf.getPassword()));
+                            httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+                        });
+
+                ofNullable(esConf.getCertPath())
+                        .filter(BlueChecker::isNotBlank)
+                        .ifPresent(certPath -> {
+                            Path path = Paths.get(certPath);
+                            try (InputStream inputStream = Files.newInputStream(path)) {
+                                CertificateFactory certificateFactory = CertificateFactory.getInstance(CERT_TYPE);
+                                Certificate certificate = certificateFactory.generateCertificate(inputStream);
+
+                                KeyStore keyStore = KeyStore.getInstance(KEY_STORE_TYPE);
+                                keyStore.load(null, null);
+                                keyStore.setCertificateEntry(CA_ALIAS, certificate);
+
+                                httpClientBuilder.setSSLContext(SSLContexts.custom().loadTrustMaterial(keyStore, null).build());
+                            } catch (Exception e) {
+                                throw new RuntimeException("", e);
+                            }
+                        });
+
+                return httpClientBuilder;
+            });
 
         ofNullable(esConf.getDefaultHeaders())
                 .ifPresent(hs -> builder.setDefaultHeaders(

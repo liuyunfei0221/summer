@@ -48,6 +48,7 @@ public enum ResponseElement {
     NEED_TURING_TEST(HttpStatus.BAD_REQUEST.value(), 400000020, "Need to pass the Turing test"),
     DATA_NOT_BELONG_TO_YOU(HttpStatus.BAD_REQUEST.value(), 400000021, "Data not belong to you"),
     DATA_HAS_BEEN_FROZEN(HttpStatus.BAD_REQUEST.value(), 400000022, "Data has been frozen"),
+    INVALID_REQUEST_PARAM(HttpStatus.BAD_REQUEST.value(), 400000023, "Invalid request param: %s"),
     //</editor-fold>
 
 

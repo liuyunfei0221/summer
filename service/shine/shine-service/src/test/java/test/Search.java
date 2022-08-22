@@ -1,12 +1,17 @@
 package test;
 
 import co.elastic.clients.elasticsearch.ElasticsearchAsyncClient;
-import co.elastic.clients.elasticsearch._types.*;
+import co.elastic.clients.elasticsearch._types.FieldSort;
+import co.elastic.clients.elasticsearch._types.SortOptions;
+import co.elastic.clients.elasticsearch._types.SortOrder;
+import co.elastic.clients.elasticsearch._types.Time;
+import co.elastic.clients.elasticsearch._types.aggregations.Aggregate;
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
-import co.elastic.clients.elasticsearch._types.query_dsl.MatchAllQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.FuzzyQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.*;
+import co.elastic.clients.elasticsearch.core.search.Highlight;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.elasticsearch.core.search.HitsMetadata;
 import co.elastic.clients.elasticsearch.core.search.PointInTimeReference;
@@ -22,11 +27,14 @@ import org.elasticsearch.client.NodeSelector;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import static com.blue.es.api.generator.BlueEsGenerator.generateElasticsearchAsyncClient;
 import static com.blue.es.api.generator.BlueEsGenerator.generateRestClientTransport;
+import static com.blue.es.common.EsPitSearchAfterProcessor.packagePitSearchAfter;
 import static com.blue.es.common.EsSearchAfterProcessor.packageSearchAfter;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
@@ -45,78 +53,100 @@ public class Search {
     }
 
     public static void main(String[] args) {
-//        test1();
-//        test2();
-//        test3();
-//        test5();
-        test6();
+        test7();
     }
 
-    private static void test1() {
-        Time time = Time.of(builder -> builder.time("1m"));
-        OpenPointInTimeRequest openPointInTimeRequest = OpenPointInTimeRequest.of(builder -> builder.index(INDEX_NAME).keepAlive(time));
-        CompletableFuture<OpenPointInTimeResponse> responseFuture = ELASTICSEARCH_ASYNC_CLIENT.openPointInTime(openPointInTimeRequest);
-
-        OpenPointInTimeResponse response = responseFuture.join();
-
-        System.err.println(response);
-        String id = response.id();
-        System.err.println(id);
-    }
-
-    private static void test2() {
-        ClosePointInTimeRequest closePointInTimeRequest = ClosePointInTimeRequest.of(builder ->
-                builder.id("v5HqAwEFc2hpbmUWVmdWV01QTTdRTkdEQ3NPRzFIVDJndwAWTndzUlBsdGNUbEs2cWF5WklOWXZ4dwAAAAAAAAAAORZYOWQ4VkpQdVJVV19fYUVUZkd5bXBBAAEWVmdWV01QTTdRTkdEQ3NPRzFIVDJndwAA"));
-        CompletableFuture<ClosePointInTimeResponse> responseFuture = ELASTICSEARCH_ASYNC_CLIENT.closePointInTime(closePointInTimeRequest);
-
-        ClosePointInTimeResponse response = responseFuture.join();
-
-        System.err.println(response);
-        boolean succeeded = response.succeeded();
-        System.err.println(succeeded);
-        int numFreed = response.numFreed();
-        System.err.println(numFreed);
-    }
-
-    private static void test3() {
-        Query query = Query.of(b -> b.bool(new BoolQuery.Builder().must(MatchQuery.of(q -> q.field("content").query("内容"))._toQuery()).build()));
+    private static void test7() {
+        Query query = Query.of(b -> b.bool(new BoolQuery.Builder().must(FuzzyQuery.of(q -> q.field("content").value("容").fuzziness("0"))._toQuery()).build()));
         SortOptions sortOptions = SortOptions.of(builder -> builder.field(FieldSort.of(b -> b.field("id").order(SortOrder.Desc))));
 
-        String searchAfter = null;
+        SearchRequest searchRequest = SearchRequest.of(builder -> builder
+                .index(INDEX_NAME)
+                .query(query)
+                .sort(sortOptions)
+                .aggregations("group", ab -> ab.terms(tb -> tb.field("stateId")))
+        );
 
-        SearchRequest searchRequest;
-        for (int i = 0; i < 10; i++) {
-            String after = searchAfter;
-            searchRequest = SearchRequest.of(builder -> {
-                builder
-                        .index(INDEX_NAME)
-                        .query(query)
-                        .sort(sortOptions)
-                        .from(0)
-                        .size(3);
+        CompletableFuture<SearchResponse<Shine>> responseFuture = ELASTICSEARCH_ASYNC_CLIENT.search(searchRequest, Shine.class);
+        SearchResponse<Shine> searchResponse = responseFuture.join();
 
-                packageSearchAfter(builder, after);
+        System.err.println(searchResponse.took());
+        System.err.println();
+        System.err.println(searchResponse.hits().total());
+        System.err.println();
 
-                return builder;
-            });
+        searchResponse.hits().hits().forEach(h -> {
+            Shine source = h.source();
+            System.err.println(source);
+            System.err.println();
+        });
 
-            CompletableFuture<SearchResponse<Shine>> responseFuture = ELASTICSEARCH_ASYNC_CLIENT.search(searchRequest, Shine.class);
-            SearchResponse<Shine> response = responseFuture.join();
+        Map<String, Aggregate> aggregations = searchResponse.aggregations();
+        Aggregate aggregate = aggregations.get("group");
+        System.err.println(aggregate);
+    }
 
-            HitsMetadata<Shine> hits = response.hits();
-            List<Hit<Shine>> hitList = hits.hits();
+    private static void test6() {
+        Query query = Query.of(b -> b.bool(new BoolQuery.Builder().must(FuzzyQuery.of(q -> q.field("content").value("容").fuzziness("0"))._toQuery()).build()));
+        SortOptions sortOptions = SortOptions.of(builder -> builder.field(FieldSort.of(b -> b.field("id").order(SortOrder.Desc))));
 
-            for (Hit<Shine> hit : hitList) {
+        SearchRequest searchRequest = SearchRequest.of(builder -> builder
+                .index(INDEX_NAME)
+                .query(query)
+                .sort(sortOptions)
+                .aggregations("max", ab -> ab.max(mb -> mb.field("stateId")))
+        );
 
-                System.err.println(hit.source().getId());
-                System.err.println(hit.source().getTitle());
-                System.err.println(hit.sort());
-                searchAfter = ofNullable(hit.sort()).filter(BlueChecker::isNotEmpty).map(l -> l.get(0)).orElse(null);
-                System.err.println(searchAfter);
+        CompletableFuture<SearchResponse<Shine>> responseFuture = ELASTICSEARCH_ASYNC_CLIENT.search(searchRequest, Shine.class);
+        SearchResponse<Shine> searchResponse = responseFuture.join();
 
-                System.err.println();
-            }
-        }
+        System.err.println(searchResponse.took());
+        System.err.println();
+        System.err.println(searchResponse.hits().total());
+        System.err.println();
+
+        searchResponse.hits().hits().forEach(h -> {
+            Shine source = h.source();
+            System.err.println(source);
+            System.err.println();
+        });
+
+        Map<String, Aggregate> aggregations = searchResponse.aggregations();
+        Aggregate aggregate = aggregations.get("max");
+        System.err.println(aggregate);
+    }
+
+    private static void test5() {
+        Query query = Query.of(b -> b.bool(new BoolQuery.Builder().must(FuzzyQuery.of(q -> q.field("content").value("容").fuzziness("0"))._toQuery()).build()));
+        SortOptions sortOptions = SortOptions.of(builder -> builder.field(FieldSort.of(b -> b.field("id").order(SortOrder.Desc))));
+
+        SearchRequest searchRequest = SearchRequest.of(builder -> builder
+                .index(INDEX_NAME)
+                .query(query)
+                .sort(sortOptions)
+                .highlight(Highlight.of(b -> b.fields("content", f -> f.preTags("<font color='red'>")
+                        .postTags("</font>")))));
+
+        CompletableFuture<SearchResponse<Shine>> responseFuture = ELASTICSEARCH_ASYNC_CLIENT.search(searchRequest, Shine.class);
+        SearchResponse<Shine> searchResponse = responseFuture.join();
+
+        System.err.println(searchResponse.took());
+        System.err.println();
+        System.err.println(searchResponse.hits().total());
+        System.err.println();
+
+        List<Hit<Shine>> hits = searchResponse.hits().hits();
+
+        searchResponse.hits().hits().forEach(h -> {
+            Map<String, List<String>> highlight = h.highlight();
+            Shine source = h.source();
+            source.setContent(highlight.get("content").get(0));
+
+            System.err.println(source);
+            System.err.println();
+        });
+
+
     }
 
     private static void test4() {
@@ -173,46 +203,72 @@ public class Search {
         }
     }
 
-    private static void test5() {
-        BoolQuery.Builder builder = new BoolQuery.Builder();
-        builder.must(new Query(new MatchAllQuery.Builder().build()));
+    private static void test3() {
+        Query query = Query.of(b -> b.bool(new BoolQuery.Builder().must(MatchQuery.of(q -> q.field("content").query("内容"))._toQuery()).build()));
+        SortOptions sortOptions = SortOptions.of(builder -> builder.field(FieldSort.of(b -> b.field("id").order(SortOrder.Desc))));
 
-        Query query = Query.of(b -> b.bool(builder.build()));
-        SearchRequest searchRequest = SearchRequest.of(b -> b.query(query));
+        List<String> searchAfter = null;
 
-        CompletableFuture<SearchResponse<Shine>> responseFuture = ELASTICSEARCH_ASYNC_CLIENT.search(searchRequest, Shine.class);
-        SearchResponse<Shine> response = responseFuture.join();
+        SearchRequest searchRequest;
+        for (int i = 0; i < 10; i++) {
+            List<String> after = searchAfter;
+            searchRequest = SearchRequest.of(builder -> {
+                builder
+                        .index(INDEX_NAME)
+                        .query(query)
+                        .sort(sortOptions)
+                        .from(0)
+                        .size(3);
 
-        ofNullable(response).ifPresent(System.err::println);
-        ofNullable(response).map(SearchResponse::hits).map(HitsMetadata::hits).ifPresent(System.err::println);
+                packagePitSearchAfter(builder, after);
+
+                return builder;
+            });
+
+            CompletableFuture<SearchResponse<Shine>> responseFuture = ELASTICSEARCH_ASYNC_CLIENT.search(searchRequest, Shine.class);
+            SearchResponse<Shine> response = responseFuture.join();
+
+            HitsMetadata<Shine> hits = response.hits();
+            List<Hit<Shine>> hitList = hits.hits();
+
+            for (Hit<Shine> hit : hitList) {
+
+                System.err.println(hit.source().getId());
+                System.err.println(hit.source().getTitle());
+                System.err.println(hit.sort());
+                searchAfter = ofNullable(hit.sort()).filter(BlueChecker::isNotEmpty).orElseGet(Collections::emptyList);
+                System.err.println(searchAfter);
+
+                System.err.println();
+            }
+        }
     }
 
-    private static void test6() {
-        BoolQuery.Builder builder = new BoolQuery.Builder();
-        builder.must(new Query(new MatchAllQuery.Builder().build()));
-//        builder.must(RangeQuery.of(q -> q.field("id").gte(JsonData.of(1L)))._toQuery());
+    private static void test2() {
+        ClosePointInTimeRequest closePointInTimeRequest = ClosePointInTimeRequest.of(builder ->
+                builder.id("v5HqAwEFc2hpbmUWVmdWV01QTTdRTkdEQ3NPRzFIVDJndwAWTndzUlBsdGNUbEs2cWF5WklOWXZ4dwAAAAAAAAAAORZYOWQ4VkpQdVJVV19fYUVUZkd5bXBBAAEWVmdWV01QTTdRTkdEQ3NPRzFIVDJndwAA"));
+        CompletableFuture<ClosePointInTimeResponse> responseFuture = ELASTICSEARCH_ASYNC_CLIENT.closePointInTime(closePointInTimeRequest);
 
+        ClosePointInTimeResponse response = responseFuture.join();
 
-        Query query = Query.of(b -> b.bool(builder.build()));
-
-        SortOptions sortOptions = SortOptions.of(b -> b.score(SortOptionsBuilders.score().order(SortOrder.Desc).build()));
-
-        SearchRequest searchRequest = SearchRequest.of(b -> {
-            b.query(query);
-            b.sort(sortOptions);
-
-            packageSearchAfter(b, "45101494524975387");
-            return b;
-        });
-
-
-        CompletableFuture<SearchResponse<Shine>> responseFuture = ELASTICSEARCH_ASYNC_CLIENT.search(searchRequest, Shine.class);
-        SearchResponse<Shine> response = responseFuture.join();
-
-        ofNullable(response).ifPresent(System.err::println);
-        ofNullable(response).map(SearchResponse::hits).map(HitsMetadata::hits).ifPresent(System.err::println);
+        System.err.println(response);
+        boolean succeeded = response.succeeded();
+        System.err.println(succeeded);
+        int numFreed = response.numFreed();
+        System.err.println(numFreed);
     }
 
+    private static void test1() {
+        Time time = Time.of(builder -> builder.time("1m"));
+        OpenPointInTimeRequest openPointInTimeRequest = OpenPointInTimeRequest.of(builder -> builder.index(INDEX_NAME).keepAlive(time));
+        CompletableFuture<OpenPointInTimeResponse> responseFuture = ELASTICSEARCH_ASYNC_CLIENT.openPointInTime(openPointInTimeRequest);
+
+        OpenPointInTimeResponse response = responseFuture.join();
+
+        System.err.println(response);
+        String id = response.id();
+        System.err.println(id);
+    }
 
     private static EsConf initConf() {
         BaseEsConfParams esConfParams = new BaseEsConfParams() {

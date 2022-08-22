@@ -4507,7 +4507,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":2,\r\n    \"cursor\":\"45131391792324338\"\r\n}"
+							"raw": "{\r\n    \"rows\":5,\r\n    \"condition\":{\r\n        \"id\":null,\r\n        \"titleLike\":\"标\",\r\n        \"contentLike\":\"容\",\r\n        \"detailLike\":\"详\",\r\n        \"contactLike\":\"联\",\r\n        \"contactDetailLike\":\"详\",\r\n        \"countryId\":null,\r\n        \"stateId\":null,\r\n        \"cityId\":null,\r\n        \"addressDetailLike\":null,\r\n        \"extra\":null,\r\n        \"priority\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"creator\":null,\r\n        \"updater\":null,\r\n        \"sortAttribute\":\"createTime\",\r\n        \"sortType\":\"DESC\"\r\n    },\r\n    \"cursor\":\"1660796637\"\r\n}"
 						},
 						"url": {
 							"raw": "localhost:11000/blue-shine/shines/scroll",
@@ -4536,13 +4536,13 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiI2ZDZiMzVhOTY2NjM3ZTA3Zjg3ZTA5MDljMTRlZjg2MWExMGU3Y2Y0OGEyNjBhMzIwMjMyM2IyNDUxMzM4OGY2MWZhZWE5OTI5YzY2ZDIyODE2NTU5NGY0YThmNjUzZTE3MjBmYmJhZTcwNmMwODE1ZDE0MjRmYzU4NjYyYWE5MiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDUyMTU2MTUwMjcyNDkxNTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ1MjE1NjE1MDI3MjQ5MTUzIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYwOTAwODgwIiwibmJmIjoxNjYwOTAwODgwLCJ0IjoiNXVTbUVwWnprWlgiLCJlYXMiOjE2Njg2NzY4ODAwOTgsImV4cCI6MTY2ODY3Njg4MCwiaWF0IjoxNjYwOTAwODgwLCJqdGkiOiI2dFVLaWtGRVdxQ1dVY2lONWtMZmtzQWtPdHhVMTJqUyJ9.2PTdS4a4vgyCm67LmHjHo5BiA2QQ0ZSK87PWYdj3hRHfVMIRo5k1uoLYOosmof8Q_fek4Js1IE3y8edz3GALsg",
+								"value": "eyJraWQiOiJiNGE3NjFhMzkyYmQ1YWI3MGFiMmM3MjY1YTcwNDE2YTE1ZTczY2NlZTdmOThlNGExMzkyMGYzNmY0M2U4M2M3OWZjYWRiMmQzZmRmYTBkOWIxMjNhODA5OGRjYzZmMmJlNDM5OTE5MmI3ZGZkNDZmOWYxYTdkY2Q1Zjk4Mjk5NiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDU0OTM5NDcxNjE2NDQ0MzNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ1NDkzOTQ3MTYxNjQ0NDMzIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYxMTYwMjcwIiwibmJmIjoxNjYxMTYwMjcwLCJ0IjoiQWlKYm5QdUJBeWkiLCJlYXMiOjE2Njg5MzYyNzAwMjQsImV4cCI6MTY2ODkzNjI3MCwiaWF0IjoxNjYxMTYwMjcwLCJqdGkiOiJKUUQ2VEc1dVdFZkI2QjlJZ2JIUDF0Y2JwOXUwY000MyJ9.hQztAel0sZdLRM3-M8uQfZvk7egyCRoORXQzqduFjULXgdWj-z29iKVdQJQBI64mYhx3_fhp_F3xXOzzqbp9hg",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"page\":100,\r\n    \"rows\":2\r\n}"
+							"raw": "{\r\n    \"page\":2,\r\n    \"rows\":100,\r\n    \"condition\":{\r\n        \"id\":null,\r\n        \"titleLike\":\"标\",\r\n        \"contentLike\":\"容\",\r\n        \"detailLike\":\"详\",\r\n        \"contactLike\":\"联\",\r\n        \"contactDetailLike\":\"详\",\r\n        \"countryId\":null,\r\n        \"stateId\":null,\r\n        \"cityId\":null,\r\n        \"addressDetailLike\":null,\r\n        \"extra\":null,\r\n        \"priority\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"creator\":null,\r\n        \"updater\":null,\r\n        \"sortAttribute\":\"createTime\",\r\n        \"sortType\":\"DESC\"\r\n    }\r\n}"
 						},
 						"url": {
 							"raw": "localhost:11000/blue-shine/manager/shines/page",
@@ -4572,13 +4572,13 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiI2ZDZiMzVhOTY2NjM3ZTA3Zjg3ZTA5MDljMTRlZjg2MWExMGU3Y2Y0OGEyNjBhMzIwMjMyM2IyNDUxMzM4OGY2MWZhZWE5OTI5YzY2ZDIyODE2NTU5NGY0YThmNjUzZTE3MjBmYmJhZTcwNmMwODE1ZDE0MjRmYzU4NjYyYWE5MiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDUyMTU2MTUwMjcyNDkxNTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ1MjE1NjE1MDI3MjQ5MTUzIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYwOTAwODgwIiwibmJmIjoxNjYwOTAwODgwLCJ0IjoiNXVTbUVwWnprWlgiLCJlYXMiOjE2Njg2NzY4ODAwOTgsImV4cCI6MTY2ODY3Njg4MCwiaWF0IjoxNjYwOTAwODgwLCJqdGkiOiI2dFVLaWtGRVdxQ1dVY2lONWtMZmtzQWtPdHhVMTJqUyJ9.2PTdS4a4vgyCm67LmHjHo5BiA2QQ0ZSK87PWYdj3hRHfVMIRo5k1uoLYOosmof8Q_fek4Js1IE3y8edz3GALsg",
+								"value": "eyJraWQiOiJiNGE3NjFhMzkyYmQ1YWI3MGFiMmM3MjY1YTcwNDE2YTE1ZTczY2NlZTdmOThlNGExMzkyMGYzNmY0M2U4M2M3OWZjYWRiMmQzZmRmYTBkOWIxMjNhODA5OGRjYzZmMmJlNDM5OTE5MmI3ZGZkNDZmOWYxYTdkY2Q1Zjk4Mjk5NiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDU0OTM5NDcxNjE2NDQ0MzNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ1NDkzOTQ3MTYxNjQ0NDMzIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYxMTYwMjcwIiwibmJmIjoxNjYxMTYwMjcwLCJ0IjoiQWlKYm5QdUJBeWkiLCJlYXMiOjE2Njg5MzYyNzAwMjQsImV4cCI6MTY2ODkzNjI3MCwiaWF0IjoxNjYxMTYwMjcwLCJqdGkiOiJKUUQ2VEc1dVdFZkI2QjlJZ2JIUDF0Y2JwOXUwY000MyJ9.hQztAel0sZdLRM3-M8uQfZvk7egyCRoORXQzqduFjULXgdWj-z29iKVdQJQBI64mYhx3_fhp_F3xXOzzqbp9hg",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"page\":100,\r\n    \"rows\":2,\r\n    \"condition\":{\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"ASC\"\r\n    },\r\n    \"cursor\":{\r\n\t\t\"id\":\"v5HqAwEFc2hpbmUWVmdWV01QTTdRTkdEQ3NPRzFIVDJndwAWTndzUlBsdGNUbEs2cWF5WklOWXZ4dwAAAAAAAAAAihZfcFQ4UzdmVVM2TzFsbmhRM2VMM3p3AAEWVmdWV01QTTdRTkdEQ3NPRzFIVDJndwAA\",\r\n        \"searchAfters\": [\r\n                \"45101494524968963\",\r\n                \"425\"\r\n            ]\r\n\t}\r\n}"
+							"raw": "{\r\n    \"rows\":2,\r\n    \"condition\":{\r\n        \"id\":null,\r\n        \"titleLike\":\"标\",\r\n        \"contentLike\":\"容\",\r\n        \"detailLike\":\"详\",\r\n        \"contactLike\":\"联\",\r\n        \"contactDetailLike\":\"详\",\r\n        \"countryId\":null,\r\n        \"stateId\":null,\r\n        \"cityId\":null,\r\n        \"addressDetailLike\":null,\r\n        \"extra\":null,\r\n        \"priority\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"creator\":null,\r\n        \"updater\":null,\r\n        \"sortAttribute\":\"createTime\",\r\n        \"sortType\":\"DESC\"\r\n    },\r\n    \"cursor\":{\r\n\t\t\"id\": \"v5HqAwEFc2hpbmUWVmdWV01QTTdRTkdEQ3NPRzFIVDJndwAWTndzUlBsdGNUbEs2cWF5WklOWXZ4dwAAAAAAAAAAeRZuVWsxNnFKZVNFTzAycWphMWhTMWJnAAEWVmdWV01QTTdRTkdEQ3NPRzFIVDJndwAA\",\r\n        \"searchAfters\": [\r\n            \"16a60822356\",\r\n                \"2007\"\r\n        ]\r\n\t}\r\n}"
 						},
 						"url": {
 							"raw": "localhost:11000/blue-shine/manager/shines/scroll/snapshot",
@@ -4932,7 +4932,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"5485660\"\r\n    }\r\n}"
+							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"5736644\"\r\n    }\r\n}"
 						},
 						"url": {
 							"raw": "localhost:11000/blue-auth/auth/session",
@@ -4961,7 +4961,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiI2ZDZiMzVhOTY2NjM3ZTA3Zjg3ZTA5MDljMTRlZjg2MWExMGU3Y2Y0OGEyNjBhMzIwMjMyM2IyNDUxMzM4OGY2MWZhZWE5OTI5YzY2ZDIyODE2NTU5NGY0YThmNjUzZTE3MjBmYmJhZTcwNmMwODE1ZDE0MjRmYzU4NjYyYWE5MiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDUyMTU2MTUwMjcyNDkxNTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ1MjE1NjE1MDI3MjQ5MTUzIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYwOTAwODgwIiwibmJmIjoxNjYwOTAwODgwLCJ0IjoiNXVTbUVwWnprWlgiLCJlYXMiOjE2Njg2NzY4ODAwOTgsImV4cCI6MTY2ODY3Njg4MCwiaWF0IjoxNjYwOTAwODgwLCJqdGkiOiI2dFVLaWtGRVdxQ1dVY2lONWtMZmtzQWtPdHhVMTJqUyJ9.2PTdS4a4vgyCm67LmHjHo5BiA2QQ0ZSK87PWYdj3hRHfVMIRo5k1uoLYOosmof8Q_fek4Js1IE3y8edz3GALsg",
+								"value": "eyJraWQiOiJiNGE3NjFhMzkyYmQ1YWI3MGFiMmM3MjY1YTcwNDE2YTE1ZTczY2NlZTdmOThlNGExMzkyMGYzNmY0M2U4M2M3OWZjYWRiMmQzZmRmYTBkOWIxMjNhODA5OGRjYzZmMmJlNDM5OTE5MmI3ZGZkNDZmOWYxYTdkY2Q1Zjk4Mjk5NiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDU0OTM5NDcxNjE2NDQ0MzNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ1NDkzOTQ3MTYxNjQ0NDMzIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYxMTYwMjcwIiwibmJmIjoxNjYxMTYwMjcwLCJ0IjoiQWlKYm5QdUJBeWkiLCJlYXMiOjE2Njg5MzYyNzAwMjQsImV4cCI6MTY2ODkzNjI3MCwiaWF0IjoxNjYxMTYwMjcwLCJqdGkiOiJKUUQ2VEc1dVdFZkI2QjlJZ2JIUDF0Y2JwOXUwY000MyJ9.hQztAel0sZdLRM3-M8uQfZvk7egyCRoORXQzqduFjULXgdWj-z29iKVdQJQBI64mYhx3_fhp_F3xXOzzqbp9hg",
 								"type": "text"
 							},
 							{

@@ -98,7 +98,7 @@ use verify;
 
 db.verifyHistory.createIndex({"id":1});
 db.verifyHistory.createIndex({"verifyType":1});
-db.verifyHistory.createIndex({"businessType":1});
+db.verifyHistory.createIndex({"verifyBusinessType":1});
 db.verifyHistory.createIndex({"destination":1});
 db.verifyHistory.createIndex({"requestIp":1});
 db.verifyHistory.createIndex({"createTime":-1});

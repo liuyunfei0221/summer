@@ -13,7 +13,7 @@ public class Test2 {
 
     public static void main(String[] args) {
 
-        String quorum = "172.16.204.75";
+        String quorum = "172.16.204.244";
         String clientPort = "2181";
 
         try {

@@ -1,7 +1,7 @@
 package com.blue.verify.model;
 
 import com.blue.basic.constant.common.SortType;
-import com.blue.basic.constant.verify.BusinessType;
+import com.blue.basic.constant.verify.VerifyBusinessType;
 import com.blue.basic.model.common.SortCondition;
 import com.blue.verify.constant.VerifyHistorySortAttribute;
 
@@ -25,7 +25,7 @@ public final class VerifyHistoryCondition extends SortCondition implements Seria
     private String verifyType;
 
     /**
-     * @see BusinessType
+     * @see VerifyBusinessType
      */
     private String businessType;
 

@@ -1,6 +1,6 @@
 package com.blue.verify.remote.provider;
 
-import com.blue.basic.constant.verify.BusinessType;
+import com.blue.basic.constant.verify.VerifyBusinessType;
 import com.blue.basic.constant.verify.VerifyType;
 import com.blue.verify.api.inter.RpcVerifyHandleService;
 import com.blue.verify.service.inter.VerifyHandleService;
@@ -39,28 +39,28 @@ public class RpcVerifyHandleServiceProvider implements RpcVerifyHandleService {
      * generate verify for api
      *
      * @param verifyType
-     * @param businessType
+     * @param verifyBusinessType
      * @param destination
      * @return
      */
     @Override
-    public CompletableFuture<String> generate(VerifyType verifyType, BusinessType businessType, String destination) {
-        return just(true).publishOn(scheduler).flatMap(v -> verifyHandleService.generate(verifyType, businessType, destination)).toFuture();
+    public CompletableFuture<String> generate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination) {
+        return just(true).publishOn(scheduler).flatMap(v -> verifyHandleService.generate(verifyType, verifyBusinessType, destination)).toFuture();
     }
 
     /**
      * validate verify
      *
      * @param verifyType
-     * @param businessType
+     * @param verifyBusinessType
      * @param key
      * @param verify
      * @param repeatable
      * @return
      */
     @Override
-    public CompletableFuture<Boolean> validate(VerifyType verifyType, BusinessType businessType, String key, String verify, Boolean repeatable) {
-        return just(true).publishOn(scheduler).flatMap(v -> verifyHandleService.validate(verifyType, businessType, key, verify, repeatable)).toFuture();
+    public CompletableFuture<Boolean> validate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String key, String verify, Boolean repeatable) {
+        return just(true).publishOn(scheduler).flatMap(v -> verifyHandleService.validate(verifyType, verifyBusinessType, key, verify, repeatable)).toFuture();
     }
 
     /**

@@ -5,20 +5,19 @@ import com.blue.basic.component.exception.model.ExceptionInfo;
 import reactor.util.Logger;
 
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
-import static com.blue.basic.constant.common.ResponseElement.INVALID_REQUEST_PARAM;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * elastic search exp handler
+ * invalid format exp handler
  *
  * @author liuyunfei
  */
 @SuppressWarnings({"unused"})
-public final class ElasticsearchExceptionHandler implements ExceptionHandler {
+public final class InvalidFormatExceptionHandler implements ExceptionHandler {
 
-    private static final Logger LOGGER = getLogger(ElasticsearchExceptionHandler.class);
+    private static final Logger LOGGER = getLogger(InvalidFormatExceptionHandler.class);
 
-    private static final String EXP_NAME = "co.elastic.clients.elasticsearch._types.ElasticsearchException";
+    private static final String EXP_NAME = "com.fasterxml.jackson.databind.exc.InvalidFormatException";
 
     private static final ExceptionInfo EXP_HANDLE_INFO = new ExceptionInfo(BAD_REQUEST);
 
@@ -29,7 +28,7 @@ public final class ElasticsearchExceptionHandler implements ExceptionHandler {
 
     @Override
     public ExceptionInfo handle(Throwable throwable) {
-        LOGGER.info("elasticsearchExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
-        return new ExceptionInfo(INVALID_REQUEST_PARAM, new String[]{throwable.getMessage()});
+        LOGGER.info("invalidFormatExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
+        return EXP_HANDLE_INFO;
     }
 }

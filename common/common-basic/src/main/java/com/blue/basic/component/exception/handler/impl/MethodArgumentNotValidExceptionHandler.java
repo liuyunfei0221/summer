@@ -1,5 +1,6 @@
 package com.blue.basic.component.exception.handler.impl;
 
+import com.blue.basic.common.base.BlueChecker;
 import com.blue.basic.component.exception.handler.inter.ExceptionHandler;
 import com.blue.basic.component.exception.model.ExceptionInfo;
 import org.springframework.validation.BindingResult;
@@ -9,7 +10,6 @@ import reactor.util.Logger;
 
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 import static java.util.Optional.of;
-import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -35,7 +35,7 @@ public final class MethodArgumentNotValidExceptionHandler implements ExceptionHa
         MethodArgumentNotValidException ex = (MethodArgumentNotValidException) throwable;
         return new ExceptionInfo(BAD_REQUEST, new String[]{of(ex.getBindingResult())
                 .map(BindingResult::getAllErrors)
-                .filter(l -> !isEmpty(l))
+                .filter(BlueChecker::isNotEmpty)
                 .map(l -> l.get(0))
                 .map(ObjectError::getDefaultMessage)
                 .orElse(BAD_REQUEST.message)});

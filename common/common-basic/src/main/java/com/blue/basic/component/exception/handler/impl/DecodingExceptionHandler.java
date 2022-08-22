@@ -13,6 +13,7 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import static com.blue.basic.constant.common.ResponseElement.FILE_INVALID;
+import static com.blue.basic.constant.common.Symbol.SLASH;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.lastIndexOf;
@@ -36,7 +37,7 @@ public class DecodingExceptionHandler implements ExceptionHandler {
                     bmt -> "<" + bmt.identity + ">get bound failed,Please specify <boundary> in <Content-Type>.", (a, b) -> a));
 
     private static final UnaryOperator<String> TOO_MANY_PARTS_MESSAGE_CONVERTER = message -> {
-        int beginIndex = StringUtils.indexOf(message, "/");
+        int beginIndex = StringUtils.indexOf(message, SLASH.identity);
         int endIndex = lastIndexOf(message, " ");
 
         return beginIndex != -1 && endIndex != -1 ? "file size can't be greater than" + substring(message, beginIndex + 1, endIndex) : message;

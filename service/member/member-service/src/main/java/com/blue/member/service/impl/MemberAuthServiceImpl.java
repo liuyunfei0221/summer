@@ -39,7 +39,7 @@ import static com.blue.basic.common.base.BlueChecker.isEmpty;
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.ConstantProcessor.getSortTypeByIdentity;
 import static com.blue.basic.constant.common.ResponseElement.*;
-import static com.blue.basic.constant.verify.BusinessType.REGISTER;
+import static com.blue.basic.constant.verify.VerifyBusinessType.REGISTER;
 import static com.blue.basic.constant.verify.VerifyType.MAIL;
 import static com.blue.basic.constant.verify.VerifyType.SMS;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_BASIC_INFO;

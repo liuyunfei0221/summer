@@ -1,6 +1,6 @@
 package com.blue.media.remote.consumer;
 
-import com.blue.basic.constant.verify.BusinessType;
+import com.blue.basic.constant.verify.VerifyBusinessType;
 import com.blue.basic.constant.verify.VerifyType;
 import com.blue.verify.api.inter.RpcVerifyHandleService;
 import org.apache.dubbo.config.annotation.DubboReference;
@@ -36,26 +36,26 @@ public class RpcVerifyHandleServiceConsumer {
      * generate verify for api
      *
      * @param verifyType
-     * @param businessType
+     * @param verifyBusinessType
      * @param destination
      * @return
      */
-    public Mono<String> generate(VerifyType verifyType, BusinessType businessType, String destination) {
-        return fromFuture(rpcVerifyHandleService.generate(verifyType, businessType, destination)).publishOn(scheduler);
+    public Mono<String> generate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination) {
+        return fromFuture(rpcVerifyHandleService.generate(verifyType, verifyBusinessType, destination)).publishOn(scheduler);
     }
 
     /**
      * validate verify
      *
      * @param verifyType
-     * @param businessType
+     * @param verifyBusinessType
      * @param key
      * @param verify
      * @param repeatable
      * @return
      */
-    public Mono<Boolean> validate(VerifyType verifyType, BusinessType businessType, String key, String verify, Boolean repeatable) {
-        return fromFuture(rpcVerifyHandleService.validate(verifyType, businessType, key, verify, repeatable)).publishOn(scheduler);
+    public Mono<Boolean> validate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String key, String verify, Boolean repeatable) {
+        return fromFuture(rpcVerifyHandleService.validate(verifyType, verifyBusinessType, key, verify, repeatable)).publishOn(scheduler);
     }
 
     /**

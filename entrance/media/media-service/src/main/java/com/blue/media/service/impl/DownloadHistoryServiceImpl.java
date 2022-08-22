@@ -1,7 +1,10 @@
 package com.blue.media.service.impl;
 
 import com.blue.basic.common.base.BlueChecker;
-import com.blue.basic.model.common.*;
+import com.blue.basic.model.common.PageModelRequest;
+import com.blue.basic.model.common.PageModelResponse;
+import com.blue.basic.model.common.ScrollModelRequest;
+import com.blue.basic.model.common.ScrollModelResponse;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.media.api.model.AttachmentDetailInfo;
 import com.blue.media.api.model.DownloadHistoryInfo;
@@ -178,13 +181,10 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
 
         query.skip(scrollModelRequest.getFrom()).limit(scrollModelRequest.getRows().intValue());
 
-        return zip(reactiveMongoTemplate.find(query, DownloadHistory.class).publishOn(scheduler).collectList()
-                        .map(histories -> parseSearchAfter(histories, downloadHistory -> String.valueOf(downloadHistory.getId()))),
+        return zip(reactiveMongoTemplate.find(query, DownloadHistory.class).publishOn(scheduler).collectList(),
                 rpcMemberBasicServiceConsumer.getMemberBasicInfoByPrimaryKey(memberId)
         ).flatMap(tuple2 -> {
-            DataAndSearchAfter<DownloadHistory, String> dataAndSearchAfter = tuple2.getT1();
-            List<DownloadHistory> downloadHistories = dataAndSearchAfter.getData();
-
+            List<DownloadHistory> downloadHistories = tuple2.getT1();
             String memberName = ofNullable(tuple2.getT2().getName()).filter(BlueChecker::isNotBlank).orElse(EMPTY_DATA.value);
 
             return isNotEmpty(downloadHistories) ?
@@ -195,9 +195,10 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
                                                 downloadHistoryToDownloadHistoryInfo(dh, ofNullable(attachmentIdAndAttachmentNameMapping.get(dh.getAttachmentId())).orElse(EMPTY_DATA.value), memberName))
                                         .collect(toList()));
                             }).flatMap(downloadHistoryInfo ->
-                                    just(new ScrollModelResponse<>(downloadHistoryInfo, dataAndSearchAfter.getSearchAfter())))
+                                    just(new ScrollModelResponse<>(downloadHistoryInfo,
+                                            parseSearchAfter(downloadHistories, downloadHistory -> String.valueOf(downloadHistory.getId())))))
                     :
-                    just(new ScrollModelResponse<>(emptyList(), dataAndSearchAfter.getSearchAfter()));
+                    just(new ScrollModelResponse<>(emptyList(), ""));
         });
     }
 

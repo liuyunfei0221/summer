@@ -15,17 +15,25 @@ import java.util.List;
 @SuppressWarnings({"unused", "AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
 public abstract class BaseEsConfParams implements EsConf {
 
-    transient List<EsNode> esNodes;
+    protected transient List<EsNode> esNodes;
 
-    transient List<DefaultHeader> defaultHeaders;
+    protected transient Boolean auth;
 
-    transient String pathPrefix;
+    protected transient String userName;
 
-    Boolean strictDeprecationMode;
+    protected transient String password;
 
-    Boolean metaHeaderEnabled;
+    protected transient String certPath;
 
-    Boolean compressionEnabled;
+    protected transient List<DefaultHeader> defaultHeaders;
+
+    protected transient String pathPrefix;
+
+    protected Boolean strictDeprecationMode;
+
+    protected Boolean metaHeaderEnabled;
+
+    protected Boolean compressionEnabled;
 
     public BaseEsConfParams() {
     }
@@ -33,6 +41,26 @@ public abstract class BaseEsConfParams implements EsConf {
     @Override
     public List<EsNode> getEsNodes() {
         return esNodes;
+    }
+
+    @Override
+    public Boolean getAuth() {
+        return auth;
+    }
+
+    @Override
+    public String getUserName() {
+        return userName;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getCertPath() {
+        return certPath;
     }
 
     @Override
@@ -79,6 +107,22 @@ public abstract class BaseEsConfParams implements EsConf {
         this.esNodes = esNodes;
     }
 
+    public void setAuth(Boolean auth) {
+        this.auth = auth;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setCertPath(String certPath) {
+        this.certPath = certPath;
+    }
+
     public void setDefaultHeaders(List<DefaultHeader> defaultHeaders) {
         this.defaultHeaders = defaultHeaders;
     }
@@ -103,6 +147,10 @@ public abstract class BaseEsConfParams implements EsConf {
     public String toString() {
         return "BaseEsConfParams{" +
                 "esNodes=" + esNodes +
+                ", auth=" + auth +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", certPath='" + certPath + '\'' +
                 ", defaultHeaders=" + defaultHeaders +
                 ", pathPrefix='" + pathPrefix + '\'' +
                 ", strictDeprecationMode=" + strictDeprecationMode +

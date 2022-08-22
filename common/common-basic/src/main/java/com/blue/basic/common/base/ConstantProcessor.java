@@ -18,7 +18,7 @@ import com.blue.basic.constant.member.SourceType;
 import com.blue.basic.constant.member.ZodiacSign;
 import com.blue.basic.constant.portal.BulletinType;
 import com.blue.basic.constant.portal.StyleType;
-import com.blue.basic.constant.verify.BusinessType;
+import com.blue.basic.constant.verify.VerifyBusinessType;
 import com.blue.basic.constant.verify.VerifyType;
 import com.blue.basic.model.exps.BlueException;
 import org.springframework.http.HttpMethod;
@@ -195,8 +195,8 @@ public final class ConstantProcessor {
     /**
      * business verify type identity and type mapping
      */
-    private static final Map<String, BusinessType> BUSINESS_TYPE_MAPPING =
-            of(BusinessType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
+    private static final Map<String, VerifyBusinessType> VERIFY_BUSINESS_TYPE_MAPPING =
+            of(VerifyBusinessType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
 
     /**
      * verify type identity and type mapping
@@ -516,11 +516,11 @@ public final class ConstantProcessor {
      *
      * @param identity
      */
-    public static void assertBusinessType(String identity, boolean nullable) {
+    public static void assertVerifyBusinessType(String identity, boolean nullable) {
         if (nullable && isNull(identity))
             return;
 
-        if (!BUSINESS_TYPE_MAPPING.containsKey(identity))
+        if (!VERIFY_BUSINESS_TYPE_MAPPING.containsKey(identity))
             throw new BlueException(INVALID_IDENTITY);
     }
 
@@ -968,11 +968,11 @@ public final class ConstantProcessor {
      * @param identity
      * @return
      */
-    public static BusinessType getBusinessTypeByIdentity(String identity) {
+    public static VerifyBusinessType getVerifyBusinessTypeByIdentity(String identity) {
         if (isNull(identity))
             throw new BlueException(INVALID_IDENTITY);
 
-        BusinessType type = BUSINESS_TYPE_MAPPING.get(identity);
+        VerifyBusinessType type = VERIFY_BUSINESS_TYPE_MAPPING.get(identity);
         if (isNull(type))
             throw new BlueException(INVALID_IDENTITY);
 

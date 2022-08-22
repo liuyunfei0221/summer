@@ -12,7 +12,7 @@ public class Test3 {
     //    private static final Logger LOGGER = getLogger(BlueHbaseGenerator.class);
 
     public static void main(String[] args) {
-        String quorum = "172.16.204.75";
+        String quorum = "172.16.204.244";
         String clientPort = "2181";
 
         try {
