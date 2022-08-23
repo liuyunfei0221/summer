@@ -3,7 +3,7 @@ package com.blue.media.component.qr;
 import com.blue.basic.model.common.Access;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.media.api.model.QrCodeConfigInfo;
-import com.blue.media.component.qr.inter.QrCodeGenHandler;
+import com.blue.media.component.qr.inter.QrCodeGenerateHandler;
 import com.blue.media.model.QrCodeGenerateParam;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
@@ -17,7 +17,7 @@ import java.util.Map;
 
 import static com.blue.basic.common.base.BlueChecker.isEmpty;
 import static com.blue.basic.common.base.BlueChecker.isNull;
-import static com.blue.basic.common.base.ConstantProcessor.assertQrCodeGenType;
+import static com.blue.basic.common.base.ConstantProcessor.assertQrCodeType;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 import static java.util.Optional.ofNullable;
@@ -35,12 +35,12 @@ public class QrCodeGenerateProcessor implements ApplicationListener<ContextRefre
     /**
      * handler type -> handler
      */
-    private Map<Integer, QrCodeGenHandler> qrCodeGenHandlers;
+    private Map<Integer, QrCodeGenerateHandler> qrCodeGenHandlers;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         ApplicationContext applicationContext = contextRefreshedEvent.getApplicationContext();
-        Map<String, QrCodeGenHandler> beansOfType = applicationContext.getBeansOfType(QrCodeGenHandler.class);
+        Map<String, QrCodeGenerateHandler> beansOfType = applicationContext.getBeansOfType(QrCodeGenerateHandler.class);
         if (isEmpty(beansOfType))
             throw new RuntimeException("qrCodeGenHandlers is empty");
 
@@ -61,10 +61,10 @@ public class QrCodeGenerateProcessor implements ApplicationListener<ContextRefre
         if (isNull(qrCodeConfigInfo))
             throw new BlueException(BAD_REQUEST);
 
-        Integer genHandlerType = qrCodeConfigInfo.getGenHandlerType();
-        assertQrCodeGenType(genHandlerType, false);
+        Integer type = qrCodeConfigInfo.getType();
+        assertQrCodeType(type, false);
 
-        return ofNullable(qrCodeGenHandlers.get(genHandlerType))
+        return ofNullable(qrCodeGenHandlers.get(type))
                 .map(gh -> gh.generateCode(qrCodeGenerateParam, qrCodeConfigInfo, access, serverRequest))
                 .orElseThrow(() -> new BlueException(INVALID_PARAM));
     }

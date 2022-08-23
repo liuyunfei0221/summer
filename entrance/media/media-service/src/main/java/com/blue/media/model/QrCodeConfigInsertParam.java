@@ -1,5 +1,6 @@
 package com.blue.media.model;
 
+import com.blue.basic.constant.media.QrCodeType;
 import com.blue.basic.inter.Asserter;
 import com.blue.basic.model.exps.BlueException;
 
@@ -7,7 +8,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import static com.blue.basic.common.base.BlueChecker.*;
-import static com.blue.basic.common.base.ConstantProcessor.assertQrCodeGenType;
+import static com.blue.basic.common.base.ConstantProcessor.assertQrCodeType;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 
 /**
@@ -25,14 +26,9 @@ public class QrCodeConfigInsertParam implements Serializable, Asserter {
     protected String description;
 
     /**
-     * unique qr code type
+     * @see QrCodeType
      */
     protected Integer type;
-
-    /**
-     * @see com.blue.basic.constant.media.QrCodeGenType
-     */
-    protected Integer genHandlerType;
 
     protected String domain;
 
@@ -61,7 +57,7 @@ public class QrCodeConfigInsertParam implements Serializable, Asserter {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid name");
         if (isBlank(this.description))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid description");
-        assertQrCodeGenType(this.genHandlerType, false);
+        assertQrCodeType(this.type, false);
         if (isBlank(this.domain))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid domain");
         if (isBlank(this.pathToBeFilled))
@@ -94,14 +90,6 @@ public class QrCodeConfigInsertParam implements Serializable, Asserter {
 
     public void setType(Integer type) {
         this.type = type;
-    }
-
-    public Integer getGenHandlerType() {
-        return genHandlerType;
-    }
-
-    public void setGenHandlerType(Integer genHandlerType) {
-        this.genHandlerType = genHandlerType;
     }
 
     public String getDomain() {
@@ -142,12 +130,11 @@ public class QrCodeConfigInsertParam implements Serializable, Asserter {
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", type=" + type +
-                ", genHandlerType=" + genHandlerType +
                 ", domain='" + domain + '\'' +
                 ", pathToBeFilled='" + pathToBeFilled + '\'' +
                 ", placeholderCount=" + placeholderCount +
                 ", allowedRoles=" + allowedRoles +
                 '}';
     }
-    
+
 }

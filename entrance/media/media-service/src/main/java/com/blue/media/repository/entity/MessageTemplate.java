@@ -1,21 +1,19 @@
 package com.blue.media.repository.entity;
 
 
-import com.blue.basic.constant.media.QrCodeType;
 import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
- * qr code config
+ * message template
  *
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class QrCodeConfig implements Serializable {
+public final class MessageTemplate implements Serializable {
 
-    private static final long serialVersionUID = 7723764623524543097L;
+    private static final long serialVersionUID = 2511921064553196993L;
 
     @Id
     private Long id;
@@ -25,20 +23,18 @@ public final class QrCodeConfig implements Serializable {
     private String description;
 
     /**
-     * @see QrCodeType
+     * @see com.blue.basic.constant.media.MessageType
      */
     private Integer type;
 
-    private String domain;
-
-    private String pathToBeFilled;
-
-    private Integer placeholderCount;
-
     /**
-     * allowed role ids
+     * @see com.blue.basic.constant.media.MessageBusinessType
      */
-    private List<Long> allowedRoles;
+    private Integer businessType;
+
+    private String title;
+
+    private String content;
 
     private Long createTime;
 
@@ -80,36 +76,28 @@ public final class QrCodeConfig implements Serializable {
         this.type = type;
     }
 
-    public String getDomain() {
-        return domain;
+    public Integer getBusinessType() {
+        return businessType;
     }
 
-    public void setDomain(String domain) {
-        this.domain = domain;
+    public void setBusinessType(Integer businessType) {
+        this.businessType = businessType;
     }
 
-    public String getPathToBeFilled() {
-        return pathToBeFilled;
+    public String getTitle() {
+        return title;
     }
 
-    public void setPathToBeFilled(String pathToBeFilled) {
-        this.pathToBeFilled = pathToBeFilled;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public Integer getPlaceholderCount() {
-        return placeholderCount;
+    public String getContent() {
+        return content;
     }
 
-    public void setPlaceholderCount(Integer placeholderCount) {
-        this.placeholderCount = placeholderCount;
-    }
-
-    public List<Long> getAllowedRoles() {
-        return allowedRoles;
-    }
-
-    public void setAllowedRoles(List<Long> allowedRoles) {
-        this.allowedRoles = allowedRoles;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public Long getCreateTime() {
@@ -146,15 +134,14 @@ public final class QrCodeConfig implements Serializable {
 
     @Override
     public String toString() {
-        return "QrCodeConfig{" +
+        return "MessageTemplate{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", type=" + type +
-                ", domain='" + domain + '\'' +
-                ", pathToBeFilled='" + pathToBeFilled + '\'' +
-                ", placeholderCount=" + placeholderCount +
-                ", allowedRoles=" + allowedRoles +
+                ", businessType=" + businessType +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", creator=" + creator +

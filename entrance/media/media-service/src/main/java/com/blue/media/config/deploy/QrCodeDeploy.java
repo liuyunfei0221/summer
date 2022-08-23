@@ -1,16 +1,16 @@
-package com.blue.member.config.deploy;
+package com.blue.media.config.deploy;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * member config
+ * qr code config
  *
  * @author liuyunfei
  */
 @Component
-@ConfigurationProperties(prefix = "member")
-public class MemberDeploy {
+@ConfigurationProperties(prefix = "qrcode")
+public class QrCodeDeploy {
 
     private Long cacheExpiresSecond;
 
@@ -24,7 +24,7 @@ public class MemberDeploy {
 
     @Override
     public String toString() {
-        return "MemberDeploy{" +
+        return "QrCodeDeploy{" +
                 "cacheExpiresSecond=" + cacheExpiresSecond +
                 '}';
     }

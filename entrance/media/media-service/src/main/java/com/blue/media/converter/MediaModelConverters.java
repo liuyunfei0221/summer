@@ -91,8 +91,8 @@ public final class MediaModelConverters {
         if (isNull(qrCodeConfig))
             throw new BlueException(EMPTY_PARAM);
 
-        return new QrCodeConfigInfo(qrCodeConfig.getId(), qrCodeConfig.getName(), qrCodeConfig.getDescription(), qrCodeConfig.getType(), qrCodeConfig.getGenHandlerType(),
-                qrCodeConfig.getDomain(), qrCodeConfig.getPathToBeFilled(), qrCodeConfig.getPlaceholderCount(), qrCodeConfig.getAllowedRoles(), qrCodeConfig.getStatus());
+        return new QrCodeConfigInfo(qrCodeConfig.getId(), qrCodeConfig.getName(), qrCodeConfig.getDescription(), qrCodeConfig.getType(),
+                qrCodeConfig.getDomain(), qrCodeConfig.getPathToBeFilled(), qrCodeConfig.getPlaceholderCount(), qrCodeConfig.getAllowedRoles());
     };
 
     /**
@@ -108,10 +108,9 @@ public final class MediaModelConverters {
             throw new BlueException(EMPTY_PARAM);
 
         return new QrCodeConfigManagerInfo(
-                qrCodeConfig.getId(), qrCodeConfig.getName(), qrCodeConfig.getDescription(), qrCodeConfig.getType(), qrCodeConfig.getGenHandlerType(),
-                qrCodeConfig.getDomain(), qrCodeConfig.getPathToBeFilled(), qrCodeConfig.getPlaceholderCount(), qrCodeConfig.getAllowedRoles().stream().map(idAndRoleInfoMapping::get).collect(toList()), qrCodeConfig.getStatus(),
-                qrCodeConfig.getCreateTime(), qrCodeConfig.getUpdateTime(), qrCodeConfig.getCreator(), ofNullable(idAndMemberNameMapping.get(qrCodeConfig.getCreator())).orElse(EMPTY_DATA.value),
-                qrCodeConfig.getUpdater(), ofNullable(idAndMemberNameMapping.get(qrCodeConfig.getUpdater())).orElse(EMPTY_DATA.value));
+                qrCodeConfig.getId(), qrCodeConfig.getName(), qrCodeConfig.getDescription(), qrCodeConfig.getType(), qrCodeConfig.getDomain(), qrCodeConfig.getPathToBeFilled(), qrCodeConfig.getPlaceholderCount(),
+                qrCodeConfig.getAllowedRoles().stream().map(idAndRoleInfoMapping::get).collect(toList()), qrCodeConfig.getCreateTime(), qrCodeConfig.getUpdateTime(), qrCodeConfig.getCreator(),
+                ofNullable(idAndMemberNameMapping.get(qrCodeConfig.getCreator())).orElse(EMPTY_DATA.value), qrCodeConfig.getUpdater(), ofNullable(idAndMemberNameMapping.get(qrCodeConfig.getUpdater())).orElse(EMPTY_DATA.value));
     }
 
 }

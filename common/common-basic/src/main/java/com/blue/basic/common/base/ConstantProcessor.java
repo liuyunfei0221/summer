@@ -11,7 +11,9 @@ import com.blue.basic.constant.auth.RoleType;
 import com.blue.basic.constant.common.*;
 import com.blue.basic.constant.marketing.RewardType;
 import com.blue.basic.constant.media.AttachmentType;
-import com.blue.basic.constant.media.QrCodeGenType;
+import com.blue.basic.constant.media.MessageBusinessType;
+import com.blue.basic.constant.media.MessageType;
+import com.blue.basic.constant.media.QrCodeType;
 import com.blue.basic.constant.member.ChineseZodiac;
 import com.blue.basic.constant.member.Gender;
 import com.blue.basic.constant.member.SourceType;
@@ -84,11 +86,22 @@ public final class ConstantProcessor {
             of(AttachmentType.values()).collect(toMap(t -> t.identity, at -> at));
 
     /**
-     * qr code generator type identity and qr code generator type mapping
+     * message type identity and message type mapping
      */
-    private static final Map<Integer, QrCodeGenType> QR_CODE_GEN_TYPE_MAPPING =
-            of(QrCodeGenType.values()).collect(toMap(t -> t.identity, t -> t));
+    private static final Map<Integer, MessageType> MESSAGE_TYPE_MAPPING =
+            of(MessageType.values()).collect(toMap(t -> t.identity, t -> t));
 
+    /**
+     * message business type identity and message business type mapping
+     */
+    private static final Map<Integer, MessageBusinessType> MESSAGE_BUSINESS_TYPE_MAPPING =
+            of(MessageBusinessType.values()).collect(toMap(t -> t.identity, t -> t));
+
+    /**
+     * qr code type identity and qr code type mapping
+     */
+    private static final Map<Integer, QrCodeType> QR_CODE_TYPE_MAPPING =
+            of(QrCodeType.values()).collect(toMap(t -> t.identity, t -> t));
 
     /**
      * valid resource type identity and type mapping
@@ -303,16 +316,44 @@ public final class ConstantProcessor {
     }
 
     /**
-     * assert qr code generator type
+     * assert message type
      *
      * @param identity
      * @return
      */
-    public static void assertQrCodeGenType(Integer identity, boolean nullable) {
+    public static void assertMessageType(Integer identity, boolean nullable) {
         if (nullable && isNull(identity))
             return;
 
-        if (!QR_CODE_GEN_TYPE_MAPPING.containsKey(identity))
+        if (!MESSAGE_TYPE_MAPPING.containsKey(identity))
+            throw new BlueException(INVALID_IDENTITY);
+    }
+
+    /**
+     * assert message business type
+     *
+     * @param identity
+     * @return
+     */
+    public static void assertMessageBusinessType(Integer identity, boolean nullable) {
+        if (nullable && isNull(identity))
+            return;
+
+        if (!MESSAGE_BUSINESS_TYPE_MAPPING.containsKey(identity))
+            throw new BlueException(INVALID_IDENTITY);
+    }
+
+    /**
+     * assert qr code type
+     *
+     * @param identity
+     * @return
+     */
+    public static void assertQrCodeType(Integer identity, boolean nullable) {
+        if (nullable && isNull(identity))
+            return;
+
+        if (!QR_CODE_TYPE_MAPPING.containsKey(identity))
             throw new BlueException(INVALID_IDENTITY);
     }
 
@@ -691,20 +732,54 @@ public final class ConstantProcessor {
     }
 
     /**
-     * get qr code generator type by identity
+     * get message type by identity
      *
      * @param identity
      * @return
      */
-    public static QrCodeGenType getQrCodeGenTypeByIdentity(Integer identity) {
+    public static MessageType getMessageTypeByIdentity(Integer identity) {
         if (isNull(identity))
             throw new BlueException(INVALID_IDENTITY);
 
-        QrCodeGenType qrCodeGenType = QR_CODE_GEN_TYPE_MAPPING.get(identity);
-        if (isNull(qrCodeGenType))
+        MessageType messageType = MESSAGE_TYPE_MAPPING.get(identity);
+        if (isNull(messageType))
             throw new BlueException(INVALID_IDENTITY);
 
-        return qrCodeGenType;
+        return messageType;
+    }
+
+    /**
+     * get message business type by identity
+     *
+     * @param identity
+     * @return
+     */
+    public static MessageBusinessType getMessageBusinessTypeByIdentity(Integer identity) {
+        if (isNull(identity))
+            throw new BlueException(INVALID_IDENTITY);
+
+        MessageBusinessType messageBusinessType = MESSAGE_BUSINESS_TYPE_MAPPING.get(identity);
+        if (isNull(messageBusinessType))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return messageBusinessType;
+    }
+
+    /**
+     * get qr code type by identity
+     *
+     * @param identity
+     * @return
+     */
+    public static QrCodeType getQrCodeTypeByIdentity(Integer identity) {
+        if (isNull(identity))
+            throw new BlueException(INVALID_IDENTITY);
+
+        QrCodeType qrCodeType = QR_CODE_TYPE_MAPPING.get(identity);
+        if (isNull(qrCodeType))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return qrCodeType;
     }
 
     /**

@@ -1,6 +1,6 @@
 package com.blue.media.component.qr.inter;
 
-import com.blue.basic.constant.media.QrCodeGenType;
+import com.blue.basic.constant.media.QrCodeType;
 import com.blue.basic.model.common.Access;
 import com.blue.media.api.model.QrCodeConfigInfo;
 import com.blue.media.model.QrCodeGenerateParam;
@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
  * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
-public interface QrCodeGenHandler {
+public interface QrCodeGenerateHandler {
 
     /**
      * generate
@@ -28,10 +28,10 @@ public interface QrCodeGenHandler {
     Mono<ServerResponse> generateCode(QrCodeGenerateParam qrCodeGenerateParam, QrCodeConfigInfo qrCodeConfigInfo, Access access, ServerRequest serverRequest);
 
     /**
-     * target qr code gen type to process
+     * target qr code type to process
      *
      * @return
      */
-    QrCodeGenType targetType();
+    QrCodeType targetType();
 
 }

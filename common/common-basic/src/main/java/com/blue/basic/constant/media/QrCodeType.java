@@ -2,11 +2,11 @@ package com.blue.basic.constant.media;
 
 
 /**
- * qr code generator type
+ * qr code type
  *
  * @author liuyunfei
  */
-public enum QrCodeGenType {
+public enum QrCodeType {
 
     /**
      * user info
@@ -17,7 +17,7 @@ public enum QrCodeGenType {
 
     public final String disc;
 
-    QrCodeGenType(int identity, String disc) {
+    QrCodeType(int identity, String disc) {
         this.identity = identity;
         this.disc = disc;
     }

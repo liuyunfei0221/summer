@@ -1,6 +1,7 @@
 package com.blue.media.model;
 
 import com.blue.auth.api.model.RoleInfo;
+import com.blue.basic.constant.media.QrCodeType;
 
 import java.io.Serializable;
 import java.util.List;
@@ -22,14 +23,9 @@ public final class QrCodeConfigManagerInfo implements Serializable {
     private String description;
 
     /**
-     * unique qr code type
+     * @see QrCodeType
      */
     private Integer type;
-
-    /**
-     * @see com.blue.basic.constant.media.QrCodeGenType
-     */
-    private Integer genHandlerType;
 
     private String domain;
 
@@ -41,8 +37,6 @@ public final class QrCodeConfigManagerInfo implements Serializable {
      * allowed role ids
      */
     private List<RoleInfo> allowedRoles;
-
-    private Integer status;
 
     private Long createTime;
 
@@ -59,19 +53,17 @@ public final class QrCodeConfigManagerInfo implements Serializable {
     public QrCodeConfigManagerInfo() {
     }
 
-    public QrCodeConfigManagerInfo(Long id, String name, String description, Integer type, Integer genHandlerType, String domain, String pathToBeFilled,
-                                   Integer placeholderCount, List<RoleInfo> allowedRoles, Integer status, Long createTime, Long updateTime,
+    public QrCodeConfigManagerInfo(Long id, String name, String description, Integer type, String domain, String pathToBeFilled,
+                                   Integer placeholderCount, List<RoleInfo> allowedRoles, Long createTime, Long updateTime,
                                    Long creator, String creatorName, Long updater, String updaterName) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.type = type;
-        this.genHandlerType = genHandlerType;
         this.domain = domain;
         this.pathToBeFilled = pathToBeFilled;
         this.placeholderCount = placeholderCount;
         this.allowedRoles = allowedRoles;
-        this.status = status;
         this.createTime = createTime;
         this.updateTime = updateTime;
         this.creator = creator;
@@ -112,14 +104,6 @@ public final class QrCodeConfigManagerInfo implements Serializable {
         this.type = type;
     }
 
-    public Integer getGenHandlerType() {
-        return genHandlerType;
-    }
-
-    public void setGenHandlerType(Integer genHandlerType) {
-        this.genHandlerType = genHandlerType;
-    }
-
     public String getDomain() {
         return domain;
     }
@@ -150,14 +134,6 @@ public final class QrCodeConfigManagerInfo implements Serializable {
 
     public void setAllowedRoles(List<RoleInfo> allowedRoles) {
         this.allowedRoles = allowedRoles;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
     }
 
     public Long getCreateTime() {
@@ -215,12 +191,10 @@ public final class QrCodeConfigManagerInfo implements Serializable {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", type=" + type +
-                ", genHandlerType=" + genHandlerType +
                 ", domain='" + domain + '\'' +
                 ", pathToBeFilled='" + pathToBeFilled + '\'' +
                 ", placeholderCount=" + placeholderCount +
                 ", allowedRoles=" + allowedRoles +
-                ", status=" + status +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", creator=" + creator +

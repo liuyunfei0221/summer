@@ -6,6 +6,7 @@ import com.blue.basic.model.common.PageModelResponse;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.media.api.model.QrCodeConfigInfo;
+import com.blue.media.config.deploy.QrCodeDeploy;
 import com.blue.media.constant.QrCodeConfigSortAttribute;
 import com.blue.media.model.QrCodeCondition;
 import com.blue.media.model.QrCodeConfigInsertParam;
@@ -17,16 +18,20 @@ import com.blue.media.repository.entity.QrCodeConfig;
 import com.blue.media.repository.template.QrCodeConfigRepository;
 import com.blue.media.service.inter.QrCodeConfigService;
 import com.blue.member.api.model.MemberBasicInfo;
+import com.blue.redisson.component.SynchronizedProcessor;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 import reactor.util.Loggers;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -34,9 +39,11 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.common.base.CommonFunctions.GSON;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
+import static com.blue.basic.constant.common.CacheKeyPrefix.QR_CONF_PRE;
 import static com.blue.basic.constant.common.ResponseElement.*;
-import static com.blue.basic.constant.common.Status.VALID;
+import static com.blue.basic.constant.common.SyncKey.QR_CODE_CONFIG_UPDATE_SYNC;
 import static com.blue.media.constant.QrCodeConfigColumnName.*;
 import static com.blue.media.converter.MediaModelConverters.QR_CODE_CONFIG_2_QR_CODE_CONFIG_INFO_CONVERTER;
 import static com.blue.media.converter.MediaModelConverters.qrCodeConfigToQrCodeConfigManagerInfo;
@@ -68,7 +75,11 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
 
     private final RpcRoleServiceConsumer rpcRoleServiceConsumer;
 
+    private ReactiveStringRedisTemplate reactiveStringRedisTemplate;
+
     private BlueIdentityProcessor blueIdentityProcessor;
+
+    private final SynchronizedProcessor synchronizedProcessor;
 
     private QrCodeConfigRepository qrCodeConfigRepository;
 
@@ -76,15 +87,62 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
 
     private Scheduler scheduler;
 
-    public QrCodeConfigServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, RpcRoleServiceConsumer rpcRoleServiceConsumer, BlueIdentityProcessor blueIdentityProcessor,
-                                   QrCodeConfigRepository qrCodeConfigRepository, ReactiveMongoTemplate reactiveMongoTemplate, Scheduler scheduler) {
+    public QrCodeConfigServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, RpcRoleServiceConsumer rpcRoleServiceConsumer, ReactiveStringRedisTemplate reactiveStringRedisTemplate, BlueIdentityProcessor blueIdentityProcessor,
+                                   SynchronizedProcessor synchronizedProcessor, QrCodeConfigRepository qrCodeConfigRepository, ReactiveMongoTemplate reactiveMongoTemplate, Scheduler scheduler, QrCodeDeploy qrCodeDeploy) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.rpcRoleServiceConsumer = rpcRoleServiceConsumer;
+        this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
         this.blueIdentityProcessor = blueIdentityProcessor;
+        this.synchronizedProcessor = synchronizedProcessor;
         this.qrCodeConfigRepository = qrCodeConfigRepository;
         this.reactiveMongoTemplate = reactiveMongoTemplate;
         this.scheduler = scheduler;
+
+        Long cacheExpiresSecond = qrCodeDeploy.getCacheExpiresSecond();
+        if (isNull(cacheExpiresSecond) || cacheExpiresSecond < 1L)
+            throw new RuntimeException("cacheExpiresSecond can't be null or less than 1");
+
+        this.expireDuration = Duration.of(cacheExpiresSecond, ChronoUnit.SECONDS);
     }
+
+    private Duration expireDuration;
+
+    private static final Function<Integer, String> CONFIG_CACHE_KEY_GENERATOR = type -> QR_CONF_PRE.prefix + type;
+
+    private final Consumer<Integer> REDIS_CACHE_DELETER = type ->
+            reactiveStringRedisTemplate.delete(CONFIG_CACHE_KEY_GENERATOR.apply(type))
+                    .subscribe(size -> LOGGER.info("REDIS_CACHE_DELETER, type = {}, size = {}", type, size));
+
+    private final Function<Integer, Mono<QrCodeConfigInfo>> QR_CODE_CONFIG_DB_GETTER = type -> {
+        if (isNull(type))
+            throw new BlueException(EMPTY_PARAM);
+
+        QrCodeConfig probe = new QrCodeConfig();
+        probe.setType(type);
+
+        return qrCodeConfigRepository.findOne(Example.of(probe)).publishOn(scheduler)
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
+                .map(QR_CODE_CONFIG_2_QR_CODE_CONFIG_INFO_CONVERTER);
+    };
+
+    private final Function<Integer, Mono<QrCodeConfigInfo>> QR_CODE_CONFIG_WITH_REDIS_CACHE_GETTER = type -> {
+        if (isNull(type))
+            throw new BlueException(EMPTY_PARAM);
+
+        String key = CONFIG_CACHE_KEY_GENERATOR.apply(type);
+
+        return reactiveStringRedisTemplate.opsForValue().get(key)
+                .map(s -> GSON.fromJson(s, QrCodeConfigInfo.class))
+                .switchIfEmpty(defer(() ->
+                        QR_CODE_CONFIG_DB_GETTER.apply(type)
+                                .flatMap(qrCodeConfigInfo ->
+                                        reactiveStringRedisTemplate.opsForValue().set(key, GSON.toJson(qrCodeConfigInfo), expireDuration)
+                                                .flatMap(success -> {
+                                                    LOGGER.info("reactiveStringRedisTemplate.opsForValue().set(key, GSON.toJson(qrCodeConfigInfo), expireDuration), success = {}", success);
+                                                    return just(qrCodeConfigInfo);
+                                                }))
+                ));
+    };
 
     private final Consumer<QrCodeConfigInsertParam> INSERT_ITEM_VALIDATOR = p -> {
         if (isNull(p))
@@ -92,9 +150,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
         p.asserts();
 
         QrCodeConfig probe = new QrCodeConfig();
-
         probe.setType(p.getType());
-        probe.setName(p.getName());
 
         if (ofNullable(qrCodeConfigRepository.count(Example.of(probe)).publishOn(scheduler).toFuture().join()).orElse(0L) > 0L)
             throw new BlueException(DATA_ALREADY_EXIST);
@@ -113,13 +169,11 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
         qrCodeConfig.setName(p.getName());
         qrCodeConfig.setDescription(p.getDescription());
         qrCodeConfig.setType(p.getType());
-        qrCodeConfig.setGenHandlerType(p.getGenHandlerType());
         qrCodeConfig.setDomain(p.getDomain());
         qrCodeConfig.setPathToBeFilled(p.getPathToBeFilled());
         qrCodeConfig.setPlaceholderCount(p.getPlaceholderCount());
         qrCodeConfig.setAllowedRoles(p.getAllowedRoles());
 
-        qrCodeConfig.setStatus(VALID.status);
         Long stamp = TIME_STAMP_GETTER.get();
         qrCodeConfig.setCreateTime(stamp);
         qrCodeConfig.setUpdateTime(stamp);
@@ -171,9 +225,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
 
         ofNullable(c.getId()).ifPresent(probe::setId);
         ofNullable(c.getType()).ifPresent(probe::setType);
-        ofNullable(c.getGenHandlerType()).ifPresent(probe::setGenHandlerType);
         ofNullable(c.getPlaceholderCount()).ifPresent(probe::setPlaceholderCount);
-        ofNullable(c.getStatus()).ifPresent(probe::setStatus);
         ofNullable(c.getCreator()).ifPresent(probe::setCreator);
         ofNullable(c.getUpdater()).ifPresent(probe::setUpdater);
 
@@ -240,12 +292,6 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
             alteration = true;
         }
 
-        Integer genHandlerType = param.getGenHandlerType();
-        if (isNotNull(genHandlerType) && !genHandlerType.equals(qrCodeConfig.getGenHandlerType())) {
-            qrCodeConfig.setGenHandlerType(genHandlerType);
-            alteration = true;
-        }
-
         String domain = param.getDomain();
         if (isNotBlank(domain) && !domain.equals(qrCodeConfig.getDomain())) {
             qrCodeConfig.setDomain(domain);
@@ -290,12 +336,14 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
         LOGGER.info("Mono<QrCodeConfigInfo> insertQrCodeConfig(QrCodeConfigInsertParam qrCodeConfigInsertParam, Long operatorId), qrCodeConfigInsertParam = {}, operatorId = {}",
                 qrCodeConfigInsertParam, operatorId);
 
-        INSERT_ITEM_VALIDATOR.accept(qrCodeConfigInsertParam);
-        QrCodeConfig qrCodeConfig = CONFIG_INSERT_PARAM_2_CONFIG_CONVERTER.apply(qrCodeConfigInsertParam, operatorId);
+        return synchronizedProcessor.handleSupWithLock(QR_CODE_CONFIG_UPDATE_SYNC.key, () -> {
+            INSERT_ITEM_VALIDATOR.accept(qrCodeConfigInsertParam);
+            QrCodeConfig qrCodeConfig = CONFIG_INSERT_PARAM_2_CONFIG_CONVERTER.apply(qrCodeConfigInsertParam, operatorId);
 
-        return qrCodeConfigRepository.insert(qrCodeConfig)
-                .publishOn(scheduler)
-                .map(QR_CODE_CONFIG_2_QR_CODE_CONFIG_INFO_CONVERTER);
+            return qrCodeConfigRepository.insert(qrCodeConfig)
+                    .publishOn(scheduler)
+                    .map(QR_CODE_CONFIG_2_QR_CODE_CONFIG_INFO_CONVERTER);
+        });
     }
 
     /**
@@ -310,16 +358,26 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
         LOGGER.info("Mono<QrCodeConfigInfo> updateQrCodeConfig(QrCodeConfigUpdateParam qrCodeConfigUpdateParam, Long operatorId), qrCodeConfigUpdateParam = {}, operatorId = {]",
                 qrCodeConfigUpdateParam, operatorId);
 
-        QrCodeConfig qrCodeConfig = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(qrCodeConfigUpdateParam);
-        if (!validateAndPackageConfigForUpdate(qrCodeConfigUpdateParam, qrCodeConfig, operatorId))
-            throw new BlueException(DATA_HAS_NOT_CHANGED);
+        return synchronizedProcessor.handleSupWithLock(QR_CODE_CONFIG_UPDATE_SYNC.key, () -> {
+            QrCodeConfig qrCodeConfig = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(qrCodeConfigUpdateParam);
+            if (!validateAndPackageConfigForUpdate(qrCodeConfigUpdateParam, qrCodeConfig, operatorId))
+                throw new BlueException(DATA_HAS_NOT_CHANGED);
 
-        qrCodeConfig.setUpdater(operatorId);
-        qrCodeConfig.setUpdateTime(TIME_STAMP_GETTER.get());
+            qrCodeConfig.setUpdater(operatorId);
+            qrCodeConfig.setUpdateTime(TIME_STAMP_GETTER.get());
 
-        return qrCodeConfigRepository.save(qrCodeConfig)
-                .publishOn(scheduler)
-                .map(QR_CODE_CONFIG_2_QR_CODE_CONFIG_INFO_CONVERTER);
+            return qrCodeConfigRepository.save(qrCodeConfig)
+                    .publishOn(scheduler)
+                    .doOnSuccess(config -> {
+                        Integer tarType = config.getType();
+                        REDIS_CACHE_DELETER.accept(tarType);
+
+                        Integer originalType = qrCodeConfig.getType();
+                        if (!originalType.equals(tarType))
+                            REDIS_CACHE_DELETER.accept(originalType);
+                    })
+                    .map(QR_CODE_CONFIG_2_QR_CODE_CONFIG_INFO_CONVERTER);
+        });
     }
 
     /**
@@ -334,24 +392,14 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return qrCodeConfigRepository.findById(id)
-                .publishOn(scheduler)
-                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
-                .flatMap(config -> qrCodeConfigRepository.delete(config).then(just(config)))
-                .map(QR_CODE_CONFIG_2_QR_CODE_CONFIG_INFO_CONVERTER);
-    }
-
-    /**
-     * get config by id
-     *
-     * @param id
-     * @return
-     */
-    @Override
-    public Optional<QrCodeConfig> getQrCodeConfig(Long id) {
-        LOGGER.info("Optional<QrCodeConfig> getQrCodeConfig(Long id), id = {}", id);
-
-        return ofNullable(qrCodeConfigRepository.findById(id).publishOn(scheduler).toFuture().join());
+        return synchronizedProcessor.handleSupWithLock(QR_CODE_CONFIG_UPDATE_SYNC.key, () ->
+                qrCodeConfigRepository.findById(id)
+                        .publishOn(scheduler)
+                        .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
+                        .flatMap(config -> qrCodeConfigRepository.delete(config).then(just(config)))
+                        .doOnSuccess(config -> REDIS_CACHE_DELETER.accept(config.getType()))
+                        .map(QR_CODE_CONFIG_2_QR_CODE_CONFIG_INFO_CONVERTER)
+        );
     }
 
     /**
@@ -380,22 +428,6 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
     }
 
     /**
-     * get config by type
-     *
-     * @param type
-     * @return
-     */
-    @Override
-    public Optional<QrCodeConfigInfo> getQrCodeConfigInfoByType(Integer type) {
-        LOGGER.info("Optional<QrCodeConfigInfo> getQrCodeConfigInfoByType(Integer type), type = {}", type);
-
-        QrCodeConfig probe = new QrCodeConfig();
-        probe.setType(ofNullable(type).orElseThrow(() -> new BlueException(BAD_REQUEST)));
-
-        return ofNullable(qrCodeConfigRepository.findOne(Example.of(probe)).publishOn(scheduler).toFuture().join()).map(QR_CODE_CONFIG_2_QR_CODE_CONFIG_INFO_CONVERTER);
-    }
-
-    /**
      * get config mono by type
      *
      * @param type
@@ -404,14 +436,10 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
     @Override
     public Mono<QrCodeConfigInfo> getQrCodeConfigInfoMonoByType(Integer type) {
         LOGGER.info("Mono<QrCodeConfig> getQrCodeConfigMonoByType(Integer type), type = {}", type);
+        if (isNull(type))
+            throw new BlueException(EMPTY_PARAM);
 
-        QrCodeConfig probe = new QrCodeConfig();
-        probe.setType(ofNullable(type).orElseThrow(() -> new BlueException(BAD_REQUEST)));
-
-        return qrCodeConfigRepository.findOne(Example.of(probe))
-                .publishOn(scheduler)
-                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
-                .map(QR_CODE_CONFIG_2_QR_CODE_CONFIG_INFO_CONVERTER);
+        return QR_CODE_CONFIG_WITH_REDIS_CACHE_GETTER.apply(type);
     }
 
     /**

@@ -15,7 +15,6 @@ import com.blue.basic.model.common.ScrollModelRequest;
 import com.blue.basic.model.common.ScrollModelResponse;
 import com.blue.basic.model.event.IdentityEvent;
 import com.blue.basic.model.exps.BlueException;
-import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.blue.es.model.PitCursor;
 import com.blue.es.model.QueryAndHighlightColumns;
 import com.blue.identity.component.BlueIdentityProcessor;
@@ -28,21 +27,18 @@ import com.blue.shine.event.producer.ShineUpdateProducer;
 import com.blue.shine.model.ShineCondition;
 import com.blue.shine.model.ShineInsertParam;
 import com.blue.shine.model.ShineUpdateParam;
-import com.blue.shine.remote.consumer.RpcCityServiceConsumer;
 import com.blue.shine.repository.entity.Shine;
 import com.blue.shine.repository.template.ShineRepository;
+import com.blue.shine.service.inter.CityService;
 import com.blue.shine.service.inter.ShineService;
-import com.github.benmanes.caffeine.cache.Cache;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
-import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -55,8 +51,6 @@ import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
 import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
-import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
-import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
 import static com.blue.es.common.EsPitProcessor.packagePit;
 import static com.blue.es.common.EsPitProcessor.parsePit;
 import static com.blue.es.common.EsPitSearchAfterProcessor.packagePitSearchAfter;
@@ -69,7 +63,6 @@ import static com.blue.es.common.HighlightProcessor.parseHighlight;
 import static com.blue.shine.constant.ShineColumnName.*;
 import static com.blue.shine.constant.ShineTableName.SHINE;
 import static com.blue.shine.converter.ShineModelConverters.SHINE_2_SHINE_INFO;
-import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
@@ -97,7 +90,7 @@ public class ShineServiceImpl implements ShineService {
 
     private final ElasticsearchAsyncClient elasticsearchAsyncClient;
 
-    private RpcCityServiceConsumer rpcCityServiceConsumer;
+    private CityService cityService;
 
     private final ShineInsertProducer shineInsertProducer;
 
@@ -108,13 +101,13 @@ public class ShineServiceImpl implements ShineService {
     private final ShineRepository shineRepository;
 
     public ShineServiceImpl(BlueIdentityProcessor blueIdentityProcessor, Scheduler scheduler, ElasticsearchAsyncClient elasticsearchAsyncClient,
-                            RpcCityServiceConsumer rpcCityServiceConsumer, ShineRepository shineRepository, ShineInsertProducer shineInsertProducer, ShineUpdateProducer shineUpdateProducer,
-                            ShineDeleteProducer shineDeleteProducer, ExecutorService executorService, PitDeploy pitDeploy, FuzzinessDeploy fuzzinessDeploy, HighlightDeploy highlightDeploy,
-                            DefaultPriorityDeploy defaultPriorityDeploy, CaffeineDeploy caffeineDeploy) {
+                            CityService cityService, ShineRepository shineRepository, ShineInsertProducer shineInsertProducer, ShineUpdateProducer shineUpdateProducer,
+                            ShineDeleteProducer shineDeleteProducer, PitDeploy pitDeploy, FuzzinessDeploy fuzzinessDeploy, HighlightDeploy highlightDeploy,
+                            DefaultPriorityDeploy defaultPriorityDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.scheduler = scheduler;
         this.elasticsearchAsyncClient = elasticsearchAsyncClient;
-        this.rpcCityServiceConsumer = rpcCityServiceConsumer;
+        this.cityService = cityService;
         this.shineRepository = shineRepository;
         this.shineInsertProducer = shineInsertProducer;
         this.shineUpdateProducer = shineUpdateProducer;
@@ -126,9 +119,6 @@ public class ShineServiceImpl implements ShineService {
         this.postTags = ofNullable(highlightDeploy.getPostTags()).orElseGet(() -> singletonList(EMPTY_DATA.value));
 
         this.defaultPriority = defaultPriorityDeploy.getPriority();
-        this.idRegionCache = generateCache(new CaffeineConfParams(
-                caffeineDeploy.getCityMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
-                AFTER_ACCESS, executorService));
     }
 
     private final Time PIT_TIME;
@@ -143,29 +133,11 @@ public class ShineServiceImpl implements ShineService {
 
     private static final String INDEX_NAME = SHINE.name;
 
-    private Cache<Long, CityRegion> idRegionCache;
-
-    private final Function<Long, CityRegion> CITY_REGION_REMOTE_GETTER = id -> {
-        if (isValidIdentity(id))
-            return ofNullable(rpcCityServiceConsumer.getCityRegionById(id)
-                    .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
-                    .toFuture().join()).orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
-
-        throw new BlueException(INVALID_IDENTITY);
-    };
-
-    private final Function<Long, CityRegion> CITY_REGION_GETTER = id -> {
-        if (isValidIdentity(id))
-            return idRegionCache.get(id, CITY_REGION_REMOTE_GETTER);
-
-        throw new BlueException(INVALID_IDENTITY);
-    };
-
     private final BiConsumer<Shine, Long> SHINE_CITY_PACKAGER = (shine, cid) -> {
         if (isNull(shine) || isInvalidIdentity(cid))
             return;
 
-        CityRegion cityRegion = CITY_REGION_GETTER.apply(cid);
+        CityRegion cityRegion = cityService.getCityRegionById(cid);
 
         ofNullable(cityRegion.getCountry())
                 .ifPresent(countryInfo -> {

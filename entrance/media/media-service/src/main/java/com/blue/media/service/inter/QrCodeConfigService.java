@@ -12,7 +12,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * qr code config service
@@ -49,14 +48,6 @@ public interface QrCodeConfigService {
     Mono<QrCodeConfigInfo> deleteQrCodeConfig(Long id);
 
     /**
-     * get config by id
-     *
-     * @param id
-     * @return
-     */
-    Optional<QrCodeConfig> getQrCodeConfig(Long id);
-
-    /**
      * get config mono by id
      *
      * @param id
@@ -70,14 +61,6 @@ public interface QrCodeConfigService {
      * @return
      */
     Mono<List<QrCodeConfig>> selectQrCodeConfig();
-
-    /**
-     * get config by type
-     *
-     * @param type
-     * @return
-     */
-    Optional<QrCodeConfigInfo> getQrCodeConfigInfoByType(Integer type);
 
     /**
      * get config mono by type

@@ -1,13 +1,12 @@
 package com.blue.media.component.qr.impl;
 
-import com.blue.basic.common.base.BlueRandomGenerator;
 import com.blue.basic.constant.common.RandomType;
-import com.blue.basic.constant.media.QrCodeGenType;
+import com.blue.basic.constant.media.QrCodeType;
 import com.blue.basic.model.common.Access;
 import com.blue.basic.model.common.BlueResponse;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.media.api.model.QrCodeConfigInfo;
-import com.blue.media.component.qr.inter.QrCodeGenHandler;
+import com.blue.media.component.qr.inter.QrCodeGenerateHandler;
 import com.blue.media.model.QrCodeGenerateParam;
 import com.blue.media.service.inter.ByteOperateService;
 import com.blue.qr.component.QrCoder;
@@ -19,12 +18,13 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.BlueRandomGenerator.generate;
 import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.basic.constant.common.Symbol.*;
 import static com.blue.basic.constant.media.AttachmentType.QR_CODE;
-import static com.blue.basic.constant.media.QrCodeGenType.USER_INFO;
+import static com.blue.basic.constant.media.QrCodeType.USER_INFO;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
@@ -35,7 +35,7 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
  * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "unused"})
-public class MemberInfoQrCodeGenHandler implements QrCodeGenHandler {
+public class MemberInfoQrCodeGenHandler implements QrCodeGenerateHandler {
 
     private final ByteOperateService byteOperateService;
 
@@ -71,7 +71,7 @@ public class MemberInfoQrCodeGenHandler implements QrCodeGenHandler {
 
         String content = domain + SLASH.identity + path;
         String descName = "E:\\tempFile\\disc\\qr\\" + memberId + "\\"
-                + memberId + HYPHEN.identity + BlueRandomGenerator.generate(RandomType.ALPHABETIC, 6)
+                + memberId + HYPHEN.identity + generate(RandomType.ALPHABETIC, 6)
                 + PERIOD.identity + qrCoder.getFileType();
 
         return byteOperateService.upload(qrCoder.generateCodeWithoutLogo(content), QR_CODE.identity, memberId, EMPTY_DATA.value, descName)
@@ -86,7 +86,7 @@ public class MemberInfoQrCodeGenHandler implements QrCodeGenHandler {
      * @return
      */
     @Override
-    public QrCodeGenType targetType() {
+    public QrCodeType targetType() {
         return USER_INFO;
     }
 

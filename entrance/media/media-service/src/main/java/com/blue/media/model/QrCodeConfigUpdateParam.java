@@ -52,7 +52,6 @@ public final class QrCodeConfigUpdateParam extends QrCodeConfigInsertParam {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", type=" + type +
-                ", genHandlerType=" + genHandlerType +
                 ", domain='" + domain + '\'' +
                 ", pathToBeFilled='" + pathToBeFilled + '\'' +
                 ", placeholderCount=" + placeholderCount +

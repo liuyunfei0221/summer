@@ -144,7 +144,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     private final Function<List<Long>, List<MemberBasic>> MEMBER_BASICS_DB_GETTER = ids ->
             isNotEmpty(ids) ? memberBasicMapper.selectByIds(ids) : emptyList();
 
-    private final BiConsumer<List<MemberBasic>, Map<Long, String>> MEMBERS_BASIC_REDIS_SETTER = (memberBasics, idAndCacheKeyMapping) -> {
+    private final BiConsumer<List<MemberBasic>, Map<Long, String>> MEMBER_BASICS_REDIS_SETTER = (memberBasics, idAndCacheKeyMapping) -> {
         if (isEmpty(memberBasics) || isEmpty(idAndCacheKeyMapping))
             return;
 
@@ -190,7 +190,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
             return result;
 
         List<MemberBasic> missCacheMemberBasics = MEMBER_BASICS_DB_GETTER.apply(new ArrayList<>(idAndCacheKeyMapping.keySet()));
-        executorService.execute(() -> MEMBERS_BASIC_REDIS_SETTER.accept(missCacheMemberBasics, idAndCacheKeyMapping));
+        executorService.execute(() -> MEMBER_BASICS_REDIS_SETTER.accept(missCacheMemberBasics, idAndCacheKeyMapping));
         result.addAll(missCacheMemberBasics);
 
         return result;

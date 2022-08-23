@@ -146,7 +146,7 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
 
         return ofNullable(verifyHandlers.get(verifyType.identity))
                 .map(h -> h.validate(verifyBusinessType, key, verify, repeatable))
-                .orElseThrow(() -> new BlueException(INVALID_PARAM));
+                .orElseThrow(() -> new BlueException(INVALID_IDENTITY));
     }
 
 }

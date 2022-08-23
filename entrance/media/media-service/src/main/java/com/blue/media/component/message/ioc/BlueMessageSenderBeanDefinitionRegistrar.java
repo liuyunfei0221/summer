@@ -1,7 +1,7 @@
-package com.blue.media.component.qr.ioc;
+package com.blue.media.component.message.ioc;
 
 import com.blue.basic.component.common.BlueBeanDefinitionScanner;
-import com.blue.media.component.qr.inter.QrCodeGenerateHandler;
+import com.blue.media.component.message.inter.MessageSender;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.Configuration;
@@ -16,14 +16,14 @@ import org.springframework.lang.NonNull;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
 /**
- * qr code generate handler registrar
+ * message sender registrar
  *
  * @author liuyunfei
  */
-@Import(BlueQrCodeGenHandlerBeanDefinitionRegistrar.class)
+@Import(BlueMessageSenderBeanDefinitionRegistrar.class)
 @Configuration
 @Order(HIGHEST_PRECEDENCE)
-public class BlueQrCodeGenHandlerBeanDefinitionRegistrar implements ResourceLoaderAware, ImportBeanDefinitionRegistrar {
+public class BlueMessageSenderBeanDefinitionRegistrar implements ResourceLoaderAware, ImportBeanDefinitionRegistrar {
 
     private ResourceLoader resourceLoader;
 
@@ -32,9 +32,9 @@ public class BlueQrCodeGenHandlerBeanDefinitionRegistrar implements ResourceLoad
         this.resourceLoader = resourceLoader;
     }
 
-    private static final String[] SCAN_PACKAGES = new String[]{"com.blue.media.component.qr.impl"};
+    private static final String[] SCAN_PACKAGES = new String[]{"com.blue.media.component.message.impl"};
     private static final boolean USE_DEFAULT_FILTERS = false;
-    private static final Class<?> TARGET_TYPE = QrCodeGenerateHandler.class;
+    private static final Class<?> TARGET_TYPE = MessageSender.class;
 
     @Override
     public void registerBeanDefinitions(@NonNull AnnotationMetadata importingClassMetadata, @NonNull BeanDefinitionRegistry registry) {

@@ -1,5 +1,6 @@
 package com.blue.media.model;
 
+import com.blue.basic.constant.media.QrCodeType;
 import com.blue.basic.model.common.SortCondition;
 import com.blue.media.constant.QrCodeConfigSortAttribute;
 
@@ -24,22 +25,15 @@ public final class QrCodeCondition extends SortCondition implements Serializable
     private String descriptionLike;
 
     /**
-     * unique qr code type
+     * @see QrCodeType
      */
     private Integer type;
-
-    /**
-     * @see com.blue.basic.constant.media.QrCodeGenType
-     */
-    private Integer genHandlerType;
 
     private String domainLike;
 
     private String pathToBeFilledLike;
 
     private Integer placeholderCount;
-
-    private Integer status;
 
     private Long createTimeBegin;
 
@@ -61,20 +55,18 @@ public final class QrCodeCondition extends SortCondition implements Serializable
         super(sortAttribute, sortType);
     }
 
-    public QrCodeCondition(Long id, String nameLike, String descriptionLike, Integer type, Integer genHandlerType,
-                           String domainLike, String pathToBeFilledLike, Integer placeholderCount, Integer status,
-                           Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, Long creator, Long updater,
+    public QrCodeCondition(Long id, String nameLike, String descriptionLike, Integer type, String domainLike,
+                           String pathToBeFilledLike, Integer placeholderCount, Long createTimeBegin, Long createTimeEnd,
+                           Long updateTimeBegin, Long updateTimeEnd, Long creator, Long updater,
                            String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.id = id;
         this.nameLike = nameLike;
         this.descriptionLike = descriptionLike;
         this.type = type;
-        this.genHandlerType = genHandlerType;
         this.domainLike = domainLike;
         this.pathToBeFilledLike = pathToBeFilledLike;
         this.placeholderCount = placeholderCount;
-        this.status = status;
         this.createTimeBegin = createTimeBegin;
         this.createTimeEnd = createTimeEnd;
         this.updateTimeBegin = updateTimeBegin;
@@ -115,14 +107,6 @@ public final class QrCodeCondition extends SortCondition implements Serializable
         this.type = type;
     }
 
-    public Integer getGenHandlerType() {
-        return genHandlerType;
-    }
-
-    public void setGenHandlerType(Integer genHandlerType) {
-        this.genHandlerType = genHandlerType;
-    }
-
     public String getDomainLike() {
         return domainLike;
     }
@@ -145,14 +129,6 @@ public final class QrCodeCondition extends SortCondition implements Serializable
 
     public void setPlaceholderCount(Integer placeholderCount) {
         this.placeholderCount = placeholderCount;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
     }
 
     public Long getCreateTimeBegin() {
@@ -210,11 +186,9 @@ public final class QrCodeCondition extends SortCondition implements Serializable
                 ", nameLike='" + nameLike + '\'' +
                 ", descriptionLike='" + descriptionLike + '\'' +
                 ", type=" + type +
-                ", genHandlerType=" + genHandlerType +
                 ", domainLike='" + domainLike + '\'' +
                 ", pathToBeFilledLike='" + pathToBeFilledLike + '\'' +
                 ", placeholderCount=" + placeholderCount +
-                ", status=" + status +
                 ", createTimeBegin=" + createTimeBegin +
                 ", createTimeEnd=" + createTimeEnd +
                 ", updateTimeBegin=" + updateTimeBegin +

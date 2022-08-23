@@ -29,6 +29,11 @@ public enum CacheKeyPrefix {
     MEMBER_PRE("MB:"),
 
     /**
+     * qr config type key prefix
+     */
+    QR_CONF_PRE("QC:"),
+
+    /**
      * verify key prefix
      */
     VERIFY_PRE("VF:"),

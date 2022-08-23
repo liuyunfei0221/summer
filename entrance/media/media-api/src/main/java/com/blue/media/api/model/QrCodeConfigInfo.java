@@ -1,6 +1,7 @@
 package com.blue.media.api.model;
 
 
+import com.blue.basic.constant.media.QrCodeType;
 import com.blue.basic.serializer.IdentitiesDeserializer;
 import com.blue.basic.serializer.IdentitiesSerializer;
 import com.blue.basic.serializer.IdentityDeserializer;
@@ -30,14 +31,9 @@ public final class QrCodeConfigInfo implements Serializable {
     private String description;
 
     /**
-     * unique qr code type
+     * @see QrCodeType
      */
     private Integer type;
-
-    /**
-     * @see com.blue.basic.constant.media.QrCodeGenType
-     */
-    private Integer genHandlerType;
 
     private String domain;
 
@@ -52,23 +48,19 @@ public final class QrCodeConfigInfo implements Serializable {
     @JsonDeserialize(using = IdentitiesDeserializer.class)
     private List<Long> allowedRoles;
 
-    private Integer status;
-
     public QrCodeConfigInfo() {
     }
 
-    public QrCodeConfigInfo(Long id, String name, String description, Integer type, Integer genHandlerType, String domain,
-                            String pathToBeFilled, Integer placeholderCount, List<Long> allowedRoles, Integer status) {
+    public QrCodeConfigInfo(Long id, String name, String description, Integer type, String domain,
+                            String pathToBeFilled, Integer placeholderCount, List<Long> allowedRoles) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.type = type;
-        this.genHandlerType = genHandlerType;
         this.domain = domain;
         this.pathToBeFilled = pathToBeFilled;
         this.placeholderCount = placeholderCount;
         this.allowedRoles = allowedRoles;
-        this.status = status;
     }
 
     public Long getId() {
@@ -103,14 +95,6 @@ public final class QrCodeConfigInfo implements Serializable {
         this.type = type;
     }
 
-    public Integer getGenHandlerType() {
-        return genHandlerType;
-    }
-
-    public void setGenHandlerType(Integer genHandlerType) {
-        this.genHandlerType = genHandlerType;
-    }
-
     public String getDomain() {
         return domain;
     }
@@ -143,14 +127,6 @@ public final class QrCodeConfigInfo implements Serializable {
         this.allowedRoles = allowedRoles;
     }
 
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
     @Override
     public String toString() {
         return "QrCodeConfigInfo{" +
@@ -158,12 +134,10 @@ public final class QrCodeConfigInfo implements Serializable {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", type=" + type +
-                ", genHandlerType=" + genHandlerType +
                 ", domain='" + domain + '\'' +
                 ", pathToBeFilled='" + pathToBeFilled + '\'' +
                 ", placeholderCount=" + placeholderCount +
                 ", allowedRoles=" + allowedRoles +
-                ", status=" + status +
                 '}';
     }
 

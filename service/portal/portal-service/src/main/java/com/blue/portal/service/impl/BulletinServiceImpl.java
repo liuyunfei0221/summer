@@ -146,7 +146,6 @@ public class BulletinServiceImpl implements BulletinService {
         return LOCAL_CACHE.get(t, BULLETIN_INFOS_WITH_REDIS_CACHE_GETTER);
     };
 
-
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(BulletinSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
