@@ -5,6 +5,7 @@ import com.blue.basic.model.event.InvalidAuthEvent;
 import com.blue.member.config.blue.BlueProducerConfig;
 import com.blue.pulsar.component.BluePulsarProducer;
 import org.apache.pulsar.client.api.MessageId;
+import org.apache.pulsar.client.api.PulsarClient;
 import reactor.util.Logger;
 
 import java.util.concurrent.CompletableFuture;
@@ -31,9 +32,9 @@ public final class InvalidAuthProducer implements BlueLifecycle {
 
     private final BluePulsarProducer<InvalidAuthEvent> pulsarProducer;
 
-    public InvalidAuthProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
+    public InvalidAuthProducer(PulsarClient pulsarClient, ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
         this.executorService = executorService;
-        this.pulsarProducer = generateProducer(blueProducerConfig.getByKey(INVALID_AUTH.name), InvalidAuthEvent.class);
+        this.pulsarProducer = generateProducer(pulsarClient, blueProducerConfig.getByKey(INVALID_AUTH.name), InvalidAuthEvent.class);
     }
 
     @Override

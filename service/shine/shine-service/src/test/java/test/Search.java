@@ -34,7 +34,6 @@ import java.util.concurrent.CompletableFuture;
 
 import static com.blue.es.api.generator.BlueEsGenerator.generateElasticsearchAsyncClient;
 import static com.blue.es.api.generator.BlueEsGenerator.generateRestClientTransport;
-import static com.blue.es.common.EsPitSearchAfterProcessor.packagePitSearchAfter;
 import static com.blue.es.common.EsSearchAfterProcessor.packageSearchAfter;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
@@ -164,11 +163,11 @@ public class Search {
         Query query = Query.of(b -> b.bool(new BoolQuery.Builder().must(MatchQuery.of(q -> q.field("content").query("内容"))._toQuery()).build()));
         SortOptions sortOptions = SortOptions.of(builder -> builder.field(FieldSort.of(b -> b.field("id").order(SortOrder.Desc))));
 
-        String searchAfter = null;
+        List<String> searchAfter = null;
 
         SearchRequest searchRequest;
         for (int i = 0; i < 10; i++) {
-            String after = searchAfter;
+            List<String> after = searchAfter;
             searchRequest = SearchRequest.of(builder -> {
                 builder
                         .index(INDEX_NAME)
@@ -195,7 +194,7 @@ public class Search {
                 System.err.println("shine id = " + hit.source().getId());
                 System.err.println(hit.source().getTitle());
                 System.err.println(hit.sort());
-                searchAfter = ofNullable(hit.sort()).filter(BlueChecker::isNotEmpty).map(l -> l.get(0)).orElse(null);
+                searchAfter = ofNullable(hit.sort()).filter(BlueChecker::isNotEmpty).orElse(null);
                 System.err.println(searchAfter);
 
                 System.err.println();
@@ -220,7 +219,7 @@ public class Search {
                         .from(0)
                         .size(3);
 
-                packagePitSearchAfter(builder, after);
+                packageSearchAfter(builder, after);
 
                 return builder;
             });

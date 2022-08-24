@@ -11,7 +11,7 @@ import java.util.List;
  * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
-public interface ConsumerConf extends ClientConf {
+public interface ConsumerConf {
 
     List<String> getTopics();
 

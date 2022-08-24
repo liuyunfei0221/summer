@@ -6,9 +6,11 @@ import org.slf4j.Logger;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.annotation.Order;
 
 import static java.util.Objects.isNull;
 import static org.slf4j.LoggerFactory.getLogger;
+import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
 /**
  * zk lock configuration
@@ -18,6 +20,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @SuppressWarnings({"AlibabaRemoveCommentedCode", "JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @ConditionalOnBean(value = {DistributedLockConf.class})
 @AutoConfiguration
+@Order(HIGHEST_PRECEDENCE)
 public class BlueDistributedLockConfiguration {
 
     private static final Logger LOGGER = getLogger(BlueDistributedLockConfiguration.class);

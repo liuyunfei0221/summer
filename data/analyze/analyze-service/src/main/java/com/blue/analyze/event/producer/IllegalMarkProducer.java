@@ -5,6 +5,7 @@ import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.event.IllegalMarkEvent;
 import com.blue.pulsar.component.BluePulsarProducer;
 import org.apache.pulsar.client.api.MessageId;
+import org.apache.pulsar.client.api.PulsarClient;
 import reactor.util.Logger;
 
 import java.util.concurrent.CompletableFuture;
@@ -32,9 +33,9 @@ public final class IllegalMarkProducer implements BlueLifecycle {
 
     private final BluePulsarProducer<IllegalMarkEvent> pulsarProducer;
 
-    public IllegalMarkProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
+    public IllegalMarkProducer(PulsarClient pulsarClient, ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
         this.executorService = executorService;
-        this.pulsarProducer = generateProducer(blueProducerConfig.getByKey(ILLEGAL_MARK.name), IllegalMarkEvent.class);
+        this.pulsarProducer = generateProducer(pulsarClient, blueProducerConfig.getByKey(ILLEGAL_MARK.name), IllegalMarkEvent.class);
     }
 
     @Override

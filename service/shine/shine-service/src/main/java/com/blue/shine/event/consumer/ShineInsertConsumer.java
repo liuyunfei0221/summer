@@ -6,6 +6,7 @@ import com.blue.pulsar.component.BluePulsarListener;
 import com.blue.shine.config.blue.BlueConsumerConfig;
 import com.blue.shine.repository.entity.Shine;
 import com.blue.shine.service.inter.ShineService;
+import org.apache.pulsar.client.api.PulsarClient;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
@@ -32,6 +33,8 @@ public final class ShineInsertConsumer implements BlueLifecycle {
 
     private static final Logger LOGGER = getLogger(ShineInsertConsumer.class);
 
+    private final PulsarClient pulsarClient;
+
     private final BlueConsumerConfig blueConsumerConfig;
 
     private final Scheduler scheduler;
@@ -40,7 +43,8 @@ public final class ShineInsertConsumer implements BlueLifecycle {
 
     private BluePulsarListener<Shine> pulsarListener;
 
-    public ShineInsertConsumer(BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, ShineService shineService) {
+    public ShineInsertConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, ShineService shineService) {
+        this.pulsarClient = pulsarClient;
         this.blueConsumerConfig = blueConsumerConfig;
         this.scheduler = scheduler;
         this.shineService = shineService;
@@ -55,7 +59,7 @@ public final class ShineInsertConsumer implements BlueLifecycle {
                                 .doOnError(throwable -> LOGGER.info("shineService.insertShineEvent(s) failed, s = {}, throwable = {}", s, throwable))
                                 .subscribe(b -> LOGGER.info("shineService.insertShineEvent(s), b = {}, s = {}", b, s)));
 
-        this.pulsarListener = generateListener(blueConsumerConfig.getByKey(SHINE_INSERT.name), dataConsumer);
+        this.pulsarListener = generateListener(pulsarClient, blueConsumerConfig.getByKey(SHINE_INSERT.name), dataConsumer);
     }
 
     @Override

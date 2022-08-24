@@ -69,6 +69,7 @@ public class HighlightProcessor {
             T source;
             Map<String, List<String>> highlight;
             Set<Map.Entry<String, List<String>>> entries;
+            BiConsumer<List<String>, T> processor;
 
             for (Hit<T> hit : hits) {
                 if (isNull(hit))
@@ -80,7 +81,6 @@ public class HighlightProcessor {
                 if (isNotNull(source) && isNotEmpty(highlight)) {
                     entries = highlight.entrySet();
 
-                    BiConsumer<List<String>, T> processor;
                     for (Map.Entry<String, List<String>> entry : entries)
                         if (isNotNull(processor = highlightProcessors.get(entry.getKey())))
                             processor.accept(entry.getValue(), source);

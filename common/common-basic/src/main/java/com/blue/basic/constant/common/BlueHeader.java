@@ -70,11 +70,6 @@ public enum BlueHeader {
     TURING_DATA("Turing-Data"),
 
     /**
-     * content
-     */
-    CONTENT_DISPOSITION(HttpHeaders.CONTENT_DISPOSITION),
-
-    /**
      * REQ EXTRA
      */
     REQUEST_EXTRA("RequestExtra"),

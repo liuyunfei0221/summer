@@ -6,6 +6,7 @@ import com.blue.finance.config.blue.BlueConsumerConfig;
 import com.blue.finance.repository.entity.FinanceFlow;
 import com.blue.finance.service.inter.FinanceFlowService;
 import com.blue.pulsar.component.BluePulsarListener;
+import org.apache.pulsar.client.api.PulsarClient;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
@@ -32,6 +33,8 @@ public final class FinanceFlowConsumer implements BlueLifecycle {
 
     private static final Logger LOGGER = getLogger(FinanceFlowConsumer.class);
 
+    private final PulsarClient pulsarClient;
+
     private final BlueConsumerConfig blueConsumerConfig;
 
     private final Scheduler scheduler;
@@ -40,7 +43,8 @@ public final class FinanceFlowConsumer implements BlueLifecycle {
 
     private BluePulsarListener<FinanceFlow> pulsarListener;
 
-    public FinanceFlowConsumer(BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, FinanceFlowService financeFlowService) {
+    public FinanceFlowConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, FinanceFlowService financeFlowService) {
+        this.pulsarClient = pulsarClient;
         this.blueConsumerConfig = blueConsumerConfig;
         this.scheduler = scheduler;
         this.financeFlowService = financeFlowService;
@@ -55,7 +59,7 @@ public final class FinanceFlowConsumer implements BlueLifecycle {
                                 .doOnError(throwable -> LOGGER.info("financeFlowService.insertFinanceFlow(ff) failed, ff = {}, throwable = {}", ff, throwable))
                                 .subscribe(b -> LOGGER.info("financeFlowService.insertFinanceFlow(ff), b = {}, ff = {}", b, ff)));
 
-        this.pulsarListener = generateListener(blueConsumerConfig.getByKey(FINANCE_FLOW.name), dataConsumer);
+        this.pulsarListener = generateListener(pulsarClient, blueConsumerConfig.getByKey(FINANCE_FLOW.name), dataConsumer);
     }
 
     @Override

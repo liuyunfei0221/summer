@@ -5,8 +5,10 @@ import com.blue.template.component.UriFileTemplateWriter;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.annotation.Order;
 
 import static com.blue.template.api.generator.TemplateWriterGenerator.generateUriFileTemplateWriter;
+import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
 /**
  * package file writer configuration
@@ -15,6 +17,7 @@ import static com.blue.template.api.generator.TemplateWriterGenerator.generateUr
  */
 @ConditionalOnBean(value = {UriFileWriterConf.class})
 @AutoConfiguration
+@Order(HIGHEST_PRECEDENCE)
 public class UriFileWriterConfiguration {
 
     @Bean

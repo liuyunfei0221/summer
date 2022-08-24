@@ -45,9 +45,7 @@ import static com.blue.media.common.MediaCommonFunctions.*;
 import static com.blue.media.config.filter.BlueFilterOrder.BLUE_POST_WITH_DATA_REPORT;
 import static java.lang.String.valueOf;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
-import static org.springframework.http.HttpHeaders.CONTENT_LENGTH;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -128,13 +126,10 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
                 .body(Flux.from(body)).build()
                 .bodyToMono(String.class)
                 .flatMap(responseBody -> {
-                            String tarBody = RESPONSE_BODY_PROCESSOR.apply(responseBody, exchange.getAttributes());
-
                             dataEvent.addData(RESPONSE_BODY.key, responseBody);
                             requestEventReporter.report(dataEvent);
 
-                            response.getHeaders().put(CONTENT_LENGTH, singletonList(valueOf(tarBody.getBytes(UTF_8).length)));
-                            return just(tarBody);
+                            return just(RESPONSE_BODY_PROCESSOR.apply(responseBody, exchange.getAttributes()));
                         }
                 );
     }
@@ -145,19 +140,18 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
         HttpStatus httpStatus = ofNullable(response.getStatusCode()).orElse(OK);
         dataEvent.addData(RESPONSE_STATUS.key, valueOf(httpStatus.value()).intern());
 
+        ofNullable(response.getHeaders().getFirst(BlueHeader.RESPONSE_EXTRA.name))
+                .ifPresent(extra -> dataEvent.addData(RESPONSE_EXTRA.key, extra));
+
         if (ofNullable(exchange.getAttributes().get(EXISTENCE_RESPONSE_BODY.key))
                 .map(b -> (boolean) b).orElse(true)) {
             return new ServerHttpResponseDecorator(response) {
                 @Override
                 public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
-                    ofNullable(response.getHeaders().getFirst(BlueHeader.RESPONSE_EXTRA.name))
-                            .ifPresent(extra -> dataEvent.addData(RESPONSE_EXTRA.key, extra));
-
                     return getResponseBodyAndReport(exchange, response, httpStatus, body, dataEvent).flatMap(data -> {
                         byte[] bytes = data.getBytes(UTF_8);
                         DataBuffer resBuffer = DATA_BUFFER_FACTORY.allocateBuffer(bytes.length);
                         resBuffer.write(bytes);
-                        response.getHeaders().put(CONTENT_LENGTH, singletonList(valueOf(bytes.length)));
 
                         return getDelegate().writeWith(just(resBuffer));
                     });
@@ -170,13 +164,9 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
             };
         }
 
-        ServerHttpResponse decoratorResponse = new ServerHttpResponseDecorator(response);
-        ofNullable(response.getHeaders().getFirst(BlueHeader.RESPONSE_EXTRA.name))
-                .ifPresent(extra -> dataEvent.addData(RESPONSE_EXTRA.key, extra));
-
         requestEventReporter.report(dataEvent);
 
-        return decoratorResponse;
+        return response;
     }
 
     private Mono<Void> reportWithoutRequestBody(ServerWebExchange exchange, WebFilterChain chain, DataEvent dataEvent) {

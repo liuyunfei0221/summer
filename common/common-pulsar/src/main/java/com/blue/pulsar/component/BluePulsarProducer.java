@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-import static com.blue.pulsar.common.PulsarCommonsGenerator.generateClient;
 import static com.blue.pulsar.common.PulsarCommonsGenerator.generateProducer;
 import static java.lang.System.currentTimeMillis;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -28,9 +27,9 @@ public final class BluePulsarProducer<T extends Serializable> implements Produce
 
     private final Producer<T> pulsarProducer;
 
-    public BluePulsarProducer(ProducerConf conf, Class<T> clz, MessageRouter messageRouter,
+    public BluePulsarProducer(PulsarClient pulsarClient, ProducerConf conf, Class<T> clz, MessageRouter messageRouter,
                               BatcherBuilder batcherBuilder, List<ProducerInterceptor> interceptors) {
-        this.pulsarProducer = generateProducer(generateClient(conf), conf, clz, messageRouter, batcherBuilder, interceptors);
+        this.pulsarProducer = generateProducer(pulsarClient, conf, clz, messageRouter, batcherBuilder, interceptors);
     }
 
     @Override

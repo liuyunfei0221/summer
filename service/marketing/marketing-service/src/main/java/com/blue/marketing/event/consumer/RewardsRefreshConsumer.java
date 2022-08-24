@@ -6,6 +6,7 @@ import com.blue.marketing.config.blue.BlueConsumerConfig;
 import com.blue.marketing.service.inter.SignInService;
 import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
 import com.blue.pulsar.component.BluePulsarListener;
+import org.apache.pulsar.client.api.PulsarClient;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
@@ -28,6 +29,8 @@ public final class RewardsRefreshConsumer implements BlueLifecycle {
 
     private static final Logger LOGGER = getLogger(RewardsRefreshConsumer.class);
 
+    private final PulsarClient pulsarClient;
+
     private final BlueConsumerConfig blueConsumerConfig;
 
     private final Scheduler scheduler;
@@ -36,7 +39,8 @@ public final class RewardsRefreshConsumer implements BlueLifecycle {
 
     private BluePulsarListener<EmptyEvent> pulsarListener;
 
-    public RewardsRefreshConsumer(BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, SignInService signInService) {
+    public RewardsRefreshConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, SignInService signInService) {
+        this.pulsarClient = pulsarClient;
         this.blueConsumerConfig = blueConsumerConfig;
         this.scheduler = scheduler;
         this.signInService = signInService;
@@ -51,7 +55,7 @@ public final class RewardsRefreshConsumer implements BlueLifecycle {
                                 .doOnError(throwable -> LOGGER.info("signInService.refreshDayRewards() failed, ee = {}, throwable = {}", ee, throwable))
                                 .subscribe(ig -> LOGGER.info("signInService.refreshDayRewards(), ig = {}, ee = {}", ig, ee)));
 
-        this.pulsarListener = BluePulsarListenerGenerator.generateListener(blueConsumerConfig.getByKey(REWARDS_REFRESH.name), dataConsumer);
+        this.pulsarListener = BluePulsarListenerGenerator.generateListener(pulsarClient, blueConsumerConfig.getByKey(REWARDS_REFRESH.name), dataConsumer);
     }
 
     @Override

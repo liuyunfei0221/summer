@@ -17,6 +17,7 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 @SuppressWarnings("SpringFacetCodeInspection")
 @ConditionalOnWebApplication(type = REACTIVE)
 @AutoConfiguration
+@Order(HIGHEST_PRECEDENCE)
 public class BlueContextConfiguration {
 
     @Bean

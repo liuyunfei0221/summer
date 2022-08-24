@@ -6,6 +6,7 @@ import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.event.DataEvent;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.pulsar.component.BluePulsarListener;
+import org.apache.pulsar.client.api.PulsarClient;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
@@ -31,6 +32,8 @@ public final class DataEventConsumer implements BlueLifecycle {
 
     private static final Logger LOGGER = getLogger(DataEventConsumer.class);
 
+    private final PulsarClient pulsarClient;
+
     private final BlueConsumerConfig blueConsumerConfig;
 
     private final Scheduler scheduler;
@@ -39,7 +42,8 @@ public final class DataEventConsumer implements BlueLifecycle {
 
     private BluePulsarListener<DataEvent> pulsarListener;
 
-    public DataEventConsumer(BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, StatisticsProcessor statisticsProcessor) {
+    public DataEventConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, StatisticsProcessor statisticsProcessor) {
+        this.pulsarClient = pulsarClient;
         this.blueConsumerConfig = blueConsumerConfig;
         this.scheduler = scheduler;
         this.statisticsProcessor = statisticsProcessor;
@@ -54,7 +58,7 @@ public final class DataEventConsumer implements BlueLifecycle {
                                 .doOnError(throwable -> LOGGER.info("statisticsProcessor.process(de) failed, de = {}, throwable = {}", de, throwable))
                                 .subscribe(b -> LOGGER.info("statisticsProcessor.process(de), b = {}, de = {}", b, de)));
 
-        this.pulsarListener = generateListener(blueConsumerConfig.getByKey(REQUEST_EVENT.name), dataConsumer);
+        this.pulsarListener = generateListener(pulsarClient, blueConsumerConfig.getByKey(REQUEST_EVENT.name), dataConsumer);
     }
 
     @Override

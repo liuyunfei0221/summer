@@ -3,8 +3,10 @@ package com.blue.member.service.impl;
 import com.blue.base.api.model.AreaRegion;
 import com.blue.base.api.model.CityRegion;
 import com.blue.basic.common.base.BlueChecker;
+import com.blue.basic.constant.common.SortType;
 import com.blue.basic.model.common.PageModelRequest;
 import com.blue.basic.model.common.PageModelResponse;
+import com.blue.basic.model.common.SortElement;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.member.api.model.AddressInfo;
@@ -52,9 +54,11 @@ import static com.blue.mongo.common.MongoSortProcessor.process;
 import static com.blue.mongo.constant.LikeElement.PREFIX;
 import static com.blue.mongo.constant.LikeElement.SUFFIX;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.data.mongodb.core.query.Criteria.byExample;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -244,8 +248,22 @@ public class AddressServiceImpl implements AddressService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(AddressSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final Function<AddressCondition, Sort> SORTER_CONVERTER = c ->
-            process(c, SORT_ATTRIBUTE_MAPPING, AddressSortAttribute.ID.column);
+    private static final Function<AddressCondition, Sort> SORTER_CONVERTER = c -> {
+        String sortAttribute = ofNullable(c).map(AddressCondition::getSortAttribute)
+                .map(SORT_ATTRIBUTE_MAPPING::get)
+                .filter(BlueChecker::isNotBlank)
+                .orElse(AddressSortAttribute.CREATE_TIME.column);
+
+        String sortType = ofNullable(c).map(AddressCondition::getSortType)
+                .filter(BlueChecker::isNotBlank)
+                .orElse(SortType.DESC.identity);
+
+        return sortAttribute.equals(AddressSortAttribute.ID.column) ?
+                process(singletonList(new SortElement(sortAttribute, sortType)))
+                :
+                process(Stream.of(sortAttribute, AddressSortAttribute.ID.column)
+                        .map(attr -> new SortElement(attr, sortType)).collect(toList()));
+    };
 
     private static final Function<AddressCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();

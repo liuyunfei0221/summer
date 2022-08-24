@@ -1,6 +1,7 @@
 package com.blue.media.service.impl;
 
 import com.blue.basic.common.base.BlueChecker;
+import com.blue.basic.constant.common.SortType;
 import com.blue.basic.model.common.*;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.media.api.model.AttachmentDetailInfo;
@@ -41,6 +42,7 @@ import static com.blue.mongo.constant.LikeElement.PREFIX;
 import static com.blue.mongo.constant.LikeElement.SUFFIX;
 import static com.blue.mongo.constant.SortSchema.DESC;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
@@ -83,8 +85,22 @@ public class AttachmentServiceImpl implements AttachmentService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(AttachmentSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final Function<AttachmentCondition, Sort> SORTER_CONVERTER = c ->
-            process(c, SORT_ATTRIBUTE_MAPPING, AttachmentSortAttribute.CREATE_TIME.column);
+    private static final Function<AttachmentCondition, Sort> SORTER_CONVERTER = c -> {
+        String sortAttribute = ofNullable(c).map(AttachmentCondition::getSortAttribute)
+                .map(SORT_ATTRIBUTE_MAPPING::get)
+                .filter(BlueChecker::isNotBlank)
+                .orElse(AttachmentSortAttribute.CREATE_TIME.column);
+
+        String sortType = ofNullable(c).map(AttachmentCondition::getSortType)
+                .filter(BlueChecker::isNotBlank)
+                .orElse(SortType.DESC.identity);
+
+        return sortAttribute.equals(AttachmentSortAttribute.ID.column) ?
+                process(singletonList(new SortElement(sortAttribute, sortType)))
+                :
+                process(Stream.of(sortAttribute, AttachmentSortAttribute.ID.column)
+                        .map(attr -> new SortElement(attr, sortType)).collect(toList()));
+    };
 
     private static final Function<AttachmentCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();
@@ -249,7 +265,7 @@ public class AttachmentServiceImpl implements AttachmentService {
 
         query.addCriteria(byExample(probe));
         packageSearchAfter(query, DESC.sortType.identity, AttachmentSortAttribute.ID.column, scrollModelRequest.getCursor());
-        query.with(process(DESC.sortType.identity, AttachmentSortAttribute.CREATE_TIME.column));
+        query.with(process(singletonList(new SortElement(AttachmentSortAttribute.CREATE_TIME.column, DESC.sortType.identity))));
 
         query.skip(scrollModelRequest.getFrom()).limit(scrollModelRequest.getRows().intValue());
 

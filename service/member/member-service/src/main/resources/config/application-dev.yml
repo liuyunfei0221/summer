@@ -444,38 +444,41 @@ card:
   max: 8
 
 
+pulsar:
+  services: [ 172.16.204.244:6650 ]
+  enableTls: false
+  tlsTrustCertsFilePath:
+  tlsCertFilePath:
+  tlsKeyFilePath:
+  tlsAllowInsecureConnection:
+  tlsHostnameVerificationEnable:
+  listenerName:
+  operationTimeoutMillis: 30000
+  statsIntervalMillis: 60000
+  ioThreads: 1
+  listenerThreads: 1
+  connectionsPerBroker: 1
+  useTcpNoDelay: true
+  memoryLimitKiloBytes: 512
+  maxConcurrentLookupRequests: 60
+  maxLookupRequest: 50000
+  maxLookupRedirects: 3
+  maxNumberOfRejectedRequestPerConnection: 50
+  keepAliveIntervalMillis: 30000
+  connectionTimeoutMillis: 60000
+  startingBackoffIntervalMillis: 300
+  maxBackoffIntervalMillis: 600
+  enableBusyWait: false
+  clockZoneId: Asia/Shanghai
+  enableTransaction: false
+  enableProxy: false
+  proxyServiceUrl:
+  proxyProtocol: SNI
+
+
 producers:
   configs:
     invalidAuth:
-      services: [ 172.16.204.244:6650 ]
-      enableTls: false
-      tlsTrustCertsFilePath:
-      tlsCertFilePath:
-      tlsKeyFilePath:
-      tlsAllowInsecureConnection:
-      tlsHostnameVerificationEnable:
-      listenerName:
-      operationTimeoutMillis: 30000
-      statsIntervalMillis: 60000
-      ioThreads: 1
-      listenerThreads: 1
-      connectionsPerBroker: 1
-      useTcpNoDelay: true
-      memoryLimitKiloBytes: 512
-      maxConcurrentLookupRequests: 60
-      maxLookupRequest: 50000
-      maxLookupRedirects: 3
-      maxNumberOfRejectedRequestPerConnection: 50
-      keepAliveIntervalMillis: 30000
-      connectionTimeoutMillis: 60000
-      startingBackoffIntervalMillis: 300
-      maxBackoffIntervalMillis: 600
-      enableBusyWait: false
-      clockZoneId: Asia/Shanghai
-      enableTransaction: false
-      enableProxy: false
-      proxyServiceUrl:
-      proxyProtocol: SNI
       topic: invalidAuth
       producerName: invalidAuthProducer000
       accessMode: Shared

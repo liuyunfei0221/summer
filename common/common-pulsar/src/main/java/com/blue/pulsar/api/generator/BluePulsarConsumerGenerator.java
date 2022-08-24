@@ -2,10 +2,7 @@ package com.blue.pulsar.api.generator;
 
 import com.blue.pulsar.api.conf.ConsumerConf;
 import com.blue.pulsar.component.BluePulsarConsumer;
-import org.apache.pulsar.client.api.ConsumerEventListener;
-import org.apache.pulsar.client.api.ConsumerInterceptor;
-import org.apache.pulsar.client.api.KeySharedPolicy;
-import org.apache.pulsar.client.api.MessageListener;
+import org.apache.pulsar.client.api.*;
 
 import java.io.Serializable;
 import java.util.List;
@@ -16,12 +13,13 @@ import java.util.List;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc"})
+@SuppressWarnings({"JavaDoc", "unused"})
 public final class BluePulsarConsumerGenerator {
 
     /**
      * generate consumer
      *
+     * @param pulsarClient
      * @param conf
      * @param consumer
      * @param messageListener
@@ -31,9 +29,9 @@ public final class BluePulsarConsumerGenerator {
      * @param <T>
      * @return
      */
-    public static <T extends Serializable> BluePulsarConsumer<T> generateConsumer(ConsumerConf conf, java.util.function.Consumer<T> consumer, MessageListener<T> messageListener, ConsumerEventListener consumerEventListener,
-                                                                                  List<ConsumerInterceptor<T>> interceptors, KeySharedPolicy keySharedPolicy) {
-        return new BluePulsarConsumer<>(conf, consumer, messageListener, consumerEventListener, interceptors, keySharedPolicy);
+    public static <T extends Serializable> BluePulsarConsumer<T> generateConsumer(PulsarClient pulsarClient, ConsumerConf conf, java.util.function.Consumer<T> consumer, ConsumerEventListener consumerEventListener,
+                                                                                  List<ConsumerInterceptor<T>> interceptors, KeySharedPolicy keySharedPolicy, MessageListener<T> messageListener) {
+        return new BluePulsarConsumer<>(pulsarClient, conf, consumer, consumerEventListener, interceptors, keySharedPolicy, messageListener);
     }
 
 }

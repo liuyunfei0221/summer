@@ -11,7 +11,7 @@ import org.apache.pulsar.client.api.PulsarClient;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc"})
+@SuppressWarnings({"JavaDoc", "unused"})
 public final class BluePulsarCoordinatorGenerator {
 
     /**

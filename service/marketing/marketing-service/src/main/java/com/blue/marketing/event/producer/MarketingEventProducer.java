@@ -5,6 +5,7 @@ import com.blue.marketing.api.model.MarketingEvent;
 import com.blue.marketing.config.blue.BlueProducerConfig;
 import com.blue.pulsar.component.BluePulsarProducer;
 import org.apache.pulsar.client.api.MessageId;
+import org.apache.pulsar.client.api.PulsarClient;
 import reactor.util.Logger;
 
 import java.util.concurrent.CompletableFuture;
@@ -32,9 +33,9 @@ public final class MarketingEventProducer implements BlueLifecycle {
 
     private final BluePulsarProducer<MarketingEvent> pulsarProducer;
 
-    public MarketingEventProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
+    public MarketingEventProducer(PulsarClient pulsarClient, ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
         this.executorService = executorService;
-        this.pulsarProducer = generateProducer(blueProducerConfig.getByKey(MARKETING.name), MarketingEvent.class);
+        this.pulsarProducer = generateProducer(pulsarClient, blueProducerConfig.getByKey(MARKETING.name), MarketingEvent.class);
     }
 
     @Override

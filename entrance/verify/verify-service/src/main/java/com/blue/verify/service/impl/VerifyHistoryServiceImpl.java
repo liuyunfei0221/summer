@@ -1,8 +1,10 @@
 package com.blue.verify.service.impl;
 
 import com.blue.basic.common.base.BlueChecker;
+import com.blue.basic.constant.common.SortType;
 import com.blue.basic.model.common.PageModelRequest;
 import com.blue.basic.model.common.PageModelResponse;
+import com.blue.basic.model.common.SortElement;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.verify.api.model.VerifyHistoryInfo;
 import com.blue.verify.constant.VerifyHistorySortAttribute;
@@ -30,7 +32,9 @@ import static com.blue.mongo.common.MongoSortProcessor.process;
 import static com.blue.verify.constant.BaseColumnName.CREATE_TIME;
 import static com.blue.verify.converter.VerifyModelConverters.VERIFY_HISTORIES_2_VERIFY_HISTORY_INFOS_CONVERTER;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.data.mongodb.core.query.Criteria.byExample;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -64,8 +68,22 @@ public class VerifyHistoryServiceImpl implements VerifyHistoryService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(VerifyHistorySortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final Function<VerifyHistoryCondition, Sort> SORTER_CONVERTER = c ->
-            process(c, SORT_ATTRIBUTE_MAPPING, VerifyHistorySortAttribute.CREATE_TIME.column);
+    private static final Function<VerifyHistoryCondition, Sort> SORTER_CONVERTER = c -> {
+        String sortAttribute = ofNullable(c).map(VerifyHistoryCondition::getSortAttribute)
+                .map(SORT_ATTRIBUTE_MAPPING::get)
+                .filter(BlueChecker::isNotBlank)
+                .orElse(VerifyHistorySortAttribute.CREATE_TIME.column);
+
+        String sortType = ofNullable(c).map(VerifyHistoryCondition::getSortType)
+                .filter(BlueChecker::isNotBlank)
+                .orElse(SortType.DESC.identity);
+
+        return sortAttribute.equals(VerifyHistorySortAttribute.ID.column) ?
+                process(singletonList(new SortElement(sortAttribute, sortType)))
+                :
+                process(Stream.of(sortAttribute, VerifyHistorySortAttribute.ID.column)
+                        .map(attr -> new SortElement(attr, sortType)).collect(toList()));
+    };
 
     private static final Function<VerifyHistoryCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();

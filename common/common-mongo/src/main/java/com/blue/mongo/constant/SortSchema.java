@@ -15,20 +15,20 @@ public enum SortSchema {
     /**
      * DESC
      */
-    DESC(SortType.DESC, attr -> Sort.by(Sort.Order.desc(attr))),
+    DESC(SortType.DESC, Sort.Order::desc),
 
     /**
      * ASC
      */
-    ASC(SortType.ASC, attr -> Sort.by(Sort.Order.asc(attr)));
+    ASC(SortType.ASC, Sort.Order::asc);
 
     public final SortType sortType;
 
-    public final Function<String, Sort> converter;
+    public final Function<String, Sort.Order> sortOrder;
 
-    SortSchema(SortType sortType, Function<String, Sort> converter) {
+    SortSchema(SortType sortType, Function<String, Sort.Order> sortOrder) {
         this.sortType = sortType;
-        this.converter = converter;
+        this.sortOrder = sortOrder;
     }
 
 }

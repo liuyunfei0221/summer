@@ -5,6 +5,7 @@ import com.blue.base.service.inter.RegionControlService;
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.event.EmptyEvent;
 import com.blue.pulsar.component.BluePulsarListener;
+import org.apache.pulsar.client.api.PulsarClient;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
@@ -28,6 +29,8 @@ public final class RegionInfosInvalidConsumer implements BlueLifecycle {
 
     private static final Logger LOGGER = getLogger(RegionInfosInvalidConsumer.class);
 
+    private final PulsarClient pulsarClient;
+
     private final BlueConsumerConfig blueConsumerConfig;
 
     private final Scheduler scheduler;
@@ -36,7 +39,8 @@ public final class RegionInfosInvalidConsumer implements BlueLifecycle {
 
     private BluePulsarListener<EmptyEvent> pulsarListener;
 
-    public RegionInfosInvalidConsumer(BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, RegionControlService regionControlService) {
+    public RegionInfosInvalidConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, RegionControlService regionControlService) {
+        this.pulsarClient = pulsarClient;
         this.blueConsumerConfig = blueConsumerConfig;
         this.scheduler = scheduler;
         this.regionControlService = regionControlService;
@@ -51,7 +55,7 @@ public final class RegionInfosInvalidConsumer implements BlueLifecycle {
                                 .doOnError(throwable -> LOGGER.info("regionControlService.invalidAllCache() failed, ee = {}, throwable = {}", ee, throwable))
                                 .subscribe(ig -> LOGGER.info("regionControlService.invalidAllCache(), ig = {}, ee = {}", ig, ee)));
 
-        this.pulsarListener = generateListener(blueConsumerConfig.getByKey(REGION_INFOS_INVALID.name), dataConsumer);
+        this.pulsarListener = generateListener(pulsarClient, blueConsumerConfig.getByKey(REGION_INFOS_INVALID.name), dataConsumer);
     }
 
     @Override

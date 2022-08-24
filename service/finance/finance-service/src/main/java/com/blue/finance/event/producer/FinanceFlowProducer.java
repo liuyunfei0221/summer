@@ -5,6 +5,7 @@ import com.blue.finance.config.blue.BlueProducerConfig;
 import com.blue.finance.repository.entity.FinanceFlow;
 import com.blue.pulsar.component.BluePulsarProducer;
 import org.apache.pulsar.client.api.MessageId;
+import org.apache.pulsar.client.api.PulsarClient;
 import reactor.util.Logger;
 
 import java.util.concurrent.CompletableFuture;
@@ -31,9 +32,9 @@ public final class FinanceFlowProducer implements BlueLifecycle {
 
     private final BluePulsarProducer<FinanceFlow> pulsarProducer;
 
-    public FinanceFlowProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
+    public FinanceFlowProducer(PulsarClient pulsarClient, ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
         this.executorService = executorService;
-        this.pulsarProducer = generateProducer(blueProducerConfig.getByKey(FINANCE_FLOW.name), FinanceFlow.class);
+        this.pulsarProducer = generateProducer(pulsarClient, blueProducerConfig.getByKey(FINANCE_FLOW.name), FinanceFlow.class);
     }
 
     @Override

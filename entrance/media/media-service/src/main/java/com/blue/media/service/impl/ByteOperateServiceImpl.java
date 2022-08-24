@@ -36,18 +36,17 @@ import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.blue.basic.common.base.AccessGetter.getAccessReact;
 import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.basic.common.base.ConstantProcessor.assertAttachmentType;
-import static com.blue.basic.common.base.AccessGetter.getAccessReact;
 import static com.blue.basic.common.base.CommonFunctions.success;
+import static com.blue.basic.common.base.ConstantProcessor.assertAttachmentType;
 import static com.blue.basic.constant.common.BlueBoolean.FALSE;
 import static com.blue.basic.constant.common.BlueBoolean.TRUE;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_WRITE;
-import static com.blue.basic.constant.common.BlueHeader.CONTENT_DISPOSITION;
-import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.BluePrefix.CONTENT_DISPOSITION_FILE_NAME_PREFIX;
+import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.Status.VALID;
 import static com.blue.basic.constant.common.Symbol.PERIOD;
 import static com.blue.media.converter.MediaModelConverters.ATTACHMENTS_2_ATTACHMENT_UPLOAD_INFOS_CONVERTER;
@@ -58,6 +57,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.lastIndexOf;
 import static org.apache.commons.lang3.StringUtils.substring;
+import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
 import static org.springframework.util.CollectionUtils.isEmpty;
@@ -310,7 +310,7 @@ public class ByteOperateServiceImpl implements ByteOperateService {
                                 String link = attachment.getLink();
 
                                 return ok().contentType(MEDIA_GETTER.apply(FILE_TYPE_GETTER.apply(link)))
-                                        .header(CONTENT_DISPOSITION.name, CONTENT_DISPOSITION_GEN.apply(attachment))
+                                        .header(CONTENT_DISPOSITION, CONTENT_DISPOSITION_GEN.apply(attachment))
                                         .body(fromDataBuffers(ATTACHMENTS_DOWNLOADER.apply(link, memberId)))
                                         .doOnSuccess(res -> DOWNLOAD_RECORDER.accept(attachmentId, memberId));
                             });

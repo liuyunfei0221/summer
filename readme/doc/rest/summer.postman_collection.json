@@ -3970,13 +3970,13 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiI2ZDZiMzVhOTY2NjM3ZTA3Zjg3ZTA5MDljMTRlZjg2MWExMGU3Y2Y0OGEyNjBhMzIwMjMyM2IyNDUxMzM4OGY2MWZhZWE5OTI5YzY2ZDIyODE2NTU5NGY0YThmNjUzZTE3MjBmYmJhZTcwNmMwODE1ZDE0MjRmYzU4NjYyYWE5MiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDUyMTU2MTUwMjcyNDkxNTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ1MjE1NjE1MDI3MjQ5MTUzIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYwOTAwODgwIiwibmJmIjoxNjYwOTAwODgwLCJ0IjoiNXVTbUVwWnprWlgiLCJlYXMiOjE2Njg2NzY4ODAwOTgsImV4cCI6MTY2ODY3Njg4MCwiaWF0IjoxNjYwOTAwODgwLCJqdGkiOiI2dFVLaWtGRVdxQ1dVY2lONWtMZmtzQWtPdHhVMTJqUyJ9.2PTdS4a4vgyCm67LmHjHo5BiA2QQ0ZSK87PWYdj3hRHfVMIRo5k1uoLYOosmof8Q_fek4Js1IE3y8edz3GALsg",
+								"value": "eyJraWQiOiIwNmE3YWNkODI2NzUzY2U5MzA2ODhjMzM2NTJjOGY0M2M3NzA1NTRiZDgyNTZjYWQ5ODAyZWY3Y2VmZGRiODlkZDYzOWNiMThlM2QwNDAwYTk1MjkzMzViNTQwMjhiMzU3YjNkYWFjZjcwZTI0YWJlZDE5YjNkOTJiMDA3MDZiOSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDU2Nzk0MjQyNTA1NzY4OTdfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ1Njc5NDI0MjUwNTc2ODk3IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYxMzQxODExIiwibmJmIjoxNjYxMzQxODExLCJ0IjoiNVpxOFVESTM1WmoiLCJlYXMiOjE2NjkxMTc4MTE0MDYsImV4cCI6MTY2OTExNzgxMSwiaWF0IjoxNjYxMzQxODExLCJqdGkiOiJORkl0UEQ3ZjEyaTBGTjZseVZaT2J4a1Z0aHBrZG9lRiJ9.FedMZoJG-WA5WCdTbaSH7WuwgRmkVC8-q880uY1ybJyVoVXE_5oH9j-14Y_4D76jDwAGHtNgktKEQg9uPiRu7A",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":3,\r\n    \"cursor\":\"45215753539944451\"\r\n}"
+							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":3,\r\n    \"cursor\":\"45689113696796675\"\r\n}"
 						},
 						"url": {
 							"raw": "localhost:13000/blue-media/attachments/scroll",
@@ -4000,7 +4000,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiI2ZDZiMzVhOTY2NjM3ZTA3Zjg3ZTA5MDljMTRlZjg2MWExMGU3Y2Y0OGEyNjBhMzIwMjMyM2IyNDUxMzM4OGY2MWZhZWE5OTI5YzY2ZDIyODE2NTU5NGY0YThmNjUzZTE3MjBmYmJhZTcwNmMwODE1ZDE0MjRmYzU4NjYyYWE5MiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDUyMTU2MTUwMjcyNDkxNTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ1MjE1NjE1MDI3MjQ5MTUzIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYwOTAwODgwIiwibmJmIjoxNjYwOTAwODgwLCJ0IjoiNXVTbUVwWnprWlgiLCJlYXMiOjE2Njg2NzY4ODAwOTgsImV4cCI6MTY2ODY3Njg4MCwiaWF0IjoxNjYwOTAwODgwLCJqdGkiOiI2dFVLaWtGRVdxQ1dVY2lONWtMZmtzQWtPdHhVMTJqUyJ9.2PTdS4a4vgyCm67LmHjHo5BiA2QQ0ZSK87PWYdj3hRHfVMIRo5k1uoLYOosmof8Q_fek4Js1IE3y8edz3GALsg",
+								"value": "eyJraWQiOiIwNmE3YWNkODI2NzUzY2U5MzA2ODhjMzM2NTJjOGY0M2M3NzA1NTRiZDgyNTZjYWQ5ODAyZWY3Y2VmZGRiODlkZDYzOWNiMThlM2QwNDAwYTk1MjkzMzViNTQwMjhiMzU3YjNkYWFjZjcwZTI0YWJlZDE5YjNkOTJiMDA3MDZiOSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDU2Nzk0MjQyNTA1NzY4OTdfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ1Njc5NDI0MjUwNTc2ODk3IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYxMzQxODExIiwibmJmIjoxNjYxMzQxODExLCJ0IjoiNVpxOFVESTM1WmoiLCJlYXMiOjE2NjkxMTc4MTE0MDYsImV4cCI6MTY2OTExNzgxMSwiaWF0IjoxNjYxMzQxODExLCJqdGkiOiJORkl0UEQ3ZjEyaTBGTjZseVZaT2J4a1Z0aHBrZG9lRiJ9.FedMZoJG-WA5WCdTbaSH7WuwgRmkVC8-q880uY1ybJyVoVXE_5oH9j-14Y_4D76jDwAGHtNgktKEQg9uPiRu7A",
 								"type": "text"
 							},
 							{
@@ -4011,7 +4011,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\":45215753539944452\r\n}",
+							"raw": "{\r\n    \"id\":45689113696796673\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -4359,13 +4359,13 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiIxMDkxZDY5ZTQxMTFlMDhhMjc2MmI0ZTE4NzJlODViMjUwNzMzOWZhZDY2YjExMDI3ODg5MDA1NDVjMDlmYTM3Njk4Yzc5NzczNjljYjEzMDU1ZDMxZDE2MGE3YWUzZTM4ZDUyNmFmYjkyOTg2YWNmYjFhYTY1NDQ3MTgzZjc3MSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU05fUDo0MTIyMTAwNDQ1NzkzNDg0OV9DTElfTSIsImlzcyI6IkJsdWUiLCJpIjoiNDEyMjEwMDQ0NTc5MzQ4NDkiLCJuIjoiUFZBUiIsImF1ZCI6IkJsdWVyIiwicyI6IjE2NTcxODEyNDIiLCJuYmYiOjE2NTcxODEyNDIsInQiOiJ2R0FKTnNsRFNNRiIsImVhcyI6MTY2NDk1NzI0MjU4NCwiZXhwIjoxNjY0OTU3MjQyLCJpYXQiOjE2NTcxODEyNDIsImp0aSI6IlpxNFYzZ01ialdjdmdOVnJuUXRDRnFDcUx3RVg5c25NIn0.Qpoy6Nex7ALymcBCwomHregAzM_9QtScB3-6xRjBycv2ndZnNDVjcef6ingizxny0Ltw_a0iUbbdtviaN_uhbw",
+								"value": "eyJraWQiOiIwNmE3YWNkODI2NzUzY2U5MzA2ODhjMzM2NTJjOGY0M2M3NzA1NTRiZDgyNTZjYWQ5ODAyZWY3Y2VmZGRiODlkZDYzOWNiMThlM2QwNDAwYTk1MjkzMzViNTQwMjhiMzU3YjNkYWFjZjcwZTI0YWJlZDE5YjNkOTJiMDA3MDZiOSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDU2Nzk0MjQyNTA1NzY4OTdfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ1Njc5NDI0MjUwNTc2ODk3IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYxMzQxODExIiwibmJmIjoxNjYxMzQxODExLCJ0IjoiNVpxOFVESTM1WmoiLCJlYXMiOjE2NjkxMTc4MTE0MDYsImV4cCI6MTY2OTExNzgxMSwiaWF0IjoxNjYxMzQxODExLCJqdGkiOiJORkl0UEQ3ZjEyaTBGTjZseVZaT2J4a1Z0aHBrZG9lRiJ9.FedMZoJG-WA5WCdTbaSH7WuwgRmkVC8-q880uY1ybJyVoVXE_5oH9j-14Y_4D76jDwAGHtNgktKEQg9uPiRu7A",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"nameLike\":null,\r\n        \"descriptionLike\":null,\r\n        \"type\":null,\r\n        \"genHandlerType\":null,\r\n        \"domainLike\":null,\r\n        \"pathToBeFilledLike\":null,\r\n        \"placeholderCount\":null,\r\n        \"status\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"creator\":null,\r\n        \"updater\":null,\r\n\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"DESC\"\r\n    }\r\n}"
+							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"nameLike\":null,\r\n        \"descriptionLike\":null,\r\n        \"type\":null,\r\n        \"genHandlerType\":null,\r\n        \"domainLike\":null,\r\n        \"pathToBeFilledLike\":null,\r\n        \"placeholderCount\":null,\r\n        \"status\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"creator\":null,\r\n        \"updater\":null,\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"DESC\"\r\n    }\r\n}"
 						},
 						"url": {
 							"raw": "localhost:13000/blue-media/manager/qrCodeConfigs",
@@ -4394,13 +4394,13 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiIxMDkxZDY5ZTQxMTFlMDhhMjc2MmI0ZTE4NzJlODViMjUwNzMzOWZhZDY2YjExMDI3ODg5MDA1NDVjMDlmYTM3Njk4Yzc5NzczNjljYjEzMDU1ZDMxZDE2MGE3YWUzZTM4ZDUyNmFmYjkyOTg2YWNmYjFhYTY1NDQ3MTgzZjc3MSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU05fUDo0MTIyMTAwNDQ1NzkzNDg0OV9DTElfTSIsImlzcyI6IkJsdWUiLCJpIjoiNDEyMjEwMDQ0NTc5MzQ4NDkiLCJuIjoiUFZBUiIsImF1ZCI6IkJsdWVyIiwicyI6IjE2NTcxODEyNDIiLCJuYmYiOjE2NTcxODEyNDIsInQiOiJ2R0FKTnNsRFNNRiIsImVhcyI6MTY2NDk1NzI0MjU4NCwiZXhwIjoxNjY0OTU3MjQyLCJpYXQiOjE2NTcxODEyNDIsImp0aSI6IlpxNFYzZ01ialdjdmdOVnJuUXRDRnFDcUx3RVg5c25NIn0.Qpoy6Nex7ALymcBCwomHregAzM_9QtScB3-6xRjBycv2ndZnNDVjcef6ingizxny0Ltw_a0iUbbdtviaN_uhbw",
+								"value": "eyJraWQiOiIwNmE3YWNkODI2NzUzY2U5MzA2ODhjMzM2NTJjOGY0M2M3NzA1NTRiZDgyNTZjYWQ5ODAyZWY3Y2VmZGRiODlkZDYzOWNiMThlM2QwNDAwYTk1MjkzMzViNTQwMjhiMzU3YjNkYWFjZjcwZTI0YWJlZDE5YjNkOTJiMDA3MDZiOSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDU2Nzk0MjQyNTA1NzY4OTdfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ1Njc5NDI0MjUwNTc2ODk3IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYxMzQxODExIiwibmJmIjoxNjYxMzQxODExLCJ0IjoiNVpxOFVESTM1WmoiLCJlYXMiOjE2NjkxMTc4MTE0MDYsImV4cCI6MTY2OTExNzgxMSwiaWF0IjoxNjYxMzQxODExLCJqdGkiOiJORkl0UEQ3ZjEyaTBGTjZseVZaT2J4a1Z0aHBrZG9lRiJ9.FedMZoJG-WA5WCdTbaSH7WuwgRmkVC8-q880uY1ybJyVoVXE_5oH9j-14Y_4D76jDwAGHtNgktKEQg9uPiRu7A",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\":\"member detail\",\r\n    \"description\":\"member detail\",\r\n    \"type\":2,\r\n    \"genHandlerType\":\"1\",\r\n    \"domain\":\"localhost:11000\",\r\n    \"pathToBeFilled\":\"blue-member/basic/%s\",\r\n    \"placeholderCount\":\"1\",\r\n    \"allowedRoles\":[1,2,3,4,5,6]\r\n}"
+							"raw": "{\r\n    \"name\":\"member detail1\",\r\n    \"description\":\"member detail1\",\r\n    \"type\":1,\r\n    \"domain\":\"localhost:11000\",\r\n    \"pathToBeFilled\":\"blue-member/basic/%s\",\r\n    \"placeholderCount\":\"1\",\r\n    \"allowedRoles\":[1,2,3,4,5,6]\r\n}"
 						},
 						"url": {
 							"raw": "localhost:13000/blue-media/manager/qrCodeConfig",
@@ -4525,6 +4525,43 @@
 					"response": []
 				},
 				{
+					"name": "后台基于快照滚动查询公益信息",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiIwNmE3YWNkODI2NzUzY2U5MzA2ODhjMzM2NTJjOGY0M2M3NzA1NTRiZDgyNTZjYWQ5ODAyZWY3Y2VmZGRiODlkZDYzOWNiMThlM2QwNDAwYTk1MjkzMzViNTQwMjhiMzU3YjNkYWFjZjcwZTI0YWJlZDE5YjNkOTJiMDA3MDZiOSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDU2Nzk0MjQyNTA1NzY4OTdfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ1Njc5NDI0MjUwNTc2ODk3IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYxMzQxODExIiwibmJmIjoxNjYxMzQxODExLCJ0IjoiNVpxOFVESTM1WmoiLCJlYXMiOjE2NjkxMTc4MTE0MDYsImV4cCI6MTY2OTExNzgxMSwiaWF0IjoxNjYxMzQxODExLCJqdGkiOiJORkl0UEQ3ZjEyaTBGTjZseVZaT2J4a1Z0aHBrZG9lRiJ9.FedMZoJG-WA5WCdTbaSH7WuwgRmkVC8-q880uY1ybJyVoVXE_5oH9j-14Y_4D76jDwAGHtNgktKEQg9uPiRu7A",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rows\":2,\r\n    \"condition\":{\r\n        \"id\":null,\r\n        \"titleLike\":\"标\",\r\n        \"contentLike\":\"容\",\r\n        \"detailLike\":\"详\",\r\n        \"contactLike\":\"联\",\r\n        \"contactDetailLike\":\"详\",\r\n        \"countryId\":null,\r\n        \"stateId\":null,\r\n        \"cityId\":null,\r\n        \"addressDetailLike\":null,\r\n        \"extra\":null,\r\n        \"priority\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"creator\":null,\r\n        \"updater\":null,\r\n        \"sortAttribute\":\"createTime\",\r\n        \"sortType\":\"DESC\"\r\n    },\r\n    \"cursor\":{\r\n\t\t\"id\": \"v5HqAwEFc2hpbmUWVmdWV01QTTdRTkdEQ3NPRzFIVDJndwAWTndzUlBsdGNUbEs2cWF5WklOWXZ4dwAAAAAAAAAAMhZPNkxCOUtsRlFQZWpXMUxpRUxlN19nAAEWVmdWV01QTTdRTkdEQ3NPRzFIVDJndwAA\",\r\n        \"searchAfter\": [\r\n            \"1660796638\",\r\n                \"1495\"\r\n        ]\r\n\t}\r\n}"
+						},
+						"url": {
+							"raw": "localhost:11000/blue-shine/manager/shines/scroll/snapshot",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-shine",
+								"manager",
+								"shines",
+								"scroll",
+								"snapshot"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "后台分页查询公益信息",
 					"request": {
 						"method": "POST",
@@ -4555,43 +4592,6 @@
 								"manager",
 								"shines",
 								"page"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "后台基于快照滚动查询公益信息",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Authorization",
-								"value": "eyJraWQiOiJiNGE3NjFhMzkyYmQ1YWI3MGFiMmM3MjY1YTcwNDE2YTE1ZTczY2NlZTdmOThlNGExMzkyMGYzNmY0M2U4M2M3OWZjYWRiMmQzZmRmYTBkOWIxMjNhODA5OGRjYzZmMmJlNDM5OTE5MmI3ZGZkNDZmOWYxYTdkY2Q1Zjk4Mjk5NiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDU0OTM5NDcxNjE2NDQ0MzNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ1NDkzOTQ3MTYxNjQ0NDMzIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYxMTYwMjcwIiwibmJmIjoxNjYxMTYwMjcwLCJ0IjoiQWlKYm5QdUJBeWkiLCJlYXMiOjE2Njg5MzYyNzAwMjQsImV4cCI6MTY2ODkzNjI3MCwiaWF0IjoxNjYxMTYwMjcwLCJqdGkiOiJKUUQ2VEc1dVdFZkI2QjlJZ2JIUDF0Y2JwOXUwY000MyJ9.hQztAel0sZdLRM3-M8uQfZvk7egyCRoORXQzqduFjULXgdWj-z29iKVdQJQBI64mYhx3_fhp_F3xXOzzqbp9hg",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"rows\":2,\r\n    \"condition\":{\r\n        \"id\":null,\r\n        \"titleLike\":\"标\",\r\n        \"contentLike\":\"容\",\r\n        \"detailLike\":\"详\",\r\n        \"contactLike\":\"联\",\r\n        \"contactDetailLike\":\"详\",\r\n        \"countryId\":null,\r\n        \"stateId\":null,\r\n        \"cityId\":null,\r\n        \"addressDetailLike\":null,\r\n        \"extra\":null,\r\n        \"priority\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"creator\":null,\r\n        \"updater\":null,\r\n        \"sortAttribute\":\"createTime\",\r\n        \"sortType\":\"DESC\"\r\n    },\r\n    \"cursor\":{\r\n\t\t\"id\": \"v5HqAwEFc2hpbmUWVmdWV01QTTdRTkdEQ3NPRzFIVDJndwAWTndzUlBsdGNUbEs2cWF5WklOWXZ4dwAAAAAAAAAAeRZuVWsxNnFKZVNFTzAycWphMWhTMWJnAAEWVmdWV01QTTdRTkdEQ3NPRzFIVDJndwAA\",\r\n        \"searchAfters\": [\r\n            \"16a60822356\",\r\n                \"2007\"\r\n        ]\r\n\t}\r\n}"
-						},
-						"url": {
-							"raw": "localhost:11000/blue-shine/manager/shines/scroll/snapshot",
-							"host": [
-								"localhost"
-							],
-							"port": "11000",
-							"path": [
-								"blue-shine",
-								"manager",
-								"shines",
-								"scroll",
-								"snapshot"
 							]
 						}
 					},

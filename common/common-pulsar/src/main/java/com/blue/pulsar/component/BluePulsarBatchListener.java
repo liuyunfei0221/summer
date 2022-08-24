@@ -14,6 +14,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.pulsar.common.PulsarCommonsGenerator.*;
 import static java.lang.Thread.onSpinWait;
 import static java.util.Optional.ofNullable;
@@ -69,22 +70,12 @@ public final class BluePulsarBatchListener<T extends Serializable> {
         }
     };
 
-    /**
-     * constructor
-     *
-     * @param conf
-     * @param consumer
-     * @param messageListener
-     * @param consumerEventListener
-     * @param interceptors
-     * @param keySharedPolicy
-     */
-    public BluePulsarBatchListener(ConsumerConf conf, Consumer<List<T>> consumer, Class<T> type, MessageListener<T> messageListener, ConsumerEventListener consumerEventListener,
+    public BluePulsarBatchListener(PulsarClient pulsarClient, ConsumerConf conf, Consumer<List<T>> consumer, Class<T> type, ConsumerEventListener consumerEventListener,
                                    List<ConsumerInterceptor<T>> interceptors, KeySharedPolicy keySharedPolicy) {
-        if (type == null)
+        if (isNull(type))
             throw new RuntimeException("type can't be null");
 
-        this.pulsarConsumer = generateConsumer(generateClient(conf), conf, type, messageListener, consumerEventListener, interceptors, keySharedPolicy);
+        this.pulsarConsumer = generateConsumer(pulsarClient, conf, type, consumerEventListener, interceptors, keySharedPolicy, null);
 
         ACK_BATCH_CONSUMER_GENERATOR_HOLDER.put(true, NEGATIVE_ACKNOWLEDGE_BATCH_CONSUMER_GENERATOR);
         ACK_BATCH_CONSUMER_GENERATOR_HOLDER.put(false, AUTO_ACKNOWLEDGE_BATCH_CONSUMER_GENERATOR);

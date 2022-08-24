@@ -5,6 +5,7 @@ import com.blue.pulsar.component.BluePulsarProducer;
 import com.blue.shine.config.blue.BlueProducerConfig;
 import com.blue.shine.repository.entity.Shine;
 import org.apache.pulsar.client.api.MessageId;
+import org.apache.pulsar.client.api.PulsarClient;
 import reactor.util.Logger;
 
 import java.util.concurrent.CompletableFuture;
@@ -31,9 +32,9 @@ public final class ShineInsertProducer implements BlueLifecycle {
 
     private final BluePulsarProducer<Shine> pulsarProducer;
 
-    public ShineInsertProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
+    public ShineInsertProducer(PulsarClient pulsarClient, ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
         this.executorService = executorService;
-        this.pulsarProducer = generateProducer(blueProducerConfig.getByKey(SHINE_INSERT.name), Shine.class);
+        this.pulsarProducer = generateProducer(pulsarClient, blueProducerConfig.getByKey(SHINE_INSERT.name), Shine.class);
     }
 
     @Override

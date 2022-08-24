@@ -6,6 +6,7 @@ import com.blue.finance.config.blue.BlueConsumerConfig;
 import com.blue.finance.repository.entity.OrderSummary;
 import com.blue.finance.service.inter.OrderSummaryService;
 import com.blue.pulsar.component.BluePulsarListener;
+import org.apache.pulsar.client.api.PulsarClient;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
@@ -32,6 +33,8 @@ public final class OrderSummaryInsertConsumer implements BlueLifecycle {
 
     private static final Logger LOGGER = getLogger(OrderSummaryInsertConsumer.class);
 
+    private final PulsarClient pulsarClient;
+
     private final BlueConsumerConfig blueConsumerConfig;
 
     private final Scheduler scheduler;
@@ -40,7 +43,8 @@ public final class OrderSummaryInsertConsumer implements BlueLifecycle {
 
     private BluePulsarListener<OrderSummary> pulsarListener;
 
-    public OrderSummaryInsertConsumer(BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, OrderSummaryService orderSummaryService) {
+    public OrderSummaryInsertConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, OrderSummaryService orderSummaryService) {
+        this.pulsarClient = pulsarClient;
         this.blueConsumerConfig = blueConsumerConfig;
         this.scheduler = scheduler;
         this.orderSummaryService = orderSummaryService;
@@ -55,7 +59,7 @@ public final class OrderSummaryInsertConsumer implements BlueLifecycle {
                                 .doOnError(throwable -> LOGGER.info("orderSummaryService.insertOrderSummary(os) failed, os = {}, throwable = {}", os, throwable))
                                 .subscribe(b -> LOGGER.info("orderSummaryService.insertOrderSummary(os), b = {}, os = {}", b, os)));
 
-        this.pulsarListener = generateListener(blueConsumerConfig.getByKey(ORDER_SUMMARY_INSERT.name), dataConsumer);
+        this.pulsarListener = generateListener(pulsarClient, blueConsumerConfig.getByKey(ORDER_SUMMARY_INSERT.name), dataConsumer);
     }
 
     @Override

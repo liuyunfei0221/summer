@@ -1,8 +1,11 @@
 package com.blue.media.service.impl;
 
 import com.blue.auth.api.model.RoleInfo;
+import com.blue.basic.common.base.BlueChecker;
+import com.blue.basic.constant.common.SortType;
 import com.blue.basic.model.common.PageModelRequest;
 import com.blue.basic.model.common.PageModelResponse;
+import com.blue.basic.model.common.SortElement;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.media.api.model.QrCodeConfigInfo;
@@ -51,6 +54,7 @@ import static com.blue.mongo.common.MongoSortProcessor.process;
 import static com.blue.mongo.constant.LikeElement.PREFIX;
 import static com.blue.mongo.constant.LikeElement.SUFFIX;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
@@ -210,8 +214,22 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(QrCodeConfigSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final Function<QrCodeCondition, Sort> SORTER_CONVERTER = c ->
-            process(c, SORT_ATTRIBUTE_MAPPING, QrCodeConfigSortAttribute.ID.column);
+    private static final Function<QrCodeCondition, Sort> SORTER_CONVERTER = c -> {
+        String sortAttribute = ofNullable(c).map(QrCodeCondition::getSortAttribute)
+                .map(SORT_ATTRIBUTE_MAPPING::get)
+                .filter(BlueChecker::isNotBlank)
+                .orElse(QrCodeConfigSortAttribute.CREATE_TIME.column);
+
+        String sortType = ofNullable(c).map(QrCodeCondition::getSortType)
+                .filter(BlueChecker::isNotBlank)
+                .orElse(SortType.DESC.identity);
+
+        return sortAttribute.equals(QrCodeConfigSortAttribute.ID.column) ?
+                process(singletonList(new SortElement(sortAttribute, sortType)))
+                :
+                process(Stream.of(sortAttribute, QrCodeConfigSortAttribute.ID.column)
+                        .map(attr -> new SortElement(attr, sortType)).collect(toList()));
+    };
 
     private static final Function<QrCodeCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();

@@ -7,6 +7,7 @@ import com.blue.marketing.config.blue.BlueConsumerConfig;
 import com.blue.marketing.service.inter.MarketingEventHandleService;
 import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
 import com.blue.pulsar.component.BluePulsarListener;
+import org.apache.pulsar.client.api.PulsarClient;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
@@ -31,6 +32,8 @@ public final class MarketingEventConsumer implements BlueLifecycle {
 
     private static final Logger LOGGER = getLogger(MarketingEventConsumer.class);
 
+    private final PulsarClient pulsarClient;
+
     private final BlueConsumerConfig blueConsumerConfig;
 
     private final Scheduler scheduler;
@@ -39,8 +42,9 @@ public final class MarketingEventConsumer implements BlueLifecycle {
 
     private BluePulsarListener<MarketingEvent> pulsarListener;
 
-    public MarketingEventConsumer(BlueConsumerConfig blueConsumerConfig, Scheduler schedule,
+    public MarketingEventConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, Scheduler schedule,
                                   MarketingEventHandleService marketingEventHandleService) {
+        this.pulsarClient = pulsarClient;
         this.blueConsumerConfig = blueConsumerConfig;
         this.scheduler = schedule;
         this.marketingEventHandleService = marketingEventHandleService;
@@ -55,7 +59,7 @@ public final class MarketingEventConsumer implements BlueLifecycle {
                                 .doOnError(throwable -> LOGGER.info("marketingEventHandleService.handleEvent(me) failed, me = {}, throwable = {}", me, throwable))
                                 .subscribe(er -> LOGGER.info("marketingEventHandleService.handleEvent(me), er = {}, me = {}", er, me)));
 
-        this.pulsarListener = BluePulsarListenerGenerator.generateListener(blueConsumerConfig.getByKey(MARKETING.name), dataConsumer);
+        this.pulsarListener = BluePulsarListenerGenerator.generateListener(pulsarClient, blueConsumerConfig.getByKey(MARKETING.name), dataConsumer);
     }
 
     @Override

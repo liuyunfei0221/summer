@@ -5,6 +5,7 @@ import com.blue.basic.model.event.IdentityEvent;
 import com.blue.pulsar.component.BluePulsarProducer;
 import com.blue.shine.config.blue.BlueProducerConfig;
 import org.apache.pulsar.client.api.MessageId;
+import org.apache.pulsar.client.api.PulsarClient;
 import reactor.util.Logger;
 
 import java.util.concurrent.CompletableFuture;
@@ -31,9 +32,9 @@ public final class ShineDeleteProducer implements BlueLifecycle {
 
     private final BluePulsarProducer<IdentityEvent> pulsarProducer;
 
-    public ShineDeleteProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
+    public ShineDeleteProducer(PulsarClient pulsarClient, ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
         this.executorService = executorService;
-        this.pulsarProducer = generateProducer(blueProducerConfig.getByKey(SHINE_DELETE.name), IdentityEvent.class);
+        this.pulsarProducer = generateProducer(pulsarClient, blueProducerConfig.getByKey(SHINE_DELETE.name), IdentityEvent.class);
     }
 
     @Override

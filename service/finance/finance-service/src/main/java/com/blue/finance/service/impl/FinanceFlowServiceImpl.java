@@ -1,7 +1,10 @@
 package com.blue.finance.service.impl;
 
+import com.blue.basic.common.base.BlueChecker;
+import com.blue.basic.constant.common.SortType;
 import com.blue.basic.model.common.PageModelRequest;
 import com.blue.basic.model.common.PageModelResponse;
+import com.blue.basic.model.common.SortElement;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.finance.api.model.FinanceFlowInfo;
 import com.blue.finance.api.model.FinanceFlowManagerInfo;
@@ -36,6 +39,7 @@ import static com.blue.finance.converter.FinanceModelConverters.FINANCE_FLOW_2_F
 import static com.blue.finance.converter.FinanceModelConverters.FINANCE_FLOW_2_FINANCE_FLOW_MANAGER_INFO_CONVERTER;
 import static com.blue.mongo.common.MongoSortProcessor.process;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -80,8 +84,22 @@ public class FinanceFlowServiceImpl implements FinanceFlowService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(FinanceFlowSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final Function<FinanceFlowCondition, Sort> SORTER_CONVERTER = c ->
-            process(c, SORT_ATTRIBUTE_MAPPING, FinanceFlowSortAttribute.ID.column);
+    private static final Function<FinanceFlowCondition, Sort> SORTER_CONVERTER = c -> {
+        String sortAttribute = ofNullable(c).map(FinanceFlowCondition::getSortAttribute)
+                .map(SORT_ATTRIBUTE_MAPPING::get)
+                .filter(BlueChecker::isNotBlank)
+                .orElse(FinanceFlowSortAttribute.CREATE_TIME.column);
+
+        String sortType = ofNullable(c).map(FinanceFlowCondition::getSortType)
+                .filter(BlueChecker::isNotBlank)
+                .orElse(SortType.DESC.identity);
+
+        return sortAttribute.equals(FinanceFlowSortAttribute.ID.column) ?
+                process(singletonList(new SortElement(sortAttribute, sortType)))
+                :
+                process(Stream.of(sortAttribute, FinanceFlowSortAttribute.ID.column)
+                        .map(attr -> new SortElement(attr, sortType)).collect(toList()));
+    };
 
     private static final Function<FinanceFlowCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();

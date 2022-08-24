@@ -7,8 +7,10 @@ import org.apache.hadoop.hbase.client.Connection;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.annotation.Order;
 
 import static com.blue.hbase.api.generator.BlueHbaseGenerator.*;
+import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
 /**
  * hbase configuration
@@ -17,6 +19,7 @@ import static com.blue.hbase.api.generator.BlueHbaseGenerator.*;
  */
 @ConditionalOnBean(value = {HbaseConf.class})
 @AutoConfiguration
+@Order(HIGHEST_PRECEDENCE)
 public class BlueHbaseConfiguration {
 
     @Bean

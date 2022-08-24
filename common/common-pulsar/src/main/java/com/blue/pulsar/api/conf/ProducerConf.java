@@ -10,7 +10,7 @@ import java.util.List;
  * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc"})
-public interface ProducerConf extends ClientConf {
+public interface ProducerConf {
 
     String getTopic();
 

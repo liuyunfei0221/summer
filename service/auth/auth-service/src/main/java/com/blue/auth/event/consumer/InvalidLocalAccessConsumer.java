@@ -6,6 +6,7 @@ import com.blue.auth.event.model.InvalidLocalAccessEvent;
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.pulsar.component.BluePulsarListener;
+import org.apache.pulsar.client.api.PulsarClient;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
@@ -32,6 +33,8 @@ public final class InvalidLocalAccessConsumer implements BlueLifecycle {
 
     private static final Logger LOGGER = getLogger(InvalidLocalAccessConsumer.class);
 
+    private final PulsarClient pulsarClient;
+
     private final BlueConsumerConfig blueConsumerConfig;
 
     private final Scheduler scheduler;
@@ -40,7 +43,8 @@ public final class InvalidLocalAccessConsumer implements BlueLifecycle {
 
     private BluePulsarListener<InvalidLocalAccessEvent> pulsarListener;
 
-    public InvalidLocalAccessConsumer(BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, AccessInfoCache accessInfoCache) {
+    public InvalidLocalAccessConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, AccessInfoCache accessInfoCache) {
+        this.pulsarClient = pulsarClient;
         this.blueConsumerConfig = blueConsumerConfig;
         this.scheduler = scheduler;
         this.accessInfoCache = accessInfoCache;
@@ -56,7 +60,7 @@ public final class InvalidLocalAccessConsumer implements BlueLifecycle {
                                 .doOnError(throwable -> LOGGER.info("accessInfoCache.invalidLocalAccessInfo(kid) failed, kid = {}, throwable = {}", kid, throwable))
                                 .subscribe(b -> LOGGER.info("accessInfoCache.invalidLocalAccessInfo(kid), b = {}, kid = {}", b, kid)));
 
-        this.pulsarListener = generateListener(blueConsumerConfig.getByKey(INVALID_LOCAL_ACCESS.name), dataConsumer);
+        this.pulsarListener = generateListener(pulsarClient, blueConsumerConfig.getByKey(INVALID_LOCAL_ACCESS.name), dataConsumer);
     }
 
     @Override

@@ -104,7 +104,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
 
 -- verify api
 
-       (120001, 'POST', 'blue-verify', '/verify/generate', '', b'0', b'1', b'1', b'0', b'1', 1,
+       (120001, 'POST', 'blue-verify', '/verify/generate', '', b'0', b'1', b'1', b'1', b'0', 1,
         'generate verify with param', 'generate verify with param', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- verify manage

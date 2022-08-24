@@ -478,39 +478,41 @@ dubbo:
     check: false
 
 
+pulsar:
+  services: [ 172.16.204.244:6650 ]
+  enableTls: false
+  tlsTrustCertsFilePath:
+  tlsCertFilePath:
+  tlsKeyFilePath:
+  tlsAllowInsecureConnection:
+  tlsHostnameVerificationEnable:
+  listenerName:
+  operationTimeoutMillis: 30000
+  statsIntervalMillis: 60000
+  ioThreads: 1
+  listenerThreads: 1
+  connectionsPerBroker: 1
+  useTcpNoDelay: true
+  memoryLimitKiloBytes: 512
+  maxConcurrentLookupRequests: 60
+  maxLookupRequest: 50000
+  maxLookupRedirects: 3
+  maxNumberOfRejectedRequestPerConnection: 50
+  keepAliveIntervalMillis: 30000
+  connectionTimeoutMillis: 60000
+  startingBackoffIntervalMillis: 300
+  maxBackoffIntervalMillis: 600
+  enableBusyWait: false
+  clockZoneId: Asia/Shanghai
+  enableTransaction: false
+  enableProxy: false
+  proxyServiceUrl:
+  proxyProtocol: SNI
+
 
 producers:
   configs:
     financeFlow:
-      services: [ 172.16.204.244:6650 ]
-      enableTls: false
-      tlsTrustCertsFilePath:
-      tlsCertFilePath:
-      tlsKeyFilePath:
-      tlsAllowInsecureConnection:
-      tlsHostnameVerificationEnable:
-      listenerName:
-      operationTimeoutMillis: 30000
-      statsIntervalMillis: 60000
-      ioThreads: 1
-      listenerThreads: 1
-      connectionsPerBroker: 1
-      useTcpNoDelay: true
-      memoryLimitKiloBytes: 512
-      maxConcurrentLookupRequests: 60
-      maxLookupRequest: 50000
-      maxLookupRedirects: 3
-      maxNumberOfRejectedRequestPerConnection: 50
-      keepAliveIntervalMillis: 30000
-      connectionTimeoutMillis: 60000
-      startingBackoffIntervalMillis: 300
-      maxBackoffIntervalMillis: 600
-      enableBusyWait: false
-      clockZoneId: Asia/Shanghai
-      enableTransaction: false
-      enableProxy: false
-      proxyServiceUrl:
-      proxyProtocol: SNI
       topic: financeFlow
       producerName: financeFlowProducer000
       accessMode: Shared
@@ -534,35 +536,6 @@ producers:
       encryptionKey:
       producerCryptoFailureAction: FAIL
     orderSummaryInsert:
-      services: [ 172.16.204.244:6650 ]
-      enableTls: false
-      tlsTrustCertsFilePath:
-      tlsCertFilePath:
-      tlsKeyFilePath:
-      tlsAllowInsecureConnection:
-      tlsHostnameVerificationEnable:
-      listenerName:
-      operationTimeoutMillis: 30000
-      statsIntervalMillis: 60000
-      ioThreads: 1
-      listenerThreads: 1
-      connectionsPerBroker: 1
-      useTcpNoDelay: true
-      memoryLimitKiloBytes: 512
-      maxConcurrentLookupRequests: 60
-      maxLookupRequest: 50000
-      maxLookupRedirects: 3
-      maxNumberOfRejectedRequestPerConnection: 50
-      keepAliveIntervalMillis: 30000
-      connectionTimeoutMillis: 60000
-      startingBackoffIntervalMillis: 300
-      maxBackoffIntervalMillis: 600
-      enableBusyWait: false
-      clockZoneId: Asia/Shanghai
-      enableTransaction: false
-      enableProxy: false
-      proxyServiceUrl:
-      proxyProtocol: SNI
       topic: orderSummaryInsert
       producerName: orderSummaryInsertProducer000
       accessMode: Shared
@@ -586,35 +559,6 @@ producers:
       encryptionKey:
       producerCryptoFailureAction: FAIL
     orderSummaryUpdate:
-      services: [ 172.16.204.244:6650 ]
-      enableTls: false
-      tlsTrustCertsFilePath:
-      tlsCertFilePath:
-      tlsKeyFilePath:
-      tlsAllowInsecureConnection:
-      tlsHostnameVerificationEnable:
-      listenerName:
-      operationTimeoutMillis: 30000
-      statsIntervalMillis: 60000
-      ioThreads: 1
-      listenerThreads: 1
-      connectionsPerBroker: 1
-      useTcpNoDelay: true
-      memoryLimitKiloBytes: 512
-      maxConcurrentLookupRequests: 60
-      maxLookupRequest: 50000
-      maxLookupRedirects: 3
-      maxNumberOfRejectedRequestPerConnection: 50
-      keepAliveIntervalMillis: 30000
-      connectionTimeoutMillis: 60000
-      startingBackoffIntervalMillis: 300
-      maxBackoffIntervalMillis: 600
-      enableBusyWait: false
-      clockZoneId: Asia/Shanghai
-      enableTransaction: false
-      enableProxy: false
-      proxyServiceUrl:
-      proxyProtocol: SNI
       topic: orderSummaryUpdate
       producerName: orderSummaryUpdateProducer000
       accessMode: Shared
@@ -642,35 +586,6 @@ producers:
 consumers:
   configs:
     financeFlow:
-      services: [ 172.16.204.244:6650 ]
-      enableTls: false
-      tlsTrustCertsFilePath:
-      tlsCertFilePath:
-      tlsKeyFilePath:
-      tlsAllowInsecureConnection:
-      tlsHostnameVerificationEnable:
-      listenerName:
-      operationTimeoutMillis: 30000
-      statsIntervalMillis: 60
-      ioThreads: 1
-      listenerThreads: 1
-      connectionsPerBroker: 2
-      useTcpNoDelay: true
-      memoryLimitKiloBytes: 1024
-      maxConcurrentLookupRequests: 60
-      maxLookupRequest: 1000
-      maxLookupRedirects: 2
-      maxNumberOfRejectedRequestPerConnection: 50
-      keepAliveIntervalMillis: 30000
-      connectionTimeoutMillis: 10000
-      startingBackoffIntervalMillis: 1000
-      maxBackoffIntervalMillis: 30000
-      enableBusyWait: true
-      clockZoneId: Asia/Shanghai
-      enableTransaction: false
-      enableProxy: false
-      proxyServiceUrl:
-      proxyProtocol: SNI
       topics: [ financeFlow ]
       topicsPattern:
       subscriptionName: financeFlowSubscription
@@ -715,35 +630,6 @@ consumers:
       workingThreads: 2
       enableNegativeAcknowledge: true
     orderSummaryInsert:
-      services: [ 172.16.204.244:6650 ]
-      enableTls: false
-      tlsTrustCertsFilePath:
-      tlsCertFilePath:
-      tlsKeyFilePath:
-      tlsAllowInsecureConnection:
-      tlsHostnameVerificationEnable:
-      listenerName:
-      operationTimeoutMillis: 30000
-      statsIntervalMillis: 60
-      ioThreads: 1
-      listenerThreads: 1
-      connectionsPerBroker: 2
-      useTcpNoDelay: true
-      memoryLimitKiloBytes: 1024
-      maxConcurrentLookupRequests: 60
-      maxLookupRequest: 1000
-      maxLookupRedirects: 2
-      maxNumberOfRejectedRequestPerConnection: 50
-      keepAliveIntervalMillis: 30000
-      connectionTimeoutMillis: 10000
-      startingBackoffIntervalMillis: 1000
-      maxBackoffIntervalMillis: 30000
-      enableBusyWait: true
-      clockZoneId: Asia/Shanghai
-      enableTransaction: false
-      enableProxy: false
-      proxyServiceUrl:
-      proxyProtocol: SNI
       topics: [ orderSummaryInsert ]
       topicsPattern:
       subscriptionName: orderSummaryInsertSubscription
@@ -788,35 +674,6 @@ consumers:
       workingThreads: 2
       enableNegativeAcknowledge: true
     orderSummaryUpdate:
-      services: [ 172.16.204.244:6650 ]
-      enableTls: false
-      tlsTrustCertsFilePath:
-      tlsCertFilePath:
-      tlsKeyFilePath:
-      tlsAllowInsecureConnection:
-      tlsHostnameVerificationEnable:
-      listenerName:
-      operationTimeoutMillis: 30000
-      statsIntervalMillis: 60
-      ioThreads: 1
-      listenerThreads: 1
-      connectionsPerBroker: 2
-      useTcpNoDelay: true
-      memoryLimitKiloBytes: 1024
-      maxConcurrentLookupRequests: 60
-      maxLookupRequest: 1000
-      maxLookupRedirects: 2
-      maxNumberOfRejectedRequestPerConnection: 50
-      keepAliveIntervalMillis: 30000
-      connectionTimeoutMillis: 10000
-      startingBackoffIntervalMillis: 1000
-      maxBackoffIntervalMillis: 30000
-      enableBusyWait: true
-      clockZoneId: Asia/Shanghai
-      enableTransaction: false
-      enableProxy: false
-      proxyServiceUrl:
-      proxyProtocol: SNI
       topics: [ orderSummaryUpdate ]
       topicsPattern:
       subscriptionName: orderSummaryUpdateSubscription

@@ -5,6 +5,8 @@ import com.blue.media.api.model.Message;
 import com.blue.media.component.message.inter.MessageSender;
 import reactor.core.publisher.Mono;
 
+import static com.blue.basic.constant.media.MessageType.MAIL;
+
 /**
  * mail message sender
  *
@@ -31,7 +33,7 @@ public class MailMessageSender implements MessageSender {
      */
     @Override
     public MessageType targetType() {
-        return null;
+        return MAIL;
     }
 
 }

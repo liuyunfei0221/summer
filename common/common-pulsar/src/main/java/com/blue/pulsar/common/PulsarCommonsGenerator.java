@@ -1,21 +1,27 @@
 package com.blue.pulsar.common;
 
-import com.blue.pulsar.api.conf.ClientConf;
-import com.blue.pulsar.api.conf.ConsumerConf;
-import com.blue.pulsar.api.conf.ProducerConf;
+import com.blue.basic.common.base.BlueChecker;
+import com.blue.pulsar.api.conf.*;
 import org.apache.pulsar.client.api.*;
 import org.apache.pulsar.client.api.interceptor.ProducerInterceptor;
+import org.apache.pulsar.client.impl.AutoClusterFailover;
+import org.apache.pulsar.client.impl.auth.AuthenticationTls;
 import org.slf4j.Logger;
 
+import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 
-import static com.blue.pulsar.common.PulsarFuncParamTypeProcessor.getConsumerParameterType;
+import static com.blue.basic.common.base.BlueChecker.isEmpty;
+import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.FuncParamTypeProcessor.getConsumerParameterType;
 import static java.time.Clock.system;
 import static java.time.ZoneId.of;
+import static java.util.Collections.singletonMap;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.pulsar.client.api.DeadLetterPolicy.builder;
 import static org.apache.pulsar.client.api.Schema.JSON;
@@ -69,7 +75,7 @@ public final class PulsarCommonsGenerator {
             ClientBuilder builder = PulsarClient.builder();
 
             ofNullable(conf.getListenerName())
-                    .filter(n -> !"".equals(n))
+                    .filter(BlueChecker::isNotBlank)
                     .ifPresent(builder::listenerName);
 
             if (ofNullable(conf.getEnableTls()).orElse(false)) {
@@ -125,10 +131,51 @@ public final class PulsarCommonsGenerator {
             ofNullable(conf.getEnableTransaction())
                     .ifPresent(builder::enableTransaction);
 
-            if (ofNullable(conf.getEnableProxy()).orElse(false))
-                builder.proxyServiceUrl(conf.getProxyServiceUrl(), conf.getProxyProtocol());
+            if (ofNullable(conf.getEnableProxy()).orElse(false)) {
+                Proxy proxy = conf.getProxy();
+                builder.proxyServiceUrl(proxy.getProxyServiceUrl(), proxy.getProxyProtocol());
+            }
 
-            return builder.build();
+            if (ofNullable(conf.getEnableSocks5Proxy()).orElse(false)) {
+                Socks5Proxy socks5Proxy = conf.getSocks5Proxy();
+                builder.socks5ProxyAddress(InetSocketAddress.createUnresolved(socks5Proxy.getHost(), socks5Proxy.getPort()))
+                        .socks5ProxyUsername(socks5Proxy.getUsername()).socks5ProxyPassword(socks5Proxy.getPassword());
+            }
+
+            PulsarClient pulsarClient = builder.build();
+
+            if (ofNullable(conf.getEnableFailover()).orElse(false)) {
+                AutoClusterFailoverBuilder autoClusterFailoverBuilder = AutoClusterFailover.builder();
+
+                ClusterFailover clusterFailover = conf.getClusterFailover();
+                if (ofNullable(conf.getEnableTls()).orElse(false)) {
+                    autoClusterFailoverBuilder.primary(TLS_SCHEMA + clusterFailover.getPrimaryShard())
+                            .secondary(clusterFailover.getSecondaryShards().stream().map(s -> TLS_SCHEMA + s).collect(toList()));
+                } else {
+                    autoClusterFailoverBuilder.primary(SCHEMA + clusterFailover.getPrimaryShard())
+                            .secondary(clusterFailover.getSecondaryShards().stream().map(s -> SCHEMA + s).collect(toList()));
+                }
+
+                autoClusterFailoverBuilder
+                        .failoverDelay(clusterFailover.getFailoverDelayMillis(), MILLISECONDS)
+                        .switchBackDelay(clusterFailover.getSwitchBackDelayMillis(), MILLISECONDS)
+                        .checkInterval(clusterFailover.getCheckIntervalMillis(), MILLISECONDS);
+
+                ofNullable(clusterFailover.getSecondaryTlsTrustCertsFilePaths()).filter(BlueChecker::isNotEmpty)
+                        .ifPresent(autoClusterFailoverBuilder::secondaryTlsTrustCertsFilePath);
+
+                autoClusterFailoverBuilder.secondaryTlsTrustCertsFilePath(clusterFailover.getSecondaryTlsTrustCertsFilePaths());
+                autoClusterFailoverBuilder.secondaryAuthentication(singletonMap(AUTH_PLUGIN_CLASS_NAME, new AuthenticationTls(clusterFailover.getCertFilePath(), clusterFailover.getKeyFilePath())));
+
+                try (ServiceUrlProvider serviceUrlProvider = autoClusterFailoverBuilder.build()) {
+                    serviceUrlProvider.initialize(pulsarClient);
+                } catch (Exception e) {
+                    LOGGER.error("process failover client failed, cause e = {0}", e);
+                    throw new RuntimeException("process failover client failed, cause e = {}", e);
+                }
+            }
+
+            return pulsarClient;
         } catch (Exception e) {
             LOGGER.error("generate client failed, cause e = {0}", e);
             throw new RuntimeException("generate client failed, cause e = {}", e);
@@ -141,6 +188,9 @@ public final class PulsarCommonsGenerator {
      * @param pulsarClient
      * @param conf
      * @param clz
+     * @param messageRouter
+     * @param batcherBuilder
+     * @param interceptors
      * @param <T>
      * @return
      */
@@ -215,18 +265,21 @@ public final class PulsarCommonsGenerator {
      * @param pulsarClient
      * @param conf
      * @param consumer
+     * @param consumerEventListener
+     * @param interceptors
+     * @param keySharedPolicy
      * @param <T>
      * @return
      */
-    public static <T> Consumer<T> generateConsumer(PulsarClient pulsarClient, ConsumerConf conf, java.util.function.Consumer<T> consumer, MessageListener<T> messageListener,
-                                                   ConsumerEventListener consumerEventListener, List<ConsumerInterceptor<T>> interceptors, KeySharedPolicy keySharedPolicy) {
+    public static <T> Consumer<T> generateConsumer(PulsarClient pulsarClient, ConsumerConf conf, java.util.function.Consumer<T> consumer, ConsumerEventListener consumerEventListener,
+                                                   List<ConsumerInterceptor<T>> interceptors, KeySharedPolicy keySharedPolicy) {
         assertConsumerConf(pulsarClient, conf);
         if (consumer == null)
             throw new RuntimeException("consumer can't be null");
 
         //noinspection unchecked
         Class<T> clz = (Class<T>) getConsumerParameterType(consumer);
-        return generateConsumer(pulsarClient, conf, clz, messageListener, consumerEventListener, interceptors, keySharedPolicy);
+        return generateConsumer(pulsarClient, conf, clz, consumerEventListener, interceptors, keySharedPolicy, null);
     }
 
     /**
@@ -234,11 +287,40 @@ public final class PulsarCommonsGenerator {
      *
      * @param pulsarClient
      * @param conf
+     * @param consumer
+     * @param consumerEventListener
+     * @param interceptors
+     * @param keySharedPolicy
+     * @param messageListener
      * @param <T>
      * @return
      */
-    public static <T> Consumer<T> generateConsumer(PulsarClient pulsarClient, ConsumerConf conf, Class<T> clz, MessageListener<T> messageListener,
-                                                   ConsumerEventListener consumerEventListener, List<ConsumerInterceptor<T>> interceptors, KeySharedPolicy keySharedPolicy) {
+    public static <T> Consumer<T> generateConsumer(PulsarClient pulsarClient, ConsumerConf conf, java.util.function.Consumer<T> consumer, ConsumerEventListener consumerEventListener,
+                                                   List<ConsumerInterceptor<T>> interceptors, KeySharedPolicy keySharedPolicy, MessageListener<T> messageListener) {
+        assertConsumerConf(pulsarClient, conf);
+        if (consumer == null)
+            throw new RuntimeException("consumer can't be null");
+
+        //noinspection unchecked
+        Class<T> clz = (Class<T>) getConsumerParameterType(consumer);
+        return generateConsumer(pulsarClient, conf, clz, consumerEventListener, interceptors, keySharedPolicy, messageListener);
+    }
+
+    /**
+     * generate consumer
+     *
+     * @param pulsarClient
+     * @param conf
+     * @param clz
+     * @param consumerEventListener
+     * @param interceptors
+     * @param keySharedPolicy
+     * @param messageListener
+     * @param <T>
+     * @return
+     */
+    public static <T> Consumer<T> generateConsumer(PulsarClient pulsarClient, ConsumerConf conf, Class<T> clz, ConsumerEventListener consumerEventListener, List<ConsumerInterceptor<T>> interceptors,
+                                                   KeySharedPolicy keySharedPolicy, MessageListener<T> messageListener) {
         assertConsumerConf(pulsarClient, conf);
         if (clz == null)
             throw new RuntimeException("clz can't be null");
@@ -346,39 +428,51 @@ public final class PulsarCommonsGenerator {
      * @param conf
      */
     private static void assertClient(ClientConf conf) {
-        if (conf == null) throw new RuntimeException("conf can't be null");
+        if (isNull(conf)) throw new RuntimeException("conf can't be null");
 
-        List<String> services = conf.getServices();
-        if (services == null || services.size() < 1) throw new RuntimeException("services can't be null");
+        if (isEmpty(conf.getServices()))
+            throw new RuntimeException("services can't be null");
 
         if (ofNullable(conf.getEnableTls()).orElse(false)) {
-            String tlsTrustCertsFilePath = conf.getTlsTrustCertsFilePath();
-            if (tlsTrustCertsFilePath == null || "".equals(tlsTrustCertsFilePath))
+            if (isBlank(conf.getTlsTrustCertsFilePath()))
                 throw new RuntimeException("if enableTls, tlsTrustCertsFilePath can't be null");
 
-            String tlsCertFilePath = conf.getTlsCertFilePath();
-            if (tlsCertFilePath == null || "".equals(tlsCertFilePath))
+            if (isBlank(conf.getTlsCertFilePath()))
                 throw new RuntimeException("if enableTls, tlsCertFilePath can't be null");
 
-            String tlsKeyFilePath = conf.getTlsKeyFilePath();
-            if (tlsKeyFilePath == null || "".equals(tlsKeyFilePath))
+            if (isBlank(conf.getTlsKeyFilePath()))
                 throw new RuntimeException("if enableTls, tlsKeyFilePath can't be null");
 
-            Boolean tlsAllowInsecureConnection = conf.getTlsAllowInsecureConnection();
-            if (tlsAllowInsecureConnection == null)
+            if (isNull(conf.getTlsAllowInsecureConnection()))
                 throw new RuntimeException("if enableTls, tlsAllowInsecureConnection can't be null");
 
-            Boolean tlsHostnameVerificationEnable = conf.getTlsHostnameVerificationEnable();
-            if (tlsHostnameVerificationEnable == null)
+            if (isNull(conf.getTlsHostnameVerificationEnable()))
                 throw new RuntimeException("if enableTls, tlsHostnameVerificationEnable can't be null");
         }
 
         if ((ofNullable(conf.getEnableProxy()).orElse(false))) {
-            String proxyServiceUrl = conf.getProxyServiceUrl();
-            if (proxyServiceUrl == null || "".equals(proxyServiceUrl))
+            Proxy proxy = conf.getProxy();
+            if (isNull(proxy))
+                throw new RuntimeException("if enableProxy, proxy can't be null");
+
+            String proxyServiceUrl = proxy.getProxyServiceUrl();
+            if (isBlank(proxyServiceUrl))
                 throw new RuntimeException("if enableProxy, proxyServiceUrl can't be null");
-            if (conf.getProxyProtocol() == null)
+            if (isNull(proxy.getProxyProtocol()))
                 throw new RuntimeException("if enableProxy, proxyProtocol can't be null");
+        }
+
+        if ((ofNullable(conf.getEnableSocks5Proxy()).orElse(false))) {
+            Socks5Proxy socks5Proxy = conf.getSocks5Proxy();
+            if (isNull(socks5Proxy))
+                throw new RuntimeException("if enableSocks5Proxy, socks5Proxy can't be null");
+
+            if (isBlank(socks5Proxy.getHost()))
+                throw new RuntimeException("if enableSocks5Proxy, host can't be null");
+
+            Integer port = socks5Proxy.getPort();
+            if (isNull(port) || port < 1)
+                throw new RuntimeException("if enableSocks5Proxy, port can't be null");
         }
     }
 
@@ -392,31 +486,28 @@ public final class PulsarCommonsGenerator {
      */
     @SuppressWarnings("AlibabaMethodTooLong")
     private static <T> void assertProducerConf(PulsarClient pulsarClient, ProducerConf conf, Class<T> clz) {
-        if (pulsarClient == null || conf == null || clz == null)
+        if (isNull(pulsarClient) || isNull(conf) || isNull(clz))
             throw new RuntimeException("pulsarClient or conf or clz can't be null");
 
-        String topics = conf.getTopic();
-        if (topics == null || "".equals(topics)) throw new RuntimeException("topics can't be null");
+        if (isBlank(conf.getTopic())) throw new RuntimeException("topics can't be null");
 
-        String producerName = conf.getProducerName();
-        if (producerName == null || "".equals(producerName)) throw new RuntimeException("producerName can't be null");
+        if (isBlank(conf.getProducerName())) throw new RuntimeException("producerName can't be null");
 
-        if (conf.getAccessMode() == null) throw new RuntimeException("accessMode can't be null");
+        if (isNull(conf.getAccessMode())) throw new RuntimeException("accessMode can't be null");
 
-        if (conf.getMessageRoutingMode() == null) throw new RuntimeException("messageRoutingMode can't be null");
+        if (isNull(conf.getMessageRoutingMode())) throw new RuntimeException("messageRoutingMode can't be null");
 
-        if (conf.getCompressionType() == null) throw new RuntimeException("compressionType can't be null");
+        if (isNull(conf.getCompressionType())) throw new RuntimeException("compressionType can't be null");
 
         if (ofNullable(conf.getEnableBatching()).orElse(false) &&
                 ofNullable(conf.getEnableChunking()).orElse(false))
             throw new RuntimeException("batching and chunking can't be both enabled");
 
         if (ofNullable(conf.getEnableEncrypt()).orElse(false)) {
-            String encryptionKey = conf.getEncryptionKey();
-            if (encryptionKey == null || "".equals(encryptionKey))
+            if (isBlank(conf.getEncryptionKey()))
                 throw new RuntimeException("if enableEncrypt, encryptionKey can't be null");
 
-            if (conf.getProducerCryptoFailureAction() == null)
+            if (isNull(conf.getProducerCryptoFailureAction()))
                 throw new RuntimeException("if enableEncrypt, producerCryptoFailureAction or consumer can't be null");
         }
 
@@ -429,36 +520,33 @@ public final class PulsarCommonsGenerator {
      */
     @SuppressWarnings("AlibabaMethodTooLong")
     private static void assertConsumerConf(PulsarClient pulsarClient, ConsumerConf conf) {
-        if (pulsarClient == null || conf == null)
+        if (isNull(pulsarClient) || isNull(conf))
             throw new RuntimeException("pulsarClient or conf can't be null");
 
-        List<String> topics = conf.getTopics();
-        String topicsPattern = conf.getTopicsPattern();
-
         //noinspection AlibabaAvoidComplexCondition
-        if ((topics == null || topics.size() < 1) && (topicsPattern == null || "".equals(topicsPattern)))
+        if (isEmpty(conf.getTopics()) && isBlank(conf.getTopicsPattern()))
             throw new RuntimeException("topics and topicsPattern can't be both null");
 
         if (isBlank(conf.getSubscriptionName()))
             throw new RuntimeException("subscriptionName can't be null");
 
-        if (conf.getSubscriptionType() == null)
+        if (isNull(conf.getSubscriptionType()))
             throw new RuntimeException("subscriptionType can't be null");
 
-        if (conf.getSubscriptionMode() == null)
+        if (isNull(conf.getSubscriptionMode()))
             throw new RuntimeException("subscriptionMode can't be null");
 
-        if (conf.getSubscriptionInitialPosition() == null)
+        if (isNull(conf.getSubscriptionInitialPosition()))
             throw new RuntimeException("subscriptionInitialPosition can't be null");
 
-        if (conf.getRegexSubscriptionMode() == null)
+        if (isNull(conf.getRegexSubscriptionMode()))
             throw new RuntimeException("regexSubscriptionMode can't be null");
 
         if (ofNullable(conf.getEnableEncrypt()).orElse(false)) {
             if (isBlank(conf.getEncryptionKey()))
                 throw new RuntimeException("if enableEncrypt, encryptionKey can't be null or ''");
 
-            if (conf.getConsumerCryptoFailureAction() == null)
+            if (isNull(conf.getConsumerCryptoFailureAction()))
                 throw new RuntimeException("if enableEncrypt, consumerCryptoFailureAction can't be null");
         }
 
@@ -470,33 +558,33 @@ public final class PulsarCommonsGenerator {
                 throw new RuntimeException("if enableDeadLetter, retryLetterTopic can't be null");
 
             Integer maxRedeliverCount = conf.getMaxRedeliverCount();
-            if (maxRedeliverCount == null || maxRedeliverCount < 1)
+            if (isNull(maxRedeliverCount) || maxRedeliverCount < 1)
                 throw new RuntimeException("if enableDeadLetter, maxRedeliverCount can't be null or less than 1");
         }
 
         if (ofNullable(conf.getEnableBatchReceive()).orElse(false)) {
             Integer batchReceiveMaxNumMessages = conf.getBatchReceiveMaxNumMessages();
-            if (batchReceiveMaxNumMessages == null || batchReceiveMaxNumMessages < -1)
+            if (isNull(batchReceiveMaxNumMessages) || batchReceiveMaxNumMessages < -1)
                 throw new RuntimeException("batchReceiveMaxNumMessages can't be null or less than -1");
 
             Integer batchReceiveMaxNumBytes = conf.getBatchReceiveMaxNumBytes();
-            if (batchReceiveMaxNumBytes == null || batchReceiveMaxNumBytes < 1)
+            if (isNull(batchReceiveMaxNumBytes) || batchReceiveMaxNumBytes < 1)
                 throw new RuntimeException("batchReceiveMaxNumBytes can't be null or less than 1");
 
             Integer batchReceiveTimeoutMillis = conf.getBatchReceiveTimeoutMillis();
-            if (batchReceiveTimeoutMillis == null || batchReceiveTimeoutMillis < 1)
+            if (isNull(batchReceiveTimeoutMillis) || batchReceiveTimeoutMillis < 1)
                 throw new RuntimeException("batchReceiveTimeoutMillis can't be null or less than 1");
         }
 
         Integer pollDurationMills = conf.getPollDurationMills();
-        if (pollDurationMills == null || pollDurationMills < 1)
+        if (isNull(pollDurationMills) || pollDurationMills < 1)
             throw new RuntimeException("pollDurationMills can't be null or less than 1");
 
         if (conf.getEnableNegativeAcknowledge() == null)
             throw new RuntimeException("enableNegativeAcknowledge can't be null");
 
         Integer workingThreads = conf.getWorkingThreads();
-        if (workingThreads == null || workingThreads < 1)
+        if (isNull(workingThreads) || workingThreads < 1)
             throw new RuntimeException("workingThreads can't be null or less than 1");
     }
     //</editor-fold>

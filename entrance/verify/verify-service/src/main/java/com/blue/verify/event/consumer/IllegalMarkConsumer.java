@@ -5,6 +5,7 @@ import com.blue.basic.model.event.IllegalMarkEvent;
 import com.blue.pulsar.component.BluePulsarListener;
 import com.blue.verify.component.illegal.IllegalAsserter;
 import com.blue.verify.config.blue.BlueConsumerConfig;
+import org.apache.pulsar.client.api.PulsarClient;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
@@ -27,6 +28,8 @@ public final class IllegalMarkConsumer implements BlueLifecycle {
 
     private static final Logger LOGGER = getLogger(IllegalMarkConsumer.class);
 
+    private final PulsarClient pulsarClient;
+
     private final IllegalAsserter illegalAsserter;
 
     private final Scheduler scheduler;
@@ -35,7 +38,8 @@ public final class IllegalMarkConsumer implements BlueLifecycle {
 
     private BluePulsarListener<IllegalMarkEvent> pulsarListener;
 
-    public IllegalMarkConsumer(IllegalAsserter illegalAsserter, Scheduler scheduler, BlueConsumerConfig blueConsumerConfig) {
+    public IllegalMarkConsumer(PulsarClient pulsarClient, IllegalAsserter illegalAsserter, Scheduler scheduler, BlueConsumerConfig blueConsumerConfig) {
+        this.pulsarClient = pulsarClient;
         this.illegalAsserter = illegalAsserter;
         this.scheduler = scheduler;
         this.blueConsumerConfig = blueConsumerConfig;
@@ -50,7 +54,7 @@ public final class IllegalMarkConsumer implements BlueLifecycle {
                         .doOnError(t -> LOGGER.error("mark jwt or ip -> FAILED,illegalMarkEvent = {}, t = {}", illegalMarkEvent, t))
                         .subscribe(b -> LOGGER.warn("mark jwt or ip -> SUCCESS, illegalMarkEvent = {}, b = {}", illegalMarkEvent, b));
 
-        this.pulsarListener = generateListener(blueConsumerConfig.getByKey(ILLEGAL_MARK.name), dataEvent);
+        this.pulsarListener = generateListener(pulsarClient, blueConsumerConfig.getByKey(ILLEGAL_MARK.name), dataEvent);
     }
 
     @Override

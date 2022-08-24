@@ -6,6 +6,7 @@ import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.event.InvalidAuthEvent;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.pulsar.component.BluePulsarListener;
+import org.apache.pulsar.client.api.PulsarClient;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
@@ -32,6 +33,8 @@ public final class InvalidAuthConsumer implements BlueLifecycle {
 
     private static final Logger LOGGER = getLogger(InvalidAuthConsumer.class);
 
+    private final PulsarClient pulsarClient;
+
     private final BlueConsumerConfig blueConsumerConfig;
 
     private final Scheduler scheduler;
@@ -40,7 +43,8 @@ public final class InvalidAuthConsumer implements BlueLifecycle {
 
     private BluePulsarListener<InvalidAuthEvent> pulsarListener;
 
-    public InvalidAuthConsumer(BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, AuthControlService authControlService) {
+    public InvalidAuthConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, AuthControlService authControlService) {
+        this.pulsarClient = pulsarClient;
         this.blueConsumerConfig = blueConsumerConfig;
         this.scheduler = scheduler;
         this.authControlService = authControlService;
@@ -56,7 +60,7 @@ public final class InvalidAuthConsumer implements BlueLifecycle {
                                 .doOnError(throwable -> LOGGER.info("authControlService.invalidateAuthByMemberId(mid) failed, mid = {}, throwable = {}", mid, throwable))
                                 .subscribe(b -> LOGGER.info("authControlService.invalidateAuthByMemberId(mid), b = {}, mid = {}", b, mid)));
 
-        this.pulsarListener = generateListener(blueConsumerConfig.getByKey(INVALID_AUTH.name), dataConsumer);
+        this.pulsarListener = generateListener(pulsarClient, blueConsumerConfig.getByKey(INVALID_AUTH.name), dataConsumer);
     }
 
     @Override

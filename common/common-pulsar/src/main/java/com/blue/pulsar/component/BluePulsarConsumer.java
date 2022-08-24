@@ -12,7 +12,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
-import static com.blue.pulsar.common.PulsarCommonsGenerator.generateClient;
 import static com.blue.pulsar.common.PulsarCommonsGenerator.generateConsumer;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -28,9 +27,9 @@ public final class BluePulsarConsumer<T extends Serializable> implements Consume
 
     private final org.apache.pulsar.client.api.Consumer<T> pulsarConsumer;
 
-    public BluePulsarConsumer(ConsumerConf conf, java.util.function.Consumer<T> consumer, MessageListener<T> messageListener, ConsumerEventListener consumerEventListener,
-                              List<ConsumerInterceptor<T>> interceptors, KeySharedPolicy keySharedPolicy) {
-        this.pulsarConsumer = generateConsumer(generateClient(conf), conf, consumer, messageListener, consumerEventListener, interceptors, keySharedPolicy);
+    public BluePulsarConsumer(PulsarClient pulsarClient, ConsumerConf conf, java.util.function.Consumer<T> consumer, ConsumerEventListener consumerEventListener,
+                              List<ConsumerInterceptor<T>> interceptors, KeySharedPolicy keySharedPolicy, MessageListener<T> messageListener) {
+        this.pulsarConsumer = generateConsumer(pulsarClient, conf, consumer, consumerEventListener, interceptors, keySharedPolicy, messageListener);
     }
 
     @Override

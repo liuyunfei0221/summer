@@ -6,6 +6,7 @@ import com.blue.basic.model.exps.BlueException;
 import com.blue.pulsar.component.BluePulsarListener;
 import com.blue.shine.config.blue.BlueConsumerConfig;
 import com.blue.shine.service.inter.ShineService;
+import org.apache.pulsar.client.api.PulsarClient;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
@@ -32,6 +33,8 @@ public final class ShineDeleteConsumer implements BlueLifecycle {
 
     private static final Logger LOGGER = getLogger(ShineDeleteConsumer.class);
 
+    private final PulsarClient pulsarClient;
+
     private final BlueConsumerConfig blueConsumerConfig;
 
     private final Scheduler scheduler;
@@ -40,7 +43,8 @@ public final class ShineDeleteConsumer implements BlueLifecycle {
 
     private BluePulsarListener<IdentityEvent> pulsarListener;
 
-    public ShineDeleteConsumer(BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, ShineService shineService) {
+    public ShineDeleteConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, ShineService shineService) {
+        this.pulsarClient = pulsarClient;
         this.blueConsumerConfig = blueConsumerConfig;
         this.scheduler = scheduler;
         this.shineService = shineService;
@@ -55,7 +59,7 @@ public final class ShineDeleteConsumer implements BlueLifecycle {
                                 .doOnError(throwable -> LOGGER.info("shineService.deleteShineEvent(IdentityEvent identityEvent) failed, ie = {}, throwable = {}", ie, throwable))
                                 .subscribe(b -> LOGGER.info("shineService.deleteShineEvent(IdentityEvent identityEvent), b = {}, ie = {}", b, ie)));
 
-        this.pulsarListener = generateListener(blueConsumerConfig.getByKey(SHINE_DELETE.name), dataConsumer);
+        this.pulsarListener = generateListener(pulsarClient, blueConsumerConfig.getByKey(SHINE_DELETE.name), dataConsumer);
     }
 
     @Override

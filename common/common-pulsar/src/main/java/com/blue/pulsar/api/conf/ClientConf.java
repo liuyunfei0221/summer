@@ -1,7 +1,5 @@
 package com.blue.pulsar.api.conf;
 
-import org.apache.pulsar.client.api.ProxyProtocol;
-
 import java.util.List;
 
 /**
@@ -68,10 +66,16 @@ public interface ClientConf {
 
     Boolean getEnableProxy();
 
-    String getProxyServiceUrl();
+    Proxy getProxy();
 
-    ProxyProtocol getProxyProtocol();
+    Boolean getEnableSocks5Proxy();
+
+    Socks5Proxy getSocks5Proxy();
 
     Boolean getEnableTransaction();
+
+    Boolean getEnableFailover();
+
+    ClusterFailover getClusterFailover();
 
 }

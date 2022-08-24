@@ -5,6 +5,7 @@ import com.blue.basic.model.event.DataEvent;
 import com.blue.event.config.blue.BlueProducerConfig;
 import com.blue.pulsar.component.BluePulsarProducer;
 import org.apache.pulsar.client.api.MessageId;
+import org.apache.pulsar.client.api.PulsarClient;
 import reactor.util.Logger;
 
 import java.util.concurrent.CompletableFuture;
@@ -32,9 +33,9 @@ public final class RequestEventProducer implements BlueLifecycle {
 
     private final BluePulsarProducer<DataEvent> pulsarProducer;
 
-    public RequestEventProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
+    public RequestEventProducer(PulsarClient pulsarClient, ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
         this.executorService = executorService;
-        this.pulsarProducer = generateProducer(blueProducerConfig.getByKey(REQUEST_EVENT.name), DataEvent.class);
+        this.pulsarProducer = generateProducer(pulsarClient, blueProducerConfig.getByKey(REQUEST_EVENT.name), DataEvent.class);
     }
 
     @Override

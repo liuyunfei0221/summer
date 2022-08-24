@@ -6,11 +6,13 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.annotation.Order;
 import org.springframework.transaction.TransactionManager;
 
 import javax.sql.DataSource;
 
 import static com.blue.database.api.generator.BlueDataAccessGenerator.*;
+import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
 
 /**
@@ -19,6 +21,7 @@ import static com.blue.database.api.generator.BlueDataAccessGenerator.*;
  * @author liuyunfei
  */
 @AutoConfiguration
+@Order(HIGHEST_PRECEDENCE)
 public class BlueDataAccessConfiguration {
 
     private final DataAccessConf dataAccessConf;

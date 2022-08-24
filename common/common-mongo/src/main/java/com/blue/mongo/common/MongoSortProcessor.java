@@ -1,17 +1,19 @@
 package com.blue.mongo.common;
 
 
-import com.blue.basic.common.base.BlueChecker;
-import com.blue.basic.model.common.SortCondition;
+import com.blue.basic.model.common.SortElement;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.mongo.constant.SortSchema;
 import org.springframework.data.domain.Sort;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 
@@ -23,44 +25,43 @@ import static java.util.stream.Collectors.toMap;
 @SuppressWarnings({"JavadocDeclaration"})
 public final class MongoSortProcessor {
 
-    private static final Sort DEFAULT_SORT = Sort.unsorted();
+    private static final Map<String, Function<String, Sort.Order>> MAPPING =
+            Stream.of(SortSchema.values()).collect(toMap(e -> e.sortType.identity, e -> e.sortOrder, (a, b) -> a));
 
-    private static final Map<String, Function<String, Sort>> MAPPING =
-            Stream.of(SortSchema.values()).collect(toMap(e -> e.sortType.identity, e -> e.converter, (a, b) -> a));
+    private static final Function<String, Function<String, Sort.Order>> PROCESSOR = sortType -> {
+        if (isNotBlank(sortType))
+            return ofNullable(MAPPING.get(sortType)).orElseThrow(() -> new BlueException(INVALID_IDENTITY));
 
-    private static final BiFunction<String, String, Sort> PROCESSOR = (sort, attr) ->
-            isNotBlank(attr) ?
-                    ofNullable(sort)
-                            .map(MAPPING::get)
-                            .map(p -> p.apply(attr))
-                            .orElse(DEFAULT_SORT)
-                    :
-                    DEFAULT_SORT;
+        throw new BlueException(INVALID_IDENTITY);
+    };
 
     /**
-     * assert and package sort attr
+     * package sort attr
      *
-     * @param sort
-     * @param attr
+     * @param sorts
      * @return
      */
-    public static Sort process(String sort, String attr) {
-        return PROCESSOR.apply(sort, attr);
-    }
+    public static Sort process(List<SortElement> sorts) {
+        if (isEmpty(sorts))
+            return Sort.unsorted();
 
-    /**
-     * assert and package sort attr
-     *
-     * @param condition
-     * @param sortAttrMapping
-     * @param defaultSortAttr
-     */
-    public static Sort process(SortCondition condition, Map<String, String> sortAttrMapping, String defaultSortAttr) {
-        return isNotNull(condition) ?
-                process(condition.getSortType(), ofNullable(sortAttrMapping).filter(BlueChecker::isNotEmpty).map(sar -> sar.get(condition.getSortAttribute())).filter(BlueChecker::isNotBlank).orElse(defaultSortAttr))
-                :
-                DEFAULT_SORT;
+        List<Sort.Order> orders = new ArrayList<>(sorts.size());
 
+        String sortAttribute;
+        String sortType;
+
+        for (SortElement sortElement : sorts) {
+            if (isNull(sortElement))
+                continue;
+
+            sortAttribute = sortElement.getSortAttribute();
+            sortType = sortElement.getSortType();
+
+            if (isNotBlank(sortAttribute) && isNotBlank(sortType))
+                orders.add(PROCESSOR.apply(sortType).apply(sortAttribute));
+        }
+
+        return isNotEmpty(orders) ? Sort.by(orders) : Sort.unsorted();
     }
 
 }

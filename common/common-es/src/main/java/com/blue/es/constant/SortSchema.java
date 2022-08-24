@@ -1,11 +1,7 @@
 package com.blue.es.constant;
 
-import co.elastic.clients.elasticsearch._types.FieldSort;
-import co.elastic.clients.elasticsearch._types.SortOptions;
 import co.elastic.clients.elasticsearch._types.SortOrder;
 import com.blue.basic.constant.common.SortType;
-
-import java.util.function.Function;
 
 /**
  * package sort attr
@@ -17,21 +13,19 @@ public enum SortSchema {
     /**
      * DESC
      */
-    DESC(SortType.DESC, attr ->
-            SortOptions.of(builder -> builder.field(FieldSort.of(b -> b.field(attr).order(SortOrder.Desc))))),
+    DESC(SortType.DESC, SortOrder.Desc),
     /**
      * ASC
      */
-    ASC(SortType.ASC, attr ->
-            SortOptions.of(builder -> builder.field(FieldSort.of(b -> b.field(attr).order(SortOrder.Asc)))));
+    ASC(SortType.ASC, SortOrder.Asc);
 
     public final SortType sortType;
 
-    public final Function<String, SortOptions> converter;
+    public final SortOrder sortOrder;
 
-    SortSchema(SortType sortType, Function<String, SortOptions> converter) {
+    SortSchema(SortType sortType, SortOrder sortOrder) {
         this.sortType = sortType;
-        this.converter = converter;
+        this.sortOrder = sortOrder;
     }
 
 }

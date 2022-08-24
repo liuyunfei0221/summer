@@ -8,6 +8,7 @@ import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.annotation.Order;
 import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Isolation;
@@ -26,6 +27,7 @@ import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.context.annotation.AdviceMode.PROXY;
+import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
@@ -36,6 +38,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc", "DefaultAnnotationParam"})
 @EnableTransactionManagement(proxyTargetClass = true, mode = PROXY, order = LOWEST_PRECEDENCE)
+@Order(HIGHEST_PRECEDENCE)
 public class BlueTransactionConfiguration {
 
     private static final Logger LOGGER = getLogger(BlueTransactionConfiguration.class);

@@ -5,6 +5,7 @@ import com.blue.basic.model.event.EmptyEvent;
 import com.blue.marketing.config.blue.BlueProducerConfig;
 import com.blue.pulsar.component.BluePulsarProducer;
 import org.apache.pulsar.client.api.MessageId;
+import org.apache.pulsar.client.api.PulsarClient;
 import reactor.util.Logger;
 
 import java.util.concurrent.CompletableFuture;
@@ -31,9 +32,9 @@ public final class RewardsRefreshProducer implements BlueLifecycle {
 
     private final BluePulsarProducer<EmptyEvent> pulsarProducer;
 
-    public RewardsRefreshProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
+    public RewardsRefreshProducer(PulsarClient pulsarClient, ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
         this.executorService = executorService;
-        this.pulsarProducer = generateProducer(blueProducerConfig.getByKey(REWARDS_REFRESH.name), EmptyEvent.class);
+        this.pulsarProducer = generateProducer(pulsarClient, blueProducerConfig.getByKey(REWARDS_REFRESH.name), EmptyEvent.class);
     }
 
     @Override

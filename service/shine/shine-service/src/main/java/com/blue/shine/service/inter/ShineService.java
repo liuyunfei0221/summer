@@ -6,6 +6,7 @@ import com.blue.basic.model.common.ScrollModelRequest;
 import com.blue.basic.model.common.ScrollModelResponse;
 import com.blue.basic.model.event.IdentityEvent;
 import com.blue.es.model.PitCursor;
+import com.blue.es.model.SearchAfterCursor;
 import com.blue.shine.api.model.ShineInfo;
 import com.blue.shine.model.ShineCondition;
 import com.blue.shine.model.ShineInsertParam;
@@ -103,7 +104,7 @@ public interface ShineService {
      * @param scrollModelRequest
      * @return
      */
-    Mono<ScrollModelResponse<ShineInfo, String>> selectShineInfoScrollMonoByScrollAndCursor(ScrollModelRequest<ShineCondition, String> scrollModelRequest);
+    Mono<ScrollModelResponse<ShineInfo, SearchAfterCursor>> selectShineInfoScrollMonoByScrollAndCursor(ScrollModelRequest<ShineCondition, SearchAfterCursor> scrollModelRequest);
 
     /**
      * select shine info scroll by cursor with pit

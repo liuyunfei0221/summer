@@ -9,7 +9,7 @@ import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static java.util.Collections.emptyList;
 
 /**
- * es sort processor
+ * es pit cursor
  *
  * @author liuyunfei
  */
@@ -26,16 +26,16 @@ public final class PitCursor implements Serializable {
     /**
      * search after cursor
      */
-    private List<String> searchAfters;
+    private List<String> searchAfter;
 
     public PitCursor() {
         this.id = EMPTY_DATA.value;
-        this.searchAfters = emptyList();
+        this.searchAfter = emptyList();
     }
 
-    public PitCursor(String id, List<String> searchAfters) {
+    public PitCursor(String id, List<String> searchAfter) {
         this.id = isNotNull(id) ? id : EMPTY_DATA.value;
-        this.searchAfters = isNotEmpty(searchAfters) ? searchAfters : emptyList();
+        this.searchAfter = isNotEmpty(searchAfter) ? searchAfter : emptyList();
     }
 
     public String getId() {
@@ -46,19 +46,19 @@ public final class PitCursor implements Serializable {
         this.id = id;
     }
 
-    public List<String> getSearchAfters() {
-        return searchAfters;
+    public List<String> getSearchAfter() {
+        return searchAfter;
     }
 
-    public void setSearchAfters(List<String> searchAfters) {
-        this.searchAfters = searchAfters;
+    public void setSearchAfter(List<String> searchAfter) {
+        this.searchAfter = searchAfter;
     }
 
     @Override
     public String toString() {
         return "PitCursor{" +
                 "id='" + id + '\'' +
-                ", searchAfters=" + searchAfters +
+                ", searchAfter=" + searchAfter +
                 '}';
     }
 

@@ -38,10 +38,7 @@ import static com.blue.gateway.common.GatewayCommonFunctions.ON_ERROR_CONSUMER_W
 import static com.blue.gateway.common.GatewayCommonFunctions.getRequestDecorator;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_POST_WITH_DATA_REPORT;
 import static java.lang.String.valueOf;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
-import static org.springframework.http.HttpHeaders.CONTENT_LENGTH;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
 import static reactor.core.publisher.Flux.from;
@@ -111,13 +108,10 @@ public final class BluePostWithDataReportFilter implements GlobalFilter, Ordered
                 .body(from(body)).build()
                 .bodyToMono(String.class)
                 .flatMap(responseBody -> {
-                            String tarBody = RESPONSE_BODY_PROCESSOR.apply(responseBody, exchange.getAttributes());
-
                             dataEvent.addData(RESPONSE_BODY.key, responseBody);
                             requestEventReporter.report(dataEvent);
 
-                            response.getHeaders().put(CONTENT_LENGTH, singletonList(valueOf(tarBody.getBytes(UTF_8).length)));
-                            return just(tarBody);
+                            return just(RESPONSE_BODY_PROCESSOR.apply(responseBody, exchange.getAttributes()));
                         }
                 );
     }
@@ -128,6 +122,9 @@ public final class BluePostWithDataReportFilter implements GlobalFilter, Ordered
         HttpStatus httpStatus = ofNullable(response.getStatusCode()).orElse(OK);
         dataEvent.addData(RESPONSE_STATUS.key, valueOf(httpStatus.value()).intern());
 
+        ofNullable(response.getHeaders().getFirst(BlueHeader.RESPONSE_EXTRA.name))
+                .ifPresent(extra -> dataEvent.addData(RESPONSE_EXTRA.key, extra));
+
         if (ofNullable(exchange.getAttributes().get(EXISTENCE_RESPONSE_BODY.key))
                 .map(b -> (boolean) b).orElse(true)) {
             //noinspection NullableProblems
@@ -136,9 +133,6 @@ public final class BluePostWithDataReportFilter implements GlobalFilter, Ordered
                 public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
                     CachedBodyOutputMessage outputMessage = new CachedBodyOutputMessage(
                             exchange, exchange.getResponse().getHeaders());
-
-                    ofNullable(response.getHeaders().getFirst(BlueHeader.RESPONSE_EXTRA.name))
-                            .ifPresent(extra -> dataEvent.addData(RESPONSE_EXTRA.key, extra));
 
                     return fromPublisher(getResponseBodyAndReport(exchange, httpStatus, body, dataEvent), String.class)
                             .insert(outputMessage, new BodyInserterContext())
@@ -158,13 +152,9 @@ public final class BluePostWithDataReportFilter implements GlobalFilter, Ordered
             };
         }
 
-        ServerHttpResponse decoratorResponse = new ServerHttpResponseDecorator(response);
-        ofNullable(response.getHeaders().getFirst(BlueHeader.RESPONSE_EXTRA.name))
-                .ifPresent(extra -> dataEvent.addData(RESPONSE_EXTRA.key, extra));
-
         requestEventReporter.report(dataEvent);
 
-        return decoratorResponse;
+        return response;
     }
 
     private Mono<Void> reportWithoutRequestBody(ServerWebExchange exchange, GatewayFilterChain chain, DataEvent dataEvent) {

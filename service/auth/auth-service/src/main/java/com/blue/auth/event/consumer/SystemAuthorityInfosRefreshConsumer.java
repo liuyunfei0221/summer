@@ -5,6 +5,7 @@ import com.blue.auth.service.inter.AuthControlService;
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.event.EmptyEvent;
 import com.blue.pulsar.component.BluePulsarListener;
+import org.apache.pulsar.client.api.PulsarClient;
 import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
@@ -28,6 +29,8 @@ public final class SystemAuthorityInfosRefreshConsumer implements BlueLifecycle 
 
     private static final Logger LOGGER = getLogger(SystemAuthorityInfosRefreshConsumer.class);
 
+    private final PulsarClient pulsarClient;
+
     private final BlueConsumerConfig blueConsumerConfig;
 
     private final Scheduler scheduler;
@@ -36,7 +39,8 @@ public final class SystemAuthorityInfosRefreshConsumer implements BlueLifecycle 
 
     private BluePulsarListener<EmptyEvent> pulsarListener;
 
-    public SystemAuthorityInfosRefreshConsumer(BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, AuthControlService authControlService) {
+    public SystemAuthorityInfosRefreshConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, AuthControlService authControlService) {
+        this.pulsarClient = pulsarClient;
         this.blueConsumerConfig = blueConsumerConfig;
         this.scheduler = scheduler;
         this.authControlService = authControlService;
@@ -51,7 +55,7 @@ public final class SystemAuthorityInfosRefreshConsumer implements BlueLifecycle 
                                 .doOnError(throwable -> LOGGER.info("authControlService.refreshSystemAuthorityInfos() failed, ee = {}, throwable = {}", ee, throwable))
                                 .subscribe(ig -> LOGGER.info("authControlService.refreshSystemAuthorityInfos(), ig = {}, ee = {}", ig, ee)));
 
-        this.pulsarListener = generateListener(blueConsumerConfig.getByKey(SYSTEM_AUTHORITY_INFOS_REFRESH.name), dataConsumer);
+        this.pulsarListener = generateListener(pulsarClient, blueConsumerConfig.getByKey(SYSTEM_AUTHORITY_INFOS_REFRESH.name), dataConsumer);
     }
 
     @Override

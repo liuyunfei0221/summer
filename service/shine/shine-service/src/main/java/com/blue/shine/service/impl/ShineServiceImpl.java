@@ -9,17 +9,19 @@ import co.elastic.clients.elasticsearch.core.search.HitsMetadata;
 import co.elastic.clients.json.JsonData;
 import com.blue.base.api.model.CityRegion;
 import com.blue.basic.common.base.BlueChecker;
-import com.blue.basic.model.common.PageModelRequest;
-import com.blue.basic.model.common.PageModelResponse;
-import com.blue.basic.model.common.ScrollModelRequest;
-import com.blue.basic.model.common.ScrollModelResponse;
+import com.blue.basic.constant.common.SortType;
+import com.blue.basic.model.common.*;
 import com.blue.basic.model.event.IdentityEvent;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.es.model.PitCursor;
 import com.blue.es.model.QueryAndHighlightColumns;
+import com.blue.es.model.SearchAfterCursor;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.shine.api.model.ShineInfo;
-import com.blue.shine.config.deploy.*;
+import com.blue.shine.config.deploy.DefaultPriorityDeploy;
+import com.blue.shine.config.deploy.FuzzinessDeploy;
+import com.blue.shine.config.deploy.HighlightDeploy;
+import com.blue.shine.config.deploy.PitDeploy;
 import com.blue.shine.constant.ShineSortAttribute;
 import com.blue.shine.event.producer.ShineDeleteProducer;
 import com.blue.shine.event.producer.ShineInsertProducer;
@@ -53,8 +55,6 @@ import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.es.common.EsPitProcessor.packagePit;
 import static com.blue.es.common.EsPitProcessor.parsePit;
-import static com.blue.es.common.EsPitSearchAfterProcessor.packagePitSearchAfter;
-import static com.blue.es.common.EsPitSearchAfterProcessor.parsePitSearchAfter;
 import static com.blue.es.common.EsSearchAfterProcessor.packageSearchAfter;
 import static com.blue.es.common.EsSearchAfterProcessor.parseSearchAfter;
 import static com.blue.es.common.EsSortProcessor.process;
@@ -68,7 +68,6 @@ import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static org.apache.commons.lang3.math.NumberUtils.isDigits;
 import static reactor.core.publisher.Flux.fromIterable;
 import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
@@ -222,8 +221,22 @@ public class ShineServiceImpl implements ShineService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(ShineSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final Function<ShineCondition, SortOptions> SORT_PROCESSOR = c ->
-            process(c, SORT_ATTRIBUTE_MAPPING, ShineSortAttribute.ID.column);
+    private static final Function<ShineCondition, SortOptions> SORT_PROCESSOR = c -> {
+        String sortAttribute = ofNullable(c).map(ShineCondition::getSortAttribute)
+                .map(SORT_ATTRIBUTE_MAPPING::get)
+                .filter(BlueChecker::isNotBlank)
+                .orElse(ShineSortAttribute.CREATE_TIME.column);
+
+        String sortType = ofNullable(c).map(ShineCondition::getSortType)
+                .filter(BlueChecker::isNotBlank)
+                .orElse(SortType.DESC.identity);
+
+        return sortAttribute.equals(ShineSortAttribute.ID.column) ?
+                process(singletonList(new SortElement(sortAttribute, sortType)))
+                :
+                process(Stream.of(sortAttribute, ShineSortAttribute.ID.column)
+                        .map(attr -> new SortElement(attr, sortType)).collect(toList()));
+    };
 
     private static final Map<String, BiConsumer<List<String>, Shine>> HIGH_LIGHT_PROCESSORS;
 
@@ -601,22 +614,11 @@ public class ShineServiceImpl implements ShineService {
      * @return
      */
     @Override
-    public Mono<ScrollModelResponse<ShineInfo, String>> selectShineInfoScrollMonoByScrollAndCursor(ScrollModelRequest<ShineCondition, String> scrollModelRequest) {
-        LOGGER.info("Mono<ScrollModelResponse<ShineInfo, String>> selectShineInfoScrollMonoByScrollAndCursor(ScrollModelRequest<ShineCondition, String> scrollModelRequest), " +
+    public Mono<ScrollModelResponse<ShineInfo, SearchAfterCursor>> selectShineInfoScrollMonoByScrollAndCursor(ScrollModelRequest<ShineCondition, SearchAfterCursor> scrollModelRequest) {
+        LOGGER.info("Mono<ScrollModelResponse<ShineInfo, SearchAfterCursor>> selectShineInfoScrollMonoByScrollAndCursor(ScrollModelRequest<ShineCondition, SearchAfterCursor> scrollModelRequest), " +
                 "scrollModelRequest = {}", scrollModelRequest);
         if (isNull(scrollModelRequest))
             throw new BlueException(EMPTY_PARAM);
-
-        ofNullable(scrollModelRequest.getCursor())
-                .filter(BlueChecker::isNotBlank)
-                .ifPresent(cursor -> {
-                    if (!isDigits(cursor))
-                        throw new BlueException(INVALID_IDENTITY);
-                });
-
-        String searchAfter = ofNullable(scrollModelRequest.getCursor()).filter(BlueChecker::isNotBlank).orElse(EMPTY_DATA.value);
-        if (isNotBlank(searchAfter) && !isDigits(searchAfter))
-            throw new BlueException(INVALID_IDENTITY);
 
         ShineCondition condition = scrollModelRequest.getCondition();
         QueryAndHighlightColumns queryAndHighlightColumns = CONDITION_PROCESSOR.apply(condition);
@@ -631,7 +633,9 @@ public class ShineServiceImpl implements ShineService {
                             .size(scrollModelRequest.getRows().intValue());
 
                     packageHighlight(builder, queryAndHighlightColumns.getColumns(), preTags, postTags);
-                    packageSearchAfter(builder, searchAfter);
+                    packageSearchAfter(builder, ofNullable(scrollModelRequest.getCursor())
+                            .map(SearchAfterCursor::getSearchAfter)
+                            .filter(BlueChecker::isNotEmpty).orElseGet(Collections::emptyList));
 
                     return builder;
                 }), Shine.class)
@@ -643,7 +647,7 @@ public class ShineServiceImpl implements ShineService {
                                 .filter(BlueChecker::isNotEmpty)
                                 .map(hits ->
                                         just(new ScrollModelResponse<>(parseHighlight(hits, HIGH_LIGHT_PROCESSORS).stream().map(SHINE_2_SHINE_INFO).collect(toList()),
-                                                parseSearchAfter(hits)))
+                                                new SearchAfterCursor(parseSearchAfter(hits))))
                                 ).orElseGet(() -> just(new ScrollModelResponse<>(emptyList())))
                 )
                 .switchIfEmpty(defer(() -> just(new ScrollModelResponse<>(emptyList()))));
@@ -684,7 +688,7 @@ public class ShineServiceImpl implements ShineService {
                                             .size(scrollModelRequest.getRows().intValue());
 
                                     packageHighlight(builder, queryAndHighlightColumns.getColumns(), preTags, postTags);
-                                    packagePitSearchAfter(builder, ofNullable(cursor).map(PitCursor::getSearchAfters).filter(BlueChecker::isNotEmpty).orElseGet(Collections::emptyList));
+                                    packageSearchAfter(builder, ofNullable(cursor).map(PitCursor::getSearchAfter).filter(BlueChecker::isNotEmpty).orElseGet(Collections::emptyList));
                                     packagePit(builder, id, PIT_TIME);
 
                                     return builder;
@@ -696,7 +700,7 @@ public class ShineServiceImpl implements ShineService {
                                                 .filter(BlueChecker::isNotEmpty)
                                                 .map(hits ->
                                                         just(new ScrollModelResponse<>(parseHighlight(hits, HIGH_LIGHT_PROCESSORS).stream().map(SHINE_2_SHINE_INFO).collect(toList()),
-                                                                new PitCursor(parsePit(searchResponse), parsePitSearchAfter(hits))))
+                                                                new PitCursor(parsePit(searchResponse), parseSearchAfter(hits))))
                                                 ).orElseGet(() -> just(new ScrollModelResponse<>(emptyList(), new PitCursor())))
                                 )
                                 .switchIfEmpty(defer(() -> just(new ScrollModelResponse<>(emptyList(), new PitCursor())))));

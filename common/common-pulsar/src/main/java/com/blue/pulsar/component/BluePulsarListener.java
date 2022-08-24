@@ -16,7 +16,6 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static com.blue.pulsar.common.PulsarCommonsGenerator.generateClient;
 import static com.blue.pulsar.common.PulsarCommonsGenerator.generateConsumer;
 import static java.lang.Thread.onSpinWait;
 import static java.util.Optional.ofNullable;
@@ -68,19 +67,9 @@ public final class BluePulsarListener<T extends Serializable> {
         throw new RuntimeException("data or params can't be null");
     };
 
-    /**
-     * constructor
-     *
-     * @param conf
-     * @param consumer
-     * @param messageListener
-     * @param consumerEventListener
-     * @param interceptors
-     * @param keySharedPolicy
-     */
-    public BluePulsarListener(ConsumerConf conf, Consumer<T> consumer, MessageListener<T> messageListener, ConsumerEventListener consumerEventListener,
+    public BluePulsarListener(PulsarClient pulsarClient, ConsumerConf conf, Consumer<T> consumer, ConsumerEventListener consumerEventListener,
                               List<ConsumerInterceptor<T>> interceptors, KeySharedPolicy keySharedPolicy) {
-        this.pulsarConsumer = generateConsumer(generateClient(conf), conf, consumer, messageListener, consumerEventListener, interceptors, keySharedPolicy);
+        this.pulsarConsumer = generateConsumer(pulsarClient, conf, consumer, consumerEventListener, interceptors, keySharedPolicy, null);
 
         ACK_CONSUMER_GENERATOR_HOLDER.put(true, NEGATIVE_ACKNOWLEDGE_CONSUMER_GENERATOR);
         ACK_CONSUMER_GENERATOR_HOLDER.put(false, AUTO_ACKNOWLEDGE_CONSUMER_GENERATOR);

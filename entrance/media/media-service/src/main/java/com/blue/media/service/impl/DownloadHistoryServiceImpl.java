@@ -1,10 +1,8 @@
 package com.blue.media.service.impl;
 
 import com.blue.basic.common.base.BlueChecker;
-import com.blue.basic.model.common.PageModelRequest;
-import com.blue.basic.model.common.PageModelResponse;
-import com.blue.basic.model.common.ScrollModelRequest;
-import com.blue.basic.model.common.ScrollModelResponse;
+import com.blue.basic.constant.common.SortType;
+import com.blue.basic.model.common.*;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.media.api.model.AttachmentDetailInfo;
 import com.blue.media.api.model.DownloadHistoryInfo;
@@ -40,6 +38,7 @@ import static com.blue.mongo.common.MongoSearchAfterProcessor.parseSearchAfter;
 import static com.blue.mongo.common.MongoSortProcessor.process;
 import static com.blue.mongo.constant.SortSchema.DESC;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -81,8 +80,22 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(DownloadHistorySortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final Function<DownloadHistoryCondition, Sort> SORTER_CONVERTER = c ->
-            process(c, SORT_ATTRIBUTE_MAPPING, DownloadHistorySortAttribute.ID.column);
+    private static final Function<DownloadHistoryCondition, Sort> SORTER_CONVERTER = c -> {
+        String sortAttribute = ofNullable(c).map(DownloadHistoryCondition::getSortAttribute)
+                .map(SORT_ATTRIBUTE_MAPPING::get)
+                .filter(BlueChecker::isNotBlank)
+                .orElse(DownloadHistorySortAttribute.CREATE_TIME.column);
+
+        String sortType = ofNullable(c).map(DownloadHistoryCondition::getSortType)
+                .filter(BlueChecker::isNotBlank)
+                .orElse(SortType.DESC.identity);
+
+        return sortAttribute.equals(DownloadHistorySortAttribute.ID.column) ?
+                process(singletonList(new SortElement(sortAttribute, sortType)))
+                :
+                process(Stream.of(sortAttribute, DownloadHistorySortAttribute.ID.column)
+                        .map(attr -> new SortElement(attr, sortType)).collect(toList()));
+    };
 
     private static final Function<DownloadHistoryCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();
@@ -177,7 +190,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
 
         query.addCriteria(byExample(probe));
         packageSearchAfter(query, DESC.sortType.identity, DownloadHistorySortAttribute.ID.column, scrollModelRequest.getCursor());
-        query.with(process(DESC.sortType.identity, DownloadHistorySortAttribute.CREATE_TIME.attribute));
+        query.with(process(singletonList(new SortElement(DownloadHistorySortAttribute.CREATE_TIME.column, DESC.sortType.identity))));
 
         query.skip(scrollModelRequest.getFrom()).limit(scrollModelRequest.getRows().intValue());
 

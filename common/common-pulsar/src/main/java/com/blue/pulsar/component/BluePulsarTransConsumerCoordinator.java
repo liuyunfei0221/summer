@@ -142,63 +142,53 @@ public final class BluePulsarTransConsumerCoordinator {
     /**
      * generate listener
      *
+     * @param pulsarClient
      * @param conf
      * @param consumer
      * @param <T>
      * @return
      */
-    public <T extends Serializable> BluePulsarListener<T> generateListener(ConsumerConf conf, Consumer<T> consumer) {
-        return new BluePulsarListener<>(conf, consumer, null, null, null, null);
+    public <T extends Serializable> BluePulsarListener<T> generateListener(PulsarClient pulsarClient, ConsumerConf conf, Consumer<T> consumer) {
+        return new BluePulsarListener<>(pulsarClient, conf, consumer, null, null, null);
     }
 
     /**
      * generate listener
      *
+     * @param pulsarClient
      * @param conf
      * @param consumer
      * @param <T>
      * @return
      */
-    public <T extends Serializable> BluePulsarListener<T> generateListener(ConsumerConf conf, Consumer<T> consumer, MessageListener<T> messageListener) {
-        return new BluePulsarListener<>(conf, consumer, messageListener, null, null, null);
+    public <T extends Serializable> BluePulsarListener<T> generateListener(PulsarClient pulsarClient, ConsumerConf conf, Consumer<T> consumer, ConsumerEventListener consumerEventListener) {
+        return new BluePulsarListener<>(pulsarClient, conf, consumer, consumerEventListener, null, null);
     }
 
     /**
      * generate listener
      *
+     * @param pulsarClient
      * @param conf
      * @param consumer
      * @param <T>
      * @return
      */
-    public <T extends Serializable> BluePulsarListener<T> generateListener(ConsumerConf conf, Consumer<T> consumer, MessageListener<T> messageListener, ConsumerEventListener consumerEventListener) {
-        return new BluePulsarListener<>(conf, consumer, messageListener, consumerEventListener, null, null);
+    public <T extends Serializable> BluePulsarListener<T> generateListener(PulsarClient pulsarClient, ConsumerConf conf, Consumer<T> consumer, ConsumerEventListener consumerEventListener, List<ConsumerInterceptor<T>> interceptors) {
+        return new BluePulsarListener<>(pulsarClient, conf, consumer, consumerEventListener, interceptors, null);
     }
 
     /**
      * generate listener
      *
+     * @param pulsarClient
      * @param conf
      * @param consumer
      * @param <T>
      * @return
      */
-    public <T extends Serializable> BluePulsarListener<T> generateListener(ConsumerConf conf, Consumer<T> consumer, MessageListener<T> messageListener,
-                                                                           ConsumerEventListener consumerEventListener, List<ConsumerInterceptor<T>> interceptors) {
-        return new BluePulsarListener<>(conf, consumer, messageListener, consumerEventListener, interceptors, null);
-    }
-
-    /**
-     * generate listener
-     *
-     * @param conf
-     * @param consumer
-     * @param <T>
-     * @return
-     */
-    public <T extends Serializable> BluePulsarListener<T> generateListener(ConsumerConf conf, Consumer<T> consumer, MessageListener<T> messageListener, ConsumerEventListener consumerEventListener,
-                                                                           List<ConsumerInterceptor<T>> interceptors, KeySharedPolicy keySharedPolicy) {
-        return new BluePulsarListener<>(conf, consumer, messageListener, consumerEventListener, interceptors, keySharedPolicy);
+    public <T extends Serializable> BluePulsarListener<T> generateListener(PulsarClient pulsarClient, ConsumerConf conf, Consumer<T> consumer, ConsumerEventListener consumerEventListener, List<ConsumerInterceptor<T>> interceptors, KeySharedPolicy keySharedPolicy) {
+        return new BluePulsarListener<>(pulsarClient, conf, consumer, consumerEventListener, interceptors, keySharedPolicy);
     }
 
 }

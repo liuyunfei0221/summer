@@ -5,6 +5,7 @@ import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.event.EmptyEvent;
 import com.blue.pulsar.component.BluePulsarProducer;
 import org.apache.pulsar.client.api.MessageId;
+import org.apache.pulsar.client.api.PulsarClient;
 import reactor.util.Logger;
 
 import java.util.concurrent.CompletableFuture;
@@ -31,9 +32,9 @@ public final class RegionInfosInvalidProducer implements BlueLifecycle {
 
     private final BluePulsarProducer<EmptyEvent> pulsarProducer;
 
-    public RegionInfosInvalidProducer(ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
+    public RegionInfosInvalidProducer(PulsarClient pulsarClient, ExecutorService executorService, BlueProducerConfig blueProducerConfig) {
         this.executorService = executorService;
-        this.pulsarProducer = generateProducer(blueProducerConfig.getByKey(REGION_INFOS_INVALID.name), EmptyEvent.class);
+        this.pulsarProducer = generateProducer(pulsarClient, blueProducerConfig.getByKey(REGION_INFOS_INVALID.name), EmptyEvent.class);
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.blue.redis.component.*;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.connection.RedisConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
@@ -19,6 +20,7 @@ import static com.blue.redis.api.generator.BlueRateLimiterGenerator.generateToke
 import static com.blue.redis.api.generator.BlueRedisGenerator.*;
 import static com.blue.redis.api.generator.BlueValidatorGenerator.generateValidator;
 import static com.blue.redis.api.generator.BlueValueMarkerGenerator.generateValueMarker;
+import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -29,6 +31,7 @@ import static reactor.util.Loggers.getLogger;
 @SuppressWarnings({"AlibabaRemoveCommentedCode"})
 @ConditionalOnBean(value = {RedisConf.class})
 @AutoConfiguration
+@Order(HIGHEST_PRECEDENCE)
 public class BlueRedisConfiguration {
 
     private static final Logger LOGGER = getLogger(BlueRedisConfiguration.class);
