@@ -1,10 +1,8 @@
 package com.blue.auth.config.auth;
 
-import com.blue.auth.api.component.jwt.api.conf.MemberJwtConf;
-import com.blue.auth.api.component.jwt.api.conf.MemberJwtConfParams;
 import com.blue.auth.component.access.AccessBatchExpireProcessor;
 import com.blue.auth.component.access.AccessInfoCache;
-import com.blue.auth.config.deploy.AuthDeploy;
+import com.blue.auth.config.deploy.AccessDeploy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
@@ -24,37 +22,26 @@ public class AuthConfig {
 
     private static final Logger LOGGER = getLogger(AuthConfig.class);
 
-    private final Scheduler scheduler;
+    private final AccessDeploy accessDeploy;
 
-    private final AuthDeploy authDeploy;
-
-    public AuthConfig(Scheduler scheduler, AuthDeploy authDeploy) {
-        this.scheduler = scheduler;
-        this.authDeploy = authDeploy;
+    public AuthConfig(AccessDeploy accessDeploy) {
+        this.accessDeploy = accessDeploy;
     }
 
     @Bean
-    MemberJwtConf memberJwtConf() {
-        LOGGER.info("authDeploy = {}", authDeploy);
-        return new MemberJwtConfParams(authDeploy.getGlobalMaxExpiresMillis(), authDeploy.getGlobalMinExpiresMillis(), authDeploy.getGlobalRefreshExpiresMillis(),
-                authDeploy.getSignKey(), authDeploy.getGammaSecrets());
+    AccessBatchExpireProcessor accessBatchExpireProcessor(StringRedisTemplate stringRedisTemplate) {
+        LOGGER.info("accessDeploy = {}", accessDeploy);
+        return new AccessBatchExpireProcessor(stringRedisTemplate, accessDeploy.getBatchExpireMaxPerHandle(),
+                accessDeploy.getBatchExpireScheduledCorePoolSize(), accessDeploy.getBatchExpireScheduledInitialDelayMillis(),
+                accessDeploy.getBatchExpireScheduledDelayMillis(), accessDeploy.getBatchExpireQueueCapacity());
     }
 
     @Bean
-    AccessBatchExpireProcessor authBatchExpireProcessor(StringRedisTemplate stringRedisTemplate) {
-        LOGGER.info("authDeploy = {}", authDeploy);
-        return new AccessBatchExpireProcessor(stringRedisTemplate,
-                authDeploy.getBatchExpireMaxPerHandle(),
-                authDeploy.getBatchExpireScheduledCorePoolSize(), authDeploy.getBatchExpireScheduledInitialDelayMillis(),
-                authDeploy.getBatchExpireScheduledDelayMillis(), authDeploy.getBatchExpireQueueCapacity());
-    }
-
-    @Bean
-    AccessInfoCache authInfoCache(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AccessBatchExpireProcessor authBatchExpireProcessor) {
-        LOGGER.info("authDeploy = {}", authDeploy);
-        return new AccessInfoCache(reactiveStringRedisTemplate, authBatchExpireProcessor, scheduler, authDeploy.getRefresherCorePoolSize(),
-                authDeploy.getRefresherMaximumPoolSize(), authDeploy.getRefresherKeepAliveSeconds(), authDeploy.getRefresherBlockingQueueCapacity(),
-                authDeploy.getGlobalMinExpiresMillis(), authDeploy.getLocalExpiresMillis(), authDeploy.getMillisLeftToHandleExpire(), authDeploy.getLocalCacheCapacity());
+    AccessInfoCache accessInfoCache(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler, AccessBatchExpireProcessor accessBatchExpireProcessor) {
+        LOGGER.info("accessDeploy = {}", accessDeploy);
+        return new AccessInfoCache(reactiveStringRedisTemplate, accessBatchExpireProcessor, scheduler, accessDeploy.getRefresherCorePoolSize(),
+                accessDeploy.getRefresherMaximumPoolSize(), accessDeploy.getRefresherKeepAliveSeconds(), accessDeploy.getRefresherBlockingQueueCapacity(),
+                accessDeploy.getGlobalExpiresMillis(), accessDeploy.getLocalExpiresMillis(), accessDeploy.getMillisLeftToHandleExpire(), accessDeploy.getLocalCacheCapacity());
     }
 
 }

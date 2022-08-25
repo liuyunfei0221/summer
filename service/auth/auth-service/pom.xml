@@ -21,11 +21,6 @@
     <dependencies>
         <dependency>
             <groupId>com.blue</groupId>
-            <artifactId>common-basic</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.blue</groupId>
             <artifactId>common-caffeine</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>

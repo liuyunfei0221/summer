@@ -2,13 +2,13 @@ package com.blue.dubbo.component;
 
 import com.blue.basic.model.exps.BlueException;
 import org.apache.dubbo.common.extension.Activate;
-import org.apache.dubbo.common.logger.Logger;
 import org.apache.dubbo.registry.Constants;
 import org.apache.dubbo.rpc.*;
 import org.apache.dubbo.rpc.service.GenericService;
+import org.slf4j.Logger;
 
-import static org.apache.dubbo.common.logger.LoggerFactory.getLogger;
 import static org.apache.dubbo.rpc.RpcContext.getServiceContext;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * dubbo exception filter
@@ -29,7 +29,7 @@ public final class BlueExceptionFilter implements Filter, Filter.Listener {
     public void onResponse(Result appResponse, Invoker<?> invoker, Invocation invocation) {
         if (appResponse.hasException() && GenericService.class != invoker.getInterface()) {
             Throwable exception = appResponse.getException();
-            LOGGER.error("dubbo catch exception, exception = {}", exception);
+            LOGGER.error("dubbo catch exception, exception = {}", exception.getMessage());
             if (exception instanceof BlueException)
                 return;
 

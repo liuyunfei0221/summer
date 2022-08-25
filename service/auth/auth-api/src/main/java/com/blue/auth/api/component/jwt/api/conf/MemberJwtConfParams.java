@@ -8,25 +8,19 @@ import java.util.List;
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class MemberJwtConfParams implements MemberJwtConf {
+public class MemberJwtConfParams implements MemberJwtConf {
 
-    private transient Long globalMaxExpiresMillis;
+    protected transient Long globalMaxExpiresMillis;
 
-    private transient Long globalMinExpiresMillis;
+    protected transient Long globalMinExpiresMillis;
 
-    private transient Long globalRefreshExpiresMillis;
+    protected transient Long globalRefreshExpiresMillis;
 
-    private transient String signKey;
+    protected transient String signKey;
 
-    private transient List<String> gammaSecrets;
+    protected transient List<String> gammaSecrets;
 
-    public MemberJwtConfParams(Long globalMaxExpiresMillis, Long globalMinExpiresMillis, Long globalRefreshExpiresMillis,
-                               String signKey, List<String> gammaSecrets) {
-        this.globalMaxExpiresMillis = globalMaxExpiresMillis;
-        this.globalMinExpiresMillis = globalMinExpiresMillis;
-        this.globalRefreshExpiresMillis = globalRefreshExpiresMillis;
-        this.signKey = signKey;
-        this.gammaSecrets = gammaSecrets;
+    public MemberJwtConfParams() {
     }
 
     @Override

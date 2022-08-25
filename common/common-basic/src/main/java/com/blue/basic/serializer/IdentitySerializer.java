@@ -9,7 +9,7 @@ import java.io.IOException;
 import static com.blue.basic.common.base.BlueChecker.isNotNull;
 
 /**
- * id long转string
+ * id long2string
  *
  * @author liuyunfei
  */

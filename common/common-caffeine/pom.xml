@@ -19,6 +19,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.blue</groupId>
+            <artifactId>common-basic</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
             <version>${caffeine.version}</version>

@@ -2,11 +2,11 @@ package com.blue.basic.component.lifecycle.ioc;
 
 import com.blue.basic.anno.EnableBlueLifecycle;
 import com.blue.basic.component.common.BlueBeanDefinitionScanner;
-import org.apache.logging.log4j.core.config.Order;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.annotation.AnnotationAttributes;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.filter.AssignableTypeFilter;

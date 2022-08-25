@@ -1,1 +1,1 @@
-blueException=com.blue.dubbo.component.BlueExceptionFilter
+blue=com.blue.dubbo.component.BlueExceptionFilter

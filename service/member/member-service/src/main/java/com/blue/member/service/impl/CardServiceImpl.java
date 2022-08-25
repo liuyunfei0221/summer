@@ -44,6 +44,7 @@ import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
 import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
 import static com.blue.basic.constant.common.ResponseElement.*;
+import static com.blue.basic.constant.common.SortType.DESC;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.basic.constant.common.Status.VALID;
 import static com.blue.basic.constant.common.SyncKeyPrefix.CARD_UPDATE_PRE;
@@ -379,7 +380,9 @@ public class CardServiceImpl implements CardService {
         Card probe = new Card();
         probe.setMemberId(memberId);
 
-        return cardRepository.findAll(Example.of(probe)).publishOn(scheduler).collectList();
+        return cardRepository.findAll(Example.of(probe),
+                process(singletonList(new SortElement(CardSortAttribute.CREATE_TIME.column, DESC.identity)))
+        ).publishOn(scheduler).collectList();
     }
 
     /**

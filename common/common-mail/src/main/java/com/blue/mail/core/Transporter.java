@@ -109,4 +109,8 @@ final class Transporter {
         sendMsg(message);
     }
 
+    public String from() {
+        return FROM_ADDRESS;
+    }
+
 }

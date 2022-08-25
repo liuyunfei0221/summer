@@ -104,6 +104,11 @@ public class StringContentTemplateWriter implements TemplateWriter {
     public void reloadTemplates(StringContentWriterConf stringContentWriterConf) {
         synchronized (this) {
             WriterElement writerElement = generateElement(stringContentWriterConf);
+
+            this.configuration.clearTemplateCache();
+            this.configuration.clearEncodingMap();
+            this.configuration.clearSharedVariables();
+
             this.configuration = writerElement.getConfiguration();
             this.templateNames = writerElement.getTemplateNames();
         }

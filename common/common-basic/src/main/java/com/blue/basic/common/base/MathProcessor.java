@@ -131,8 +131,18 @@ public final class MathProcessor {
      * @param num
      * @return
      */
+    public static boolean isPowerOf2(int num) {
+        return Integer.bitCount(num) == 1;
+    }
+
+    /**
+     * is power of 2
+     *
+     * @param num
+     * @return
+     */
     public static boolean isPowerOf2(long num) {
-        return num > 0L && 0L == (num & (num - 1L));
+        return Long.bitCount(num) == 1;
     }
 
     /**

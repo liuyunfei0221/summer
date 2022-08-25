@@ -11,7 +11,7 @@ import static com.blue.basic.common.base.BlueChecker.isNotEmpty;
 import static java.util.stream.Collectors.toList;
 
 /**
- * ids long转string
+ * ids long2string
  *
  * @author liuyunfei
  */

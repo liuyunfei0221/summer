@@ -3,7 +3,6 @@ package com.blue.member.service.impl;
 import com.blue.base.api.model.AreaRegion;
 import com.blue.base.api.model.CityRegion;
 import com.blue.basic.common.base.BlueChecker;
-import com.blue.basic.constant.common.SortType;
 import com.blue.basic.model.common.PageModelRequest;
 import com.blue.basic.model.common.PageModelResponse;
 import com.blue.basic.model.common.SortElement;
@@ -44,6 +43,7 @@ import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.common.base.ConstantProcessor.assertGender;
 import static com.blue.basic.constant.common.BlueCommonThreshold.*;
 import static com.blue.basic.constant.common.ResponseElement.*;
+import static com.blue.basic.constant.common.SortType.DESC;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.basic.constant.common.Status.VALID;
 import static com.blue.basic.constant.common.SyncKeyPrefix.ADDRESS_UPDATE_PRE;
@@ -256,7 +256,7 @@ public class AddressServiceImpl implements AddressService {
 
         String sortType = ofNullable(c).map(AddressCondition::getSortType)
                 .filter(BlueChecker::isNotBlank)
-                .orElse(SortType.DESC.identity);
+                .orElse(DESC.identity);
 
         return sortAttribute.equals(AddressSortAttribute.ID.column) ?
                 process(singletonList(new SortElement(sortAttribute, sortType)))
@@ -436,7 +436,9 @@ public class AddressServiceImpl implements AddressService {
         Address probe = new Address();
         probe.setMemberId(memberId);
 
-        return addressRepository.findAll(Example.of(probe)).publishOn(scheduler).collectList();
+        return addressRepository.findAll(Example.of(probe),
+                        process(singletonList(new SortElement(AddressSortAttribute.CREATE_TIME.column, DESC.identity))))
+                .publishOn(scheduler).collectList();
     }
 
     /**

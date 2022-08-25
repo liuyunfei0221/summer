@@ -11,7 +11,7 @@ import java.util.List;
 import static com.blue.basic.common.base.BlueChecker.isNotNull;
 
 /**
- * ids string转long
+ * ids string2long
  *
  * @author liuyunfei
  */

@@ -83,32 +83,15 @@ public final class MongoSearchAfterProcessor {
         if (isEmpty(data) || isNull(searchAfterParser))
             return null;
 
-        SearchAfterHolder<A> searchAfterHolder = new SearchAfterHolder<>();
+        int index = data.size() - 1;
 
-        for (T t : data)
-            ofNullable(t).map(searchAfterParser).ifPresent(searchAfter -> searchAfterHolder.searchAfter = searchAfter);
+        T t;
+        A searchAfter;
+        for (int i = 0; index >= i; index--)
+            if (isNotNull(t = data.get(index)) && isNotNull(searchAfter = searchAfterParser.apply(t)))
+                return searchAfter;
 
-        return searchAfterHolder.searchAfter;
-    }
-
-    /**
-     * search after holder
-     */
-    @SuppressWarnings("unused")
-    private static final class SearchAfterHolder<A extends Serializable> {
-
-        /**
-         * search after
-         */
-        private A searchAfter;
-
-        public SearchAfterHolder() {
-            this.searchAfter = null;
-        }
-
-        public SearchAfterHolder(A searchAfter) {
-            this.searchAfter = searchAfter;
-        }
+        return null;
     }
 
 }

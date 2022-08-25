@@ -36,7 +36,7 @@
         <clickhouse.version>0.3.2</clickhouse.version>
         <hikari-cp.version>5.0.1</hikari-cp.version>
         <sharding-jdbc.version>4.1.1</sharding-jdbc.version>
-        <spring-dubbo.version>3.0.10</spring-dubbo.version>
+        <spring-dubbo.version>3.1.0</spring-dubbo.version>
         <zkclient.version>0.11</zkclient.version>
         <seata-spring.version>1.4.2</seata-spring.version>
         <spring-mybatis.version>2.2.2</spring-mybatis.version>
@@ -46,20 +46,19 @@
         <commons-codec.version>1.15</commons-codec.version>
         <gson.version>2.9.1</gson.version>
         <java-jwt.version>4.0.0</java-jwt.version>
-        <redisson.version>3.17.5</redisson.version>
-        <elasticsearch.version>8.3.3</elasticsearch.version>
+        <redisson.version>3.17.6</redisson.version>
+        <elasticsearch.version>8.4.0</elasticsearch.version>
         <zxing.version>3.5.0</zxing.version>
         <caffeine.version>3.1.1</caffeine.version>
         <apache.poi.version>5.2.2</apache.poi.version>
         <pulsar.version>2.10.1</pulsar.version>
-        <flink.version>1.15.1</flink.version>
+        <flink.version>1.15.2</flink.version>
         <affinity.version>3.23ea0</affinity.version>
-        <slf4j.version>1.7.36</slf4j.version>
         <apollo.version>2.0.1</apollo.version>
         <kaptcha.version>2.3.2</kaptcha.version>
         <jakarta-mail.version>2.0.1</jakarta-mail.version>
-        <jakarta-json.version>2.1.1</jakarta-json.version>
         <jackson.version>2.13.3</jackson.version>
+        <jakarta-json.version>2.1.1</jakarta-json.version>
     </properties>
 
     <dependencyManagement>
