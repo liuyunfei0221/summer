@@ -5,6 +5,7 @@ import com.blue.basic.model.exps.BlueException;
 import com.blue.mail.api.conf.MailSenderConf;
 import com.blue.mail.api.conf.SenderAttr;
 import jakarta.mail.Message;
+import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import reactor.util.Logger;
 
@@ -113,6 +114,7 @@ public final class BatchSender {
 
     private final BiConsumer<Transporter, Message> MESSAGE_SENDER = (transport, message) -> {
         try {
+            message.addFrom(new InternetAddress[]{new InternetAddress(transport.from())});
             transport.sendMessage(message);
         } catch (Throwable throwable) {
             if (RETRY_PREDICATE.test(throwable)) {

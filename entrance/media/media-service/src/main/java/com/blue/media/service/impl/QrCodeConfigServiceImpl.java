@@ -36,7 +36,6 @@ import reactor.util.Loggers;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -48,8 +47,7 @@ import static com.blue.basic.constant.common.CacheKeyPrefix.QR_CONF_PRE;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.SyncKey.QR_CODE_CONFIG_UPDATE_SYNC;
 import static com.blue.media.constant.QrCodeConfigColumnName.*;
-import static com.blue.media.converter.MediaModelConverters.QR_CODE_CONFIG_2_QR_CODE_CONFIG_INFO_CONVERTER;
-import static com.blue.media.converter.MediaModelConverters.qrCodeConfigToQrCodeConfigManagerInfo;
+import static com.blue.media.converter.MediaModelConverters.*;
 import static com.blue.mongo.common.MongoSortProcessor.process;
 import static com.blue.mongo.constant.LikeElement.PREFIX;
 import static com.blue.mongo.constant.LikeElement.SUFFIX;
@@ -81,26 +79,27 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
 
     private ReactiveStringRedisTemplate reactiveStringRedisTemplate;
 
-    private BlueIdentityProcessor blueIdentityProcessor;
+    private final BlueIdentityProcessor blueIdentityProcessor;
 
     private final SynchronizedProcessor synchronizedProcessor;
-
-    private QrCodeConfigRepository qrCodeConfigRepository;
 
     private final ReactiveMongoTemplate reactiveMongoTemplate;
 
     private Scheduler scheduler;
 
-    public QrCodeConfigServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, RpcRoleServiceConsumer rpcRoleServiceConsumer, ReactiveStringRedisTemplate reactiveStringRedisTemplate, BlueIdentityProcessor blueIdentityProcessor,
-                                   SynchronizedProcessor synchronizedProcessor, QrCodeConfigRepository qrCodeConfigRepository, ReactiveMongoTemplate reactiveMongoTemplate, Scheduler scheduler, QrCodeDeploy qrCodeDeploy) {
+    private QrCodeConfigRepository qrCodeConfigRepository;
+
+    public QrCodeConfigServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, RpcRoleServiceConsumer rpcRoleServiceConsumer,
+                                   ReactiveStringRedisTemplate reactiveStringRedisTemplate, BlueIdentityProcessor blueIdentityProcessor, SynchronizedProcessor synchronizedProcessor,
+                                   ReactiveMongoTemplate reactiveMongoTemplate, Scheduler scheduler, QrCodeConfigRepository qrCodeConfigRepository, QrCodeDeploy qrCodeDeploy) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.rpcRoleServiceConsumer = rpcRoleServiceConsumer;
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.synchronizedProcessor = synchronizedProcessor;
-        this.qrCodeConfigRepository = qrCodeConfigRepository;
         this.reactiveMongoTemplate = reactiveMongoTemplate;
         this.scheduler = scheduler;
+        this.qrCodeConfigRepository = qrCodeConfigRepository;
 
         Long cacheExpiresSecond = qrCodeDeploy.getCacheExpiresSecond();
         if (isNull(cacheExpiresSecond) || cacheExpiresSecond < 1L)
@@ -158,33 +157,6 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
 
         if (ofNullable(qrCodeConfigRepository.count(Example.of(probe)).publishOn(scheduler).toFuture().join()).orElse(0L) > 0L)
             throw new BlueException(DATA_ALREADY_EXIST);
-    };
-
-    public final BiFunction<QrCodeConfigInsertParam, Long, QrCodeConfig> CONFIG_INSERT_PARAM_2_CONFIG_CONVERTER = (p, oid) -> {
-        if (isNull(p))
-            throw new BlueException(EMPTY_PARAM);
-        if (isInvalidIdentity(oid))
-            throw new BlueException(EMPTY_PARAM);
-        p.asserts();
-
-        QrCodeConfig qrCodeConfig = new QrCodeConfig();
-
-        qrCodeConfig.setId(blueIdentityProcessor.generate(QrCodeConfig.class));
-        qrCodeConfig.setName(p.getName());
-        qrCodeConfig.setDescription(p.getDescription());
-        qrCodeConfig.setType(p.getType());
-        qrCodeConfig.setDomain(p.getDomain());
-        qrCodeConfig.setPathToBeFilled(p.getPathToBeFilled());
-        qrCodeConfig.setPlaceholderCount(p.getPlaceholderCount());
-        qrCodeConfig.setAllowedRoles(p.getAllowedRoles());
-
-        Long stamp = TIME_STAMP_GETTER.get();
-        qrCodeConfig.setCreateTime(stamp);
-        qrCodeConfig.setUpdateTime(stamp);
-        qrCodeConfig.setCreator(oid);
-        qrCodeConfig.setUpdater(oid);
-
-        return qrCodeConfig;
     };
 
     private final Function<QrCodeConfigUpdateParam, QrCodeConfig> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = p -> {
@@ -251,7 +223,6 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
 
         ofNullable(c.getNameLike()).ifPresent(nameLike ->
                 query.addCriteria(where(NAME.name).regex(compile(PREFIX.element + nameLike + SUFFIX.element, CASE_INSENSITIVE))));
-
         ofNullable(c.getDescriptionLike()).ifPresent(descriptionLike ->
                 query.addCriteria(where(DESCRIPTION.name).regex(compile(PREFIX.element + descriptionLike + SUFFIX.element, CASE_INSENSITIVE))));
         ofNullable(c.getDomainLike()).ifPresent(domainLike ->
@@ -353,10 +324,16 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
     public Mono<QrCodeConfigInfo> insertQrCodeConfig(QrCodeConfigInsertParam qrCodeConfigInsertParam, Long operatorId) {
         LOGGER.info("Mono<QrCodeConfigInfo> insertQrCodeConfig(QrCodeConfigInsertParam qrCodeConfigInsertParam, Long operatorId), qrCodeConfigInsertParam = {}, operatorId = {}",
                 qrCodeConfigInsertParam, operatorId);
+        if (isInvalidIdentity(operatorId))
+            throw new BlueException(EMPTY_PARAM);
 
         return synchronizedProcessor.handleSupWithLock(QR_CODE_CONFIG_UPDATE_SYNC.key, () -> {
             INSERT_ITEM_VALIDATOR.accept(qrCodeConfigInsertParam);
-            QrCodeConfig qrCodeConfig = CONFIG_INSERT_PARAM_2_CONFIG_CONVERTER.apply(qrCodeConfigInsertParam, operatorId);
+            QrCodeConfig qrCodeConfig = CONFIG_INSERT_PARAM_2_CONFIG_CONVERTER.apply(qrCodeConfigInsertParam);
+
+            qrCodeConfig.setId(blueIdentityProcessor.generate(QrCodeConfig.class));
+            qrCodeConfig.setCreator(operatorId);
+            qrCodeConfig.setUpdater(operatorId);
 
             return qrCodeConfigRepository.insert(qrCodeConfig)
                     .publishOn(scheduler)
@@ -378,6 +355,8 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
 
         return synchronizedProcessor.handleSupWithLock(QR_CODE_CONFIG_UPDATE_SYNC.key, () -> {
             QrCodeConfig qrCodeConfig = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(qrCodeConfigUpdateParam);
+            Integer originalType = qrCodeConfig.getType();
+
             if (!validateAndPackageConfigForUpdate(qrCodeConfigUpdateParam, qrCodeConfig, operatorId))
                 throw new BlueException(DATA_HAS_NOT_CHANGED);
 
@@ -390,7 +369,6 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
                         Integer tarType = config.getType();
                         REDIS_CACHE_DELETER.accept(tarType);
 
-                        Integer originalType = qrCodeConfig.getType();
                         if (!originalType.equals(tarType))
                             REDIS_CACHE_DELETER.accept(originalType);
                     })

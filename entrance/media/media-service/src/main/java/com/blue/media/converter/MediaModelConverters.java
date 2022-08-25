@@ -3,6 +3,7 @@ package com.blue.media.converter;
 import com.blue.auth.api.model.RoleInfo;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.media.api.model.*;
+import com.blue.media.model.QrCodeConfigInsertParam;
 import com.blue.media.model.QrCodeConfigManagerInfo;
 import com.blue.media.repository.entity.Attachment;
 import com.blue.media.repository.entity.DownloadHistory;
@@ -13,8 +14,8 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static com.blue.basic.common.base.BlueChecker.isNotBlank;
-import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static java.util.Collections.emptyList;
@@ -93,6 +94,31 @@ public final class MediaModelConverters {
 
         return new QrCodeConfigInfo(qrCodeConfig.getId(), qrCodeConfig.getName(), qrCodeConfig.getDescription(), qrCodeConfig.getType(),
                 qrCodeConfig.getDomain(), qrCodeConfig.getPathToBeFilled(), qrCodeConfig.getPlaceholderCount(), qrCodeConfig.getAllowedRoles());
+    };
+
+    /**
+     * qr code config insert param -> qr code config
+     */
+    public static final Function<QrCodeConfigInsertParam, QrCodeConfig> CONFIG_INSERT_PARAM_2_CONFIG_CONVERTER = param -> {
+        if (isNull(param))
+            throw new BlueException(EMPTY_PARAM);
+        param.asserts();
+
+        QrCodeConfig qrCodeConfig = new QrCodeConfig();
+
+        qrCodeConfig.setName(param.getName());
+        qrCodeConfig.setDescription(param.getDescription());
+        qrCodeConfig.setType(param.getType());
+        qrCodeConfig.setDomain(param.getDomain());
+        qrCodeConfig.setPathToBeFilled(param.getPathToBeFilled());
+        qrCodeConfig.setPlaceholderCount(param.getPlaceholderCount());
+        qrCodeConfig.setAllowedRoles(param.getAllowedRoles());
+
+        Long stamp = TIME_STAMP_GETTER.get();
+        qrCodeConfig.setCreateTime(stamp);
+        qrCodeConfig.setUpdateTime(stamp);
+
+        return qrCodeConfig;
     };
 
     /**

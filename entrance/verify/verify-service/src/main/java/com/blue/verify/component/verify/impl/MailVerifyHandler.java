@@ -6,10 +6,11 @@ import com.blue.basic.model.common.BlueResponse;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.redis.component.BlueLeakyBucketRateLimiter;
+import com.blue.verify.api.model.VerifyMessage;
 import com.blue.verify.component.verify.inter.VerifyHandler;
 import com.blue.verify.config.deploy.MailVerifyDeploy;
+import com.blue.verify.event.producer.VerifyMessageEventProducer;
 import com.blue.verify.repository.entity.VerifyHistory;
-import com.blue.verify.service.inter.MailService;
 import com.blue.verify.service.inter.VerifyHistoryService;
 import com.blue.verify.service.inter.VerifyService;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -47,7 +48,7 @@ public class MailVerifyHandler implements VerifyHandler {
 
     private static final Logger LOGGER = getLogger(MailVerifyHandler.class);
 
-    private final MailService mailService;
+    private final VerifyMessageEventProducer verifyMessageEventProducer;
 
     private final VerifyService verifyService;
 
@@ -62,9 +63,9 @@ public class MailVerifyHandler implements VerifyHandler {
     private final int ALLOW;
     private final long SEND_INTERVAL_MILLIS;
 
-    public MailVerifyHandler(MailService mailService, VerifyService verifyService, BlueLeakyBucketRateLimiter blueLeakyBucketRateLimiter,
+    public MailVerifyHandler(VerifyMessageEventProducer verifyMessageEventProducer, VerifyService verifyService, BlueLeakyBucketRateLimiter blueLeakyBucketRateLimiter,
                              BlueIdentityProcessor blueIdentityProcessor, VerifyHistoryService verifyHistoryService, MailVerifyDeploy mailVerifyDeploy) {
-        this.mailService = mailService;
+        this.verifyMessageEventProducer = verifyMessageEventProducer;
         this.verifyService = verifyService;
         this.blueLeakyBucketRateLimiter = blueLeakyBucketRateLimiter;
         this.blueIdentityProcessor = blueIdentityProcessor;
@@ -143,7 +144,7 @@ public class MailVerifyHandler implements VerifyHandler {
                         allowed ?
                                 verifyService.generate(MAIL, BUSINESS_KEY_WRAPPER.apply(verifyBusinessType, destination), VERIFY_LEN, DEFAULT_DURATION)
                                         .flatMap(verify ->
-                                                mailService.send(destination, verify)
+                                                verifyMessageEventProducer.send(new VerifyMessage(MAIL.identity, verifyBusinessType.identity, destination, verify))
                                                         .flatMap(success -> success ?
                                                                 just(verify)
                                                                 :

@@ -75,6 +75,16 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
             GAMMA_SECRETS_MAX_LEN = GAMMA_SECRETS_MAX.len;
 
     /**
+     * randoms
+     */
+    private static final int
+            RANDOM_NUM_1 = 2,
+            RANDOM_NUM_2 = 7,
+            RANDOM_NUM_3 = 5,
+            RANDOM_NUM_4 = 3,
+            RANDOM_NUM_5 = 2;
+
+    /**
      * maximum expiration time/Maximum validity period for certification
      */
     private transient long maxExpiresMillis;
@@ -108,6 +118,16 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
      * abstract function used to convert payload into authentication information entity
      */
     private final transient Function<Map<String, String>, T> CLAIM_2_DATA_PROCESSOR;
+
+    /**
+     * randoms
+     */
+    private transient String
+            randomSalt1,
+            randomSalt2,
+            randomSalt3,
+            randomSalt4,
+            randomSalt5;
 
     /**
      * gamma secret keys
@@ -152,10 +172,15 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
      */
     private final BiFunction<String, Long, String> MIX_UP_PROCESSOR = (jwtId, expiresAtStamp) -> {
         int h = HASH_DISCRETE_PROCESSOR.apply(jwtId.hashCode());
-        return gammaSecretArr[~h & gammaSecretArrIndexMask]
+        return randomSalt1
+                + gammaSecretArr[~h & gammaSecretArrIndexMask]
+                + randomSalt2
                 + gammaSecretArr[EXPIRES_AT_STAMP_DISCRETE_PROCESSOR.apply(expiresAtStamp) & gammaSecretArrIndexMask]
+                + randomSalt3
                 + jwtId
-                + gammaSecretArr[h & gammaSecretArrIndexMask];
+                + randomSalt4
+                + gammaSecretArr[h & gammaSecretArrIndexMask]
+                + randomSalt5;
     };
 
     /**
@@ -205,7 +230,16 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
         this.minExpiresMillis = jwtConf.getMinExpiresMillis();
         this.refreshExpiresMillis = jwtConf.getRefreshExpiresMillis();
 
-        this.ALGORITHM = HMAC512(jwtConf.getSignKey());
+        String signKey = jwtConf.getSignKey();
+        int signKeyLen = signKey.length();
+
+        this.randomSalt1 = String.valueOf(signKey.charAt(signKeyLen - RANDOM_NUM_1));
+        this.randomSalt2 = String.valueOf(signKey.charAt(signKeyLen / RANDOM_NUM_2));
+        this.randomSalt3 = String.valueOf(signKey.charAt(signKeyLen / RANDOM_NUM_3));
+        this.randomSalt4 = String.valueOf(signKey.charAt(signKeyLen / RANDOM_NUM_4));
+        this.randomSalt5 = String.valueOf(signKey.charAt(signKeyLen / RANDOM_NUM_5));
+
+        this.ALGORITHM = HMAC512(signKey);
         this.VERIFIER = require(ALGORITHM).build();
 
         this.gammaSecretArr = jwtConf.getGammaSecrets().toArray(String[]::new);

@@ -8,6 +8,11 @@ package com.blue.basic.constant.common;
 public enum BlueTopic {
 
     /**
+     * verify message Events
+     */
+    VERIFY_MESSAGE("verifyMessage"),
+
+    /**
      * Illegal ip or jwt prefix mark
      */
     ILLEGAL_MARK("illegalMark"),

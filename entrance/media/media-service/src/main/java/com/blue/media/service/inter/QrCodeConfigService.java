@@ -71,7 +71,7 @@ public interface QrCodeConfigService {
     Mono<QrCodeConfigInfo> getQrCodeConfigInfoMonoByType(Integer type);
 
     /**
-     * select config by page and query
+     * select config by limit and query
      *
      * @param limit
      * @param rows

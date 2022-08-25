@@ -390,7 +390,15 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
 
 -- verify manage
 
-       (130001, 'POST', 'blue-verify', '/manager/verifyHistories', '', b'1', b'1', b'1', b'1', b'1', 3,
+       (130001, 'POST', 'blue-verify', '/manager/verifyTemplates', '', b'1', b'1', b'1', b'1', b'1', 3,
+        'verify template page of manager', 'verify template page of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (130002, 'POST', 'blue-verify', '/manager/verifyTemplate', '', b'1', b'1', b'1', b'1', b'1', 3,
+        'insert verify template', 'insert verify template', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (130003, 'PUT', 'blue-verify', '/manager/verifyTemplate', '', b'1', b'1', b'1', b'1', b'1', 3,
+        'update verify template', 'update verify template', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (130004, 'DELETE', 'blue-verify', '/manager/verifyTemplate/{id}', '', b'1', b'1', b'1', b'1', b'1', 3,
+        'delete verify template', 'delete verify template', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (130005, 'POST', 'blue-verify', '/manager/verifyHistories', '', b'1', b'1', b'1', b'1', b'1', 3,
         'verify history list of manager', 'verify history list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- auth api
@@ -516,6 +524,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
         'select card page for manager', 'select card page for manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- finance api
+
        (200001, 'GET', 'blue-finance', '/balance', '', b'1', b'1', b'1', b'0', b'1', 1,
         'query balance', 'query balance', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (200002, 'POST', 'blue-finance', '/withdraw', '', b'1', b'0', b'0', b'1', b'1', 1,
@@ -551,7 +560,8 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
        (220003, 'POST', 'blue-media', '/attachments/scroll', '', b'1', b'1', b'1', b'1', b'1', 1,
         'attachment scroll list of api', 'attachment scroll list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (220004, 'POST', 'blue-media', '/downloadHistories/scroll', '', b'1', b'1', b'1', b'1', b'1', 1,
-        'download history scroll list of api', 'download history scroll list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+        'download history scroll list of api', 'download history scroll list of api', UNIX_TIMESTAMP(),
+        UNIX_TIMESTAMP(), 1, 1),
        (220005, 'POST', 'blue-media', '/qrCode', '', b'1', b'1', b'1', b'1', b'1', 1,
         'generate qr code for api', 'generate qr code for api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
@@ -577,7 +587,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
         'download history list of manager', 'download history list of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
         1),
        (230008, 'POST', 'blue-media', '/manager/qrCodeConfigs', '', b'1', b'1', b'1', b'1', b'1', 3,
-        ' qr code config page of manager', ' qr code config page of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+        'qr code config page of manager', ' qr code config page of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (230009, 'POST', 'blue-media', '/manager/qrCodeConfig', '', b'1', b'1', b'1', b'1', b'1', 3,
         'insert qr code config', 'insert qr code config', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (230010, 'PUT', 'blue-media', '/manager/qrCodeConfig', '', b'1', b'1', b'1', b'1', b'1', 3,

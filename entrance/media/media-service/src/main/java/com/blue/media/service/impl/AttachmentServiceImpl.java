@@ -265,7 +265,8 @@ public class AttachmentServiceImpl implements AttachmentService {
 
         query.addCriteria(byExample(probe));
         packageSearchAfter(query, DESC.sortType.identity, AttachmentSortAttribute.ID.column, scrollModelRequest.getCursor());
-        query.with(process(singletonList(new SortElement(AttachmentSortAttribute.CREATE_TIME.column, DESC.sortType.identity))));
+        query.with(process(List.of(new SortElement(AttachmentSortAttribute.CREATE_TIME.column, DESC.sortType.identity),
+                new SortElement(AttachmentSortAttribute.ID.column, DESC.sortType.identity))));
 
         query.skip(scrollModelRequest.getFrom()).limit(scrollModelRequest.getRows().intValue());
 

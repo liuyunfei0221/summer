@@ -39,6 +39,11 @@ public enum CacheKeyPrefix {
     VERIFY_PRE("VF:"),
 
     /**
+     * verify template key prefix
+     */
+    VERIFY_TEMPLATE_PRE("VFT:"),
+
+    /**
      * sing in key prefix
      */
     SIGN_IN_PRE("SI_N:"),

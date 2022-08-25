@@ -5,7 +5,7 @@ import com.blue.basic.constant.verify.VerifyBusinessType;
 import java.io.Serializable;
 
 /**
- * marketing event
+ * verify param
  *
  * @author liuyunfei
  */

@@ -2,6 +2,10 @@ package com.blue.media.model;
 
 import com.blue.auth.api.model.RoleInfo;
 import com.blue.basic.constant.media.QrCodeType;
+import com.blue.basic.serializer.IdentityDeserializer;
+import com.blue.basic.serializer.IdentitySerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.io.Serializable;
 import java.util.List;
@@ -16,6 +20,8 @@ public final class QrCodeConfigManagerInfo implements Serializable {
 
     private static final long serialVersionUID = 4786656684754973382L;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long id;
 
     private String name;
@@ -38,14 +44,22 @@ public final class QrCodeConfigManagerInfo implements Serializable {
      */
     private List<RoleInfo> allowedRoles;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long createTime;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long updateTime;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long creator;
 
     private String creatorName;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long updater;
 
     private String updaterName;

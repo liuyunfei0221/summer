@@ -190,7 +190,8 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
 
         query.addCriteria(byExample(probe));
         packageSearchAfter(query, DESC.sortType.identity, DownloadHistorySortAttribute.ID.column, scrollModelRequest.getCursor());
-        query.with(process(singletonList(new SortElement(DownloadHistorySortAttribute.CREATE_TIME.column, DESC.sortType.identity))));
+        query.with(process(List.of(new SortElement(DownloadHistorySortAttribute.CREATE_TIME.column, DESC.sortType.identity),
+                new SortElement(DownloadHistorySortAttribute.ID.column, DESC.sortType.identity))));
 
         query.skip(scrollModelRequest.getFrom()).limit(scrollModelRequest.getRows().intValue());
 

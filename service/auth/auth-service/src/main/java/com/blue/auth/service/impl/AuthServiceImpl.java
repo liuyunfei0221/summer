@@ -2,7 +2,7 @@ package com.blue.auth.service.impl;
 
 import com.blue.auth.api.model.*;
 import com.blue.auth.component.access.AccessInfoCache;
-import com.blue.auth.config.deploy.AuthDeploy;
+import com.blue.auth.config.deploy.AccessDeploy;
 import com.blue.auth.event.model.InvalidLocalAccessEvent;
 import com.blue.auth.event.producer.InvalidLocalAccessProducer;
 import com.blue.auth.model.AccessInfo;
@@ -97,7 +97,7 @@ public class AuthServiceImpl implements AuthService {
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public AuthServiceImpl(RefreshInfoService refreshInfoService, JwtProcessor<MemberPayload> jwtProcessor, AccessInfoCache accessInfoCache, StringRedisTemplate stringRedisTemplate,
                            RoleService roleService, ResourceService resourceService, RoleResRelationService roleResRelationService, MemberRoleRelationService memberRoleRelationService,
-                           InvalidLocalAccessProducer invalidLocalAccessProducer, ExecutorService executorService, SynchronizedProcessor synchronizedProcessor, AuthDeploy authDeploy) {
+                           InvalidLocalAccessProducer invalidLocalAccessProducer, ExecutorService executorService, SynchronizedProcessor synchronizedProcessor, AccessDeploy accessDeploy) {
         this.refreshInfoService = refreshInfoService;
         this.jwtProcessor = jwtProcessor;
         this.accessInfoCache = accessInfoCache;
@@ -110,7 +110,7 @@ public class AuthServiceImpl implements AuthService {
         this.executorService = executorService;
         this.synchronizedProcessor = synchronizedProcessor;
 
-        this.gammaLength = authDeploy.getGammaLength();
+        this.gammaLength = accessDeploy.getGammaLength();
         this.refreshExpiresMillis = this.jwtProcessor.getRefreshExpiresMillis();
     }
 
@@ -314,7 +314,7 @@ public class AuthServiceImpl implements AuthService {
                     if (b)
                         return just(new MemberAccess(jwt, keyPair.getPriKey()));
 
-                    LOGGER.error("authInfoCache.setAuthInfo(memberPayload.getKeyId(), authInfoJson), failed, memberPayload = {}, roleIds = {}, keyPair = {}, accessInfo = {}", memberPayload, roleIds, keyPair, accessInfo);
+                    LOGGER.error("accessInfoCache.setAuthInfo(memberPayload.getKeyId(), authInfoJson), failed, memberPayload = {}, roleIds = {}, keyPair = {}, accessInfo = {}", memberPayload, roleIds, keyPair, accessInfo);
                     return error(() -> new RuntimeException("accessInfoCache.setAccessInfo(memberPayload.getKeyId(), accessInfo) failed"));
                 });
     };

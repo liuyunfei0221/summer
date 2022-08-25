@@ -6,10 +6,11 @@ import com.blue.basic.model.common.BlueResponse;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.redis.component.BlueLeakyBucketRateLimiter;
+import com.blue.verify.api.model.VerifyMessage;
 import com.blue.verify.component.verify.inter.VerifyHandler;
 import com.blue.verify.config.deploy.SmsVerifyDeploy;
+import com.blue.verify.event.producer.VerifyMessageEventProducer;
 import com.blue.verify.repository.entity.VerifyHistory;
-import com.blue.verify.service.inter.SmsService;
 import com.blue.verify.service.inter.VerifyHistoryService;
 import com.blue.verify.service.inter.VerifyService;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -29,6 +30,7 @@ import static com.blue.basic.constant.common.RateLimitKeyPrefix.SMS_VERIFY_RATE_
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 import static com.blue.basic.constant.common.ResponseElement.TOO_MANY_REQUESTS;
 import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION;
+import static com.blue.basic.constant.verify.VerifyType.MAIL;
 import static com.blue.basic.constant.verify.VerifyType.SMS;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -47,7 +49,7 @@ public class SmsVerifyHandler implements VerifyHandler {
 
     private static final Logger LOGGER = getLogger(SmsVerifyHandler.class);
 
-    private final SmsService smsService;
+    private final VerifyMessageEventProducer verifyMessageEventProducer;
 
     private final VerifyService verifyService;
 
@@ -62,9 +64,9 @@ public class SmsVerifyHandler implements VerifyHandler {
     private final int ALLOW;
     private final long SEND_INTERVAL_MILLIS;
 
-    public SmsVerifyHandler(SmsService smsService, VerifyService verifyService, BlueLeakyBucketRateLimiter blueLeakyBucketRateLimiter,
+    public SmsVerifyHandler(VerifyMessageEventProducer verifyMessageEventProducer, VerifyService verifyService, BlueLeakyBucketRateLimiter blueLeakyBucketRateLimiter,
                             BlueIdentityProcessor blueIdentityProcessor, VerifyHistoryService verifyHistoryService, SmsVerifyDeploy smsVerifyDeploy) {
-        this.smsService = smsService;
+        this.verifyMessageEventProducer = verifyMessageEventProducer;
         this.verifyService = verifyService;
         this.blueLeakyBucketRateLimiter = blueLeakyBucketRateLimiter;
         this.blueIdentityProcessor = blueIdentityProcessor;
@@ -143,7 +145,7 @@ public class SmsVerifyHandler implements VerifyHandler {
                         allowed ?
                                 verifyService.generate(SMS, BUSINESS_KEY_WRAPPER.apply(verifyBusinessType, destination), VERIFY_LEN, DEFAULT_DURATION)
                                         .flatMap(verify ->
-                                                smsService.send(destination, verify)
+                                                verifyMessageEventProducer.send(new VerifyMessage(MAIL.identity, verifyBusinessType.identity, destination, verify))
                                                         .flatMap(success -> success ?
                                                                 just(verify)
                                                                 :
