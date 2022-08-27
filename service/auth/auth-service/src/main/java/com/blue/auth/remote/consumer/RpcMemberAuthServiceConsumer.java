@@ -21,7 +21,7 @@ public class RpcMemberAuthServiceConsumer {
     @DubboReference(version = "1.0",
             providedBy = {"summer-member"},
             methods = {
-                    @Method(name = "autoRegisterMemberBasic", async = false),
+                    @Method(name = "registerMemberBasic", async = false),
                     @Method(name = "updateMemberCredentialAttr", async = false)
             })
     private RpcMemberAuthService rpcMemberAuthService;
@@ -32,8 +32,8 @@ public class RpcMemberAuthServiceConsumer {
      * @param memberRegistryParam
      * @return
      */
-    public MemberBasicInfo autoRegisterMemberBasic(MemberRegistryParam memberRegistryParam) {
-        return rpcMemberAuthService.autoRegisterMemberBasic(memberRegistryParam);
+    public MemberBasicInfo registerMemberBasic(MemberRegistryParam memberRegistryParam) {
+        return rpcMemberAuthService.registerMemberBasic(memberRegistryParam);
     }
 
     /**

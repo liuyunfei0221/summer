@@ -11,7 +11,7 @@ import java.util.List;
  * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused", "UnusedReturnValue"})
-public interface AutoRegisterService {
+public interface RegisterService {
 
     /**
      * auto register for a new member
@@ -21,6 +21,6 @@ public interface AutoRegisterService {
      * @param source
      * @return
      */
-    MemberBasicInfo autoRegisterMemberInfo(List<CredentialInfo> credentials, Long roleId, String source);
+    MemberBasicInfo registerMemberBasic(List<CredentialInfo> credentials, Long roleId, String source);
 
 }

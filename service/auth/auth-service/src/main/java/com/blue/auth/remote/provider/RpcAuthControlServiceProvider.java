@@ -2,7 +2,6 @@ package com.blue.auth.remote.provider;
 
 import com.blue.auth.api.inter.RpcAuthControlService;
 import com.blue.auth.api.model.AuthorityBaseOnRole;
-import com.blue.auth.api.model.MemberCredentialInfo;
 import com.blue.auth.api.model.MemberRoleRelationInsertOrDeleteParam;
 import com.blue.auth.api.model.MemberRoleRelationUpdateParam;
 import com.blue.auth.service.inter.AuthControlService;
@@ -26,7 +25,6 @@ import static reactor.core.publisher.Mono.just;
 @DubboService(interfaceClass = RpcAuthControlService.class,
         version = "1.0",
         methods = {
-                @Method(name = "initMemberAuthInfo", async = false, timeout = 60000, retries = 0),
                 @Method(name = "insertAuthorityByMemberSync", async = false, timeout = 60000, retries = 0),
                 @Method(name = "updateAuthoritiesByMemberSync", async = false, timeout = 60000, retries = 0),
                 @Method(name = "deleteAuthorityByMemberSync", async = false, timeout = 60000, retries = 0),
@@ -43,16 +41,6 @@ public class RpcAuthControlServiceProvider implements RpcAuthControlService {
     public RpcAuthControlServiceProvider(AuthControlService authControlService, Scheduler scheduler) {
         this.authControlService = authControlService;
         this.scheduler = scheduler;
-    }
-
-    /**
-     * init auth info for a new member
-     *
-     * @param memberCredentialInfo
-     */
-    @Override
-    public void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo) {
-        authControlService.initMemberAuthInfo(memberCredentialInfo);
     }
 
     /**

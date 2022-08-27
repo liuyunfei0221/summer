@@ -8,7 +8,7 @@ import com.blue.auth.model.SessionInfo;
 import com.blue.auth.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.auth.remote.consumer.RpcVerifyHandleServiceConsumer;
 import com.blue.auth.service.inter.AuthService;
-import com.blue.auth.service.inter.AutoRegisterService;
+import com.blue.auth.service.inter.RegisterService;
 import com.blue.auth.service.inter.CredentialService;
 import com.blue.auth.service.inter.RoleService;
 import com.blue.basic.common.base.BlueChecker;
@@ -66,7 +66,7 @@ public class SmsVerifyWithAutoRegisterSessionHandler implements SessionHandler {
 
     private final RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer;
 
-    private final AutoRegisterService autoRegisterService;
+    private final RegisterService registerService;
 
     private final CredentialService credentialService;
 
@@ -75,10 +75,10 @@ public class SmsVerifyWithAutoRegisterSessionHandler implements SessionHandler {
     private final AuthService authService;
 
     public SmsVerifyWithAutoRegisterSessionHandler(RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer, RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer,
-                                                   AutoRegisterService autoRegisterService, CredentialService credentialService, RoleService roleService, AuthService authService) {
+                                                   RegisterService registerService, CredentialService credentialService, RoleService roleService, AuthService authService) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.rpcVerifyHandleServiceConsumer = rpcVerifyHandleServiceConsumer;
-        this.autoRegisterService = autoRegisterService;
+        this.registerService = registerService;
         this.credentialService = credentialService;
         this.roleService = roleService;
         this.authService = authService;
@@ -133,7 +133,7 @@ public class SmsVerifyWithAutoRegisterSessionHandler implements SessionHandler {
                                         .switchIfEmpty(defer(() -> {
                                             extra.put(NEW_MEMBER.key, true);
                                             return just(roleService.getDefaultRole().getId())
-                                                    .flatMap(roleId -> just(autoRegisterService.autoRegisterMemberInfo(CREDENTIALS_GENERATOR.apply(phone), roleId, source))
+                                                    .flatMap(roleId -> just(registerService.registerMemberBasic(CREDENTIALS_GENERATOR.apply(phone), roleId, source))
                                                             .flatMap(mbi -> zip(authService.generateAuthMono(mbi.getId(), singletonList(roleId), PHONE_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern()), just(mbi))));
                                         }))
                                         .flatMap(tuple2 -> {

@@ -8,7 +8,7 @@ import com.blue.auth.model.SessionInfo;
 import com.blue.auth.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.auth.remote.consumer.RpcMiniProServiceConsumer;
 import com.blue.auth.service.inter.AuthService;
-import com.blue.auth.service.inter.AutoRegisterService;
+import com.blue.auth.service.inter.RegisterService;
 import com.blue.auth.service.inter.CredentialService;
 import com.blue.auth.service.inter.RoleService;
 import com.blue.basic.common.base.BlueChecker;
@@ -64,7 +64,7 @@ public class MiniProWithAutoRegisterSessionHandler implements SessionHandler {
 
     private final RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer;
 
-    private final AutoRegisterService autoRegisterService;
+    private final RegisterService registerService;
 
     private final CredentialService credentialService;
 
@@ -73,10 +73,10 @@ public class MiniProWithAutoRegisterSessionHandler implements SessionHandler {
     private final AuthService authService;
 
     public MiniProWithAutoRegisterSessionHandler(RpcMiniProServiceConsumer rpcMiniProServiceConsumer, RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer,
-                                                 AutoRegisterService autoRegisterService, CredentialService credentialService, RoleService roleService, AuthService authService) {
+                                                 RegisterService registerService, CredentialService credentialService, RoleService roleService, AuthService authService) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.rpcMiniProServiceConsumer = rpcMiniProServiceConsumer;
-        this.autoRegisterService = autoRegisterService;
+        this.registerService = registerService;
         this.credentialService = credentialService;
         this.roleService = roleService;
         this.authService = authService;
@@ -132,7 +132,7 @@ public class MiniProWithAutoRegisterSessionHandler implements SessionHandler {
                 .switchIfEmpty(defer(() -> {
                     extra.put(NEW_MEMBER.key, true);
                     return just(roleService.getDefaultRole().getId())
-                            .flatMap(roleId -> just(autoRegisterService.autoRegisterMemberInfo(CREDENTIALS_GENERATOR.apply(phone), roleId, source))
+                            .flatMap(roleId -> just(registerService.registerMemberBasic(CREDENTIALS_GENERATOR.apply(phone), roleId, source))
                                     .flatMap(mbi -> zip(authService.generateAuthMono(mbi.getId(), singletonList(roleId), MINI_PRO_AUTO_REGISTER.identity, loginParam.getDeviceType().intern()), just(mbi))));
                 }))
                 .flatMap(tuple2 -> {
