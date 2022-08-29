@@ -6,6 +6,7 @@ import com.blue.auth.repository.mapper.CredentialMapper;
 import com.blue.auth.service.inter.CredentialService;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
+import com.blue.redisson.component.SynchronizedProcessor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
@@ -13,6 +14,7 @@ import reactor.util.Logger;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 import static com.blue.auth.common.AccessEncoder.encryptAccess;
 import static com.blue.auth.converter.AuthModelConverters.CREDENTIAL_2_CREDENTIAL_INFO_CONVERTER;
@@ -23,6 +25,7 @@ import static com.blue.basic.constant.common.BlueCommonThreshold.ACS_LEN_MAX;
 import static com.blue.basic.constant.common.BlueCommonThreshold.ACS_LEN_MIN;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.Status.VALID;
+import static com.blue.basic.constant.common.SyncKeyPrefix.CREDENTIAL_UPDATE_PRE;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
@@ -46,11 +49,15 @@ public class CredentialServiceImpl implements CredentialService {
 
     private final BlueIdentityProcessor blueIdentityProcessor;
 
+    private final SynchronizedProcessor synchronizedProcessor;
+
     private CredentialMapper credentialMapper;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public CredentialServiceImpl(BlueIdentityProcessor blueIdentityProcessor, CredentialMapper credentialMapper) {
+
+    public CredentialServiceImpl(BlueIdentityProcessor blueIdentityProcessor, SynchronizedProcessor synchronizedProcessor, CredentialMapper credentialMapper) {
         this.blueIdentityProcessor = blueIdentityProcessor;
+        this.synchronizedProcessor = synchronizedProcessor;
         this.credentialMapper = credentialMapper;
     }
 
@@ -104,6 +111,13 @@ public class CredentialServiceImpl implements CredentialService {
         LOGGER.info("insert credential = {}", credential);
     }
 
+    private static final UnaryOperator<String> CREDENTIAL_UPDATE_SYNC_KEY_GEN = credential -> {
+        if (isNotBlank(credential))
+            return CREDENTIAL_UPDATE_PRE.prefix + credential;
+
+        throw new BlueException(BAD_REQUEST);
+    };
+
     /**
      * insert credential batch
      *
@@ -122,7 +136,16 @@ public class CredentialServiceImpl implements CredentialService {
         credentials.parallelStream()
                 .forEach(c -> c.setId(blueIdentityProcessor.generate(Credential.class)));
 
-        credentialMapper.insertBatch(credentials);
+        Map<String, List<Credential>> credentialAndCredentialsMapping = credentials.stream()
+                .collect(groupingBy(Credential::getCredential));
+
+        Set<Map.Entry<String, List<Credential>>> entries = credentialAndCredentialsMapping.entrySet();
+
+        for (Map.Entry<String, List<Credential>> entry : entries) {
+            synchronizedProcessor.handleTaskWithLock(CREDENTIAL_UPDATE_SYNC_KEY_GEN.apply(entry.getKey()),
+                    () -> credentialMapper.insertBatch(entry.getValue()));
+        }
+
         LOGGER.info("insert batch credentials = {}", credentials);
     }
 
@@ -140,7 +163,8 @@ public class CredentialServiceImpl implements CredentialService {
         if (isInvalidIdentity(credential.getId()))
             throw new BlueException(INVALID_IDENTITY);
 
-        credentialMapper.updateByPrimaryKeySelective(credential);
+        synchronizedProcessor.handleTaskWithLock(CREDENTIAL_UPDATE_SYNC_KEY_GEN.apply(credential.getCredential()),
+                () -> credentialMapper.updateByPrimaryKeySelective(credential));
     }
 
     /**
@@ -158,7 +182,9 @@ public class CredentialServiceImpl implements CredentialService {
         if (isNotEmpty(credentialMapper.selectByCredentials(singletonList(credential))))
             throw new BlueException(DATA_ALREADY_EXIST);
 
-        credentialMapper.updateCredentialByIds(credential, TIME_STAMP_GETTER.get(), ids);
+        synchronizedProcessor.handleTaskWithLock(CREDENTIAL_UPDATE_SYNC_KEY_GEN.apply(credential),
+                () -> credentialMapper.updateCredentialByIds(credential, TIME_STAMP_GETTER.get(), ids));
+
         LOGGER.info("update batch credential = {}", credential);
     }
 
@@ -169,12 +195,18 @@ public class CredentialServiceImpl implements CredentialService {
      * @return
      */
     @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public void deleteCredential(Long id) {
         LOGGER.info("void deleteCredentialById(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        credentialMapper.deleteByPrimaryKey(id);
+        Credential credential = credentialMapper.selectByPrimaryKey(id);
+        if (isNull(credential))
+            return;
+
+        synchronizedProcessor.handleTaskWithLock(CREDENTIAL_UPDATE_SYNC_KEY_GEN.apply(credential.getCredential()),
+                () -> credentialMapper.deleteByPrimaryKey(id));
     }
 
     /**

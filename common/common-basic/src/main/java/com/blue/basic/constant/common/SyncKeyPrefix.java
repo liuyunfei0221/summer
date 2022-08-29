@@ -14,6 +14,11 @@ public enum SyncKeyPrefix {
     REQUEST_SYNC_PRE("REQ_SYNC:"),
 
     /**
+     * credential update sync prefix
+     */
+    CREDENTIAL_UPDATE_PRE("CREDENTIAL_UPDATE_PRE:"),
+
+    /**
      * access update sync prefix
      */
     ACCESS_UPDATE_PRE("ACCESS_UPDATE:"),
