@@ -61,27 +61,20 @@ public class CredentialServiceImpl implements CredentialService {
         this.credentialMapper = credentialMapper;
     }
 
+    private static final UnaryOperator<String> CREDENTIAL_UPDATE_SYNC_KEY_GEN = credential -> {
+        if (isNotBlank(credential))
+            return CREDENTIAL_UPDATE_PRE.prefix + credential;
+
+        throw new BlueException(BAD_REQUEST);
+    };
+
     private final Consumer<List<Credential>> CREDENTIALS_ASSERTER = cs -> {
         if (isEmpty(cs))
             throw new BlueException(EMPTY_PARAM);
 
-        Map<Long, Set<String>> memberIdAndTypes = cs.stream().collect(groupingBy(Credential::getMemberId))
-                .entrySet().stream().collect(toMap(Map.Entry::getKey, e -> e.getValue().stream().map(Credential::getType).collect(toSet())));
-
-        List<Credential> existCredentials = credentialMapper.selectByMemberIds(new ArrayList<>(memberIdAndTypes.keySet()));
-
-        for (Credential credential : existCredentials)
-            if (memberIdAndTypes.get(credential.getMemberId()).contains(credential.getType()))
-                throw new BlueException(DATA_ALREADY_EXIST);
-
-        Map<String, Set<String>> credentialAndTypes = cs.stream().collect(groupingBy(Credential::getCredential))
-                .entrySet().stream().collect(toMap(Map.Entry::getKey, e -> e.getValue().stream().map(Credential::getType).collect(toSet())));
-
-        existCredentials = credentialMapper.selectByCredentials(new ArrayList<>(credentialAndTypes.keySet()));
-
-        for (Credential credential : existCredentials)
-            if (credentialAndTypes.get(credential.getCredential()).contains(credential.getType()))
-                throw new BlueException(DATA_ALREADY_EXIST);
+        if (isNotEmpty(credentialMapper.selectByCredentials(
+                cs.stream().map(Credential::getCredential).collect(toList()))))
+            throw new BlueException(DATA_ALREADY_EXIST);
     };
 
     /**
@@ -94,29 +87,20 @@ public class CredentialServiceImpl implements CredentialService {
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public void insertCredential(Credential credential) {
         LOGGER.info("void insertCredential(Credential credential, Long operatorId), credential = {}", credential);
-        Long memberId;
-        if (isNull(credential) || isInvalidIdentity(memberId = credential.getMemberId()))
-            throw new BlueException(EMPTY_PARAM);
 
         String type = credential.getType();
         assertCredentialType(type, false);
 
-        Optional<Credential> existOptional = this.getCredentialByMemberIdAndType(memberId, type);
-        if (existOptional.isPresent())
-            throw new BlueException(DATA_ALREADY_EXIST);
-
         credential.setId(blueIdentityProcessor.generate(Credential.class));
 
-        credentialMapper.insert(credential);
+        synchronizedProcessor.handleTaskWithLock(CREDENTIAL_UPDATE_SYNC_KEY_GEN.apply(credential.getCredential()),
+                () -> {
+                    CREDENTIALS_ASSERTER.accept(singletonList(credential));
+                    credentialMapper.insert(credential);
+                });
+
         LOGGER.info("insert credential = {}", credential);
     }
-
-    private static final UnaryOperator<String> CREDENTIAL_UPDATE_SYNC_KEY_GEN = credential -> {
-        if (isNotBlank(credential))
-            return CREDENTIAL_UPDATE_PRE.prefix + credential;
-
-        throw new BlueException(BAD_REQUEST);
-    };
 
     /**
      * insert credential batch
@@ -131,40 +115,24 @@ public class CredentialServiceImpl implements CredentialService {
         if (isEmpty(credentials))
             return;
 
-        CREDENTIALS_ASSERTER.accept(credentials);
-
         credentials.parallelStream()
                 .forEach(c -> c.setId(blueIdentityProcessor.generate(Credential.class)));
 
         Map<String, List<Credential>> credentialAndCredentialsMapping = credentials.stream()
                 .collect(groupingBy(Credential::getCredential));
 
-        Set<Map.Entry<String, List<Credential>>> entries = credentialAndCredentialsMapping.entrySet();
+        String c;
+        for (Map.Entry<String, List<Credential>> entry : credentialAndCredentialsMapping.entrySet()) {
+            c = entry.getKey();
+            List<Credential> cs = entry.getValue();
 
-        for (Map.Entry<String, List<Credential>> entry : entries) {
-            synchronizedProcessor.handleTaskWithLock(CREDENTIAL_UPDATE_SYNC_KEY_GEN.apply(entry.getKey()),
-                    () -> credentialMapper.insertBatch(entry.getValue()));
+            CREDENTIALS_ASSERTER.accept(cs);
+
+            synchronizedProcessor.handleTaskWithLock(CREDENTIAL_UPDATE_SYNC_KEY_GEN.apply(c),
+                    () -> credentialMapper.insertBatch(cs));
         }
 
         LOGGER.info("insert batch credentials = {}", credentials);
-    }
-
-    /**
-     * update a exist role
-     *
-     * @param credential
-     * @return
-     */
-    @Override
-    public void updateCredential(Credential credential) {
-        LOGGER.info("void updateCredential(Credential credential), credential = {}", credential);
-        if (isNull(credential))
-            throw new BlueException(EMPTY_PARAM);
-        if (isInvalidIdentity(credential.getId()))
-            throw new BlueException(INVALID_IDENTITY);
-
-        synchronizedProcessor.handleTaskWithLock(CREDENTIAL_UPDATE_SYNC_KEY_GEN.apply(credential.getCredential()),
-                () -> credentialMapper.updateByPrimaryKeySelective(credential));
     }
 
     /**
@@ -183,7 +151,12 @@ public class CredentialServiceImpl implements CredentialService {
             throw new BlueException(DATA_ALREADY_EXIST);
 
         synchronizedProcessor.handleTaskWithLock(CREDENTIAL_UPDATE_SYNC_KEY_GEN.apply(credential),
-                () -> credentialMapper.updateCredentialByIds(credential, TIME_STAMP_GETTER.get(), ids));
+                () -> {
+                    if (isNotEmpty(credentialMapper.selectByCredentials(
+                            singletonList(credential))))
+                        throw new BlueException(DATA_ALREADY_EXIST);
+                    credentialMapper.updateCredentialByIds(credential, TIME_STAMP_GETTER.get(), ids);
+                });
 
         LOGGER.info("update batch credential = {}", credential);
     }

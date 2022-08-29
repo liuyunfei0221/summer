@@ -32,14 +32,6 @@ public interface CredentialService {
     void insertCredentials(List<Credential> credentials);
 
     /**
-     * update a exist role
-     *
-     * @param credential
-     * @return
-     */
-    void updateCredential(Credential credential);
-
-    /**
      * batch update credential by ids
      *
      * @param credential
