@@ -21,8 +21,6 @@ public final class MemberBasicInfo implements Serializable {
     @JsonDeserialize(using = IdentityDeserializer.class)
     private Long id;
 
-    private String account;
-
     private String phone;
 
     private String email;
@@ -56,9 +54,8 @@ public final class MemberBasicInfo implements Serializable {
     public MemberBasicInfo() {
     }
 
-    public MemberBasicInfo(Long id, String account, String phone, String email, String name, String icon, String qrCode, Integer gender, String profile, Integer status, Long createTime, Long updateTime) {
+    public MemberBasicInfo(Long id, String phone, String email, String name, String icon, String qrCode, Integer gender, String profile, Integer status, Long createTime, Long updateTime) {
         this.id = id;
-        this.account = account;
         this.phone = phone;
         this.email = email;
         this.name = name;
@@ -77,14 +74,6 @@ public final class MemberBasicInfo implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getAccount() {
-        return account;
-    }
-
-    public void setAccount(String account) {
-        this.account = account;
     }
 
     public String getPhone() {
@@ -171,7 +160,6 @@ public final class MemberBasicInfo implements Serializable {
     public String toString() {
         return "MemberBasicInfo{" +
                 "id=" + id +
-                ", account='" + account + '\'' +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +

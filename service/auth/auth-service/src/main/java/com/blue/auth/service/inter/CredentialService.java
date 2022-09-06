@@ -16,14 +16,6 @@ import java.util.Optional;
 public interface CredentialService {
 
     /**
-     * insert credential
-     *
-     * @param credential
-     * @return
-     */
-    void insertCredential(Credential credential);
-
-    /**
      * insert credential batch
      *
      * @param credentials

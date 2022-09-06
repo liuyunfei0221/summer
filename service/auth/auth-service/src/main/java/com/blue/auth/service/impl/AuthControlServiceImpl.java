@@ -53,8 +53,7 @@ import static com.blue.basic.constant.common.Status.VALID;
 import static com.blue.basic.constant.common.SummerAttr.EMPTY_EVENT;
 import static com.blue.basic.constant.common.SyncKey.AUTHORITY_UPDATE_SYNC;
 import static com.blue.basic.constant.common.SyncKey.DEFAULT_ROLE_UPDATE_SYNC;
-import static com.blue.basic.constant.common.SyncKeyPrefix.MEMBER_ROLE_REL_UPDATE_PRE;
-import static com.blue.basic.constant.common.SyncKeyPrefix.QUESTION_INSERT_PRE;
+import static com.blue.basic.constant.common.SyncKeyPrefix.*;
 import static com.blue.basic.constant.verify.VerifyBusinessType.*;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -171,6 +170,13 @@ public class AuthControlServiceImpl implements AuthControlService {
         memberRoleRelation.setCreator(memberId);
 
         return memberRoleRelation;
+    };
+
+    private static final UnaryOperator<String> CREDENTIAL_UPDATE_SYNC_KEY_GEN = credential -> {
+        if (isNotBlank(credential))
+            return CREDENTIAL_UPDATE_PRE.prefix + credential;
+
+        throw new BlueException(BAD_REQUEST);
     };
 
     /**
@@ -517,7 +523,8 @@ public class AuthControlServiceImpl implements AuthControlService {
 
         packageExistAccess(credentials, memberId);
 
-        memberRoleRelationService.insertMemberRoleRelation(MEMBER_ROLE_RELATION_GEN.apply(memberId, roleId));
+        synchronizedProcessor.handleTaskWithLock(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () ->
+                memberRoleRelationService.insertMemberRoleRelation(MEMBER_ROLE_RELATION_GEN.apply(memberId, roleId)));
         credentialService.insertCredentials(credentials);
 
         credentialHistoryService.insertCredentialHistoriesByCredentialsAndMemberIdAsync(credentials, memberId);
@@ -550,22 +557,26 @@ public class AuthControlServiceImpl implements AuthControlService {
 
         String credential = credentialSettingUpParam.getCredential();
 
-        if (!rpcVerifyHandleServiceConsumer.validate(getVerifyTypeByIdentity(credentialSettingUpParam.getVerifyType()),
-                CREDENTIAL_SETTING_UP, credential, credentialSettingUpParam.getVerificationCode(), true).toFuture().join())
-            throw new BlueException(VERIFY_IS_INVALID);
+        return synchronizedProcessor.handleSupWithLock(CREDENTIAL_UPDATE_SYNC_KEY_GEN.apply(credential), () -> {
+            if (!rpcVerifyHandleServiceConsumer.validate(getVerifyTypeByIdentity(credentialSettingUpParam.getVerifyType()),
+                    CREDENTIAL_SETTING_UP, credential, credentialSettingUpParam.getVerificationCode(), true).toFuture().join())
+                throw new BlueException(VERIFY_IS_INVALID);
 
-        List<String> types = CTS_BY_VT_GETTER.apply(getVerifyTypeByIdentity(credentialSettingUpParam.getVerifyType()));
+            List<String> types = CTS_BY_VT_GETTER.apply(getVerifyTypeByIdentity(credentialSettingUpParam.getVerifyType()));
 
-        List<Credential> sameTypeCredentials = credentialService.selectCredentialByMemberIdAndTypes(memberId, types);
-        if (isNotEmpty(sameTypeCredentials))
-            throw new BlueException(DATA_ALREADY_EXIST);
+            if (isNotEmpty(credentialService.selectCredentialByMemberIdAndTypes(memberId, types)))
+                throw new BlueException(DATA_ALREADY_EXIST);
 
-        credentialService.insertCredentials(generateCredentialsByElements(types, credential, memberId));
-        MemberBasicInfo memberBasicInfo = rpcMemberAuthServiceConsumer.updateMemberCredentialAttr(types, credential, memberId);
+            List<Credential> credentials = generateCredentialsByElements(types, credential, memberId);
+            packageExistAccess(credentials, memberId);
+            credentialService.insertCredentials(credentials);
 
-        credentialHistoryService.insertCredentialHistoryByCredentialAndMemberIdAsync(credential, memberId);
+            MemberBasicInfo memberBasicInfo = rpcMemberAuthServiceConsumer.updateMemberCredentialAttr(types, credential, memberId);
 
-        return memberBasicInfo;
+            credentialHistoryService.insertCredentialHistoryByCredentialAndMemberIdAsync(credential, memberId);
+
+            return memberBasicInfo;
+        });
     }
 
     /**
@@ -602,25 +613,27 @@ public class AuthControlServiceImpl implements AuthControlService {
                 credentialModifyParam.getCurrentVerificationCode(), true).toFuture().join())
             throw new BlueException(VERIFY_IS_INVALID);
 
-
         VerifyType destinationVerifyType = getVerifyTypeByIdentity(credentialModifyParam.getDestinationVerifyType());
         String destinationCredential = credentialModifyParam.getDestinationCredential();
-        if (!rpcVerifyHandleServiceConsumer.validate(destinationVerifyType, CREDENTIAL_UPDATE, destinationCredential,
-                credentialModifyParam.getDestinationVerificationCode(), true).toFuture().join())
-            throw new BlueException(VERIFY_IS_INVALID);
 
-        List<String> destinationCredentialTypes = CTS_BY_VT_GETTER.apply(destinationVerifyType);
-        List<Credential> destinationCredentials = credentialService.selectCredentialByMemberIdAndTypes(memberId, destinationCredentialTypes);
-        if (isEmpty(destinationCredentials))
-            throw new BlueException(DATA_NOT_EXIST);
+        return synchronizedProcessor.handleSupWithLock(CREDENTIAL_UPDATE_SYNC_KEY_GEN.apply(destinationCredential), () -> {
+            if (!rpcVerifyHandleServiceConsumer.validate(destinationVerifyType, CREDENTIAL_UPDATE, destinationCredential,
+                    credentialModifyParam.getDestinationVerificationCode(), true).toFuture().join())
+                throw new BlueException(VERIFY_IS_INVALID);
 
-        credentialService.updateCredentialByIds(destinationCredential, destinationCredentials.stream().map(Credential::getId).collect(toList()));
-        authService.invalidateAuthByMemberId(memberId).doOnError(throwable -> LOGGER.info("authService.invalidateAuthByMemberId(memberId) failed, memberId = {}, throwable = {}", memberId, throwable)).subscribe();
-        MemberBasicInfo memberBasicInfo = rpcMemberAuthServiceConsumer.updateMemberCredentialAttr(destinationCredentialTypes, destinationCredential, memberId);
+            List<String> destinationCredentialTypes = CTS_BY_VT_GETTER.apply(destinationVerifyType);
+            List<Credential> destinationCredentials = credentialService.selectCredentialByMemberIdAndTypes(memberId, destinationCredentialTypes);
+            if (isEmpty(destinationCredentials))
+                throw new BlueException(DATA_NOT_EXIST);
 
-        credentialHistoryService.insertCredentialHistoryByCredentialAndMemberIdAsync(destinationCredential, memberId);
+            credentialService.updateCredentialByIds(destinationCredential, destinationCredentials.stream().map(Credential::getId).collect(toList()));
+            authService.invalidateAuthByMemberId(memberId).doOnError(throwable -> LOGGER.info("authService.invalidateAuthByMemberId(memberId) failed, memberId = {}, throwable = {}", memberId, throwable)).subscribe();
+            MemberBasicInfo memberBasicInfo = rpcMemberAuthServiceConsumer.updateMemberCredentialAttr(destinationCredentialTypes, destinationCredential, memberId);
 
-        return memberBasicInfo;
+            credentialHistoryService.insertCredentialHistoryByCredentialAndMemberIdAsync(destinationCredential, memberId);
+
+            return memberBasicInfo;
+        });
     }
 
     /**

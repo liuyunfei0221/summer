@@ -26,7 +26,6 @@ import static reactor.core.publisher.Mono.*;
         methods = {
                 @Method(name = "getMemberBasicInfoByPrimaryKey", async = true),
                 @Method(name = "selectMemberBasicInfoByIds", async = true),
-                @Method(name = "getMemberBasicInfoByAccount", async = true),
                 @Method(name = "getMemberBasicInfoByPhone", async = true),
                 @Method(name = "getMemberBasicInfoByEmail", async = true)
         })
@@ -65,21 +64,6 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
     public CompletableFuture<List<MemberBasicInfo>> selectMemberBasicInfoByIds(List<Long> ids) {
         return just(ids).publishOn(scheduler)
                 .flatMap(memberBasicService::selectMemberBasicInfoMonoByIds)
-                .toFuture();
-    }
-
-    /**
-     * get member basic by account
-     *
-     * @param account
-     * @return
-     */
-    @Override
-    public CompletableFuture<MemberBasicInfo> getMemberBasicInfoByAccount(String account) {
-        return just(account).publishOn(scheduler)
-                .flatMap(memberBasicService::getMemberBasicMonoByPhone)
-                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
-                .map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                 .toFuture();
     }
 

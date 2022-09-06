@@ -15,11 +15,6 @@ import static com.blue.basic.constant.verify.VerifyType.*;
 public enum VerifyTypeAndCredentialTypesRelation {
 
     /**
-     * image with credential types
-     */
-    IMAGE_VT_AND_CTS(IMAGE, Set.of(ACCOUNT_PWD)),
-
-    /**
      * sms with credential types
      */
     SMS_VT_AND_CTS(SMS, Set.of(PHONE_VERIFY_AUTO_REGISTER, PHONE_PWD, LOCAL_PHONE_AUTO_REGISTER, WECHAT_AUTO_REGISTER, MINI_PRO_AUTO_REGISTER)),

@@ -30,14 +30,6 @@ public interface RpcMemberBasicService {
     CompletableFuture<List<MemberBasicInfo>> selectMemberBasicInfoByIds(List<Long> ids);
 
     /**
-     * get member basic by account
-     *
-     * @param account
-     * @return
-     */
-    CompletableFuture<MemberBasicInfo> getMemberBasicInfoByAccount(String account);
-
-    /**
      * get member basic by phone
      *
      * @param phone

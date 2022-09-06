@@ -14,8 +14,6 @@ public final class MemberBasic implements Serializable {
 
     private Long id;
 
-    private String account;
-
     /**
      * phone format: 8613131693996
      */
@@ -54,14 +52,6 @@ public final class MemberBasic implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getAccount() {
-        return account;
-    }
-
-    public void setAccount(String account) {
-        this.account = account;
     }
 
     public String getPhone() {
@@ -156,7 +146,6 @@ public final class MemberBasic implements Serializable {
     public String toString() {
         return "MemberBasic{" +
                 "id=" + id +
-                ", account='" + account + '\'' +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +

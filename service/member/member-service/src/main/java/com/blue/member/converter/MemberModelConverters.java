@@ -36,14 +36,6 @@ public final class MemberModelConverters {
         if (isNull(memberRegistryParam))
             throw new BlueException(EMPTY_PARAM);
 
-        String account = ofNullable(memberRegistryParam.getAccount()).orElse(EMPTY_DATA.value);
-        if (isNotBlank(account)) {
-            if (account.length() > BlueCommonThreshold.ACCOUNT_LEN_MAX.value)
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "account length is too long");
-            if (account.length() < BlueCommonThreshold.ACCOUNT_LEN_MIN.value)
-                throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "account length is too short");
-        }
-
         String phone = ofNullable(memberRegistryParam.getPhone()).orElse(EMPTY_DATA.value);
         if (isNotBlank(phone)) {
             if (phone.length() > BlueCommonThreshold.PHONE_LEN_MAX.value)
@@ -60,7 +52,7 @@ public final class MemberModelConverters {
                 throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email length is too short");
         }
 
-        if (isBlank(account) && isBlank(phone) && isBlank(email))
+        if (isBlank(phone) && isBlank(email))
             throw new BlueException(BAD_REQUEST);
 
         String name = memberRegistryParam.getName();
@@ -78,7 +70,6 @@ public final class MemberModelConverters {
         Long stamp = TIME_STAMP_GETTER.get();
 
         MemberBasic memberBasic = new MemberBasic();
-        memberBasic.setAccount(account);
         memberBasic.setPhone(phone);
         memberBasic.setEmail(email);
         memberBasic.setName(name);
@@ -96,7 +87,7 @@ public final class MemberModelConverters {
 
     public static final Function<MemberBasic, MemberBasicInfo> MEMBER_BASIC_2_MEMBER_BASIC_INFO = memberBasic -> {
         if (memberBasic != null)
-            return new MemberBasicInfo(memberBasic.getId(), memberBasic.getAccount(), memberBasic.getPhone(), memberBasic.getEmail(),
+            return new MemberBasicInfo(memberBasic.getId(), memberBasic.getPhone(), memberBasic.getEmail(),
                     memberBasic.getName(), memberBasic.getIcon(), memberBasic.getQrCode(), memberBasic.getGender(), memberBasic.getProfile(),
                     memberBasic.getStatus(), memberBasic.getCreateTime(), memberBasic.getUpdateTime());
 

@@ -20,8 +20,6 @@ public final class MemberBasicCondition extends SortCondition implements Seriali
 
     private Long id;
 
-    private String account;
-
     private String phone;
 
     private String email;
@@ -56,11 +54,10 @@ public final class MemberBasicCondition extends SortCondition implements Seriali
         super(sortAttribute, sortType);
     }
 
-    public MemberBasicCondition(Long id, String account, String phone, String email, String name, Integer gender, String source, Integer status,
+    public MemberBasicCondition(Long id, String phone, String email, String name, Integer gender, String source, Integer status,
                                 Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.id = id;
-        this.account = account;
         this.phone = phone;
         this.email = email;
         this.name = name;
@@ -79,14 +76,6 @@ public final class MemberBasicCondition extends SortCondition implements Seriali
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getAccount() {
-        return account;
-    }
-
-    public void setAccount(String account) {
-        this.account = account;
     }
 
     public String getPhone() {
@@ -173,7 +162,6 @@ public final class MemberBasicCondition extends SortCondition implements Seriali
     public String toString() {
         return "MemberCondition{" +
                 "id=" + id +
-                ", account='" + account + '\'' +
                 ", phone='" + phone + '\'' +
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
