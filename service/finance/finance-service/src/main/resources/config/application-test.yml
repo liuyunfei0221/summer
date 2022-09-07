@@ -455,7 +455,6 @@ dubbo:
     retries: 0
     timeout: 10000
     loadbalance: random
-    filter: -exception
   consumer:
     retries: 0
     timeout: 10000

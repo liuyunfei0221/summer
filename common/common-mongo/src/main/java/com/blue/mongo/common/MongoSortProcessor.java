@@ -28,12 +28,9 @@ public final class MongoSortProcessor {
     private static final Map<String, Function<String, Sort.Order>> MAPPING =
             Stream.of(SortSchema.values()).collect(toMap(e -> e.sortType.identity, e -> e.sortOrder, (a, b) -> a));
 
-    private static final Function<String, Function<String, Sort.Order>> PROCESSOR = sortType -> {
-        if (isNotBlank(sortType))
-            return ofNullable(MAPPING.get(sortType)).orElseThrow(() -> new BlueException(INVALID_IDENTITY));
+    private static final Function<String, Function<String, Sort.Order>> PROCESSOR = sortType ->
+            ofNullable(MAPPING.get(sortType)).orElseThrow(() -> new BlueException(INVALID_IDENTITY));
 
-        throw new BlueException(INVALID_IDENTITY);
-    };
 
     /**
      * package sort attr
@@ -53,11 +50,8 @@ public final class MongoSortProcessor {
         for (SortElement sortElement : sorts) {
             if (isNull(sortElement))
                 continue;
-
-            sortAttribute = sortElement.getSortAttribute();
-            sortType = sortElement.getSortType();
-
-            if (isNotBlank(sortAttribute) && isNotBlank(sortType))
+            
+            if (isNotBlank(sortAttribute = sortElement.getSortAttribute()) && isNotBlank(sortType = sortElement.getSortType()))
                 orders.add(PROCESSOR.apply(sortType).apply(sortAttribute));
         }
 

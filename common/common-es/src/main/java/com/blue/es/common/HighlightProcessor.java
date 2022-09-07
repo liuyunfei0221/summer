@@ -7,7 +7,6 @@ import co.elastic.clients.elasticsearch.core.search.Hit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.BiConsumer;
 
 import static com.blue.basic.common.base.BlueChecker.*;
@@ -33,7 +32,7 @@ public class HighlightProcessor {
         final boolean hasPreTags = isNotEmpty(preTags);
         final boolean hasPostTags = isNotEmpty(postTags);
 
-        if (isNotNull(builder) && isNotEmpty(highlightColumns) && (hasPreTags || hasPostTags)) {
+        if (isNotNull(builder) && isNotEmpty(highlightColumns) && (hasPreTags || hasPostTags))
             builder.highlight(Highlight.of(hb -> {
                 for (String column : highlightColumns)
                     if (isNotBlank(column))
@@ -49,7 +48,6 @@ public class HighlightProcessor {
 
                 return hb;
             }));
-        }
     }
 
     /**
@@ -68,23 +66,16 @@ public class HighlightProcessor {
 
             T source;
             Map<String, List<String>> highlight;
-            Set<Map.Entry<String, List<String>>> entries;
             BiConsumer<List<String>, T> processor;
 
             for (Hit<T> hit : hits) {
                 if (isNull(hit))
                     continue;
-
-                source = hit.source();
-                highlight = hit.highlight();
-
-                if (isNotNull(source) && isNotEmpty(highlight)) {
-                    entries = highlight.entrySet();
-
-                    for (Map.Entry<String, List<String>> entry : entries)
+                
+                if (isNotNull(source = hit.source()) && isNotEmpty(highlight = hit.highlight()))
+                    for (Map.Entry<String, List<String>> entry : highlight.entrySet())
                         if (isNotNull(processor = highlightProcessors.get(entry.getKey())))
                             processor.accept(entry.getValue(), source);
-                }
 
                 sources.add(source);
             }

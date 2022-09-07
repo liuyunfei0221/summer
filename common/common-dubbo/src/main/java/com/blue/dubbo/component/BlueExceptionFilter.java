@@ -2,11 +2,12 @@ package com.blue.dubbo.component;
 
 import com.blue.basic.model.exps.BlueException;
 import org.apache.dubbo.common.extension.Activate;
-import org.apache.dubbo.registry.Constants;
 import org.apache.dubbo.rpc.*;
 import org.apache.dubbo.rpc.service.GenericService;
 import org.slf4j.Logger;
 
+import static org.apache.dubbo.registry.Constants.CONSUMER_PROTOCOL;
+import static org.apache.dubbo.registry.Constants.PROVIDER_PROTOCOL;
 import static org.apache.dubbo.rpc.RpcContext.getServiceContext;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -16,8 +17,9 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaClassNamingShouldBeCamel", "unused", "AlibabaUndefineMagicConstant", "AliControlFlowStatementWithoutBraces"})
-@Activate(group = {Constants.PROVIDER_PROTOCOL, Constants.CONSUMER_PROTOCOL})
+@Activate(group = {PROVIDER_PROTOCOL, CONSUMER_PROTOCOL})
 public final class BlueExceptionFilter implements Filter, Filter.Listener {
+    
     private static final Logger LOGGER = getLogger(BlueExceptionFilter.class);
 
     @Override

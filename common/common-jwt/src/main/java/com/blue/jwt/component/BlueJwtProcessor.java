@@ -6,8 +6,8 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.jwt.api.conf.JwtConf;
-import com.blue.jwt.exception.AuthenticationException;
 import org.slf4j.Logger;
 
 import java.time.Instant;
@@ -19,8 +19,8 @@ import java.util.function.*;
 import static com.auth0.jwt.HeaderParams.CONTENT_TYPE;
 import static com.auth0.jwt.JWT.require;
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
+import static com.blue.basic.constant.common.ResponseElement.UNAUTHORIZED;
 import static com.blue.jwt.constant.JwtConfSchema.*;
-import static com.blue.jwt.constant.JwtResponseElement.UNAUTHORIZED;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
@@ -215,7 +215,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
 
         if (jwt.getKeyId().equals(KEY_ID_GENERATOR.apply(jwt.getId(), expiresAtStamp)))
             return;
-        throw new AuthenticationException(UNAUTHORIZED);
+        throw new BlueException(UNAUTHORIZED);
     };
 
     /**
@@ -275,7 +275,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
         }
 
         LOGGER.error("String create(T t), t can't be null");
-        throw new AuthenticationException(UNAUTHORIZED);
+        throw new BlueException(UNAUTHORIZED);
     }
 
     /**
@@ -296,10 +296,10 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
                                 .collect(toMap(Map.Entry::getKey, e ->
                                         ofNullable(e.getValue()).map(Claim::asString).orElse(EMPTY_DATA), (a, b) -> a)));
             } catch (Exception e) {
-                throw new AuthenticationException(UNAUTHORIZED);
+                throw new BlueException(UNAUTHORIZED);
             }
 
-        throw new AuthenticationException(UNAUTHORIZED);
+        throw new BlueException(UNAUTHORIZED);
     }
 
     /**

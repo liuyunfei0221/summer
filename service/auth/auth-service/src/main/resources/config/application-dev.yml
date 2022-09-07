@@ -249,8 +249,6 @@ seata:
       default: 172.16.204.244:8091
     enable-degrade: false
     disable-global-transaction: false
-  log:
-    exception-rate: 100
   shutdown:
     wait: 3
   thread-factory:
@@ -671,7 +669,6 @@ dubbo:
     retries: 0
     timeout: 10000
     loadbalance: random
-    filter: -exception
   consumer:
     retries: 0
     timeout: 10000
