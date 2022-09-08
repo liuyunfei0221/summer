@@ -12,7 +12,7 @@ import java.util.Map;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc", "unused"})
 public final class InternationalProcessor {
 
     /**
