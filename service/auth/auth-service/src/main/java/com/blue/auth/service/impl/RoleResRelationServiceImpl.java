@@ -36,6 +36,7 @@ import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
 import static com.blue.basic.constant.common.CacheKey.ROLE_RES_RELS;
 import static com.blue.basic.constant.common.ResponseElement.*;
+import static com.blue.basic.constant.common.SyncKey.ROLE_RESOURCE_RELATIONS_REFRESH_SYNC;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collector.Characteristics.CONCURRENT;
@@ -146,7 +147,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     };
 
     private final Supplier<List<RoleResRelation>> RELATIONS_WITH_CACHE_SUP = () ->
-            synchronizedProcessor.handleSupByOrderedWithSetter(RELATIONS_REDIS_SUP, BlueChecker::isNotEmpty, RELATIONS_DB_SUP, RELATIONS_REDIS_SETTER);
+            synchronizedProcessor.handleSupByOrderedWithSetter(ROLE_RESOURCE_RELATIONS_REFRESH_SYNC.key, RELATIONS_REDIS_SUP, RELATIONS_DB_SUP, RELATIONS_REDIS_SETTER, BlueChecker::isNotEmpty);
 
     /**
      * generate role-res-relations

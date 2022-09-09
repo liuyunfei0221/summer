@@ -42,71 +42,14 @@ public final class BlueRedissonGenerator {
 
     private static final String THREAD_NAME_PRE = "redisson-thread- ";
     private static final int RANDOM_LEN = 6;
+    private static final String REDIS_PROTOCOL = "redis://";
 
-    private static final Map<ServerMode, Consumer<RedissonConf>> SERVER_MODE_ASSERTERS = new HashMap<>(4, 2.0f);
-
-    private static final Map<ServerMode, BiConsumer<RedissonConf, Config>> CONF_PACKAGERS = new HashMap<>(4, 2.0f);
-
-    static {
-        SERVER_MODE_ASSERTERS.put(CLUSTER, redissonConf -> {
-            List<String> nodes = redissonConf.getNodes();
-            if (isEmpty(nodes))
-                throw new RuntimeException("nodes can't be null or empty");
-        });
-
-        SERVER_MODE_ASSERTERS.put(SINGLE, redissonConf -> {
-            String host = redissonConf.getHost();
-            Integer port = redissonConf.getPort();
-            if (isBlank(host) || isNull(port) || port < 1)
-                throw new RuntimeException("host can't be null or '', port can't be null or less than 1");
-        });
-
-        CONF_PACKAGERS.put(CLUSTER, BlueRedissonGenerator::configClusterServer);
-        CONF_PACKAGERS.put(SINGLE, BlueRedissonGenerator::configSingleServer);
-    }
-
-    private static final Consumer<RedissonConf> SERVER_MODE_ASSERTER = redissonConf -> {
-        if (isNull(redissonConf))
-            throw new RuntimeException("redissonConf can't be null");
-
-        ServerMode serverMode = redissonConf.getServerMode();
-        if (isNull(serverMode))
-            throw new RuntimeException("serverMode can't be null");
-
-        Consumer<RedissonConf> asserter = SERVER_MODE_ASSERTERS.get(serverMode);
-        if (isNull(asserter))
-            throw new RuntimeException("unknown serverMode -> " + serverMode);
-
-        asserter.accept(redissonConf);
-    };
-
-    private static final BiConsumer<RedissonConf, Config> CONF_PACKAGER = (redissonConf, conf) -> {
-        if (isNull(redissonConf) || isNull(conf))
-            throw new RuntimeException("redissonConf or conf can't be null");
-
-        ServerMode serverMode = redissonConf.getServerMode();
-        if (isNull(serverMode))
-            throw new RuntimeException("serverMode can't be null");
-
-        BiConsumer<RedissonConf, Config> packager = CONF_PACKAGERS.get(serverMode);
-        if (isNull(packager))
-            throw new RuntimeException("unknown serverMode -> " + serverMode);
-
-        packager.accept(redissonConf, conf);
-    };
-
-    /**
-     * cluster
-     *
-     * @param redissonConf
-     * @param config
-     */
-    private static void configClusterServer(RedissonConf redissonConf, Config config) {
+    private static final BiConsumer<RedissonConf, Config> CLUSTER_CONFIG_PROCESSOR = (redissonConf, config) -> {
         assertConf(redissonConf);
 
         ClusterServersConfig serverConfig = config.useClusterServers();
         List<String> nodes = redissonConf.getNodes();
-        nodes.forEach(address -> serverConfig.addNodeAddress("redis://" + address));
+        nodes.forEach(address -> serverConfig.addNodeAddress(REDIS_PROTOCOL + address));
 
         ofNullable(redissonConf.getScanInterval())
                 .ifPresent(serverConfig::setScanInterval);
@@ -128,19 +71,13 @@ public final class BlueRedissonGenerator {
                 .ifPresent(serverConfig::setCheckSlotsCoverage);
         ofNullable(redissonConf.getPassword())
                 .ifPresent(serverConfig::setPassword);
-    }
+    };
 
-    /**
-     * standalone
-     *
-     * @param redissonConf
-     * @param config
-     */
-    private static void configSingleServer(RedissonConf redissonConf, Config config) {
+    private static final BiConsumer<RedissonConf, Config> SINGLE_CONFIG_PROCESSOR = (redissonConf, config) -> {
         assertConf(redissonConf);
 
         SingleServerConfig serverConfig = config.useSingleServer()
-                .setAddress("redis://" + redissonConf.getHost() + ":" + redissonConf.getPort());
+                .setAddress(REDIS_PROTOCOL + redissonConf.getAddress());
 
         ofNullable(redissonConf.getConnectionMinimumIdleSize())
                 .ifPresent(serverConfig::setConnectionMinimumIdleSize);
@@ -189,7 +126,58 @@ public final class BlueRedissonGenerator {
         ofNullable(redissonConf.getPassword())
                 .filter(BlueChecker::isNotBlank)
                 .ifPresent(serverConfig::setPassword);
+    };
+
+    private static final Map<ServerMode, Consumer<RedissonConf>> SERVER_MODE_ASSERTERS = new HashMap<>(4, 2.0f);
+
+    private static final Map<ServerMode, BiConsumer<RedissonConf, Config>> CONF_PACKAGERS = new HashMap<>(4, 2.0f);
+
+    static {
+        SERVER_MODE_ASSERTERS.put(CLUSTER, redissonConf -> {
+            List<String> nodes = redissonConf.getNodes();
+            if (isEmpty(nodes))
+                throw new RuntimeException("nodes can't be null or empty");
+        });
+
+        SERVER_MODE_ASSERTERS.put(SINGLE, redissonConf -> {
+            String address = redissonConf.getAddress();
+            if (isBlank(address))
+                throw new RuntimeException("address can't be blank");
+        });
+
+        CONF_PACKAGERS.put(CLUSTER, CLUSTER_CONFIG_PROCESSOR);
+        CONF_PACKAGERS.put(SINGLE, SINGLE_CONFIG_PROCESSOR);
     }
+
+    private static final Consumer<RedissonConf> SERVER_MODE_ASSERTER = redissonConf -> {
+        if (isNull(redissonConf))
+            throw new RuntimeException("redissonConf can't be null");
+
+        ServerMode serverMode = redissonConf.getServerMode();
+        if (isNull(serverMode))
+            throw new RuntimeException("serverMode can't be null");
+
+        Consumer<RedissonConf> asserter = SERVER_MODE_ASSERTERS.get(serverMode);
+        if (isNull(asserter))
+            throw new RuntimeException("unknown serverMode -> " + serverMode);
+
+        asserter.accept(redissonConf);
+    };
+
+    private static final BiConsumer<RedissonConf, Config> CONF_PACKAGER = (redissonConf, conf) -> {
+        if (isNull(redissonConf) || isNull(conf))
+            throw new RuntimeException("redissonConf or conf can't be null");
+
+        ServerMode serverMode = redissonConf.getServerMode();
+        if (isNull(serverMode))
+            throw new RuntimeException("serverMode can't be null");
+
+        BiConsumer<RedissonConf, Config> packager = CONF_PACKAGERS.get(serverMode);
+        if (isNull(packager))
+            throw new RuntimeException("unknown serverMode -> " + serverMode);
+
+        packager.accept(redissonConf, conf);
+    };
 
     /**
      * generate client

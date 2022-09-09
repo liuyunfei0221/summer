@@ -327,7 +327,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(EMPTY_PARAM);
 
-        return synchronizedProcessor.handleSupWithLock(QR_CODE_CONFIG_UPDATE_SYNC.key, () -> {
+        return synchronizedProcessor.handleSupWithSync(QR_CODE_CONFIG_UPDATE_SYNC.key, () -> {
             INSERT_ITEM_VALIDATOR.accept(qrCodeConfigInsertParam);
             QrCodeConfig qrCodeConfig = CONFIG_INSERT_PARAM_2_CONFIG_CONVERTER.apply(qrCodeConfigInsertParam);
 
@@ -353,7 +353,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
         LOGGER.info("Mono<QrCodeConfigInfo> updateQrCodeConfig(QrCodeConfigUpdateParam qrCodeConfigUpdateParam, Long operatorId), qrCodeConfigUpdateParam = {}, operatorId = {]",
                 qrCodeConfigUpdateParam, operatorId);
 
-        return synchronizedProcessor.handleSupWithLock(QR_CODE_CONFIG_UPDATE_SYNC.key, () -> {
+        return synchronizedProcessor.handleSupWithSync(QR_CODE_CONFIG_UPDATE_SYNC.key, () -> {
             QrCodeConfig qrCodeConfig = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(qrCodeConfigUpdateParam);
             Integer originalType = qrCodeConfig.getType();
 
@@ -388,7 +388,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return synchronizedProcessor.handleSupWithLock(QR_CODE_CONFIG_UPDATE_SYNC.key, () ->
+        return synchronizedProcessor.handleSupWithSync(QR_CODE_CONFIG_UPDATE_SYNC.key, () ->
                 qrCodeConfigRepository.findById(id)
                         .publishOn(scheduler)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))

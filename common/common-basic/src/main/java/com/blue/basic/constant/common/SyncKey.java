@@ -14,6 +14,21 @@ public enum SyncKey {
     RESOURCES_REFRESH_SYNC("RESOURCES_REFRESH_SYNC"),
 
     /**
+     * roles cache sync key
+     */
+    ROLES_REFRESH_SYNC("ROLES_REFRESH_SYNC"),
+
+    /**
+     * default role cache sync key
+     */
+    DEFAULT_ROLE_REFRESH_SYNC("DEFAULT_ROLE_REFRESH_SYNC"),
+
+    /**
+     * relations cache sync key
+     */
+    ROLE_RESOURCE_RELATIONS_REFRESH_SYNC("ROLE_RESOURCE_RELATIONS_REFRESH_SYNC"),
+
+    /**
      * AUTHORITY_UPDATE_SYNC
      */
     AUTHORITY_UPDATE_SYNC("AUTHORITY_UPDATE_SYNC"),

@@ -29,9 +29,19 @@ public enum SyncKeyPrefix {
     BULLETINS_CACHE_PRE("BULLETINS_CACHE:"),
 
     /**
-     * styles cache sync key prefix
+     * bulletins sync key prefix
+     */
+    BULLETINS_UPDATE_SYNC_PRE("BULLETINS_UPDATE_SYNC:"),
+
+    /**
+     * styles cache key prefix
      */
     STYLES_CACHE_PRE("STYLES_CACHE:"),
+
+    /**
+     * styles sync key prefix
+     */
+    STYLES_UPDATE_SYNC_PRE("STYLES_UPDATE_SYNC:"),
 
     /**
      * member role relation update sync key prefix

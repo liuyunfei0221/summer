@@ -55,88 +55,6 @@ web:
   maxInMemorySize: 8388608
 
 
-data:
-  shardingDatabases:
-    - url: jdbc:mysql://172.16.204.244:3306/message_0
-      dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
-      username: root
-      password: 1024
-      driverClassName: com.mysql.cj.jdbc.Driver
-      connectionTimeout: 120000
-      maxLifetime: 1800000
-      maximumPoolSize: 4
-      minimumIdle: 2
-      idleTimeout: 5
-      testQuery: SELECT 1 FROM DUAL
-      readOnly: false
-      autoCommit: false
-
-    - url: jdbc:mysql://172.16.204.244:3306/message_1
-      dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
-      username: root
-      password: 1024
-      driverClassName: com.mysql.cj.jdbc.Driver
-      connectionTimeout: 120000
-      maxLifetime: 1800000
-      maximumPoolSize: 4
-      minimumIdle: 2
-      idleTimeout: 5
-      testQuery: SELECT 1 FROM DUAL
-      readOnly: false
-      autoCommit: false
-  shardingTables:
-    - tableName: attachment
-      shardingColumn: id
-
-  shardingTableSizePerDataBase: 2
-  dataCenterToDatabaseMappings:
-    - id: 0
-      index: 0
-
-    - id: 1
-      index: 1
-  workerToTableMappings:
-    - id: 0
-      index: 0
-
-    - id: 1
-      index: 1
-  broadcastTables: [ ]
-  singleDatabasesWithTables:
-  safeRowBoundsEnabled: false
-  safeResultHandlerEnabled: false
-  mapUnderscoreToCamelCase: true
-  aggressiveLazyLoading: false
-  multipleResultSetsEnabled: false
-  useGeneratedKeys: false
-  useColumnLabel: true
-  cacheEnabled: false
-  callSettersOnNulls: false
-  useActualParamName: false
-  returnInstanceForEmptyRow: false
-  shrinkWhitespacesInSql: false
-  nullableOnForEach: false
-  localCacheScope: SESSION
-  jdbcTypeForNull:
-  defaultStatementTimeout: 30000
-  defaultFetchSize: 100
-  defaultResultSetType: DEFAULT
-  defaultExecutorType: BATCH
-  autoMappingBehavior: FULL
-  autoMappingUnknownColumnBehavior: FAILING
-  lazyLoadingEnabled: false
-  mapperLocation: classpath:mapper/*.xml
-  props:
-    sql.show: true
-    sql.simple: false
-    executor.size: 128
-    max.connections.size.per.query: 2
-    check.table.metadata.enabled: true
-    query.with.cipher.column: false
-    xa.transaction.manager.type: Atomikos
-  debugLogging: true
-
-
 identity:
   dataCenter: 0
   worker: 0
@@ -232,6 +150,14 @@ cache:
   entryTtl: 60
 
 
+jwt:
+  globalMaxExpiresMillis: 7776000000
+  globalMinExpiresMillis: 259200000
+  globalRefreshExpiresMillis: 7776000000
+  signKey: hkKxzZljEWoXpDuoEmQOfyeHkSWKxKQHJrLwbrKpZzcToEfAakJzLqiqELUHPQltQIwODaYXHszkfdTQVKTNEeoPBkKqkyPfZRsQLUqCwYpLszaTZCmblaWUNLqQbVsADtvDFjABNPmJGxkiWTkQzvxmjXLhdobZbJAvRLYFIELKWXQpKYKOgYBsSuGHUrHoNArsZyLDIbbNCJTrEdwqngeMEcyEMzVCkbegyonApHlDBwDiawDvyZXEavAdfkLFhujLdtFIeSqZDdOVwwaTXUlWFtfprKKZhGsFLprQpgnrATqZVemBTQdgPLFjXBlZwZsIEFeQpJCAkrIOYEbCQBmaaQnQqegibZVOPrYePKYIiVysIUiNqJGdQaCbvfSfwOYZQBcolMwifFMxXArwkPqveuregGaPcVpsSiozExYvEOyXepFcCHQNyBjksZeyRHxGcFfzVSslchLMjVGOYWWoKjdIZtkNTHgHcnZCVcBTtNDXcVJPaOqzdURJCgwx
+  gammaSecrets: [ rxoMQukWNVIiDDEjkgzqYWDaIbMDjpdelCYDFRmaCtkHcFavunqmjgTUqvlLVAcs, MABqFUqicXMPoGfLzQurQuygXAKIrhvwEfwZNKbmAjQNiKhPDbfyVKxqWHBbIoDn, rNQJgfHlSAJDcjbBqTjNwYOfrhoPyseEdqymJeyrQpxUGMtihdscwjppInHqhehd, WxyymLWRrseeyiYsbhAddSfplkijjwYcDqPyMXoykcnNEwXScxHjLiYhUuaEzkHH, nVWnqODrwcYNamnOEWEfMJSfuYVxQEinYpXTtSScLVQoDoYCbKgjRJdpOdSyFirq, yXUmMoKFGXuUxsPoWAxfXDXtLFVAcKDJmkYkfFDxCHaRklqcPqzhqdnLraJTnKwh, KfFMiZJWLyimjnaWdkaSXVdUBhzdIWzuMwjXYbAJfEujtSGETiyFEXQOIeVpbqmI, NnCXrwRuezZASDfyFaNHlKzxpxWoKfavqcPNOoiDJSOABQShLixBaVDjWBgugtTf, AKAbOTpwWejayNfJJPavAhIvaVhKHHCsZhJjtqFpLmSrYcdyKzDYLRrEXCclsKBp, qKJpIXgoYWJLahimHXNmKFDtUjCqfVLBoxmzSYgWiHiSLRQYgRACWdLOjnLKVtMJ, CHKUihdkQdfaFrAKuthNaCnHOtkdAxhzoffeYFvdyJuuAeLnrPACjwUrQNiHGGTH, dzjHRNBLGEFxoXmCNHdeiHnvHJZBqHNzTisjPrDoXpVBmyhPlpqPZMTtDZTQsVlL, XrlZRICrhBjhzzBsrWwDdYPDzijQDyJErAsVaqCYepNqKMHjhnSgIKgKThKkoJbo, XgZeWaMJEDfLnVXXrSEKIVbEwPprmyhOoBfDitMVBMLgtFsiEhnAofUcUdmjeXLM, YdjArGclTThgjhUOfSqWlTCDXJVYzPnQkVteqOoLuQAlBnwmAUYNBrMicMqCpxzV, meHTMNecOzqOMXoirtCCYFppFiMzhrRfvzDiiYpuPLXyZsPYvkdWLWaTwnwWmbAl, MyIQmVWwxczlYIGHlKJvSVniIfwHvvTHnHyttmucEuNSiQGwSSUDepimCvLhLjop, HgjjUEUWDXFwoExEFIhiplMXRBAnyLBpUyHNZthqaadIMTWIgBCdTpMkfrXwtfVV, ggqHAhbQPPyFZzxxTAtBOmMgjaUHZATaxbvNFDARlViVmnKUGEKIYSuIHHiEjlQH, MMcPVGvBcHOxOBiDIxXLYKWWOTKSmKpFWIgTxXDovtajFSjAqKYFUchZrrrFIVon, mrGhhQETJWYhHbvuhQAyHsmBhDJkawAKxtmHQowFWrpeBNqwxTnNPyoUTMGfmQIW, htjiYzMMPqZlRtboXVKrHUrPrCacnxLIXRvhfCyTXabsDbihRksmUCrlMKLhGzwS, NNOymaRhmAjeaZpAJoTcXbmuQoAPDZgSqZkVuNHuRpUEJMgbcSmxyOhLeFwHfUDr, iCyDLAkKXDEdfTILqeDGQnVSKagzHOYCoBnVZqAHeNwceGmklgrNiHaBWuXvMWPM, WdQJlNQlwqeoFfADQRjvuLaoaHNPIUNYFXXnoFsFYuOXegxrZKYUwJQCaPMnHHwx, gcBWGFGXcucRJnSiVTeeeEOtBvDbPEtcTMdHCIHPfqQfQMMOxpxukMZMsJvQwyHD, qQAxFWZWrhWeCaZeBSvnvenzaUuHcICcIXSPpYaQtlYGEAyBdAYGYCHUkykHgZun, PbWKhuCKtoChXABJCmyWhwOVoutODKsOmQpQQrANevzbfeJTiqTPuhrdVqmblvss, jqToXjYSiGfWoGTiVWryIXguNMuMARorQfRQVeNZrbGqmvGTUibDlQJVMVpLLxdB, HHvYOjXqhmNRhgBGWwCshwXgvholVyLsXCrTtdbFvExFimxZnUUKqGNTVnSiJpsG, KGLWMmXJzJsIKtOJBAsCfReCMpwufembkDavbkEGCnWXpgLNfeMmuRtHXEfeMZVX, TsELApzcPqWGRdTNTcXAiiKIJZPdtqtyNbgFgOUxkvYGkXMgVlrkcaGhMYPbKoJM, fphKydcYoIZZcebrnBQVgjfLJksQDOidLBGWzYFPTnMMxIlnFBGZXCbpglQJZMDN, NPxllBnxGBBhWBxTgwCsxWdrrmuzluawgCOJervMcSazJnXDEVqqPErkAgFDhhQb, RwTBrvQBDRfJEtacZwQrtedtIpRYuFJwYjIXLVewDTjWzJqxNUckgxFANTxNxAVD, tETQTGthvIYKfqnQzDziGZAIrbtJvzQfnWtFsqJqbqzugVBDYANfnYRiTrlVuAPU, kHqDKKExInGLxibbXxcqLNHKYadcoHEnvHPIrPGEgTYmiVCQtRRegradRligZtDe, NpxLnPngpZdOnSaXkhfgyeEjkDGffdjvUkstkNgwCJWLwyZSjJhgdJNAwUnoSZiH, YClkzesBEGaPpmItxIBGNAiwYnLqnERFgjDzaYTYSOaxqiTbaDMEbrZZeAsNImea, nATlkuJKpsenVcWlmATWittKAgxQYXyMNeghnDSbBTzfprYbdyXeJvxmQiGNdKtg, KSysLoYZtxHNCchFkcBOJopYNxpyWqgIHyLjYcaPAwcSCzwMiQPIjZUjlmPXlyiZ, cLHxgxCVlEXxHpWLAYfGtDHUiXhRizBhDvPiKeZRTCIYaXRPnnPPFNgtslTIPHPs, hiIfjfbUXlpRixMHXfixcHXQJNdlEpYUBnJiwDWbHTKuZKutktLNDnFRcLGQRrde, ouOkTyQAfBaYCipqKsZvWjzkQUMOvIsIKtnZZyzPjduufCqvAHATzdLWaTYyxeHV, WWcVqJujTGTPJOpLVYVqLJwtuRPcvhsURqwlQeTRnaxlaJYNCWUYjgYuCPzVOoTo, RttLYHqohvsPhOAGAHbtaxzkaYqqRocRdFtFkKSXLbiWxYArRHXiRyOtrjGoCKSz, imIWhxpjkgKeaIOIOVebPZyzHcksLvbLXUnHkyfDscYhrvDOdvIxjAHwxERzQVbq, uxkiqDnKgMHpOfuZVMpBEHrlqpDFixjmkFbwhDZdBngdMeeempCGLCEnULkROKRx, mAYWsPPHwgspdmNilrdSKduMzhiiyqIAAxFQkkzvooszTFQPGhIyNFKPrRoZoutp, WuDRnzSvUHlWgkMZhljKkMAtNGzuBZJOpJzrttKumwGshVQJdiTyIomCJHVrCwoM, bkQVsLElGmyLIKjVklOUxpDTTKETewKmeYruuYIMDcXYyGOKWtWjPebdweQBduyr, FbZqtYxWYzFhBUKfezjiOKpOJQijPSJcwyKBtvlFrsSVSTJUOtMeblSfOGiDrMUf, OidaFLwJBBqORUOMVNLTPtozeOrvuCyQrWLxzTvOAHnXoGWUJTAJlGhWyoaheRbM, HoBzKGrdyxuKOqOdncNysPzTjudvOZXdzzaQjVftbXueNnwXPsOkEmmDMxBgooQi, NuvuLAZaJlJMMDfixZRYrBJNwrCHqjrJiayRRMGQbiiYxsQlpOPCJSRAvdfiLAYd, LPhEGLSHvuGVchFdYHQhRNOcQKGKgkttyvHdDKihqqGVrIaOKWWGkIuvmQGddGoW, AMvwhuiglkLBTcvmQuXlDiUIzYPBhxqoFrnrjaswiLbYMBANOYgOpktBNrMBjqnl, HzMxpBPdVsCMyeywLvQuMdAhQVDGPTZALmpfnlHDCTazKxywqgPWzoNmwDFJAVZJ, MdWjAiZvVDWrxWEjxVeMZJnSERudxzLhuHBNanOFPtYmJjlgsUmJjEcjuUYrMNUX, ayvKBkUnVhSAKFSIwTirCQuDlqOshjwKxvnOhKNwmyCIfKyfBsoQgtsuDmxxhvqw, bMTHdobtBYxLWcsoABqnoIIMQylnPVWtixNyMnqiHZqbMCHnuFYzzEdcFoGugOhs, LXLVZcIDxCTgqBLbTKmARSFfxFuyyosTKJlmLBnTspKpRrcPXgrDpuLKaASnacDh, sKyLCdFvWWcAxTZJpstgRtjSVGpDSyLJVHrARFqHJESWkUuYZVyPVVhWCsXxgvLE, hQqqjvRnRExCnTMJaCkwdSeYodtFmHzhcTeLgVoTbBTuZBIXxZzMBYGjZanlttHB, sqpXtyxTsbhKiUQHFapjwPOqxbxZcrCbMtukANKIHIhMulMyTkBrubUEvFUuPTTH, iNNgAOLpSIcqnDDUwUfBjWZsVoaSyYLhWxUVWdJUuqhqZsTQBPfAZKYExLahXEHS, yVGNwAlqvrQUPNLxSPenlUpZZUeieFgeHQAmJqBTJUwDUzbSXwKhndyFFQcLoQUV, wlwOqrSplsOcRIdMFJwWPqAshZRTUYpuEMIXDgLzUgICnedxRAQSbWkfdrwFnGtF, rBgvpehHgZWiqSsLOpIoHAnUkhDDRihXnjYzeXHarlzIROgVcgjAzFBPcoezuCQJ, WnxgIHzzRxIvEdrsDqWcuFyQSvIpNFNVZdAdSTyBzobZZmDGWFhNdrvuzEmibQXj, zAzTwdWbWZUhYRKjpIBUoijySXsuIIdmGbSvuyFTOUIvflKyepZfmLMgKkzoAPkb, FnoihflzscLIJNWHYGqsEHTWwqydLNBNnNQaveHUYOLZLmxdolwasUfjWxPpYLZm, MztYVDRcQpvqMuSXJAOLUNZoWgiBxJyfhaBybtvzrEyVBPislCNPUZggKdhsvQLJ, ZnToqZfmYXPhjOnVWkJGRUOFrEtASudGWINLAQpNlgrxLdQsbvLxUmxLBblGxpij, RNVEzafznGQrMmrZNVnOrkeXChpvkqlSqvqfwMPhhQgVVKrCxpfYUtRwGQVYZpHl, uyzlUiCbYWWeNIsGOquOxjKcfiGqDoqhHPwfbCsSXNuJmrCwDGrAICMyEfNwjprI, locmeLUgdlKwEKIBNUgnLZpNnDBblwUGSNpwRVtZZdXsmGOHRzgmafiVjsiXmSBO, uIutRQbeiSrfmWIrfySSogGUYZshlwuRTBeqZmzPMIrbtmvCyIijkTBUJdhEAoHB, VdACXnBbnyRIZyZpkyoZOBURFYMcUSCvHSZlYXjAgqhjrEpuCtHxoSZdVvIrRCNg, rNLOWnWAFKuxsomKVAiGmGheJpSzrgwoVNVaqvLACPtIPxociVSaHvWZrMNpaFHw, MepelgMNRLMInQrwdbGhfpdZkxVHuXJLrGyksgDbVpdPDTsGSlwVdsVxJAavZjvh, dQvScNoYbGZqDdPQHMjjpYEVkXkpwpeshlwwWJgWxtWRhblOKvdSQxnbweRsEOzd, ifIpMtimhtdFGQvyCsqGPWxCAIoNBvZPqNIqBKRiOBqsarTKLkmIlMRwauEhYtgG, HWJkmcjusATTDpBfzERfaByOnhVXpRqaBaudgOnvPOQsKbvWyhaMbNkbwHCBmrlL, ElMiYClTRwMtsjkRrwFVmAfaBcogocsxVMlAiqMeAymBObHxRTjUHMJEMycxKjDn, fhrFLdpoqiUrdaqXkalwUPAQirOytwWvOVLJHKVtwdvFBGvtcrbfexmRibBDnqxO, iiykilCsvXXTxKlFROwBycorZeqzCLVzvqvkuTgTcTsJHmgTzafiiqqnLQGpskvo, qIzmySKvGZuhFJMUxXhFGcyJjAHltbTmsBUjXcEDQmZnNQaflEusAnTNaOcyJHEK, fycRJWYKtAKEHZujUThiKfpnauOsUHTtWgZemNyxWpSUBcwIgXKwSxjTQbgazmnK, AsWBkGZXcbzaWQxYxQWIjxCXXgaupukuXmtUYLNUFCFASVtqLxoMkgnpWddDQKhc, cPyLutuJKRfbptNOSyGAJNYxeTFmHWwqJiKibhKxiVylcPNXNhLvIJIeoyWnFUns, jmEtBqCIUykqOeSfVGFiICKGgewMfhoaTfnraPMKhjDOlrIMkhhmiZpLByhuiieR, IdZOqxrsBKeSxzhSVIUIDLClXAlIGdikMsCfnmzQFoywxpgbYPORWdTQfiGXIFSK, mutbnWcjlbYvNdGsbQoafETviHoanYwDCEJtSCWqBEnfrocYJzYedHRDrbcEnDMP, doRVSDWBClcoYzpLAUgfLRAnzZoQAXXkUbvCxdqucvOKkyqhKUoObThrjIGzAcZN, iVspiiiGiGWLQyArZciTBsEKlvjibgNMziHfrGebZyKKXXGMiryHyyQLkqDoZrer, fVdoFGhKZleYiJUjqmfVZAouEyoFEccPKCoYTXYNddhtuBaSBZbllwJJfmetBgMQ, HveYVnFHoLynXafFyHtTKrpUgZXWVLiZHteBUURqEiSsOiWbPgasNAJwgMWciOny, IjriKppqdkYROTBukmtohOcPhUCRbrgcnpqmvecDGKTUxERVvhaaHNSwHEjBEZkN, ZrwgLJeapZWzetqUtaUPSmqbAhWPIPDRNcnSpjIuzhcPAQKtTUECiKtdkVbHfYHR, qjZicvYbZPvOCEoEquvtjNZQhmBCMsHKmFZAYNmbynuvXOJcPwkccBexAqpcAmzx, SVuvZWUDPQtXpAGExrWFInoVSyJSQzwyqlAkMigZhcYMiKJwgwnVuRzRbggqhGQg, kpXTjGEVcxsqurLaOEdXAcKpREBdRBrWrmKOuTMAKMBqaUUXeAMLvoHUQjNbLBBb, eIMXCiqTvqZHlxrbMIUESaYCOqKNMmDqeVQzITZcWWKQDBBiiqxhKttQqpurcNCB, szSJRAgCHQmOPIDhnGMRMnIddQlAIKbfaQFFHqVUsvPSAAYNKmAcjemjkYiuFjcg, YpgQPcggnBsDPiCisIsGnAXexiXfqnkNRfKkHhtUEHOgqZMojkVfZZOCCfawSJzz, AHocczIHsBvlJeDKibDEgRrTvyKKuCFUcfSCBTWLRfuSAYhCcJVjzmsvwKqoxDPB, vMwdGWnwfgNLsYibidTLLvXmBMjHLgkiWbfXNmMgVSFeAiHBgVSFvHbgzpwdsHYV, geCbnAfNUBuhexriwQIHriSAruZvwwkDGQKrWTFGdYIcndfbcInYJDSCWTnPaIQW, AhJkYOGNcqbPCuwivELooRYkIgNbYdNbnIizTWnDgkQfTOpUFXowgvCwjgyIFlGo, lDvKaRMlbhxkXRdIvNSXWAOjCDaDZyIMDOAVYPqNYsiyOEmmouRUItUXQbAildWt, aeyZrrDZZHKIQRllXOVuWUSjyrVbDzMWbyZXQrmtpuvalVUbFfiJFMnlSztWGGxA, gPJlUsmpmZakhSmxlFFcxxVrzOjhgBYfqDfLYpjNAUdYgJHIbMEGdxyUOWDxrGie, MgedJvjLLJTIhZOrhIeZOtCMsovEJakowTzgGCHJEgdONCBWfuxdkISmiLyklqkU, IhtbAScOISCcTkmRzmjoBPpjPFzlLqHkDUnDrbRhyOizQZYaEaPFoKofmkSpgjdM, lphIgROMhUnkemLlGiyWroFNXNWGWBdhXwjhNMvqTUBpgpKjvrhiuHzRDKogZisg, TOfyNuzENFALBkXWrfbzKnNDHXeQSJbJEhavDzLCJfsyrpNNcCMCLFpzBvQhLjmx, ZqVahdrQOtDAHZsFobXcrJKCQaymshJvXIcUaotLFldnwFllECJINtRWmiPNTqpK, MyvOOqfXDFHdwKrgjJWQeLEZeoSYEtcntrqyCTVbuGotfSCsrGpoclWPuFvMJcaP, TgGYyPOYSQnJafYIAveFZfjfFjyzoZtLBeiGQNyDTRSYSOgjJdakyYzSPBfjWOHL, SdWwRRZVqFlccCQLvKOUOfIMxjYAItqygJPhOfKVuOxupRHMtrDVQyFgmkCNYKMr, wKpsuAcckSvOIDsPmixFhiZKXyFVhPwLGPddEzzGoPFJnpiZjfPsbtqjKLwKLnvN, UJYUisCxnAabXWBgqiNhIbZyRIGhHYUywpGPzcuTarTnGEmnwNliMpluLCbxUfsX, MgUFVasAIMEAiRLfaZrdIKRfcbnxqHEGSSOOHCJslILOJVIGnIiQjUwGMvJNrWwK, ZfHXnQfnemKdlSKSUjTlrWoENQkQucNVJTbazVKRwyeLqiNxLAJHoOPKpGreVtkc, xwcdzJNIJylQDdchhFqzwFdWkDbsuPXKUGAJcIfwyiFVQwzloyQPIhssAkWddxcS, cQMAWuxQSSBnPvoTLesgKkJAnNWGgJhEFhNgaYuBBjRoLdSZHkFnfwwdqOqbEycZ, AOOMcTLnAUmJnDXNzRgIJmWFHvZAgvgdvDehXrVfUDjItvbqZApTWlfuUitqOkhR, mTHtRGNewMYanVKqMaBlRzcndZNMUaUjBpDrAmwAhsthCulUMHssMeglxahtsgcq, wUzINpnsckwKERxezoEaFJaKYUJgZmFrYWIAOsrbgeQhnzzQixcpaUwxTWHXHTfC, KGdBTzgHHXZRijbANaImscIKWQxkupRXsSMlRgUYciUxfyvaJYHCfhqfDBEUuGWW, wPRlBUwGtBshiuPqsQVYWMTTFNDLuKINmkHRQVJIpWyWeSXuqahhWdIYRvyZLdcQ, pfPTKANKvdRpcEuUleNLopdOncxzFWIhtqauJVZrFDpsjektElRKgKSanAQMrkcQ, UIRwVwFuuMWPPAGdZkQpeqkEQeHvqnSbFExDLRIYTjvOaBIwSVWWQZDaNDrCkJWE, noxpdRwTtqjKDyAtyXoVSoVYmlZndmrEOhoJrnvAwHTDwkMqLfdtuRbofYiwhHzV, yWBGtzDadBQJVCWbWwRrQgSdqTkYfldadLTefhitCZQDOlXuvPPwUDsVujPKTsHn, GTTpBFHCZftNoaVBKqsxjjWSDXELrjCzdEcLNdOjbEZhgjdINLHobcuHhNqiYqwV, npsimTUPqjUqWUUySExPCwSckxIsSlLjTHqMUpKvbzAAmkXKThsYgOqqqfDWGgec, XpQLrEQijuHgLCwAVMBPSLXbIMABXhXamYtVyHAMnGXKPwhzoHcBQxTCYuoyPcol, kznuSPPpiQEJmzpdSnErgDEGoLlKUovnhBhMzZHHrQiPiZDDwEWkfTCIiMAbQFnq, kujCnFDfoEttfZmtHFQnsESgFNXxgrXvOvmiYntqiMMQCxvJLLnVAJPrleMwryvx, eMyUjQsnmioJBFnxtGAQexOozutcZwElRKBkoVuHEdEfvYQLnhDqPaVABYyDFkgg, qmCeVfVqwxtivvROxIcPROHOKRawdNttVXZwOUePdZUBKHLygmyAXKBtTTvLVrha, pKbYsNDiQrWiaSLiAluwWOlYqdnVlVVSUaqWRDbZUnGnokuRJYmUkXSbyeLxoeta, bNoYHavilSBflVRHMhNhCsNjbzyzUXvkzmaXuLoYVIANePlUcwSnpwVfmAMFpTNh, PfRymwjabgsbKxrKKlqCdPlOjIKoANzunopmszCwCKvqZzLbSHlpcPDljgZnbdeA, FOHqPMySdSlmoXfcvglYcPFbnvzoaWfZxSFKTuRxLTnEQKbNtVhbYxlBeAAFJneN, ayfbmlwohWNYEtiBLxQUWLpRGyGHcvGjddaZwThnelfnxTbEgTwYhmYDfXDfOmSk, wBcLWdXbNldMJWQcMiEOjFhXZGSDdROPDuvodGakLuuTWzoTSRFMCDbwziwKqMdK, YrfdDkLyGUhEHutIvlpwMrtJJBFrtnBgMRtjzafnNeFVJxxVPjqORDWkdpOjEzoW, YQncMBQhqBWWpOsJCmVqwRSJsVOfDwqKagemtljgJQqTxPfeJiHMiQdpsERkTXvB, cDFueRpXZIDtDirQslPcLZydfLDnBCqOydYjSXbIiAnRymXvRZSDWrJaIoGUAJXJ, xPcuVdoubAvCiqbrXzkqbAqRPJYEJSIWdqxRTddLNZOIdVuuexoFZctJEiBUpWWP, upzbyocLgRAdGQBStFNKgVTbgIWHFXaqiWgJsPGLkSQFyhjEtAsDOOjcfLpmQIDx, CFbkoHWbugjfaJcPygMTblZgbdObNHLFSxfRHXmwNVrKtdMIfJjuLJzEUtWQFGjv, DpBHhNroaDFDmECGOkxzlQXqCqUxQaRHDCmIikcfiPDapjAJHiEaYMZxvNdADMHP, xLhcOEZCsGfWOWDtjrAaWnejoCZdOArGZAZDHoCjBipLiMKhcDYHtIaiTwiZkixJ, ygaYDkzjsfQsHTxOyAyjrkAOPpkPwQUkZOMhUBlyGxNHlnarwVDxBaYXtFMpzERQ, IxbuOyExKerJIIuMRHJqUJiGjmtADNglxmBWBwtdpEYzQToMCGTPOJChmpuVawkC, rXPGMzwvsfLSZWGLFFndjUTyfaykyBdsJWujARBLIVouyRchlnpWjnWGpNXvwFMy, zZAWmcAEFvoRFqVDiDJzniVfpSieOIiuBVUrWUMuUuWEorQpxqKjKogHxbnUToWN, IIryLUwRQhKcifGDfhuENoOOlayiDcsZdmMetkaslrcvtJXKlfbIierhJEYXuYEX, nIQFJeIYRjOlQuaVyMUQFRijHAzZgxRwudKocveHGMNYiprwQwehxqBPaVgndADq, oySrafBRbdmuPeLZavkumaOHNynbIxrQKegIKvAYAMAmMbTgTpsgueestXfnkxoR, ZFBqlbaVudevjolgyrZFxswaKpaDbnnOnZkUEXFkSOJIJGWXQuLiQEsSExzMOhLE, ZtYVusYRRuWSnFqNhXtViSqVexpMHSMKdQFgVDDcldjczqtKsIkvQfikKIwXkXMN, nsafuiEHjHTCqSySwrwWxPtvrjzweVvDsLJwAAFUCJMAatZeztTFefDTruMvqeqR, XxuYiydtJMClcXTYIUnSKnasbsFTDjIMAvLgzPSqwdTicaWkPCFgdTnfVBkPrxUb, qCWnCsvMfwqcvsReiPpBxsMCpPyRgvnxvXHykNxeDPOLQtyJxpiVqFRZEmuiWFCP, xGdzjnGUUjefwOJcinGhoRxjMmeRkrXDsfFoLAmGSzptSWIYfWUEzcrPGxRGiivt, woivbSCYrbhbSKFBfEOHwiwYaGHIoxzprodwjENEZuZWOatNPiCJpxWVdpCbIzpQ, GdsZoSRwxnBLUCjVjNcMnoCAHJtBhvHIjvthMBEaoqPaOLVsFWCPRHEehlPlJsGB, bMifjqoUfFsqRZFpcBChqqQQNEILQJIqzxMoxHYpccbDKXcAzFqJbeKzGTWihtpy, CvEYximueuJxTLTatQinZxEfWxZFrgXjLmBPqUBNOLxtelKEqcWncYnUmGmhIFep, nYbEZtiGgblVjhGEKgaqNhgIXzBskbmUzmqXqiicZbrnOnjQLesnoGVcJJdWjblL, pFHSeHjqGLisXpaFKqiFLYeEwsliUWBnISUPXXnSdITDooSvjzTcMSaGTFMhZzzW, EafAkYMwwKiceDkaZUEQwDDiFYcrxqCztoixDeXMdSGKWpyJNoVdIDhpHszGRmjO, ndMIoYIziKxbDqoaHFAxdvKqYmgjvRxFPqQLbHBGtPQHpJGeyXdQFMZxuOlVIpiJ, yAfNLdqRkDVtfxUigcBsQxWsrOZSsLSNkXLzrQdQryyusGWctCcgkDFLxFpNPuMa, bpxkRvvrwJOtczoVRGQkjUYncWJehnsgfOBKNJArtlKwLrTkKcZUPsMPVUrAncUK, KNbyvbdqmyVoYFYFNFpevEZMVkBvggFFeKEiAFPyHDBNzjSBzmAtXrTZMZPaqnXf, DGUjlyoBEWeNUhZQBuXRdCRLxKySHqgqBOhtZFCFSByPLfBgxGsKgZpqLSsFzNuV, ihTXJQnHPhMLzgbHMXuEeCnkQrSUMUnRNFngDqNKdpUmCPhJxDGoetETImHFhurq, tohUMadiIBQcqmnhQLZlCGTEihmgYgOKauQJBYxWwgezDuUNCMjqzUOYRpPWGDAO, VZNnEsKhWqSlcYVNNbQEDiZLemOTlBTeqCnyKSUgoVpBUejBCZDVtKlIKmVGdYbi, XLcyMtcALCyumqphvFswopUnAVPVpCqAobZnEapFiMbwDCeXiWcCBOXoOpHVielU, lxJHfXjfyEjzotYFzfJLOJkGgyOfEdNKMOxDlQwKUpyoWiNhNnytVsrATMZHaESb, HkAVGHKDPNxbKNfSwtDKykaxlzjrWAwPitmNJQIRqqrHWBcnaQkVGBwfiQEdjJqL, EpEEwTSgdeLqJcrPVghepRldUojCFOgDVaxCCaDSJVahiVngEMrByEulxWmTgtVO, sIqUPFjCizPkfYufNvfblRoFiTVtezDarJhhuAJqywnrJFeczOjiYAmdPHpFILiN, KkOytfgrfLrfCkFEMGzFFpEArXOiHXfeyowlrEvHGQdLZRbkMLCIzotfDjQXIJGE, cjBoyowMIsxSXaUiHCatIsCKizAIsYNBykmGyJnLGTLqcGTZiRfsGKWEsPlfCUfl, tNYzcuefaUhwfJCPoapIdzTLlJCEXURUZzapKzLyrHGNTmlGeyayOUrwBXeZzXBn, ZNzTtMZpPCoeniSMQJxcQyxDPzseVhVsgrfqSSbCgWQPNiMPAsAXfoHXdgJaFybc, iAfINeuhEVRDsePpuSDkiqwlmvbsAqMeXJdotKPxSbNApdEtJDbALSFxmMKPVvpQ, LcAziiOINxSmCgIDBRrbLhALExSUnTMqfCwYPndtwmZdCUFJnhivPsXOYojhVOrq, mWfvtlTyySJtbcKDANdJifnTrCPwnJGWLuGdOJoazLPIcZzFRyDPTVeePuoyyoFB, lhXEyWmSHiUkMwpMVGBSSQaDNcdqiZDBbEgdskPAhaloungVHEBpEDjCJLVSfKeX, LZheoMDsHRLTTgdIXywMnKmqlXPyqAfMaQHSnzhATQKeTcwRQsSYIOJqSFBPFZSw, HQDHQxHHkVUSpCfdKVDhwXJQxzYcuXFZwqDjENMoxYXNQvjUsnErkGNgLQpNcFvV, XIiTebolUmKumuvWTiJMXNMhrBSXkTrMxxyAHdsmMcWCGaAIcNZFzXOWtcZecpbx, cLuYbdJWMuPHyJEZjltplisoYwNYiIFgqzdobbgGriDYfrvcnJfwTMEDLGypmZrr, zWNWVKxUiYOSofLKcQEQCnKpEvsaNiVGXtJxRaOpzHmWPLzIzITjEmJLrOsJaTHw, NcIepwoMMcTxwAHNjMKlbfZlFpuYnsIhweouhBJIcnLFuUOoAeUKijWDjaarXLLB, buftooliluVQEcwDvUjhxmtmLXgZAVgxfVVhRofipyxOzGGzHrRFunDBiKuZMDYU, pfNBxcFoetVbsliTDDIQqWSFkrEXrUijQffXCPgwTVaZhWpZSxyGtVSFwTIkftAE, XEgcIzaUmDjSJOWzeRVTXjvtwRQAVdxFpwyXjuwNRqlVnXNLEzFRWbnAVfbDRheK, kefeCKpbmccGjdfEYlZpcOolMCBtUvjAFlEULTdohwaFhdKyePBmMbjtxXSypnGs, tqTVcskAvpjNcBUKEozLlmuXaRZUfArBjihhxjtpflztwJWigInGeSDzmrSBUKJa, wAMuwFJUmFJxIUxnYHBCfLRyEbxtMXvktfXhYiWqiSsoElWAsCHmynYWsNHIOIhq, QfGhzabqqTKIWKAFYkeswIgfeAzNMlkLGcTliZsVArxMoFmuMdNAJftHxHdPZYPk, woJdIbBCMGETDhKaIJHSiUANVrzNzEJJhSwLgBvZxyJqKqRrtuwgbQezEaEdniME, SPERVwOulNbsQdQvZotiTICgXTSMSncjEZIdSLGVJjiYwqjWXuwXYKHmirXfuZlX, INdDJXbKNUbuZzrfcvMFZLxTHfSTHHbImojSACBBMhgVLnLnNWdwTZLTQuiHKzLs, VWEPeEYSxvFHHRcRKYZEGCLmLolREamnsWfPUqFKLEMgveclJiWZWLDzfJKEIRad, ZLrxeTFqptYUTiBeilpdoVjeAeAEGKvshgvyJebDuwuTLTenXQTfMpoICYRrtfPk, jfaMyfuWQJHAMTYTfyVKxjYpHyRkAjBhSyIpCOsyeTtMtlfEkToZEAVCgUuLGcuN, vCCrYAykbHhrLPYtMpfHidKZUDsKHCqWnHygkkCxyqzCeFonHnvrFpeYMuOEHFMl, EZcOdFIVPbSNOwfXTFuHxGWvseaiaREdFjNNnbZrSILvctXaoJEdQeIkdsgLpiFz, zOjEsSJCfMuSnyKACflMFKvptnQqPsyPkueVYrzyJqJyWCSvpxWOPKEorZYJsNwB, nvuMAGCgRKWbIgFhcEKVqZDyNDOoYHLPOgOjhkIBeAEsMUnjEGWCEdwCjzWmzSio, UMuLEPHJSFRapDJqhsNxZsHxluweTaqWTKXINFhwSpyJvAbgRgfBDHNCNLsXNDxy, iuBendbvErnvyymOGFOaUEuYfQTYpCtISFrNNBuMWGQFNBQYwafsxghFCkinvmnf, ccXErLXZzvhBINzzQUXomdHjeBKricrSjYsXVkpHwgfbuejRPaLpIbCxeZjMPMLu, sItkhuCuitqXocpLDJBkmkQILZgYKAcRhZPsEttkcPzHHNFloYFUsJKQmhihtqZe, oTRAhPqnbcUgRJLwYQUhPBhFjKtCJfBDsNDWxehUhHKWqKrJBAtmrWYiQltMBHxI, hNTeYrlwEuJvaacqyLdDGDHuHofsfDEIDcRMTOdWrstvxcKpJHaHWDbtxnSgeXZL, MEGPZpFHEUAbEhWBBquslGaDJsvhcfhiJUXRQLZJaovgjIjvLjgcLvDPNddEfABz, QOjXtsUzaJcECALbKUcsyugsqiumLOrNXkCEIkOmtdRAqifDVxJUtMYOvXjKFKBG, kYYZtJMApFhOKtXxKsKZnxbCpqsHdastYVgHbmlqPoVwhXPDwWiPTRHlyWHAjApu, wuGawivXDfuQaKNfdwyJiFKIeriEHDCRjtnVOlDxjfnEMNTxapjniGJabDZfBgNx, BBxuUXARBseXfUHhHmnDEMxQqKKPSQdsGnrHhJKJkSNYuZOkxqTSmSoJhnGLyqhI, KXpqmJRQoifvZfcNETeCiSjyzTYMTjICgTxtRmoAxjAcWnVBGBLeRbQOpsTzUBUO, zObbnIdWRUChXFBIwuqwcKyVygGDaXLmApJNucLbIKOesPGtkvVzGrjcRenJJssP, aLFRLMXyFXaHKCbYDEUBeckTpcFwPSixvsjifCNWooMnymhNjACOmZUVpiaVosft, mKBGFBulKUgsFxuCMEmaNKGgpVNVsOTvCAzFlRuiUXyiQIvgOwQqqqtCRpnQZCSF, LFrBNhXrKmeoUYlMPCLHLqFcuqEOyPYOfkQqbRrUqxuQFTlmqwydziUgBeraHoUy, aVXvljkqfyzLYvoFQKsUPwICwiWgWDCwjuotEdGOPtGXLXSlmxmweEACMTHuRQKn, MPRaEDnENzPcNVjazMjPxKnmWjDqrnXblWxfWGDcJozTmSVEOjTxQjNELViietGt, RejRRIsIcIalzoOIIdzATYveWhIHCPDZbabNCTDaIVRRxPEepNJTeorabpcfIpSM, BzmWVYCokAUnRASMEvkGCzrlurtqEjoUrmTJELvXmSFBXhaFCXREmzzacyxMMVwy, hbeaddwSmCdDXYhyfUIQmfYxItaajVLYbzsEVOUvPvnQSQEJBKeVGFtdfVzmRDPf, UipjMjOGTnHOYQTSYlUmXTzzjFIpOJXJSUFWniufvFKDnpUlrESHJtHUkXgusCdC, ksnzKdJVjmWXWYbQnPDxAtPUWnPPsJmuwfZAftoCzekukTaQHLbGXGlBvxlxitCa, owPzoMxvNcqTxSuPilafbPvtRykECyrRcEJyWsGzKjyMhphqdWQHcJhQusbiKDnf, PciEoygDBlmJgqEmvbodizGYZzJWotLYhCceVrOxJgrAoQSCDcczhMBSXvYNlJHq, tuvUAowDeYHyOsqPbKcXoGDcuRxtiVLtOwAjRemDWAVkGQyMJwRhCKzNXnbXfckf, SiEdneMTfofUlBtOeuNHiGWbiGKIhxAxkXKOrJHWiFaYbquIyDhUMcYJhxAlOpmr, XfBYIiiPzFTIDEbZGRiZexAMBKIRevVfdFIQUDUwXIFeCKuKrxyGKFANMFwzlCWd, ExDGZXhleaRIbKftcSlFpcioOoUZINPJFsVOLPnLsyuIUfMvoxohoKIrvgPKBJYw, IUBRMIgZcnccIltUDRVmUioesiRRdBddZzuCRcyCggZDsNyxLHToIkfTwqaOyuNX, yoTmeNkaDxDtOUJzKzAOfBMSVUfHgxFLWmpUkHvXfcKjcaICcgWnbbzFaRumfWqc, hqnLZrYyJuAcETaTJgZFceTzkMuliuejwywyFnoLNQyaeEhnHSiAVsBgFNOsTMDR, zvZSWZozJdWFsYDvOaGuUHzEJSDRESRDLdtzLNQJEvjqLLNzeZzOKrRkxzdJrCsi, yyKxUrtwUoKCIqhEdQWbZqufabVhxyvxjSzYyJnGYzKSYYnQirbJfEpfFlESeTlD, AwRhauhNpYsIOiCkyQARLQVYsfctSrfxoeMGUDubKxPsusHnlqRSaSxtnMViLKhM ]
+
+
 limit:
   replenishRate: 1
   burstCapacity: 3
@@ -242,75 +168,11 @@ risk:
 
 
 request:
-  validContentTypes: [ application/json,multipart/form-data ]
+  validContentTypes: [ application/json ]
   maxUriLength: 256
   maxHeaderCount: 16
   maxHeaderLength: 2048
-  maxContentLength: 429496729000
-  maxHeadersSize: 1048576
-  maxInMemorySize: 8388608
-  maxDiskUsagePerPart: 33554432
-  maxParts: 32
-  enableLoggingRequestDetails: false
-
-
-error:
-  errorReportWithRequestBodyContentTypes: [ application/json,multipart/form-data ]
-
-
-files:
-  handlerType: ld
-  attrName: attachments
-  validTypes: [ .JPG,.JPEG,.PNG,.RMVB,.MKV,.MP4,.ZIP ]
-  invalidPres: [ .,/,^ ]
-  nameLenThreshold: 256
-  allFileSizeThreshold: 4294967296000
-  singleFileSizeThreshold: 4294967296000
-  currentSizeThreshold: 32
-  descPath: E:\\tempFile\\disc
-
-
-encrypt:
-  expire: 10000000000
-
-
-reader:
-  user: yunfei0221@outlook.com
-  password: Fei19890116
-  props:
-    mail.imap.host: outlook.office365.com
-    mail.imap.port: 993
-    mail.imap.ssl.enable: true
-  folderName: INBOX
-  throwableForRetry: [ jakarta.mail.FolderClosedException ]
-  maxWaitingMillisForRefresh: 5000
-  debug: false
-
-
-sender:
-  smtpAttrs:
-    - user: yunfei0221@outlook.com
-      password: Fei19890116
-      props:
-        mail.smtp.auth: true
-        mail.smtp.host: smtp.office365.com
-        mail.smtp.port: 587
-        mail.smtp.ssl: true
-        mail.smtp.starttls.enable: true
-        mail.debug: false
-
-  corePoolSize: 2
-  maximumPoolSize: 8
-  keepAliveSeconds: 64
-  blockingQueueCapacity: 2048
-  threadNamePre: blue-mail-sender
-  bufferSize: 8
-  throwableForRetry: [ jakarta.mail.FolderClosedException ]
-  retryTimes: 1
-  withDKIM: false
-  domainKeyFile: classpath:dkim/selector1.pem
-  domain: outlook.com
-  selector: selector1
+  maxContentLength: 2048
 
 
 dubbo:
@@ -318,10 +180,22 @@ dubbo:
     id: summer-registry
     client: curator
     protocol: zookeeper
-    address: zookeeper://43.138.111.53:2181
+    address: zookeeper://172.16.204.244
+    port: 2181
     file: /usr/env/log/dubbo/message/registry.properties
     check: false
-    timeout: 120000
+    timeout: 60000
+    simplified: false
+  #  metadata-report:
+  #    address: zookeeper://172.16.204.244
+  #    port: 2181
+  #    username:
+  #    password:
+  #    timeout:
+  #    default: true
+  #    check: false
+  #    sync-report: false
+  #    report-metadata: false
   application:
     id: summer-message
     name: summer-message
@@ -345,40 +219,43 @@ dubbo:
     check: false
 
 
+pulsar:
+  services: [ 172.16.204.244:6650 ]
+  enableTls: false
+  tlsTrustCertsFilePath:
+  tlsCertFilePath:
+  tlsKeyFilePath:
+  tlsAllowInsecureConnection:
+  tlsHostnameVerificationEnable:
+  listenerName:
+  operationTimeoutMillis: 30000
+  statsIntervalMillis: 60000
+  ioThreads: 1
+  listenerThreads: 1
+  connectionsPerBroker: 1
+  useTcpNoDelay: true
+  memoryLimitKiloBytes: 512
+  maxConcurrentLookupRequests: 60
+  maxLookupRequest: 50000
+  maxLookupRedirects: 3
+  maxNumberOfRejectedRequestPerConnection: 50
+  keepAliveIntervalMillis: 30000
+  connectionTimeoutMillis: 60000
+  startingBackoffIntervalMillis: 300
+  maxBackoffIntervalMillis: 600
+  enableBusyWait: false
+  clockZoneId: Asia/Shanghai
+  enableTransaction: false
+  enableProxy: false
+  proxyServiceUrl:
+  proxyProtocol: SNI
+
+
 producers:
   configs:
     requestEvent:
-      services: [ 43.138.111.53:6650 ]
-      enableTls: false
-      tlsTrustCertsFilePath:
-      tlsCertFilePath:
-      tlsKeyFilePath:
-      tlsAllowInsecureConnection:
-      tlsHostnameVerificationEnable:
-      listenerName:
-      operationTimeoutMillis: 30000
-      statsIntervalMillis: 60000
-      ioThreads: 1
-      listenerThreads: 1
-      connectionsPerBroker: 1
-      useTcpNoDelay: true
-      memoryLimitKiloBytes: 512
-      maxConcurrentLookupRequests: 60
-      maxLookupRequest: 50000
-      maxLookupRedirects: 3
-      maxNumberOfRejectedRequestPerConnection: 50
-      keepAliveIntervalMillis: 30000
-      connectionTimeoutMillis: 60000
-      startingBackoffIntervalMillis: 300
-      maxBackoffIntervalMillis: 600
-      enableBusyWait: false
-      clockZoneId: Asia/Shanghai
-      enableTransaction: false
-      enableProxy: false
-      proxyServiceUrl:
-      proxyProtocol: SNI
       topic: requestEvent
-      producerName: mmessageRequestEventProducer000
+      producerName: mediaRequestEventProducer000
       accessMode: Shared
       sendTimeoutMillis: 30000
       maxPendingMessages: 1000
@@ -404,35 +281,6 @@ producers:
 consumers:
   configs:
     illegalMark:
-      services: [ 43.138.111.53:6650 ]
-      enableTls: false
-      tlsTrustCertsFilePath:
-      tlsCertFilePath:
-      tlsKeyFilePath:
-      tlsAllowInsecureConnection:
-      tlsHostnameVerificationEnable:
-      listenerName:
-      operationTimeoutMillis: 30000
-      statsIntervalMillis: 60
-      ioThreads: 1
-      listenerThreads: 1
-      connectionsPerBroker: 2
-      useTcpNoDelay: true
-      memoryLimitKiloBytes: 1024
-      maxConcurrentLookupRequests: 60
-      maxLookupRequest: 1000
-      maxLookupRedirects: 2
-      maxNumberOfRejectedRequestPerConnection: 50
-      keepAliveIntervalMillis: 30000
-      connectionTimeoutMillis: 10000
-      startingBackoffIntervalMillis: 1000
-      maxBackoffIntervalMillis: 30000
-      enableBusyWait: true
-      clockZoneId: Asia/Shanghai
-      enableTransaction: false
-      enableProxy: false
-      proxyServiceUrl:
-      proxyProtocol: SNI
       topics: [ illegalMark ]
       topicsPattern:
       subscriptionName: illegalMarkSubscription
@@ -446,7 +294,7 @@ consumers:
       acknowledgementsGroupTimeMillis: 100
       replicateSubscriptionState: false
       maxTotalReceiverQueueSizeAcrossPartitions: 5
-      consumerName: messageIllegalMarkConsumer000
+      consumerName: mediaIllegalMarkConsumer000
       readCompacted: false
       patternAutoDiscoveryPeriodMillis: 1
       priorityLevel: 0

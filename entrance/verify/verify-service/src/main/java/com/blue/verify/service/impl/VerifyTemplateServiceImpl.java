@@ -329,7 +329,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(EMPTY_PARAM);
 
-        return synchronizedProcessor.handleSupWithLock(VERIFY_TEMPLATE_UPDATE_SYNC.key, () -> {
+        return synchronizedProcessor.handleSupWithSync(VERIFY_TEMPLATE_UPDATE_SYNC.key, () -> {
             INSERT_ITEM_VALIDATOR.accept(verifyTemplateInsertParam);
             VerifyTemplate verifyTemplate = VERIFY_TEMPLATE_INSERT_PARAM_2_VERIFY_TEMPLATE_CONVERTER.apply(verifyTemplateInsertParam);
 
@@ -355,7 +355,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
         LOGGER.info("Mono<VerifyTemplateInfo> updateVerifyTemplate(VerifyTemplateUpdateParam verifyTemplateUpdateParam, Long operatorId), verifyTemplateUpdateParam = {}, operatorId = {]",
                 verifyTemplateUpdateParam, operatorId);
 
-        return synchronizedProcessor.handleSupWithLock(VERIFY_TEMPLATE_UPDATE_SYNC.key, () -> {
+        return synchronizedProcessor.handleSupWithSync(VERIFY_TEMPLATE_UPDATE_SYNC.key, () -> {
             VerifyTemplate verifyTemplate = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(verifyTemplateUpdateParam);
             String originalType = verifyTemplate.getType();
             String originalBusinessType = verifyTemplate.getBusinessType();
@@ -392,7 +392,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return synchronizedProcessor.handleSupWithLock(VERIFY_TEMPLATE_UPDATE_SYNC.key, () ->
+        return synchronizedProcessor.handleSupWithSync(VERIFY_TEMPLATE_UPDATE_SYNC.key, () ->
                 verifyTemplateRepository.findById(id)
                         .publishOn(scheduler)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))

@@ -144,7 +144,7 @@ public class MiniProWithAutoRegisterSessionHandler implements SessionHandler {
                 .switchIfEmpty(defer(() -> {
                     extra.put(NEW_MEMBER.key, true);
 
-                    return synchronizedProcessor.handleSupWithLock(CREDENTIAL_UPDATE_SYNC_KEY_GEN.apply(phone), () ->
+                    return synchronizedProcessor.handleSupWithSync(CREDENTIAL_UPDATE_SYNC_KEY_GEN.apply(phone), () ->
                             just(roleService.getDefaultRole().getId())
                                     .flatMap(roleId -> just(registerService.registerMemberBasic(CREDENTIALS_GENERATOR.apply(phone), roleId, source))
                                             .flatMap(mbi -> zip(authService.generateAuthMono(mbi.getId(), singletonList(roleId), MINI_PRO_AUTO_REGISTER.identity, loginParam.getDeviceType().intern()), just(mbi))))

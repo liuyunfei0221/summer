@@ -107,9 +107,9 @@ public final class TreeNode<T> implements Serializable {
     public int hashCode() {
         int hash = 5381;
         if (isNotNull(identity))
-            hash = hash + (((int) (long) identity) << 5);
+            hash = hash ^ ((int) ((long) identity) << 5);
         if (isNotNull(parentIdentity))
-            hash = hash + (((int) (long) parentIdentity) << 5);
+            hash = hash ^ ((int) ((long) parentIdentity) << 5);
         return hash;
     }
 

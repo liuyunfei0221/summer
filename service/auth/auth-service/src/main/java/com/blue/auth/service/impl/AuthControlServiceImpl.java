@@ -496,7 +496,7 @@ public class AuthControlServiceImpl implements AuthControlService {
 
         packageExistAccess(credentials, memberId);
 
-        synchronizedProcessor.handleTaskWithLock(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () ->
+        synchronizedProcessor.handleTaskWithSync(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () ->
                 memberRoleRelationService.insertMemberRoleRelation(MEMBER_DEFAULT_ROLE_RELATION_GEN.apply(memberId)));
         credentialService.insertCredentials(credentials);
     }
@@ -523,7 +523,7 @@ public class AuthControlServiceImpl implements AuthControlService {
 
         packageExistAccess(credentials, memberId);
 
-        synchronizedProcessor.handleTaskWithLock(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () ->
+        synchronizedProcessor.handleTaskWithSync(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () ->
                 memberRoleRelationService.insertMemberRoleRelation(MEMBER_ROLE_RELATION_GEN.apply(memberId, roleId)));
         credentialService.insertCredentials(credentials);
 
@@ -557,7 +557,7 @@ public class AuthControlServiceImpl implements AuthControlService {
 
         String credential = credentialSettingUpParam.getCredential();
 
-        return synchronizedProcessor.handleSupWithLock(CREDENTIAL_UPDATE_SYNC_KEY_GEN.apply(credential), () -> {
+        return synchronizedProcessor.handleSupWithSync(CREDENTIAL_UPDATE_SYNC_KEY_GEN.apply(credential), () -> {
             if (!rpcVerifyHandleServiceConsumer.validate(getVerifyTypeByIdentity(credentialSettingUpParam.getVerifyType()),
                     CREDENTIAL_SETTING_UP, credential, credentialSettingUpParam.getVerificationCode(), true).toFuture().join())
                 throw new BlueException(VERIFY_IS_INVALID);
@@ -616,7 +616,7 @@ public class AuthControlServiceImpl implements AuthControlService {
         VerifyType destinationVerifyType = getVerifyTypeByIdentity(credentialModifyParam.getDestinationVerifyType());
         String destinationCredential = credentialModifyParam.getDestinationCredential();
 
-        return synchronizedProcessor.handleSupWithLock(CREDENTIAL_UPDATE_SYNC_KEY_GEN.apply(destinationCredential), () -> {
+        return synchronizedProcessor.handleSupWithSync(CREDENTIAL_UPDATE_SYNC_KEY_GEN.apply(destinationCredential), () -> {
             if (!rpcVerifyHandleServiceConsumer.validate(destinationVerifyType, CREDENTIAL_UPDATE, destinationCredential,
                     credentialModifyParam.getDestinationVerificationCode(), true).toFuture().join())
                 throw new BlueException(VERIFY_IS_INVALID);
@@ -667,7 +667,7 @@ public class AuthControlServiceImpl implements AuthControlService {
 
         ROLE_LEVEL_ASSERTER.accept(targetRole.getLevel(), this.getMaxLevelRoleByMemberId(operatorId).getLevel());
 
-        return just(synchronizedProcessor.handleSupWithLock(DEFAULT_ROLE_UPDATE_SYNC.key, () ->
+        return just(synchronizedProcessor.handleSupWithSync(DEFAULT_ROLE_UPDATE_SYNC.key, () ->
                 roleService.updateDefaultRole(id, operatorId)));
     }
 
@@ -769,7 +769,7 @@ public class AuthControlServiceImpl implements AuthControlService {
      */
     @Override
     public Mono<Boolean> insertSecurityQuestion(SecurityQuestionInsertParam securityQuestionInsertParam, Long memberId) {
-        return just(synchronizedProcessor.handleSupWithLock(QUESTION_UPDATE_KEY_WRAPPER.apply(memberId), () ->
+        return just(synchronizedProcessor.handleSupWithSync(QUESTION_UPDATE_KEY_WRAPPER.apply(memberId), () ->
                 securityQuestionService.insertSecurityQuestion(securityQuestionInsertParam, memberId)) > 0);
     }
 
@@ -782,7 +782,7 @@ public class AuthControlServiceImpl implements AuthControlService {
      */
     @Override
     public Mono<Boolean> insertSecurityQuestions(List<SecurityQuestionInsertParam> securityQuestionInsertParams, Long memberId) {
-        return just(synchronizedProcessor.handleSupWithLock(QUESTION_UPDATE_KEY_WRAPPER.apply(memberId), () ->
+        return just(synchronizedProcessor.handleSupWithSync(QUESTION_UPDATE_KEY_WRAPPER.apply(memberId), () ->
                 securityQuestionService.insertSecurityQuestions(securityQuestionInsertParams, memberId)) > 0);
     }
 
@@ -842,7 +842,7 @@ public class AuthControlServiceImpl implements AuthControlService {
         LOGGER.info("Mono<RoleInfo> insertRole(RoleInsertParam roleInsertParam, Long operatorId), roleInsertParam = {}, operatorId = {}", roleInsertParam, operatorId);
         roleInsertParam.asserts();
 
-        return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () -> {
+        return just(synchronizedProcessor.handleSupWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
             ROLE_LEVEL_ASSERTER.accept(roleInsertParam.getLevel(),
                     getMaxLevelRoleByMemberId(operatorId).getLevel());
             return roleService.insertRole(roleInsertParam, operatorId);
@@ -864,7 +864,7 @@ public class AuthControlServiceImpl implements AuthControlService {
         LOGGER.info("Mono<RoleInfo> updateRole(RoleUpdateParam roleUpdateParam, Long operatorId), roleUpdateParam = {}, operatorId = {}", roleUpdateParam, operatorId);
         roleUpdateParam.asserts();
 
-        return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () -> {
+        return just(synchronizedProcessor.handleSupWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
             ROLE_LEVEL_ASSERTER.accept(roleUpdateParam.getLevel(),
                     getMaxLevelRoleByMemberId(operatorId).getLevel());
             return roleService.updateRole(roleUpdateParam, operatorId);
@@ -889,7 +889,7 @@ public class AuthControlServiceImpl implements AuthControlService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
 
-        return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () -> {
+        return just(synchronizedProcessor.handleSupWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
             TAR_ROLE_LEVEL_ASSERTER.accept(id, operatorId);
             roleResRelationService.deleteRelationByRoleId(id);
             return roleService.deleteRole(id);
@@ -910,7 +910,7 @@ public class AuthControlServiceImpl implements AuthControlService {
     public Mono<ResourceInfo> insertResource(ResourceInsertParam resourceInsertParam, Long operatorId) {
         LOGGER.info("Mono<ResourceInfo> insertResource(ResourceInsertParam resourceInsertParam, Long operatorId), resourceInsertParam = {}, operatorId = {}", resourceInsertParam, operatorId);
 
-        return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key,
+        return just(synchronizedProcessor.handleSupWithSync(AUTHORITY_UPDATE_SYNC.key,
                 () -> resourceService.insertResource(resourceInsertParam, operatorId)))
                 .doOnSuccess(ri -> {
                     LOGGER.info("ri = {}", ri);
@@ -935,7 +935,7 @@ public class AuthControlServiceImpl implements AuthControlService {
         if (isInvalidIdentity(resId))
             throw new BlueException(INVALID_IDENTITY);
 
-        return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () -> {
+        return just(synchronizedProcessor.handleSupWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
             ofNullable(roleResRelationService.selectRelationByResId(resId))
                     .filter(BlueChecker::isNotEmpty)
                     .map(rs -> rs.stream().map(RoleResRelation::getRoleId).collect(toList()))
@@ -979,7 +979,7 @@ public class AuthControlServiceImpl implements AuthControlService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
 
-        return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () -> {
+        return just(synchronizedProcessor.handleSupWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
             List<RoleResRelation> relations = roleResRelationService.selectRelationByResId(id);
             if (isNotEmpty(relations))
                 throw new BlueException(RESOURCE_STILL_USED, new String[]{
@@ -1007,7 +1007,7 @@ public class AuthControlServiceImpl implements AuthControlService {
             throw new BlueException(EMPTY_PARAM);
         roleResRelationParam.asserts();
 
-        return just(synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () -> {
+        return just(synchronizedProcessor.handleSupWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
             TAR_ROLE_LEVEL_ASSERTER.accept(roleResRelationParam.getRoleId(), operatorId);
             return roleResRelationService.updateAuthorityByRole(roleResRelationParam.getRoleId(), roleResRelationParam.getResIds(), operatorId);
         })).doOnSuccess(auth -> {
@@ -1035,7 +1035,7 @@ public class AuthControlServiceImpl implements AuthControlService {
         Long roleId = memberRoleRelationInsertOrDeleteParam.getRoleId();
 
         return fromFuture(supplyAsync(() ->
-                synchronizedProcessor.handleSupWithLock(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () -> {
+                synchronizedProcessor.handleSupWithSync(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () -> {
                     Integer operatorLevel = getMaxLevelRoleByMemberId(operatorId).getLevel();
 
                     ROLE_LEVEL_ASSERTER.accept(getMaxLevelRoleByMemberId(memberId).getLevel(), operatorLevel);
@@ -1066,7 +1066,7 @@ public class AuthControlServiceImpl implements AuthControlService {
         List<Long> roleIds = memberRoleRelationUpdateParam.getRoleIds();
 
         return fromFuture(supplyAsync(() ->
-                synchronizedProcessor.handleSupWithLock(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () -> {
+                synchronizedProcessor.handleSupWithSync(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () -> {
                     Integer operatorLevel = getMaxLevelRoleByMemberId(operatorId).getLevel();
 
                     ROLE_LEVEL_ASSERTER.accept(getMaxLevelRoleByMemberId(memberId).getLevel(), operatorLevel);
@@ -1097,7 +1097,7 @@ public class AuthControlServiceImpl implements AuthControlService {
         Long roleId = memberRoleRelationInsertOrDeleteParam.getRoleId();
 
         return fromFuture(supplyAsync(() ->
-                synchronizedProcessor.handleSupWithLock(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () -> {
+                synchronizedProcessor.handleSupWithSync(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () -> {
                     Integer operatorLevel = getMaxLevelRoleByMemberId(operatorId).getLevel();
 
                     ROLE_LEVEL_ASSERTER.accept(getMaxLevelRoleByMemberId(memberId).getLevel(), operatorLevel);
@@ -1123,7 +1123,7 @@ public class AuthControlServiceImpl implements AuthControlService {
             throw new BlueException(EMPTY_PARAM);
         roleResRelationParam.asserts();
 
-        AuthorityBaseOnRole authorityBaseOnRole = synchronizedProcessor.handleSupWithLock(AUTHORITY_UPDATE_SYNC.key, () ->
+        AuthorityBaseOnRole authorityBaseOnRole = synchronizedProcessor.handleSupWithSync(AUTHORITY_UPDATE_SYNC.key, () ->
                 roleResRelationService.updateAuthorityByRole(roleResRelationParam.getRoleId(),
                         roleResRelationParam.getResIds(), BLUE_ID.value));
 
@@ -1149,7 +1149,7 @@ public class AuthControlServiceImpl implements AuthControlService {
         Long memberId = memberRoleRelationInsertOrDeleteParam.getMemberId();
         Long roleId = memberRoleRelationInsertOrDeleteParam.getRoleId();
 
-        if (synchronizedProcessor.handleSupWithLock(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () ->
+        if (synchronizedProcessor.handleSupWithSync(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () ->
                 memberRoleRelationService.insertMemberRoleRelation(memberId, roleId, BLUE_ID.value)) < 1)
             throw new BlueException(DATA_NOT_EXIST);
 
@@ -1175,7 +1175,7 @@ public class AuthControlServiceImpl implements AuthControlService {
         Long memberId = memberRoleRelationUpdateParam.getMemberId();
         List<Long> roleIds = memberRoleRelationUpdateParam.getRoleIds();
 
-        if (synchronizedProcessor.handleSupWithLock(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () ->
+        if (synchronizedProcessor.handleSupWithSync(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () ->
                 memberRoleRelationService.updateMemberRoleRelations(memberId, roleIds, BLUE_ID.value)) < 1)
             throw new BlueException(DATA_NOT_EXIST);
 
@@ -1201,7 +1201,7 @@ public class AuthControlServiceImpl implements AuthControlService {
         Long memberId = memberRoleRelationInsertOrDeleteParam.getMemberId();
         Long roleId = memberRoleRelationInsertOrDeleteParam.getRoleId();
 
-        if (synchronizedProcessor.handleSupWithLock(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () ->
+        if (synchronizedProcessor.handleSupWithSync(MEMBER_ROLE_REL_UPDATE_KEY_WRAPPER.apply(memberId), () ->
                 memberRoleRelationService.deleteMemberRoleRelation(memberId, roleId, BLUE_ID.value)) < 1)
             throw new BlueException(DATA_NOT_EXIST);
 

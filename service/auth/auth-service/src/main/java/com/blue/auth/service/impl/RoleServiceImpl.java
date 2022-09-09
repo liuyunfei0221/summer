@@ -33,6 +33,8 @@ import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.GSON;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
+import static com.blue.basic.constant.common.SyncKey.DEFAULT_ROLE_REFRESH_SYNC;
+import static com.blue.basic.constant.common.SyncKey.ROLES_REFRESH_SYNC;
 import static com.blue.database.common.ConditionSortProcessor.process;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
 import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
@@ -99,7 +101,7 @@ public class RoleServiceImpl implements RoleService {
     };
 
     private final Supplier<List<Role>> ROLES_WITH_CACHE_SUP = () ->
-            synchronizedProcessor.handleSupByOrderedWithSetter(ROLES_REDIS_SUP, BlueChecker::isNotEmpty, ROLES_DB_SUP, ROLES_REDIS_SETTER);
+            synchronizedProcessor.handleSupByOrderedWithSetter(ROLES_REFRESH_SYNC.key, ROLES_REDIS_SUP, ROLES_DB_SUP, ROLES_REDIS_SETTER, BlueChecker::isNotEmpty);
 
 
     private final Supplier<Role> DEFAULT_ROLE_DB_SUP = () -> {
@@ -131,9 +133,8 @@ public class RoleServiceImpl implements RoleService {
                     });
 
     private final Supplier<Role> DEFAULT_ROLE_WITH_CACHE_SUP = () ->
-            synchronizedProcessor.handleSupByOrderedWithSetter(
-                    NULLABLE_DEFAULT_ROLE_REDIS_SUP, BlueChecker::isNotNull, DEFAULT_ROLE_DB_SUP, DEFAULT_ROLE_REDIS_SETTER);
-
+            synchronizedProcessor.handleSupByOrderedWithSetter(DEFAULT_ROLE_REFRESH_SYNC.key, NULLABLE_DEFAULT_ROLE_REDIS_SUP,
+                    DEFAULT_ROLE_DB_SUP, DEFAULT_ROLE_REDIS_SETTER, BlueChecker::isNotNull);
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(RoleSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));

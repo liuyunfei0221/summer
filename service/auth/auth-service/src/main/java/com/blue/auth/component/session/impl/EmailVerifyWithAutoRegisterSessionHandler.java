@@ -145,7 +145,7 @@ public class EmailVerifyWithAutoRegisterSessionHandler implements SessionHandler
                                         .switchIfEmpty(defer(() -> {
                                             extra.put(NEW_MEMBER.key, true);
 
-                                            return synchronizedProcessor.handleSupWithLock(CREDENTIAL_UPDATE_SYNC_KEY_GEN.apply(email), () ->
+                                            return synchronizedProcessor.handleSupWithSync(CREDENTIAL_UPDATE_SYNC_KEY_GEN.apply(email), () ->
                                                     just(roleService.getDefaultRole().getId())
                                                             .flatMap(roleId -> just(registerService.registerMemberBasic(CREDENTIALS_GENERATOR.apply(email), roleId, source))
                                                                     .flatMap(mbi ->

@@ -11,10 +11,10 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static com.blue.basic.common.base.BlueChecker.*;
-import static com.blue.basic.constant.common.SyncKey.AUTHORITY_UPDATE_SYNC;
-import static java.lang.System.currentTimeMillis;
-import static java.lang.Thread.onSpinWait;
+import static com.blue.basic.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 import static java.util.Optional.ofNullable;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -41,60 +41,57 @@ public final class SynchronizedProcessor {
     /**
      * get data from sups and handle cache
      *
+     * @param syncKey
      * @param firstSup
-     * @param validator
      * @param secondSup
      * @param firstSupStorage
+     * @param validator
      * @param <T>
      * @return
      */
-    public <T> T handleSupByOrderedWithSetter(Supplier<T> firstSup, Predicate<T> validator, Supplier<T> secondSup, Consumer<T> firstSupStorage) {
-        if (isNull(firstSup) || isNull(validator) || isNull(secondSup) || isNull(firstSupStorage))
-            throw new BlueException();
+    public <T> T handleSupByOrderedWithSetter(String syncKey, Supplier<T> firstSup, Supplier<T> secondSup, Consumer<T> firstSupStorage, Predicate<T> validator) {
+        if (isBlank(syncKey) || isNull(firstSup) || isNull(secondSup) || isNull(firstSupStorage) || isNull(validator))
+            throw new BlueException(INVALID_PARAM);
 
         return ofNullable(firstSup.get())
                 .filter(validator)
                 .orElseGet(() -> {
-                    RLock lock = redissonClient.getLock(AUTHORITY_UPDATE_SYNC.key);
-                    boolean tryLock = true;
+                    RLock lock = null;
+                    boolean tryLock = false;
                     try {
-                        T res = firstSup.get();
-                        if (validator.test(res))
+                        tryLock = (lock = redissonClient.getLock(syncKey)).tryLock(DEFAULT_MAX_WAITING_MILLIS, MILLISECONDS);
+
+                        if (!tryLock) {
+                            lock.lock();
+                            tryLock = true;
+                        }
+
+                        T res;
+                        if (validator.test(res = firstSup.get()))
                             return res;
 
-                        tryLock = lock.tryLock();
-
-                        if (tryLock) {
-                            res = secondSup.get();
-                            if (validator.test(res))
-                                firstSupStorage.accept(res);
-
+                        if (validator.test(res = secondSup.get())) {
+                            firstSupStorage.accept(res);
                             return res;
                         }
 
-                        long start = currentTimeMillis();
-                        while (!(tryLock = lock.tryLock()) && currentTimeMillis() - start <= DEFAULT_MAX_WAITING_MILLIS)
-                            onSpinWait();
-
-                        res = firstSup.get();
-
-                        return validator.test(res) ? res : secondSup.get();
+                        throw new BlueException(INTERNAL_SERVER_ERROR);
                     } catch (Exception e) {
-                        LOGGER.error("handleSupByOrderedWithSetter(Supplier<T> firstSup, Predicate<T> validator, Supplier<T> secondSup, Consumer<T> firstSupStorage) failed, e = {}", e);
-                        return secondSup.get();
+                        LOGGER.error("handle failed, syncKey = {}, firstSup = {}, secondSup = {}, firstSupStorage = {}, validator = {}, e = {}", syncKey, firstSup, secondSup, firstSupStorage, validator, e);
+                        throw new BlueException(INTERNAL_SERVER_ERROR);
                     } finally {
-                        if (tryLock)
+                        if (isNotNull(lock) && tryLock)
                             try {
                                 lock.unlock();
                             } catch (Exception e) {
-                                LOGGER.warn("handleSupByOrderedWithSetter(Supplier<T> firstSup, Predicate<T> validator, Supplier<T> secondSup, Consumer<T> firstSupStorage) lock.unlock() failed, e = {}", e);
+                                LOGGER.warn("lock.unlock() failed, e = {}", e);
                             }
                     }
                 });
     }
 
     /**
-     * get data from sup with lock
+     * get data from sup with sync
      *
      * @param syncKey
      * @param handlerSup
@@ -102,16 +99,18 @@ public final class SynchronizedProcessor {
      * @param <T>
      * @return
      */
-    public <T> T handleSupWithLock(String syncKey, Supplier<T> handlerSup, Supplier<T> fallbackSup) {
+    public <T> T handleSupWithSync(String syncKey, Supplier<T> handlerSup, Supplier<T> fallbackSup) {
         if (isBlank(syncKey) || isNull(handlerSup))
-            throw new BlueException();
+            throw new BlueException(INVALID_PARAM);
 
-        RLock lock = redissonClient.getLock(syncKey);
+        RLock lock = null;
         try {
+            lock = redissonClient.getLock(syncKey);
             lock.lock();
+
             return handlerSup.get();
         } catch (Exception e) {
-            LOGGER.error("T handleFuncWithLock(String syncKey, Supplier<T> handlerSup, Supplier<T> fallbackSup) failed, syncKey = {}, handlerSup = {}, fallbackSup = {}, e = {}",
+            LOGGER.error("handle failed, syncKey = {}, handlerSup = {}, fallbackSup = {}, e = {}",
                     syncKey, handlerSup, fallbackSup, e);
 
             if (isNotNull(fallbackSup))
@@ -119,12 +118,12 @@ public final class SynchronizedProcessor {
 
             throw e;
         } finally {
-            try {
-                if (lock.isLocked())
+            if (isNotNull(lock) && lock.isLocked())
+                try {
                     lock.unlock();
-            } catch (Exception e) {
-                LOGGER.error("lock.unlock() failed, e = {}", e);
-            }
+                } catch (Exception e) {
+                    LOGGER.error("lock.unlock() failed, e = {}", e);
+                }
         }
     }
 
@@ -136,8 +135,8 @@ public final class SynchronizedProcessor {
      * @param <T>
      * @return
      */
-    public <T> T handleSupWithLock(String syncKey, Supplier<T> handlerSup) {
-        return this.handleSupWithLock(syncKey, handlerSup, null);
+    public <T> T handleSupWithSync(String syncKey, Supplier<T> handlerSup) {
+        return this.handleSupWithSync(syncKey, handlerSup, null);
     }
 
     /**
@@ -151,37 +150,31 @@ public final class SynchronizedProcessor {
      * @param <T>
      * @return
      */
-    public <T> T handleSupWithTryLock(String syncKey, Supplier<T> handlerSup, Supplier<T> waitedSup, Supplier<T> fallbackSup,
-                                      long maxWaitingMillis) {
+    public <T> T handleSupWithTryLock(String syncKey, Supplier<T> handlerSup, Supplier<T> waitedSup, Supplier<T> fallbackSup, long maxWaitingMillis) {
         if (isBlank(syncKey) || isNull(handlerSup) || isNull(waitedSup) || maxWaitingMillis < 0L)
-            throw new BlueException();
+            throw new BlueException(INVALID_PARAM);
 
-        RLock lock = redissonClient.getLock(syncKey);
-        boolean tryLock = true;
+        RLock lock = null;
+        boolean tryLock = false;
         try {
-            tryLock = lock.tryLock();
-            if (tryLock)
-                return handlerSup.get();
+            lock = redissonClient.getLock(syncKey);
+            tryLock = lock.tryLock(maxWaitingMillis, MILLISECONDS);
 
-            long start = currentTimeMillis();
-            while (!(tryLock = lock.tryLock()) && currentTimeMillis() - start <= maxWaitingMillis)
-                onSpinWait();
-
-            return waitedSup.get();
+            return tryLock ? handlerSup.get() : waitedSup.get();
         } catch (Exception e) {
-            LOGGER.error("T handleAuthorityUpdateWithTryLock(String syncKey, Supplier<T> handlerSup, Supplier<T> waitSuccessedSup, Supplier<T> fallbackSup, long maxWaitingMillis) failed, " +
-                    "syncKey = {}, handlerSup = {}, waitedSup = {}, fallbackSup = {}, maxWaitingMillis = {}", syncKey, handlerSup, waitedSup, fallbackSup, maxWaitingMillis);
+            LOGGER.error("handle failed, syncKey = {}, handlerSup = {}, waitedSup = {}, fallbackSup = {}, maxWaitingMillis = {}",
+                    syncKey, handlerSup, waitedSup, fallbackSup, maxWaitingMillis);
 
             if (isNotNull(fallbackSup))
                 return fallbackSup.get();
 
-            throw e;
+            throw new BlueException(INTERNAL_SERVER_ERROR);
         } finally {
-            if (tryLock)
+            if (isNotNull(lock) && tryLock)
                 try {
                     lock.unlock();
                 } catch (Exception e) {
-                    LOGGER.warn("handleAuthorityUpdateWithTryLock, lock.unlock() failed, e = {}", e);
+                    LOGGER.warn("lock.unlock() failed, e = {}", e);
                 }
         }
     }
@@ -228,23 +221,25 @@ public final class SynchronizedProcessor {
     }
 
     /**
-     * handle task with lock
+     * handle task with sync
      *
      * @param syncKey
      * @param handleTask
      * @param fallbackTask
      */
-    public void handleTaskWithLock(String syncKey, HandleTask handleTask, HandleTask fallbackTask) {
+    public void handleTaskWithSync(String syncKey, HandleTask handleTask, HandleTask fallbackTask) {
         if (isBlank(syncKey) || isNull(handleTask))
-            throw new BlueException();
+            throw new BlueException(INVALID_PARAM);
 
-        RLock lock = redissonClient.getLock(syncKey);
+        RLock lock = null;
         try {
+            lock = redissonClient.getLock(syncKey);
             lock.lock();
+
             handleTask.handle();
         } catch (Exception e) {
-            LOGGER.error("void handleTaskWithLock(String syncKey, HandleTask handleTask, HandleTask fallbackTask) failed, syncKey = {}, handleTask = {}, e = {}",
-                    syncKey, handleTask, e);
+            LOGGER.error("handle failed, syncKey = {}, handleTask = {}, HandleTask fallbackTask = {}, e = {}",
+                    syncKey, handleTask, fallbackTask, e);
 
             if (isNotNull(fallbackTask)) {
                 fallbackTask.handle();
@@ -253,11 +248,12 @@ public final class SynchronizedProcessor {
 
             throw e;
         } finally {
-            try {
-                lock.unlock();
-            } catch (Exception e) {
-                LOGGER.error("lock.unlock() failed, e = {}", e);
-            }
+            if (isNotNull(lock) && lock.isLocked())
+                try {
+                    lock.unlock();
+                } catch (Exception e) {
+                    LOGGER.error("lock.unlock() failed, e = {}", e);
+                }
         }
     }
 
@@ -267,8 +263,8 @@ public final class SynchronizedProcessor {
      * @param syncKey
      * @param handleTask
      */
-    public void handleTaskWithLock(String syncKey, HandleTask handleTask) {
-        this.handleTaskWithLock(syncKey, handleTask, null);
+    public void handleTaskWithSync(String syncKey, HandleTask handleTask) {
+        this.handleTaskWithSync(syncKey, handleTask, null);
     }
 
     /**
@@ -280,22 +276,23 @@ public final class SynchronizedProcessor {
      */
     public void handleTaskWithTryLock(String syncKey, HandleTask handleTask, HandleTask fallbackTask, boolean breakOnLockFail) {
         if (isBlank(syncKey) || isNull(handleTask))
-            throw new BlueException();
+            throw new BlueException(INVALID_PARAM);
 
-        RLock lock = redissonClient.getLock(syncKey);
-        boolean locked = false;
+        RLock lock = null;
+        boolean tryLock = false;
         try {
-            locked = lock.tryLock();
-            if (!locked && breakOnLockFail)
+            lock = redissonClient.getLock(syncKey);
+            tryLock = lock.tryLock();
+
+            if (!tryLock && breakOnLockFail)
                 return;
 
             lock.lock();
-            locked = true;
+            tryLock = true;
 
             handleTask.handle();
         } catch (Exception e) {
-            LOGGER.error("void handleTaskWithTryLock(String syncKey, HandleTask handleTask, HandleTask fallbackTask, boolean breakOnLockFail), " +
-                            "syncKey = {}, handleTask = {}, fallbackTask = {}, breakOnLockFail = {}, e = {}",
+            LOGGER.error("handle failed, syncKey = {}, handleTask = {}, fallbackTask = {}, breakOnLockFail = {}, e = {}",
                     syncKey, handleTask, fallbackTask, breakOnLockFail, e);
 
             if (isNotNull(fallbackTask)) {
@@ -305,11 +302,11 @@ public final class SynchronizedProcessor {
 
             throw e;
         } finally {
-            if (locked)
+            if (isNotNull(lock) && tryLock)
                 try {
                     lock.unlock();
                 } catch (Exception e) {
-                    LOGGER.warn("handleTaskWithTryLock, lock.unlock() failed, e = {}", e);
+                    LOGGER.warn("lock.unlock() failed, e = {}", e);
                 }
         }
     }

@@ -2,7 +2,6 @@ package com.blue.message;
 
 import com.blue.basic.anno.EnableBlueLifecycle;
 import com.blue.basic.anno.SummerSpringBootApplication;
-import com.blue.database.anno.EnableBlueDataAccess;
 import org.apache.dubbo.config.spring.context.annotation.DubboComponentScan;
 
 import static org.springframework.boot.SpringApplication.run;
@@ -14,7 +13,6 @@ import static org.springframework.boot.SpringApplication.run;
  */
 @SummerSpringBootApplication
 @EnableBlueLifecycle(basePackages = "com.blue.message.event")
-@EnableBlueDataAccess(basePackages = "com.blue.message.repository.mapper")
 @DubboComponentScan(basePackages = "com.blue.message.remote")
 public class MessageApplication {
 

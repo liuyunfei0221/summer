@@ -32,6 +32,7 @@ import static com.blue.auth.converter.AuthModelConverters.*;
 import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.*;
+import static com.blue.basic.constant.common.SyncKey.RESOURCES_REFRESH_SYNC;
 import static com.blue.database.common.ConditionSortProcessor.process;
 import static com.blue.basic.common.base.ConstantProcessor.assertResourceType;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
@@ -95,7 +96,7 @@ public class ResourceServiceImpl implements ResourceService {
     };
 
     private final Supplier<List<Resource>> RESOURCES_WITH_CACHE_SUP = () ->
-            synchronizedProcessor.handleSupByOrderedWithSetter(RESOURCES_REDIS_SUP, BlueChecker::isNotEmpty, RESOURCES_DB_SUP, RESOURCES_REDIS_SETTER);
+            synchronizedProcessor.handleSupByOrderedWithSetter(RESOURCES_REFRESH_SYNC.key, RESOURCES_REDIS_SUP, RESOURCES_DB_SUP, RESOURCES_REDIS_SETTER, BlueChecker::isNotEmpty);
 
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(ResourceSortAttribute.values())
@@ -466,7 +467,7 @@ public class ResourceServiceImpl implements ResourceService {
                                     .flatMap(memberBasicInfos -> {
                                         Map<Long, String> idAndMemberNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(resources.stream().map(r ->
-                                                 resourceToResourceManagerInfo(r, idAndMemberNameMapping)).collect(toList()));
+                                                resourceToResourceManagerInfo(r, idAndMemberNameMapping)).collect(toList()));
                                     }).flatMap(resourceManagerInfos ->
                                             just(new PageModelResponse<>(resourceManagerInfos, tuple2.getT2())))
                             :
