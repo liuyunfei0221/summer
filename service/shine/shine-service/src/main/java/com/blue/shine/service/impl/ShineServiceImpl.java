@@ -270,78 +270,77 @@ public class ShineServiceImpl implements ShineService {
     }
 
     private final Function<ShineCondition, QueryAndHighlightColumns> CONDITION_PROCESSOR = c -> {
-        if (isNotNull(c)) {
-            BoolQuery.Builder builder = new BoolQuery.Builder();
-            List<String> highlightColumns = new LinkedList<>();
+        if (isNull(c))
+            return new QueryAndHighlightColumns(Query.of(builder -> builder.matchAll(MatchAllQuery.of(b -> b.boost(1.0f)))), emptyList());
 
-            ofNullable(c.getId()).filter(BlueChecker::isValidIdentity).ifPresent(id ->
-                    builder.must(TermQuery.of(b -> b.field(ID.name).value(id))._toQuery()));
+        BoolQuery.Builder builder = new BoolQuery.Builder();
+        List<String> highlightColumns = new LinkedList<>();
 
-            ofNullable(c.getTitleLike()).filter(BlueChecker::isNotBlank).ifPresent(titleLike -> {
-                builder.must(FuzzyQuery.of(b -> b.field(TITLE.name).value(titleLike).fuzziness(fuzziness))._toQuery());
-                highlightColumns.add(TITLE.name);
-            });
+        ofNullable(c.getId()).filter(BlueChecker::isValidIdentity).ifPresent(id ->
+                builder.must(TermQuery.of(b -> b.field(ID.name).value(id))._toQuery()));
 
-            ofNullable(c.getContentLike()).filter(BlueChecker::isNotBlank).ifPresent(contentLike -> {
-                builder.must(FuzzyQuery.of(b -> b.field(CONTENT.name).value(contentLike).fuzziness(fuzziness))._toQuery());
-                highlightColumns.add(CONTENT.name);
-            });
+        ofNullable(c.getTitleLike()).filter(BlueChecker::isNotBlank).ifPresent(titleLike -> {
+            builder.must(FuzzyQuery.of(b -> b.field(TITLE.name).value(titleLike).fuzziness(fuzziness))._toQuery());
+            highlightColumns.add(TITLE.name);
+        });
 
-            ofNullable(c.getDetailLike()).filter(BlueChecker::isNotBlank).ifPresent(detailLike -> {
-                builder.must(FuzzyQuery.of(b -> b.field(DETAIL.name).value(detailLike).fuzziness(fuzziness))._toQuery());
-                highlightColumns.add(DETAIL.name);
-            });
+        ofNullable(c.getContentLike()).filter(BlueChecker::isNotBlank).ifPresent(contentLike -> {
+            builder.must(FuzzyQuery.of(b -> b.field(CONTENT.name).value(contentLike).fuzziness(fuzziness))._toQuery());
+            highlightColumns.add(CONTENT.name);
+        });
 
-            ofNullable(c.getContactLike()).filter(BlueChecker::isNotBlank).ifPresent(contactLike -> {
-                builder.must(FuzzyQuery.of(b -> b.field(CONTACT.name).value(contactLike).fuzziness(fuzziness))._toQuery());
-                highlightColumns.add(CONTACT.name);
-            });
+        ofNullable(c.getDetailLike()).filter(BlueChecker::isNotBlank).ifPresent(detailLike -> {
+            builder.must(FuzzyQuery.of(b -> b.field(DETAIL.name).value(detailLike).fuzziness(fuzziness))._toQuery());
+            highlightColumns.add(DETAIL.name);
+        });
 
-            ofNullable(c.getContactDetailLike()).filter(BlueChecker::isNotBlank).ifPresent(contactDetailLike -> {
-                builder.must(FuzzyQuery.of(b -> b.field(CONTACT_DETAIL.name).value(contactDetailLike).fuzziness(fuzziness))._toQuery());
-                highlightColumns.add(CONTACT_DETAIL.name);
-            });
+        ofNullable(c.getContactLike()).filter(BlueChecker::isNotBlank).ifPresent(contactLike -> {
+            builder.must(FuzzyQuery.of(b -> b.field(CONTACT.name).value(contactLike).fuzziness(fuzziness))._toQuery());
+            highlightColumns.add(CONTACT.name);
+        });
 
-            ofNullable(c.getCountryId()).ifPresent(countryId ->
-                    builder.must(TermQuery.of(b -> b.field(COUNTRY_ID.name).value(countryId))._toQuery()));
+        ofNullable(c.getContactDetailLike()).filter(BlueChecker::isNotBlank).ifPresent(contactDetailLike -> {
+            builder.must(FuzzyQuery.of(b -> b.field(CONTACT_DETAIL.name).value(contactDetailLike).fuzziness(fuzziness))._toQuery());
+            highlightColumns.add(CONTACT_DETAIL.name);
+        });
 
-            ofNullable(c.getStateId()).ifPresent(stateId ->
-                    builder.must(TermQuery.of(b -> b.field(STATE_ID.name).value(stateId))._toQuery()));
+        ofNullable(c.getCountryId()).ifPresent(countryId ->
+                builder.must(TermQuery.of(b -> b.field(COUNTRY_ID.name).value(countryId))._toQuery()));
 
-            ofNullable(c.getCityId()).ifPresent(cityId ->
-                    builder.must(TermQuery.of(b -> b.field(CITY_ID.name).value(cityId))._toQuery()));
+        ofNullable(c.getStateId()).ifPresent(stateId ->
+                builder.must(TermQuery.of(b -> b.field(STATE_ID.name).value(stateId))._toQuery()));
 
-            ofNullable(c.getAddressDetailLike()).filter(BlueChecker::isNotBlank).ifPresent(addressDetailLike ->
-                    builder.must(MatchQuery.of(b -> b.field(ADDRESS_DETAIL.name).query(addressDetailLike))._toQuery()));
+        ofNullable(c.getCityId()).ifPresent(cityId ->
+                builder.must(TermQuery.of(b -> b.field(CITY_ID.name).value(cityId))._toQuery()));
 
-            ofNullable(c.getExtra()).filter(BlueChecker::isNotBlank).ifPresent(extra ->
-                    builder.must(TermQuery.of(b -> b.field(EXTRA.name).value(extra))._toQuery()));
+        ofNullable(c.getAddressDetailLike()).filter(BlueChecker::isNotBlank).ifPresent(addressDetailLike ->
+                builder.must(MatchQuery.of(b -> b.field(ADDRESS_DETAIL.name).query(addressDetailLike))._toQuery()));
 
-            ofNullable(c.getPriority()).ifPresent(priority ->
-                    builder.must(TermQuery.of(b -> b.field(PRIORITY.name).value(priority))._toQuery()));
+        ofNullable(c.getExtra()).filter(BlueChecker::isNotBlank).ifPresent(extra ->
+                builder.must(TermQuery.of(b -> b.field(EXTRA.name).value(extra))._toQuery()));
 
-            ofNullable(c.getCreateTimeBegin()).ifPresent(createTimeBegin ->
-                    builder.must(RangeQuery.of(b -> b.field(CREATE_TIME.name).gte(JsonData.of(createTimeBegin)))._toQuery()));
+        ofNullable(c.getPriority()).ifPresent(priority ->
+                builder.must(TermQuery.of(b -> b.field(PRIORITY.name).value(priority))._toQuery()));
 
-            ofNullable(c.getCreateTimeEnd()).ifPresent(createTimeEnd ->
-                    builder.must(RangeQuery.of(b -> b.field(CREATE_TIME.name).lte(JsonData.of(createTimeEnd)))._toQuery()));
+        ofNullable(c.getCreateTimeBegin()).ifPresent(createTimeBegin ->
+                builder.must(RangeQuery.of(b -> b.field(CREATE_TIME.name).gte(JsonData.of(createTimeBegin)))._toQuery()));
 
-            ofNullable(c.getUpdateTimeBegin()).ifPresent(updateTimeBegin ->
-                    builder.must(RangeQuery.of(b -> b.field(UPDATE_TIME.name).gte(JsonData.of(updateTimeBegin)))._toQuery()));
+        ofNullable(c.getCreateTimeEnd()).ifPresent(createTimeEnd ->
+                builder.must(RangeQuery.of(b -> b.field(CREATE_TIME.name).lte(JsonData.of(createTimeEnd)))._toQuery()));
 
-            ofNullable(c.getUpdateTimeEnd()).ifPresent(updateTimeEnd ->
-                    builder.must(RangeQuery.of(b -> b.field(UPDATE_TIME.name).lte(JsonData.of(updateTimeEnd)))._toQuery()));
+        ofNullable(c.getUpdateTimeBegin()).ifPresent(updateTimeBegin ->
+                builder.must(RangeQuery.of(b -> b.field(UPDATE_TIME.name).gte(JsonData.of(updateTimeBegin)))._toQuery()));
 
-            ofNullable(c.getCreator()).ifPresent(creator ->
-                    builder.must(TermQuery.of(b -> b.field(CREATOR.name).value(creator))._toQuery()));
+        ofNullable(c.getUpdateTimeEnd()).ifPresent(updateTimeEnd ->
+                builder.must(RangeQuery.of(b -> b.field(UPDATE_TIME.name).lte(JsonData.of(updateTimeEnd)))._toQuery()));
 
-            ofNullable(c.getUpdater()).ifPresent(updater ->
-                    builder.must(TermQuery.of(b -> b.field(UPDATER.name).value(updater))._toQuery()));
+        ofNullable(c.getCreator()).ifPresent(creator ->
+                builder.must(TermQuery.of(b -> b.field(CREATOR.name).value(creator))._toQuery()));
 
-            return new QueryAndHighlightColumns(Query.of(b -> b.bool(builder.build())), highlightColumns);
-        }
+        ofNullable(c.getUpdater()).ifPresent(updater ->
+                builder.must(TermQuery.of(b -> b.field(UPDATER.name).value(updater))._toQuery()));
 
-        return new QueryAndHighlightColumns(Query.of(builder -> builder.matchAll(MatchAllQuery.of(b -> b.boost(1.0f)))), emptyList());
+        return new QueryAndHighlightColumns(Query.of(b -> b.bool(builder.build())), highlightColumns);
     };
 
     /**

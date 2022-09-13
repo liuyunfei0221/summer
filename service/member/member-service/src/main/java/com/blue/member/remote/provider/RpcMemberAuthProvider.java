@@ -18,7 +18,7 @@ import java.util.List;
 @DubboService(interfaceClass = RpcMemberAuthService.class,
         version = "1.0",
         methods = {
-                @Method(name = "autoRegisterMemberBasic", async = false),
+                @Method(name = "registerMemberBasic", async = false),
                 @Method(name = "updateMemberCredentialAttr", async = false)
         })
 public class RpcMemberAuthProvider implements RpcMemberAuthService {
@@ -36,8 +36,8 @@ public class RpcMemberAuthProvider implements RpcMemberAuthService {
      * @return
      */
     @Override
-    public MemberBasicInfo autoRegisterMemberBasic(MemberRegistryParam memberRegistryParam) {
-        return memberAuthService.autoRegisterMemberBasic(memberRegistryParam);
+    public MemberBasicInfo registerMemberBasic(MemberRegistryParam memberRegistryParam) {
+        return memberAuthService.registerMemberBasic(memberRegistryParam);
     }
 
     /**

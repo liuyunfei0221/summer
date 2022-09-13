@@ -30,6 +30,7 @@ import static com.blue.basic.constant.common.Symbol.*;
 import static java.lang.Integer.*;
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -43,7 +44,7 @@ import static reactor.util.Loggers.getLogger;
  * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc"})
-public final class MessageProcessor {
+final class MessageProcessor {
 
     private static final Logger LOGGER = getLogger(MessageProcessor.class);
 
@@ -61,7 +62,7 @@ public final class MessageProcessor {
 
     private static final UnaryOperator<String> LANGUAGE_IDENTITY_PARSER = n -> {
         int idx = lastIndexOf(n, PERIOD.identity);
-        return replace(idx >= 0 ? (idx > 0 ? substring(n, 0, idx) : EMPTY_DATA.value) : n, PAR_CONCATENATION.identity, HYPHEN.identity);
+        return replace(idx >= 0 ? (idx > 0 ? substring(n, 0, idx) : n) : n, PAR_CONCATENATION.identity, HYPHEN.identity);
     };
 
     private static final Function<Map<String, String>, Integer> LANGUAGE_PRIORITY_PARSER = map ->
@@ -75,6 +76,47 @@ public final class MessageProcessor {
                     .filter(e -> isDigits(e.getKey()))
                     .collect(toMap(e -> parseInt(e.getKey()), Map.Entry::getValue, (a, b) -> a));
 
+
+    private static final Function<Map<Integer, LanguageInfo>, List<LanguageInfo>> SUPPORT_LANGUAGES_PARSER = infoMap ->
+            BlueChecker.isNotEmpty(infoMap) ? infoMap.entrySet().stream()
+                    .sorted((a, b) -> {
+                        if (DEFAULT_LANGUAGE.equals(lowerCase(a.getValue().getIdentity())))
+                            return MIN_VALUE;
+
+                        if (DEFAULT_LANGUAGE.equals(lowerCase(b.getValue().getIdentity())))
+                            return MAX_VALUE;
+
+                        return a.getKey().compareTo(b.getKey());
+                    })
+                    .map(Map.Entry::getValue).collect(toList())
+                    :
+                    emptyList();
+
+    private static final Function<List<LanguageInfo>, Map<String, String>> SIMPLE_LANGUAGE_AND_LANGUAGE_MAPPING_PARSER = supportLanguages -> {
+        if (BlueChecker.isEmpty(supportLanguages))
+            return emptyMap();
+
+        Map<String, String> simpleLanguagesMapping = new HashMap<>(supportLanguages.size());
+
+        String languageIdentity;
+        String simpleLanguage;
+        String[] languageWithCountry;
+        for (LanguageInfo li : supportLanguages) {
+            languageIdentity = li.getIdentity();
+            languageWithCountry = split(languageIdentity, HYPHEN.identity);
+            if (languageWithCountry.length == 1)
+                continue;
+
+            simpleLanguage = languageWithCountry[0];
+            if (simpleLanguagesMapping.containsKey(simpleLanguage))
+                continue;
+
+            simpleLanguagesMapping.put(simpleLanguage, toRootLowerCase(LANGUAGE_IDENTITY_PARSER.apply(languageIdentity)));
+        }
+
+        return simpleLanguagesMapping;
+    };
+
     private static final Consumer<String> CLASS_PATH_MESSAGES_LOADER = location -> {
         List<Resource> resources = getResources(location, PROP.suffix);
         LOGGER.info("resources = {}", resources);
@@ -82,7 +124,7 @@ public final class MessageProcessor {
         int size = resources.size();
 
         Map<Integer, LanguageInfo> infoMap = new HashMap<>(size, 2.0f);
-        Map<String, Map<Integer, String>> i18n = new HashMap<>(size, 2.0f);
+        Map<String, Map<Integer, String>> i18n = new HashMap<>(size << 1, 2.0f);
         LanguageInfo defaultLanguageInfo = null;
 
         Map<String, String> messages;
@@ -107,20 +149,16 @@ public final class MessageProcessor {
                 defaultLanguageInfo = languageInfo;
         }
 
-        List<LanguageInfo> supportLanguages = infoMap.entrySet().stream()
-                .sorted((a, b) -> {
-                    if (DEFAULT_LANGUAGE.equals(lowerCase(a.getValue().getIdentity())))
-                        return MIN_VALUE;
+        List<LanguageInfo> supportLanguages = SUPPORT_LANGUAGES_PARSER.apply(infoMap);
 
-                    if (DEFAULT_LANGUAGE.equals(lowerCase(b.getValue().getIdentity())))
-                        return MAX_VALUE;
+        SIMPLE_LANGUAGE_AND_LANGUAGE_MAPPING_PARSER.apply(supportLanguages)
+                .forEach((key, value) -> i18n.put(key, i18n.get(value)));
 
-                    return a.getKey().compareTo(b.getKey());
-                })
-                .map(Map.Entry::getValue).collect(toList());
+        if (BlueChecker.isEmpty(supportLanguages))
+            throw new RuntimeException("supportLanguages can't be empty");
 
         if (isNull(defaultLanguageInfo))
-            throw new RuntimeException("DEFAULT_LANGUAGE_INFO can't be null");
+            defaultLanguageInfo = supportLanguages.get(0);
 
         I_18_N = i18n;
         SUPPORT_LANGUAGES = supportLanguages;
@@ -163,20 +201,16 @@ public final class MessageProcessor {
                 defaultLanguageInfo = languageInfo;
         }
 
-        List<LanguageInfo> supportLanguages = infoMap.entrySet().stream()
-                .sorted((a, b) -> {
-                    if (DEFAULT_LANGUAGE.equals(lowerCase(a.getValue().getIdentity())))
-                        return MIN_VALUE;
+        List<LanguageInfo> supportLanguages = SUPPORT_LANGUAGES_PARSER.apply(infoMap);
 
-                    if (DEFAULT_LANGUAGE.equals(lowerCase(b.getValue().getIdentity())))
-                        return MAX_VALUE;
+        SIMPLE_LANGUAGE_AND_LANGUAGE_MAPPING_PARSER.apply(supportLanguages)
+                .forEach((key, value) -> i18n.put(key, i18n.get(value)));
 
-                    return a.getKey().compareTo(b.getKey());
-                })
-                .map(Map.Entry::getValue).collect(toList());
+        if (BlueChecker.isEmpty(supportLanguages))
+            throw new RuntimeException("supportLanguages can't be empty");
 
         if (isNull(defaultLanguageInfo))
-            throw new RuntimeException("DEFAULT_LANGUAGE_INFO can't be null");
+            defaultLanguageInfo = supportLanguages.get(0);
 
         I_18_N = i18n;
         SUPPORT_LANGUAGES = supportLanguages;
@@ -231,7 +265,7 @@ public final class MessageProcessor {
     /**
      * load i18n messages
      */
-    public static void load(String location) {
+    static void load(String location) {
         if (isBlank(location))
             throw new RuntimeException("location can't be blank");
 
@@ -244,7 +278,7 @@ public final class MessageProcessor {
      * @param serverRequest
      * @return
      */
-    public static Map<Integer, String> listMessage(ServerRequest serverRequest) {
+    static Map<Integer, String> listMessage(ServerRequest serverRequest) {
         return MESSAGES_GETTER.apply(getAcceptLanguages(serverRequest));
     }
 
@@ -253,7 +287,7 @@ public final class MessageProcessor {
      *
      * @return
      */
-    public static List<LanguageInfo> supportLanguages() {
+    static List<LanguageInfo> supportLanguages() {
         return SUPPORT_LANGUAGES;
     }
 
@@ -262,7 +296,7 @@ public final class MessageProcessor {
      *
      * @return
      */
-    public static LanguageInfo defaultLanguage() {
+    static LanguageInfo defaultLanguage() {
         return DEFAULT_LANGUAGE_INFO;
     }
 
@@ -272,7 +306,7 @@ public final class MessageProcessor {
      * @param code
      * @return
      */
-    public static String resolveToMessage(Integer code) {
+    static String resolveToMessage(Integer code) {
         return MESSAGE_GETTER.apply(code, emptyList()).intern();
     }
 
@@ -282,7 +316,7 @@ public final class MessageProcessor {
      * @param code
      * @return
      */
-    public static String resolveToMessage(Integer code, ElementKey[] replacements) {
+    static String resolveToMessage(Integer code, ElementKey[] replacements) {
         String msg = MESSAGE_GETTER.apply(code, emptyList()).intern();
         return NON_KEY_REPLACEMENTS_PRE.test(replacements) ? msg : FILLING_FUNC.apply(msg, resolveToValues(replacements));
     }
@@ -293,7 +327,7 @@ public final class MessageProcessor {
      * @param code
      * @return
      */
-    public static String resolveToMessage(Integer code, String[] replacements) {
+    static String resolveToMessage(Integer code, String[] replacements) {
         String msg = MESSAGE_GETTER.apply(code, emptyList()).intern();
         return NON_STR_REPLACEMENTS_PRE.test(replacements) ? msg : FILLING_FUNC.apply(msg, replacements);
     }
@@ -305,7 +339,7 @@ public final class MessageProcessor {
      * @param languages
      * @return
      */
-    public static String resolveToMessage(Integer code, List<String> languages) {
+    static String resolveToMessage(Integer code, List<String> languages) {
         return MESSAGE_GETTER.apply(code, languages).intern();
     }
 
@@ -317,7 +351,7 @@ public final class MessageProcessor {
      * @param replacements
      * @return
      */
-    public static String resolveToMessage(Integer code, List<String> languages, ElementKey[] replacements) {
+    static String resolveToMessage(Integer code, List<String> languages, ElementKey[] replacements) {
         String msg = MESSAGE_GETTER.apply(code, languages).intern();
         return NON_KEY_REPLACEMENTS_PRE.test(replacements) ? msg : FILLING_FUNC.apply(msg, resolveToValues(replacements, languages));
     }
@@ -330,7 +364,7 @@ public final class MessageProcessor {
      * @param replacements
      * @return
      */
-    public static String resolveToMessage(Integer code, List<String> languages, String[] replacements) {
+    static String resolveToMessage(Integer code, List<String> languages, String[] replacements) {
         String msg = MESSAGE_GETTER.apply(code, languages).intern();
         return NON_STR_REPLACEMENTS_PRE.test(replacements) ? msg : FILLING_FUNC.apply(msg, replacements);
     }
@@ -342,7 +376,7 @@ public final class MessageProcessor {
      * @param serverRequest
      * @return
      */
-    public static String resolveToMessage(Integer code, ServerRequest serverRequest) {
+    static String resolveToMessage(Integer code, ServerRequest serverRequest) {
         return MESSAGE_GETTER.apply(code, getAcceptLanguages(serverRequest)).intern();
     }
 
@@ -354,7 +388,7 @@ public final class MessageProcessor {
      * @param replacements
      * @return
      */
-    public static String resolveToMessage(Integer code, ServerRequest serverRequest, ElementKey[] replacements) {
+    static String resolveToMessage(Integer code, ServerRequest serverRequest, ElementKey[] replacements) {
         String msg = MESSAGE_GETTER.apply(code, getAcceptLanguages(serverRequest)).intern();
         return NON_KEY_REPLACEMENTS_PRE.test(replacements) ? msg : FILLING_FUNC.apply(msg, resolveToValues(replacements, serverRequest));
     }
@@ -367,7 +401,7 @@ public final class MessageProcessor {
      * @param replacements
      * @return
      */
-    public static String resolveToMessage(Integer code, ServerRequest serverRequest, String[] replacements) {
+    static String resolveToMessage(Integer code, ServerRequest serverRequest, String[] replacements) {
         String msg = MESSAGE_GETTER.apply(code, getAcceptLanguages(serverRequest)).intern();
         return NON_STR_REPLACEMENTS_PRE.test(replacements) ? msg : FILLING_FUNC.apply(msg, replacements);
     }

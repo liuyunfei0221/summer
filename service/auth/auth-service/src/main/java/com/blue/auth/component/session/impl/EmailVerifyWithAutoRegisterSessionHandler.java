@@ -8,7 +8,7 @@ import com.blue.auth.model.SessionInfo;
 import com.blue.auth.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.auth.remote.consumer.RpcVerifyHandleServiceConsumer;
 import com.blue.auth.service.inter.AuthService;
-import com.blue.auth.service.inter.AutoRegisterService;
+import com.blue.auth.service.inter.RegisterService;
 import com.blue.auth.service.inter.CredentialService;
 import com.blue.auth.service.inter.RoleService;
 import com.blue.basic.common.base.BlueChecker;
@@ -16,6 +16,7 @@ import com.blue.basic.constant.auth.CredentialType;
 import com.blue.basic.model.common.BlueResponse;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.member.api.model.MemberBasicInfo;
+import com.blue.redisson.component.SynchronizedProcessor;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import static com.blue.auth.constant.LoginAttribute.ACCESS;
 import static com.blue.auth.constant.LoginAttribute.IDENTITY;
@@ -43,6 +45,7 @@ import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.basic.constant.common.Status.INVALID;
 import static com.blue.basic.constant.common.Status.VALID;
+import static com.blue.basic.constant.common.SyncKeyPrefix.CREDENTIAL_UPDATE_PRE;
 import static com.blue.basic.constant.member.SourceType.APP;
 import static com.blue.basic.constant.verify.VerifyBusinessType.EMAIL_VERIFY_LOGIN_WITH_AUTO_REGISTER;
 import static com.blue.basic.constant.verify.VerifyType.MAIL;
@@ -67,7 +70,7 @@ public class EmailVerifyWithAutoRegisterSessionHandler implements SessionHandler
 
     private final RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer;
 
-    private final AutoRegisterService autoRegisterService;
+    private final RegisterService registerService;
 
     private final CredentialService credentialService;
 
@@ -75,16 +78,26 @@ public class EmailVerifyWithAutoRegisterSessionHandler implements SessionHandler
 
     private final AuthService authService;
 
+    private final SynchronizedProcessor synchronizedProcessor;
+
     public EmailVerifyWithAutoRegisterSessionHandler(RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer, RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer,
-                                                     AutoRegisterService autoRegisterService, CredentialService credentialService,
-                                                     RoleService roleService, AuthService authService) {
+                                                     RegisterService registerService, CredentialService credentialService, RoleService roleService, AuthService authService,
+                                                     SynchronizedProcessor synchronizedProcessor) {
         this.rpcVerifyHandleServiceConsumer = rpcVerifyHandleServiceConsumer;
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
-        this.autoRegisterService = autoRegisterService;
+        this.registerService = registerService;
         this.credentialService = credentialService;
         this.roleService = roleService;
         this.authService = authService;
+        this.synchronizedProcessor = synchronizedProcessor;
     }
+
+    private static final UnaryOperator<String> CREDENTIAL_UPDATE_SYNC_KEY_GEN = credential -> {
+        if (isNotBlank(credential))
+            return CREDENTIAL_UPDATE_PRE.prefix + credential;
+
+        throw new BlueException(BAD_REQUEST);
+    };
 
     private static final Function<String, List<CredentialInfo>> CREDENTIALS_GENERATOR = email -> {
         List<CredentialInfo> credentials = new ArrayList<>(5);
@@ -131,10 +144,13 @@ public class EmailVerifyWithAutoRegisterSessionHandler implements SessionHandler
                                         })
                                         .switchIfEmpty(defer(() -> {
                                             extra.put(NEW_MEMBER.key, true);
-                                            return just(roleService.getDefaultRole().getId())
-                                                    .flatMap(roleId -> just(autoRegisterService.autoRegisterMemberInfo(CREDENTIALS_GENERATOR.apply(email), roleId, source))
-                                                            .flatMap(mbi ->
-                                                                    zip(authService.generateAuthMono(mbi.getId(), singletonList(roleId), EMAIL_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern()), just(mbi))));
+
+                                            return synchronizedProcessor.handleSupWithSync(CREDENTIAL_UPDATE_SYNC_KEY_GEN.apply(email), () ->
+                                                    just(roleService.getDefaultRole().getId())
+                                                            .flatMap(roleId -> just(registerService.registerMemberBasic(CREDENTIALS_GENERATOR.apply(email), roleId, source))
+                                                                    .flatMap(mbi ->
+                                                                            zip(authService.generateAuthMono(mbi.getId(), singletonList(roleId), EMAIL_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern()), just(mbi))))
+                                            );
                                         }))
                                         .flatMap(tuple2 -> {
                                             MemberAuth ma = tuple2.getT1();

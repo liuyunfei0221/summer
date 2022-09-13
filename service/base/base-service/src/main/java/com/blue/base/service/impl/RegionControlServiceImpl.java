@@ -65,7 +65,7 @@ public class RegionControlServiceImpl implements RegionControlService {
         LOGGER.info("Mono<CountryInfo> insertCountry(CountryInsertParam countryInsertParam), countryInsertParam = {}", countryInsertParam);
         countryInsertParam.asserts();
 
-        return synchronizedProcessor.handleSupWithLock(REGION_UPDATE_SYNC.key, () ->
+        return synchronizedProcessor.handleSupWithSync(REGION_UPDATE_SYNC.key, () ->
                 countryService.insertCountry(countryInsertParam)
         ).doOnSuccess(ci -> {
             LOGGER.info("ci = {}", ci);
@@ -84,7 +84,7 @@ public class RegionControlServiceImpl implements RegionControlService {
         LOGGER.info("Mono<CountryInfo> updateCountry(CountryUpdateParam countryUpdateParam), countryUpdateParam = {}", countryUpdateParam);
         countryUpdateParam.asserts();
 
-        return synchronizedProcessor.handleSupWithLock(REGION_UPDATE_SYNC.key, () ->
+        return synchronizedProcessor.handleSupWithSync(REGION_UPDATE_SYNC.key, () ->
                 countryService.updateCountry(countryUpdateParam)
         ).doOnSuccess(ci -> {
             LOGGER.info("ci = {}", ci);
@@ -104,7 +104,7 @@ public class RegionControlServiceImpl implements RegionControlService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return synchronizedProcessor.handleSupWithLock(REGION_UPDATE_SYNC.key, () ->
+        return synchronizedProcessor.handleSupWithSync(REGION_UPDATE_SYNC.key, () ->
                 countryService.deleteCountry(id)
         ).doOnSuccess(ci -> {
             LOGGER.info("ci = {}", ci);
@@ -123,7 +123,7 @@ public class RegionControlServiceImpl implements RegionControlService {
         LOGGER.info("Mono<StateInfo> insertState(StateInsertParam stateInsertParam), stateInsertParam = {}", stateInsertParam);
         stateInsertParam.asserts();
 
-        return synchronizedProcessor.handleSupWithLock(REGION_UPDATE_SYNC.key, () ->
+        return synchronizedProcessor.handleSupWithSync(REGION_UPDATE_SYNC.key, () ->
                 stateService.insertState(stateInsertParam)
         ).doOnSuccess(si -> {
             LOGGER.info("si = {}", si);
@@ -142,7 +142,7 @@ public class RegionControlServiceImpl implements RegionControlService {
         LOGGER.info("Mono<StateInfo> updateState(StateUpdateParam stateUpdateParam), stateUpdateParam = {}", stateUpdateParam);
         stateUpdateParam.asserts();
 
-        return synchronizedProcessor.handleSupWithLock(REGION_UPDATE_SYNC.key, () ->
+        return synchronizedProcessor.handleSupWithSync(REGION_UPDATE_SYNC.key, () ->
                 stateService.updateState(stateUpdateParam)
         ).doOnSuccess(si -> {
             LOGGER.info("si = {}", si);
@@ -162,7 +162,7 @@ public class RegionControlServiceImpl implements RegionControlService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return synchronizedProcessor.handleSupWithLock(REGION_UPDATE_SYNC.key, () ->
+        return synchronizedProcessor.handleSupWithSync(REGION_UPDATE_SYNC.key, () ->
                 stateService.deleteState(id)
         ).doOnSuccess(si -> {
             LOGGER.info("si = {}", si);
@@ -181,7 +181,7 @@ public class RegionControlServiceImpl implements RegionControlService {
         LOGGER.info("Mono<CityInfo> insertCity(CityInsertParam cityInsertParam), cityInsertParam = {}", cityInsertParam);
         cityInsertParam.asserts();
 
-        return synchronizedProcessor.handleSupWithLock(REGION_UPDATE_SYNC.key, () ->
+        return synchronizedProcessor.handleSupWithSync(REGION_UPDATE_SYNC.key, () ->
                 cityService.insertCity(cityInsertParam)
         ).doOnSuccess(ci -> {
             LOGGER.info("ci = {}", ci);
@@ -200,7 +200,7 @@ public class RegionControlServiceImpl implements RegionControlService {
         LOGGER.info("Mono<CityInfo> updateCity(CityUpdateParam cityUpdateParam), cityUpdateParam = {}", cityUpdateParam);
         cityUpdateParam.asserts();
 
-        return synchronizedProcessor.handleSupWithLock(REGION_UPDATE_SYNC.key, () ->
+        return synchronizedProcessor.handleSupWithSync(REGION_UPDATE_SYNC.key, () ->
                 cityService.updateCity(cityUpdateParam)
         ).doOnSuccess(ci -> {
             LOGGER.info("ci = {}", ci);
@@ -220,7 +220,7 @@ public class RegionControlServiceImpl implements RegionControlService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return synchronizedProcessor.handleSupWithLock(REGION_UPDATE_SYNC.key, () ->
+        return synchronizedProcessor.handleSupWithSync(REGION_UPDATE_SYNC.key, () ->
                 cityService.deleteCity(id)
         ).doOnSuccess(ci -> {
             LOGGER.info("ci = {}", ci);
@@ -239,7 +239,7 @@ public class RegionControlServiceImpl implements RegionControlService {
         LOGGER.info("Mono<AreaInfo> insertArea(AreaInsertParam areaInsertParam), areaInsertParam = {}", areaInsertParam);
         areaInsertParam.asserts();
 
-        return synchronizedProcessor.handleSupWithLock(REGION_UPDATE_SYNC.key, () ->
+        return synchronizedProcessor.handleSupWithSync(REGION_UPDATE_SYNC.key, () ->
                 areaService.insertArea(areaInsertParam)
         ).doOnSuccess(ai -> {
             LOGGER.info("ai = {}", ai);
@@ -258,7 +258,7 @@ public class RegionControlServiceImpl implements RegionControlService {
         LOGGER.info("Mono<AreaInfo> updateArea(AreaUpdateParam areaUpdateParam), areaUpdateParam = {}", areaUpdateParam);
         areaUpdateParam.asserts();
 
-        return synchronizedProcessor.handleSupWithLock(REGION_UPDATE_SYNC.key, () ->
+        return synchronizedProcessor.handleSupWithSync(REGION_UPDATE_SYNC.key, () ->
                 areaService.updateArea(areaUpdateParam)
         ).doOnSuccess(ai -> {
             LOGGER.info("ai = {}", ai);
@@ -278,7 +278,7 @@ public class RegionControlServiceImpl implements RegionControlService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return synchronizedProcessor.handleSupWithLock(REGION_UPDATE_SYNC.key, () ->
+        return synchronizedProcessor.handleSupWithSync(REGION_UPDATE_SYNC.key, () ->
                 areaService.deleteArea(id)
         ).doOnSuccess(ai -> {
             LOGGER.info("ai = {}", ai);

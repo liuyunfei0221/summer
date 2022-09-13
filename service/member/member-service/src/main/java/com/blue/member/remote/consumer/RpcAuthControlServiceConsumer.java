@@ -2,7 +2,6 @@ package com.blue.member.remote.consumer;
 
 import com.blue.auth.api.inter.RpcAuthControlService;
 import com.blue.auth.api.model.AuthorityBaseOnRole;
-import com.blue.auth.api.model.MemberCredentialInfo;
 import com.blue.basic.model.common.Access;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
@@ -20,14 +19,13 @@ import static reactor.core.publisher.Mono.fromFuture;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "DefaultAnnotationParam", "FieldCanBeLocal"})
+@SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "FieldCanBeLocal"})
 @Component
 public class RpcAuthControlServiceConsumer {
 
     @DubboReference(version = "1.0",
             providedBy = {"summer-auth"},
             methods = {
-                    @Method(name = "initMemberAuthInfo", async = false, timeout = 60000, retries = 0),
                     @Method(name = "refreshMemberRoleById", async = true),
                     @Method(name = "selectAuthorityByAccess", async = true),
                     @Method(name = "selectAuthorityByMemberId", async = true)
@@ -38,15 +36,6 @@ public class RpcAuthControlServiceConsumer {
 
     public RpcAuthControlServiceConsumer(Scheduler scheduler) {
         this.scheduler = scheduler;
-    }
-
-    /**
-     * init auth info for a new member
-     *
-     * @param memberCredentialInfo
-     */
-    public void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo) {
-        rpcAuthControlService.initMemberAuthInfo(memberCredentialInfo);
     }
 
     /**

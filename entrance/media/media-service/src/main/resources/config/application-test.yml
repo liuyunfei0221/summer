@@ -153,8 +153,7 @@ cache:
 redisson:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  host: 101.43.192.155
-  port: 6379
+  address: 101.43.192.155:6379
   password: LiuZhiyi20200805
   scanInterval: 8000
   checkSlotsCoverage: false
@@ -341,7 +340,6 @@ dubbo:
     retries: 0
     timeout: 10000
     loadbalance: random
-    filter: -exception
   consumer:
     retries: 0
     timeout: 10000

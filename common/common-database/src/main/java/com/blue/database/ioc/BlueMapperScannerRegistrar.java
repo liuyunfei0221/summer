@@ -1,7 +1,6 @@
 package com.blue.database.ioc;
 
 import com.blue.database.anno.EnableBlueDataAccess;
-import org.apache.logging.log4j.core.config.Order;
 import org.mybatis.spring.annotation.MapperScannerRegistrar;
 import org.mybatis.spring.mapper.MapperFactoryBean;
 import org.mybatis.spring.mapper.MapperScannerConfigurer;
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanNameGenerator;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
 import org.springframework.core.annotation.AnnotationAttributes;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;

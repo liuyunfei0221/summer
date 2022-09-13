@@ -1,6 +1,5 @@
 package com.blue.member.service.impl;
 
-import com.blue.auth.api.model.MemberCredentialInfo;
 import com.blue.auth.api.model.MemberRoleInfo;
 import com.blue.auth.api.model.RoleInfo;
 import com.blue.basic.common.base.BlueChecker;
@@ -15,16 +14,13 @@ import com.blue.member.component.credential.CredentialCollectProcessor;
 import com.blue.member.constant.MemberBasicSortAttribute;
 import com.blue.member.model.MemberAuthorityInfo;
 import com.blue.member.model.MemberBasicCondition;
-import com.blue.member.remote.consumer.RpcAuthControlServiceConsumer;
 import com.blue.member.remote.consumer.RpcFinanceControlServiceConsumer;
 import com.blue.member.remote.consumer.RpcRoleServiceConsumer;
-import com.blue.member.remote.consumer.RpcVerifyHandleServiceConsumer;
 import com.blue.member.repository.entity.MemberBasic;
 import com.blue.member.service.inter.MemberAuthService;
 import com.blue.member.service.inter.MemberBasicService;
 import com.blue.member.service.inter.MemberDetailService;
 import com.blue.member.service.inter.RealNameService;
-import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
@@ -39,9 +35,6 @@ import static com.blue.basic.common.base.BlueChecker.isEmpty;
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.ConstantProcessor.getSortTypeByIdentity;
 import static com.blue.basic.constant.common.ResponseElement.*;
-import static com.blue.basic.constant.verify.VerifyBusinessType.REGISTER;
-import static com.blue.basic.constant.verify.VerifyType.MAIL;
-import static com.blue.basic.constant.verify.VerifyType.SMS;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_BASIC_INFO;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_REGISTRY_INFO_2_MEMBER_BASIC;
 import static java.util.Collections.emptyList;
@@ -76,24 +69,17 @@ public class MemberAuthServiceImpl implements MemberAuthService {
 
     private final RpcRoleServiceConsumer rpcRoleServiceConsumer;
 
-    private final RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer;
-
-    private final RpcAuthControlServiceConsumer rpcAuthControlServiceConsumer;
-
     private final RpcFinanceControlServiceConsumer rpcFinanceControlServiceConsumer;
 
     public MemberAuthServiceImpl(MemberBasicService memberBasicService, MemberDetailService memberDetailService, RealNameService realNameService,
                                  BlueIdentityProcessor blueIdentityProcessor, CredentialCollectProcessor credentialCollectProcessor,
-                                 RpcRoleServiceConsumer rpcRoleServiceConsumer, RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer,
-                                 RpcAuthControlServiceConsumer rpcAuthControlServiceConsumer, RpcFinanceControlServiceConsumer rpcFinanceControlServiceConsumer) {
+                                 RpcRoleServiceConsumer rpcRoleServiceConsumer, RpcFinanceControlServiceConsumer rpcFinanceControlServiceConsumer) {
         this.memberBasicService = memberBasicService;
         this.memberDetailService = memberDetailService;
         this.realNameService = realNameService;
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.credentialCollectProcessor = credentialCollectProcessor;
         this.rpcRoleServiceConsumer = rpcRoleServiceConsumer;
-        this.rpcVerifyHandleServiceConsumer = rpcVerifyHandleServiceConsumer;
-        this.rpcAuthControlServiceConsumer = rpcAuthControlServiceConsumer;
         this.rpcFinanceControlServiceConsumer = rpcFinanceControlServiceConsumer;
     }
 
@@ -116,49 +102,6 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         return c;
     };
 
-
-    /**
-     * member registry
-     *
-     * @param memberRegistryParam
-     * @return
-     */
-    @Override
-    @GlobalTransactional(propagation = io.seata.tm.api.transaction.Propagation.REQUIRED,
-            rollbackFor = Exception.class, lockRetryInternal = 1, lockRetryTimes = 1, timeoutMills = 30000)
-    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
-            rollbackFor = Exception.class, timeout = 30)
-    public MemberBasicInfo registerMemberBasic(MemberRegistryParam memberRegistryParam) {
-        LOGGER.info("MemberInfo registerMemberBasic(MemberRegistryParam memberRegistryParam), memberRegistryDTO = {}", memberRegistryParam);
-        if (isNull(memberRegistryParam))
-            throw new BlueException(EMPTY_PARAM);
-        memberRegistryParam.asserts();
-
-        if (!rpcVerifyHandleServiceConsumer.validate(SMS, REGISTER, memberRegistryParam.getPhone(), memberRegistryParam.getPhoneVerify(), true)
-                .toFuture().join())
-            throw new BlueException(VERIFY_IS_INVALID);
-        if (!rpcVerifyHandleServiceConsumer.validate(MAIL, REGISTER, memberRegistryParam.getEmail(), memberRegistryParam.getEmailVerify(), true)
-                .toFuture().join())
-            throw new BlueException(VERIFY_IS_INVALID);
-
-        MemberBasic memberBasic = MEMBER_REGISTRY_INFO_2_MEMBER_BASIC.apply(memberRegistryParam);
-
-        long id = blueIdentityProcessor.generate(MemberBasic.class);
-        memberBasic.setId(id);
-
-        rpcAuthControlServiceConsumer.initMemberAuthInfo(new MemberCredentialInfo(id, credentialCollectProcessor.collect(memberBasic, memberRegistryParam.getAccess())));
-
-        rpcFinanceControlServiceConsumer.initMemberFinanceInfo(new MemberFinanceInfo(id));
-
-        MemberBasicInfo memberBasicInfo = memberBasicService.insertMemberBasic(memberBasic);
-        LOGGER.info("registerMemberBasic -> memberBasicInfo = {}", memberBasicInfo);
-
-        memberDetailService.initMemberDetail(id);
-        realNameService.initRealName(id);
-
-        return memberBasicInfo;
-    }
-
     /**
      * member register for auto registry or third party session
      *
@@ -168,8 +111,8 @@ public class MemberAuthServiceImpl implements MemberAuthService {
     @Override
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 30)
-    public MemberBasicInfo autoRegisterMemberBasic(MemberRegistryParam memberRegistryParam) {
-        LOGGER.info("MemberInfo simpleRegisterMemberBasic(MemberRegistryParam memberRegistryParam), memberRegistryDTO = {}", memberRegistryParam);
+    public MemberBasicInfo registerMemberBasic(MemberRegistryParam memberRegistryParam) {
+        LOGGER.info("MemberInfo registerMemberBasic(MemberRegistryParam memberRegistryParam), memberRegistryDTO = {}", memberRegistryParam);
         if (isNull(memberRegistryParam))
             throw new BlueException(EMPTY_PARAM);
 

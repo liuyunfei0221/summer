@@ -421,7 +421,7 @@ public class AuthServiceImpl implements AuthService {
         if (isInvalidIdentity(memberId) || isNull(handleTask))
             return;
 
-        synchronizedProcessor.handleTaskWithLock(ACCESS_UPDATE_SYNC_KEY_GEN.apply(memberId), handleTask);
+        synchronizedProcessor.handleTaskWithSync(ACCESS_UPDATE_SYNC_KEY_GEN.apply(memberId), handleTask);
     };
 
     /**
@@ -461,7 +461,7 @@ public class AuthServiceImpl implements AuthService {
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
 
-        return synchronizedProcessor.handleSupWithLock(ACCESS_UPDATE_SYNC_KEY_GEN.apply(memberId), () ->
+        return synchronizedProcessor.handleSupWithSync(ACCESS_UPDATE_SYNC_KEY_GEN.apply(memberId), () ->
                 REFRESH_INFOS_BY_MEMBER_ID_DELETER.apply(memberId)
                         .flatMap(b -> {
                             if (!b)

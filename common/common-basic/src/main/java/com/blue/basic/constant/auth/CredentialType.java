@@ -10,11 +10,6 @@ package com.blue.basic.constant.auth;
 public enum CredentialType {
 
     /**
-     * session with account and password
-     */
-    ACCOUNT_PWD("AP", "CLI", true, "APP", "session with account and password"),
-
-    /**
      * session with phone num and message verify with auto register
      */
     PHONE_VERIFY_AUTO_REGISTER("PVAR", "CLI", false, "APP", "session with phone num and message verify"),

@@ -3,6 +3,7 @@ package com.blue.basic.common.message;
 import com.blue.basic.common.base.BlueChecker;
 import com.blue.basic.common.base.PropertiesProcessor;
 import com.blue.basic.constant.common.ElementKey;
+import com.blue.basic.model.message.LanguageInfo;
 import org.springframework.core.io.Resource;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.util.Logger;
@@ -39,7 +40,7 @@ import static reactor.util.Loggers.getLogger;
  * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc", "unused"})
-public final class ElementProcessor {
+final class ElementProcessor {
 
     private static final Logger LOGGER = getLogger(ElementProcessor.class);
 
@@ -47,13 +48,37 @@ public final class ElementProcessor {
     private static final String DEFAULT_KEY = DEFAULT.key;
     private static final String DEFAULT_VALUE = DEFAULT.key;
 
-    private static final UnaryOperator<String> PRE_NAME_PARSER = n -> {
+    private static final UnaryOperator<String> LANGUAGE_IDENTITY_PARSER = n -> {
         int idx = lastIndexOf(n, PERIOD.identity);
-        String name = idx >= 0 ? (idx > 0 ? substring(n, 0, idx) : EMPTY_DATA.value) : n;
-        return replace(name, PAR_CONCATENATION.identity, HYPHEN.identity);
+        return replace(idx >= 0 ? (idx > 0 ? substring(n, 0, idx) : n) : n, PAR_CONCATENATION.identity, HYPHEN.identity);
     };
 
     private static volatile Map<String, Map<String, String>> I_18_N;
+
+    private static final Function<List<LanguageInfo>, Map<String, String>> SIMPLE_LANGUAGE_AND_LANGUAGE_MAPPING_PARSER = supportLanguages -> {
+        if (BlueChecker.isEmpty(supportLanguages))
+            return emptyMap();
+
+        Map<String, String> simpleLanguagesMapping = new HashMap<>(supportLanguages.size());
+
+        String languageIdentity;
+        String simpleLanguage;
+        String[] languageWithCountry;
+        for (LanguageInfo li : supportLanguages) {
+            languageIdentity = li.getIdentity();
+            languageWithCountry = split(languageIdentity, HYPHEN.identity);
+            if (languageWithCountry.length == 1)
+                continue;
+
+            simpleLanguage = languageWithCountry[0];
+            if (simpleLanguagesMapping.containsKey(simpleLanguage))
+                continue;
+
+            simpleLanguagesMapping.put(simpleLanguage, toRootLowerCase(LANGUAGE_IDENTITY_PARSER.apply(languageIdentity)));
+        }
+
+        return simpleLanguagesMapping;
+    };
 
     private static final Consumer<String> CLASS_PATH_ELEMENT_LOADER = location -> {
         List<Resource> resources = getResources(location, PROP.suffix);
@@ -62,10 +87,14 @@ public final class ElementProcessor {
         if (resources.size() != ofNullable(MessageProcessor.supportLanguages()).map(List::size).orElse(0))
             LOGGER.warn("size of element languages support and size of message languages support are different");
 
-        //noinspection UnnecessaryLocalVariable
         Map<String, Map<String, String>> i18n = resources.stream()
-                .collect(toMap(f -> lowerCase(PRE_NAME_PARSER.apply(f.getFilename())),
+                .collect(toMap(f -> lowerCase(LANGUAGE_IDENTITY_PARSER.apply(f.getFilename())),
                         PropertiesProcessor::parseProp, (a, b) -> a));
+
+        List<LanguageInfo> supportLanguages = MessageProcessor.supportLanguages();
+
+        SIMPLE_LANGUAGE_AND_LANGUAGE_MAPPING_PARSER.apply(supportLanguages)
+                .forEach((key, value) -> i18n.put(key, i18n.get(value)));
 
         I_18_N = i18n;
         LOGGER.info("I_18_N = {}", I_18_N);
@@ -78,10 +107,14 @@ public final class ElementProcessor {
         if (files.size() != ofNullable(MessageProcessor.supportLanguages()).map(List::size).orElse(0))
             LOGGER.warn("size of element languages support and size of message languages support are different");
 
-        //noinspection UnnecessaryLocalVariable
         Map<String, Map<String, String>> i18n = files.stream()
-                .collect(toMap(f -> lowerCase(PRE_NAME_PARSER.apply(f.getName())),
+                .collect(toMap(f -> lowerCase(LANGUAGE_IDENTITY_PARSER.apply(f.getName())),
                         PropertiesProcessor::parseProp, (a, b) -> a));
+
+        List<LanguageInfo> supportLanguages = MessageProcessor.supportLanguages();
+
+        SIMPLE_LANGUAGE_AND_LANGUAGE_MAPPING_PARSER.apply(supportLanguages)
+                .forEach((key, value) -> i18n.put(key, i18n.get(value)));
 
         I_18_N = i18n;
         LOGGER.info("I_18_N = {}", I_18_N);
@@ -132,7 +165,7 @@ public final class ElementProcessor {
     /**
      * load i18n elements
      */
-    public static void load(String location) {
+    static void load(String location) {
         if (isBlank(location))
             throw new RuntimeException("location can't be blank");
 
@@ -144,7 +177,7 @@ public final class ElementProcessor {
      *
      * @return
      */
-    public static Map<String, String> selectAllElement() {
+    static Map<String, String> selectAllElement() {
         return ELEMENT_GETTER.apply(null);
     }
 
@@ -154,7 +187,7 @@ public final class ElementProcessor {
      * @param languages
      * @return
      */
-    public static Map<String, String> selectAllElement(List<String> languages) {
+    static Map<String, String> selectAllElement(List<String> languages) {
         return ELEMENT_GETTER.apply(languages);
     }
 
@@ -164,7 +197,7 @@ public final class ElementProcessor {
      * @param serverRequest
      * @return
      */
-    public static Map<String, String> selectAllElement(ServerRequest serverRequest) {
+    static Map<String, String> selectAllElement(ServerRequest serverRequest) {
         return selectAllElement(getAcceptLanguages(serverRequest));
     }
 
@@ -174,7 +207,7 @@ public final class ElementProcessor {
      * @param keys
      * @return
      */
-    public static Map<String, String> selectElement(List<String> keys) {
+    static Map<String, String> selectElement(List<String> keys) {
         return BlueChecker.isNotEmpty(keys) ? TARGETS_GETTER.apply(keys, ELEMENT_GETTER.apply(null)) : emptyMap();
     }
 
@@ -185,7 +218,7 @@ public final class ElementProcessor {
      * @param languages
      * @return
      */
-    public static Map<String, String> selectElement(List<String> keys, List<String> languages) {
+    static Map<String, String> selectElement(List<String> keys, List<String> languages) {
         return BlueChecker.isNotEmpty(keys) ? TARGETS_GETTER.apply(keys, ELEMENT_GETTER.apply(languages)) : emptyMap();
     }
 
@@ -196,7 +229,7 @@ public final class ElementProcessor {
      * @param serverRequest
      * @return
      */
-    public static Map<String, String> selectElement(List<String> keys, ServerRequest serverRequest) {
+    static Map<String, String> selectElement(List<String> keys, ServerRequest serverRequest) {
         return selectElement(keys, getAcceptLanguages(serverRequest));
     }
 
@@ -206,7 +239,7 @@ public final class ElementProcessor {
      * @param key
      * @return
      */
-    public static String resolveToValue(ElementKey key) {
+    static String resolveToValue(ElementKey key) {
         return resolveToValue(key, emptyList());
     }
 
@@ -216,7 +249,7 @@ public final class ElementProcessor {
      * @param keys
      * @return
      */
-    public static String[] resolveToValues(ElementKey[] keys) {
+    static String[] resolveToValues(ElementKey[] keys) {
         return resolveToValues(keys, emptyList());
     }
 
@@ -227,7 +260,7 @@ public final class ElementProcessor {
      * @param languages
      * @return
      */
-    public static String resolveToValue(ElementKey key, List<String> languages) {
+    static String resolveToValue(ElementKey key, List<String> languages) {
         return ofNullable(ELEMENT_GETTER.apply(languages))
                 .map(values -> VALUE_GETTER.apply(values, key))
                 .orElse(DEFAULT_VALUE).intern();
@@ -240,7 +273,7 @@ public final class ElementProcessor {
      * @param languages
      * @return
      */
-    public static String[] resolveToValues(ElementKey[] keys, List<String> languages) {
+    static String[] resolveToValues(ElementKey[] keys, List<String> languages) {
         return ofNullable(ELEMENT_GETTER.apply(languages))
                 .map(values ->
                         ofNullable(keys)
@@ -261,7 +294,7 @@ public final class ElementProcessor {
      * @param serverRequest
      * @return
      */
-    public static String resolveToValue(ElementKey key, ServerRequest serverRequest) {
+    static String resolveToValue(ElementKey key, ServerRequest serverRequest) {
         return resolveToValue(key, getAcceptLanguages(serverRequest));
     }
 
@@ -272,7 +305,7 @@ public final class ElementProcessor {
      * @param serverRequest
      * @return
      */
-    public static String[] resolveToValues(ElementKey[] keys, ServerRequest serverRequest) {
+    static String[] resolveToValues(ElementKey[] keys, ServerRequest serverRequest) {
         return resolveToValues(keys, getAcceptLanguages(serverRequest));
     }
 

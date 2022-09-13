@@ -5,7 +5,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-        <artifactId>common</artifactId>
+        <artifactId>summer</artifactId>
         <groupId>com.blue</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
@@ -56,16 +56,6 @@
             <groupId>net.openhft</groupId>
             <artifactId>affinity</artifactId>
             <version>${affinity.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.projectreactor</groupId>
-            <artifactId>reactor-test</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 

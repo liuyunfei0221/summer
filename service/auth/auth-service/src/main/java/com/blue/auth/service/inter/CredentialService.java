@@ -16,28 +16,12 @@ import java.util.Optional;
 public interface CredentialService {
 
     /**
-     * insert credential
-     *
-     * @param credential
-     * @return
-     */
-    void insertCredential(Credential credential);
-
-    /**
      * insert credential batch
      *
      * @param credentials
      * @return
      */
     void insertCredentials(List<Credential> credentials);
-
-    /**
-     * update a exist role
-     *
-     * @param credential
-     * @return
-     */
-    void updateCredential(Credential credential);
 
     /**
      * batch update credential by ids

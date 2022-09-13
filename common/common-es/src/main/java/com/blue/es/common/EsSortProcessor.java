@@ -16,7 +16,6 @@ import java.util.stream.Stream;
 import static com.blue.basic.common.base.BlueChecker.isNotBlank;
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
-import static com.blue.es.constant.SortSchema.DESC;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 
@@ -28,17 +27,12 @@ import static java.util.stream.Collectors.toMap;
 @SuppressWarnings({"JavadocDeclaration"})
 public final class EsSortProcessor {
 
-    private static final String DEFAULT_SORT = DESC.sortType.identity;
-
     private static final Map<String, SortOrder> MAPPING =
             Stream.of(SortSchema.values()).collect(toMap(e -> e.sortType.identity, e -> e.sortOrder, (a, b) -> a));
 
-    private static final Function<String, SortOrder> PROCESSOR = sortType -> {
-        if (isNotBlank(sortType))
-            return ofNullable(MAPPING.get(sortType)).orElseThrow(() -> new BlueException(INVALID_IDENTITY));
+    private static final Function<String, SortOrder> PROCESSOR = sortType ->
+            ofNullable(MAPPING.get(sortType)).orElseThrow(() -> new BlueException(INVALID_IDENTITY));
 
-        throw new BlueException(INVALID_IDENTITY);
-    };
 
     /**
      * package sort attr
@@ -56,11 +50,8 @@ public final class EsSortProcessor {
                 if (isNull(sortElement))
                     continue;
 
-                sortAttribute = sortElement.getSortAttribute();
-                sortType = sortElement.getSortType();
-
-                if (isNotBlank(sortAttribute) && isNotBlank(sortType))
-                    b.field(sortAttribute).order(PROCESSOR.apply(sortElement.getSortType()));
+                if (isNotBlank(sortAttribute = sortElement.getSortAttribute()) && isNotBlank(sortType = sortElement.getSortType()))
+                    b.field(sortAttribute).order(PROCESSOR.apply(sortType));
             }
 
             return b;

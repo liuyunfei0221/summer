@@ -17,6 +17,7 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
  *
  * @author liuyunfei
  */
+@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @ConditionalOnBean(value = {HbaseConf.class})
 @AutoConfiguration
 @Order(HIGHEST_PRECEDENCE)

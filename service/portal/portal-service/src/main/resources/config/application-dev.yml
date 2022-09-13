@@ -170,8 +170,7 @@ scheduler:
 redisson:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  host: 172.16.204.244
-  port: 6379
+  address: 172.16.204.244:6379
   password:
   scanInterval: 8000
   checkSlotsCoverage: false
@@ -219,8 +218,8 @@ dubbo:
     protocol: zookeeper
     address: zookeeper://172.16.204.244
     port: 2181
-    username: blue
-    password: LiuZhiyi20200805
+    username:
+    password:
     file: /usr/env/log/dubbo/portal/registry.properties
     check: false
     timeout: 60000
@@ -251,7 +250,6 @@ dubbo:
     retries: 0
     timeout: 10000
     loadbalance: random
-    filter: -exception
   consumer:
     retries: 0
     timeout: 10000

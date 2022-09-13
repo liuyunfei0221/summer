@@ -40,15 +40,16 @@ import java.util.stream.Stream;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.GSON;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.database.common.ConditionSortProcessor.process;
 import static com.blue.basic.common.base.ConstantProcessor.assertBulletinType;
-import static com.blue.basic.constant.common.CacheKeyPrefix.BULLETINS_PRE;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.Status.VALID;
 import static com.blue.basic.constant.common.Symbol.PERCENT;
+import static com.blue.basic.constant.common.SyncKeyPrefix.BULLETINS_CACHE_PRE;
+import static com.blue.basic.constant.common.SyncKeyPrefix.BULLETINS_UPDATE_SYNC_PRE;
 import static com.blue.basic.constant.portal.BulletinType.POPULAR;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
+import static com.blue.database.common.ConditionSortProcessor.process;
 import static com.blue.portal.converter.PortalModelConverters.*;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
@@ -106,7 +107,8 @@ public class BulletinServiceImpl implements BulletinService {
 
     private static Cache<Integer, List<BulletinInfo>> LOCAL_CACHE;
 
-    private static final Function<Integer, String> BULLETIN_CACHE_KEY_GENERATOR = t -> BULLETINS_PRE.prefix + t;
+    private static final Function<Integer, String> BULLETIN_CACHE_KEY_GENERATOR = t -> BULLETINS_CACHE_PRE.prefix + t;
+    private static final Function<Integer, String> BULLETIN_UPDATE_SYNC_KEY_GEN = t -> BULLETINS_UPDATE_SYNC_PRE.prefix + t;
 
     private final Consumer<Integer> REDIS_CACHE_DELETER = t ->
             stringRedisTemplate.delete(BULLETIN_CACHE_KEY_GENERATOR.apply(t));
@@ -135,9 +137,9 @@ public class BulletinServiceImpl implements BulletinService {
     };
 
     private final Function<Integer, List<BulletinInfo>> BULLETIN_INFOS_WITH_REDIS_CACHE_GETTER = t ->
-            synchronizedProcessor.handleSupByOrderedWithSetter(() -> BULLETIN_INFOS_REDIS_GETTER.apply(t),
-                    BlueChecker::isNotEmpty, () -> BULLETIN_INFOS_DB_GETTER.apply(t),
-                    bulletinInfos -> BULLETIN_INFOS_REDIS_SETTER.accept(t, bulletinInfos));
+            synchronizedProcessor.handleSupByOrderedWithSetter(BULLETIN_UPDATE_SYNC_KEY_GEN.apply(t),
+                    () -> BULLETIN_INFOS_REDIS_GETTER.apply(t), () -> BULLETIN_INFOS_DB_GETTER.apply(t),
+                    bulletinInfos -> BULLETIN_INFOS_REDIS_SETTER.accept(t, bulletinInfos), BlueChecker::isNotEmpty);
 
     private final Function<Integer, List<BulletinInfo>> BULLETIN_INFOS_WITH_ALL_CACHE_GETTER = t -> {
         if (isNull(t))

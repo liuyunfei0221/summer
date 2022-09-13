@@ -11,7 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static com.blue.auth.common.AccessEncoder.encryptAccess;
@@ -26,7 +27,7 @@ import static com.blue.basic.constant.common.Status.VALID;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static reactor.core.publisher.Mono.just;
@@ -58,51 +59,10 @@ public class CredentialServiceImpl implements CredentialService {
         if (isEmpty(cs))
             throw new BlueException(EMPTY_PARAM);
 
-        Map<Long, Set<String>> memberIdAndTypes = cs.stream().collect(groupingBy(Credential::getMemberId))
-                .entrySet().stream().collect(toMap(Map.Entry::getKey, e -> e.getValue().stream().map(Credential::getType).collect(toSet())));
-
-        List<Credential> existCredentials = credentialMapper.selectByMemberIds(new ArrayList<>(memberIdAndTypes.keySet()));
-
-        for (Credential credential : existCredentials)
-            if (memberIdAndTypes.get(credential.getMemberId()).contains(credential.getType()))
-                throw new BlueException(DATA_ALREADY_EXIST);
-
-        Map<String, Set<String>> credentialAndTypes = cs.stream().collect(groupingBy(Credential::getCredential))
-                .entrySet().stream().collect(toMap(Map.Entry::getKey, e -> e.getValue().stream().map(Credential::getType).collect(toSet())));
-
-        existCredentials = credentialMapper.selectByCredentials(new ArrayList<>(credentialAndTypes.keySet()));
-
-        for (Credential credential : existCredentials)
-            if (credentialAndTypes.get(credential.getCredential()).contains(credential.getType()))
-                throw new BlueException(DATA_ALREADY_EXIST);
-    };
-
-    /**
-     * insert a new role
-     *
-     * @param credential
-     * @return
-     */
-    @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public void insertCredential(Credential credential) {
-        LOGGER.info("void insertCredential(Credential credential, Long operatorId), credential = {}", credential);
-        Long memberId;
-        if (isNull(credential) || isInvalidIdentity(memberId = credential.getMemberId()))
-            throw new BlueException(EMPTY_PARAM);
-
-        String type = credential.getType();
-        assertCredentialType(type, false);
-
-        Optional<Credential> existOptional = this.getCredentialByMemberIdAndType(memberId, type);
-        if (existOptional.isPresent())
+        if (isNotEmpty(credentialMapper.selectByCredentials(
+                cs.stream().map(Credential::getCredential).collect(toList()))))
             throw new BlueException(DATA_ALREADY_EXIST);
-
-        credential.setId(blueIdentityProcessor.generate(Credential.class));
-
-        credentialMapper.insert(credential);
-        LOGGER.info("insert credential = {}", credential);
-    }
+    };
 
     /**
      * insert credential batch
@@ -124,23 +84,6 @@ public class CredentialServiceImpl implements CredentialService {
 
         credentialMapper.insertBatch(credentials);
         LOGGER.info("insert batch credentials = {}", credentials);
-    }
-
-    /**
-     * update a exist role
-     *
-     * @param credential
-     * @return
-     */
-    @Override
-    public void updateCredential(Credential credential) {
-        LOGGER.info("void updateCredential(Credential credential), credential = {}", credential);
-        if (isNull(credential))
-            throw new BlueException(EMPTY_PARAM);
-        if (isInvalidIdentity(credential.getId()))
-            throw new BlueException(INVALID_IDENTITY);
-
-        credentialMapper.updateByPrimaryKeySelective(credential);
     }
 
     /**
@@ -169,6 +112,7 @@ public class CredentialServiceImpl implements CredentialService {
      * @return
      */
     @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public void deleteCredential(Long id) {
         LOGGER.info("void deleteCredentialById(Long id), id = {}", id);
         if (isInvalidIdentity(id))

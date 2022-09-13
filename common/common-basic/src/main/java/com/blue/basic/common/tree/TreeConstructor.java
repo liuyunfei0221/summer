@@ -38,24 +38,25 @@ public interface TreeConstructor<T> {
                 .filter(Objects::nonNull)
                 .collect(toMap(TreeNode::getIdentity, n -> n, (a, b) -> a));
 
-        List<TreeNode<T>> result = new LinkedList<>();
+        List<TreeNode<T>> roots = new LinkedList<>();
 
         Long pIdentity;
         TreeNode<T> pNode;
         List<TreeNode<T>> pChildren;
+
         for (TreeNode<T> cNode : nodes) {
             if (isNotNull(pIdentity = cNode.getParentIdentity()) && isNotNull(pNode = mapping.get(pIdentity))) {
-                if (isNull(pChildren = pNode.getChildren())) {
-                    pChildren = new LinkedList<>();
-                    pNode.setChildren(pChildren);
-                }
+                if (isNull(pChildren = pNode.getChildren()))
+                    pNode.setChildren(pChildren = new LinkedList<>());
+
                 pChildren.add(cNode);
             } else {
-                result.add(cNode);
+                roots.add(cNode);
             }
         }
+
         mapping = null;
 
-        return result;
+        return roots;
     }
 }

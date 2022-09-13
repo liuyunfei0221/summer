@@ -1,7 +1,6 @@
 package com.blue.auth.api.inter;
 
 import com.blue.auth.api.model.AuthorityBaseOnRole;
-import com.blue.auth.api.model.MemberCredentialInfo;
 import com.blue.auth.api.model.MemberRoleRelationInsertOrDeleteParam;
 import com.blue.auth.api.model.MemberRoleRelationUpdateParam;
 import com.blue.basic.model.common.Access;
@@ -16,13 +15,6 @@ import java.util.concurrent.CompletableFuture;
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public interface RpcAuthControlService {
-
-    /**
-     * init auth info for a new member
-     *
-     * @param memberCredentialInfo
-     */
-    void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo);
 
     /**
      * add authority base on member / insert member-role-relations sync

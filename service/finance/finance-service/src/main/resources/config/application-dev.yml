@@ -201,7 +201,7 @@ es:
         schema: http
       boundServers: [ ]
       name: blue-es
-      version: 8.3.3
+      version: 8.4.0
       roles: [ ]
       attributes: [ ]
 
@@ -389,8 +389,7 @@ curator:
 redisson:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  host: 172.16.204.244
-  port: 6379
+  address: 172.16.204.244:6379
   password:
   scanInterval: 8000
   checkSlotsCoverage: false
@@ -470,7 +469,6 @@ dubbo:
     retries: 0
     timeout: 10000
     loadbalance: random
-    filter: -exception
   consumer:
     retries: 0
     timeout: 10000

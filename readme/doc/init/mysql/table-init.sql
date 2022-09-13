@@ -1162,7 +1162,6 @@ member_0;
 CREATE TABLE `member_basic_0`
 (
     `id`          bigint NOT NULL COMMENT 'id',
-    `account`     varchar(256) DEFAULT '' COMMENT 'account',
     `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
@@ -1175,7 +1174,6 @@ CREATE TABLE `member_basic_0`
     `create_time` bigint NOT NULL COMMENT 'data create time',
     `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    KEY           `idx_account`(`account`) USING BTREE,
     KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_email`(`email`) USING BTREE,
     KEY           `idx_name`(`name`) USING BTREE,
@@ -1185,7 +1183,6 @@ CREATE TABLE `member_basic_0`
 CREATE TABLE `member_basic_1`
 (
     `id`          bigint NOT NULL COMMENT 'id',
-    `account`     varchar(256) DEFAULT '' COMMENT 'account',
     `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
@@ -1198,7 +1195,6 @@ CREATE TABLE `member_basic_1`
     `create_time` bigint NOT NULL COMMENT 'data create time',
     `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    KEY           `idx_account`(`account`) USING BTREE,
     KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_email`(`email`) USING BTREE,
     KEY           `idx_name`(`name`) USING BTREE,
@@ -1363,7 +1359,6 @@ member_1;
 CREATE TABLE `member_basic_0`
 (
     `id`          bigint NOT NULL COMMENT 'id',
-    `account`     varchar(256) DEFAULT '' COMMENT 'account',
     `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
@@ -1376,7 +1371,6 @@ CREATE TABLE `member_basic_0`
     `create_time` bigint NOT NULL COMMENT 'data create time',
     `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    KEY           `idx_account`(`account`) USING BTREE,
     KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_email`(`email`) USING BTREE,
     KEY           `idx_name`(`name`) USING BTREE,
@@ -1386,7 +1380,6 @@ CREATE TABLE `member_basic_0`
 CREATE TABLE `member_basic_1`
 (
     `id`          bigint NOT NULL COMMENT 'id',
-    `account`     varchar(256) DEFAULT '' COMMENT 'account',
     `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
     `email`       varchar(256) DEFAULT '' COMMENT 'email',
     `name`        varchar(256) DEFAULT '' COMMENT 'name',
@@ -1399,7 +1392,6 @@ CREATE TABLE `member_basic_1`
     `create_time` bigint NOT NULL COMMENT 'data create time',
     `update_time` bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    KEY           `idx_account`(`account`) USING BTREE,
     KEY           `idx_phone`(`phone`) USING BTREE,
     KEY           `idx_email`(`email`) USING BTREE,
     KEY           `idx_name`(`name`) USING BTREE,
@@ -2125,5 +2117,4 @@ CREATE
 DATABASE base_1 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE
 base_1;
-
 

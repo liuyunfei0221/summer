@@ -30,13 +30,11 @@ import static com.blue.basic.constant.common.RateLimitKeyPrefix.SMS_VERIFY_RATE_
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 import static com.blue.basic.constant.common.ResponseElement.TOO_MANY_REQUESTS;
 import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION;
-import static com.blue.basic.constant.verify.VerifyType.MAIL;
 import static com.blue.basic.constant.verify.VerifyType.SMS;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
-import static reactor.core.publisher.Mono.error;
-import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -145,11 +143,8 @@ public class SmsVerifyHandler implements VerifyHandler {
                         allowed ?
                                 verifyService.generate(SMS, BUSINESS_KEY_WRAPPER.apply(verifyBusinessType, destination), VERIFY_LEN, DEFAULT_DURATION)
                                         .flatMap(verify ->
-                                                verifyMessageEventProducer.send(new VerifyMessage(MAIL.identity, verifyBusinessType.identity, destination, verify))
-                                                        .flatMap(success -> success ?
-                                                                just(verify)
-                                                                :
-                                                                error(() -> new RuntimeException("send sms verify failed"))))
+                                                fromRunnable(() -> verifyMessageEventProducer.send(new VerifyMessage(SMS.identity, verifyBusinessType.identity, destination, verify)))
+                                                        .then(just(verify)))
                                 :
                                 error(() -> new BlueException(TOO_MANY_REQUESTS.status, TOO_MANY_REQUESTS.code, "operation too frequently")));
     }

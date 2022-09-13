@@ -13,7 +13,7 @@ import java.util.function.BiFunction;
 import static com.blue.basic.common.base.BlueChecker.isNotNull;
 import static com.blue.basic.common.base.ClassGetter.getClassesByPackage;
 import static com.blue.basic.common.base.OriginalThrowableGetter.getOriginalThrowable;
-import static com.blue.basic.common.message.MessageProcessor.resolveToMessage;
+import static com.blue.basic.common.message.InternationalProcessor.resolveToMessage;
 import static com.blue.basic.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;

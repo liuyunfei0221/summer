@@ -19,20 +19,12 @@ import java.util.List;
 public interface MemberAuthService {
 
     /**
-     * member register
-     *
-     * @param memberRegistryParam
-     * @return
-     */
-    MemberBasicInfo registerMemberBasic(MemberRegistryParam memberRegistryParam);
-
-    /**
      * member register for auto registry or third party session
      *
      * @param memberRegistryParam
      * @return
      */
-    MemberBasicInfo autoRegisterMemberBasic(MemberRegistryParam memberRegistryParam);
+    MemberBasicInfo registerMemberBasic(MemberRegistryParam memberRegistryParam);
 
     /**
      * package credential attribute to member basic

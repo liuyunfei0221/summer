@@ -28,7 +28,7 @@ import static com.blue.basic.common.base.BlueChecker.isBlank;
 import static com.blue.basic.common.base.BlueChecker.isNotBlank;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.RsaProcessor.*;
-import static com.blue.basic.common.message.MessageProcessor.resolveToMessage;
+import static com.blue.basic.common.message.InternationalProcessor.resolveToMessage;
 import static com.blue.basic.constant.common.BlueDataAttrKey.*;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;

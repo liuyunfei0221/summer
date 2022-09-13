@@ -19,7 +19,7 @@ public interface RpcMemberAuthService {
      * @param memberRegistryParam
      * @return
      */
-    MemberBasicInfo autoRegisterMemberBasic(MemberRegistryParam memberRegistryParam);
+    MemberBasicInfo registerMemberBasic(MemberRegistryParam memberRegistryParam);
 
     /**
      * package credential attribute to member basic

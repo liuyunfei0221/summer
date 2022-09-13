@@ -23,9 +23,7 @@ public interface RedissonConf {
     //</editor-fold>
 
     //<editor-fold desc="standalone conf">
-    String getHost();
-
-    Integer getPort();
+    String getAddress();
     //</editor-fold>
 
     String getPassword();

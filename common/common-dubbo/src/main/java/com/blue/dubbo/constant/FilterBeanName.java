@@ -16,7 +16,7 @@ public enum FilterBeanName {
     /**
      * blue filter
      */
-    BLUE_EXCEPTION_FILTER("blueException");
+    BLUE_EXCEPTION_FILTER("blue");
 
     public final String name;
 

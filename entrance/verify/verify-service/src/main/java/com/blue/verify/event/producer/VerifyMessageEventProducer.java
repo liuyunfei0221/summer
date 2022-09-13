@@ -6,7 +6,6 @@ import com.blue.verify.api.model.VerifyMessage;
 import com.blue.verify.config.blue.BlueProducerConfig;
 import org.apache.pulsar.client.api.MessageId;
 import org.apache.pulsar.client.api.PulsarClient;
-import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.util.concurrent.CompletableFuture;
@@ -17,8 +16,6 @@ import static com.blue.basic.constant.common.BlueTopic.VERIFY_MESSAGE;
 import static com.blue.pulsar.api.generator.BluePulsarProducerGenerator.generateProducer;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
-import static reactor.core.publisher.Mono.fromFuture;
-import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 
@@ -68,14 +65,14 @@ public final class VerifyMessageEventProducer implements BlueLifecycle {
      *
      * @param verifyMessage
      */
-    public Mono<Boolean> send(VerifyMessage verifyMessage) {
+    public void send(VerifyMessage verifyMessage) {
         CompletableFuture<MessageId> future = pulsarProducer.sendAsync(verifyMessage);
 
         LOGGER.info("pulsarProducer send, verifyMessage = {}", verifyMessage);
         Consumer<MessageId> c = messageId ->
                 LOGGER.info("pulsarProducer send success, verifyMessage = {}, messageId = {}", verifyMessage, messageId);
 
-        return fromFuture(future.thenAcceptAsync(c, executorService)).then(just(true));
+        future.thenAcceptAsync(c, executorService);
     }
 
 }

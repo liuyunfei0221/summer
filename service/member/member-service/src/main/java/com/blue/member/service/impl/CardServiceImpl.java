@@ -272,7 +272,7 @@ public class CardServiceImpl implements CardService {
         if (isInvalidIdentity(memberId))
             throw new BlueException(UNAUTHORIZED);
 
-        return synchronizedProcessor.handleSupWithLock(CARD_UPDATE_SYNC_KEY_GEN.apply(memberId), () -> {
+        return synchronizedProcessor.handleSupWithSync(CARD_UPDATE_SYNC_KEY_GEN.apply(memberId), () -> {
                     Card probe = new Card();
                     probe.setMemberId(memberId);
 
@@ -307,7 +307,7 @@ public class CardServiceImpl implements CardService {
         if (isInvalidIdentity(memberId))
             throw new BlueException(UNAUTHORIZED);
 
-        return synchronizedProcessor.handleSupWithLock(CARD_UPDATE_SYNC_KEY_GEN.apply(memberId), () ->
+        return synchronizedProcessor.handleSupWithSync(CARD_UPDATE_SYNC_KEY_GEN.apply(memberId), () ->
                 cardRepository.findById(cardUpdateParam.getId())
                         .publishOn(scheduler)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
@@ -336,7 +336,7 @@ public class CardServiceImpl implements CardService {
         if (isInvalidIdentity(memberId))
             throw new BlueException(UNAUTHORIZED);
 
-        return synchronizedProcessor.handleSupWithLock(CARD_UPDATE_SYNC_KEY_GEN.apply(memberId), () ->
+        return synchronizedProcessor.handleSupWithSync(CARD_UPDATE_SYNC_KEY_GEN.apply(memberId), () ->
                 cardRepository.findById(id)
                         .publishOn(scheduler)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))

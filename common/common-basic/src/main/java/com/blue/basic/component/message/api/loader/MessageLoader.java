@@ -1,11 +1,11 @@
 package com.blue.basic.component.message.api.loader;
 
-import com.blue.basic.common.message.ElementProcessor;
-import com.blue.basic.common.message.MessageProcessor;
 import com.blue.basic.component.message.api.conf.MessageConf;
 
 import static com.blue.basic.common.base.BlueChecker.isBlank;
 import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.message.InternationalProcessor.loadElement;
+import static com.blue.basic.common.message.InternationalProcessor.loadMessage;
 
 /**
  * message loader
@@ -21,8 +21,8 @@ public final class MessageLoader {
     public static void load(MessageConf messageConf) {
         confAssert(messageConf);
 
-        MessageProcessor.load(messageConf.getMessageLocation());
-        ElementProcessor.load(messageConf.getElementLocation());
+        loadMessage(messageConf.getMessageLocation());
+        loadElement(messageConf.getElementLocation());
     }
 
     /**

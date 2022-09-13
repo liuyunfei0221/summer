@@ -1,7 +1,6 @@
 package com.blue.mongo.common;
 
 
-import com.blue.basic.common.base.BlueChecker;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
@@ -39,7 +38,7 @@ public final class MongoSearchAfterProcessor {
     }
 
     private static final Function<String, BiFunction<String, Object, Criteria>> CRITERIA_GENERATOR_GETTER = sort ->
-            ofNullable(sort).map(MAPPING::get).orElse(null);
+            ofNullable(sort).map(MAPPING::get).orElseGet(() -> MAPPING.get(DEFAULT_SORT));
 
     /**
      * package search after to query
@@ -51,7 +50,7 @@ public final class MongoSearchAfterProcessor {
      */
     public static <A extends Serializable> void packageSearchAfter(Query query, String sortAttribute, A searchAfter) {
         if (isNotNull(query) && isNotBlank(sortAttribute) && isNotNull(searchAfter))
-            ofNullable(CRITERIA_GENERATOR_GETTER.apply(DEFAULT_SORT)).map(g -> g.apply(sortAttribute, searchAfter))
+            ofNullable(CRITERIA_GENERATOR_GETTER.apply(DEFAULT_SORT).apply(sortAttribute, searchAfter))
                     .ifPresent(query::addCriteria);
     }
 
@@ -66,7 +65,7 @@ public final class MongoSearchAfterProcessor {
      */
     public static <A extends Serializable> void packageSearchAfter(Query query, String sort, String sortAttribute, A searchAfter) {
         if (isNotNull(query) && isNotBlank(sortAttribute) && isNotNull(searchAfter))
-            ofNullable(CRITERIA_GENERATOR_GETTER.apply(ofNullable(sort).filter(BlueChecker::isNotBlank).orElse(DEFAULT_SORT))).map(g -> g.apply(sortAttribute, searchAfter))
+            ofNullable(CRITERIA_GENERATOR_GETTER.apply(sort).apply(sortAttribute, searchAfter))
                     .ifPresent(query::addCriteria);
     }
 

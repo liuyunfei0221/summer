@@ -2,21 +2,21 @@ package com.blue.base.service.impl;
 
 import com.blue.base.api.model.StyleInfo;
 import com.blue.base.api.model.StyleManagerInfo;
-import com.blue.basic.common.base.BlueChecker;
 import com.blue.base.config.blue.BlueRedisConfig;
 import com.blue.base.config.deploy.CaffeineDeploy;
 import com.blue.base.constant.StyleSortAttribute;
-import com.blue.basic.constant.portal.StyleType;
 import com.blue.base.model.StyleCondition;
 import com.blue.base.model.StyleInsertParam;
 import com.blue.base.model.StyleUpdateParam;
-import com.blue.basic.model.common.PageModelRequest;
-import com.blue.basic.model.common.PageModelResponse;
-import com.blue.basic.model.exps.BlueException;
 import com.blue.base.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.base.repository.entity.Style;
 import com.blue.base.repository.mapper.StyleMapper;
 import com.blue.base.service.inter.StyleService;
+import com.blue.basic.common.base.BlueChecker;
+import com.blue.basic.constant.portal.StyleType;
+import com.blue.basic.model.common.PageModelRequest;
+import com.blue.basic.model.common.PageModelResponse;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.caffeine.api.conf.CaffeineConf;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.blue.identity.component.BlueIdentityProcessor;
@@ -37,10 +37,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.function.*;
 import java.util.stream.Stream;
 
+import static com.blue.base.converter.BaseModelConverters.*;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.GSON;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.database.common.ConditionSortProcessor.process;
 import static com.blue.basic.common.base.ConstantProcessor.assertBulletinType;
 import static com.blue.basic.common.base.ConstantProcessor.assertStyleType;
 import static com.blue.basic.constant.common.BlueBoolean.FALSE;
@@ -48,10 +48,10 @@ import static com.blue.basic.constant.common.BlueBoolean.TRUE;
 import static com.blue.basic.constant.common.CacheKeyPrefix.ACTIVE_STYLE_PRE;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.Symbol.PERCENT;
-import static com.blue.basic.constant.common.SyncKeyPrefix.STYLES_CACHE_PRE;
-import static com.blue.base.converter.BaseModelConverters.*;
+import static com.blue.basic.constant.common.SyncKeyPrefix.STYLES_UPDATE_SYNC_PRE;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
+import static com.blue.database.common.ConditionSortProcessor.process;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.*;
 import static java.util.Optional.ofNullable;
@@ -108,9 +108,9 @@ public class StyleServiceImpl implements StyleService {
 
     private static Cache<Integer, StyleInfo> LOCAL_CACHE;
 
-    private static final Function<Integer, String> STYLE_CACHE_KEY_GENERATOR = type -> ACTIVE_STYLE_PRE.prefix + type;
+    private static final Function<Integer, String> STYLE_CACHE_KEY_GENERATOR = t -> ACTIVE_STYLE_PRE.prefix + t;
 
-    private static final Function<Integer, String> STYLE_LOAD_SYNC_KEY_GEN = type -> STYLES_CACHE_PRE.prefix + type;
+    private static final Function<Integer, String> STYLES_UPDATE_SYNC_KEY_GEN = t -> STYLES_UPDATE_SYNC_PRE.prefix + t;
 
     private final Consumer<Integer> REDIS_CACHE_DELETER = type ->
             stringRedisTemplate.delete(STYLE_CACHE_KEY_GENERATOR.apply(type));
@@ -148,9 +148,9 @@ public class StyleServiceImpl implements StyleService {
     };
 
     private final Function<Integer, StyleInfo> ACTIVE_STYLE_INFO_WITH_REDIS_CACHE_GETTER = type ->
-            synchronizedProcessor.handleSupByOrderedWithSetter(() -> ACTIVE_STYLE_INFO_REDIS_GETTER.apply(type),
-                    BlueChecker::isNotNull, () -> ACTIVE_STYLE_INFO_DB_GETTER.apply(type),
-                    bulletinInfos -> ACTIVE_STYLE_INFO_REDIS_SETTER.accept(type, bulletinInfos));
+            synchronizedProcessor.handleSupByOrderedWithSetter(STYLES_UPDATE_SYNC_KEY_GEN.apply(type),
+                    () -> ACTIVE_STYLE_INFO_REDIS_GETTER.apply(type), () -> ACTIVE_STYLE_INFO_DB_GETTER.apply(type),
+                    bulletinInfos -> ACTIVE_STYLE_INFO_REDIS_SETTER.accept(type, bulletinInfos), BlueChecker::isNotNull);
 
     private final Function<Integer, StyleInfo> ACTIVE_STYLE_INFO_WITH_ALL_CACHE_GETTER = type -> {
         if (isNull(type))
