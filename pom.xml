@@ -17,6 +17,66 @@
 
     <packaging>pom</packaging>
 
+    <modules>
+        <module>center/registry</module>
+
+        <module>common/common-basic</module>
+        <module>common/common-caffeine</module>
+        <module>common/common-captcha</module>
+        <module>common/common-context</module>
+        <module>common/common-curator</module>
+        <module>common/common-database</module>
+        <module>common/common-dubbo</module>
+        <module>common/common-es</module>
+        <module>common/common-excel</module>
+        <module>common/common-flink</module>
+        <module>common/common-hbase</module>
+        <module>common/common-identity</module>
+        <module>common/common-jwt</module>
+        <module>common/common-mail</module>
+        <module>common/common-mongo</module>
+        <module>common/common-pulsar</module>
+        <module>common/common-qr</module>
+        <module>common/common-redis</module>
+        <module>common/common-redisson</module>
+        <module>common/common-seata</module>
+        <module>common/common-template</module>
+
+        <module>data/analyze/analyze-api</module>
+        <module>data/analyze/analyze-service</module>
+        <module>data/lake/lake-api</module>
+        <module>data/lake/lake-service</module>
+        <module>data/risk/risk-api</module>
+        <module>data/risk/risk-service</module>
+
+        <module>entrance/event/event-api</module>
+        <module>entrance/event/event-service</module>
+        <module>entrance/gateway</module>
+        <module>entrance/media/media-api</module>
+        <module>entrance/media/media-service</module>
+        <module>entrance/message/message-api</module>
+        <module>entrance/message/message-service</module>
+        <module>entrance/verify/verify-api</module>
+        <module>entrance/verify/verify-service</module>
+
+        <module>service/article/article-api</module>
+        <module>service/article/article-service</module>
+        <module>service/auth/auth-api</module>
+        <module>service/auth/auth-service</module>
+        <module>service/base/base-api</module>
+        <module>service/base/base-service</module>
+        <module>service/finance/finance-api</module>
+        <module>service/finance/finance-service</module>
+        <module>service/marketing/marketing-api</module>
+        <module>service/marketing/marketing-service</module>
+        <module>service/member/member-api</module>
+        <module>service/member/member-service</module>
+        <module>service/portal/portal-api</module>
+        <module>service/portal/portal-service</module>
+        <module>service/shine/shine-api</module>
+        <module>service/shine/shine-service</module>
+    </modules>
+
     <properties>
         <project.build>UTF-8</project.build>
         <java.version>11</java.version>
@@ -98,21 +158,5 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <proc>none</proc>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>
