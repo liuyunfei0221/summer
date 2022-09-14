@@ -264,6 +264,27 @@ public final class PulsarCommonsGenerator {
      *
      * @param pulsarClient
      * @param conf
+     * @param clz
+     * @param consumerEventListener
+     * @param interceptors
+     * @param keySharedPolicy
+     * @param <T>
+     * @return
+     */
+    public static <T> Consumer<T> generateConsumer(PulsarClient pulsarClient, ConsumerConf conf, Class<T> clz, ConsumerEventListener consumerEventListener,
+                                                   List<ConsumerInterceptor<T>> interceptors, KeySharedPolicy keySharedPolicy) {
+        assertConsumerConf(pulsarClient, conf);
+        if (clz == null)
+            throw new RuntimeException("clz can't be null");
+
+        return generateConsumer(pulsarClient, conf, clz, consumerEventListener, interceptors, keySharedPolicy, null);
+    }
+
+    /**
+     * generate consumer
+     *
+     * @param pulsarClient
+     * @param conf
      * @param consumer
      * @param consumerEventListener
      * @param interceptors

@@ -689,11 +689,11 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
 
        (320001, 'POST', 'blue-lake', '/events', '', b'1', b'1', b'1', b'1', b'1', 3,
         'test lake eventRecord', 'test lake eventRecord', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (320002, 'POST', 'blue-analyze', '/statistics/active/simple', '', b'1', b'1', b'1', b'1', b'1', 3,
+       (320002, 'POST', 'blue-analyze', '/manager/statistics/active/simple', '', b'1', b'1', b'1', b'1', b'1', 3,
         'statistics active simple', 'statistics active simple', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (320003, 'POST', 'blue-analyze', '/statistics/active/merge', '', b'1', b'1', b'1', b'1', b'1', 3,
+       (320003, 'POST', 'blue-analyze', '/manager/statistics/active/merge', '', b'1', b'1', b'1', b'1', b'1', 3,
         'statistics merge active', 'statistics merge active', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (320004, 'POST', 'blue-analyze', '/statistics/active/summary', '', b'1', b'1', b'1', b'0', b'1', 3,
+       (320004, 'POST', 'blue-analyze', '/manager/statistics/active/summary', '', b'1', b'1', b'1', b'0', b'1', 3,
         'statistics summary', 'statistics summary', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
 
 

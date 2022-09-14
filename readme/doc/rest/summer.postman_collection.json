@@ -2932,13 +2932,13 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiI0YmQxN2E5YTQwNzI0ZjU1ODEwYzU4NTY2YjZiYTNlYTlmOTZmYzM3OTFmYmYzZjJkYTczOGZkNTk0ZDUwYjFmMzk4ZWM2YmRiMGNhMGEyZjAwYTRjMTEyMmM5MTVhYmM1NmJiY2ZiOWZlZjA2NDc3MTM4NTIxYjFmYzUyMzdhZiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU05fUDo0MDY2MTE3Njk0NTczNzcyOV9DTElfTSIsImlzcyI6IkJsdWUiLCJpIjoiNDA2NjExNzY5NDU3Mzc3MjkiLCJuIjoiUFZBUiIsImF1ZCI6IkJsdWVyIiwicyI6IjE2NTY2NTk4NzQiLCJuYmYiOjE2NTY2NTk4NzQsInQiOiI4aWg2Q1BkdnFpeiIsImVhcyI6MTY2NDQzNTg3NDM0NiwiZXhwIjoxNjY0NDM1ODc0LCJpYXQiOjE2NTY2NTk4NzQsImp0aSI6Im9ramI3bWNDdkdMeFpNenhrNWhzOGVySW5OWXRMbmhtIn0.J7i19doPYoGkMqu_9bjF5u6Su3JPcl4EkX_cH0vHR-sg8n7tWC1m6aIC9jZw70ZribT6mz6cjZl5XNl7qvoxVQ",
+								"value": "eyJraWQiOiJjNDc2ZGMwZDI2YmRlY2FhNzc0ODhiODE1OWZjMDNlNWZiYzhmZTE2YmQ0NzBiODQzYzAzODg0MWIyYTBiM2RkNTMwMmE3MjQyYzBhZTNhMTFkNDkyMjFkM2ZhODJlYzBjYjM1NWExNGI3ODUyY2M4NTU0MzBjMWQwZDE5ZjM1NyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDc2MjYxOTY1NjA2NDIwNTBfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ3NjI2MTk2NTYwNjQyMDUwIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYzMTQ5MTEzIiwibmJmIjoxNjYzMTQ5MTEzLCJ0IjoiUGhZakdHTzlyR3giLCJlYXMiOjE2NzA5MjUxMTMwNTgsImV4cCI6MTY3MDkyNTExMywiaWF0IjoxNjYzMTQ5MTEzLCJqdGkiOiJsYlRUY1NWbGNRWWlJZ2p1OUphTTlGdVVjQUh4eXRycSJ9.Z2WRKilhX8YZwgytHHIaSRNiUZfLwTxaB7KyjA2LFcXqqlUoY00SiLbSJC8AX9FJ7zgYhkqw_X8lhZqjefxMsQ",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10,\r\n    \"condition\":{\r\n        \"id\":null,\r\n        \"phone\":null,\r\n        \"email\":null,\r\n        \"name\":null,\r\n        \"gender\":null,\r\n        \"status\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"ASC\"\r\n    }\r\n}"
+							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10,\r\n    \"condition\":{\r\n        \"id\":null,\r\n        \"phone\":null,\r\n        \"email\":null,\r\n        \"name\":null,\r\n        \"gender\":null,\r\n        \"status\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"sortAttribute\":\"createTime\",\r\n        \"sortType\":\"ASC\"\r\n    }\r\n}"
 						},
 						"url": {
 							"raw": "localhost:11000/blue-member/manager/basics",
@@ -3911,7 +3911,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiI2ZDZiMzVhOTY2NjM3ZTA3Zjg3ZTA5MDljMTRlZjg2MWExMGU3Y2Y0OGEyNjBhMzIwMjMyM2IyNDUxMzM4OGY2MWZhZWE5OTI5YzY2ZDIyODE2NTU5NGY0YThmNjUzZTE3MjBmYmJhZTcwNmMwODE1ZDE0MjRmYzU4NjYyYWE5MiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDUyMTU2MTUwMjcyNDkxNTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ1MjE1NjE1MDI3MjQ5MTUzIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYwOTAwODgwIiwibmJmIjoxNjYwOTAwODgwLCJ0IjoiNXVTbUVwWnprWlgiLCJlYXMiOjE2Njg2NzY4ODAwOTgsImV4cCI6MTY2ODY3Njg4MCwiaWF0IjoxNjYwOTAwODgwLCJqdGkiOiI2dFVLaWtGRVdxQ1dVY2lONWtMZmtzQWtPdHhVMTJqUyJ9.2PTdS4a4vgyCm67LmHjHo5BiA2QQ0ZSK87PWYdj3hRHfVMIRo5k1uoLYOosmof8Q_fek4Js1IE3y8edz3GALsg",
+								"value": "eyJraWQiOiJjNDc2ZGMwZDI2YmRlY2FhNzc0ODhiODE1OWZjMDNlNWZiYzhmZTE2YmQ0NzBiODQzYzAzODg0MWIyYTBiM2RkNTMwMmE3MjQyYzBhZTNhMTFkNDkyMjFkM2ZhODJlYzBjYjM1NWExNGI3ODUyY2M4NTU0MzBjMWQwZDE5ZjM1NyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDc2MjYxOTY1NjA2NDIwNTBfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ3NjI2MTk2NTYwNjQyMDUwIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYzMTQ5MTEzIiwibmJmIjoxNjYzMTQ5MTEzLCJ0IjoiUGhZakdHTzlyR3giLCJlYXMiOjE2NzA5MjUxMTMwNTgsImV4cCI6MTY3MDkyNTExMywiaWF0IjoxNjYzMTQ5MTEzLCJqdGkiOiJsYlRUY1NWbGNRWWlJZ2p1OUphTTlGdVVjQUh4eXRycSJ9.Z2WRKilhX8YZwgytHHIaSRNiUZfLwTxaB7KyjA2LFcXqqlUoY00SiLbSJC8AX9FJ7zgYhkqw_X8lhZqjefxMsQ",
 								"type": "text"
 							}
 						],
@@ -3922,18 +3922,18 @@
 									"key": "attachments",
 									"type": "file",
 									"src": [
-										"/E:/tempFile/source/walls/a_beautiful_view_of_colorful_autumn_trees-wallpaper-2560x1440.jpg",
-										"/E:/tempFile/source/walls/a_bridge_to_autumn-wallpaper-3840x2160.jpg",
-										"/E:/tempFile/source/walls/a_cloudy_day-wallpaper-3840x2160.jpg",
-										"/E:/tempFile/source/walls/a_different_world-wallpaper-3840x2160.jpg",
-										"/E:/tempFile/source/walls/a_field_of_poppies-wallpaper-3840x2160.jpg",
-										"/E:/tempFile/source/walls/a_flower_for_you-wallpaper-3840x2160.jpg",
-										"/E:/tempFile/source/walls/a_foggy_morning-wallpaper-3840x2160.jpg",
-										"/E:/tempFile/source/walls/a_mid_summers_sunrise-wallpaper-3840x2160.jpg",
-										"/E:/tempFile/source/walls/a_poolside_view_of_a_crystal_las_vegas-wallpaper-3840x2160.jpg",
-										"/E:/tempFile/source/walls/a_private_road-wallpaper-3840x2160.jpg",
-										"/E:/tempFile/source/walls/a_quiet_place_infrared_photography-wallpaper-1920x1080.jpg",
-										"/E:/tempFile/source/walls/a_spring_afternoon-wallpaper-3840x2160.jpg"
+										"/E:/tempFile/source/walls/ana_beatriz_barros-wallpaper-1920x1080.jpg",
+										"/E:/tempFile/source/walls/angel_18-wallpaper-1920x1080.jpg",
+										"/E:/tempFile/source/walls/anievas_cantabria_spain-wallpaper-2560x1440.jpg",
+										"/E:/tempFile/source/walls/animal_4-wallpaper-1920x1080.jpg",
+										"/E:/tempFile/source/walls/anime_girl_14-wallpaper-2560x1440 - 副本.jpg",
+										"/E:/tempFile/source/walls/anime_girl_14-wallpaper-2560x1440.jpg",
+										"/E:/tempFile/source/walls/anne_hathaway_2-wallpaper-1920x1080 - 副本.jpg",
+										"/E:/tempFile/source/walls/anne_hathaway_2-wallpaper-1920x1080.jpg",
+										"/E:/tempFile/source/walls/annual_migration-wallpaper-3840x2160.jpg",
+										"/E:/tempFile/source/walls/anoitecer-wallpaper-2560x1440.jpg",
+										"/E:/tempFile/source/walls/antelope_island_utah-wallpaper-3840x2160.jpg",
+										"/E:/tempFile/source/walls/appalachian_mountains_usa-wallpaper-2560x1440.jpg"
 									]
 								},
 								{
@@ -3970,13 +3970,13 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiIwNmE3YWNkODI2NzUzY2U5MzA2ODhjMzM2NTJjOGY0M2M3NzA1NTRiZDgyNTZjYWQ5ODAyZWY3Y2VmZGRiODlkZDYzOWNiMThlM2QwNDAwYTk1MjkzMzViNTQwMjhiMzU3YjNkYWFjZjcwZTI0YWJlZDE5YjNkOTJiMDA3MDZiOSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDU2Nzk0MjQyNTA1NzY4OTdfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ1Njc5NDI0MjUwNTc2ODk3IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYxMzQxODExIiwibmJmIjoxNjYxMzQxODExLCJ0IjoiNVpxOFVESTM1WmoiLCJlYXMiOjE2NjkxMTc4MTE0MDYsImV4cCI6MTY2OTExNzgxMSwiaWF0IjoxNjYxMzQxODExLCJqdGkiOiJORkl0UEQ3ZjEyaTBGTjZseVZaT2J4a1Z0aHBrZG9lRiJ9.FedMZoJG-WA5WCdTbaSH7WuwgRmkVC8-q880uY1ybJyVoVXE_5oH9j-14Y_4D76jDwAGHtNgktKEQg9uPiRu7A",
+								"value": "eyJraWQiOiJjNDc2ZGMwZDI2YmRlY2FhNzc0ODhiODE1OWZjMDNlNWZiYzhmZTE2YmQ0NzBiODQzYzAzODg0MWIyYTBiM2RkNTMwMmE3MjQyYzBhZTNhMTFkNDkyMjFkM2ZhODJlYzBjYjM1NWExNGI3ODUyY2M4NTU0MzBjMWQwZDE5ZjM1NyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDc2MjYxOTY1NjA2NDIwNTBfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ3NjI2MTk2NTYwNjQyMDUwIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYzMTQ5MTEzIiwibmJmIjoxNjYzMTQ5MTEzLCJ0IjoiUGhZakdHTzlyR3giLCJlYXMiOjE2NzA5MjUxMTMwNTgsImV4cCI6MTY3MDkyNTExMywiaWF0IjoxNjYzMTQ5MTEzLCJqdGkiOiJsYlRUY1NWbGNRWWlJZ2p1OUphTTlGdVVjQUh4eXRycSJ9.Z2WRKilhX8YZwgytHHIaSRNiUZfLwTxaB7KyjA2LFcXqqlUoY00SiLbSJC8AX9FJ7zgYhkqw_X8lhZqjefxMsQ",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":3,\r\n    \"cursor\":\"45689113696796675\"\r\n}"
+							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":5,\r\n    \"cursor\":\"47626517609447428\"\r\n}"
 						},
 						"url": {
 							"raw": "localhost:13000/blue-media/attachments/scroll",
@@ -4722,6 +4722,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiJjNDc2ZGMwZDI2YmRlY2FhNzc0ODhiODE1OWZjMDNlNWZiYzhmZTE2YmQ0NzBiODQzYzAzODg0MWIyYTBiM2RkNTMwMmE3MjQyYzBhZTNhMTFkNDkyMjFkM2ZhODJlYzBjYjM1NWExNGI3ODUyY2M4NTU0MzBjMWQwZDE5ZjM1NyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDc2MjYxOTY1NjA2NDIwNTBfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ3NjI2MTk2NTYwNjQyMDUwIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYzMTQ5MTEzIiwibmJmIjoxNjYzMTQ5MTEzLCJ0IjoiUGhZakdHTzlyR3giLCJlYXMiOjE2NzA5MjUxMTMwNTgsImV4cCI6MTY3MDkyNTExMywiaWF0IjoxNjYzMTQ5MTEzLCJqdGkiOiJsYlRUY1NWbGNRWWlJZ2p1OUphTTlGdVVjQUh4eXRycSJ9.Z2WRKilhX8YZwgytHHIaSRNiUZfLwTxaB7KyjA2LFcXqqlUoY00SiLbSJC8AX9FJ7zgYhkqw_X8lhZqjefxMsQ",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -4729,13 +4734,14 @@
 							"raw": "{\r\n    \"statisticsType\":\"MA\",\r\n    \"statisticsRange\":\"D\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:11000/blue-analyze/statistics/active/simple",
+							"raw": "localhost:11000/blue-analyze/manager/statistics/active/simple",
 							"host": [
 								"localhost"
 							],
 							"port": "11000",
 							"path": [
 								"blue-analyze",
+								"manager",
 								"statistics",
 								"active",
 								"simple"
@@ -4753,6 +4759,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiJjNDc2ZGMwZDI2YmRlY2FhNzc0ODhiODE1OWZjMDNlNWZiYzhmZTE2YmQ0NzBiODQzYzAzODg0MWIyYTBiM2RkNTMwMmE3MjQyYzBhZTNhMTFkNDkyMjFkM2ZhODJlYzBjYjM1NWExNGI3ODUyY2M4NTU0MzBjMWQwZDE5ZjM1NyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDc2MjYxOTY1NjA2NDIwNTBfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ3NjI2MTk2NTYwNjQyMDUwIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYzMTQ5MTEzIiwibmJmIjoxNjYzMTQ5MTEzLCJ0IjoiUGhZakdHTzlyR3giLCJlYXMiOjE2NzA5MjUxMTMwNTgsImV4cCI6MTY3MDkyNTExMywiaWF0IjoxNjYzMTQ5MTEzLCJqdGkiOiJsYlRUY1NWbGNRWWlJZ2p1OUphTTlGdVVjQUh4eXRycSJ9.Z2WRKilhX8YZwgytHHIaSRNiUZfLwTxaB7KyjA2LFcXqqlUoY00SiLbSJC8AX9FJ7zgYhkqw_X8lhZqjefxMsQ",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -4760,13 +4771,14 @@
 							"raw": "{\r\n    \"statisticsTypes\":[\"MA\"],\r\n    \"statisticsRanges\":[\"D\"]\r\n}"
 						},
 						"url": {
-							"raw": "localhost:11000/blue-analyze/statistics/active/merge",
+							"raw": "localhost:11000/blue-analyze/manager/statistics/active/merge",
 							"host": [
 								"localhost"
 							],
 							"port": "11000",
 							"path": [
 								"blue-analyze",
+								"manager",
 								"statistics",
 								"active",
 								"merge"
@@ -4784,6 +4796,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiJjNDc2ZGMwZDI2YmRlY2FhNzc0ODhiODE1OWZjMDNlNWZiYzhmZTE2YmQ0NzBiODQzYzAzODg0MWIyYTBiM2RkNTMwMmE3MjQyYzBhZTNhMTFkNDkyMjFkM2ZhODJlYzBjYjM1NWExNGI3ODUyY2M4NTU0MzBjMWQwZDE5ZjM1NyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDc2MjYxOTY1NjA2NDIwNTBfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ3NjI2MTk2NTYwNjQyMDUwIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYzMTQ5MTEzIiwibmJmIjoxNjYzMTQ5MTEzLCJ0IjoiUGhZakdHTzlyR3giLCJlYXMiOjE2NzA5MjUxMTMwNTgsImV4cCI6MTY3MDkyNTExMywiaWF0IjoxNjYzMTQ5MTEzLCJqdGkiOiJsYlRUY1NWbGNRWWlJZ2p1OUphTTlGdVVjQUh4eXRycSJ9.Z2WRKilhX8YZwgytHHIaSRNiUZfLwTxaB7KyjA2LFcXqqlUoY00SiLbSJC8AX9FJ7zgYhkqw_X8lhZqjefxMsQ",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -4791,13 +4808,14 @@
 							"raw": ""
 						},
 						"url": {
-							"raw": "localhost:11000/blue-analyze/statistics/active/summary",
+							"raw": "localhost:11000/blue-analyze/manager/statistics/active/summary",
 							"host": [
 								"localhost"
 							],
 							"port": "11000",
 							"path": [
 								"blue-analyze",
+								"manager",
 								"statistics",
 								"active",
 								"summary"
