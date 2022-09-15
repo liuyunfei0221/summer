@@ -40,7 +40,22 @@ public enum JwtConfSchema {
     /**
      * gamma keys max size
      */
-    GAMMA_SECRETS_MAX(1024);
+    GAMMA_SECRETS_MAX(1024),
+
+    /**
+     * issuer key max len
+     */
+    ISSUER_STR_MAX(32),
+
+    /**
+     * subject key max len
+     */
+    SUBJECT_STR_MAX(32),
+
+    /**
+     * audience key max len
+     */
+    AUDIENCE_STR_MAX(32);
 
     public final int len;
 

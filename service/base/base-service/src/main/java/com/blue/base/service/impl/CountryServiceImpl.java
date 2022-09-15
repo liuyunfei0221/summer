@@ -133,7 +133,7 @@ public class CountryServiceImpl implements CountryService {
                                         .flatMap(c -> just(COUNTRY_2_COUNTRY_INFO_CONVERTER.apply(c)))
                                         .collectList().toFuture().join()
                                         .parallelStream()
-                                        .collect(toMap(CountryInfo::getId, ci -> ci, (a, b) -> a)))
+                                        .collect(toMap(CountryInfo::getId, i -> i, (a, b) -> a)))
                                 .entrySet()
                 )
                 .flatMap(Collection::stream)

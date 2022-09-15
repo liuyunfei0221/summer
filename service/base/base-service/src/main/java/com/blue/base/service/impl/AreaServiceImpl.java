@@ -149,7 +149,7 @@ public class AreaServiceImpl implements AreaService {
                                         .flatMap(a -> just(AREA_2_AREA_INFO_CONVERTER.apply(a)))
                                         .collectList().toFuture().join()
                                         .parallelStream()
-                                        .collect(toMap(AreaInfo::getId, ci -> ci, (a, b) -> a)))
+                                        .collect(toMap(AreaInfo::getId, i -> i, (a, b) -> a)))
                                 .entrySet()
                 )
                 .flatMap(Collection::stream)
