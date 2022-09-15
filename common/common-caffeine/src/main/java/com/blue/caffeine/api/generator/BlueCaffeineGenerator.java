@@ -55,8 +55,8 @@ public final class BlueCaffeineGenerator {
     /**
      * cache size
      */
-    private static final int DEFAULT_CAPACITY = 1 << 9;
-    private static final int MAXIMUM_CAPACITY = 1 << 16;
+    private static final int DEFAULT_CAPACITY = 1 << 10;
+    private static final int MAXIMUM_CAPACITY = 1 << 17;
 
     private static final UnaryOperator<Integer> CAP_GETTER = maximumSize -> {
         int n = -1 >>> numberOfLeadingZeros(ofNullable(maximumSize).filter(ms -> ms > 1).orElse(DEFAULT_CAPACITY) - 1);

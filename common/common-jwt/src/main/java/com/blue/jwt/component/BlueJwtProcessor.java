@@ -6,6 +6,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.blue.basic.common.base.BlueChecker;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.jwt.api.conf.JwtConf;
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import static com.auth0.jwt.JWT.require;
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 import static com.blue.basic.constant.common.ResponseElement.UNAUTHORIZED;
 import static com.blue.jwt.constant.JwtConfSchema.*;
+import static com.blue.jwt.constant.JwtDefaultElement.*;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
@@ -28,8 +30,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.codec.digest.DigestUtils.sha512Hex;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.*;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
@@ -58,7 +59,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
         COMMON_HEADER.put(HEADER_CONTENT_TYPE_NAME, HEADER_CONTENT_TYPE_VALUE);
     }
 
-    private static final String ISSUER = "Blue", SUBJECT = "Hello", AUDIENCE = "Bluer";
+    private String issuer, subject, audience;
 
     private static final String EMPTY_DATA = "";
 
@@ -72,7 +73,10 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
             GAMMA_KEY_STR_MIN_LEN = GAMMA_KEY_STR_MIN.len,
             GAMMA_KEY_STR_MAX_LEN = GAMMA_KEY_STR_MAX.len,
             GAMMA_SECRETS_MIN_LEN = GAMMA_SECRETS_MIN.len,
-            GAMMA_SECRETS_MAX_LEN = GAMMA_SECRETS_MAX.len;
+            GAMMA_SECRETS_MAX_LEN = GAMMA_SECRETS_MAX.len,
+            ISSUER_MAX_LEN = ISSUER_STR_MAX.len,
+            SUBJECT_MAX_LEN = SUBJECT_STR_MAX.len,
+            AUDIENCE_MAX_LEN = AUDIENCE_STR_MAX.len;
 
     /**
      * randoms
@@ -203,7 +207,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
         Instant instant = INSTANT_GEN.apply(currentStamp);
         builder.withIssuedAt(instant).withNotBefore(instant).withExpiresAt(INSTANT_GEN.apply(expiresAtStamp));
 
-        builder.withIssuer(ISSUER).withSubject(SUBJECT).withAudience(AUDIENCE);
+        builder.withIssuer(issuer).withSubject(subject).withAudience(audience);
     };
 
     /**
@@ -233,20 +237,25 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
         String signKey = jwtConf.getSignKey();
         int signKeyLen = signKey.length();
 
-        this.randomSalt1 = String.valueOf(signKey.charAt(signKeyLen - RANDOM_NUM_1));
-        this.randomSalt2 = String.valueOf(signKey.charAt(signKeyLen / RANDOM_NUM_2));
-        this.randomSalt3 = String.valueOf(signKey.charAt(signKeyLen / RANDOM_NUM_3));
-        this.randomSalt4 = String.valueOf(signKey.charAt(signKeyLen / RANDOM_NUM_4));
-        this.randomSalt5 = String.valueOf(signKey.charAt(signKeyLen / RANDOM_NUM_5));
-
         this.ALGORITHM = HMAC512(signKey);
         this.VERIFIER = require(ALGORITHM).build();
 
         this.gammaSecretArr = jwtConf.getGammaSecrets().toArray(String[]::new);
         this.gammaSecretArrIndexMask = gammaSecretArr.length - 1;
 
+        int tarIdx;
+        this.randomSalt1 = String.valueOf(gammaSecretArr[tarIdx = gammaSecretArrIndexMask - RANDOM_NUM_1].charAt(gammaSecretArr[tarIdx].length() - RANDOM_NUM_1));
+        this.randomSalt2 = String.valueOf(signKey.charAt(signKeyLen / RANDOM_NUM_2));
+        this.randomSalt3 = String.valueOf(signKey.charAt(signKeyLen / RANDOM_NUM_3));
+        this.randomSalt4 = String.valueOf(gammaSecretArr[tarIdx = gammaSecretArrIndexMask - RANDOM_NUM_4].charAt(gammaSecretArr[tarIdx].length() - RANDOM_NUM_4));
+        this.randomSalt5 = String.valueOf(signKey.charAt(signKeyLen / RANDOM_NUM_5));
+
         this.DATA_2_CLAIM_PROCESSOR = jwtConf.getDataToClaimProcessor();
         this.CLAIM_2_DATA_PROCESSOR = jwtConf.getClaimToDataProcessor();
+
+        this.issuer = ofNullable(jwtConf.getIssuer()).filter(BlueChecker::isNotBlank).orElse(ISSUER.identity);
+        this.subject = ofNullable(jwtConf.getSubject()).filter(BlueChecker::isNotBlank).orElse(SUBJECT.identity);
+        this.audience = ofNullable(jwtConf.getAudience()).filter(BlueChecker::isNotBlank).orElse(AUDIENCE.identity);
     }
 
     /**
@@ -380,6 +389,18 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
             throw new RuntimeException("dataToClaimProcessor can't be null");
         if (isNull(conf.getClaimToDataProcessor()))
             throw new RuntimeException("claimToDataProcessor can't be null");
+
+        String issuer = conf.getIssuer();
+        if (isNotBlank(issuer) && issuer.length() > ISSUER_MAX_LEN)
+            throw new RuntimeException("issuer length can't greater than " + ISSUER_MAX_LEN);
+
+        String subject = conf.getSubject();
+        if (isNotBlank(subject) && subject.length() > SUBJECT_MAX_LEN)
+            throw new RuntimeException("subject length can't greater than " + SUBJECT_MAX_LEN);
+
+        String audience = conf.getAudience();
+        if (isNotBlank(audience) && audience.length() > AUDIENCE_MAX_LEN)
+            throw new RuntimeException("audience length can't greater than " + AUDIENCE_MAX_LEN);
     }
 
 }

@@ -24,6 +24,13 @@ public class CaffeineConfParams implements CaffeineConf {
     public CaffeineConfParams() {
     }
 
+    public CaffeineConfParams(Integer maximumSize, Duration expireDuration, ExpireStrategy expireStrategy) {
+        this.maximumSize = maximumSize;
+        this.expireDuration = expireDuration;
+        this.expireStrategy = expireStrategy;
+        this.executorService = null;
+    }
+
     public CaffeineConfParams(Integer maximumSize, Duration expireDuration, ExpireStrategy expireStrategy, ExecutorService executorService) {
         this.maximumSize = maximumSize;
         this.expireDuration = expireDuration;

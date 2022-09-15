@@ -142,7 +142,7 @@ public class StateServiceImpl implements StateService {
                                         .flatMap(s -> just(STATE_2_STATE_INFO_CONVERTER.apply(s)))
                                         .publishOn(scheduler).collectList().toFuture().join()
                                         .parallelStream()
-                                        .collect(toMap(StateInfo::getId, ci -> ci, (a, b) -> a)))
+                                        .collect(toMap(StateInfo::getId, i -> i, (a, b) -> a)))
                                 .entrySet()
                 )
                 .flatMap(Collection::stream)

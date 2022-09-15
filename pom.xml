@@ -51,7 +51,7 @@
 
         <module>entrance/event/event-api</module>
         <module>entrance/event/event-service</module>
-        <module>entrance/gateway</module>
+        <module>entrance/gateway/gateway</module>
         <module>entrance/media/media-api</module>
         <module>entrance/media/media-service</module>
         <module>entrance/message/message-api</module>

@@ -147,7 +147,7 @@ public class CityServiceImpl implements CityService {
                                         .flatMap(c -> just(CITY_2_CITY_INFO_CONVERTER.apply(c)))
                                         .publishOn(scheduler).collectList().toFuture().join()
                                         .parallelStream()
-                                        .collect(toMap(CityInfo::getId, ci -> ci, (a, b) -> a)))
+                                        .collect(toMap(CityInfo::getId, i -> i, (a, b) -> a)))
                                 .entrySet()
                 )
                 .flatMap(Collection::stream)
