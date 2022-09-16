@@ -21,6 +21,7 @@ import static com.auth0.jwt.HeaderParams.CONTENT_TYPE;
 import static com.auth0.jwt.JWT.require;
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 import static com.blue.basic.constant.common.ResponseElement.UNAUTHORIZED;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
 import static com.blue.jwt.constant.JwtConfSchema.*;
 import static com.blue.jwt.constant.JwtDefaultElement.*;
 import static java.util.Objects.isNull;
@@ -61,7 +62,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
 
     private String issuer, subject, audience;
 
-    private static final String EMPTY_DATA = "";
+    private static final String EMPTY_VALUE = EMPTY_DATA.value;
 
     /**
      * constants
@@ -303,7 +304,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
                 return CLAIM_2_DATA_PROCESSOR.apply(
                         jwt.getClaims().entrySet().stream()
                                 .collect(toMap(Map.Entry::getKey, e ->
-                                        ofNullable(e.getValue()).map(Claim::asString).orElse(EMPTY_DATA), (a, b) -> a)));
+                                        ofNullable(e.getValue()).map(Claim::asString).orElse(EMPTY_VALUE), (a, b) -> a)));
             } catch (Exception e) {
                 throw new BlueException(UNAUTHORIZED);
             }
