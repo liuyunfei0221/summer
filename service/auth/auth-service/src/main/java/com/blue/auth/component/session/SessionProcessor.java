@@ -56,8 +56,8 @@ public class SessionProcessor implements ApplicationListener<ContextRefreshedEve
         this.authService = authService;
     }
 
-    private static final Set<String> ALLOW_ACCESS_LTS = Stream.of(CredentialType.values())
-            .filter(lt -> lt.allowAccess).map(lt -> lt.identity).collect(toSet());
+    private static final Set<String> ALLOW_TURING_LTS = Stream.of(CredentialType.values())
+            .filter(lt -> lt.allowTuring).map(lt -> lt.identity).collect(toSet());
 
     private final BiFunction<String, String, Mono<Boolean>> IMAGE_VERIFY_VALIDATOR = (key, verify) ->
             rpcVerifyHandleServiceConsumer.validate(IMAGE, CREDENTIAL_ACCESS_LOGIN, key, verify, false);
@@ -66,7 +66,7 @@ public class SessionProcessor implements ApplicationListener<ContextRefreshedEve
         if (isBlank(credentialType))
             return error(() -> new BlueException(INVALID_PARAM));
 
-        if (!ALLOW_ACCESS_LTS.contains(credentialType))
+        if (!ALLOW_TURING_LTS.contains(credentialType))
             return just(true);
 
         String verifyKey = loginParam.getData(VERIFICATION_KEY.key);

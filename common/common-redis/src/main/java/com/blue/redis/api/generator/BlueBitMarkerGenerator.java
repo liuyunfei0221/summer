@@ -9,7 +9,7 @@ import static reactor.core.scheduler.Schedulers.boundedElastic;
 /**
  * bit marker generator
  *
- * @author blue
+ * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
 public final class BlueBitMarkerGenerator {

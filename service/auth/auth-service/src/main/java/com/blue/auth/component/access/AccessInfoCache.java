@@ -78,7 +78,7 @@ public final class AccessInfoCache {
      */
     private Cache<String, String> cache;
 
-    private static final String THREAD_NAME_PRE = "AccessInfoCache-thread- ";
+    private static final String THREAD_NAME_PRE = "AccessInfoCache-thread-";
     private static final int RANDOM_LEN = 4;
 
     public AccessInfoCache(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AccessBatchExpireProcessor accessBatchExpireProcessor, Scheduler scheduler,
@@ -235,8 +235,8 @@ public final class AccessInfoCache {
         return isNotBlank(keyId) ?
                 reactiveStringRedisTemplate.delete(keyId)
                         .publishOn(scheduler)
-                        .flatMap(l -> just(l > 0L))
-                        .doOnSuccess(ig -> cache.invalidate(keyId))
+                        .map(l -> l > 0L)
+                        .doOnEach(ig -> cache.invalidate(keyId))
                 :
                 just(false).publishOn(scheduler);
     }

@@ -6,7 +6,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 /**
  * value marker generator
  *
- * @author blue
+ * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
 public final class BlueValueMarkerGenerator {

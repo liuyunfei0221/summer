@@ -9,7 +9,7 @@ import static reactor.core.scheduler.Schedulers.boundedElastic;
 /**
  * validator generator
  *
- * @author blue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public final class BlueValidatorGenerator {

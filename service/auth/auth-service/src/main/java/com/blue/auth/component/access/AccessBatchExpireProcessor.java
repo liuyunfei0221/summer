@@ -1,6 +1,6 @@
 package com.blue.auth.component.access;
 
-import com.blue.basic.model.event.KeyExpireEvent;
+import com.blue.basic.model.common.KeyExpireParam;
 import net.openhft.affinity.AffinityThreadFactory;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
@@ -37,7 +37,7 @@ public final class AccessBatchExpireProcessor {
 
     private static final long THREAD_KEEP_ALIVE_SECONDS = 64L;
 
-    private LinkedBlockingQueue<KeyExpireEvent> bufferQueue;
+    private LinkedBlockingQueue<KeyExpireParam> bufferQueue;
 
     private final StringRedisTemplate stringRedisTemplate;
 
@@ -102,7 +102,7 @@ public final class AccessBatchExpireProcessor {
     /**
      * ignore fail sync putter
      */
-    private final Consumer<KeyExpireEvent> IGNORE_FAIL_ELEMENT_PUTTER = keyExpireEvent -> {
+    private final Consumer<KeyExpireParam> IGNORE_FAIL_ELEMENT_PUTTER = keyExpireEvent -> {
         if (!bufferQueue.offer(keyExpireEvent))
             LOGGER.warn("MAYBE_FAILED_ELEMENT_PUTTER failed, keyExpireEvent = {}", keyExpireEvent);
     };
@@ -110,25 +110,25 @@ public final class AccessBatchExpireProcessor {
     /**
      * async putter
      */
-    private final Consumer<KeyExpireEvent> ASYNC_ELEMENT_PUTTER = keyExpireEvent ->
+    private final Consumer<KeyExpireParam> ASYNC_ELEMENT_PUTTER = keyExpireEvent ->
             executorService.execute(() -> IGNORE_FAIL_ELEMENT_PUTTER.accept(keyExpireEvent));
 
     /**
      * element getter, maybe return null
      */
-    private final Supplier<KeyExpireEvent> NULLABLE_ELEMENT_GETTER = () -> bufferQueue.poll();
+    private final Supplier<KeyExpireParam> NULLABLE_ELEMENT_GETTER = () -> bufferQueue.poll();
 
     /**
      * expire data and release data to queue b
      */
-    private final BiConsumer<KeyExpireEvent, RedisConnection> DATA_EXPIRE_WITH_WRAPPER_RELEASE_HANDLER = (keyExpireEvent, connection) ->
+    private final BiConsumer<KeyExpireParam, RedisConnection> DATA_EXPIRE_WITH_WRAPPER_RELEASE_HANDLER = (keyExpireEvent, connection) ->
             connection.expire(keyExpireEvent.getKey().getBytes(UTF_8), SECONDS_CONVERTER.apply(keyExpireEvent.getExpire(), keyExpireEvent.getUnit()));
 
     /**
      * data expire task
      */
     private void handleExpireTask() {
-        KeyExpireEvent firstData = NULLABLE_ELEMENT_GETTER.get();
+        KeyExpireParam firstData = NULLABLE_ELEMENT_GETTER.get();
         if (isNull(firstData))
             return;
 
@@ -136,7 +136,7 @@ public final class AccessBatchExpireProcessor {
             DATA_EXPIRE_WITH_WRAPPER_RELEASE_HANDLER.accept(firstData, connection);
 
             int size = 1;
-            KeyExpireEvent data;
+            KeyExpireParam data;
             while (size <= BATCH_EXPIRE_MAX_PER_HANDLE && isNotNull(data = NULLABLE_ELEMENT_GETTER.get())) {
                 DATA_EXPIRE_WITH_WRAPPER_RELEASE_HANDLER.accept(data, connection);
                 size++;
@@ -183,7 +183,7 @@ public final class AccessBatchExpireProcessor {
         LOGGER.info("void expireKey(String key, Long expiresMillis, ChronoUnit unit), key = {}, expiresMillis = {}, unit = {}", key, expiresMillis, unit);
         assertParams(key, expiresMillis, unit);
 
-        ASYNC_ELEMENT_PUTTER.accept(new KeyExpireEvent(key, expiresMillis, unit));
+        ASYNC_ELEMENT_PUTTER.accept(new KeyExpireParam(key, expiresMillis, unit));
     }
 
 }

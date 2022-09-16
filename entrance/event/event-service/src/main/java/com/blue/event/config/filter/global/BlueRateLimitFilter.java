@@ -2,7 +2,6 @@ package com.blue.event.config.filter.global;
 
 import com.blue.basic.model.exps.BlueException;
 import com.blue.event.config.deploy.RateLimiterDeploy;
-import com.blue.redis.api.generator.BlueRateLimiterGenerator;
 import com.blue.redis.component.BlueFixedTokenBucketRateLimiter;
 import org.springframework.core.Ordered;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
@@ -16,6 +15,7 @@ import reactor.core.scheduler.Scheduler;
 import static com.blue.basic.common.base.CommonFunctions.SERVER_HTTP_REQUEST_IDENTITY_SYNC_KEY_GETTER;
 import static com.blue.basic.constant.common.ResponseElement.TOO_MANY_REQUESTS;
 import static com.blue.event.config.filter.BlueFilterOrder.BLUE_RATE_LIMIT;
+import static com.blue.redis.api.generator.BlueRateLimiterGenerator.generateFixedTokenBucketRateLimiter;
 import static reactor.core.publisher.Mono.error;
 
 /**
@@ -29,7 +29,7 @@ public final class BlueRateLimitFilter implements WebFilter, Ordered {
     private final BlueFixedTokenBucketRateLimiter blueFixedTokenBucketRateLimiter;
 
     public BlueRateLimitFilter(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler, RateLimiterDeploy rateLimiterDeploy) {
-        this.blueFixedTokenBucketRateLimiter = BlueRateLimiterGenerator.generateFixedTokenBucketRateLimiter(reactiveStringRedisTemplate, scheduler, rateLimiterDeploy.getReplenishRate(), rateLimiterDeploy.getBurstCapacity());
+        this.blueFixedTokenBucketRateLimiter = generateFixedTokenBucketRateLimiter(reactiveStringRedisTemplate, scheduler, rateLimiterDeploy.getReplenishRate(), rateLimiterDeploy.getBurstCapacity());
     }
 
     @SuppressWarnings("NullableProblems")

@@ -292,7 +292,7 @@ public class AuthServiceImpl implements AuthService {
         if (isNull(memberPayload) || isEmpty(roleIds) || isNull(keyPair))
             throw new BlueException(BAD_REQUEST);
 
-        return new AccessInfo(memberPayload.getGamma(), roleIds, keyPair.getPubKey(),
+        return new AccessInfo(memberPayload.getGamma(), parseLong(memberPayload.getId()), roleIds, keyPair.getPubKey(),
                 SECOND_STAMP_2_MILLIS_STAMP.apply(parseLong(memberPayload.getLoginTime())));
     }
 
@@ -623,7 +623,7 @@ public class AuthServiceImpl implements AuthService {
 
                                 return just(new AccessAsserted(true, reqUnDecryption, resUnEncryption, resource.getExistenceRequestBody(), resource.getExistenceResponseBody(),
                                         reqUnDecryption && resUnEncryption ? EMPTY_DATA.value : accessInfo.getPubKey(),
-                                        new Access(parseLong(memberPayload.getId()), accessInfo.getRoleIds(), memberPayload.getCredentialType().intern(),
+                                        new Access(accessInfo.getId(), accessInfo.getRoleIds(), memberPayload.getCredentialType().intern(),
                                                 memberPayload.getDeviceType().intern(), parseLong(memberPayload.getLoginTime())), OK.message));
                             });
                 });

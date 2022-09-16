@@ -11,7 +11,7 @@ import static reactor.core.scheduler.Schedulers.boundedElastic;
 /**
  * rate limiter generator
  *
- * @author blue
+ * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 public final class BlueRateLimiterGenerator {

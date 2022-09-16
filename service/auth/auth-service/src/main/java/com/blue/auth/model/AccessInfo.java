@@ -24,6 +24,11 @@ public final class AccessInfo implements Serializable {
     private String gamma;
 
     /**
+     * member id
+     */
+    private Long id;
+
+    /**
      * role id
      */
     private List<Long> roleIds;
@@ -41,8 +46,10 @@ public final class AccessInfo implements Serializable {
     public AccessInfo() {
     }
 
-    public AccessInfo(String gamma, List<Long> roleIds, String pubKey, Long loginMillisTimeStamp) {
+    public AccessInfo(String gamma, Long id, List<Long> roleIds, String pubKey, Long loginMillisTimeStamp) {
         if (isBlank(gamma))
+            throw new BlueException(BAD_REQUEST);
+        if (isInvalidIdentity(id))
             throw new BlueException(BAD_REQUEST);
         if (isInvalidIdentities(roleIds))
             throw new BlueException(BAD_REQUEST);
@@ -52,6 +59,7 @@ public final class AccessInfo implements Serializable {
             throw new BlueException(BAD_REQUEST);
 
         this.gamma = gamma;
+        this.id = id;
         this.roleIds = roleIds;
         this.pubKey = pubKey;
         this.loginMillisTimeStamp = loginMillisTimeStamp;
@@ -66,6 +74,17 @@ public final class AccessInfo implements Serializable {
             throw new BlueException(BAD_REQUEST);
 
         this.gamma = gamma;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        if (isInvalidIdentity(id))
+            throw new BlueException(BAD_REQUEST);
+
+        this.id = id;
     }
 
     public List<Long> getRoleIds() {
@@ -102,6 +121,7 @@ public final class AccessInfo implements Serializable {
     public String toString() {
         return "AccessInfo{" +
                 "gamma='" + gamma + '\'' +
+                ", id=" + id +
                 ", roleIds=" + roleIds +
                 ", pubKey='" + pubKey + '\'' +
                 ", loginMillisTimeStamp=" + loginMillisTimeStamp +

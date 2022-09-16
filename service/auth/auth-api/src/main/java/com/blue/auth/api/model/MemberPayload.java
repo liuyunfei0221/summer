@@ -23,7 +23,7 @@ public final class MemberPayload implements Serializable {
     private String gamma;
 
     /**
-     * auth keyId used for redis
+     * auth keyId for redis
      */
     private final String keyId;
 

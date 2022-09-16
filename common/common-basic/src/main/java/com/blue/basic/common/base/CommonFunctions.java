@@ -372,43 +372,13 @@ public class CommonFunctions {
      * request identity getter func
      */
     public static final Function<ServerHttpRequest, Mono<String>> SERVER_HTTP_REQUEST_IDENTITY_SYNC_KEY_GETTER = request ->
-            just(REQ_SYNC_PRE + ofNullable(request)
-                    .map(ServerHttpRequest::getHeaders)
-                    .map(h -> h.getFirst(AUTHORIZATION))
-                    .filter(StringUtils::isNotEmpty)
-                    .map(String::hashCode)
-                    .map(String::valueOf)
-                    .orElseGet(() ->
-                            getIp(request)).hashCode());
+            just(REQ_SYNC_PRE + getIp(request));
 
     /**
      * request identity getter func
      */
     public static final Function<ServerRequest, Mono<String>> SERVER_REQUEST_IDENTITY_SYNC_KEY_GETTER = request ->
-            just(REQ_SYNC_PRE + ofNullable(request)
-                    .map(ServerRequest::headers)
-                    .map(h -> h.firstHeader(AUTHORIZATION))
-                    .filter(StringUtils::isNotEmpty)
-                    .map(String::hashCode)
-                    .map(String::valueOf)
-                    .orElseGet(() ->
-                            getIp(request)).hashCode());
-
-    /**
-     * request ip getter func
-     */
-    public static final Function<ServerHttpRequest, Mono<String>> SERVER_HTTP_REQUEST_IP_SYNC_KEY_GETTER = request ->
-            just(REQ_SYNC_PRE + ofNullable(request)
-                    .map(req -> just(getIp(req)))
-                    .orElseThrow(() -> new BlueException(BAD_REQUEST)));
-
-    /**
-     * request ip getter func
-     */
-    public static final Function<ServerRequest, Mono<String>> SERVER_REQUEST_IP_SYNC_KEY_GETTER = request ->
-            just(REQ_SYNC_PRE + ofNullable(request)
-                    .map(CommonFunctions::getIp)
-                    .orElseThrow(() -> new BlueException(BAD_REQUEST)));
+            just(REQ_SYNC_PRE + getIp(request));
 
     /**
      * locale language to language list

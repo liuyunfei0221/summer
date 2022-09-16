@@ -60,9 +60,9 @@ public enum CredentialType {
     public final String nature;
 
     /**
-     * allow access/pwd?
+     * allow img turing/pwd?
      */
-    public final boolean allowAccess;
+    public final boolean allowTuring;
 
     /**
      * source
@@ -74,10 +74,10 @@ public enum CredentialType {
      */
     public final String disc;
 
-    CredentialType(String identity, String nature, boolean allowAccess, String source, String disc) {
+    CredentialType(String identity, String nature, boolean allowTuring, String source, String disc) {
         this.identity = identity;
         this.nature = nature;
-        this.allowAccess = allowAccess;
+        this.allowTuring = allowTuring;
         this.source = source;
         this.disc = disc;
     }

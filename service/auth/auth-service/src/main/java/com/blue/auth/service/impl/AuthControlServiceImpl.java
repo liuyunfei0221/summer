@@ -286,7 +286,7 @@ public class AuthControlServiceImpl implements AuthControlService {
     };
 
     private static final List<String> ALLOW_ACCESS_LTS = Stream.of(CredentialType.values())
-            .filter(lt -> lt.allowAccess).map(lt -> lt.identity).collect(toList());
+            .filter(lt -> lt.allowTuring).map(lt -> lt.identity).collect(toList());
 
     private static final Set<String> ALLOW_ACCESS_LT_SET = new HashSet<>(ALLOW_ACCESS_LTS);
 

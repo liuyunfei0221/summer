@@ -1,4 +1,4 @@
-package com.blue.basic.model.event;
+package com.blue.basic.model.common;
 
 import com.blue.basic.model.exps.BlueException;
 
@@ -14,7 +14,7 @@ import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
  * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "unused"})
-public final class KeyExpireEvent implements Serializable {
+public final class KeyExpireParam implements Serializable {
 
     private static final long serialVersionUID = 713277204676056312L;
 
@@ -33,10 +33,10 @@ public final class KeyExpireEvent implements Serializable {
      */
     private ChronoUnit unit;
 
-    public KeyExpireEvent() {
+    public KeyExpireParam() {
     }
 
-    public KeyExpireEvent(String key, Long expire, ChronoUnit unit) {
+    public KeyExpireParam(String key, Long expire, ChronoUnit unit) {
         if (isBlank(key))
             throw new BlueException(BAD_REQUEST);
         if (isInvalidIdentity(expire))
@@ -79,4 +79,13 @@ public final class KeyExpireEvent implements Serializable {
         this.unit = unit;
     }
 
+    @Override
+    public String toString() {
+        return "KeyExpireParam{" +
+                "key='" + key + '\'' +
+                ", expire=" + expire +
+                ", unit=" + unit +
+                '}';
+    }
+    
 }

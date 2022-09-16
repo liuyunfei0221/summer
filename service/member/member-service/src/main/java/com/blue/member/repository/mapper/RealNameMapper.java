@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * real name dao
  *
- * @author blue
+ * @author liuyunfei
  */
 @SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "JavaDoc"})
 public interface RealNameMapper {

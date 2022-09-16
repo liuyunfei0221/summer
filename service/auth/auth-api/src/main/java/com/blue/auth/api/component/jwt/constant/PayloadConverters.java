@@ -9,7 +9,7 @@ import java.util.function.Function;
 /**
  * payload converters
  *
- * @author blue
+ * @author liuyunfei
  */
 public final class PayloadConverters {
 

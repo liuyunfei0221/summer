@@ -151,8 +151,8 @@ public class SmsVerifyHandler implements VerifyHandler {
 
     @Override
     public Mono<ServerResponse> handle(VerifyBusinessType verifyBusinessType, String destination, ServerRequest serverRequest) {
-        return SERVER_REQUEST_IP_SYNC_KEY_GETTER.apply(serverRequest)
-                .flatMap(syncIp -> blueLeakyBucketRateLimiter.isAllowed(syncIp, ALLOW, SEND_INTERVAL_MILLIS))
+        return SERVER_REQUEST_IDENTITY_SYNC_KEY_GETTER.apply(serverRequest)
+                .flatMap(identity -> blueLeakyBucketRateLimiter.isAllowed(identity, ALLOW, SEND_INTERVAL_MILLIS))
                 .flatMap(allowed ->
                         allowed ?
                                 this.handle(verifyBusinessType, destination)
