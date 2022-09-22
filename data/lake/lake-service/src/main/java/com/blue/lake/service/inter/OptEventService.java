@@ -9,26 +9,28 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 /**
- * lake service
+ * option event service
  *
  * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
-public interface LakeService {
+public interface OptEventService {
 
     /**
      * insert event
      *
      * @param dataEvent
+     * @return
      */
-    Mono<Boolean> insertEvent(DataEvent dataEvent);
+    boolean insertEvent(DataEvent dataEvent);
 
     /**
      * insert events
      *
      * @param dataEvents
+     * @return
      */
-    Mono<Boolean> insertEvents(List<DataEvent> dataEvents);
+    boolean insertEvents(List<DataEvent> dataEvents);
 
     /**
      * select by search after

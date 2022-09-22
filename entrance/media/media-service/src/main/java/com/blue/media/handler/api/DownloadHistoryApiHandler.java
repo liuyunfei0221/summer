@@ -44,9 +44,9 @@ public final class DownloadHistoryApiHandler {
                 .flatMap(tuple2 ->
                         downloadHistoryService.selectShineInfoScrollMonoByScrollAndCursorBaseOnMemberId(tuple2.getT1(), tuple2.getT2().getId())
                 )
-                .flatMap(pmr ->
+                .flatMap(smr ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(pmr, serverRequest), BlueResponse.class));
+                                .body(success(smr, serverRequest), BlueResponse.class));
     }
 
 }

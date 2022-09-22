@@ -414,14 +414,19 @@
             where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <select id="selectByLimitAndRows" resultMap="BaseResultMap">
+    <select id="selectByRowsAndSearchAfter" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
         opt_event
+        <if test="searchAfter != null and searchAfter > 0">
+            <where>
+                id &lt; #{searchAfter.id,jdbcType=BIGINT}
+            </where>
+        </if>
         ORDER BY
         stamp DESC
-        LIMIT #{limit,jdbcType=BIGINT}, #{rows,jdbcType=BIGINT}
+        LIMIT #{rows,jdbcType=BIGINT}
     </select>
 
 </mapper>

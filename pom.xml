@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--suppress MybatisXMapperXmlInspection, MavenModelInspection, VulnerableLibrariesLocal -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
@@ -52,7 +53,7 @@
 
         <module>entrance/event/event-api</module>
         <module>entrance/event/event-service</module>
-        <module>entrance/gateway/gateway</module>
+        <module>entrance/gateway/gateway-service</module>
         <module>entrance/media/media-api</module>
         <module>entrance/media/media-service</module>
         <module>entrance/message/message-api</module>

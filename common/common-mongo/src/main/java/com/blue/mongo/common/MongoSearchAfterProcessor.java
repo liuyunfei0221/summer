@@ -18,7 +18,7 @@ import static java.util.Optional.ofNullable;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 /**
- * es search after processor
+ * mongo search after processor
  *
  * @author liuyunfei
  */

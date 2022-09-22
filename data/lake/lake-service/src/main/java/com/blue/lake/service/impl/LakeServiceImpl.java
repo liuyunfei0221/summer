@@ -1,12 +1,12 @@
 package com.blue.lake.service.impl;
 
 import com.blue.basic.common.base.BlueChecker;
-import com.blue.basic.model.common.LimitModelRequest;
+import com.blue.basic.model.common.ScrollModelRequest;
+import com.blue.basic.model.common.ScrollModelResponse;
 import com.blue.basic.model.event.DataEvent;
-import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.lake.repository.entity.OptEvent;
-import com.blue.lake.repository.mapper.OptEventMapper;
 import com.blue.lake.service.inter.LakeService;
+import com.blue.lake.service.inter.OptEventService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
@@ -15,12 +15,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 
-import static com.blue.basic.constant.common.BlueCommonThreshold.LIMIT;
-import static com.blue.basic.constant.common.BlueCommonThreshold.ROWS;
-import static com.blue.lake.converter.LakeModelConverters.DATA_EVENT_2_OPT_EVENT;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
-import static java.util.stream.Collectors.toList;
 import static reactor.core.publisher.Mono.fromFuture;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
@@ -38,42 +34,24 @@ public class LakeServiceImpl implements LakeService {
 
     private ExecutorService executorService;
 
-    private OptEventMapper optEventMapper;
+    private OptEventService optEventService;
 
-    private BlueIdentityProcessor blueIdentityProcessor;
-
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public LakeServiceImpl(ExecutorService executorService, OptEventMapper optEventMapper, BlueIdentityProcessor blueIdentityProcessor) {
+    public LakeServiceImpl(ExecutorService executorService, OptEventService optEventService) {
         this.executorService = executorService;
-        this.optEventMapper = optEventMapper;
-        this.blueIdentityProcessor = blueIdentityProcessor;
+        this.optEventService = optEventService;
     }
 
     private final Function<DataEvent, Mono<Boolean>> EVENT_INSERTER = dataEvent ->
             ofNullable(dataEvent)
-                    .map(event -> {
-                        OptEvent optEvent = DATA_EVENT_2_OPT_EVENT.apply(event);
-                        optEvent.setId(blueIdentityProcessor.generate(OptEvent.class));
-
-                        return fromFuture(supplyAsync(() -> {
-                            optEventMapper.insert(optEvent);
-                            return true;
-                        }, executorService));
-                    }).orElseGet(() -> just(false));
+                    .map(event ->
+                            fromFuture(supplyAsync(() -> optEventService.insertEvent(event), executorService))
+                    ).orElseGet(() -> just(false));
 
     private final Function<List<DataEvent>, Mono<Boolean>> EVENTS_INSERTER = dataEvents ->
             ofNullable(dataEvents)
                     .filter(BlueChecker::isNotEmpty)
                     .map(events ->
-                            fromFuture(supplyAsync(() -> {
-                                optEventMapper.insertBatch(dataEvents.stream()
-                                        .map(event -> {
-                                            OptEvent optEvent = DATA_EVENT_2_OPT_EVENT.apply(event);
-                                            optEvent.setId(blueIdentityProcessor.generate(OptEvent.class));
-                                            return optEvent;
-                                        }).collect(toList()));
-                                return true;
-                            }, executorService))
+                            fromFuture(supplyAsync(() -> optEventService.insertEvents(events), executorService))
                     ).orElseGet(() -> just(false));
 
     /**
@@ -101,17 +79,14 @@ public class LakeServiceImpl implements LakeService {
     }
 
     /**
-     * select by limit
+     * select by search after
      *
-     * @param limitModelRequest
+     * @param scrollModelRequest
      * @return
      */
     @Override
-    public Mono<List<OptEvent>> selectByLimitAndRows(LimitModelRequest<Void> limitModelRequest) {
-        return limitModelRequest != null ?
-                just(optEventMapper.selectByLimitAndRows(limitModelRequest.getLimit(), limitModelRequest.getRows()))
-                :
-                just(optEventMapper.selectByLimitAndRows(LIMIT.value, ROWS.value));
+    public Mono<ScrollModelResponse<OptEvent, Long>> selectEventScrollMonoByScrollAndCursor(ScrollModelRequest<Void, Long> scrollModelRequest) {
+        return optEventService.selectEventScrollMonoByScrollAndCursor(scrollModelRequest);
     }
 
 }

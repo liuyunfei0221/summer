@@ -1,6 +1,6 @@
 server:
   address: 127.0.0.1
-  port: 55000
+  port: 61000
   netty:
     connection-timeout: 16s
     h2c-max-content-length: 0B
@@ -76,19 +76,19 @@ mongo:
   addressAttrs:
     - address: 172.16.204.244
       port: 27017
-  auth: true
+  auth: false
   authBase: admin
   userName:
   password:
   database: message
-  retryReads: true
+  retryReads: false
   retryWrites: false
   applicationName: blue-message
   uuidRepresentation: JAVA_LEGACY
   socketConnectTimeoutMillis: 60000
   socketReadTimeoutMillis: 60000
-  socketReceiveBufferSize: 1000000
-  socketSendBufferSize: 1024
+  socketReceiveBufferSize: 10000
+  socketSendBufferSize: 256
   clusterConnectionMode: SINGLE
   clusterType: STANDALONE
   clusterLocalThresholdMillis: 60000
@@ -255,7 +255,7 @@ producers:
   configs:
     requestEvent:
       topic: requestEvent
-      producerName: mediaRequestEventProducer000
+      producerName: messageRequestEventProducer000
       accessMode: Shared
       sendTimeoutMillis: 30000
       maxPendingMessages: 1000
@@ -294,7 +294,7 @@ consumers:
       acknowledgementsGroupTimeMillis: 100
       replicateSubscriptionState: false
       maxTotalReceiverQueueSizeAcrossPartitions: 5
-      consumerName: mediaIllegalMarkConsumer000
+      consumerName: messageIllegalMarkConsumer000
       readCompacted: false
       patternAutoDiscoveryPeriodMillis: 1
       priorityLevel: 0

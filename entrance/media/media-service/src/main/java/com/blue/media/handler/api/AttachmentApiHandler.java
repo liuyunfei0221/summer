@@ -42,9 +42,9 @@ public final class AttachmentApiHandler {
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 -> attachmentService.selectShineInfoScrollMonoByScrollAndCursorBaseOnMemberId(tuple2.getT1(), tuple2.getT2().getId()))
-                .flatMap(pmr ->
+                .flatMap(smr ->
                         ok().contentType(APPLICATION_JSON)
-                                .body(success(pmr, serverRequest), BlueResponse.class));
+                                .body(success(smr, serverRequest), BlueResponse.class));
     }
 
 }

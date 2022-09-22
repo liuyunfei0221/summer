@@ -27,6 +27,6 @@ public interface OptEventMapper {
 
     int updateByPrimaryKey(OptEvent record);
 
-    List<OptEvent> selectByLimitAndRows(@Param("limit") long limit, @Param("rows") long rows);
+    List<OptEvent> selectByRowsAndSearchAfter(@Param("rows") long rows, @Param("searchAfter") Long searchAfter);
 
 }
