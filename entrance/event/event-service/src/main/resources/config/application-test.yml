@@ -45,7 +45,7 @@ cors:
   allowedOrigins: [ "*" ]
   allowedMethods: [ "*" ]
   allowedHeaders: [ "*" ]
-  exposedHeaders: [ "*" ]
+  exposedHeaders: [ ]
   allowCredentials: true
   maxAgeSeconds: 1728000
   allowedOriginPatterns: [ /** ]

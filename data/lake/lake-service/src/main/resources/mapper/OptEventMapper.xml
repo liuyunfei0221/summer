@@ -55,54 +55,46 @@
     </delete>
 
     <insert id="insert" parameterType="com.blue.lake.repository.entity.OptEvent">
-        insert into opt_event (id, data_event_type, data_event_op_type, stamp, create_date,
-                               method, uri, real_uri, request_body, request_extra, response_status,
-                               response_body, response_extra, request_id, metadata, jwt, member_id,
-                               role_ids, credential_type, device_type, login_time, client_ip,
-                               user_agent, sec_key, request_un_decryption,
-                               response_un_encryption, existence_request_body,
-                               existence_response_body, duration_seconds)
+        insert into opt_event (
+        <include refid="Base_Column_List"/>
+        )
         values (#{id,jdbcType=BIGINT}, #{dataEventType,jdbcType=VARCHAR},
-                #{dataEventOpType,jdbcType=VARCHAR}, #{stamp,jdbcType=BIGINT},
-                #{createDate,jdbcType=VARCHAR}, #{method,jdbcType=VARCHAR},
-                #{uri,jdbcType=VARCHAR}, #{realUri,jdbcType=VARCHAR},
-                #{requestBody,jdbcType=VARCHAR}, #{requestExtra,jdbcType=VARCHAR},
-                #{responseStatus,jdbcType=INTEGER}, #{responseBody,jdbcType=VARCHAR},
-                #{responseExtra,jdbcType=VARCHAR}, #{requestId,jdbcType=VARCHAR}, #{metadata,jdbcType=VARCHAR},
-                #{jwt,jdbcType=VARCHAR}, #{memberId,jdbcType=BIGINT},
-                #{roleIds,jdbcType=ARRAY,typeHandler=com.blue.lake.repository.type.ClickHouseLongArrayTypeHandler},
-                #{credentialType,jdbcType=VARCHAR}, #{deviceType,jdbcType=VARCHAR},
-                #{loginTime,jdbcType=BIGINT}, #{clientIp,jdbcType=VARCHAR}, #{userAgent,jdbcType=VARCHAR},
-                #{secKey,jdbcType=VARCHAR}, #{requestUnDecryption,jdbcType=INTEGER},
-                #{responseUnEncryption,jdbcType=INTEGER}, #{existenceRequestBody,jdbcType=INTEGER},
-                #{existenceResponseBody,jdbcType=INTEGER}, #{durationSeconds,jdbcType=INTEGER})
+        #{dataEventOpType,jdbcType=VARCHAR}, #{stamp,jdbcType=BIGINT},
+        #{createDate,jdbcType=VARCHAR}, #{method,jdbcType=VARCHAR},
+        #{uri,jdbcType=VARCHAR}, #{realUri,jdbcType=VARCHAR},
+        #{requestBody,jdbcType=VARCHAR}, #{requestExtra,jdbcType=VARCHAR},
+        #{responseStatus,jdbcType=INTEGER}, #{responseBody,jdbcType=VARCHAR},
+        #{responseExtra,jdbcType=VARCHAR}, #{requestId,jdbcType=VARCHAR}, #{metadata,jdbcType=VARCHAR},
+        #{jwt,jdbcType=VARCHAR}, #{memberId,jdbcType=BIGINT},
+        #{roleIds,jdbcType=ARRAY,typeHandler=com.blue.lake.repository.type.ClickHouseLongArrayTypeHandler},
+        #{credentialType,jdbcType=VARCHAR}, #{deviceType,jdbcType=VARCHAR},
+        #{loginTime,jdbcType=BIGINT}, #{clientIp,jdbcType=VARCHAR}, #{userAgent,jdbcType=VARCHAR},
+        #{secKey,jdbcType=VARCHAR}, #{requestUnDecryption,jdbcType=INTEGER},
+        #{responseUnEncryption,jdbcType=INTEGER}, #{existenceRequestBody,jdbcType=INTEGER},
+        #{existenceResponseBody,jdbcType=INTEGER}, #{durationSeconds,jdbcType=INTEGER})
     </insert>
 
     <insert id="insertBatch" parameterType="java.util.List">
         <if test="list != null and list.size > 0">
-            INSERT INTO opt_event (id, data_event_type, data_event_op_type,
-            stamp, create_date, method, uri, real_uri, request_body,
-            request_extra, response_status, response_body, response_extra,
-            request_id, metadata, jwt, member_id,
-            role_ids, credential_type, device_type, login_time, client_ip,
-            user_agent, sec_key, request_un_decryption,
-            response_un_encryption, existence_request_body,
-            existence_response_body, duration_seconds)
-            values
+            INSERT INTO opt_event (
+            <include refid="Base_Column_List"/>
+            ) values
             <foreach collection="list" index="index" item="item" separator=",">
-                (#{id,jdbcType=BIGINT}, #{dataEventType,jdbcType=VARCHAR},
-                #{dataEventOpType,jdbcType=VARCHAR}, #{stamp,jdbcType=BIGINT},
-                #{stamp,jdbcType=BIGINT}, #{createDate,jdbcType=VARCHAR},
-                #{method,jdbcType=VARCHAR}, #{uri,jdbcType=VARCHAR}, #{realUri,jdbcType=VARCHAR},
-                #{requestBody,jdbcType=VARCHAR}, #{requestExtra,jdbcType=VARCHAR}, #{responseStatus,jdbcType=INTEGER},
-                #{responseBody,jdbcType=VARCHAR}, #{responseExtra,jdbcType=VARCHAR}, #{requestId,jdbcType=VARCHAR},
-                #{metadata,jdbcType=VARCHAR}, #{jwt,jdbcType=VARCHAR}, #{memberId,jdbcType=BIGINT},
-                #{roleIds,jdbcType=ARRAY,typeHandler=com.blue.lake.repository.type.ClickHouseLongArrayTypeHandler},
-                #{credentialType,jdbcType=VARCHAR}, #{deviceType,jdbcType=VARCHAR},
-                #{loginTime,jdbcType=BIGINT}, #{clientIp,jdbcType=VARCHAR}, #{userAgent,jdbcType=VARCHAR},
-                #{secKey,jdbcType=VARCHAR}, #{requestUnDecryption,jdbcType=INTEGER},
-                #{responseUnEncryption,jdbcType=INTEGER}, #{existenceRequestBody,jdbcType=INTEGER},
-                #{existenceResponseBody,jdbcType=INTEGER}, #{durationSeconds,jdbcType=INTEGER})
+                (
+                #{item.id,jdbcType=BIGINT}, #{item.dataEventType,jdbcType=VARCHAR},
+                #{item.dataEventOpType,jdbcType=VARCHAR}, #{item.stamp,jdbcType=BIGINT},
+                #{item.stamp,jdbcType=BIGINT}, #{item.createDate,jdbcType=VARCHAR},
+                #{item.method,jdbcType=VARCHAR}, #{item.uri,jdbcType=VARCHAR}, #{item.realUri,jdbcType=VARCHAR},
+                #{item.requestBody,jdbcType=VARCHAR}, #{item.requestExtra,jdbcType=VARCHAR}, #{item.responseStatus,jdbcType=INTEGER},
+                #{item.responseBody,jdbcType=VARCHAR}, #{item.responseExtra,jdbcType=VARCHAR}, #{item.requestId,jdbcType=VARCHAR},
+                #{item.metadata,jdbcType=VARCHAR}, #{item.jwt,jdbcType=VARCHAR}, #{item.memberId,jdbcType=BIGINT},
+                #{item.roleIds,jdbcType=ARRAY,typeHandler=com.blue.lake.repository.type.ClickHouseLongArrayTypeHandler},
+                #{item.credentialType,jdbcType=VARCHAR}, #{item.deviceType,jdbcType=VARCHAR},
+                #{item.loginTime,jdbcType=BIGINT}, #{item.clientIp,jdbcType=VARCHAR}, #{item.userAgent,jdbcType=VARCHAR},
+                #{item.secKey,jdbcType=VARCHAR}, #{item.requestUnDecryption,jdbcType=INTEGER},
+                #{item.responseUnEncryption,jdbcType=INTEGER}, #{item.existenceRequestBody,jdbcType=INTEGER},
+                #{item.existenceResponseBody,jdbcType=INTEGER}, #{item.durationSeconds,jdbcType=INTEGER}
+                )
             </foreach>
         </if>
     </insert>

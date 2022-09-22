@@ -711,4 +711,4 @@ encode:
   salt: I'm a salt :)
 
 
-debug: false
+debug: true

@@ -45,7 +45,7 @@ cors:
   allowedOrigins: [ "*" ]
   allowedMethods: [ "*" ]
   allowedHeaders: [ "*" ]
-  exposedHeaders: [ "*" ]
+  exposedHeaders: [ ]
   allowCredentials: true
   maxAgeSeconds: 1728000
   allowedOriginPatterns: [ /** ]
@@ -274,7 +274,7 @@ reader:
   folderName: INBOX
   throwableForRetry: [ jakarta.mail.FolderClosedException ]
   maxWaitingMillisForRefresh: 5000
-  debug: false
+  debug: true
 
 
 sender:
@@ -287,7 +287,7 @@ sender:
         mail.smtp.port: 587
         mail.smtp.ssl: true
         mail.smtp.starttls.enable: true
-        mail.debug: false
+        mail.debug: true
 
   corePoolSize: 2
   maximumPoolSize: 8
@@ -456,4 +456,4 @@ consumers:
       enableNegativeAcknowledge: true
 
 
-debug: false
+debug: true

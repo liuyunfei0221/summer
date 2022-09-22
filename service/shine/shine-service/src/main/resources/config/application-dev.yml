@@ -506,4 +506,4 @@ consumers:
       enableNegativeAcknowledge: true
 
 
-debug: false
+debug: true

@@ -257,4 +257,4 @@ dubbo:
     check: false
 
 
-debug: false
+debug: true
