@@ -13,7 +13,7 @@ import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.constant.common.BlueBoolean.FALSE;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.common.Status.VALID;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -146,8 +146,8 @@ public final class BaseModelConverters {
             throw new BlueException(EMPTY_PARAM);
 
         return new StyleManagerInfo(style.getId(), style.getName(), style.getAttributes(), style.getType(), style.getIsActive(), style.getStatus(),
-                style.getCreateTime(), style.getUpdateTime(), style.getCreator(), ofNullable(idAndMemberNameMapping.get(style.getCreator())).orElse(EMPTY_DATA.value),
-                style.getUpdater(), ofNullable(idAndMemberNameMapping.get(style.getUpdater())).orElse(EMPTY_DATA.value));
+                style.getCreateTime(), style.getUpdateTime(), style.getCreator(), ofNullable(idAndMemberNameMapping.get(style.getCreator())).orElse(EMPTY_VALUE.value),
+                style.getUpdater(), ofNullable(idAndMemberNameMapping.get(style.getUpdater())).orElse(EMPTY_VALUE.value));
     }
 
     /**

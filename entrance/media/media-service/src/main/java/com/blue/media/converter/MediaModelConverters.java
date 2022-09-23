@@ -17,7 +17,7 @@ import java.util.function.Function;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -66,7 +66,7 @@ public final class MediaModelConverters {
             throw new BlueException(EMPTY_PARAM);
 
         return new AttachmentDetailInfo(attachment.getId(), attachment.getType(), attachment.getLink(), attachment.getName(), attachment.getSize(),
-                attachment.getStatus(), attachment.getCreateTime(), attachment.getCreator(), isNotBlank(creatorName) ? creatorName : EMPTY_DATA.value);
+                attachment.getStatus(), attachment.getCreateTime(), attachment.getCreator(), isNotBlank(creatorName) ? creatorName : EMPTY_VALUE.value);
     };
 
     /**
@@ -81,8 +81,8 @@ public final class MediaModelConverters {
         if (isNull(downloadHistory))
             throw new BlueException(EMPTY_PARAM);
 
-        return new DownloadHistoryInfo(downloadHistory.getId(), downloadHistory.getAttachmentId(), isNotBlank(attachmentName) ? attachmentName : EMPTY_DATA.value, downloadHistory.getCreateTime(),
-                downloadHistory.getCreator(), isNotBlank(creatorName) ? creatorName : EMPTY_DATA.value);
+        return new DownloadHistoryInfo(downloadHistory.getId(), downloadHistory.getAttachmentId(), isNotBlank(attachmentName) ? attachmentName : EMPTY_VALUE.value, downloadHistory.getCreateTime(),
+                downloadHistory.getCreator(), isNotBlank(creatorName) ? creatorName : EMPTY_VALUE.value);
     }
 
     /**
@@ -136,7 +136,7 @@ public final class MediaModelConverters {
         return new QrCodeConfigManagerInfo(
                 qrCodeConfig.getId(), qrCodeConfig.getName(), qrCodeConfig.getDescription(), qrCodeConfig.getType(), qrCodeConfig.getDomain(), qrCodeConfig.getPathToBeFilled(), qrCodeConfig.getPlaceholderCount(),
                 qrCodeConfig.getAllowedRoles().stream().map(idAndRoleInfoMapping::get).collect(toList()), qrCodeConfig.getCreateTime(), qrCodeConfig.getUpdateTime(), qrCodeConfig.getCreator(),
-                ofNullable(idAndMemberNameMapping.get(qrCodeConfig.getCreator())).orElse(EMPTY_DATA.value), qrCodeConfig.getUpdater(), ofNullable(idAndMemberNameMapping.get(qrCodeConfig.getUpdater())).orElse(EMPTY_DATA.value));
+                ofNullable(idAndMemberNameMapping.get(qrCodeConfig.getCreator())).orElse(EMPTY_VALUE.value), qrCodeConfig.getUpdater(), ofNullable(idAndMemberNameMapping.get(qrCodeConfig.getUpdater())).orElse(EMPTY_VALUE.value));
     }
 
 }

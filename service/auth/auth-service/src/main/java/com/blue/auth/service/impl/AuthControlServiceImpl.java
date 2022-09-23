@@ -47,7 +47,7 @@ import static com.blue.basic.common.base.CommonFunctions.getIpReact;
 import static com.blue.basic.constant.common.BlueCommonThreshold.BLUE_ID;
 import static com.blue.basic.constant.common.RateLimitKeyPrefix.ACCESS_UPDATE_RATE_LIMIT_KEY_PRE;
 import static com.blue.basic.constant.common.ResponseElement.*;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.common.Status.INVALID;
 import static com.blue.basic.constant.common.Status.VALID;
 import static com.blue.basic.constant.common.SummerAttr.EMPTY_EVENT;
@@ -197,7 +197,7 @@ public class AuthControlServiceImpl implements AuthControlService {
         credential.setAccess(ofNullable(credentialInfo.getAccess())
                 .filter(BlueChecker::isNotBlank)
                 .map(AccessEncoder::encryptAccess)
-                .orElse(EMPTY_DATA.value));
+                .orElse(EMPTY_VALUE.value));
 
         credential.setMemberId(memberId);
         credential.setExtra(credentialInfo.getExtra());
@@ -315,7 +315,7 @@ public class AuthControlServiceImpl implements AuthControlService {
 
                     cre.setCredential(credential);
                     cre.setType(type);
-                    cre.setAccess(EMPTY_DATA.value);
+                    cre.setAccess(EMPTY_VALUE.value);
                     cre.setMemberId(memberId);
                     cre.setExtra("from add credential");
                     cre.setStatus(ALLOW_ACCESS_LT_SET.contains(type) ? INVALID.status : VALID.status);
@@ -954,7 +954,7 @@ public class AuthControlServiceImpl implements AuthControlService {
                     .ifPresent(higherLevelRoles -> {
                         if (isNotEmpty(higherLevelRoles))
                             throw new BlueException(RESOURCE_STILL_USED, new String[]{
-                                    higherLevelRoles.stream().map(Role::getName).reduce((a, b) -> a + "," + b).orElse(EMPTY_DATA.value)});
+                                    higherLevelRoles.stream().map(Role::getName).reduce((a, b) -> a + "," + b).orElse(EMPTY_VALUE.value)});
                     });
 
             return resourceService.updateResource(resourceUpdateParam, operatorId);
@@ -984,7 +984,7 @@ public class AuthControlServiceImpl implements AuthControlService {
             if (isNotEmpty(relations))
                 throw new BlueException(RESOURCE_STILL_USED, new String[]{
                         roleService.selectRoleByIds(relations.stream().map(RoleResRelation::getRoleId).collect(toList()))
-                                .stream().map(Role::getName).reduce((a, b) -> a + "," + b).orElse(EMPTY_DATA.value)});
+                                .stream().map(Role::getName).reduce((a, b) -> a + "," + b).orElse(EMPTY_VALUE.value)});
 
             return resourceService.deleteResource(id);
         })).doOnSuccess(ri -> {

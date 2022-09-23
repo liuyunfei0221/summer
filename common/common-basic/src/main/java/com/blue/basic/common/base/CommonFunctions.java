@@ -31,7 +31,7 @@ import static com.blue.basic.common.base.RsaProcessor.*;
 import static com.blue.basic.common.message.InternationalProcessor.resolveToMessage;
 import static com.blue.basic.constant.common.BlueDataAttrKey.*;
 import static com.blue.basic.constant.common.ResponseElement.*;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.common.SummerAttr.LANGUAGE;
 import static com.blue.basic.constant.common.Symbol.*;
 import static com.blue.basic.constant.common.SyncKeyPrefix.REQUEST_SYNC_PRE;
@@ -276,14 +276,14 @@ public class CommonFunctions {
                     .filter(cts -> cts.size() > 0)
                     .map(cts -> cts.get(0))
                     .map(HEADER_VALUE_CONVERTER)
-                    .orElse(EMPTY_DATA.value);
+                    .orElse(EMPTY_VALUE.value);
 
     /**
      * simple header value getter
      */
     public static final BiFunction<HttpHeaders, String, String> SIMPLE_HEADER_VALUE_GETTER = (headers, key) ->
             ofNullable(headers.getFirst(key))
-                    .orElse(EMPTY_DATA.value);
+                    .orElse(EMPTY_VALUE.value);
 
     /**
      * get a random str
@@ -301,7 +301,7 @@ public class CommonFunctions {
      */
     public static final BiFunction<DataWrapper, Long, String> DATA_CONVERTER = (dataWrapper, expire) -> {
         if (TIME_STAMP_GETTER.get() - ofNullable(dataWrapper.getTimeStamp()).orElse(0L) <= expire)
-            return ofNullable(dataWrapper.getOriginal()).orElse(EMPTY_DATA.value);
+            return ofNullable(dataWrapper.getOriginal()).orElse(EMPTY_VALUE.value);
 
         throw new BlueException(DECRYPTION_FAILED);
     };

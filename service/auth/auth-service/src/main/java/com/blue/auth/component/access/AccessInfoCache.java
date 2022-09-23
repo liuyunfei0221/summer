@@ -25,7 +25,7 @@ import static com.blue.basic.common.base.CommonFunctions.GSON;
 import static com.blue.basic.common.base.CommonFunctions.MILLIS_STAMP_SUP;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 import static com.blue.basic.constant.common.ResponseElement.UNAUTHORIZED;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
 import static java.time.temporal.ChronoUnit.MILLIS;
@@ -145,7 +145,7 @@ public final class AccessInfoCache {
         return reactiveStringRedisTemplate.opsForValue().get(keyId)
                 .publishOn(scheduler)
                 .flatMap(accessInfo -> {
-                    if (!EMPTY_DATA.value.equals(accessInfo))
+                    if (!EMPTY_VALUE.value.equals(accessInfo))
                         cache.put(keyId, accessInfo);
 
                     return just(accessInfo);

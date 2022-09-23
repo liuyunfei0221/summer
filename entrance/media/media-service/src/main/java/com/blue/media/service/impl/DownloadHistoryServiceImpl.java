@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.constant.common.ResponseElement.*;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.media.constant.DownloadHistoryColumnName.CREATE_TIME;
 import static com.blue.media.converter.MediaModelConverters.downloadHistoryToDownloadHistoryInfo;
 import static com.blue.mongo.common.MongoSearchAfterProcessor.packageSearchAfter;
@@ -199,14 +199,14 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
                 rpcMemberBasicServiceConsumer.getMemberBasicInfoByPrimaryKey(memberId)
         ).flatMap(tuple2 -> {
             List<DownloadHistory> downloadHistories = tuple2.getT1();
-            String memberName = ofNullable(tuple2.getT2().getName()).filter(BlueChecker::isNotBlank).orElse(EMPTY_DATA.value);
+            String memberName = ofNullable(tuple2.getT2().getName()).filter(BlueChecker::isNotBlank).orElse(EMPTY_VALUE.value);
 
             return isNotEmpty(downloadHistories) ?
                     attachmentService.selectAttachmentDetailInfoMonoByIds(downloadHistories.parallelStream().map(DownloadHistory::getAttachmentId).collect(toList()))
                             .flatMap(attachments -> {
                                 Map<Long, String> attachmentIdAndAttachmentNameMapping = attachments.parallelStream().collect(toMap(AttachmentDetailInfo::getId, AttachmentDetailInfo::getName, (a, b) -> a));
                                 return just(downloadHistories.stream().map(dh ->
-                                                downloadHistoryToDownloadHistoryInfo(dh, ofNullable(attachmentIdAndAttachmentNameMapping.get(dh.getAttachmentId())).orElse(EMPTY_DATA.value), memberName))
+                                                downloadHistoryToDownloadHistoryInfo(dh, ofNullable(attachmentIdAndAttachmentNameMapping.get(dh.getAttachmentId())).orElse(EMPTY_VALUE.value), memberName))
                                         .collect(toList()));
                             }).flatMap(downloadHistoryInfo ->
                                     just(new ScrollModelResponse<>(downloadHistoryInfo,
@@ -280,8 +280,8 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
                         Map<Long, String> memberIdAndNameMapping = t2.getT2();
 
                         return just(downloadHistories.stream().map(dh ->
-                                        downloadHistoryToDownloadHistoryInfo(dh, ofNullable(attachmentIdAndNameMapping.get(dh.getAttachmentId())).orElse(EMPTY_DATA.value),
-                                                ofNullable(memberIdAndNameMapping.get(dh.getCreator())).orElse(EMPTY_DATA.value)))
+                                        downloadHistoryToDownloadHistoryInfo(dh, ofNullable(attachmentIdAndNameMapping.get(dh.getAttachmentId())).orElse(EMPTY_VALUE.value),
+                                                ofNullable(memberIdAndNameMapping.get(dh.getCreator())).orElse(EMPTY_VALUE.value)))
                                 .collect(toList()))
                                 .flatMap(downloadHistoryInfos ->
                                         just(new PageModelResponse<>(downloadHistoryInfos, tuple2.getT2())));

@@ -66,7 +66,7 @@ import static reactor.core.publisher.Mono.*;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection", "DuplicatedCode"})
 @Service
 public class BulletinServiceImpl implements BulletinService {
 
@@ -82,10 +82,9 @@ public class BulletinServiceImpl implements BulletinService {
 
     private SynchronizedProcessor synchronizedProcessor;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     public BulletinServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BlueIdentityProcessor blueIdentityProcessor,
-                               BulletinMapper bulletinMapper, StringRedisTemplate stringRedisTemplate,
-                               SynchronizedProcessor synchronizedProcessor, ExecutorService executorService, BlueRedisConfig blueRedisConfig, CaffeineDeploy caffeineDeploy) {
+                               BulletinMapper bulletinMapper, StringRedisTemplate stringRedisTemplate, SynchronizedProcessor synchronizedProcessor,
+                               BlueRedisConfig blueRedisConfig, ExecutorService executorService, CaffeineDeploy caffeineDeploy) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.bulletinMapper = bulletinMapper;
@@ -390,6 +389,9 @@ public class BulletinServiceImpl implements BulletinService {
      */
     @Override
     public Mono<Bulletin> getBulletinMono(Long id) {
+        LOGGER.info("Mono<Bulletin> getBulletinMono(Long id), id = {}", id);
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
         return justOrEmpty(bulletinMapper.selectByPrimaryKey(id));
     }
 

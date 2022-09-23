@@ -44,7 +44,7 @@ import static com.blue.basic.common.base.ConstantProcessor.assertGender;
 import static com.blue.basic.constant.common.BlueCommonThreshold.*;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.SortType.DESC;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.common.Status.VALID;
 import static com.blue.basic.constant.common.SyncKeyPrefix.ADDRESS_UPDATE_PRE;
 import static com.blue.member.constant.AddressColumnName.*;
@@ -166,7 +166,7 @@ public class AddressServiceImpl implements AddressService {
                 });
 
         address.setAreaId(BLUE_ID.value);
-        address.setArea(EMPTY_DATA.value);
+        address.setArea(EMPTY_VALUE.value);
     };
 
     private void packageAddressRegion(Address address, Long aid, Long cid) {

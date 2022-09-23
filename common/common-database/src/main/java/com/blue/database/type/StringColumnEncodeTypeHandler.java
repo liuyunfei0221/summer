@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static com.blue.basic.component.encoder.api.common.StringColumnEncoder.encryptString;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static java.util.Optional.ofNullable;
 
 /**
@@ -36,7 +36,7 @@ public final class StringColumnEncodeTypeHandler extends BaseTypeHandler<String>
         return ofNullable(resultSet.getString(columnName))
                 .filter(StringUtils::hasText)
                 .map(StringColumnEncoder::decryptString)
-                .orElse(EMPTY_DATA.value);
+                .orElse(EMPTY_VALUE.value);
     }
 
     @Override
@@ -44,7 +44,7 @@ public final class StringColumnEncodeTypeHandler extends BaseTypeHandler<String>
         return ofNullable(resultSet.getString(columnIndex))
                 .filter(StringUtils::hasText)
                 .map(StringColumnEncoder::decryptString)
-                .orElse(EMPTY_DATA.value);
+                .orElse(EMPTY_VALUE.value);
     }
 
     @Override
@@ -52,7 +52,7 @@ public final class StringColumnEncodeTypeHandler extends BaseTypeHandler<String>
         return ofNullable(callableStatement.getString(columnIndex))
                 .filter(StringUtils::hasText)
                 .map(StringColumnEncoder::decryptString)
-                .orElse(EMPTY_DATA.value);
+                .orElse(EMPTY_VALUE.value);
     }
 
 }

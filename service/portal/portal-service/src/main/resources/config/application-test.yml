@@ -147,6 +147,14 @@ caffeine:
   expiresSecond: 10
 
 
+notice:
+  id: -1
+  title: blue
+  content: blue
+  link: www.bing.com
+  type: -1
+
+
 executor:
   corePoolSize: 4
   maximumPoolSize: 8

@@ -29,7 +29,7 @@ import static com.blue.database.common.ConditionSortProcessor.process;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
 import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
 import static com.blue.basic.constant.common.ResponseElement.*;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.marketing.converter.MarketingModelConverters.EVENT_RECORD_2_EVENT_RECORD_INFO_CONVERTER;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -277,7 +277,7 @@ public class EventRecordServiceImpl implements EventRecordService {
                                     .flatMap(memberBasicInfos -> {
                                         Map<Long, String> idAndNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(eventRecords.stream().map(e ->
-                                                        EVENT_RECORD_2_EVENT_RECORD_INFO_CONVERTER.apply(e, ofNullable(idAndNameMapping.get(e.getCreator())).orElse(EMPTY_DATA.value)))
+                                                        EVENT_RECORD_2_EVENT_RECORD_INFO_CONVERTER.apply(e, ofNullable(idAndNameMapping.get(e.getCreator())).orElse(EMPTY_VALUE.value)))
                                                 .collect(toList()));
                                     }).flatMap(eventRecordInfos ->
                                             just(new PageModelResponse<>(eventRecordInfos, tuple2.getT2())))

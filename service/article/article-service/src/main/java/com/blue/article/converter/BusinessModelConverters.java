@@ -11,7 +11,7 @@ import java.util.function.Function;
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.common.Status.VALID;
 import static java.util.Optional.ofNullable;
 
@@ -56,7 +56,7 @@ public final class BusinessModelConverters {
         Link link = new Link();
 
         link.setLinkUrl(linkInsertParam.getLinkUrl());
-        link.setContent(ofNullable(linkInsertParam.getContent()).orElse(EMPTY_DATA.value));
+        link.setContent(ofNullable(linkInsertParam.getContent()).orElse(EMPTY_VALUE.value));
 
         link.setFavorites(0L);
         link.setReadings(0L);

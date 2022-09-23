@@ -39,7 +39,7 @@ import static com.blue.basic.constant.auth.CredentialType.*;
 import static com.blue.basic.constant.auth.ExtraKey.NEW_MEMBER;
 import static com.blue.basic.constant.common.BlueHeader.*;
 import static com.blue.basic.constant.common.ResponseElement.*;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.common.Status.INVALID;
 import static com.blue.basic.constant.common.Status.VALID;
 import static com.blue.basic.constant.common.SyncKeyPrefix.CREDENTIAL_UPDATE_PRE;
@@ -96,11 +96,11 @@ public class WechatWithAutoRegisterSessionHandler implements SessionHandler {
     private static final Function<String, List<CredentialInfo>> CREDENTIALS_GENERATOR = phone -> {
         List<CredentialInfo> credentials = new ArrayList<>(4);
 
-        credentials.add(new CredentialInfo(phone, PHONE_VERIFY_AUTO_REGISTER.identity, EMPTY_DATA.value, VALID.status, "from auto registry"));
-        credentials.add(new CredentialInfo(phone, PHONE_PWD.identity, EMPTY_DATA.value, INVALID.status, "from auto registry"));
-        credentials.add(new CredentialInfo(phone, LOCAL_PHONE_AUTO_REGISTER.identity, EMPTY_DATA.value, VALID.status, "from auto registry"));
-        credentials.add(new CredentialInfo(phone, WECHAT_AUTO_REGISTER.identity, EMPTY_DATA.value, VALID.status, "from auto registry"));
-        credentials.add(new CredentialInfo(phone, MINI_PRO_AUTO_REGISTER.identity, EMPTY_DATA.value, VALID.status, "from auto registry"));
+        credentials.add(new CredentialInfo(phone, PHONE_VERIFY_AUTO_REGISTER.identity, EMPTY_VALUE.value, VALID.status, "from auto registry"));
+        credentials.add(new CredentialInfo(phone, PHONE_PWD.identity, EMPTY_VALUE.value, INVALID.status, "from auto registry"));
+        credentials.add(new CredentialInfo(phone, LOCAL_PHONE_AUTO_REGISTER.identity, EMPTY_VALUE.value, VALID.status, "from auto registry"));
+        credentials.add(new CredentialInfo(phone, WECHAT_AUTO_REGISTER.identity, EMPTY_VALUE.value, VALID.status, "from auto registry"));
+        credentials.add(new CredentialInfo(phone, MINI_PRO_AUTO_REGISTER.identity, EMPTY_VALUE.value, VALID.status, "from auto registry"));
 
         return credentials;
     };
@@ -118,7 +118,7 @@ public class WechatWithAutoRegisterSessionHandler implements SessionHandler {
 
         //TODO verify param
 
-        String phone = EMPTY_DATA.value;
+        String phone = EMPTY_VALUE.value;
 
         String source = ofNullable(getSource(serverRequest))
                 .filter(BlueChecker::isNotBlank).orElse(WE.identity);

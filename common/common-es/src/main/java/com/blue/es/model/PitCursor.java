@@ -5,7 +5,7 @@ import java.util.List;
 
 import static com.blue.basic.common.base.BlueChecker.isNotEmpty;
 import static com.blue.basic.common.base.BlueChecker.isNotNull;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static java.util.Collections.emptyList;
 
 /**
@@ -29,12 +29,12 @@ public final class PitCursor implements Serializable {
     private List<String> searchAfter;
 
     public PitCursor() {
-        this.id = EMPTY_DATA.value;
+        this.id = EMPTY_VALUE.value;
         this.searchAfter = emptyList();
     }
 
     public PitCursor(String id, List<String> searchAfter) {
-        this.id = isNotNull(id) ? id : EMPTY_DATA.value;
+        this.id = isNotNull(id) ? id : EMPTY_VALUE.value;
         this.searchAfter = isNotEmpty(searchAfter) ? searchAfter : emptyList();
     }
 

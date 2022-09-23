@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.redis.api.generator.BlueRedisScriptGenerator.generateScriptByScriptStr;
 import static com.blue.redis.constant.RedisScripts.TOKEN_BUCKET_RATE_LIMITER;
 import static java.lang.String.valueOf;
@@ -45,7 +45,7 @@ public final class BlueTokenBucketRateLimiter {
         this.scheduler = isNotNull(scheduler) ? scheduler : boundedElastic();
     }
 
-    private static final Supplier<String> CURRENT_SEC_STAMP_SUP = () -> now().getEpochSecond() + EMPTY_DATA.value;
+    private static final Supplier<String> CURRENT_SEC_STAMP_SUP = () -> now().getEpochSecond() + EMPTY_VALUE.value;
 
     private static final RedisScript<Boolean> SCRIPT = generateScriptByScriptStr(TOKEN_BUCKET_RATE_LIMITER.str, Boolean.class);
 

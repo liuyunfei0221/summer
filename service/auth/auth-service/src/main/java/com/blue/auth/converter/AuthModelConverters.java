@@ -13,7 +13,7 @@ import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.common.base.ConstantProcessor.getResourceTypeByIdentity;
 import static com.blue.basic.constant.common.Default.NOT_DEFAULT;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.common.Symbol.SLASH;
 import static java.util.Optional.ofNullable;
 
@@ -69,8 +69,8 @@ public final class AuthModelConverters {
             throw new BlueException(EMPTY_PARAM);
 
         return new RoleManagerInfo(role.getId(), role.getType(), role.getName(), role.getDescription(), role.getLevel(), role.getIsDefault(),
-                role.getCreateTime(), role.getUpdateTime(), role.getCreator(), ofNullable(idAndMemberNameMapping.get(role.getCreator())).orElse(EMPTY_DATA.value),
-                role.getUpdater(), ofNullable(idAndMemberNameMapping.get(role.getUpdater())).orElse(EMPTY_DATA.value));
+                role.getCreateTime(), role.getUpdateTime(), role.getCreator(), ofNullable(idAndMemberNameMapping.get(role.getCreator())).orElse(EMPTY_VALUE.value),
+                role.getUpdater(), ofNullable(idAndMemberNameMapping.get(role.getUpdater())).orElse(EMPTY_VALUE.value));
     }
 
     /**
@@ -134,8 +134,8 @@ public final class AuthModelConverters {
 
         return new ResourceManagerInfo(resource.getId(), resource.getRequestMethod().intern(), module, relativeUri, (SLASH.identity.intern() + module + relativeUri).intern(), resource.getRelationView(), resource.getAuthenticate(),
                 resource.getRequestUnDecryption(), resource.getResponseUnEncryption(), resource.getExistenceRequestBody(), resource.getExistenceResponseBody(), getResourceTypeByIdentity(resource.getType()).disc.intern(),
-                resource.getName(), resource.getDescription(), resource.getCreateTime(), resource.getUpdateTime(), resource.getCreator(), ofNullable(idAndMemberNameMapping.get(resource.getCreator())).orElse(EMPTY_DATA.value),
-                resource.getUpdater(), ofNullable(idAndMemberNameMapping.get(resource.getUpdater())).orElse(EMPTY_DATA.value));
+                resource.getName(), resource.getDescription(), resource.getCreateTime(), resource.getUpdateTime(), resource.getCreator(), ofNullable(idAndMemberNameMapping.get(resource.getCreator())).orElse(EMPTY_VALUE.value),
+                resource.getUpdater(), ofNullable(idAndMemberNameMapping.get(resource.getUpdater())).orElse(EMPTY_VALUE.value));
     }
 
     /**
@@ -145,7 +145,7 @@ public final class AuthModelConverters {
         if (isNull(credential))
             throw new BlueException(EMPTY_PARAM);
 
-        return new CredentialInfo(credential.getCredential(), credential.getType(), EMPTY_DATA.value, credential.getStatus(), credential.getExtra());
+        return new CredentialInfo(credential.getCredential(), credential.getType(), EMPTY_VALUE.value, credential.getStatus(), credential.getExtra());
     };
 
     /**

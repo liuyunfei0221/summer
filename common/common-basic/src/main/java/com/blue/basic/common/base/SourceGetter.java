@@ -5,7 +5,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Mono;
 
 import static com.blue.basic.constant.common.BlueHeader.SOURCE;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.member.SourceType.APP;
 import static java.util.Optional.ofNullable;
 import static reactor.core.publisher.Mono.just;
@@ -27,7 +27,7 @@ public final class SourceGetter {
      * @return
      */
     public static String getSource(ServerRequest serverRequest) {
-        return ofNullable(serverRequest.headers().firstHeader(SOURCE.name)).orElse(EMPTY_DATA.value);
+        return ofNullable(serverRequest.headers().firstHeader(SOURCE.name)).orElse(EMPTY_VALUE.value);
     }
 
     /**
@@ -37,7 +37,7 @@ public final class SourceGetter {
      * @return
      */
     public static String getSource(ServerHttpRequest serverHttpRequest) {
-        return ofNullable(serverHttpRequest.getHeaders().getFirst(SOURCE.name)).orElse(EMPTY_DATA.value);
+        return ofNullable(serverHttpRequest.getHeaders().getFirst(SOURCE.name)).orElse(EMPTY_VALUE.value);
     }
 
     /**

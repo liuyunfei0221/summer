@@ -23,7 +23,7 @@ import static com.blue.basic.common.base.FileGetter.getResources;
 import static com.blue.basic.constant.common.BluePrefix.CLASS_PATH_PREFIX;
 import static com.blue.basic.constant.common.BlueSuffix.PROP;
 import static com.blue.basic.constant.common.ElementKey.DEFAULT;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.common.SummerAttr.LANGUAGE;
 import static com.blue.basic.constant.common.Symbol.*;
 import static java.util.Collections.emptyList;
@@ -149,7 +149,7 @@ final class ElementProcessor {
             for (String key : keys) {
                 if (isNotBlank(key)) {
                     value = allElement.get(key);
-                    res.put(key, isNotNull(value) ? value : EMPTY_DATA.value);
+                    res.put(key, isNotNull(value) ? value : EMPTY_VALUE.value);
                 }
             }
 

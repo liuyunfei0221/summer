@@ -1574,6 +1574,21 @@ CREATE TABLE `bulletin`
     KEY           `idx_pri_stat`(`priority`,`status`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of bulletin';
 
+CREATE TABLE `notice`
+(
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `title`       varchar(128) NOT NULL COMMENT 'notice title',
+    `content`     text         DEFAULT NULL COMMENT 'notice content',
+    `link`        varchar(256) DEFAULT '' COMMENT 'notice link',
+    `type`        tinyint      NOT NULL COMMENT 'notice type: 1-privacy policy 2-faq 3-about us 4-terms and conditions',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    `creator`     bigint       NOT NULL COMMENT 'creator id',
+    `updater`     bigint       NOT NULL COMMENT 'updater id',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_type`(`type`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of notice';
+
 -- portal0
 
 CREATE

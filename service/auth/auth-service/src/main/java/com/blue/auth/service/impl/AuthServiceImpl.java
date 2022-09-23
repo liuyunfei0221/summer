@@ -47,7 +47,7 @@ import static com.blue.basic.constant.auth.DeviceType.UNKNOWN;
 import static com.blue.basic.constant.common.BlueCommonThreshold.*;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.SpecialSecKey.NOT_LOGGED_IN_SEC_KEY;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.common.SyncKeyPrefix.ACCESS_UPDATE_PRE;
 import static java.lang.Long.parseLong;
 import static java.lang.String.valueOf;
@@ -382,7 +382,7 @@ public class AuthServiceImpl implements AuthService {
             return;
 
         String originalAuthInfoJson = ofNullable(stringRedisTemplate.opsForValue().get(keyId))
-                .orElse(EMPTY_DATA.value);
+                .orElse(EMPTY_VALUE.value);
 
         if (isBlank(originalAuthInfoJson)) {
             LOGGER.info("member's authInfo is blank, can't refresh");
@@ -622,7 +622,7 @@ public class AuthServiceImpl implements AuthService {
                                 boolean resUnEncryption = resource.getResponseUnEncryption();
 
                                 return just(new AccessAsserted(true, reqUnDecryption, resUnEncryption, resource.getExistenceRequestBody(), resource.getExistenceResponseBody(),
-                                        reqUnDecryption && resUnEncryption ? EMPTY_DATA.value : accessInfo.getPubKey(),
+                                        reqUnDecryption && resUnEncryption ? EMPTY_VALUE.value : accessInfo.getPubKey(),
                                         new Access(accessInfo.getId(), accessInfo.getRoleIds(), memberPayload.getCredentialType().intern(),
                                                 memberPayload.getDeviceType().intern(), parseLong(memberPayload.getLoginTime())), OK.message));
                             });

@@ -52,7 +52,7 @@ import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
 import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
 import static com.blue.basic.constant.common.ResponseElement.*;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.es.common.EsPitProcessor.packagePit;
 import static com.blue.es.common.EsPitProcessor.parsePit;
 import static com.blue.es.common.EsSearchAfterProcessor.packageSearchAfter;
@@ -114,8 +114,8 @@ public class ShineServiceImpl implements ShineService {
 
         this.PIT_TIME = Time.of(builder -> builder.time(pitDeploy.getTime()));
         this.fuzziness = ofNullable(fuzzinessDeploy.getFuzziness()).filter(f -> f >= 0 && f <= 2).map(String::valueOf).orElseThrow(() -> new RuntimeException("Invalid Fuzziness"));
-        this.preTags = ofNullable(highlightDeploy.getPreTags()).orElseGet(() -> singletonList(EMPTY_DATA.value));
-        this.postTags = ofNullable(highlightDeploy.getPostTags()).orElseGet(() -> singletonList(EMPTY_DATA.value));
+        this.preTags = ofNullable(highlightDeploy.getPreTags()).orElseGet(() -> singletonList(EMPTY_VALUE.value));
+        this.postTags = ofNullable(highlightDeploy.getPostTags()).orElseGet(() -> singletonList(EMPTY_VALUE.value));
 
         this.defaultPriority = defaultPriorityDeploy.getPriority();
     }
@@ -670,13 +670,13 @@ public class ShineServiceImpl implements ShineService {
         ShineCondition condition = scrollModelRequest.getCondition();
         QueryAndHighlightColumns queryAndHighlightColumns = CONDITION_PROCESSOR.apply(condition);
 
-        return just(ofNullable(cursor).map(PitCursor::getId).filter(BlueChecker::isNotBlank).orElse(EMPTY_DATA.value))
+        return just(ofNullable(cursor).map(PitCursor::getId).filter(BlueChecker::isNotBlank).orElse(EMPTY_VALUE.value))
                 .filter(BlueChecker::isNotBlank)
                 .switchIfEmpty(defer(() ->
                         fromFuture(elasticsearchAsyncClient.openPointInTime(OpenPointInTimeRequest.of(builder -> builder.index(INDEX_NAME).keepAlive(PIT_TIME))))
                                 .flatMap(response -> just(response.id()))
                                 .filter(BlueChecker::isNotBlank)
-                                .switchIfEmpty(defer(() -> just(EMPTY_DATA.value)))
+                                .switchIfEmpty(defer(() -> just(EMPTY_VALUE.value)))
                 )).flatMap(id ->
                         fromFuture(elasticsearchAsyncClient.search(
                                 SearchRequest.of(builder -> {

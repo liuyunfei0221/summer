@@ -16,7 +16,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 /**
- * portal api handler
+ * bulletin api handler
  *
  * @author liuyunfei
  */

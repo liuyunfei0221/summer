@@ -19,6 +19,7 @@ import com.blue.basic.constant.member.Gender;
 import com.blue.basic.constant.member.SourceType;
 import com.blue.basic.constant.member.ZodiacSign;
 import com.blue.basic.constant.portal.BulletinType;
+import com.blue.basic.constant.portal.NoticeType;
 import com.blue.basic.constant.portal.StyleType;
 import com.blue.basic.constant.verify.VerifyBusinessType;
 import com.blue.basic.constant.verify.VerifyType;
@@ -168,6 +169,12 @@ public final class ConstantProcessor {
      */
     private static final Map<Integer, BulletinType> BULLETIN_TYPE_MAPPING =
             of(BulletinType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
+
+    /**
+     * valid notice type identity and type mapping
+     */
+    private static final Map<Integer, NoticeType> NOTICE_TYPE_MAPPING =
+            of(NoticeType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
 
     /**
      * valid reward type identity and type mapping
@@ -471,6 +478,19 @@ public final class ConstantProcessor {
             return;
 
         if (!BULLETIN_TYPE_MAPPING.containsKey(identity))
+            throw new BlueException(INVALID_IDENTITY);
+    }
+
+    /**
+     * assert notice type
+     *
+     * @param identity
+     */
+    public static void assertNoticeType(Integer identity, boolean nullable) {
+        if (nullable && isNull(identity))
+            return;
+
+        if (!NOTICE_TYPE_MAPPING.containsKey(identity))
             throw new BlueException(INVALID_IDENTITY);
     }
 
@@ -929,6 +949,23 @@ public final class ConstantProcessor {
             throw new BlueException(INVALID_IDENTITY);
 
         BulletinType type = BULLETIN_TYPE_MAPPING.get(identity);
+        if (isNull(type))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return type;
+    }
+
+    /**
+     * get notice type by identity
+     *
+     * @param identity
+     * @return
+     */
+    public static NoticeType getNoticeTypeByIdentity(Integer identity) {
+        if (isNull(identity))
+            throw new BlueException(INVALID_IDENTITY);
+
+        NoticeType type = NOTICE_TYPE_MAPPING.get(identity);
         if (isNull(type))
             throw new BlueException(INVALID_IDENTITY);
 

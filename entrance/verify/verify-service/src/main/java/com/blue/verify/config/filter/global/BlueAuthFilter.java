@@ -22,7 +22,7 @@ import static com.blue.basic.constant.common.BlueDataAttrKey.*;
 import static com.blue.basic.constant.common.BlueHeader.AUTHORIZATION;
 import static com.blue.basic.constant.common.ResponseElement.UNAUTHORIZED;
 import static com.blue.basic.constant.common.SpecialAccess.VISITOR;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.verify.config.filter.BlueFilterOrder.BLUE_AUTH;
 import static java.util.Optional.ofNullable;
 
@@ -68,8 +68,8 @@ public final class BlueAuthFilter implements WebFilter, Ordered {
 
         return rpcAuthServiceConsumer.assertAccess(
                         new AccessAssert(HEADER_VALUE_GETTER.apply(request.getHeaders(), AUTHORIZATION.name),
-                                ofNullable(attributes.get(METHOD.key)).map(String::valueOf).orElse(EMPTY_DATA.value),
-                                ofNullable(attributes.get(URI.key)).map(String::valueOf).orElse(EMPTY_DATA.value)))
+                                ofNullable(attributes.get(METHOD.key)).map(String::valueOf).orElse(EMPTY_VALUE.value),
+                                ofNullable(attributes.get(URI.key)).map(String::valueOf).orElse(EMPTY_VALUE.value)))
                 .flatMap(authAsserted -> {
                     authProcess(authAsserted, request, attributes);
                     return chain.filter(exchange);

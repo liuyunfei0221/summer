@@ -10,7 +10,7 @@ import com.blue.basic.common.base.BlueChecker;
 
 import static com.blue.basic.common.base.BlueChecker.isNotBlank;
 import static com.blue.basic.common.base.BlueChecker.isNotNull;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static java.util.Optional.ofNullable;
 
 /**
@@ -40,7 +40,7 @@ public final class EsPitProcessor {
      * @return
      */
     public static String parsePit(OpenPointInTimeResponse openPointInTimeResponse) {
-        return ofNullable(openPointInTimeResponse).map(OpenPointInTimeResponse::id).filter(BlueChecker::isNotBlank).orElse(EMPTY_DATA.value);
+        return ofNullable(openPointInTimeResponse).map(OpenPointInTimeResponse::id).filter(BlueChecker::isNotBlank).orElse(EMPTY_VALUE.value);
     }
 
     /**
@@ -50,7 +50,7 @@ public final class EsPitProcessor {
      * @return
      */
     public static String parsePit(SearchResponse<?> searchResponse) {
-        return ofNullable(searchResponse).map(SearchResponse::pitId).filter(BlueChecker::isNotBlank).orElse(EMPTY_DATA.value);
+        return ofNullable(searchResponse).map(SearchResponse::pitId).filter(BlueChecker::isNotBlank).orElse(EMPTY_VALUE.value);
     }
 
 }

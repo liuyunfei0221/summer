@@ -32,7 +32,7 @@ import static com.blue.basic.constant.common.BlueHeader.REQUEST_IP;
 import static com.blue.basic.constant.common.DataEventOpType.CLICK;
 import static com.blue.basic.constant.common.DataEventType.UNIFIED;
 import static com.blue.basic.constant.common.ResponseElement.UNSUPPORTED_MEDIA_TYPE;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.media.common.MediaCommonFunctions.extractValuesToBind;
 import static com.blue.media.config.filter.BlueFilterOrder.BLUE_PRE_WITH_ERROR_REPORT;
 import static java.lang.String.valueOf;
@@ -231,7 +231,7 @@ public final class BluePreWithErrorReportFilter implements WebFilter, Ordered {
         public Mono<String> processor(ServerWebExchange exchange) {
             return ServerRequest.create(exchange, httpMessageReaders)
                     .bodyToMono(String.class)
-                    .switchIfEmpty(defer(() -> just(EMPTY_DATA.value)));
+                    .switchIfEmpty(defer(() -> just(EMPTY_VALUE.value)));
         }
     }
 

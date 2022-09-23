@@ -8,9 +8,14 @@ package com.blue.basic.constant.common;
 public enum SpecialStringElement {
 
     /**
-     * special secKey is not session
+     * empty value
      */
-    EMPTY_DATA("");
+    EMPTY_VALUE(""),
+
+    /**
+     * empty json
+     */
+    EMPTY_JSON("{}");
 
     /**
      * value

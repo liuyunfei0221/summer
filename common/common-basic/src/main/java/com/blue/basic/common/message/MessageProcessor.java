@@ -24,7 +24,7 @@ import static com.blue.basic.common.message.ElementProcessor.resolveToValues;
 import static com.blue.basic.constant.common.BluePrefix.CLASS_PATH_PREFIX;
 import static com.blue.basic.constant.common.BlueSuffix.PROP;
 import static com.blue.basic.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.common.SummerAttr.LANGUAGE;
 import static com.blue.basic.constant.common.Symbol.*;
 import static java.lang.Integer.*;
@@ -138,14 +138,14 @@ final class MessageProcessor {
             messages = parseProp(r);
             identity = LANGUAGE_IDENTITY_PARSER.apply(r.getFilename());
 
-            languageInfo = new LanguageInfo(ofNullable(messages.get(LANGUAGE_NAME_KEY)).orElse(EMPTY_DATA.value),
-                    identity, ofNullable(messages.get(LANGUAGE_ICON_KEY)).orElse(EMPTY_DATA.value));
+            languageInfo = new LanguageInfo(ofNullable(messages.get(LANGUAGE_NAME_KEY)).orElse(EMPTY_VALUE.value),
+                    identity, ofNullable(messages.get(LANGUAGE_ICON_KEY)).orElse(EMPTY_VALUE.value));
 
             infoMap.put(LANGUAGE_PRIORITY_PARSER.apply(messages), languageInfo);
 
             i18n.put(lowerCase(identity), MESSAGES_CONVERTER.apply(messages));
 
-            if (DEFAULT_LANGUAGE.equals(ofNullable(languageInfo.getIdentity()).map(String::toLowerCase).orElse(EMPTY_DATA.value)))
+            if (DEFAULT_LANGUAGE.equals(ofNullable(languageInfo.getIdentity()).map(String::toLowerCase).orElse(EMPTY_VALUE.value)))
                 defaultLanguageInfo = languageInfo;
         }
 
@@ -190,14 +190,14 @@ final class MessageProcessor {
             messages = parseProp(f);
             identity = LANGUAGE_IDENTITY_PARSER.apply(f.getName());
 
-            languageInfo = new LanguageInfo(ofNullable(messages.get(LANGUAGE_NAME_KEY)).orElse(EMPTY_DATA.value),
-                    identity, ofNullable(messages.get(LANGUAGE_ICON_KEY)).orElse(EMPTY_DATA.value));
+            languageInfo = new LanguageInfo(ofNullable(messages.get(LANGUAGE_NAME_KEY)).orElse(EMPTY_VALUE.value),
+                    identity, ofNullable(messages.get(LANGUAGE_ICON_KEY)).orElse(EMPTY_VALUE.value));
 
             infoMap.put(LANGUAGE_PRIORITY_PARSER.apply(messages), languageInfo);
 
             i18n.put(lowerCase(identity), MESSAGES_CONVERTER.apply(messages));
 
-            if (DEFAULT_LANGUAGE.equals(ofNullable(languageInfo.getIdentity()).map(String::toLowerCase).orElse(EMPTY_DATA.value)))
+            if (DEFAULT_LANGUAGE.equals(ofNullable(languageInfo.getIdentity()).map(String::toLowerCase).orElse(EMPTY_VALUE.value)))
                 defaultLanguageInfo = languageInfo;
         }
 

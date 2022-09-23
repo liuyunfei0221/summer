@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 
 /**
  * jwt params
@@ -34,9 +34,9 @@ public abstract class BaseJwtConfParams<T> implements JwtConf<T> {
         this.refreshExpiresMillis = refreshExpiresMillis;
         this.signKey = signKey;
         this.gammaSecrets = gammaSecrets;
-        this.issuer = EMPTY_DATA.value;
-        this.subject = EMPTY_DATA.value;
-        this.audience = EMPTY_DATA.value;
+        this.issuer = EMPTY_VALUE.value;
+        this.subject = EMPTY_VALUE.value;
+        this.audience = EMPTY_VALUE.value;
     }
 
     public BaseJwtConfParams(Long maxExpiresMillis, Long minExpiresMillis, Long refreshExpiresMillis, String signKey, List<String> gammaSecrets, String issuer, String subject, String audience) {

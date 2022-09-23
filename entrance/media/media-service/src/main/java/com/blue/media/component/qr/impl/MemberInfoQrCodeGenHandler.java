@@ -21,7 +21,7 @@ import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.BlueRandomGenerator.generate;
 import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.common.Symbol.*;
 import static com.blue.basic.constant.media.AttachmentType.QR_CODE;
 import static com.blue.basic.constant.media.QrCodeType.USER_INFO;
@@ -74,7 +74,7 @@ public class MemberInfoQrCodeGenHandler implements QrCodeGenerateHandler {
                 + memberId + HYPHEN.identity + generate(RandomType.ALPHABETIC, 6)
                 + PERIOD.identity + qrCoder.getFileType();
 
-        return byteOperateService.upload(qrCoder.generateCodeWithoutLogo(content), QR_CODE.identity, memberId, EMPTY_DATA.value, descName)
+        return byteOperateService.upload(qrCoder.generateCodeWithoutLogo(content), QR_CODE.identity, memberId, EMPTY_VALUE.value, descName)
                 .flatMap(aui ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(aui), BlueResponse.class));

@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 
 /**
  * global business exception
@@ -132,7 +132,7 @@ public final class BlueException extends RuntimeException {
                 "status=" + status +
                 ", code=" + code +
                 ", message='" + message + '\'' +
-                (isNull(replacements) ? EMPTY_DATA.value : ", replacements=" + Arrays.toString(replacements)) +
+                (isNull(replacements) ? EMPTY_VALUE.value : ", replacements=" + Arrays.toString(replacements)) +
                 '}';
     }
 }

@@ -45,7 +45,7 @@ import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
 import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.SortType.DESC;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.common.Status.VALID;
 import static com.blue.basic.constant.common.SyncKeyPrefix.CARD_UPDATE_PRE;
 import static com.blue.member.constant.CardColumnName.*;
@@ -503,7 +503,7 @@ public class CardServiceImpl implements CardService {
                                     .flatMap(memberBasicInfos -> {
                                         Map<Long, String> idAndNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(cards.stream().map(c ->
-                                                        CARD_2_CARD_DETAIL_INFO_CONVERTER.apply(c, ofNullable(idAndNameMapping.get(c.getMemberId())).orElse(EMPTY_DATA.value)))
+                                                        CARD_2_CARD_DETAIL_INFO_CONVERTER.apply(c, ofNullable(idAndNameMapping.get(c.getMemberId())).orElse(EMPTY_VALUE.value)))
                                                 .collect(toList()));
                                     }).flatMap(cardDetailInfos ->
                                             just(new PageModelResponse<>(cardDetailInfos, tuple2.getT2())))

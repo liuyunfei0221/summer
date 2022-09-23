@@ -10,7 +10,6 @@ import com.blue.lake.repository.entity.OptEvent;
 import com.blue.lake.repository.mapper.OptEventMapper;
 import com.blue.lake.service.inter.OptEventService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
@@ -24,8 +23,6 @@ import static com.blue.lake.converter.LakeModelConverters.DATA_EVENT_2_OPT_EVENT
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
-import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
@@ -91,7 +88,6 @@ public class OptEventServiceImpl implements OptEventService {
      * @return
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public boolean insertEvent(DataEvent dataEvent) {
         LOGGER.info("boolean insertEvent(DataEvent dataEvent), dataEvent = {}", dataEvent);
         if (isNull(dataEvent))
@@ -107,7 +103,6 @@ public class OptEventServiceImpl implements OptEventService {
      * @return
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public boolean insertEvents(List<DataEvent> dataEvents) {
         LOGGER.info("boolean insertEvents(List<DataEvent> dataEvents), dataEvents = {}", dataEvents);
         if (isEmpty(dataEvents))

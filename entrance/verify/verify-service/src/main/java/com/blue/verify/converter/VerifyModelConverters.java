@@ -16,7 +16,7 @@ import java.util.function.Function;
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -72,8 +72,8 @@ public final class VerifyModelConverters {
             throw new BlueException(EMPTY_PARAM);
 
         return new VerifyTemplateManagerInfo(verifyTemplate.getId(), verifyTemplate.getName(), verifyTemplate.getDescription(), verifyTemplate.getType(), verifyTemplate.getBusinessType(), verifyTemplate.getTitle(), verifyTemplate.getContent(),
-                verifyTemplate.getCreateTime(), verifyTemplate.getUpdateTime(), verifyTemplate.getCreator(), ofNullable(idAndMemberNameMapping.get(verifyTemplate.getCreator())).orElse(EMPTY_DATA.value), verifyTemplate.getUpdater(),
-                ofNullable(idAndMemberNameMapping.get(verifyTemplate.getUpdater())).orElse(EMPTY_DATA.value));
+                verifyTemplate.getCreateTime(), verifyTemplate.getUpdateTime(), verifyTemplate.getCreator(), ofNullable(idAndMemberNameMapping.get(verifyTemplate.getCreator())).orElse(EMPTY_VALUE.value), verifyTemplate.getUpdater(),
+                ofNullable(idAndMemberNameMapping.get(verifyTemplate.getUpdater())).orElse(EMPTY_VALUE.value));
     };
 
     /**

@@ -33,7 +33,7 @@ import static com.blue.basic.common.base.CommonFunctions.*;
 import static com.blue.basic.constant.common.BlueDataAttrKey.*;
 import static com.blue.basic.constant.common.DataEventOpType.CLICK;
 import static com.blue.basic.constant.common.DataEventType.UNIFIED;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.gateway.common.GatewayCommonFunctions.ON_ERROR_CONSUMER_WITH_MESSAGE;
 import static com.blue.gateway.common.GatewayCommonFunctions.getRequestDecorator;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_POST_WITH_DATA_REPORT;
@@ -75,14 +75,14 @@ public final class BluePostWithDataReportFilter implements GlobalFilter, Ordered
                     requestBody
                     :
                     decryptRequestBody(requestBody,
-                            ofNullable(attributes.get(SEC_KEY.key)).map(String::valueOf).orElse(EMPTY_DATA.value), EXPIRED_SECONDS);
+                            ofNullable(attributes.get(SEC_KEY.key)).map(String::valueOf).orElse(EMPTY_VALUE.value), EXPIRED_SECONDS);
 
     private static final BiFunction<String, Map<String, Object>, String> RESPONSE_BODY_PROCESSOR = (responseBody, attributes) ->
             ofNullable(attributes.get(RESPONSE_UN_ENCRYPTION.key))
                     .map(b -> (boolean) b).orElse(true) ?
                     responseBody
                     :
-                    encryptResponseBody(responseBody, ofNullable(attributes.get(SEC_KEY.key)).map(s -> (String) s).orElse(EMPTY_DATA.value));
+                    encryptResponseBody(responseBody, ofNullable(attributes.get(SEC_KEY.key)).map(s -> (String) s).orElse(EMPTY_VALUE.value));
 
     private void packageError(Throwable throwable, ServerHttpRequest request, DataEvent dataEvent) {
         ExceptionElement exceptionElement = THROWABLE_CONVERTER.apply(throwable, getAcceptLanguages(request));
@@ -177,7 +177,7 @@ public final class BluePostWithDataReportFilter implements GlobalFilter, Ordered
         return fromPublisher(
                 ServerRequest.create(exchange, httpMessageReaders)
                         .bodyToMono(String.class)
-                        .switchIfEmpty(defer(() -> just(EMPTY_DATA.value)))
+                        .switchIfEmpty(defer(() -> just(EMPTY_VALUE.value)))
                         .flatMap(requestBody -> {
                             String tarBody = REQUEST_BODY_PROCESSOR.apply(requestBody, attributes);
                             dataEvent.addData(REQUEST_BODY.key, tarBody);

@@ -31,7 +31,7 @@ import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.constant.common.BlueCommonThreshold.*;
 import static com.blue.basic.constant.common.ResponseElement.*;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.media.constant.AttachmentColumnName.*;
 import static com.blue.media.converter.MediaModelConverters.ATTACHMENT_2_ATTACHMENT_DETAIL_INFO_CONVERTER;
 import static com.blue.media.converter.MediaModelConverters.ATTACHMENT_2_ATTACHMENT_INFO_CONVERTER;
@@ -274,7 +274,7 @@ public class AttachmentServiceImpl implements AttachmentService {
                 rpcMemberBasicServiceConsumer.getMemberBasicInfoByPrimaryKey(memberId)
         ).map(tuple2 -> {
             List<Attachment> attachments = tuple2.getT1();
-            String memberName = ofNullable(tuple2.getT2().getName()).filter(BlueChecker::isNotBlank).orElse(EMPTY_DATA.value);
+            String memberName = ofNullable(tuple2.getT2().getName()).filter(BlueChecker::isNotBlank).orElse(EMPTY_VALUE.value);
 
             return isNotEmpty(attachments) ?
                     new ScrollModelResponse<>(attachments.stream().map(a -> ATTACHMENT_2_ATTACHMENT_DETAIL_INFO_CONVERTER.apply(a, memberName)).collect(toList()),
@@ -341,7 +341,7 @@ public class AttachmentServiceImpl implements AttachmentService {
                                     .flatMap(memberBasicInfos -> {
                                         Map<Long, String> idAndNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(attachments.stream().map(a ->
-                                                        ATTACHMENT_2_ATTACHMENT_DETAIL_INFO_CONVERTER.apply(a, ofNullable(idAndNameMapping.get(a.getCreator())).orElse(EMPTY_DATA.value)))
+                                                        ATTACHMENT_2_ATTACHMENT_DETAIL_INFO_CONVERTER.apply(a, ofNullable(idAndNameMapping.get(a.getCreator())).orElse(EMPTY_VALUE.value)))
                                                 .collect(toList()));
                                     }).flatMap(attachmentDetailInfos ->
                                             just(new PageModelResponse<>(attachmentDetailInfos, tuple2.getT2())))

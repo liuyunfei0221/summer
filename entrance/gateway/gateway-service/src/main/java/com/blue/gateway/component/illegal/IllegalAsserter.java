@@ -22,7 +22,7 @@ import static com.blue.basic.common.base.CommonFunctions.REQ_RES_KEY_GENERATOR;
 import static com.blue.basic.constant.common.BlueDataAttrKey.*;
 import static com.blue.basic.constant.common.CacheKeyPrefix.ILLEGAL_IP_PRE;
 import static com.blue.basic.constant.common.CacheKeyPrefix.ILLEGAL_JWT_PRE;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.common.Symbol.ASTERISK;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Optional.ofNullable;
@@ -147,8 +147,8 @@ public final class IllegalAsserter {
         Map<String, Object> attributes = exchange.getAttributes();
 
         String resKey = REQ_RES_KEY_GENERATOR.apply(
-                ofNullable(attributes.get(METHOD.key)).map(String::valueOf).orElse(EMPTY_DATA.value),
-                ofNullable(attributes.get(URI.key)).map(String::valueOf).orElse(EMPTY_DATA.value));
+                ofNullable(attributes.get(METHOD.key)).map(String::valueOf).orElse(EMPTY_VALUE.value),
+                ofNullable(attributes.get(URI.key)).map(String::valueOf).orElse(EMPTY_VALUE.value));
 
         return zip(
                 ofNullable(attributes.get(JWT.key))

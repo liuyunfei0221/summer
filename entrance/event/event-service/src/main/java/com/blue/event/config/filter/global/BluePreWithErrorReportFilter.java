@@ -26,7 +26,7 @@ import static com.blue.basic.constant.common.BlueHeader.AUTHORIZATION;
 import static com.blue.basic.constant.common.BlueHeader.REQUEST_IP;
 import static com.blue.basic.constant.common.DataEventOpType.CLICK;
 import static com.blue.basic.constant.common.DataEventType.UNIFIED;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.event.config.filter.BlueFilterOrder.BLUE_PRE_WITH_ERROR_REPORT;
 import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;
@@ -121,7 +121,7 @@ public final class BluePreWithErrorReportFilter implements WebFilter, Ordered {
                 .onErrorResume(throwable ->
                         ServerRequest.create(exchange, httpMessageReaders)
                                 .bodyToMono(String.class)
-                                .switchIfEmpty(defer(() -> just(EMPTY_DATA.value)))
+                                .switchIfEmpty(defer(() -> just(EMPTY_VALUE.value)))
                                 .flatMap(requestBody -> {
                                     DataEvent dataEvent = new DataEvent();
                                     dataEvent.setDataEventType(UNIFIED.identity);
@@ -129,7 +129,7 @@ public final class BluePreWithErrorReportFilter implements WebFilter, Ordered {
 
                                     dataEvent.setStamp(TIME_STAMP_GETTER.get());
                                     EVENT_ATTR_PACKAGER.accept(attributes, dataEvent);
-                                    if (!EMPTY_DATA.value.equals(requestBody))
+                                    if (!EMPTY_VALUE.value.equals(requestBody))
                                         dataEvent.addData(REQUEST_BODY.key, requestBody);
                                     report(throwable, request, dataEvent);
 

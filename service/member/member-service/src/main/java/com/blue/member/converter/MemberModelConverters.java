@@ -17,7 +17,7 @@ import static com.blue.basic.common.base.ConstantProcessor.assertGender;
 import static com.blue.basic.common.base.ConstantProcessor.assertSource;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.member.Gender.UNKNOWN;
 import static com.blue.basic.constant.member.SourceType.APP;
 import static java.util.Collections.emptyList;
@@ -36,7 +36,7 @@ public final class MemberModelConverters {
         if (isNull(memberRegistryParam))
             throw new BlueException(EMPTY_PARAM);
 
-        String phone = ofNullable(memberRegistryParam.getPhone()).orElse(EMPTY_DATA.value);
+        String phone = ofNullable(memberRegistryParam.getPhone()).orElse(EMPTY_VALUE.value);
         if (isNotBlank(phone)) {
             if (phone.length() > BlueCommonThreshold.PHONE_LEN_MAX.value)
                 throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone length is too long");
@@ -44,7 +44,7 @@ public final class MemberModelConverters {
                 throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone length is too short");
         }
 
-        String email = ofNullable(memberRegistryParam.getEmail()).orElse(EMPTY_DATA.value);
+        String email = ofNullable(memberRegistryParam.getEmail()).orElse(EMPTY_VALUE.value);
         if (isNotBlank(email)) {
             if (email.length() > BlueCommonThreshold.EMAIL_LEN_MAX.value)
                 throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email length is too long");
@@ -73,10 +73,10 @@ public final class MemberModelConverters {
         memberBasic.setPhone(phone);
         memberBasic.setEmail(email);
         memberBasic.setName(name);
-        memberBasic.setIcon(ofNullable(memberRegistryParam.getIcon()).orElse(EMPTY_DATA.value));
-        memberBasic.setQrCode(EMPTY_DATA.value);
+        memberBasic.setIcon(ofNullable(memberRegistryParam.getIcon()).orElse(EMPTY_VALUE.value));
+        memberBasic.setQrCode(EMPTY_VALUE.value);
         memberBasic.setGender(gender);
-        memberBasic.setProfile(EMPTY_DATA.value);
+        memberBasic.setProfile(EMPTY_VALUE.value);
         memberBasic.setStatus(Status.VALID.status);
         memberBasic.setSource(source);
         memberBasic.setCreateTime(stamp);
@@ -137,7 +137,7 @@ public final class MemberModelConverters {
 
         return new CardDetailInfo(card.getId(), card.getMemberId(), card.getName(), card.getDetail(), card.getCoverId(),
                 card.getCoverLink(), card.getContentId(), card.getContentLink(), card.getExtra(), card.getCreateTime(), card.getUpdateTime(),
-                isNotBlank(creatorName) ? creatorName : EMPTY_DATA.value);
+                isNotBlank(creatorName) ? creatorName : EMPTY_VALUE.value);
     };
 
     public static final Function<MemberDetail, MemberDetailInfo> MEMBER_DETAIL_2_MEMBER_DETAIL_INFO = memberDetail -> {

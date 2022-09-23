@@ -30,7 +30,7 @@ import java.util.function.UnaryOperator;
 
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.MathProcessor.assertDisorderIntegerContinuous;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.common.Symbol.*;
 import static com.blue.identity.constant.IdentitySchema.MAX_DATA_CENTER_ID;
 import static com.blue.identity.constant.IdentitySchema.MAX_WORKER_ID;
@@ -78,7 +78,7 @@ public final class BlueDataAccessGenerator {
             throw new RuntimeException("username can't be blank");
 
         hikariConfig.setDriverClassName(driverClassName);
-        hikariConfig.setJdbcUrl(url + ofNullable(shardAttr.getDataBaseConf()).map(c -> QUESTION_MARK.identity + c).orElse(EMPTY_DATA.value));
+        hikariConfig.setJdbcUrl(url + ofNullable(shardAttr.getDataBaseConf()).map(c -> QUESTION_MARK.identity + c).orElse(EMPTY_VALUE.value));
         hikariConfig.setUsername(username);
         ofNullable(shardAttr.getPassword()).ifPresent(hikariConfig::setPassword);
 

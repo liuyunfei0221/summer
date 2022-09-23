@@ -23,7 +23,7 @@ import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.ConstantProcessor.assertAttachmentType;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 import static com.blue.basic.constant.common.ResponseElement.PAYLOAD_TOO_LARGE;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.common.Symbol.PERIOD;
 import static com.blue.basic.constant.media.ByteHandlerType.LOCAL_DISK;
 import static com.blue.media.common.MediaCommonFunctions.*;
@@ -246,7 +246,7 @@ public final class LocalDiskByteHandler implements ByteHandler {
                 CHANNEL_CLOSER,
                 true)
                 .flatMap(size ->
-                        just(new FileUploadResult(type, descName, isNotBlank(originalName) ? originalName : EMPTY_DATA.value, true, SUCCESS_MSG, size))
+                        just(new FileUploadResult(type, descName, isNotBlank(originalName) ? originalName : EMPTY_VALUE.value, true, SUCCESS_MSG, size))
                 );
     }
 

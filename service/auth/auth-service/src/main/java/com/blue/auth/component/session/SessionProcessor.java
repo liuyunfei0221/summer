@@ -28,7 +28,7 @@ import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.constant.common.BlueHeader.AUTHORIZATION;
 import static com.blue.basic.constant.common.ResponseElement.*;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.verify.VerifyBusinessType.CREDENTIAL_ACCESS_LOGIN;
 import static com.blue.basic.constant.verify.VerifyType.IMAGE;
 import static java.util.Optional.ofNullable;
@@ -129,7 +129,7 @@ public class SessionProcessor implements ApplicationListener<ContextRefreshedEve
                         authService.invalidateAuthByAccess(acc)
                                 .flatMap(success ->
                                         ok().contentType(APPLICATION_JSON)
-                                                .header(AUTHORIZATION.name, EMPTY_DATA.value)
+                                                .header(AUTHORIZATION.name, EMPTY_VALUE.value)
                                                 .body(
                                                         success(serverRequest)
                                                         , BlueResponse.class)));
@@ -147,7 +147,7 @@ public class SessionProcessor implements ApplicationListener<ContextRefreshedEve
                         authService.invalidateAuthByMemberId(acc.getId())
                                 .flatMap(success ->
                                         ok().contentType(APPLICATION_JSON)
-                                                .header(AUTHORIZATION.name, EMPTY_DATA.value)
+                                                .header(AUTHORIZATION.name, EMPTY_VALUE.value)
                                                 .body(success(serverRequest)
                                                         , BlueResponse.class)));
     }

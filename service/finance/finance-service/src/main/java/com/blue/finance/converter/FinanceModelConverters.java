@@ -13,7 +13,7 @@ import java.util.function.Function;
 
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_DATA;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static java.util.Optional.ofNullable;
 
 /**
@@ -42,7 +42,7 @@ public final class FinanceModelConverters {
         if (isNull(financeFlow))
             throw new BlueException(EMPTY_PARAM);
 
-        return new FinanceFlowManagerInfo(financeFlow.getId(), financeFlow.getMemberId(), ofNullable(idAndMemberNameMapping.get(financeFlow.getMemberId())).orElse(EMPTY_DATA.value),
+        return new FinanceFlowManagerInfo(financeFlow.getId(), financeFlow.getMemberId(), ofNullable(idAndMemberNameMapping.get(financeFlow.getMemberId())).orElse(EMPTY_VALUE.value),
                 financeFlow.getOrderId(), financeFlow.getOrderNo(), financeFlow.getFlowNo(), financeFlow.getType(),
                 financeFlow.getChangeType(), financeFlow.getAmountChanged(), financeFlow.getAmountBeforeChanged(), financeFlow.getAmountAfterChanged(), financeFlow.getCreateTime());
     };

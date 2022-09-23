@@ -317,11 +317,13 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
 
        (250001, 'GET', 'blue-portal', '/bulletins/{type}', '', b'0', b'1', b'1', b'0', b'1', 1,
         'bulletin list of api', 'bulletin list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (250002, 'GET', 'blue-portal', '/formatter/{formatter}.html', '', b'1', b'1', b'1', b'0', b'1', 1,
+       (250002, 'GET', 'blue-portal', '/notice/{type}', '', b'0', b'1', b'1', b'0', b'1', 1,
+        'notice of api', 'notice of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (250003, 'GET', 'blue-portal', '/formatter/{formatter}.html', '', b'1', b'1', b'1', b'0', b'1', 1,
         'formatter test', 'formatter test', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (250003, 'GET', 'blue-portal', '/fallBack', '', b'0', b'1', b'1', b'0', b'1', 1,
+       (250004, 'GET', 'blue-portal', '/fallBack', '', b'0', b'1', b'1', b'0', b'1', 1,
         'GET fallback', 'GET fallback', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (250004, 'POST', 'blue-portal', '/fallBack', '', b'0', b'1', b'1', b'1', b'1', 1,
+       (250005, 'POST', 'blue-portal', '/fallBack', '', b'0', b'1', b'1', b'1', b'1', 1,
         'POST fallback', 'POST fallback', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- portal manage
@@ -334,6 +336,14 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
         'update portal', 'update portal', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (260004, 'DELETE', 'blue-portal', '/manager/bulletin/{id}', '', b'1', b'1', b'1', b'1', b'1', 3,
         'delete portal', 'delete portal', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (260005, 'POST', 'blue-portal', '/manager/notices', '', b'1', b'1', b'1', b'0', b'1', 3,
+        'notice page of manager', 'notice page of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (260006, 'POST', 'blue-portal', '/manager/notice', '', b'1', b'1', b'1', b'1', b'1', 3,
+        'insert notice', 'insert notice', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (260007, 'PUT', 'blue-portal', '/manager/notice', '', b'1', b'1', b'1', b'1', b'1', 3,
+        'update notice', 'update notice', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (260008, 'DELETE', 'blue-portal', '/manager/notice/{id}', '', b'1', b'1', b'1', b'1', b'1', 3,
+        'delete notice', 'delete notice', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- marketing api
 

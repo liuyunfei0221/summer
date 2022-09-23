@@ -90,7 +90,8 @@ public enum ResponseElement {
 
     //<editor-fold desc="portal">
     BULLETIN_TITLE_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400700001, "Bulletin title already exists"),
-    STYLE_NAME_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400700007, "Style name already exists"),
+    NOTICE_TYPE_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400700002, "Notice type already exists"),
+    STYLE_NAME_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 400700003, "Style name already exists"),
     //</editor-fold>
 
     //<editor-fold desc="marketing">

@@ -34,6 +34,16 @@ public enum SyncKeyPrefix {
     BULLETINS_UPDATE_SYNC_PRE("BULLETINS_UPDATE_SYNC:"),
 
     /**
+     * notice cache sync key prefix
+     */
+    NOTICE_CACHE_PRE("NOTICE_CACHE:"),
+
+    /**
+     * notice sync key prefix
+     */
+    NOTICE_UPDATE_SYNC_PRE("NOTICE_UPDATE_SYNC:"),
+
+    /**
      * styles cache key prefix
      */
     STYLES_CACHE_PRE("STYLES_CACHE:"),
