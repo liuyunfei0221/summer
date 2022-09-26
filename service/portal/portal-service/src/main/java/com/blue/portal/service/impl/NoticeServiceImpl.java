@@ -123,14 +123,14 @@ public class NoticeServiceImpl implements NoticeService {
     };
 
     private final Function<Integer, NoticeInfo> NOTICE_INFO_DB_GETTER = t ->
-            NOTICE_2_NOTICE_INFO_CONVERTER.apply(noticeMapper.selectByType(t));
+            ofNullable(noticeMapper.selectByType(t)).map(NOTICE_2_NOTICE_INFO_CONVERTER).orElse(DEFAULT_NOTICE_INFO);
 
     private final Function<Integer, NoticeInfo> NOTICE_INFO_REDIS_GETTER = t -> {
         assertNoticeType(t, false);
         return ofNullable(stringRedisTemplate.opsForValue().get(NOTICE_CACHE_KEY_GENERATOR.apply(t)))
                 .filter(BlueChecker::isNotBlank)
                 .map(s -> GSON.fromJson(s, NoticeInfo.class))
-                .orElse(DEFAULT_NOTICE_INFO);
+                .orElse(null);
     };
 
     private final BiConsumer<Integer, NoticeInfo> NOTICE_INFO_REDIS_SETTER = (t, ni) -> {
@@ -186,7 +186,7 @@ public class NoticeServiceImpl implements NoticeService {
         p.asserts();
 
         if (isNotNull(noticeMapper.selectByType(p.getType())))
-            throw new BlueException(NOTICE_TYPE_ALREADY_EXIST);
+            throw new BlueException(NOTICE_TYPE_ALREADY_EXIST, new String[]{String.valueOf(p.getType())});
     };
 
     private final Function<NoticeUpdateParam, Notice> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = p -> {
@@ -380,6 +380,7 @@ public class NoticeServiceImpl implements NoticeService {
         LOGGER.info("Mono<Notice> getNoticeMono(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
+
         return justOrEmpty(noticeMapper.selectByPrimaryKey(id));
     }
 

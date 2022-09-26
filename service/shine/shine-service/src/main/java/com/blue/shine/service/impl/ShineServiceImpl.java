@@ -4,7 +4,8 @@ import co.elastic.clients.elasticsearch.ElasticsearchAsyncClient;
 import co.elastic.clients.elasticsearch._types.SortOptions;
 import co.elastic.clients.elasticsearch._types.Time;
 import co.elastic.clients.elasticsearch._types.query_dsl.*;
-import co.elastic.clients.elasticsearch.core.*;
+import co.elastic.clients.elasticsearch.core.OpenPointInTimeRequest;
+import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.search.HitsMetadata;
 import co.elastic.clients.json.JsonData;
 import com.blue.base.api.model.CityRegion;
@@ -40,7 +41,6 @@ import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -370,7 +370,7 @@ public class ShineServiceImpl implements ShineService {
                     }
                     return just(shine);
                 })
-                .flatMap(s -> just(SHINE_2_SHINE_INFO.apply(s)));
+                .flatMap(shine -> just(SHINE_2_SHINE_INFO.apply(shine)));
     }
 
     /**
@@ -385,12 +385,10 @@ public class ShineServiceImpl implements ShineService {
         if (shine == null)
             throw new BlueException(EMPTY_PARAM);
 
-        CompletableFuture<IndexResponse> responseFuture = elasticsearchAsyncClient.index(request ->
+        return fromFuture(elasticsearchAsyncClient.index(request ->
                 request.index(INDEX_NAME)
                         .id(String.valueOf(shine.getId()))
-                        .document(shine));
-
-        return fromFuture(responseFuture)
+                        .document(shine)))
                 .flatMap(indexResponse -> {
                     LOGGER.info("indexResponse = {}", indexResponse);
                     return just(true);
@@ -449,12 +447,10 @@ public class ShineServiceImpl implements ShineService {
         if (shine == null)
             throw new BlueException(EMPTY_PARAM);
 
-        CompletableFuture<UpdateResponse<Shine>> responseFuture = elasticsearchAsyncClient.update(request ->
+        return fromFuture(elasticsearchAsyncClient.update(request ->
                 request.index(INDEX_NAME)
                         .id(String.valueOf(shine.getId()))
-                        .doc(shine), Shine.class);
-
-        return fromFuture(responseFuture)
+                        .doc(shine), Shine.class))
                 .flatMap(updateResponse -> {
                     LOGGER.info("updateResponse = {}", updateResponse);
                     return just(true);
@@ -512,11 +508,9 @@ public class ShineServiceImpl implements ShineService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        CompletableFuture<DeleteResponse> responseFuture = elasticsearchAsyncClient.delete(request ->
+        return fromFuture(elasticsearchAsyncClient.delete(request ->
                 request.index(INDEX_NAME)
-                        .id(String.valueOf(id)));
-
-        return fromFuture(responseFuture)
+                        .id(String.valueOf(id))))
                 .flatMap(deleteResponse -> {
                     LOGGER.info("deleteResponse = {}", deleteResponse);
                     return just(true);
@@ -541,10 +535,8 @@ public class ShineServiceImpl implements ShineService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        CompletableFuture<GetResponse<Shine>> responseFuture = elasticsearchAsyncClient.get(request ->
-                request.index(INDEX_NAME).id(String.valueOf(id)), Shine.class);
-
-        return fromFuture(responseFuture)
+        return fromFuture(elasticsearchAsyncClient.get(request ->
+                request.index(INDEX_NAME).id(String.valueOf(id)), Shine.class))
                 .flatMap(getResponse ->
                         getResponse.found() ?
                                 just(getResponse.source())
