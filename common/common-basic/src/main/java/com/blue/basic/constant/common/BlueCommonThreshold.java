@@ -25,7 +25,7 @@ public enum BlueCommonThreshold {
     /**
      * max rows per page
      */
-    MAX_ROWS(100L),
+    MAX_ROWS(50L),
 
     /**
      * min count per page

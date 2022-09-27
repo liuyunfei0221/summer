@@ -32,7 +32,7 @@ server:
 eureka:
   instance:
     prefer-ip-address: false
-    lease-renewal-interval-in-seconds: 10
+    lease-renewal-interval-in-seconds: 60
     instance-id: ${server.address}:${spring.application.name}:${server.port}
     hostname: ${server.address}
   client:
@@ -357,8 +357,8 @@ jwt:
 access:
   localCacheCapacity: 16384
   globalExpiresMillis: 259200000
-  localExpiresMillis: 180000
-  millisLeftToHandleExpire: 25920000
+  localExpiresMillis: 30000
+  millisLeftToHandleExpire: 259194000
   refresherCorePoolSize: 2
   refresherMaximumPoolSize: 4
   refresherKeepAliveSeconds: 64

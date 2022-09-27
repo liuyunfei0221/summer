@@ -1,9 +1,12 @@
 package com.blue.lake.converter;
 
+import com.blue.auth.api.model.MemberPayload;
 import com.blue.basic.common.access.AccessProcessor;
 import com.blue.basic.common.base.BlueChecker;
+import com.blue.basic.model.common.Access;
 import com.blue.basic.model.event.DataEvent;
 import com.blue.basic.model.exps.BlueException;
+import com.blue.jwt.component.JwtProcessor;
 import com.blue.lake.config.deploy.NestingResponseDeploy;
 import com.blue.lake.repository.entity.OptEvent;
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +14,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
+import reactor.util.Logger;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -18,6 +22,8 @@ import java.util.Set;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 
+import static com.blue.basic.common.access.AccessProcessor.jsonToAccess;
+import static com.blue.basic.common.base.BlueChecker.isNotBlank;
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.common.base.ConstantProcessor.getBoolByBool;
@@ -27,20 +33,24 @@ import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.basic.constant.common.ResponseElement.OK;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.common.SummerAttr.DATE_FORMATTER;
+import static java.lang.Long.parseLong;
 import static java.time.Instant.ofEpochSecond;
 import static java.time.LocalDate.ofInstant;
 import static java.time.ZoneId.systemDefault;
 import static java.util.Optional.ofNullable;
 import static org.springframework.util.CollectionUtils.isEmpty;
+import static reactor.util.Loggers.getLogger;
 
 /**
  * model converters in lake project
  *
  * @author liuyunfei
  */
-@SuppressWarnings("AliControlFlowStatementWithoutBraces")
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "unchecked"})
 @Component
 public final class LakeModelConverters implements ApplicationListener<ContextRefreshedEvent> {
+
+    private static final Logger LOGGER = getLogger(LakeModelConverters.class);
 
     private static final Function<Long, String> DATE_STR_FUNC = stamp ->
             ofInstant(ofEpochSecond(stamp), systemDefault()).format(DATE_FORMATTER);
@@ -48,6 +58,8 @@ public final class LakeModelConverters implements ApplicationListener<ContextRef
     private static Set<String> NESTING_REAL_URIS;
 
     private static String NESTING_RES;
+
+    private static JwtProcessor<MemberPayload> JWT_PROCESSOR;
 
     private static final BinaryOperator<String> NESTING_RESPONSE_BODY_HANDLER = (realUri, body) ->
             NESTING_REAL_URIS.contains(realUri) ? NESTING_RES : body;
@@ -63,6 +75,8 @@ public final class LakeModelConverters implements ApplicationListener<ContextRef
 
         NESTING_RES = ofNullable(nestingResponseDeploy.getResponse()).filter(StringUtils::isNotEmpty)
                 .orElse(EMPTY_VALUE.value);
+
+        JWT_PROCESSOR = applicationContext.getBean(JwtProcessor.class);
     }
 
     /**
@@ -97,7 +111,38 @@ public final class LakeModelConverters implements ApplicationListener<ContextRef
         optEvent.setResponseExtra(ofNullable(entries.get(RESPONSE_EXTRA.key)).orElse(EMPTY_VALUE.value));
         optEvent.setRequestId(ofNullable(entries.get(REQUEST_ID.key)).orElse(EMPTY_VALUE.value));
         optEvent.setMetadata(ofNullable(entries.get(METADATA.key)).orElse(EMPTY_VALUE.value));
-        optEvent.setJwt(ofNullable(entries.get(JWT.key)).orElse(EMPTY_VALUE.value));
+
+        String jwt = entries.get(JWT.key);
+        optEvent.setJwt(ofNullable(jwt).orElse(EMPTY_VALUE.value));
+
+        String accessJson = entries.get(ACCESS.key);
+        if (isNotBlank(accessJson)) {
+            try {
+                Access access = jsonToAccess(accessJson);
+
+                optEvent.setMemberId(access.getId());
+                optEvent.setRoleIds(ofNullable(access.getRoleIds())
+                        .filter(BlueChecker::isNotEmpty).map(l -> l.toArray(Long[]::new)).orElseGet(() -> new Long[0]));
+                optEvent.setCredentialType(access.getCredentialType());
+                optEvent.setDeviceType(access.getDeviceType());
+                optEvent.setLoginTime(access.getLoginTime());
+            } catch (Exception e) {
+                LOGGER.error("e = {0}", e);
+            }
+        } else {
+            if (isNotBlank(jwt))
+                try {
+                    MemberPayload memberPayload = JWT_PROCESSOR.parse(jwt);
+
+                    optEvent.setMemberId(parseLong(memberPayload.getId()));
+                    optEvent.setRoleIds(null);
+                    optEvent.setCredentialType(memberPayload.getCredentialType());
+                    optEvent.setDeviceType(memberPayload.getDeviceType());
+                    optEvent.setLoginTime(parseLong(memberPayload.getLoginTime()));
+                } catch (Exception e) {
+                    LOGGER.error("e = {0}", e);
+                }
+        }
 
         ofNullable(entries.get(ACCESS.key)).filter(BlueChecker::isNotBlank)
                 .map(AccessProcessor::jsonToAccess)
@@ -118,6 +163,7 @@ public final class LakeModelConverters implements ApplicationListener<ContextRef
         optEvent.setExistenceRequestBody(getBoolByBool(ofNullable(entries.get(EXISTENCE_REQUEST_BODY.key)).map(Boolean::parseBoolean).orElse(TRUE.bool)).status);
         optEvent.setExistenceResponseBody(getBoolByBool(ofNullable(entries.get(EXISTENCE_RESPONSE_BODY.key)).map(Boolean::parseBoolean).orElse(TRUE.bool)).status);
         optEvent.setDurationSeconds(ofNullable(entries.get(DURATION_SECONDS.key)).map(Integer::parseInt).orElse(0));
+
 
         return optEvent;
     };

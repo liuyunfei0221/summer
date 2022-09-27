@@ -32,7 +32,7 @@ server:
 eureka:
   instance:
     prefer-ip-address: false
-    lease-renewal-interval-in-seconds: 10
+    lease-renewal-interval-in-seconds: 60
     instance-id: ${server.address}:${spring.application.name}:${server.port}
     hostname: ${server.address}
   client:

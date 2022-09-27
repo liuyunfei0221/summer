@@ -4,7 +4,7 @@ import com.blue.auth.model.AccessInfo;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.caffeine.api.conf.CaffeineConf;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
-import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.AsyncCache;
 import com.google.gson.JsonSyntaxException;
 import net.openhft.affinity.AffinityThreadFactory;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
@@ -25,10 +25,10 @@ import static com.blue.basic.common.base.CommonFunctions.GSON;
 import static com.blue.basic.common.base.CommonFunctions.MILLIS_STAMP_SUP;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 import static com.blue.basic.constant.common.ResponseElement.UNAUTHORIZED;
-import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
-import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
+import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCacheAsyncCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
 import static java.time.temporal.ChronoUnit.MILLIS;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static net.openhft.affinity.AffinityStrategies.SAME_CORE;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
@@ -76,7 +76,7 @@ public final class AccessInfoCache {
     /**
      * local cache
      */
-    private Cache<String, String> cache;
+    private AsyncCache<String, String> cache;
 
     private static final String THREAD_NAME_PRE = "AccessInfoCache-thread-";
     private static final int RANDOM_LEN = 4;
@@ -110,77 +110,14 @@ public final class AccessInfoCache {
         CaffeineConf caffeineConf = new CaffeineConfParams(capacity, Duration.of(localExpiresMillis, MILLIS),
                 AFTER_WRITE, executorService);
 
-        this.cache = generateCache(caffeineConf);
+        this.cache = generateCacheAsyncCache(caffeineConf);
     }
 
+    /**
+     * expire?
+     */
     private final Predicate<Long> EXPIRE_PRE = loginMillisTimeStamp ->
             (MILLIS_STAMP_SUP.get() > (loginMillisTimeStamp + differenceToHandleExpire));
-
-    /**
-     * redis accessInfo expire
-     */
-    private final BiConsumer<String, AccessInfo> ACCESS_EXPIRE_PROCESSOR = (keyId, accessInfo) -> {
-        try {
-            this.executorService.execute(() -> {
-                if (isNotBlank(keyId) && isNotNull(accessInfo)) {
-                    if (EXPIRE_PRE.test(accessInfo.getLoginMillisTimeStamp()))
-                        accessBatchExpireProcessor.expireKey(keyId, globalExpiresMillis, UNIT);
-
-                    LOGGER.warn("ACCESS_EXPIRE_PROCESSOR -> SUCCESS, keyId = {}", keyId);
-                } else {
-                    LOGGER.error("keyId or accessInfo is empty, keyId = {}, accessInfo = {}", keyId, accessInfo);
-                }
-            });
-        } catch (Exception e) {
-            LOGGER.error("ACCESS_EXPIRE_PROCESSOR error, e = {}", e);
-        }
-    };
-
-    /**
-     * redis accessInfo getter
-     */
-    private final Function<String, Mono<String>> REDIS_ACCESS_WITH_LOCAL_CACHE_GETTER = keyId -> {
-        LOGGER.warn("REDIS_ACCESS_WITH_LOCAL_CACHE_GETTER, get accessInfo from redis and set in caff, keyId = {}", keyId);
-
-        return reactiveStringRedisTemplate.opsForValue().get(keyId)
-                .publishOn(scheduler)
-                .flatMap(accessInfo -> {
-                    if (!EMPTY_VALUE.value.equals(accessInfo))
-                        cache.put(keyId, accessInfo);
-
-                    return just(accessInfo);
-                });
-    };
-
-    /**
-     * cache accessInfo getter
-     */
-    private final Function<String, Mono<String>> ACCESS_GETTER_WITH_CACHE = keyId -> {
-        LOGGER.warn("ACCESS_GETTER_WITH_CACHE, get accessInfo from cache, keyId = {}", keyId);
-        if (isBlank(keyId))
-            return error(() -> new BlueException(UNAUTHORIZED));
-
-        return justOrEmpty(cache.getIfPresent(keyId))
-                .switchIfEmpty(defer(() -> REDIS_ACCESS_WITH_LOCAL_CACHE_GETTER.apply(keyId)));
-    };
-
-    /**
-     * cache accessInfo setter
-     */
-    private final BiFunction<String, AccessInfo, Mono<Boolean>> ACCESS_SETTER_WITH_CACHE = (keyId, accessInfo) -> {
-        LOGGER.info("ACCESS_SETTER_WITH_CACHE, keyId = {}, accessInfo = {}", keyId, accessInfo);
-        if (isBlank(keyId) || isNull(accessInfo))
-            return error(() -> new BlueException(BAD_REQUEST));
-
-        return reactiveStringRedisTemplate.opsForValue()
-                .set(keyId, GSON.toJson(accessInfo), globalExpireDuration)
-                .publishOn(scheduler)
-                .onErrorResume(throwable -> {
-                    LOGGER.error("setAccessInfo(String keyId, String accessInfo) failed, throwable = {}", throwable);
-                    return just(false);
-                })
-                .doOnSuccess(ig -> cache.invalidate(keyId));
-    };
 
     /**
      * accessInfo parser
@@ -191,6 +128,65 @@ public final class AccessInfoCache {
         } catch (JsonSyntaxException e) {
             throw new BlueException(UNAUTHORIZED);
         }
+    };
+
+    /**
+     * redis accessInfo expire
+     */
+    private final BiConsumer<String, String> ACCESS_EXPIRE_PROCESSOR = (keyId, access) ->
+            this.executorService.execute(() -> {
+                try {
+                    if (isNotBlank(keyId) && isNotBlank(access) && EXPIRE_PRE.test(ACCESS_INFO_PARSER.apply(access).getLoginMillisTimeStamp())) {
+                        accessBatchExpireProcessor.expireKey(keyId, globalExpiresMillis, UNIT);
+                        LOGGER.warn("ACCESS_EXPIRE_PROCESSOR -> SUCCESS, keyId = {}, access = {}", keyId, access);
+                    }
+                } catch (Exception e) {
+                    LOGGER.error("accessBatchExpireProcessor.expireKey(keyId, globalExpiresMillis, UNIT) failed, keyId = {}, access = {}, e = {}", keyId, access, e);
+                }
+            });
+
+    /**
+     * redis accessInfo getter
+     */
+    private final BiFunction<String, Executor, CompletableFuture<String>> REDIS_ACCESS_WITH_LOCAL_CACHE_GETTER = (keyId, executor) -> {
+        LOGGER.warn("REDIS_ACCESS_WITH_LOCAL_CACHE_GETTER, get accessInfo from redis and set in caff, keyId = {}", keyId);
+
+        return reactiveStringRedisTemplate.opsForValue().get(keyId)
+                .publishOn(scheduler)
+                .doOnSuccess(v -> {
+                    if (isNotBlank(v))
+                        ACCESS_EXPIRE_PROCESSOR.accept(keyId, v);
+                }).toFuture();
+    };
+
+    /**
+     * cache accessInfo getter
+     */
+    private final Function<String, Mono<String>> ACCESS_GETTER_WITH_CACHE = keyId -> {
+        LOGGER.warn("ACCESS_GETTER_WITH_CACHE, get accessInfo from cache, keyId = {}", keyId);
+        if (isBlank(keyId))
+            return error(() -> new BlueException(UNAUTHORIZED));
+
+        return fromFuture(cache.get(keyId, REDIS_ACCESS_WITH_LOCAL_CACHE_GETTER));
+    };
+
+    /**
+     * cache accessInfo setter
+     */
+    private final BiFunction<String, AccessInfo, Mono<Boolean>> ACCESS_SETTER_WITH_CACHE = (keyId, accessInfo) -> {
+        LOGGER.info("ACCESS_SETTER_WITH_CACHE, keyId = {}, accessInfo = {}", keyId, accessInfo);
+        if (isBlank(keyId) || isNull(accessInfo))
+            return error(() -> new BlueException(BAD_REQUEST));
+
+        String access = GSON.toJson(accessInfo);
+        return reactiveStringRedisTemplate.opsForValue()
+                .set(keyId, access, globalExpireDuration)
+                .publishOn(scheduler)
+                .onErrorResume(throwable -> {
+                    LOGGER.error("setAccessInfo(String keyId, String accessInfo) failed, throwable = {}", throwable);
+                    return just(false);
+                })
+                .doOnSuccess(ig -> cache.put(keyId, supplyAsync(() -> access, executorService)));
     };
 
     /**
@@ -206,8 +202,6 @@ public final class AccessInfoCache {
                         .flatMap(v ->
                                 isNotBlank(v) ?
                                         just(ACCESS_INFO_PARSER.apply(v))
-                                                .doOnSuccess(accessInfo ->
-                                                        ACCESS_EXPIRE_PROCESSOR.accept(keyId, accessInfo))
                                         :
                                         error(() -> new BlueException(UNAUTHORIZED)))
                 :
@@ -236,7 +230,7 @@ public final class AccessInfoCache {
                 reactiveStringRedisTemplate.delete(keyId)
                         .publishOn(scheduler)
                         .map(l -> l > 0L)
-                        .doOnEach(ig -> cache.invalidate(keyId))
+                        .doOnEach(ig -> cache.synchronous().invalidate(keyId))
                 :
                 just(false).publishOn(scheduler);
     }
@@ -250,7 +244,7 @@ public final class AccessInfoCache {
         LOGGER.info("invalidLocalAuthInfo(), keyId = {}", keyId);
         try {
             if (isNotBlank(keyId))
-                cache.invalidate(keyId);
+                cache.synchronous().invalidate(keyId);
 
             return just(true).publishOn(scheduler);
         } catch (Exception e) {
