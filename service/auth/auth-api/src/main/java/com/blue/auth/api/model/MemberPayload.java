@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 import static com.blue.basic.common.base.BlueChecker.isBlank;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.basic.constant.common.SpecialStringElement.PRIVACY_VALUE;
 
 /**
  * member payload in jwt
@@ -102,7 +103,7 @@ public final class MemberPayload implements Serializable {
     @Override
     public String toString() {
         return "MemberPayload{" +
-                "gamma='" + gamma + '\'' +
+                "gamma='" + PRIVACY_VALUE.value + '\'' +
                 ", keyId='" + keyId + '\'' +
                 ", id='" + id + '\'' +
                 ", credentialType='" + credentialType + '\'' +

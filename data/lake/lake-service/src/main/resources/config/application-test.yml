@@ -397,6 +397,7 @@ dubbo:
 
 nesting:
   uris: [ /blue-lake/events ]
+  statuses: [ 200 ]
   response: nesting dolls are prohibited
 
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--suppress MybatisXMapperXmlInspection, MavenModelInspection, VulnerableLibrariesLocal -->
+<!--suppress MybatisXMapperXmlInspection, MavenModelInspection, VulnerableLibrariesLocal, MavenPackageUpdate -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -27,6 +27,7 @@
 
         <affinity.version>3.23ea1</affinity.version>
         <apache.curator.version>5.3.0</apache.curator.version>
+        <apache-dubbo.version>3.1.0</apache-dubbo.version>
         <apache.poi.version>5.2.3</apache.poi.version>
         <apollo.version>2.0.1</apollo.version>
         <aspectj.version>1.9.9.1</aspectj.version>
@@ -48,7 +49,6 @@
         <mysql-connector-java.version>8.0.30</mysql-connector-java.version>
         <pulsar.version>2.10.1</pulsar.version>
         <redisson.version>3.17.6</redisson.version>
-        <spring-dubbo.version>3.1.0</spring-dubbo.version>
         <sharding-jdbc.version>4.1.1</sharding-jdbc.version>
         <seata-spring.version>1.4.2</seata-spring.version>
         <spring-mybatis.version>2.2.2</spring-mybatis.version>

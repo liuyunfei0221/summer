@@ -223,6 +223,13 @@ public final class ConstantProcessor {
      */
     private static final Map<String, VerifyType> VERIFY_TYPE_MAPPING =
             of(VerifyType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
+
+    /**
+     * rsa decrypt mode identity and rsa decrypt mode mapping
+     */
+    private static final Map<Integer, RsaDecryptMode> RSA_DECRYPT_MODE_MAPPING =
+            of(RsaDecryptMode.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
+
     //</editor-fold>
 
     //<editor-fold desc="asserter">
@@ -595,6 +602,19 @@ public final class ConstantProcessor {
             return;
 
         if (!VERIFY_TYPE_MAPPING.containsKey(identity))
+            throw new BlueException(INVALID_IDENTITY);
+    }
+
+    /**
+     * assert rsa decrypt mode
+     *
+     * @param identity
+     */
+    public static void assertRsaDecryptMode(Integer identity, boolean nullable) {
+        if (nullable && isNull(identity))
+            return;
+
+        if (!RSA_DECRYPT_MODE_MAPPING.containsKey(identity))
             throw new BlueException(INVALID_IDENTITY);
     }
     //</editor-fold>
@@ -1108,6 +1128,23 @@ public final class ConstantProcessor {
         return type;
     }
 
+
+    /**
+     * get rsa decrypt mode by identity
+     *
+     * @param identity
+     * @return
+     */
+    public static RsaDecryptMode getRsaDecryptModeByIdentity(Integer identity) {
+        if (isNull(identity))
+            throw new BlueException(INVALID_IDENTITY);
+
+        RsaDecryptMode rsaDecryptMode = RSA_DECRYPT_MODE_MAPPING.get(identity);
+        if (isNull(rsaDecryptMode))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return rsaDecryptMode;
+    }
     //</editor-fold>
 
 }

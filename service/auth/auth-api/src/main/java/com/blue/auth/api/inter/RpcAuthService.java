@@ -2,7 +2,9 @@ package com.blue.auth.api.inter;
 
 import com.blue.auth.api.model.AccessAssert;
 import com.blue.auth.api.model.AccessAsserted;
+import com.blue.auth.api.model.MemberPayload;
 import com.blue.basic.model.common.Access;
+import com.blue.basic.model.common.Session;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -45,5 +47,29 @@ public interface RpcAuthService {
      * @return
      */
     CompletableFuture<Boolean> invalidateAuthByMemberId(Long memberId);
+
+    /**
+     * jwt -> payload
+     *
+     * @param authentication
+     * @return
+     */
+    CompletableFuture<MemberPayload> parsePayload(String authentication);
+
+    /**
+     * jwt -> access
+     *
+     * @param authentication
+     * @return
+     */
+    CompletableFuture<Access> parseAccess(String authentication);
+
+    /**
+     * jwt -> session
+     *
+     * @param authentication
+     * @return
+     */
+    CompletableFuture<Session> parseSession(String authentication);
 
 }

@@ -15,7 +15,12 @@ public enum SpecialStringElement {
     /**
      * empty json
      */
-    EMPTY_JSON("{}");
+    EMPTY_JSON("{}"),
+
+    /**
+     * privacy value
+     */
+    PRIVACY_VALUE(":)");
 
     /**
      * value

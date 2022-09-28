@@ -16,6 +16,8 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 import static reactor.core.publisher.Mono.zip;
 
 /**
+ * auth manager handler
+ *
  * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")

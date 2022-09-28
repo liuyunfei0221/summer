@@ -3,8 +3,10 @@ package com.blue.auth.remote.provider;
 import com.blue.auth.api.inter.RpcAuthService;
 import com.blue.auth.api.model.AccessAssert;
 import com.blue.auth.api.model.AccessAsserted;
+import com.blue.auth.api.model.MemberPayload;
 import com.blue.auth.service.inter.AuthService;
 import com.blue.basic.model.common.Access;
+import com.blue.basic.model.common.Session;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
 import reactor.core.scheduler.Scheduler;
@@ -26,7 +28,10 @@ import static reactor.core.publisher.Mono.just;
                 @Method(name = "assertAccess", async = true),
                 @Method(name = "invalidateAuthByAccess", async = true),
                 @Method(name = "invalidateAuthByJwt", async = true),
-                @Method(name = "invalidateAuthByMemberId", async = true)
+                @Method(name = "invalidateAuthByMemberId", async = true),
+                @Method(name = "parsePayload", async = true),
+                @Method(name = "parseAccess", async = true),
+                @Method(name = "parseSession", async = true)
         })
 public class RpcAuthServiceProvider implements RpcAuthService {
 
@@ -81,6 +86,39 @@ public class RpcAuthServiceProvider implements RpcAuthService {
     @Override
     public CompletableFuture<Boolean> invalidateAuthByMemberId(Long memberId) {
         return just(memberId).publishOn(scheduler).flatMap(authService::invalidateAuthByMemberId).toFuture();
+    }
+
+    /**
+     * jwt -> payload
+     *
+     * @param authentication
+     * @return
+     */
+    @Override
+    public CompletableFuture<MemberPayload> parsePayload(String authentication) {
+        return just(authentication).publishOn(scheduler).flatMap(authService::parsePayload).toFuture();
+    }
+
+    /**
+     * jwt -> access
+     *
+     * @param authentication
+     * @return
+     */
+    @Override
+    public CompletableFuture<Access> parseAccess(String authentication) {
+        return just(authentication).publishOn(scheduler).flatMap(authService::parseAccess).toFuture();
+    }
+
+    /**
+     * jwt -> session
+     *
+     * @param authentication
+     * @return
+     */
+    @Override
+    public CompletableFuture<Session> parseSession(String authentication) {
+        return just(authentication).publishOn(scheduler).flatMap(authService::parseSession).toFuture();
     }
 
 }

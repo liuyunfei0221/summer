@@ -232,7 +232,7 @@ public final class AccessInfoCache {
                         .map(l -> l > 0L)
                         .doOnEach(ig -> cache.synchronous().invalidate(keyId))
                 :
-                just(false).publishOn(scheduler);
+                just(false);
     }
 
     /**
@@ -246,9 +246,9 @@ public final class AccessInfoCache {
             if (isNotBlank(keyId))
                 cache.synchronous().invalidate(keyId);
 
-            return just(true).publishOn(scheduler);
+            return just(true);
         } catch (Exception e) {
-            return just(false).publishOn(scheduler);
+            return just(false);
         }
     }
 

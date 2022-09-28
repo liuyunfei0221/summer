@@ -17,22 +17,17 @@ public enum VerifyBusinessType {
     TURING_TEST("TT", Set.of(IMAGE)),
 
     /**
-     * register
-     */
-    REGISTER("REG", Set.of(SMS, MAIL)),
-
-    /**
-     * session by credential and access
+     * login by credential and access
      */
     CREDENTIAL_ACCESS_LOGIN("CAL", Set.of(IMAGE)),
 
     /**
-     * sms verify session with auto register
+     * sms verify login with auto register
      */
     PHONE_VERIFY_LOGIN_WITH_AUTO_REGISTER("PVL_WAR", Set.of(SMS, MAIL)),
 
     /**
-     * email verify session with auto register
+     * email verify login with auto register
      */
     EMAIL_VERIFY_LOGIN_WITH_AUTO_REGISTER("EVL_WAR", Set.of(SMS, MAIL)),
 

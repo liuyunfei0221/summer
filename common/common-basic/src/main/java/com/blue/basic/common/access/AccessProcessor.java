@@ -9,7 +9,7 @@ import static com.blue.basic.common.base.CommonFunctions.GSON;
 import static com.blue.basic.constant.common.ResponseElement.UNAUTHORIZED;
 
 /**
- * auth object and auth str converter
+ * access object and access str converter
  * (auth -> json) or (json -> auth)
  *
  * @author liuyunfei

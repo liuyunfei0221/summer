@@ -122,31 +122,32 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
 
 -- auth api
 
-       (160001, 'POST', 'blue-auth', '/auth/session', '', b'0', b'1', b'1', b'1', b'1', 1,
+       (160001, 'POST', 'blue-auth', '/session', '', b'0', b'1', b'1', b'1', b'1', 1,
         'login', 'login', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (160002, 'DELETE', 'blue-auth', '/auth/session', '', b'1', b'1', b'1', b'0', b'1', 1,
+       (160002, 'DELETE', 'blue-auth', '/session', '', b'1', b'1', b'1', b'0', b'1', 1,
         'logout', 'logout', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (160003, 'DELETE', 'blue-auth', '/auth/sessions', '', b'1', b'1', b'1', b'0', b'1', 1,
+       (160003, 'DELETE', 'blue-auth', '/sessions', '', b'1', b'1', b'1', b'0', b'1', 1,
         'logout everywhere', 'logout everywhere', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (160004, 'PATCH', 'blue-auth', '/auth/access', '', b'0', b'1', b'1', b'1', b'1', 1,
-        'refresh access', 'refresh access', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (160005, 'PATCH', 'blue-auth', '/auth/secret', '', b'1', b'1', b'1', b'0', b'1', 1,
+       (160004, 'PATCH', 'blue-auth', '/session', '', b'0', b'1', b'1', b'1', b'1', 1,
+        'refresh session', 'refresh session', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (160005, 'PATCH', 'blue-auth', '/secret', '', b'1', b'1', b'1', b'0', b'1', 1,
         'refresh private key', 'refresh private key', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (160006, 'POST', 'blue-auth', '/auth/credential', '', b'1', b'1', b'1', b'0', b'1', 1,
+
+       (160006, 'POST', 'blue-auth', '/credential', '', b'1', b'1', b'1', b'0', b'1', 1,
         'credential setting up', 'credential setting up', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (160007, 'PUT', 'blue-auth', '/auth/credential', '', b'1', b'1', b'1', b'0', b'1', 1,
+       (160007, 'PUT', 'blue-auth', '/credential', '', b'1', b'1', b'1', b'0', b'1', 1,
         'credential update', 'credential update', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (160008, 'PUT', 'blue-auth', '/auth/access', '', b'1', b'1', b'1', b'0', b'1', 1,
+       (160008, 'PUT', 'blue-auth', '/access', '', b'1', b'1', b'1', b'0', b'1', 1,
         'update access', 'update access', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (160009, 'POST', 'blue-auth', '/auth/access', '', b'0', b'1', b'1', b'0', b'1', 1,
+       (160009, 'POST', 'blue-auth', '/access', '', b'0', b'1', b'1', b'0', b'1', 1,
         'reset access', 'reset access', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (160010, 'POST', 'blue-auth', '/auth/question', '', b'1', b'1', b'1', b'0', b'1', 1,
+       (160010, 'POST', 'blue-auth', '/question', '', b'1', b'1', b'1', b'0', b'1', 1,
         'insert security question', 'insert security question', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (160011, 'POST', 'blue-auth', '/auth/questions', '', b'1', b'1', b'1', b'0', b'1', 1,
+       (160011, 'POST', 'blue-auth', '/questions', '', b'1', b'1', b'1', b'0', b'1', 1,
         'insert security questions', 'insert security questions', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (160012, 'GET', 'blue-auth', '/auth/authorities', '', b'1', b'1', b'1', b'0', b'1', 1,
+       (160012, 'GET', 'blue-auth', '/authorities', '', b'1', b'1', b'1', b'0', b'1', 1,
         'query authorities', 'query authorities', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (160013, 'GET', 'blue-auth', '/auth/authority', '', b'1', b'1', b'1', b'0', b'1', 1,
+       (160013, 'GET', 'blue-auth', '/authority', '', b'1', b'1', b'1', b'0', b'1', 1,
         'get authority', 'get authority', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- auth manage
@@ -189,6 +190,15 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
 
        (170017, 'GET', 'blue-auth', '/manager/auth/security/{mid}', '', b'1', b'1', b'1', b'0', b'1', 3,
         'select members security info', 'select members security info', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+
+       (170018, 'POST', 'blue-auth', '/manager/operation/payload', '', b'1', b'1', b'1', b'1', b'1', 3,
+        'parse payload', 'parse payload', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (170019, 'POST', 'blue-auth', '/manager/operation/access', '', b'1', b'1', b'1', b'1', b'1', 3,
+        'parse access', 'parse access', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (170020, 'POST', 'blue-auth', '/manager/operation/session', '', b'1', b'1', b'1', b'1', b'1', 3,
+        'parse session', 'parse session', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (170021, 'POST', 'blue-auth', '/manager/operation/encrypted', '', b'1', b'1', b'1', b'1', b'1', 3,
+        'parse encrypted', 'parse encrypted', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- member api
 

@@ -23,7 +23,7 @@ public class RpcAuthServiceConsumer {
     @DubboReference(version = "1.0",
             providedBy = {"summer-auth"},
             methods = {
-                    @Method(name = "assertAccess", async = true)
+                    @Method(name = "assertAccess", async = true, retries = 2)
             })
     private RpcAuthService rpcAuthService;
 

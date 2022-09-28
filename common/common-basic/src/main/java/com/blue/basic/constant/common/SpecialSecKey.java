@@ -8,7 +8,7 @@ package com.blue.basic.constant.common;
 public enum SpecialSecKey {
 
     /**
-     * special secKey is not session
+     * special secKey is not login
      */
     NOT_LOGGED_IN_SEC_KEY("", "not access");
 

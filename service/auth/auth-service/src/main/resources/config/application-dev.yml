@@ -358,7 +358,7 @@ access:
   localCacheCapacity: 16384
   globalExpiresMillis: 259200000
   localExpiresMillis: 30000
-  millisLeftToHandleExpire: 259194000
+  millisLeftToHandleExpire: 258000000
   refresherCorePoolSize: 2
   refresherMaximumPoolSize: 4
   refresherKeepAliveSeconds: 64

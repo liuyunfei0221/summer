@@ -4,6 +4,7 @@ import com.blue.auth.api.inter.RpcAuthService;
 import com.blue.auth.api.model.AccessAssert;
 import com.blue.auth.api.model.AccessAsserted;
 import com.blue.basic.model.common.Access;
+import com.blue.basic.model.common.Session;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
@@ -25,9 +26,8 @@ public class RpcAuthServiceConsumer {
             providedBy = {"summer-auth"},
             methods = {
                     @Method(name = "assertAccess", async = true),
-                    @Method(name = "invalidateAuthByAccess", async = true),
-                    @Method(name = "invalidateAuthByJwt", async = true),
-                    @Method(name = "invalidateAuthByMemberId", async = true)
+                    @Method(name = "parseAccess", async = true),
+                    @Method(name = "parseSession", async = true)
             })
     private RpcAuthService rpcAuthService;
 
@@ -48,33 +48,23 @@ public class RpcAuthServiceConsumer {
     }
 
     /**
-     * invalid auth by access
+     * jwt -> access
      *
-     * @param access
+     * @param authentication
      * @return
      */
-    public Mono<Boolean> invalidateAuthByAccess(Access access) {
-        return fromFuture(rpcAuthService.invalidateAuthByAccess(access)).publishOn(scheduler);
+    public Mono<Access> parseAccess(String authentication) {
+        return fromFuture(rpcAuthService.parseAccess(authentication)).publishOn(scheduler);
     }
 
     /**
-     * invalid auth by jwt
+     * jwt -> session
      *
-     * @param jwt
+     * @param authentication
      * @return
      */
-    public Mono<Boolean> invalidateAuthByJwt(String jwt) {
-        return fromFuture(rpcAuthService.invalidateAuthByJwt(jwt)).publishOn(scheduler);
-    }
-
-    /**
-     * invalid auth by member id
-     *
-     * @param memberId
-     * @return
-     */
-    public Mono<Boolean> invalidateAuthByMemberId(Long memberId) {
-        return fromFuture(rpcAuthService.invalidateAuthByMemberId(memberId)).publishOn(scheduler);
+    public Mono<Session> parseSession(String authentication) {
+        return fromFuture(rpcAuthService.parseSession(authentication)).publishOn(scheduler);
     }
 
 }

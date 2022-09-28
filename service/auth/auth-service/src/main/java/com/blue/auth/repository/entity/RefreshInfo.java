@@ -9,6 +9,7 @@ import java.util.Date;
 import static com.blue.basic.common.base.BlueChecker.isBlank;
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.basic.constant.common.SpecialStringElement.PRIVACY_VALUE;
 
 /**
  * refresh token info entity
@@ -144,7 +145,7 @@ public class RefreshInfo implements Serializable {
     public String toString() {
         return "RefreshInfo{" +
                 "id='" + id + '\'' +
-                ", gamma='" + gamma + '\'' +
+                ", gamma='" + PRIVACY_VALUE.value + '\'' +
                 ", memberId='" + memberId + '\'' +
                 ", credentialType='" + credentialType + '\'' +
                 ", deviceType='" + deviceType + '\'' +

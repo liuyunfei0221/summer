@@ -6,6 +6,7 @@ import com.blue.auth.config.deploy.AccessDeploy;
 import com.blue.auth.event.model.InvalidLocalAccessEvent;
 import com.blue.auth.event.producer.InvalidLocalAccessProducer;
 import com.blue.auth.model.AccessInfo;
+import com.blue.auth.model.EncryptedDataParam;
 import com.blue.auth.model.MemberAccess;
 import com.blue.auth.model.MemberAuth;
 import com.blue.auth.repository.entity.RefreshInfo;
@@ -20,6 +21,7 @@ import com.blue.basic.constant.common.CacheKeyPrefix;
 import com.blue.basic.constant.common.Symbol;
 import com.blue.basic.model.common.Access;
 import com.blue.basic.model.common.KeyPair;
+import com.blue.basic.model.common.Session;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.jwt.component.JwtProcessor;
 import com.blue.redisson.api.inter.HandleTask;
@@ -48,6 +50,7 @@ import static com.blue.basic.constant.common.BlueCommonThreshold.*;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.SpecialSecKey.NOT_LOGGED_IN_SEC_KEY;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
+import static com.blue.basic.constant.common.SpecialStringElement.PRIVACY_VALUE;
 import static com.blue.basic.constant.common.SyncKeyPrefix.ACCESS_UPDATE_PRE;
 import static java.lang.Long.parseLong;
 import static java.lang.String.valueOf;
@@ -850,6 +853,116 @@ public class AuthServiceImpl implements AuthService {
                         })
                 :
                 error(() -> new BlueException(UNAUTHORIZED));
+    }
+
+    /**
+     * jwt -> payload
+     *
+     * @param authentication
+     * @return
+     */
+    @Override
+    public Mono<MemberPayload> parsePayload(String authentication) {
+        LOGGER.info("Mono<MemberPayload> parsePayload(String authentication), authentication = {}", authentication);
+
+        return justOrEmpty(authentication)
+                .filter(BlueChecker::isNotBlank)
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
+                .map(a -> {
+                    MemberPayload memberPayload = jwtProcessor.parse(a);
+                    memberPayload.setGamma(PRIVACY_VALUE.value);
+                    return memberPayload;
+                })
+                .onErrorMap(throwable -> {
+                    LOGGER.info("throwable = {}", throwable);
+                    return new BlueException(INVALID_PARAM);
+                });
+    }
+
+    /**
+     * jwt -> access
+     *
+     * @param authentication
+     * @return
+     */
+    @Override
+    public Mono<Access> parseAccess(String authentication) {
+        LOGGER.info("Mono<Access> parseAccess(String authentication), authentication = {}", authentication);
+
+        return justOrEmpty(authentication)
+                .filter(BlueChecker::isNotBlank)
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
+                .flatMap(a -> {
+                    MemberPayload memberPayload = jwtProcessor.parse(a);
+
+                    return accessInfoCache.getAccessInfo(memberPayload.getKeyId())
+                            .switchIfEmpty(defer(() -> error(() -> new BlueException(INVALID_PARAM))))
+                            .flatMap(accessInfo -> {
+                                if (!memberPayload.getGamma().equals(accessInfo.getGamma()))
+                                    return error(() -> new BlueException(UNAUTHORIZED));
+
+                                return just(new Access(accessInfo.getId(), accessInfo.getRoleIds(), memberPayload.getCredentialType().intern(),
+                                        memberPayload.getDeviceType().intern(), parseLong(memberPayload.getLoginTime())));
+                            });
+                }).onErrorMap(throwable -> {
+                    LOGGER.info("throwable = {}", throwable);
+                    return new BlueException(INVALID_PARAM);
+                });
+    }
+
+    /**
+     * jwt -> session
+     *
+     * @param authentication
+     * @return
+     */
+    @Override
+    public Mono<Session> parseSession(String authentication) {
+        LOGGER.info("Mono<Session> parseSession(String authentication), authentication = {}", authentication);
+
+        return justOrEmpty(authentication)
+                .filter(BlueChecker::isNotBlank)
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
+                .flatMap(a -> {
+                    MemberPayload memberPayload = jwtProcessor.parse(a);
+
+                    return accessInfoCache.getAccessInfo(memberPayload.getKeyId())
+                            .switchIfEmpty(defer(() -> error(() -> new BlueException(INVALID_PARAM))))
+                            .flatMap(accessInfo -> {
+                                if (!memberPayload.getGamma().equals(accessInfo.getGamma()))
+                                    return error(() -> new BlueException(UNAUTHORIZED));
+
+                                return just(new Session(accessInfo.getId(), accessInfo.getPubKey(), accessInfo.getRoleIds(), memberPayload.getCredentialType().intern(),
+                                        memberPayload.getDeviceType().intern(), parseLong(memberPayload.getLoginTime())));
+                            });
+                }).onErrorMap(throwable -> {
+                    LOGGER.info("throwable = {}", throwable);
+                    return new BlueException(INVALID_PARAM);
+                });
+    }
+
+    /**
+     * encrypted -> data
+     *
+     * @param encryptedDataParam
+     * @return
+     */
+    @Override
+    public Mono<String> parseEncrypted(EncryptedDataParam encryptedDataParam) {
+        LOGGER.info("Mono<String> parseEncrypted(EncryptedDataParam encryptedDataParam), encryptedDataParam = {}", encryptedDataParam);
+
+        return justOrEmpty(encryptedDataParam)
+                .filter(BlueChecker::isNotNull)
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
+                .map(ep -> {
+                    ep.asserts();
+
+                    return getRsaDecryptModeByIdentity(ep.getRsaDecryptMode())
+                            .decipher.apply(ep.getEncrypted(), ep.getSecKey());
+                }).onErrorMap(throwable -> {
+                    LOGGER.info("throwable = {}", throwable);
+                    return new BlueException(INVALID_PARAM);
+                });
     }
 
     /**

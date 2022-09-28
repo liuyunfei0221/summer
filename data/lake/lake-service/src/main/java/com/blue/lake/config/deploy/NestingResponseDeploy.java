@@ -16,6 +16,8 @@ public class NestingResponseDeploy {
 
     private transient List<String> uris;
 
+    private transient List<Integer> statuses;
+
     private transient String response;
 
     public NestingResponseDeploy() {
@@ -27,6 +29,14 @@ public class NestingResponseDeploy {
 
     public void setUris(List<String> uris) {
         this.uris = uris;
+    }
+
+    public List<Integer> getStatuses() {
+        return statuses;
+    }
+
+    public void setStatuses(List<Integer> statuses) {
+        this.statuses = statuses;
     }
 
     public String getResponse() {
@@ -41,6 +51,7 @@ public class NestingResponseDeploy {
     public String toString() {
         return "NestingResponseDeploy{" +
                 "uris=" + uris +
+                ", statuses=" + statuses +
                 ", response='" + response + '\'' +
                 '}';
     }

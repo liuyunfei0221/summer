@@ -88,7 +88,7 @@ public enum BlueDataAttrKey {
     DEVICE_TYPE("deviceType"),
 
     /**
-     * session time in access(loginTime)
+     * login time in access(loginTime)
      */
     LOGIN_TIME("loginTime"),
 

@@ -1,9 +1,11 @@
 package com.blue.auth.service.inter;
 
 import com.blue.auth.api.model.*;
+import com.blue.auth.model.EncryptedDataParam;
 import com.blue.auth.model.MemberAccess;
 import com.blue.auth.model.MemberAuth;
 import com.blue.basic.model.common.Access;
+import com.blue.basic.model.common.Session;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -134,6 +136,38 @@ public interface AuthService {
      * @return
      */
     Mono<String> updateSecKeyByAccess(Access access);
+
+    /**
+     * jwt -> payload
+     *
+     * @param authentication
+     * @return
+     */
+    Mono<MemberPayload> parsePayload(String authentication);
+
+    /**
+     * jwt -> access
+     *
+     * @param authentication
+     * @return
+     */
+    Mono<Access> parseAccess(String authentication);
+
+    /**
+     * jwt -> session
+     *
+     * @param authentication
+     * @return
+     */
+    Mono<Session> parseSession(String authentication);
+
+    /**
+     * encrypted -> data
+     *
+     * @param encryptedDataParam
+     * @return
+     */
+    Mono<String> parseEncrypted(EncryptedDataParam encryptedDataParam);
 
     /**
      * get member's authorities by access
