@@ -78,7 +78,8 @@ public final class BluePreWithErrorReportFilter implements WebFilter, Ordered {
     private static final BiConsumer<ServerHttpRequest, String> REQUEST_IP_REPACKAGER =
             (request, ip) -> request.mutate().headers(hs -> hs.set(REQUEST_IP.name, ip));
 
-    private void packageAttr(ServerHttpRequest request, Map<String, Object> attributes) {
+    private final BiConsumer<ServerHttpRequest, Map<String, Object>> ATTR_PACKAGER = (request, attributes) -> {
+
         String method = request.getMethodValue().intern();
         METHOD_VALUE_ASSERTER.accept(method);
         SCHEMA_ASSERTER.accept(request.getURI().getScheme());
@@ -106,7 +107,7 @@ public final class BluePreWithErrorReportFilter implements WebFilter, Ordered {
                 .ifPresent(extra -> attributes.put(REQUEST_EXTRA.key, extra));
 
         REQUEST_IP_REPACKAGER.accept(request, ip);
-    }
+    };
 
     @SuppressWarnings({"NullableProblems", "DuplicatedCode"})
     @Override
@@ -115,7 +116,7 @@ public final class BluePreWithErrorReportFilter implements WebFilter, Ordered {
 
         Map<String, Object> attributes = exchange.getAttributes();
 
-        packageAttr(request, attributes);
+        ATTR_PACKAGER.accept(request, attributes);
 
         return chain.filter(exchange)
                 .onErrorResume(throwable ->

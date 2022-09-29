@@ -77,7 +77,37 @@ public enum BlueHeader {
     /**
      * RES EXTRA
      */
-    RESPONSE_EXTRA("ResponseExtra");
+    RESPONSE_EXTRA("ResponseExtra"),
+
+    /**
+     * X_FORWARDED_FOR
+     */
+    X_FORWARDED_FOR("X-Forwarded-For"),
+
+    /**
+     * PROXY_CLIENT_IP
+     */
+    PROXY_CLIENT_IP("Proxy-Client-IP"),
+
+    /**
+     * WL_PROXY_CLIENT_IP
+     */
+    WL_PROXY_CLIENT_IP("WL-Proxy-Client-IP"),
+
+    /**
+     * HTTP_CLIENT_IP
+     */
+    HTTP_CLIENT_IP("HTTP_CLIENT_IP"),
+
+    /**
+     * HTTP_X_FORWARDED_FOR
+     */
+    HTTP_X_FORWARDED_FOR("HTTP_X_FORWARDED_FOR"),
+
+    /**
+     * X_REAL_IP
+     */
+    X_REAL_IP("X-Real-IP");
 
     public final String name;
 

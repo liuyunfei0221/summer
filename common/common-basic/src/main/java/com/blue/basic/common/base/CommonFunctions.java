@@ -17,10 +17,8 @@ import reactor.core.publisher.Mono;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.time.Clock;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.*;
 import java.util.stream.Stream;
 
@@ -53,7 +51,7 @@ import static reactor.core.publisher.Mono.just;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"WeakerAccess", "JavaDoc", "AliControlFlowStatementWithoutBraces", "unused", "UastIncorrectHttpHeaderInspection", "ConstantConditions"})
+@SuppressWarnings({"WeakerAccess", "JavaDoc", "AliControlFlowStatementWithoutBraces", "unused", "ConstantConditions"})
 public class CommonFunctions {
 
     public static final Gson GSON = new GsonBuilder().serializeNulls().create();
@@ -73,12 +71,12 @@ public class CommonFunctions {
      * ip headers
      */
     public static final String
-            X_FORWARDED_FOR = "X-Forwarded-For",
-            PROXY_CLIENT_IP = "Proxy-Client-IP",
-            WL_PROXY_CLIENT_IP = "WL-Proxy-Client-IP",
-            HTTP_CLIENT_IP = "HTTP_CLIENT_IP",
-            HTTP_X_FORWARDED_FOR = "HTTP_X_FORWARDED_FOR",
-            X_REAL_IP = "X-Real-IP";
+            X_FORWARDED_FOR = BlueHeader.X_FORWARDED_FOR.name,
+            PROXY_CLIENT_IP = BlueHeader.PROXY_CLIENT_IP.name,
+            WL_PROXY_CLIENT_IP = BlueHeader.WL_PROXY_CLIENT_IP.name,
+            HTTP_CLIENT_IP = BlueHeader.HTTP_CLIENT_IP.name,
+            HTTP_X_FORWARDED_FOR = BlueHeader.HTTP_X_FORWARDED_FOR.name,
+            X_REAL_IP = BlueHeader.X_REAL_IP.name;
 
     /**
      * auth header key
@@ -126,12 +124,17 @@ public class CommonFunctions {
     public static final Set<String> VALID_TAILS = of(ValidResourceFormatters.values())
             .map(vrf -> vrf.identity).collect(toSet());
 
+    private static final Map<String, Boolean> SIMPLE_URIS_CACHE = new ConcurrentHashMap<>();
+
     /**
      * uri parser - for request
      */
     public static final UnaryOperator<String> REQUEST_REST_URI_PROCESSOR = uri -> {
         if (isBlank(uri))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "uri can't be null");
+
+        if (SIMPLE_URIS_CACHE.containsKey(uri))
+            return uri.intern();
 
         int lastPartIdx = lastIndexOf(uri, PATH_SEPARATOR);
         if (lastPartIdx == -1 || lastPartIdx == length(uri))
@@ -150,6 +153,7 @@ public class CommonFunctions {
         if (scSeparatorIdx != -1 && VALID_TAILS.contains(schema = substring(maybePathVariable, scSeparatorIdx)))
             return (substring(uri, 0, lastPartIdx).intern() + PATH_SEPARATOR + WILDCARD + schema.intern()).intern();
 
+        SIMPLE_URIS_CACHE.put(uri.intern(), true);
         return uri.intern();
     };
 
