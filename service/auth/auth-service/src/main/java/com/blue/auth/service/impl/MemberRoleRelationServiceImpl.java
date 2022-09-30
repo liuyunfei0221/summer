@@ -220,6 +220,27 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     }
 
     /**
+     * select relation by limit and member id
+     *
+     * @param memberId
+     * @param limit
+     * @param rows
+     * @return
+     */
+    @Override
+    public List<MemberRoleRelation> selectRelationByRowsAndMemberId(Long memberId, Long limit, Long rows) {
+        LOGGER.info("List<MemberRoleRelation> selectRelationByRowsAndMemberId(Long memberId, Long limit, Long rows), memberId = {}, limit = {}, rows = {}", memberId, limit, rows);
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid roleId");
+        if (isInvalidLimit(limit))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid limit");
+        if (isInvalidRows(rows))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid rows");
+
+        return memberRoleRelationMapper.selectByRowsAndMemberId(memberId, limit, rows);
+    }
+
+    /**
      * count relation by member id
      *
      * @param memberId
@@ -232,6 +253,27 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
             throw new BlueException(INVALID_IDENTITY);
 
         return memberRoleRelationMapper.countByMemberId(memberId);
+    }
+
+    /**
+     * select relation by limit and role id
+     *
+     * @param roleId
+     * @param limit
+     * @param rows
+     * @return
+     */
+    @Override
+    public List<MemberRoleRelation> selectRelationByRowsAndRoleId(Long roleId, Long limit, Long rows) {
+        LOGGER.info("List<MemberRoleRelation> selectRelationByRowsAndRoleId(Long roleId, Long limit, Long rows), roleId = {}, limit = {}, rows = {}", roleId, limit, rows);
+        if (isInvalidIdentity(roleId))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resId");
+        if (isInvalidLimit(limit))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid limit");
+        if (isInvalidRows(rows))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid rows");
+
+        return memberRoleRelationMapper.selectByRowsAndRoleId(roleId, limit, rows);
     }
 
     /**

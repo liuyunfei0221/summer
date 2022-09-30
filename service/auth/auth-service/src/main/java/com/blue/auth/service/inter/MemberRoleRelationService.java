@@ -77,12 +77,32 @@ public interface MemberRoleRelationService {
     Mono<List<MemberRoleRelation>> selectRelationMonoByMemberIds(List<Long> memberIds);
 
     /**
+     * select relation by limit and member id
+     *
+     * @param memberId
+     * @param limit
+     * @param rows
+     * @return
+     */
+    List<MemberRoleRelation> selectRelationByRowsAndMemberId(Long memberId, Long limit, Long rows);
+
+    /**
      * count relation by member id
      *
      * @param memberId
      * @return
      */
     long countRelationByMemberId(Long memberId);
+
+    /**
+     * select relation by limit and role id
+     *
+     * @param roleId
+     * @param limit
+     * @param rows
+     * @return
+     */
+    List<MemberRoleRelation> selectRelationByRowsAndRoleId(Long roleId, Long limit, Long rows);
 
     /**
      * count relation by role id

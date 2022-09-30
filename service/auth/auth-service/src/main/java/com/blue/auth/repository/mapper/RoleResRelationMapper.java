@@ -43,11 +43,11 @@ public interface RoleResRelationMapper {
 
     List<RoleResRelation> selectByRoleIds(@Param("roleIds") List<Long> roleIds);
 
-    List<RoleResRelation> selectRelationByRowsAndRoleId(@Param("roleId") Long roleId, @Param("limit") Long limit, @Param("rows") Long rows);
+    List<RoleResRelation> selectByRowsAndRoleId(@Param("roleId") Long roleId, @Param("limit") Long limit, @Param("rows") Long rows);
 
     Long countByRoleId(@Param("roleId") Long roleId);
 
-    List<RoleResRelation> selectRelationByRowsAndResId(@Param("resId") Long resId, @Param("limit") Long limit, @Param("rows") Long rows);
+    List<RoleResRelation> selectByRowsAndResId(@Param("resId") Long resId, @Param("limit") Long limit, @Param("rows") Long rows);
 
     Long countByResId(@Param("resId") Long resId);
 

@@ -179,7 +179,7 @@
         </foreach>
     </select>
 
-    <select id="selectRelationByRowsAndRoleId" resultMap="BaseResultMap">
+    <select id="selectByRowsAndRoleId" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
@@ -197,7 +197,7 @@
             role_id = #{roleId,jdbcType=BIGINT}
     </select>
 
-    <select id="selectRelationByRowsAndResId" resultMap="BaseResultMap">
+    <select id="selectByRowsAndResId" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM

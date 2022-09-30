@@ -4,7 +4,6 @@ import com.blue.auth.api.model.AuthorityBaseOnResource;
 import com.blue.auth.api.model.AuthorityBaseOnRole;
 import com.blue.auth.api.model.ResourceInfo;
 import com.blue.auth.api.model.RoleInfo;
-import com.blue.auth.converter.AuthModelConverters;
 import com.blue.auth.repository.entity.Resource;
 import com.blue.auth.repository.entity.Role;
 import com.blue.auth.repository.entity.RoleResRelation;
@@ -317,7 +316,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
                 ).flatMap(roleInfo ->
                         this.selectResIdsMonoByRoleId(roleId)
                                 .flatMap(resourceService::selectResourceMonoByIds)
-                                .flatMap(resources -> just(resources.stream().map(AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER).collect(toList())))
+                                .flatMap(resources -> just(resources.stream().map(RESOURCE_2_RESOURCE_INFO_CONVERTER).collect(toList())))
                                 .flatMap(resourceInfos -> just(new AuthorityBaseOnRole(roleInfo, resourceInfos)))
                 );
     }
@@ -486,7 +485,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         if (isInvalidRows(rows))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid rows");
 
-        return roleResRelationMapper.selectRelationByRowsAndRoleId(roleId, limit, rows);
+        return roleResRelationMapper.selectByRowsAndRoleId(roleId, limit, rows);
     }
 
     /**
@@ -522,7 +521,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         if (isInvalidRows(rows))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid rows");
 
-        return roleResRelationMapper.selectRelationByRowsAndResId(resId, limit, rows);
+        return roleResRelationMapper.selectByRowsAndResId(resId, limit, rows);
     }
 
     /**

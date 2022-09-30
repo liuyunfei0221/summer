@@ -103,7 +103,6 @@ public class RoleServiceImpl implements RoleService {
     private final Supplier<List<Role>> ROLES_WITH_CACHE_SUP = () ->
             synchronizedProcessor.handleSupByOrderedWithSetter(ROLES_REFRESH_SYNC.key, ROLES_REDIS_SUP, ROLES_DB_SUP, ROLES_REDIS_SETTER, BlueChecker::isNotEmpty);
 
-
     private final Supplier<Role> DEFAULT_ROLE_DB_SUP = () -> {
         List<Role> defaultRoles = roleMapper.selectDefault();
         if (isEmpty(defaultRoles))

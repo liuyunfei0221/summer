@@ -37,7 +37,11 @@ public interface MemberRoleRelationMapper {
 
     List<MemberRoleRelation> selectByMemberIds(@Param("memberIds") List<Long> memberIds);
 
+    List<MemberRoleRelation> selectByRowsAndMemberId(@Param("memberId") Long memberId, @Param("limit") Long limit, @Param("rows") Long rows);
+
     Long countByMemberId(@Param("memberId") Long memberId);
+
+    List<MemberRoleRelation> selectByRowsAndRoleId(@Param("roleId") Long roleId, @Param("limit") Long limit, @Param("rows") Long rows);
 
     Long countByRoleId(@Param("roleId") Long roleId);
 
