@@ -86,6 +86,8 @@ public class LakeServiceImpl implements LakeService {
      */
     @Override
     public Mono<ScrollModelResponse<OptEvent, Long>> selectEventScrollMonoByScrollAndCursor(ScrollModelRequest<Void, Long> scrollModelRequest) {
+        LOGGER.info("Mono<ScrollModelResponse<OptEvent, Long>> selectEventScrollMonoByScrollAndCursor(ScrollModelRequest<Void, Long> scrollModelRequest), scrollModelRequest = {}", scrollModelRequest);
+
         return optEventService.selectEventScrollMonoByScrollAndCursor(scrollModelRequest);
     }
 
