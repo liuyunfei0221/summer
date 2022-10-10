@@ -206,7 +206,7 @@ dubbo:
   protocol:
     name: dubbo
     host: localhost
-    port: 14000
+    port: 18000
     accesslog: /usr/env/log/dubbo/message/access.log
   provider:
     retries: 0
@@ -326,4 +326,4 @@ consumers:
       enableNegativeAcknowledge: true
 
 
-debug: true
+debug: false

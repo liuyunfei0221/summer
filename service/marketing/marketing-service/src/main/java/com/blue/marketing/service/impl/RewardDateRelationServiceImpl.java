@@ -2,7 +2,7 @@ package com.blue.marketing.service.impl;
 
 import com.blue.basic.model.common.PageModelRequest;
 import com.blue.basic.model.common.PageModelResponse;
-import com.blue.basic.model.common.YearAndMonthParam;
+import com.blue.basic.model.common.MonthParam;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.marketing.api.model.RewardDateRelationInfo;
@@ -529,17 +529,17 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
     /**
      * select relation manager info by year and month
      *
-     * @param yearAndMonthParam
+     * @param monthParam
      * @return
      */
     @Override
-    public Mono<List<RewardDateRelationManagerInfo>> selectRewardDateRelationMonoByYearAndMonth(YearAndMonthParam yearAndMonthParam) {
-        LOGGER.info("Mono<List<RewardDateRelationManagerInfo>> selectRewardDateRelationMonoByYearAndMonth(YearAndMonthParam yearAndMonthParam), yearAndMonthParam = {}", yearAndMonthParam);
-        if (isNull(yearAndMonthParam))
+    public Mono<List<RewardDateRelationManagerInfo>> selectRewardDateRelationMonoByYearAndMonth(MonthParam monthParam) {
+        LOGGER.info("Mono<List<RewardDateRelationManagerInfo>> selectRewardDateRelationMonoByYearAndMonth(MonthParam monthParam), monthParam = {}", monthParam);
+        if (isNull(monthParam))
             throw new BlueException(EMPTY_PARAM);
-        yearAndMonthParam.asserts();
+        monthParam.asserts();
 
-        return this.selectRewardDateRelationMonoByYearAndMonth(yearAndMonthParam.getYear(), yearAndMonthParam.getMonth())
+        return this.selectRewardDateRelationMonoByYearAndMonth(monthParam.getYear(), monthParam.getMonth())
                 .flatMap(REWARD_DATE_REL_MANAGER_INFO_CONVERTER);
     }
 

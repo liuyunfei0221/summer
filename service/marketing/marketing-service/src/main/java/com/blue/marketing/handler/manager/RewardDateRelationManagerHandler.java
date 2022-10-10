@@ -1,7 +1,7 @@
 package com.blue.marketing.handler.manager;
 
 import com.blue.basic.model.common.BlueResponse;
-import com.blue.basic.model.common.YearAndMonthParam;
+import com.blue.basic.model.common.MonthParam;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.marketing.model.RewardDateRelationBatchInsertParam;
 import com.blue.marketing.model.RewardDateRelationInsertParam;
@@ -125,7 +125,7 @@ public final class RewardDateRelationManagerHandler {
      * @return
      */
     public Mono<ServerResponse> selectByDate(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(YearAndMonthParam.class)
+        return serverRequest.bodyToMono(MonthParam.class)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                 .flatMap(rewardDateRelationService::selectRewardDateRelationMonoByYearAndMonth)
                 .flatMap(l ->

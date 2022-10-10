@@ -15,16 +15,16 @@ import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
-public class YearAndMonthParam extends YearParam implements Serializable {
+public class MonthParam extends YearParam implements Serializable {
 
     private static final long serialVersionUID = 3999342903196580275L;
 
     private Integer month;
 
-    public YearAndMonthParam() {
+    public MonthParam() {
     }
 
-    public YearAndMonthParam(Integer year, Integer month) {
+    public MonthParam(Integer year, Integer month) {
         super(year);
         this.month = month;
     }
@@ -46,7 +46,7 @@ public class YearAndMonthParam extends YearParam implements Serializable {
 
     @Override
     public String toString() {
-        return "YearAndMonthParam{" +
+        return "MonthParam{" +
                 "year=" + super.getYear() +
                 ", month=" + month +
                 '}';

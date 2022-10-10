@@ -15,7 +15,7 @@ import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
-public class DateParam extends YearAndMonthParam implements Serializable {
+public class DateParam extends MonthParam implements Serializable {
 
     private static final long serialVersionUID = 770233259803754878L;
 

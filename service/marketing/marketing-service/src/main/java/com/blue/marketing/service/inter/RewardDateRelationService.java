@@ -3,7 +3,7 @@ package com.blue.marketing.service.inter;
 
 import com.blue.basic.model.common.PageModelRequest;
 import com.blue.basic.model.common.PageModelResponse;
-import com.blue.basic.model.common.YearAndMonthParam;
+import com.blue.basic.model.common.MonthParam;
 import com.blue.marketing.api.model.RewardDateRelationInfo;
 import com.blue.marketing.api.model.RewardDateRelationManagerInfo;
 import com.blue.marketing.model.RewardDateRelationBatchInsertParam;
@@ -146,9 +146,9 @@ public interface RewardDateRelationService {
     /**
      * select relation manager info by year and month
      *
-     * @param yearAndMonthParam
+     * @param monthParam
      * @return
      */
-    Mono<List<RewardDateRelationManagerInfo>> selectRewardDateRelationMonoByYearAndMonth(YearAndMonthParam yearAndMonthParam);
+    Mono<List<RewardDateRelationManagerInfo>> selectRewardDateRelationMonoByYearAndMonth(MonthParam monthParam);
 
 }
