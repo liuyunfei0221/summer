@@ -320,9 +320,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
         'select target element', 'select target element', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (100009, 'GET', 'blue-base', '/dictType', '', b'0', b'1', b'1', b'0', b'1', 1,
         'query dict types', 'query dict types', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (100010, 'GET', 'blue-base', '/bulletin/{type}', '', b'0', b'1', b'1', b'0', b'1', 1,
-        'test get endpoint', 'test get endpoint', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (100011, 'GET', 'blue-base', '/style/{type}', '', b'0', b'1', b'1', b'0', b'1', 1,
+       (100010, 'GET', 'blue-base', '/style/{type}', '', b'0', b'1', b'1', b'0', b'1', 1,
         'active style of api', 'active style of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 -- base manage

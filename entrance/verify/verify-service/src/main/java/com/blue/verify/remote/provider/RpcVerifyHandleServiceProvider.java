@@ -22,7 +22,8 @@ import static reactor.core.publisher.Mono.just;
         version = "1.0",
         methods = {
                 @Method(name = "generate", async = true),
-                @Method(name = "validate", async = true)
+                @Method(name = "validate", async = true),
+                @Method(name = "turingValidate", async = true)
         })
 public class RpcVerifyHandleServiceProvider implements RpcVerifyHandleService {
 
@@ -66,13 +67,17 @@ public class RpcVerifyHandleServiceProvider implements RpcVerifyHandleService {
     /**
      * validate by turing test
      *
+     * @param identity
+     * @param allow
+     * @param expiresMillis
      * @param key
      * @param verify
      * @return
      */
     @Override
-    public CompletableFuture<Boolean> turingValidate(String key, String verify) {
-        return just(true).publishOn(scheduler).flatMap(v -> verifyHandleService.turingValidate(key, verify)).toFuture();
+    public CompletableFuture<Boolean> turingValidate(String identity, Integer allow, Long expiresMillis, String key, String verify) {
+        return just(true).publishOn(scheduler).flatMap(v ->
+                verifyHandleService.turingValidate(identity, allow, expiresMillis, key, verify)).toFuture();
     }
 
 }

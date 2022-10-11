@@ -32,8 +32,7 @@ import static com.blue.basic.common.base.BlueRandomGenerator.generate;
 import static com.blue.basic.common.base.CommonFunctions.*;
 import static com.blue.basic.constant.common.BlueHeader.VERIFY_KEY;
 import static com.blue.basic.constant.common.RateLimitKeyPrefix.IMAGE_VERIFY_RATE_LIMIT_KEY_PRE;
-import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
-import static com.blue.basic.constant.common.ResponseElement.TOO_MANY_REQUESTS;
+import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION;
 import static com.blue.basic.constant.verify.VerifyType.IMAGE;
 import static java.time.temporal.ChronoUnit.MILLIS;
@@ -123,7 +122,7 @@ public class ImageVerifyHandler implements VerifyHandler {
 
     private static final UnaryOperator<String> LIMIT_KEY_WRAPPER = key -> {
         if (isBlank(key))
-            throw new RuntimeException("key can't be null");
+            throw new BlueException(INVALID_PARAM);
 
         return IMAGE_VERIFY_RATE_LIMIT_KEY_PRE.prefix + key;
     };

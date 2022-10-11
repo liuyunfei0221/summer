@@ -4,9 +4,10 @@ import com.blue.basic.model.common.TuringData;
 import com.blue.basic.model.exps.BlueException;
 import com.google.gson.JsonSyntaxException;
 
-import static com.blue.basic.common.base.BlueChecker.isNotNull;
+import static com.blue.basic.common.base.BlueChecker.isNotBlank;
 import static com.blue.basic.common.base.CommonFunctions.GSON;
-import static com.blue.basic.constant.common.ResponseElement.*;
+import static com.blue.basic.constant.common.ResponseElement.NEED_TURING_TEST;
+import static java.util.Optional.ofNullable;
 
 /**
  * turing data object and json str converter
@@ -24,10 +25,7 @@ public final class TuringDataProcessor {
      * @return
      */
     public static String turingDataToJson(TuringData turingData) {
-        if (isNotNull(turingData))
-            return GSON.toJson(turingData);
-
-        throw new BlueException(NEED_TURING_TEST);
+        return GSON.toJson(ofNullable(turingData).orElseGet(TuringData::new));
     }
 
     /**
@@ -37,14 +35,14 @@ public final class TuringDataProcessor {
      * @return
      */
     public static TuringData jsonToTuringData(String json) {
-        if (isNotNull(json))
+        if (isNotBlank(json))
             try {
                 return GSON.fromJson(json, TuringData.class);
             } catch (JsonSyntaxException e) {
                 throw new BlueException(NEED_TURING_TEST);
             }
 
-        throw new BlueException(NEED_TURING_TEST);
+        return new TuringData();
     }
 
 }

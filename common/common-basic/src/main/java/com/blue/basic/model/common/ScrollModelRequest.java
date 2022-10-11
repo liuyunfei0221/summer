@@ -44,7 +44,7 @@ public final class ScrollModelRequest<T, A extends Serializable> implements Seri
 
     public ScrollModelRequest(Long rows, T condition, A cursor) {
         if (isNull(rows) || rows < 1L || rows > MAX_ROWS_PER_REQ)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "rows can't be less than 1, max rows per request can't be greater than " + MAX_ROWS.value);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "rows can't be less than 1, max rows per request can't be greater than " + MAX_ROWS_PER_REQ);
 
         this.rows = rows;
         this.condition = condition;
@@ -61,7 +61,7 @@ public final class ScrollModelRequest<T, A extends Serializable> implements Seri
 
     public void setRows(Long rows) {
         if (isNull(rows) || rows < 1L || rows > MAX_ROWS_PER_REQ)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "rows can't be less than 1, max rows per request can't be greater than " + MAX_ROWS.value);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "rows can't be less than 1, max rows per request can't be greater than " + MAX_ROWS_PER_REQ);
 
         this.rows = rows;
     }

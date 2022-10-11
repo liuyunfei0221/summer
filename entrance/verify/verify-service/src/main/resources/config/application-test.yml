@@ -211,14 +211,14 @@ dubbo:
     check: false
     timeout: 60000
     simplified: false
-#  metadata-report:
-#    address: zookeeper://43.138.44.171
-#    port: 2181
-#    username: blue
-#    password: LiuZhiyi20200805
-#    timeout: 120000
-#    default: true
-#    check: false
+  #  metadata-report:
+  #    address: zookeeper://43.138.44.171
+  #    port: 2181
+  #    username: blue
+  #    password: LiuZhiyi20200805
+  #    timeout: 120000
+  #    default: true
+  #    check: false
   application:
     id: summer-verify
     name: summer-verify
@@ -430,6 +430,10 @@ image:
   imageWidth: 200
   imageHeight: 50
 
+turing:
+  allow: 5
+  intervalMillis: 12000000
+  verifyTypes: [ SMS,MAIL ]
 
 vtemplate:
   cacheExpiresSecond: 21600

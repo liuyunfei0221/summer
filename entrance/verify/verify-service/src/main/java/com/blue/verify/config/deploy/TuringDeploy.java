@@ -1,7 +1,10 @@
 package com.blue.verify.config.deploy;
 
+import com.blue.basic.constant.verify.VerifyType;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * turing deploy
@@ -12,23 +15,45 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "turing")
 public class TuringDeploy {
 
-    private Long expire;
+    private Integer allow;
+
+    private Long intervalMillis;
+
+    private List<VerifyType> verifyTypes;
 
     public TuringDeploy() {
     }
 
-    public Long getExpire() {
-        return expire;
+    public Integer getAllow() {
+        return allow;
     }
 
-    public void setExpire(Long expire) {
-        this.expire = expire;
+    public void setAllow(Integer allow) {
+        this.allow = allow;
+    }
+
+    public Long getIntervalMillis() {
+        return intervalMillis;
+    }
+
+    public void setIntervalMillis(Long intervalMillis) {
+        this.intervalMillis = intervalMillis;
+    }
+
+    public List<VerifyType> getVerifyTypes() {
+        return verifyTypes;
+    }
+
+    public void setVerifyTypes(List<VerifyType> verifyTypes) {
+        this.verifyTypes = verifyTypes;
     }
 
     @Override
     public String toString() {
         return "TuringDeploy{" +
-                "expire=" + expire +
+                "allow=" + allow +
+                ", intervalMillis=" + intervalMillis +
+                ", verifyTypes=" + verifyTypes +
                 '}';
     }
 

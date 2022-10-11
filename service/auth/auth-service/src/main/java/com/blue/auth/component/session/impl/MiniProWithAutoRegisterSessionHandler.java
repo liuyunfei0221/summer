@@ -135,6 +135,7 @@ public class MiniProWithAutoRegisterSessionHandler implements SessionHandler {
         return credentialService.getCredentialMonoByCredentialAndType(phone, MINI_PRO_AUTO_REGISTER.identity)
                 .flatMap(credential -> {
                     extra.put(NEW_MEMBER.key, false);
+
                     return rpcMemberBasicServiceConsumer.getMemberBasicInfoByPrimaryKey(credential.getMemberId())
                             .flatMap(mbi -> {
                                 MEMBER_STATUS_ASSERTER.accept(mbi);

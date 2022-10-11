@@ -22,7 +22,8 @@ public class RpcVerifyHandleServiceConsumer {
             providedBy = {"summer-verify"},
             methods = {
                     @Method(name = "generate", async = true),
-                    @Method(name = "validate", async = true)
+                    @Method(name = "validate", async = true),
+                    @Method(name = "turingValidate", async = true)
             })
     private RpcVerifyHandleService rpcVerifyHandleService;
 
@@ -61,12 +62,15 @@ public class RpcVerifyHandleServiceConsumer {
     /**
      * validate by turing test
      *
+     * @param identity
+     * @param allow
+     * @param expiresMillis
      * @param key
      * @param verify
      * @return
      */
-    public Mono<Boolean> turingValidate(String key, String verify) {
-        return fromFuture(rpcVerifyHandleService.turingValidate( key, verify)).publishOn(scheduler);
+    public Mono<Boolean> turingValidate(String identity, Integer allow, Long expiresMillis, String key, String verify) {
+        return fromFuture(rpcVerifyHandleService.turingValidate(identity, allow, expiresMillis, key, verify)).publishOn(scheduler);
     }
 
 }

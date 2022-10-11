@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 import static com.blue.basic.common.base.BlueChecker.isBlank;
 import static com.blue.basic.constant.common.ResponseElement.NEED_TURING_TEST;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 
 /**
  * turing test data
@@ -23,6 +24,8 @@ public final class TuringData implements Serializable, Asserter {
     private String verify;
 
     public TuringData() {
+        this.key = EMPTY_VALUE.value;
+        this.verify = EMPTY_VALUE.value;
     }
 
     public TuringData(String key, String verify) {

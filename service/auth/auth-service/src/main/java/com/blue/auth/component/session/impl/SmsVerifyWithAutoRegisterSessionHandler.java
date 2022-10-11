@@ -138,6 +138,7 @@ public class SmsVerifyWithAutoRegisterSessionHandler implements SessionHandler {
                                 credentialService.getCredentialMonoByCredentialAndType(phone, PHONE_VERIFY_AUTO_REGISTER.identity)
                                         .flatMap(credential -> {
                                             extra.put(NEW_MEMBER.key, false);
+
                                             return rpcMemberBasicServiceConsumer.getMemberBasicInfoByPrimaryKey(credential.getMemberId())
                                                     .flatMap(mbi -> {
                                                         MEMBER_STATUS_ASSERTER.accept(mbi);

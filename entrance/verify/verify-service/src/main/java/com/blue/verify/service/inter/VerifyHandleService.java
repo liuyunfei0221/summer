@@ -47,10 +47,13 @@ public interface VerifyHandleService {
     /**
      * validate by turing test
      *
+     * @param identity
+     * @param allow
+     * @param expiresMillis
      * @param key
      * @param verify
      * @return
      */
-    Mono<Boolean> turingValidate(String key, String verify);
+    Mono<Boolean> turingValidate(String identity, Integer allow, Long expiresMillis, String key, String verify);
 
 }
