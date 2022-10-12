@@ -433,7 +433,7 @@ image:
 turing:
   allow: 5
   intervalMillis: 12000000
-  verifyTypes: [ SMS,MAIL ]
+  targetVerifyTypes: [ SMS,MAIL ]
 
 vtemplate:
   cacheExpiresSecond: 21600

@@ -16,25 +16,25 @@ import static com.blue.identity.core.SnowflakeIdentityParser.parse;
 import static java.lang.Long.valueOf;
 
 /**
- * table sharding algorithm
+ * database sharding algorithm
  *
  * @author liuyunfei
  */
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
-public final class TableShardingAlgorithm implements PreciseShardingAlgorithm<Long> {
+public final class SnowflakeDatabaseShardingAlgorithm implements PreciseShardingAlgorithm<Long> {
 
     private final Map<Long, String> mapping;
 
-    public TableShardingAlgorithm(String logicTableName, List<IdentityToShardingMappingAttr> workerToTableMappings) {
-        if (isBlank(logicTableName))
-            throw new IdentityException("logicTableName can't be blank");
-        if (isEmpty(workerToTableMappings))
-            throw new IdentityException("workerToTableMappings can't be empty");
+    public SnowflakeDatabaseShardingAlgorithm(String logicDataBaseName, List<IdentityToShardingMappingAttr> dataCenterToDatabaseMappings) {
+        if (isBlank(logicDataBaseName))
+            throw new IdentityException("logicDataBaseName can't be blank");
+        if (isEmpty(dataCenterToDatabaseMappings))
+            throw new IdentityException("dataCenterToDatabaseMappings can't be empty");
 
-        Map<Long, String> workerIdAndDatabaseIndexMapping = new HashMap<>(workerToTableMappings.size(), 2.0f);
+        Map<Long, String> dataCenterIdAndDatabaseIndexMapping = new HashMap<>(dataCenterToDatabaseMappings.size(), 2.0f);
         Integer id;
         Integer index;
-        for (IdentityToShardingMappingAttr attr : workerToTableMappings) {
+        for (IdentityToShardingMappingAttr attr : dataCenterToDatabaseMappings) {
             id = attr.getId();
             index = attr.getIndex();
             if (isNull(id) || id < 0)
@@ -42,15 +42,16 @@ public final class TableShardingAlgorithm implements PreciseShardingAlgorithm<Lo
             if (isNull(index) || index < 0)
                 throw new IdentityException("index can't be less than 0");
 
-            workerIdAndDatabaseIndexMapping.put(valueOf(id), (logicTableName.intern() + PAR_CONCATENATION.identity + index).intern());
+            dataCenterIdAndDatabaseIndexMapping.put(valueOf(id), (logicDataBaseName.intern() + PAR_CONCATENATION.identity + index).intern());
         }
 
-        mapping = workerIdAndDatabaseIndexMapping;
+        mapping = dataCenterIdAndDatabaseIndexMapping;
     }
+
 
     @Override
     public String doSharding(Collection<String> availableTargetNames, PreciseShardingValue<Long> shardingValue) {
-        return mapping.get(parse(shardingValue.getValue()).getWorker()).intern();
+        return mapping.get(parse(shardingValue.getValue()).getDataCenter()).intern();
     }
 
 }

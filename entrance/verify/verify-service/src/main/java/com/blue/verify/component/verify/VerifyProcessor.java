@@ -11,6 +11,7 @@ import com.blue.verify.config.deploy.TuringDeploy;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -31,12 +32,14 @@ import static com.blue.basic.common.base.ConstantProcessor.getVerifyBusinessType
 import static com.blue.basic.common.base.TuringDataGetter.getTuringDataReact;
 import static com.blue.basic.constant.common.BlueCommonThreshold.*;
 import static com.blue.basic.constant.common.RateLimitKeyPrefix.TURING_TEST_LIMIT_KEY_PRE;
+import static com.blue.basic.constant.common.RateLimitKeyPrefix.VERIFIES_RATE_LIMIT_KEY_PRE;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.verify.VerifyBusinessType.TURING_TEST;
 import static com.blue.basic.constant.verify.VerifyType.IMAGE;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
+import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 import static reactor.core.publisher.Mono.*;
 
 /**
@@ -44,8 +47,9 @@ import static reactor.core.publisher.Mono.*;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "ConstantConditions"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "FieldCanBeLocal"})
 @Component
+@Order(HIGHEST_PRECEDENCE)
 public class VerifyProcessor implements ApplicationListener<ContextRefreshedEvent> {
 
     private final BlueLeakyBucketRateLimiter blueLeakyBucketRateLimiter;
@@ -63,9 +67,11 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
 
         this.ALLOW = allow;
         this.INTERVAL_MILLIS = intervalMillis;
-        this.needTuringTestVerifyTypes = ofNullable(turingDeploy.getVerifyTypes())
+
+        this.NEED_TURING_TEST_VERIFY_TYPES = ofNullable(turingDeploy.getTargetVerifyTypes())
                 .map(vts -> vts.stream().map(vt -> vt.identity).collect(toSet()))
                 .orElseGet(Collections::emptySet);
+        this.NEED_TURING_TEST_PRE = this.NEED_TURING_TEST_VERIFY_TYPES::contains;
     }
 
     private static final Map<String, Set<String>> BT_ALLOWED_VTS = Stream.of(VerifyBusinessType.values())
@@ -98,6 +104,13 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
             throw new BlueException(INVALID_PARAM);
     };
 
+    private static final UnaryOperator<String> TURING_LIMIT_IDENTITY_WRAPPER = key -> {
+        if (isBlank(key))
+            throw new BlueException(INVALID_PARAM);
+
+        return VERIFIES_RATE_LIMIT_KEY_PRE.prefix + key;
+    };
+
     private static final UnaryOperator<String> TURING_LIMIT_KEY_WRAPPER = key -> {
         if (isBlank(key))
             throw new BlueException(INVALID_PARAM);
@@ -108,9 +121,9 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
     private final int ALLOW;
     private final long INTERVAL_MILLIS;
 
-    private Set<String> needTuringTestVerifyTypes;
+    private final Set<String> NEED_TURING_TEST_VERIFY_TYPES;
 
-    private final Predicate<String> NEED_TURING_TEST_PRE = needTuringTestVerifyTypes::contains;
+    private final Predicate<String> NEED_TURING_TEST_PRE;
 
     /**
      * verify type -> verify handler
@@ -120,11 +133,12 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         ApplicationContext applicationContext = contextRefreshedEvent.getApplicationContext();
-        Map<String, VerifyHandler> beansOfType = applicationContext.getBeansOfType(VerifyHandler.class);
-        if (isEmpty(beansOfType))
+
+        Map<String, VerifyHandler> verifyHandlersOfType = applicationContext.getBeansOfType(VerifyHandler.class);
+        if (isEmpty(verifyHandlersOfType))
             throw new RuntimeException("verifyHandlers is empty");
 
-        verifyHandlers = beansOfType.values().stream()
+        verifyHandlers = verifyHandlersOfType.values().stream()
                 .collect(toMap(vh -> vh.targetType().identity, vh -> vh, (a, b) -> a));
     }
 
@@ -156,12 +170,12 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
      */
     public Mono<ServerResponse> handle(ServerRequest serverRequest) {
         return zip(
+                serverRequest.bodyToMono(VerifyParam.class).switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getIpReact(serverRequest),
-                getTuringDataReact(serverRequest),
-                serverRequest.bodyToMono(VerifyParam.class).switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
+                getTuringDataReact(serverRequest)
         )
                 .flatMap(tuple3 -> {
-                    VerifyParam vp = tuple3.getT3();
+                    VerifyParam vp = tuple3.getT1();
 
                     String destination = vp.getDestination();
                     if (isNotBlank(destination) && destination.length() > VFK_LEN_MAX)
@@ -174,8 +188,8 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
                     return just(NEED_TURING_TEST_PRE.test(verifyType))
                             .flatMap(need -> {
                                 if (need) {
-                                    TuringData turingData = tuple3.getT2();
-                                    return this.turingValidate(tuple3.getT1(), ALLOW, INTERVAL_MILLIS, turingData.getKey(), turingData.getVerify());
+                                    TuringData turingData = tuple3.getT3();
+                                    return this.turingValidate(TURING_LIMIT_IDENTITY_WRAPPER.apply(tuple3.getT2()), ALLOW, INTERVAL_MILLIS, turingData.getKey(), turingData.getVerify());
                                 } else {
                                     return just(true);
                                 }
@@ -229,9 +243,12 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
                         allowed ?
                                 just(true)
                                 :
-                                ofNullable(verifyHandlers.get(IMAGE.identity))
-                                        .map(h -> h.validate(TURING_TEST, key, verify, false))
-                                        .orElseGet(() -> just(false)));
+                                isNotBlank(key) ?
+                                        ofNullable(verifyHandlers.get(IMAGE.identity))
+                                                .map(h -> h.validate(TURING_TEST, key, verify, false))
+                                                .orElseGet(() -> just(false))
+                                        :
+                                        just(false));
     }
 
 }

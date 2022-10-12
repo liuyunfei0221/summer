@@ -1,27 +1,22 @@
-package com.blue.verify.config.deploy;
+package com.blue.auth.config.deploy;
 
-import com.blue.basic.constant.verify.VerifyType;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 /**
- * turing deploy
+ * session  deploy
  *
  * @author liuyunfei
  */
 @Component
-@ConfigurationProperties(prefix = "turing")
-public class TuringDeploy {
+@ConfigurationProperties(prefix = "session")
+public class SessionDeploy {
 
     private Integer allow;
 
     private Long intervalMillis;
 
-    private List<VerifyType> targetVerifyTypes;
-
-    public TuringDeploy() {
+    public SessionDeploy() {
     }
 
     public Integer getAllow() {
@@ -40,20 +35,11 @@ public class TuringDeploy {
         this.intervalMillis = intervalMillis;
     }
 
-    public List<VerifyType> getTargetVerifyTypes() {
-        return targetVerifyTypes;
-    }
-
-    public void setTargetVerifyTypes(List<VerifyType> targetVerifyTypes) {
-        this.targetVerifyTypes = targetVerifyTypes;
-    }
-
     @Override
     public String toString() {
-        return "TuringDeploy{" +
+        return "SessionDeploy{" +
                 "allow=" + allow +
                 ", intervalMillis=" + intervalMillis +
-                ", targetVerifyTypes=" + targetVerifyTypes +
                 '}';
     }
 

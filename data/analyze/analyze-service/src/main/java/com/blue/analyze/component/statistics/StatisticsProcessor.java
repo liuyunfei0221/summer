@@ -6,6 +6,7 @@ import com.blue.basic.model.event.DataEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
@@ -18,6 +19,7 @@ import java.util.function.Function;
 import static java.util.Comparator.comparingInt;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.toList;
+import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 import static reactor.core.publisher.Mono.fromFuture;
 import static reactor.util.Loggers.getLogger;
 
@@ -28,6 +30,7 @@ import static reactor.util.Loggers.getLogger;
  */
 @SuppressWarnings("JavaDoc")
 @Component
+@Order(HIGHEST_PRECEDENCE)
 public class StatisticsProcessor implements ApplicationListener<ContextRefreshedEvent> {
 
     private static final Logger LOGGER = getLogger(StatisticsProcessor.class);

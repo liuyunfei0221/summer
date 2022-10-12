@@ -445,13 +445,13 @@ smsv:
   verifyLength: 7
   expiresMillis: 300000
   allow: 1
-  sendIntervalMillis: 30000
+  sendIntervalMillis: 10000
 
 mailv:
   verifyLength: 7
   expiresMillis: 300000
   allow: 1
-  sendIntervalMillis: 30000
+  sendIntervalMillis: 10000
 
 image:
   border: true
@@ -478,7 +478,7 @@ image:
 turing:
   allow: 5
   intervalMillis: 12000000
-  verifyTypes: [ SMS,MAIL ]
+  targetVerifyTypes: [ SMS,MAIL ]
 
 vtemplate:
   cacheExpiresSecond: 21600

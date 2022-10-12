@@ -285,10 +285,10 @@ public class AuthControlServiceImpl implements AuthControlService {
         return credentialTypes;
     };
 
-    private static final List<String> ALLOW_ACCESS_LTS = Stream.of(CredentialType.values())
-            .filter(lt -> lt.allowTuring).map(lt -> lt.identity).collect(toList());
+    private static final List<String> ALLOW_ACCESS_CTS = Stream.of(CredentialType.values())
+            .filter(lt -> lt.allowAccess).map(lt -> lt.identity).collect(toList());
 
-    private static final Set<String> ALLOW_ACCESS_LT_SET = new HashSet<>(ALLOW_ACCESS_LTS);
+    private static final Set<String> ALLOW_ACCESS_CT_SET = new HashSet<>(ALLOW_ACCESS_CTS);
 
     private static final UnaryOperator<String> LIMIT_KEY_WRAPPER = key -> {
         if (isBlank(key))
@@ -298,9 +298,9 @@ public class AuthControlServiceImpl implements AuthControlService {
     };
 
     private void packageExistAccess(List<Credential> credentials, Long memberId) {
-        credentialService.selectCredentialByMemberIdAndTypes(memberId, ALLOW_ACCESS_LTS).stream().findAny()
+        credentialService.selectCredentialByMemberIdAndTypes(memberId, ALLOW_ACCESS_CTS).stream().findAny()
                 .ifPresent(ac ->
-                        credentials.stream().filter(c -> ALLOW_ACCESS_LT_SET.contains(c.getType()))
+                        credentials.stream().filter(c -> ALLOW_ACCESS_CT_SET.contains(c.getType()))
                                 .forEach(c -> {
                                     c.setAccess(ac.getAccess());
                                     c.setStatus(VALID.status);
@@ -318,7 +318,7 @@ public class AuthControlServiceImpl implements AuthControlService {
                     cre.setAccess(EMPTY_VALUE.value);
                     cre.setMemberId(memberId);
                     cre.setExtra("from add credential");
-                    cre.setStatus(ALLOW_ACCESS_LT_SET.contains(type) ? INVALID.status : VALID.status);
+                    cre.setStatus(ALLOW_ACCESS_CT_SET.contains(type) ? INVALID.status : VALID.status);
                     cre.setCreateTime(stamp);
                     cre.setUpdateTime(stamp);
 
@@ -699,7 +699,7 @@ public class AuthControlServiceImpl implements AuthControlService {
                                                 rpcVerifyHandleServiceConsumer.validate(verifyType, UPDATE_ACCESS, credential.getCredential(), accessUpdateParam.getVerificationCode(), true)
                                                         .flatMap(validate ->
                                                                 validate ?
-                                                                        just(credentialService.updateAccess(memberId, ALLOW_ACCESS_LTS, accessUpdateParam.getAccess()))
+                                                                        just(credentialService.updateAccess(memberId, ALLOW_ACCESS_CTS, accessUpdateParam.getAccess()))
                                                                                 .flatMap(b -> b ? authService.invalidateAuthByMemberId(memberId) : just(false))
                                                                         :
                                                                         error(() -> new BlueException(VERIFY_IS_INVALID))))
@@ -732,7 +732,7 @@ public class AuthControlServiceImpl implements AuthControlService {
                                                 rpcVerifyHandleServiceConsumer.validate(verifyType, RESET_ACCESS, cre.getCredential(), accessResetParam.getVerificationCode(), true)
                                                         .flatMap(validate ->
                                                                 validate ?
-                                                                        just(credentialService.updateAccess(cre.getMemberId(), ALLOW_ACCESS_LTS, accessResetParam.getAccess()))
+                                                                        just(credentialService.updateAccess(cre.getMemberId(), ALLOW_ACCESS_CTS, accessResetParam.getAccess()))
                                                                                 .flatMap(b -> b ? authService.invalidateAuthByMemberId(cre.getMemberId()) : just(false))
                                                                         :
                                                                         error(() -> new BlueException(VERIFY_IS_INVALID))))

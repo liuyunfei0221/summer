@@ -213,7 +213,7 @@ public class ImageVerifyHandler implements VerifyHandler {
                                                                     .header(VERIFY_KEY.name, verifyKey)
                                                                     .body(fromResource(resource))
                                                     ).doOnSuccess(ig ->
-                                                            recordVerify(verifyBusinessType, destination, verify, serverRequest)
+                                                            recordVerify(verifyBusinessType, verifyKey, verify, serverRequest)
                                                     );
                                         })
                                 :

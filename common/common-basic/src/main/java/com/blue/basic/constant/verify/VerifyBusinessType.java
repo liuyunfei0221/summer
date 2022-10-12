@@ -34,7 +34,7 @@ public enum VerifyBusinessType {
     /**
      * setting up credential
      */
-    CREDENTIAL_SETTING_UP("CSU", Set.of(IMAGE, SMS, MAIL)),
+    CREDENTIAL_SETTING_UP("CSU", Set.of(SMS, MAIL)),
 
     /**
      * update credential

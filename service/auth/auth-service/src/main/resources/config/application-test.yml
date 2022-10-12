@@ -384,6 +384,11 @@ control:
   intervalMillis: 5000
 
 
+session:
+  allow: 5
+  intervalMillis: 12000000
+
+
 question:
   max: 5
 

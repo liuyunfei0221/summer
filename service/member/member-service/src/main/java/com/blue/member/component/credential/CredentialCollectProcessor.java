@@ -6,6 +6,7 @@ import com.blue.member.repository.entity.MemberBasic;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import reactor.util.Logger;
 
@@ -16,6 +17,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 import static com.blue.basic.common.base.BlueChecker.isEmpty;
+import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -25,6 +27,7 @@ import static reactor.util.Loggers.getLogger;
  */
 @SuppressWarnings({"SameParameterValue", "JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Component
+@Order(HIGHEST_PRECEDENCE)
 public class CredentialCollectProcessor implements ApplicationListener<ContextRefreshedEvent> {
 
     private static final Logger LOGGER = getLogger(CredentialCollectProcessor.class);

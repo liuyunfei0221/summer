@@ -24,6 +24,16 @@ public enum RateLimitKeyPrefix {
     MAIL_VERIFY_RATE_LIMIT_KEY_PRE("mail_v_"),
 
     /**
+     * VERIFIES_RATE_LIMIT_KEY_PRE
+     */
+    VERIFIES_RATE_LIMIT_KEY_PRE("vs_"),
+
+    /**
+     * ALLOW_TURING_CREDENTIAL_TYPE_RATE_LIMIT_KEY_PRE
+     */
+    ALLOW_TURING_CREDENTIAL_TYPE_RATE_LIMIT_KEY_PRE("al_t_c_t"),
+
+    /**
      * TURING_TEST_LIMIT_KEY_PRE
      */
     TURING_TEST_LIMIT_KEY_PRE("turing_test_"),

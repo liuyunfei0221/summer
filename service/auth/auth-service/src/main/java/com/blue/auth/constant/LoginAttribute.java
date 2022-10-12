@@ -6,18 +6,7 @@ package com.blue.auth.constant;
  * @author liuyunfei
  */
 public enum LoginAttribute {
-
-    //common
-    /**
-     * verify key
-     */
-    VERIFICATION_KEY("verificationKey"),
-
-    /**
-     * verify code
-     */
-    VERIFICATION_CODE("verificationCode"),
-
+    
     //for session by client
     /**
      * account/phone/email for session by client

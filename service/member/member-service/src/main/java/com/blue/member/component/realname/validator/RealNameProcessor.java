@@ -10,6 +10,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import reactor.util.Logger;
 
@@ -19,6 +20,7 @@ import static com.blue.basic.common.base.BlueChecker.isEmpty;
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static java.util.Optional.ofNullable;
+import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -28,8 +30,9 @@ import static reactor.util.Loggers.getLogger;
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc"})
 @Component
+@Order(HIGHEST_PRECEDENCE)
 public class RealNameProcessor implements ApplicationListener<ContextRefreshedEvent> {
-
+    
     private static final Logger LOGGER = getLogger(RealNameProcessor.class);
 
     /**

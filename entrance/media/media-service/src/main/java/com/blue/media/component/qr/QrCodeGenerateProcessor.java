@@ -8,6 +8,7 @@ import com.blue.media.model.QrCodeGenerateParam;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -22,6 +23,7 @@ import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
+import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
 /**
  * qr code stream generate processor
@@ -30,6 +32,7 @@ import static java.util.stream.Collectors.toMap;
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Component
+@Order(HIGHEST_PRECEDENCE)
 public class QrCodeGenerateProcessor implements ApplicationListener<ContextRefreshedEvent> {
 
     /**

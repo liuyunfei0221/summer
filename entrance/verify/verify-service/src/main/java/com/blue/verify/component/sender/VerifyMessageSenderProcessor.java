@@ -6,6 +6,7 @@ import com.blue.verify.component.sender.inter.VerifyMessageSender;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -18,6 +19,7 @@ import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
+import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 import static reactor.core.publisher.Mono.error;
 
 /**
@@ -27,6 +29,7 @@ import static reactor.core.publisher.Mono.error;
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Component
+@Order(HIGHEST_PRECEDENCE)
 public class VerifyMessageSenderProcessor implements ApplicationListener<ContextRefreshedEvent> {
 
     /**

@@ -2,8 +2,8 @@ package com.blue.database.api.generator;
 
 import com.blue.basic.common.base.BlueChecker;
 import com.blue.database.api.conf.*;
-import com.blue.database.algorithm.DatabaseShardingAlgorithm;
-import com.blue.database.algorithm.TableShardingAlgorithm;
+import com.blue.database.algorithm.SnowflakeDatabaseShardingAlgorithm;
+import com.blue.database.algorithm.SnowflakeTableShardingAlgorithm;
 import com.blue.identity.api.conf.IdentityConf;
 import com.blue.identity.core.exp.IdentityException;
 import com.zaxxer.hikari.HikariConfig;
@@ -372,10 +372,10 @@ public final class BlueDataAccessGenerator {
                     TableRuleConfiguration conf = new TableRuleConfiguration(logicTableName, expression);
                     conf.setDatabaseShardingStrategyConfig(
                             new StandardShardingStrategyConfiguration(shardingColumn,
-                                    new DatabaseShardingAlgorithm(shardingLogicDataBaseName, dataCenterToDatabaseMappings)));
+                                    new SnowflakeDatabaseShardingAlgorithm(shardingLogicDataBaseName, dataCenterToDatabaseMappings)));
                     conf.setTableShardingStrategyConfig(
                             new StandardShardingStrategyConfiguration(shardingColumn,
-                                    new TableShardingAlgorithm(logicTableName, workerToTableMappings)));
+                                    new SnowflakeTableShardingAlgorithm(logicTableName, workerToTableMappings)));
 
                     return conf;
                 }).collect(toList()));
@@ -553,7 +553,7 @@ public final class BlueDataAccessGenerator {
     /**
      * config elements
      */
-    static final class DataAccessConfElements {
+    private static final class DataAccessConfElements {
 
         private final Map<String, DataSource> dataSources;
 
