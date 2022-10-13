@@ -24,7 +24,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class CityManagerRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> cityManagerRouter(CityManagerHandler cityManagerHandler) {
 
         RequestPredicate pathPredicate = path("/blue-base/manager");

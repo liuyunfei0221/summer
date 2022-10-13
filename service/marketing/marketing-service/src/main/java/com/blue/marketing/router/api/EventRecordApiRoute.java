@@ -22,7 +22,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class EventRecordApiRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> eventRecordApiRouter(EventRecordApiHandler eventRecordApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-marketing");

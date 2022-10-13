@@ -19,7 +19,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class MailManagerRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> mailManagerRouter(MailManagerHandler mailManagerHandler) {
 
         RequestPredicate pathPredicate = path("/blue-media/mail");

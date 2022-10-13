@@ -20,7 +20,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class DictApiRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> dictApiRouter(DictApiHandler dictApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-base");

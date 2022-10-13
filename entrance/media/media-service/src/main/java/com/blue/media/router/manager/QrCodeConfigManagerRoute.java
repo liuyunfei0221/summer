@@ -24,7 +24,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class QrCodeConfigManagerRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> qrCodeConfigManagerRouter(QrCodeConfigManagerHandler qrCodeConfigManagerHandler) {
 
         RequestPredicate pathPredicate = path("/blue-media/manager");

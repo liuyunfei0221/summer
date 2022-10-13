@@ -22,7 +22,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class RealNameApiRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> realNameApiRouter(RealNameApiHandler realNameApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-member/realname");

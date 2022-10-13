@@ -208,6 +208,26 @@ public enum BlueCommonThreshold {
     MAX_DAY_OF_MONTH(31L),
 
     /**
+     * min of name
+     */
+    NAME_LEN_MIN(1L),
+
+    /**
+     * max of name
+     */
+    NAME_LEN_MAX(128L),
+
+    /**
+     * min of description
+     */
+    DESCRIPTION_LEN_MIN(1L),
+
+    /**
+     * max of description
+     */
+    DESCRIPTION_LEN_MAX(128L),
+
+    /**
      * min of title
      */
     TITLE_LEN_MIN(1L),

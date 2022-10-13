@@ -34,20 +34,17 @@ public class QrCodeConfigInsertParam implements Serializable, Asserter {
 
     protected String pathToBeFilled;
 
-    protected Integer placeholderCount;
-
     protected List<Long> allowedRoles;
 
     public QrCodeConfigInsertParam() {
     }
 
-    public QrCodeConfigInsertParam(String name, String description, Integer type, String domain, String pathToBeFilled, Integer placeholderCount, List<Long> allowedRoles) {
+    public QrCodeConfigInsertParam(String name, String description, Integer type, String domain, String pathToBeFilled, List<Long> allowedRoles) {
         this.name = name;
         this.description = description;
         this.type = type;
         this.domain = domain;
         this.pathToBeFilled = pathToBeFilled;
-        this.placeholderCount = placeholderCount;
         this.allowedRoles = allowedRoles;
     }
 
@@ -62,8 +59,6 @@ public class QrCodeConfigInsertParam implements Serializable, Asserter {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid domain");
         if (isBlank(this.pathToBeFilled))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid pathToBeFilled");
-        if (isNull(this.placeholderCount) || placeholderCount < 0)
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid attributes");
         if (isEmpty(this.allowedRoles))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid allowedRoles");
     }
@@ -108,14 +103,6 @@ public class QrCodeConfigInsertParam implements Serializable, Asserter {
         this.pathToBeFilled = pathToBeFilled;
     }
 
-    public Integer getPlaceholderCount() {
-        return placeholderCount;
-    }
-
-    public void setPlaceholderCount(Integer placeholderCount) {
-        this.placeholderCount = placeholderCount;
-    }
-
     public List<Long> getAllowedRoles() {
         return allowedRoles;
     }
@@ -132,7 +119,6 @@ public class QrCodeConfigInsertParam implements Serializable, Asserter {
                 ", type=" + type +
                 ", domain='" + domain + '\'' +
                 ", pathToBeFilled='" + pathToBeFilled + '\'' +
-                ", placeholderCount=" + placeholderCount +
                 ", allowedRoles=" + allowedRoles +
                 '}';
     }

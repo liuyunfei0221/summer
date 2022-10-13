@@ -12,7 +12,6 @@ import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.portal.api.model.NoticeInfo;
 import com.blue.portal.api.model.NoticeManagerInfo;
 import com.blue.portal.config.blue.BlueRedisConfig;
-import com.blue.portal.config.deploy.CaffeineDeploy;
 import com.blue.portal.config.deploy.NoticeDeploy;
 import com.blue.portal.constant.NoticeSortAttribute;
 import com.blue.portal.model.NoticeCondition;
@@ -85,7 +84,7 @@ public class NoticeServiceImpl implements NoticeService {
 
     public NoticeServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BlueIdentityProcessor blueIdentityProcessor,
                              NoticeMapper noticeMapper, StringRedisTemplate stringRedisTemplate, SynchronizedProcessor synchronizedProcessor,
-                             BlueRedisConfig blueRedisConfig, ExecutorService executorService, CaffeineDeploy caffeineDeploy, NoticeDeploy noticeDeploy) {
+                             BlueRedisConfig blueRedisConfig, ExecutorService executorService, NoticeDeploy noticeDeploy) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.noticeMapper = noticeMapper;
@@ -95,7 +94,7 @@ public class NoticeServiceImpl implements NoticeService {
         this.expireDuration = Duration.of(blueRedisConfig.getEntryTtl(), SECONDS);
 
         CaffeineConf caffeineConf = new CaffeineConfParams(
-                caffeineDeploy.getMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
+                noticeDeploy.getMaximumSize(), Duration.of(noticeDeploy.getExpiresSecond(), SECONDS),
                 AFTER_WRITE, executorService);
 
         LOCAL_CACHE = generateCache(caffeineConf);

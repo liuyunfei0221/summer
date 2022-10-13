@@ -27,6 +27,8 @@ public final class PartInfoProcessor {
 
     private static final Logger LOGGER = getLogger(PartInfoProcessor.class);
 
+    private static final String BASE_HANDLER_NAME = PartInfoHandler.class.getName();
+
     /**
      * implements package
      */
@@ -47,7 +49,7 @@ public final class PartInfoProcessor {
         return classes
                 .stream()
                 .filter(clz -> !clz.isInterface() &&
-                        Stream.of(clz.getInterfaces()).anyMatch(inter -> PartInfoHandler.class.getName().equals(inter.getName()))
+                        Stream.of(clz.getInterfaces()).anyMatch(inter -> BASE_HANDLER_NAME.equals(inter.getName()))
                 )
                 .map(clz -> {
                     try {

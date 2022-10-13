@@ -22,7 +22,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class DownloadHistoryApiRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> downloadHistoryApiRouter(DownloadHistoryApiHandler downloadHistoryApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-media");

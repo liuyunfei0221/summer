@@ -18,7 +18,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 @Configuration
 public class FallbackRoute {
 
-    @SuppressWarnings("NullableProblems")
     @Bean
     RouterFunction<ServerResponse> fallbackApiRouter(FallbackHandler fallbackHandler) {
 

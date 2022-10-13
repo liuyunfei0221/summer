@@ -22,7 +22,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class WithdrawApiRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> withdrawApiRouter(WithdrawApiHandler withdrawApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-finance/withdraw");

@@ -24,7 +24,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class StyleManagerRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> roleManagerRouter(StyleManagerHandler styleManagerHandler) {
 
         RequestPredicate pathPredicate = path("/blue-base/manager");

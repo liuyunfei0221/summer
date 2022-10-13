@@ -20,7 +20,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class ShineApiRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> shineApiRouter(ShineApiHandler shineApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-shine");

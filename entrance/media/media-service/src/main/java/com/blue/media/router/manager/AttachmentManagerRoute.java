@@ -22,7 +22,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class AttachmentManagerRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> attachmentManagerRouter(AttachmentManagerHandler attachmentManagerHandler) {
 
         RequestPredicate pathPredicate = path("/blue-media/manager");

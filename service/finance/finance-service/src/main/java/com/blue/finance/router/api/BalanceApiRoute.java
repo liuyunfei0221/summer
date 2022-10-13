@@ -20,7 +20,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class BalanceApiRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> financeApiRouter(BalanceApiHandler balanceApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-finance");

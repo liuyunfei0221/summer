@@ -20,7 +20,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class LanguageManagerRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> languageManagerRouter(LanguageManagerHandler languageManagerHandler) {
 
         RequestPredicate pathPredicate = path("/blue-base/manager");

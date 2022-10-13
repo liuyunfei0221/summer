@@ -21,7 +21,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class AttachmentApiRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> attachmentApiRouter(AttachmentApiHandler attachmentApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-media");

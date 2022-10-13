@@ -4,19 +4,19 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * caffeine deploy
+ * bulletin deploy
  *
  * @author liuyunfei
  */
 @Component
-@ConfigurationProperties(prefix = "caffeine")
-public class CaffeineDeploy {
+@ConfigurationProperties(prefix = "bulletin")
+public class BulletinDeploy {
 
     private int maximumSize;
 
     private int expiresSecond;
 
-    public CaffeineDeploy() {
+    public BulletinDeploy() {
     }
 
     public int getMaximumSize() {
@@ -37,7 +37,7 @@ public class CaffeineDeploy {
 
     @Override
     public String toString() {
-        return "CaffeineDeploy{" +
+        return "BulletinDeploy{" +
                 "maximumSize=" + maximumSize +
                 ", expiresSecond=" + expiresSecond +
                 '}';

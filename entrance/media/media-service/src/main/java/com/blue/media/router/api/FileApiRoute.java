@@ -22,7 +22,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class FileApiRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> fileApiRouter(FileApiHandler fileApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-media/file");

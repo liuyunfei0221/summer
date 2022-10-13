@@ -23,7 +23,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class AddressApiRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> addressApiRouter(AddressApiHandler addressApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-member/address");

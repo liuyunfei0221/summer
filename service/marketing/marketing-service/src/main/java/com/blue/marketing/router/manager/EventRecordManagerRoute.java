@@ -22,7 +22,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class EventRecordManagerRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> eventRecordManagerRouter(EventRecordManagerHandler eventRecordManagerHandler) {
 
         RequestPredicate pathPredicate = path("/blue-marketing/manager");

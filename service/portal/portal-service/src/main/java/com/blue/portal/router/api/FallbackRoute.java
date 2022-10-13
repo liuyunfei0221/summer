@@ -19,7 +19,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class FallbackRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> fallbackApiRouter(FallbackHandler fallbackHandler) {
 
         RequestPredicate pathPredicate = path("/fallBack");

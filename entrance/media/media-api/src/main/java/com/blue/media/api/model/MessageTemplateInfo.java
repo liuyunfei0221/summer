@@ -1,6 +1,11 @@
 package com.blue.media.api.model;
 
 
+import com.blue.basic.serializer.IdentityDeserializer;
+import com.blue.basic.serializer.IdentitySerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 
 /**
@@ -13,6 +18,8 @@ public final class MessageTemplateInfo implements Serializable {
 
     private static final long serialVersionUID = -5148017852176419254L;
 
+    @JsonSerialize(using = IdentitySerializer.class)
+    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long id;
 
     private String name;
@@ -31,19 +38,25 @@ public final class MessageTemplateInfo implements Serializable {
 
     private String title;
 
+    private Integer titlePlaceholderCount;
+
     private String content;
+
+    private Integer contentPlaceholderCount;
 
     public MessageTemplateInfo() {
     }
 
-    public MessageTemplateInfo(Long id, String name, String description, Integer type, Integer businessType, String title, String content) {
+    public MessageTemplateInfo(Long id, String name, String description, Integer type, Integer businessType, String title, Integer titlePlaceholderCount, String content, Integer contentPlaceholderCount) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.type = type;
         this.businessType = businessType;
         this.title = title;
+        this.titlePlaceholderCount = titlePlaceholderCount;
         this.content = content;
+        this.contentPlaceholderCount = contentPlaceholderCount;
     }
 
     public Long getId() {
@@ -94,12 +107,28 @@ public final class MessageTemplateInfo implements Serializable {
         this.title = title;
     }
 
+    public Integer getTitlePlaceholderCount() {
+        return titlePlaceholderCount;
+    }
+
+    public void setTitlePlaceholderCount(Integer titlePlaceholderCount) {
+        this.titlePlaceholderCount = titlePlaceholderCount;
+    }
+
     public String getContent() {
         return content;
     }
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Integer getContentPlaceholderCount() {
+        return contentPlaceholderCount;
+    }
+
+    public void setContentPlaceholderCount(Integer contentPlaceholderCount) {
+        this.contentPlaceholderCount = contentPlaceholderCount;
     }
 
     @Override
@@ -111,7 +140,9 @@ public final class MessageTemplateInfo implements Serializable {
                 ", type=" + type +
                 ", businessType=" + businessType +
                 ", title='" + title + '\'' +
+                ", titlePlaceholderCount=" + titlePlaceholderCount +
                 ", content='" + content + '\'' +
+                ", contentPlaceholderCount=" + contentPlaceholderCount +
                 '}';
     }
 

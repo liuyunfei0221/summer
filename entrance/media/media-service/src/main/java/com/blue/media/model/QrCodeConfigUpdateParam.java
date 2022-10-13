@@ -22,8 +22,8 @@ public final class QrCodeConfigUpdateParam extends QrCodeConfigInsertParam {
     public QrCodeConfigUpdateParam() {
     }
 
-    public QrCodeConfigUpdateParam(Long id, String name, String description, Integer type, String domain, String pathToBeFilled, Integer placeholderCount, List<Long> allowedRoles) {
-        super(name, description, type, domain, pathToBeFilled, placeholderCount, allowedRoles);
+    public QrCodeConfigUpdateParam(Long id, String name, String description, Integer type, String domain, String pathToBeFilled, List<Long> allowedRoles) {
+        super(name, description, type, domain, pathToBeFilled, allowedRoles);
         this.id = id;
     }
 
@@ -54,7 +54,6 @@ public final class QrCodeConfigUpdateParam extends QrCodeConfigInsertParam {
                 ", type=" + type +
                 ", domain='" + domain + '\'' +
                 ", pathToBeFilled='" + pathToBeFilled + '\'' +
-                ", placeholderCount=" + placeholderCount +
                 ", allowedRoles=" + allowedRoles +
                 '}';
     }

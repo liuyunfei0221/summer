@@ -101,7 +101,12 @@ public enum Symbol {
     /**
      * close bracket
      */
-    CLOSE_BRACKET("]");
+    CLOSE_BRACKET("]"),
+
+    /**
+     * text placeholder
+     */
+    TEXT_PLACEHOLDER("%s");
 
     /**
      * identity

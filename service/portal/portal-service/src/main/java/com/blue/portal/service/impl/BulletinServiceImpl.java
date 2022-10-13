@@ -12,7 +12,7 @@ import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.portal.api.model.BulletinInfo;
 import com.blue.portal.api.model.BulletinManagerInfo;
 import com.blue.portal.config.blue.BlueRedisConfig;
-import com.blue.portal.config.deploy.CaffeineDeploy;
+import com.blue.portal.config.deploy.BulletinDeploy;
 import com.blue.portal.constant.BulletinSortAttribute;
 import com.blue.portal.model.BulletinCondition;
 import com.blue.portal.model.BulletinInsertParam;
@@ -76,25 +76,25 @@ public class BulletinServiceImpl implements BulletinService {
 
     private final BlueIdentityProcessor blueIdentityProcessor;
 
-    private BulletinMapper bulletinMapper;
-
     private StringRedisTemplate stringRedisTemplate;
 
     private SynchronizedProcessor synchronizedProcessor;
 
+    private BulletinMapper bulletinMapper;
+
     public BulletinServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BlueIdentityProcessor blueIdentityProcessor,
-                               BulletinMapper bulletinMapper, StringRedisTemplate stringRedisTemplate, SynchronizedProcessor synchronizedProcessor,
-                               BlueRedisConfig blueRedisConfig, ExecutorService executorService, CaffeineDeploy caffeineDeploy) {
+                               StringRedisTemplate stringRedisTemplate, SynchronizedProcessor synchronizedProcessor, BulletinMapper bulletinMapper,
+                               BlueRedisConfig blueRedisConfig, ExecutorService executorService, BulletinDeploy bulletinDeploy) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.blueIdentityProcessor = blueIdentityProcessor;
-        this.bulletinMapper = bulletinMapper;
         this.stringRedisTemplate = stringRedisTemplate;
         this.synchronizedProcessor = synchronizedProcessor;
+        this.bulletinMapper = bulletinMapper;
 
         this.expireDuration = Duration.of(blueRedisConfig.getEntryTtl(), SECONDS);
 
         CaffeineConf caffeineConf = new CaffeineConfParams(
-                caffeineDeploy.getMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
+                bulletinDeploy.getMaximumSize(), Duration.of(bulletinDeploy.getExpiresSecond(), SECONDS),
                 AFTER_WRITE, executorService);
 
         LOCAL_CACHE = generateCache(caffeineConf);

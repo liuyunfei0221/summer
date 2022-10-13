@@ -30,10 +30,9 @@ public final class ExceptionProcessor {
 
     private static final Logger LOGGER = getLogger(ExceptionProcessor.class);
 
-    /**
-     * handlers package
-     */
     private static final String DIR_NAME = "com.blue.basic.component.exception.handler.impl";
+
+    private static final String BASE_EXP_HANDLER_NAME = ExceptionHandler.class.getName();
 
     private static final Map<String, ExceptionHandler> MAPPING = generatorMapping(DIR_NAME);
 
@@ -49,12 +48,12 @@ public final class ExceptionProcessor {
     private static Map<String, ExceptionHandler> generatorMapping(String dirName) {
         List<Class<?>> classes = getClassesByPackage(dirName, true);
         LOGGER.info("Map<String, ExceptionHandler> generatorMapping(String dirName), dirName = {}, classes = {}", dirName, classes);
-        String expHandlerName = ExceptionHandler.class.getName();
+
         return classes
                 .stream()
                 .filter(clz ->
                         !clz.isInterface() &&
-                                of(clz.getInterfaces()).anyMatch(inter -> expHandlerName.equals(inter.getName())))
+                                of(clz.getInterfaces()).anyMatch(inter -> BASE_EXP_HANDLER_NAME.equals(inter.getName())))
                 .map(clz -> {
                     try {
                         LOGGER.info("generatorMapping(String dirName), Load exception handler class, clz = {}", clz.getName());

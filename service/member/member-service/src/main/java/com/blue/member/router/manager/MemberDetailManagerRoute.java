@@ -22,7 +22,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class MemberDetailManagerRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> memberDetailManagerRouter(MemberDetailManagerHandler memberDetailManagerHandler) {
 
         RequestPredicate pathPredicate = path("/blue-member/manager");

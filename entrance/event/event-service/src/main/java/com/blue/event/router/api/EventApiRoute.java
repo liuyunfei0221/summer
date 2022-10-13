@@ -22,7 +22,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class EventApiRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> eventApiRouter(EventApiHandler eventApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-event");

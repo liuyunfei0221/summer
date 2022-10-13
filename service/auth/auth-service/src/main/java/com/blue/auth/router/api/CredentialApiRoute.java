@@ -22,7 +22,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class CredentialApiRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> credentialApiRouter(CredentialApiHandler credentialApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-auth");

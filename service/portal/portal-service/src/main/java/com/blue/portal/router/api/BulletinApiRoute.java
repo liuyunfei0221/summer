@@ -21,7 +21,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class BulletinApiRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> bulletinApiRouter(BulletinApiHandler bulletinApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-portal");

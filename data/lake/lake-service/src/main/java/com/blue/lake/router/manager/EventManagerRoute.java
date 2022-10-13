@@ -20,7 +20,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class EventManagerRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> eventRouter(EventManagerHandler eventManagerHandler) {
 
         RequestPredicate pathPredicate = path("/blue-lake");

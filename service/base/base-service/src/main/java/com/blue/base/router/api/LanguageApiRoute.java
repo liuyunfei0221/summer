@@ -20,7 +20,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class LanguageApiRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> languageApiRouter(LanguageApiHandler languageApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-base");

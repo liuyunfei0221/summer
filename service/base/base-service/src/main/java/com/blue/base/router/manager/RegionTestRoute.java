@@ -22,7 +22,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class RegionTestRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> dataMoveRouter(RegionTestHandler regionTestHandler) {
 
         RequestPredicate pathPredicate = path("/blue-base/test");

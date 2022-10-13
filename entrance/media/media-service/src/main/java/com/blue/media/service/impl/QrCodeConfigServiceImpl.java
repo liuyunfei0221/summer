@@ -43,8 +43,10 @@ import java.util.stream.Stream;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.GSON;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
+import static com.blue.basic.common.base.ConstantProcessor.assertQrCodeType;
 import static com.blue.basic.constant.common.CacheKeyPrefix.QR_CONF_PRE;
 import static com.blue.basic.constant.common.ResponseElement.*;
+import static com.blue.basic.constant.common.Symbol.TEXT_PLACEHOLDER;
 import static com.blue.basic.constant.common.SyncKey.QR_CODE_CONFIG_UPDATE_SYNC;
 import static com.blue.media.constant.QrCodeConfigColumnName.*;
 import static com.blue.media.converter.MediaModelConverters.*;
@@ -58,6 +60,7 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.apache.commons.lang3.StringUtils.countMatches;
 import static org.springframework.data.mongodb.core.query.Criteria.byExample;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static reactor.core.publisher.Mono.*;
@@ -67,7 +70,7 @@ import static reactor.core.publisher.Mono.*;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces", "DuplicatedCode"})
 @Service
 public class QrCodeConfigServiceImpl implements QrCodeConfigService {
 
@@ -110,15 +113,14 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
 
     private Duration expireDuration;
 
-    private static final Function<Integer, String> CONFIG_CACHE_KEY_GENERATOR = type -> QR_CONF_PRE.prefix + type;
+    private static final Function<Integer, String> INFO_CACHE_KEY_GENERATOR = type -> QR_CONF_PRE.prefix + type;
 
     private final Consumer<Integer> REDIS_CACHE_DELETER = type ->
-            reactiveStringRedisTemplate.delete(CONFIG_CACHE_KEY_GENERATOR.apply(type))
+            reactiveStringRedisTemplate.delete(INFO_CACHE_KEY_GENERATOR.apply(type))
                     .subscribe(size -> LOGGER.info("REDIS_CACHE_DELETER, type = {}, size = {}", type, size));
 
-    private final Function<Integer, Mono<QrCodeConfigInfo>> QR_CODE_CONFIG_DB_GETTER = type -> {
-        if (isNull(type))
-            throw new BlueException(EMPTY_PARAM);
+    private final Function<Integer, Mono<QrCodeConfigInfo>> INFO_DB_GETTER = type -> {
+        assertQrCodeType(type, false);
 
         QrCodeConfig probe = new QrCodeConfig();
         probe.setType(type);
@@ -128,16 +130,15 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
                 .map(QR_CODE_CONFIG_2_QR_CODE_CONFIG_INFO_CONVERTER);
     };
 
-    private final Function<Integer, Mono<QrCodeConfigInfo>> QR_CODE_CONFIG_WITH_REDIS_CACHE_GETTER = type -> {
-        if (isNull(type))
-            throw new BlueException(EMPTY_PARAM);
+    private final Function<Integer, Mono<QrCodeConfigInfo>> INFO_WITH_REDIS_CACHE_GETTER = type -> {
+        assertQrCodeType(type, false);
 
-        String key = CONFIG_CACHE_KEY_GENERATOR.apply(type);
+        String key = INFO_CACHE_KEY_GENERATOR.apply(type);
 
         return reactiveStringRedisTemplate.opsForValue().get(key)
                 .map(s -> GSON.fromJson(s, QrCodeConfigInfo.class))
                 .switchIfEmpty(defer(() ->
-                        QR_CODE_CONFIG_DB_GETTER.apply(type)
+                        INFO_DB_GETTER.apply(type)
                                 .flatMap(qrCodeConfigInfo ->
                                         reactiveStringRedisTemplate.opsForValue().set(key, GSON.toJson(qrCodeConfigInfo), expireDuration)
                                                 .flatMap(success -> {
@@ -182,6 +183,59 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
 
         return qrCodeConfig;
     };
+
+    private static boolean validateAndPackageAttrForUpdate(QrCodeConfigUpdateParam param, QrCodeConfig qrCodeConfig, Long operatorId) {
+        if (isNull(param) || isNull(qrCodeConfig))
+            throw new BlueException(BAD_REQUEST);
+        if (!param.getId().equals(qrCodeConfig.getId()))
+            throw new BlueException(BAD_REQUEST);
+
+        boolean alteration = false;
+
+        String name = param.getName();
+        if (isNotBlank(name) && !name.equals(qrCodeConfig.getName())) {
+            qrCodeConfig.setName(name);
+            alteration = true;
+        }
+
+        String description = param.getDescription();
+        if (isNotBlank(description) && !description.equals(qrCodeConfig.getDescription())) {
+            qrCodeConfig.setDescription(description);
+            alteration = true;
+        }
+
+        Integer type = param.getType();
+        if (isNotNull(type) && !type.equals(qrCodeConfig.getType())) {
+            qrCodeConfig.setType(type);
+            alteration = true;
+        }
+
+        String domain = param.getDomain();
+        if (isNotBlank(domain) && !domain.equals(qrCodeConfig.getDomain())) {
+            qrCodeConfig.setDomain(domain);
+            alteration = true;
+        }
+
+        String pathToBeFilled = param.getPathToBeFilled();
+        if (isNotBlank(pathToBeFilled) && !pathToBeFilled.equals(qrCodeConfig.getPathToBeFilled())) {
+            qrCodeConfig.setPathToBeFilled(pathToBeFilled);
+            qrCodeConfig.setPlaceholderCount(countMatches(pathToBeFilled, TEXT_PLACEHOLDER.identity));
+            alteration = true;
+        }
+
+        List<Long> allowedRoles = param.getAllowedRoles();
+        if (isNotEmpty(allowedRoles) && isEquals(allowedRoles, qrCodeConfig.getAllowedRoles())) {
+            qrCodeConfig.setAllowedRoles(allowedRoles);
+            alteration = true;
+        }
+
+        if (alteration) {
+            qrCodeConfig.setUpdateTime(TIME_STAMP_GETTER.get());
+            qrCodeConfig.setUpdater(operatorId);
+        }
+
+        return alteration;
+    }
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(QrCodeConfigSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
@@ -255,64 +309,6 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
         return new ArrayList<>(operatorIds);
     };
 
-    private static boolean validateAndPackageConfigForUpdate(QrCodeConfigUpdateParam param, QrCodeConfig qrCodeConfig, Long operatorId) {
-        if (isNull(param) || isNull(qrCodeConfig))
-            throw new BlueException(BAD_REQUEST);
-        if (!param.getId().equals(qrCodeConfig.getId()))
-            throw new BlueException(BAD_REQUEST);
-
-        boolean alteration = false;
-
-        String name = param.getName();
-        if (isNotBlank(name) && !name.equals(qrCodeConfig.getName())) {
-            qrCodeConfig.setName(name);
-            alteration = true;
-        }
-
-        String description = param.getDescription();
-        if (isNotBlank(description) && !description.equals(qrCodeConfig.getDescription())) {
-            qrCodeConfig.setDescription(description);
-            alteration = true;
-        }
-
-        Integer type = param.getType();
-        if (isNotNull(type) && !type.equals(qrCodeConfig.getType())) {
-            qrCodeConfig.setType(type);
-            alteration = true;
-        }
-
-        String domain = param.getDomain();
-        if (isNotBlank(domain) && !domain.equals(qrCodeConfig.getDomain())) {
-            qrCodeConfig.setDomain(domain);
-            alteration = true;
-        }
-
-        String pathToBeFilled = param.getPathToBeFilled();
-        if (isNotBlank(pathToBeFilled) && !pathToBeFilled.equals(qrCodeConfig.getPathToBeFilled())) {
-            qrCodeConfig.setPathToBeFilled(pathToBeFilled);
-            alteration = true;
-        }
-
-        Integer placeholderCount = param.getPlaceholderCount();
-        if (isNotNull(placeholderCount) && !placeholderCount.equals(qrCodeConfig.getPlaceholderCount())) {
-            qrCodeConfig.setPlaceholderCount(placeholderCount);
-            alteration = true;
-        }
-
-        List<Long> allowedRoles = param.getAllowedRoles();
-        if (isNotEmpty(allowedRoles) && isEquals(allowedRoles, qrCodeConfig.getAllowedRoles())) {
-            qrCodeConfig.setAllowedRoles(allowedRoles);
-            alteration = true;
-        }
-
-        if (alteration) {
-            qrCodeConfig.setUpdateTime(TIME_STAMP_GETTER.get());
-            qrCodeConfig.setUpdater(operatorId);
-        }
-
-        return alteration;
-    }
-
     /**
      * insert qr code config
      *
@@ -324,8 +320,10 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
     public Mono<QrCodeConfigInfo> insertQrCodeConfig(QrCodeConfigInsertParam qrCodeConfigInsertParam, Long operatorId) {
         LOGGER.info("Mono<QrCodeConfigInfo> insertQrCodeConfig(QrCodeConfigInsertParam qrCodeConfigInsertParam, Long operatorId), qrCodeConfigInsertParam = {}, operatorId = {}",
                 qrCodeConfigInsertParam, operatorId);
-        if (isInvalidIdentity(operatorId))
+        if (isNull(qrCodeConfigInsertParam))
             throw new BlueException(EMPTY_PARAM);
+        if (isInvalidIdentity(operatorId))
+            throw new BlueException(UNAUTHORIZED);
 
         return synchronizedProcessor.handleSupWithSync(QR_CODE_CONFIG_UPDATE_SYNC.key, () -> {
             INSERT_ITEM_VALIDATOR.accept(qrCodeConfigInsertParam);
@@ -352,12 +350,16 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
     public Mono<QrCodeConfigInfo> updateQrCodeConfig(QrCodeConfigUpdateParam qrCodeConfigUpdateParam, Long operatorId) {
         LOGGER.info("Mono<QrCodeConfigInfo> updateQrCodeConfig(QrCodeConfigUpdateParam qrCodeConfigUpdateParam, Long operatorId), qrCodeConfigUpdateParam = {}, operatorId = {]",
                 qrCodeConfigUpdateParam, operatorId);
+        if (isNull(qrCodeConfigUpdateParam))
+            throw new BlueException(EMPTY_PARAM);
+        if (isInvalidIdentity(operatorId))
+            throw new BlueException(UNAUTHORIZED);
 
         return synchronizedProcessor.handleSupWithSync(QR_CODE_CONFIG_UPDATE_SYNC.key, () -> {
             QrCodeConfig qrCodeConfig = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(qrCodeConfigUpdateParam);
             Integer originalType = qrCodeConfig.getType();
 
-            if (!validateAndPackageConfigForUpdate(qrCodeConfigUpdateParam, qrCodeConfig, operatorId))
+            if (!validateAndPackageAttrForUpdate(qrCodeConfigUpdateParam, qrCodeConfig, operatorId))
                 throw new BlueException(DATA_HAS_NOT_CHANGED);
 
             qrCodeConfig.setUpdater(operatorId);
@@ -412,18 +414,6 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
     }
 
     /**
-     * select all config
-     *
-     * @return
-     */
-    @Override
-    public Mono<List<QrCodeConfig>> selectQrCodeConfig() {
-        LOGGER.info("Mono<List<QrCodeConfig>> selectQrCodeConfig()");
-
-        return qrCodeConfigRepository.findAll().publishOn(scheduler).collectList();
-    }
-
-    /**
      * get config mono by type
      *
      * @param type
@@ -432,10 +422,8 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
     @Override
     public Mono<QrCodeConfigInfo> getQrCodeConfigInfoMonoByType(Integer type) {
         LOGGER.info("Mono<QrCodeConfig> getQrCodeConfigMonoByType(Integer type), type = {}", type);
-        if (isNull(type))
-            throw new BlueException(EMPTY_PARAM);
 
-        return QR_CODE_CONFIG_WITH_REDIS_CACHE_GETTER.apply(type);
+        return INFO_WITH_REDIS_CACHE_GETTER.apply(type);
     }
 
     /**

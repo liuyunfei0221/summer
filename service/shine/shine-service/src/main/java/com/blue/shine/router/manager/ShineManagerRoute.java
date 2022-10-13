@@ -23,7 +23,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class ShineManagerRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> shineManagerRouter(ShineManagerHandler shineManagerHandler) {
 
         RequestPredicate pathPredicate = path("/blue-shine/manager");

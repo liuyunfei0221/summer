@@ -21,7 +21,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class SignInApiRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> signInApiRouter(SignInApiHandler signInApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-marketing/signIn");

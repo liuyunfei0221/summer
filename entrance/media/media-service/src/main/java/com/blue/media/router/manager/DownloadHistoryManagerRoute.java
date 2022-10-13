@@ -22,7 +22,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class DownloadHistoryManagerRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> downloadHistoryManagerRouter(DownloadHistoryManagerHandler downloadHistoryManagerHandler) {
 
         RequestPredicate pathPredicate = path("/blue-media/manager");

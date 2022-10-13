@@ -22,7 +22,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class MemberDetailApiRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> memberDetailApiRouter(MemberDetailApiHandler memberDetailApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-member/detail");

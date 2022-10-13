@@ -23,7 +23,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class BulletinManagerRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> bulletinManagerRouter(BulletinManagerHandler bulletinManagerHandler) {
 
         RequestPredicate pathPredicate = path("/blue-portal/manager");

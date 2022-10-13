@@ -22,7 +22,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class StatisticsManagerRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> statisticsManagerRouter(StatisticsManagerHandler statisticsManagerHandler) {
 
         RequestPredicate pathPredicate = path("/blue-analyze/manager/statistics");

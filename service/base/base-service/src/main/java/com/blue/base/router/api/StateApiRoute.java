@@ -23,7 +23,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class StateApiRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> stateApiRouter(StateApiHandler stateApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-base");

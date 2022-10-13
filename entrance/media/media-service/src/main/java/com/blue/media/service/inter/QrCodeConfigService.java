@@ -56,13 +56,6 @@ public interface QrCodeConfigService {
     Mono<QrCodeConfig> getQrCodeConfigMono(Long id);
 
     /**
-     * select all config
-     *
-     * @return
-     */
-    Mono<List<QrCodeConfig>> selectQrCodeConfig();
-
-    /**
      * get config mono by type
      *
      * @param type

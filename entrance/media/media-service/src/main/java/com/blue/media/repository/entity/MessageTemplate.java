@@ -34,7 +34,11 @@ public final class MessageTemplate implements Serializable {
 
     private String title;
 
+    private Integer titlePlaceholderCount;
+
     private String content;
+
+    private Integer contentPlaceholderCount;
 
     private Long createTime;
 
@@ -92,12 +96,28 @@ public final class MessageTemplate implements Serializable {
         this.title = title;
     }
 
+    public Integer getTitlePlaceholderCount() {
+        return titlePlaceholderCount;
+    }
+
+    public void setTitlePlaceholderCount(Integer titlePlaceholderCount) {
+        this.titlePlaceholderCount = titlePlaceholderCount;
+    }
+
     public String getContent() {
         return content;
     }
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Integer getContentPlaceholderCount() {
+        return contentPlaceholderCount;
+    }
+
+    public void setContentPlaceholderCount(Integer contentPlaceholderCount) {
+        this.contentPlaceholderCount = contentPlaceholderCount;
     }
 
     public Long getCreateTime() {
@@ -141,12 +161,14 @@ public final class MessageTemplate implements Serializable {
                 ", type=" + type +
                 ", businessType=" + businessType +
                 ", title='" + title + '\'' +
+                ", titlePlaceholderCount=" + titlePlaceholderCount +
                 ", content='" + content + '\'' +
+                ", contentPlaceholderCount=" + contentPlaceholderCount +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", creator=" + creator +
                 ", updater=" + updater +
                 '}';
     }
-
+    
 }

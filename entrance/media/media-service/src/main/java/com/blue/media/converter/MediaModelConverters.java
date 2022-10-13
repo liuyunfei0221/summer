@@ -3,10 +3,12 @@ package com.blue.media.converter;
 import com.blue.auth.api.model.RoleInfo;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.media.api.model.*;
+import com.blue.media.model.MessageTemplateInsertParam;
 import com.blue.media.model.QrCodeConfigInsertParam;
 import com.blue.media.model.QrCodeConfigManagerInfo;
 import com.blue.media.repository.entity.Attachment;
 import com.blue.media.repository.entity.DownloadHistory;
+import com.blue.media.repository.entity.MessageTemplate;
 import com.blue.media.repository.entity.QrCodeConfig;
 
 import java.util.List;
@@ -14,13 +16,16 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.common.base.BlueChecker.isNotBlank;
+import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
+import static com.blue.basic.constant.common.Symbol.TEXT_PLACEHOLDER;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.countMatches;
 
 /**
  * model converters in media project
@@ -110,8 +115,10 @@ public final class MediaModelConverters {
         qrCodeConfig.setDescription(param.getDescription());
         qrCodeConfig.setType(param.getType());
         qrCodeConfig.setDomain(param.getDomain());
-        qrCodeConfig.setPathToBeFilled(param.getPathToBeFilled());
-        qrCodeConfig.setPlaceholderCount(param.getPlaceholderCount());
+
+        String pathToBeFilled = param.getPathToBeFilled();
+        qrCodeConfig.setPathToBeFilled(pathToBeFilled);
+        qrCodeConfig.setPlaceholderCount(countMatches(pathToBeFilled, TEXT_PLACEHOLDER.identity));
         qrCodeConfig.setAllowedRoles(param.getAllowedRoles());
 
         Long stamp = TIME_STAMP_GETTER.get();
@@ -138,5 +145,61 @@ public final class MediaModelConverters {
                 qrCodeConfig.getAllowedRoles().stream().map(idAndRoleInfoMapping::get).collect(toList()), qrCodeConfig.getCreateTime(), qrCodeConfig.getUpdateTime(), qrCodeConfig.getCreator(),
                 ofNullable(idAndMemberNameMapping.get(qrCodeConfig.getCreator())).orElse(EMPTY_VALUE.value), qrCodeConfig.getUpdater(), ofNullable(idAndMemberNameMapping.get(qrCodeConfig.getUpdater())).orElse(EMPTY_VALUE.value));
     }
+
+    /**
+     * message template -> message template info
+     */
+    public static final Function<MessageTemplate, MessageTemplateInfo> MESSAGE_TEMPLATE_2_MESSAGE_TEMPLATE_INFO_CONVERTER = messageTemplate -> {
+        if (isNull(messageTemplate))
+            throw new BlueException(EMPTY_PARAM);
+
+        return new MessageTemplateInfo(messageTemplate.getId(), messageTemplate.getName(), messageTemplate.getDescription(), messageTemplate.getType(),
+                messageTemplate.getBusinessType(), messageTemplate.getTitle(), messageTemplate.getTitlePlaceholderCount(), messageTemplate.getContent(), messageTemplate.getContentPlaceholderCount());
+    };
+
+    /**
+     * message template insert param -> message template
+     */
+    public static final Function<MessageTemplateInsertParam, MessageTemplate> MESSAGE_TEMPLATE_INSERT_PARAM_2_MESSAGE_TEMPLATE_CONVERTER = param -> {
+        if (isNull(param))
+            throw new BlueException(EMPTY_PARAM);
+        param.asserts();
+
+        MessageTemplate messageTemplate = new MessageTemplate();
+
+        messageTemplate.setName(param.getName());
+        messageTemplate.setDescription(param.getDescription());
+        messageTemplate.setType(param.getType());
+        messageTemplate.setBusinessType(param.getBusinessType());
+
+        String title = param.getTitle();
+        messageTemplate.setTitle(title);
+        messageTemplate.setTitlePlaceholderCount(countMatches(title, TEXT_PLACEHOLDER.identity));
+
+        String content = param.getContent();
+        messageTemplate.setContent(content);
+        messageTemplate.setContentPlaceholderCount(countMatches(content, TEXT_PLACEHOLDER.identity));
+
+        Long stamp = TIME_STAMP_GETTER.get();
+        messageTemplate.setCreateTime(stamp);
+        messageTemplate.setUpdateTime(stamp);
+
+        return messageTemplate;
+    };
+
+    /**
+     * message template -> message template manager indo
+     */
+    public static final BiFunction<MessageTemplate, Map<Long, String>, MessageTemplateManagerInfo> MESSAGE_TEMPLATE_2_MESSAGE_TEMPLATE_MANAGER_INFO_CONVERTER = (messageTemplate, idAndMemberNameMapping) -> {
+        if (isNull(messageTemplate) || isNull(idAndMemberNameMapping))
+            throw new BlueException(EMPTY_PARAM);
+
+        return new MessageTemplateManagerInfo(
+                messageTemplate.getId(), messageTemplate.getName(), messageTemplate.getDescription(), messageTemplate.getType(), messageTemplate.getBusinessType(),
+                messageTemplate.getTitle(), messageTemplate.getTitlePlaceholderCount(), messageTemplate.getContent(), messageTemplate.getContentPlaceholderCount(),
+                messageTemplate.getCreateTime(), messageTemplate.getUpdateTime(), messageTemplate.getCreator(), ofNullable(idAndMemberNameMapping.get(messageTemplate.getCreator())).orElse(EMPTY_VALUE.value)
+                , messageTemplate.getUpdater(), ofNullable(idAndMemberNameMapping.get(messageTemplate.getUpdater())).orElse(EMPTY_VALUE.value)
+        );
+    };
 
 }

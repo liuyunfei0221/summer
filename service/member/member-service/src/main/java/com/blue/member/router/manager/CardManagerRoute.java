@@ -22,7 +22,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class CardManagerRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> cardManagerRouter(CardManagerHandler cardManagerHandler) {
 
         RequestPredicate pathPredicate = path("/blue-member/manager");

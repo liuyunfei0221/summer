@@ -264,6 +264,10 @@ encrypt:
   expire: 10000000000
 
 
+mtemplate:
+  cacheExpiresSecond: 21600
+
+
 reader:
   user: yunfei0221@outlook.com
   password: Fei19890116

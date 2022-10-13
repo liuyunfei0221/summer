@@ -24,7 +24,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class RoleManagerRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> roleManagerRouter(RoleManagerHandler roleManagerHandler) {
 
         RequestPredicate pathPredicate = path("/blue-auth/manager");

@@ -142,12 +142,14 @@ cache:
   entryTtl: 60
 
 
-caffeine:
+bulletin:
   maximumSize: 1024
   expiresSecond: 10
 
 
 notice:
+  maximumSize: 1024
+  expiresSecond: 10
   id: -1
   title: blue
   content: blue

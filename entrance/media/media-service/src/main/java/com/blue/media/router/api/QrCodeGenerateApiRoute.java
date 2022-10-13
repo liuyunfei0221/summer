@@ -22,7 +22,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class QrCodeGenerateApiRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> qrCodeGenerateApiRouter(QrCodeGenerateApiHandler qrCodeGenerateApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-media/qrCode");

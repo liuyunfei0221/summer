@@ -22,7 +22,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class AccessApiRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> accessApiRouter(AccessApiHandler accessApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-auth");

@@ -23,7 +23,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class RewardDateRelationManagerRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> rewardDateRelationManagerRouter(RewardDateRelationManagerHandler rewardDateRelationManagerHandler) {
 
         RequestPredicate pathPredicate = path("/blue-marketing/manager");
