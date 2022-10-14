@@ -84,6 +84,10 @@ public class RoleServiceImpl implements RoleService {
         this.synchronizedProcessor = synchronizedProcessor;
     }
 
+    private static final int
+            REDIS_LIST_START = 0,
+            REDIS_LIST_END = -1;
+
     private final Consumer<String> CACHE_DELETER = key ->
             stringRedisTemplate.delete(key);
 
@@ -91,7 +95,7 @@ public class RoleServiceImpl implements RoleService {
             roleMapper.select();
 
     private final Supplier<List<Role>> ROLES_REDIS_SUP = () ->
-            ofNullable(stringRedisTemplate.opsForList().range(ROLES.key, 0, -1))
+            ofNullable(stringRedisTemplate.opsForList().range(ROLES.key, REDIS_LIST_START, REDIS_LIST_END))
                     .orElseGet(Collections::emptyList).stream().map(s -> GSON.fromJson(s, Role.class)).collect(toList());
 
     private final Consumer<List<Role>> ROLES_REDIS_SETTER = roles -> {

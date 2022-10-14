@@ -32,6 +32,10 @@ public final class VerifyTemplate implements Serializable {
      */
     private String businessType;
 
+    private String language;
+
+    private Integer priority;
+
     private String title;
 
     private String content;
@@ -84,6 +88,22 @@ public final class VerifyTemplate implements Serializable {
         this.businessType = businessType;
     }
 
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public Integer getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -134,12 +154,14 @@ public final class VerifyTemplate implements Serializable {
 
     @Override
     public String toString() {
-        return "MessageTemplate{" +
+        return "VerifyTemplate{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", type=" + type +
-                ", businessType=" + businessType +
+                ", type='" + type + '\'' +
+                ", businessType='" + businessType + '\'' +
+                ", language='" + language + '\'' +
+                ", priority=" + priority +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", createTime=" + createTime +

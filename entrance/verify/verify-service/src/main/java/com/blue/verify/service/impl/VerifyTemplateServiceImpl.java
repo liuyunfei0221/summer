@@ -2,6 +2,7 @@ package com.blue.verify.service.impl;
 
 import com.blue.basic.common.base.BlueChecker;
 import com.blue.basic.constant.common.SortType;
+import com.blue.basic.constant.verify.VerifyBusinessType;
 import com.blue.basic.model.common.PageModelRequest;
 import com.blue.basic.model.common.PageModelResponse;
 import com.blue.basic.model.common.SortElement;
@@ -24,7 +25,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
@@ -42,8 +43,10 @@ import static com.blue.basic.common.base.CommonFunctions.GSON;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.common.base.ConstantProcessor.assertVerifyBusinessType;
 import static com.blue.basic.common.base.ConstantProcessor.assertVerifyType;
+import static com.blue.basic.common.message.InternationalProcessor.defaultLanguageIdentity;
 import static com.blue.basic.constant.common.CacheKeyPrefix.VERIFY_TEMPLATE_PRE;
 import static com.blue.basic.constant.common.ResponseElement.*;
+import static com.blue.basic.constant.common.Symbol.HYPHEN;
 import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION;
 import static com.blue.basic.constant.common.SyncKey.VERIFY_TEMPLATE_UPDATE_SYNC;
 import static com.blue.mongo.common.MongoSortProcessor.process;
@@ -53,11 +56,13 @@ import static com.blue.verify.constant.VerifyTemplateColumnName.*;
 import static com.blue.verify.converter.VerifyModelConverters.*;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static java.util.Comparator.comparing;
 import static java.util.Optional.ofNullable;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.*;
+import static org.apache.commons.lang3.StringUtils.lowerCase;
+import static org.apache.commons.lang3.StringUtils.replace;
 import static org.springframework.data.mongodb.core.query.Criteria.byExample;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static reactor.core.publisher.Mono.*;
@@ -67,7 +72,7 @@ import static reactor.core.publisher.Mono.*;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Service
 public class VerifyTemplateServiceImpl implements VerifyTemplateService {
 
@@ -75,7 +80,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
 
     private final RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer;
 
-    private ReactiveStringRedisTemplate reactiveStringRedisTemplate;
+    private StringRedisTemplate stringRedisTemplate;
 
     private final BlueIdentityProcessor blueIdentityProcessor;
 
@@ -87,11 +92,11 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
 
     private VerifyTemplateRepository verifyTemplateRepository;
 
-    public VerifyTemplateServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, ReactiveStringRedisTemplate reactiveStringRedisTemplate,
+    public VerifyTemplateServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, StringRedisTemplate stringRedisTemplate,
                                      BlueIdentityProcessor blueIdentityProcessor, SynchronizedProcessor synchronizedProcessor, ReactiveMongoTemplate reactiveMongoTemplate,
                                      Scheduler scheduler, VerifyTemplateRepository verifyTemplateRepository, VerifyTemplateDeploy verifyTemplateDeploy) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
-        this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
+        this.stringRedisTemplate = stringRedisTemplate;
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.synchronizedProcessor = synchronizedProcessor;
         this.reactiveMongoTemplate = reactiveMongoTemplate;
@@ -105,15 +110,27 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
         this.expireDuration = Duration.of(cacheExpiresSecond, ChronoUnit.SECONDS);
     }
 
+    private static final Map<String, Set<String>> BT_ALLOWED_VTS = Stream.of(VerifyBusinessType.values())
+            .collect(toMap(bt -> bt.identity, bt -> bt.allowedVerifyTypes.stream().map(vt -> vt.identity).collect(toSet())));
+
+    private static final BiConsumer<String, String> ALLOWED_ASSERTER = (businessType, verifyType) -> {
+        if (isBlank(businessType) || isBlank(verifyType))
+            throw new BlueException(INVALID_PARAM);
+
+        Set<String> verifyTypes = BT_ALLOWED_VTS.get(businessType);
+        if (isEmpty(verifyTypes) || !verifyTypes.contains(verifyType))
+            throw new BlueException(UNSUPPORTED_OPERATE);
+    };
+
     private Duration expireDuration;
 
-    private static final BinaryOperator<String> TEMPLATE_CACHE_KEY_GENERATOR = (type, businessType) -> VERIFY_TEMPLATE_PRE.prefix + type + PAR_CONCATENATION + businessType;
+    private static final BinaryOperator<String> TEMPLATE_CACHE_KEY_GENERATOR = (type, businessType) -> VERIFY_TEMPLATE_PRE.prefix + type + PAR_CONCATENATION.identity + businessType;
 
     private final BiConsumer<String, String> REDIS_CACHE_DELETER = (type, businessType) ->
-            reactiveStringRedisTemplate.delete(TEMPLATE_CACHE_KEY_GENERATOR.apply(type, businessType))
-                    .subscribe(size -> LOGGER.info("REDIS_CACHE_DELETER, type = {}, businessType = {}, size = {}", type, size));
+            stringRedisTemplate.delete(TEMPLATE_CACHE_KEY_GENERATOR.apply(type, businessType));
+//                    .subscribe(size -> LOGGER.info("REDIS_CACHE_DELETER, type = {}, businessType = {}, size = {}", type, size));
 
-    private final BiFunction<String, String, Mono<VerifyTemplateInfo>> TEMPLATE_DB_GETTER = (type, businessType) -> {
+    private final BiFunction<String, String, Mono<Map<String, VerifyTemplateInfo>>> TEMPLATE_DB_GETTER = (type, businessType) -> {
         assertVerifyType(type, false);
         assertVerifyBusinessType(businessType, false);
 
@@ -121,28 +138,47 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
         probe.setType(type);
         probe.setBusinessType(businessType);
 
-        return verifyTemplateRepository.findOne(Example.of(probe)).publishOn(scheduler)
+        return verifyTemplateRepository.findAll(Example.of(probe)).publishOn(scheduler)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
-                .map(VERIFY_TEMPLATE_2_VERIFY_TEMPLATE_INFO_CONVERTER);
+                .map(VERIFY_TEMPLATE_2_VERIFY_TEMPLATE_INFO_CONVERTER).collectList()
+                .map(verifyTemplateInfos ->
+                        verifyTemplateInfos.stream().collect(toMap(VerifyTemplateInfo::getLanguage, vt -> vt, (a, b) -> a)));
     };
 
-    private final BiFunction<String, String, Mono<VerifyTemplateInfo>> TEMPLATE_WITH_REDIS_CACHE_GETTER = (type, businessType) -> {
+    private final BiFunction<String, String, Mono<Map<String, VerifyTemplateInfo>>> TEMPLATE_WITH_REDIS_CACHE_GETTER = (type, businessType) -> {
         assertVerifyType(type, false);
         assertVerifyBusinessType(businessType, false);
 
         String key = TEMPLATE_CACHE_KEY_GENERATOR.apply(type, businessType);
 
-        return reactiveStringRedisTemplate.opsForValue().get(key)
-                .map(s -> GSON.fromJson(s, VerifyTemplateInfo.class))
+        return justOrEmpty(stringRedisTemplate.opsForHash().entries(key))
+                .map(entries -> entries.entrySet().stream().collect(toMap(e -> String.valueOf(e.getKey()), e -> GSON.fromJson(String.valueOf(e.getValue()), VerifyTemplateInfo.class), (a, b) -> a)))
+                .filter(BlueChecker::isNotEmpty)
                 .switchIfEmpty(defer(() ->
                         TEMPLATE_DB_GETTER.apply(type, businessType)
-                                .flatMap(verifyTemplateInfo ->
-                                        reactiveStringRedisTemplate.opsForValue().set(key, GSON.toJson(verifyTemplateInfo), expireDuration)
-                                                .flatMap(success -> {
-                                                    LOGGER.info("reactiveStringRedisTemplate.opsForValue().set(key, GSON.toJson(verifyTemplateInfo), expireDuration), success = {}", success);
-                                                    return just(verifyTemplateInfo);
-                                                }))
-                ));
+                                .filter(BlueChecker::isNotEmpty)
+                                .switchIfEmpty(defer(() -> error(() -> new BlueException(INVALID_PARAM))))
+                                .flatMap(verifyTemplateInfoMap -> {
+                                    stringRedisTemplate.opsForHash().putAll(key, verifyTemplateInfoMap);
+                                    stringRedisTemplate.expire(key, expireDuration);
+                                    return just(verifyTemplateInfoMap);
+                                })));
+    };
+
+    private static final BiFunction<Map<String, VerifyTemplateInfo>, List<String>, VerifyTemplateInfo> TEMPLATE_GETTER = (templateMap, languages) -> {
+        if (isEmpty(templateMap))
+            throw new BlueException(INVALID_PARAM);
+
+        if (isNotEmpty(languages)) {
+            VerifyTemplateInfo verifyTemplateInfo;
+            for (String language : languages)
+                if (isNotNull(verifyTemplateInfo = templateMap.get(lowerCase(language))))
+                    return verifyTemplateInfo;
+        }
+
+        return ofNullable(templateMap.get(defaultLanguageIdentity()))
+                .orElseGet(() -> templateMap.values().stream().min(comparing(VerifyTemplateInfo::getPriority))
+                        .orElseThrow(() -> new BlueException(INTERNAL_SERVER_ERROR)));
     };
 
     private final Consumer<VerifyTemplateInsertParam> INSERT_ITEM_VALIDATOR = p -> {
@@ -153,6 +189,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
         VerifyTemplate probe = new VerifyTemplate();
         probe.setType(p.getType());
         probe.setBusinessType(p.getBusinessType());
+        probe.setLanguage(lowerCase(replace(p.getLanguage(), PAR_CONCATENATION.identity, HYPHEN.identity)));
 
         if (ofNullable(verifyTemplateRepository.count(Example.of(probe)).publishOn(scheduler).toFuture().join()).orElse(0L) > 0L)
             throw new BlueException(DATA_ALREADY_EXIST);
@@ -168,6 +205,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
         VerifyTemplate probe = new VerifyTemplate();
         probe.setType(p.getType());
         probe.setBusinessType(p.getBusinessType());
+        probe.setLanguage(p.getLanguage());
 
         List<VerifyTemplate> templates = ofNullable(verifyTemplateRepository.findAll(Example.of(probe)).collectList()
                 .publishOn(scheduler).toFuture().join())
@@ -181,6 +219,70 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
             throw new BlueException(DATA_NOT_EXIST);
 
         return verifyTemplate;
+    };
+
+    public static final BiFunction<VerifyTemplateUpdateParam, VerifyTemplate, Boolean> UPDATE_ITEM_VALIDATOR = (p, t) -> {
+        if (isNull(p) || isNull(t))
+            throw new BlueException(BAD_REQUEST);
+        if (!p.getId().equals(t.getId()))
+            throw new BlueException(BAD_REQUEST);
+
+        boolean alteration = false;
+
+        String name = p.getName();
+        if (isNotBlank(name) && !name.equals(t.getName())) {
+            t.setName(name);
+            alteration = true;
+        }
+
+        String description = p.getDescription();
+        if (isNotBlank(description) && !description.equals(t.getDescription())) {
+            t.setDescription(description);
+            alteration = true;
+        }
+
+        String type = p.getType();
+        if (isNotNull(type) && !type.equals(t.getType())) {
+            assertVerifyType(type, false);
+            t.setType(type);
+            alteration = true;
+        }
+
+        String businessType = p.getBusinessType();
+        if (isNotNull(businessType) && !businessType.equals(t.getBusinessType())) {
+            assertVerifyBusinessType(businessType, false);
+            t.setBusinessType(businessType);
+            alteration = true;
+        }
+
+        String language = p.getLanguage();
+        if (isNotBlank(language) && !language.equals(t.getLanguage())) {
+            t.setLanguage(language);
+            alteration = true;
+        }
+
+        Integer priority = p.getPriority();
+        if (isNotNull(priority) && !priority.equals(t.getPriority())) {
+            t.setPriority(priority);
+            alteration = true;
+        }
+
+        String title = p.getTitle();
+        if (isNotBlank(title) && !title.equals(t.getTitle())) {
+            t.setTitle(title);
+            alteration = true;
+        }
+
+        String content = p.getContent();
+        if (isNotBlank(content) && !content.equals(t.getContent())) {
+            t.setContent(content);
+            alteration = true;
+        }
+
+        if (alteration)
+            t.setUpdateTime(TIME_STAMP_GETTER.get());
+
+        return alteration;
     };
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(VerifyTemplateSortAttribute.values())
@@ -222,6 +324,8 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
             assertVerifyBusinessType(businessType, false);
             probe.setBusinessType(businessType);
         });
+        ofNullable(c.getLanguage()).filter(BlueChecker::isNotBlank).ifPresent(probe::setLanguage);
+
         ofNullable(c.getCreator()).ifPresent(probe::setCreator);
         ofNullable(c.getUpdater()).ifPresent(probe::setUpdater);
 
@@ -260,60 +364,6 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
 
         return new ArrayList<>(operatorIds);
     };
-
-    private static boolean validateAndPackageConfigForUpdate(VerifyTemplateUpdateParam param, VerifyTemplate verifyTemplate, Long operatorId) {
-        if (isNull(param) || isNull(verifyTemplate))
-            throw new BlueException(BAD_REQUEST);
-        if (!param.getId().equals(verifyTemplate.getId()))
-            throw new BlueException(BAD_REQUEST);
-
-        boolean alteration = false;
-
-        String name = param.getName();
-        if (isNotBlank(name) && !name.equals(verifyTemplate.getName())) {
-            verifyTemplate.setName(name);
-            alteration = true;
-        }
-
-        String description = param.getDescription();
-        if (isNotBlank(description) && !description.equals(verifyTemplate.getDescription())) {
-            verifyTemplate.setDescription(description);
-            alteration = true;
-        }
-
-        String type = param.getType();
-        if (isNotNull(type) && !type.equals(verifyTemplate.getType())) {
-            assertVerifyType(type, false);
-            verifyTemplate.setType(type);
-            alteration = true;
-        }
-
-        String businessType = param.getBusinessType();
-        if (isNotNull(businessType) && !businessType.equals(verifyTemplate.getBusinessType())) {
-            assertVerifyBusinessType(businessType, false);
-            verifyTemplate.setBusinessType(businessType);
-            alteration = true;
-        }
-
-        String title = param.getTitle();
-        if (isNotBlank(title) && !title.equals(verifyTemplate.getTitle())) {
-            verifyTemplate.setTitle(title);
-            alteration = true;
-        }
-
-        String content = param.getContent();
-        if (isNotBlank(content) && !content.equals(verifyTemplate.getContent())) {
-            verifyTemplate.setContent(content);
-            alteration = true;
-        }
-
-        if (alteration) {
-            verifyTemplate.setUpdateTime(TIME_STAMP_GETTER.get());
-            verifyTemplate.setUpdater(operatorId);
-        }
-
-        return alteration;
-    }
 
     /**
      * insert verify template
@@ -360,11 +410,10 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
             String originalType = verifyTemplate.getType();
             String originalBusinessType = verifyTemplate.getBusinessType();
 
-            if (!validateAndPackageConfigForUpdate(verifyTemplateUpdateParam, verifyTemplate, operatorId))
+            if (!UPDATE_ITEM_VALIDATOR.apply(verifyTemplateUpdateParam, verifyTemplate))
                 throw new BlueException(DATA_HAS_NOT_CHANGED);
 
             verifyTemplate.setUpdater(operatorId);
-            verifyTemplate.setUpdateTime(TIME_STAMP_GETTER.get());
 
             return verifyTemplateRepository.save(verifyTemplate)
                     .publishOn(scheduler)
@@ -416,18 +465,24 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
     }
 
     /**
-     * get verify template mono by type and business type
+     * get verify template mono by type and business type and languages
      *
      * @param type
+     * @param businessType
+     * @param languages
      * @return
      */
     @Override
-    public Mono<VerifyTemplateInfo> getVerifyTemplateInfoMonoByType(String type, String businessType) {
-        LOGGER.info("Mono<VerifyTemplateInfo> getVerifyTemplateInfoMonoByType(String type, String businessType), type = {}, businessType = {}", type, businessType);
-        if (isNull(type))
-            throw new BlueException(EMPTY_PARAM);
+    public Mono<VerifyTemplateInfo> getVerifyTemplateInfoMonoByTypesAndLanguages(String type, String businessType, List<String> languages) {
+        LOGGER.info("Mono<VerifyTemplateInfo> getVerifyTemplateInfoMonoByTypesAndLanguages(), type = {}, businessType = {}, languages = {}", type, businessType, languages);
+        assertVerifyType(type, false);
+        assertVerifyBusinessType(businessType, false);
 
-        return TEMPLATE_WITH_REDIS_CACHE_GETTER.apply(type, businessType);
+        ALLOWED_ASSERTER.accept(businessType, type);
+
+        return TEMPLATE_WITH_REDIS_CACHE_GETTER.apply(type, businessType)
+                .map(templateMap -> TEMPLATE_GETTER.apply(templateMap, languages))
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))));
     }
 
     /**
@@ -440,8 +495,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
      */
     @Override
     public Mono<List<VerifyTemplate>> selectVerifyTemplateMonoByLimitAndCondition(Long limit, Long rows, Query query) {
-        LOGGER.info("Mono<List<VerifyTemplate>> selectVerifyTemplateMonoByLimitAndCondition(Long limit, Long rows, Query query)," +
-                " limit = {}, rows = {}, query = {}", limit, rows, query);
+        LOGGER.info("Mono<List<VerifyTemplate>> selectVerifyTemplateMonoByLimitAndCondition(), limit = {}, rows = {}, query = {}", limit, rows, query);
 
         if (isInvalidLimit(limit) || isInvalidRows(rows))
             throw new BlueException(INVALID_PARAM);
@@ -460,7 +514,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
      */
     @Override
     public Mono<Long> countVerifyTemplateMonoByCondition(Query query) {
-        LOGGER.info("Mono<Long> countVerifyTemplateMonoByCondition(Query query), query = {}", query);
+        LOGGER.info("Mono<Long> countVerifyTemplateMonoByCondition(), query = {}", query);
 
         return reactiveMongoTemplate.count(query, VerifyTemplate.class).publishOn(scheduler);
     }
@@ -473,9 +527,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
      */
     @Override
     public Mono<PageModelResponse<VerifyTemplateManagerInfo>> selectVerifyTemplateManagerInfoPageMonoByPageAndCondition(PageModelRequest<VerifyTemplateCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<VerifyTemplateManagerInfo>> selectVerifyTemplateManagerInfoPageMonoByPageAndCondition(PageModelRequest<VerifyTemplateCondition> pageModelRequest), " +
-                "pageModelRequest = {}", pageModelRequest);
-
+        LOGGER.info("Mono<PageModelResponse<VerifyTemplateManagerInfo>> selectVerifyTemplateManagerInfoPageMonoByPageAndCondition(), pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 

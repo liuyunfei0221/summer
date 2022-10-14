@@ -3,6 +3,7 @@ package com.blue.verify.api.inter;
 import com.blue.basic.constant.verify.VerifyBusinessType;
 import com.blue.basic.constant.verify.VerifyType;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -19,9 +20,10 @@ public interface RpcVerifyHandleService {
      * @param verifyType
      * @param verifyBusinessType
      * @param destination
+     * @param languages
      * @return
      */
-    CompletableFuture<String> generate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination);
+    CompletableFuture<String> generate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination, List<String> languages);
 
     /**
      * validate verify

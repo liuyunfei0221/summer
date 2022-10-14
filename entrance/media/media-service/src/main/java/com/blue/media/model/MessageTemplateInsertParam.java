@@ -56,7 +56,7 @@ public class MessageTemplateInsertParam implements Serializable, Asserter {
         int len;
         if (isBlank(this.name) || (len = this.name.length()) < (int) NAME_LEN_MIN.value || len > (int) NAME_LEN_MAX.value)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid name");
-        if (isBlank(this.description) || (len = this.description.length()) < (int) DESCRIPTION_LEN_MIN.value || len > (int) DESCRIPTION_LEN_MIN.value)
+        if (isBlank(this.description) || (len = this.description.length()) < (int) DESCRIPTION_LEN_MIN.value || len > (int) DESCRIPTION_LEN_MAX.value)
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid description");
 
         assertMessageType(this.type, false);

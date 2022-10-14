@@ -33,6 +33,8 @@ public final class VerifyTemplateCondition extends SortCondition implements Seri
      */
     private String businessType;
 
+    private String language;
+
     private String titleLike;
 
     private String contentLike;
@@ -57,7 +59,7 @@ public final class VerifyTemplateCondition extends SortCondition implements Seri
         super(sortAttribute, sortType);
     }
 
-    public VerifyTemplateCondition(Long id, String nameLike, String descriptionLike, String type, String businessType, String titleLike, String contentLike,
+    public VerifyTemplateCondition(Long id, String nameLike, String descriptionLike, String type, String businessType, String language, String titleLike, String contentLike,
                                    Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, Long creator, Long updater, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.id = id;
@@ -65,6 +67,7 @@ public final class VerifyTemplateCondition extends SortCondition implements Seri
         this.descriptionLike = descriptionLike;
         this.type = type;
         this.businessType = businessType;
+        this.language = language;
         this.titleLike = titleLike;
         this.contentLike = contentLike;
         this.createTimeBegin = createTimeBegin;
@@ -113,6 +116,14 @@ public final class VerifyTemplateCondition extends SortCondition implements Seri
 
     public void setBusinessType(String businessType) {
         this.businessType = businessType;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 
     public String getTitleLike() {
@@ -185,8 +196,9 @@ public final class VerifyTemplateCondition extends SortCondition implements Seri
                 "id=" + id +
                 ", nameLike='" + nameLike + '\'' +
                 ", descriptionLike='" + descriptionLike + '\'' +
-                ", type=" + type +
-                ", businessType=" + businessType +
+                ", type='" + type + '\'' +
+                ", businessType='" + businessType + '\'' +
+                ", language='" + language + '\'' +
                 ", titleLike='" + titleLike + '\'' +
                 ", contentLike='" + contentLike + '\'' +
                 ", createTimeBegin=" + createTimeBegin +

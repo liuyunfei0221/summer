@@ -20,8 +20,8 @@ public final class VerifyTemplateUpdateParam extends VerifyTemplateInsertParam {
     public VerifyTemplateUpdateParam() {
     }
 
-    public VerifyTemplateUpdateParam(Long id, String name, String description, String type, String businessType, String title, String content) {
-        super(name, description, type, businessType, title, content);
+    public VerifyTemplateUpdateParam(Long id, String name, String description, String type, String businessType, String language, Integer priority, String title, String content) {
+        super(name, description, type, businessType, language, priority, title, content);
         this.id = id;
     }
 
@@ -51,6 +51,8 @@ public final class VerifyTemplateUpdateParam extends VerifyTemplateInsertParam {
                 ", description='" + description + '\'' +
                 ", type='" + type + '\'' +
                 ", businessType='" + businessType + '\'' +
+                ", language='" + language + '\'' +
+                ", priority=" + priority +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 '}';

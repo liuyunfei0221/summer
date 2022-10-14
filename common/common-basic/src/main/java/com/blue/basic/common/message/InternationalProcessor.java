@@ -30,13 +30,12 @@ public final class InternationalProcessor {
     }
 
     /**
-     * get message by language
+     * get default language identity
      *
-     * @param serverRequest
      * @return
      */
-    public static Map<Integer, String> listMessage(ServerRequest serverRequest) {
-        return MessageProcessor.listMessage(serverRequest);
+    public static String defaultLanguageIdentity() {
+        return MessageProcessor.DEFAULT_LANGUAGE;
     }
 
     /**
@@ -55,6 +54,16 @@ public final class InternationalProcessor {
      */
     public static LanguageInfo defaultLanguage() {
         return MessageProcessor.defaultLanguage();
+    }
+
+    /**
+     * get message by language
+     *
+     * @param serverRequest
+     * @return
+     */
+    public static Map<Integer, String> listMessage(ServerRequest serverRequest) {
+        return MessageProcessor.listMessage(serverRequest);
     }
 
     /**

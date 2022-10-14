@@ -10,7 +10,7 @@ public enum MessageBusinessType {
     /**
      * message
      */
-    T1(1, "t1"),
+    LOGIN(1, "t1"),
 
     /**
      * message

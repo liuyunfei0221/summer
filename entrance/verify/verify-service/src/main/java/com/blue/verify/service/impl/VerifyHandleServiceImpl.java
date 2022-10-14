@@ -11,6 +11,8 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
+import java.util.List;
+
 import static com.blue.basic.common.base.BlueChecker.isBlank;
 import static com.blue.basic.common.base.BlueChecker.isGreaterThanZero;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
@@ -38,14 +40,16 @@ public class VerifyHandleServiceImpl implements VerifyHandleService {
      *
      * @param verifyType
      * @param verifyBusinessType
-     * @return destination / key
+     * @param destination
+     * @param languages
+     * @return
      */
     @Override
-    public Mono<String> generate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination) {
-        LOGGER.info("Mono<String> generate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination), verifyType = {}, verifyBusinessType = {}, destination = {}",
-                verifyType, verifyBusinessType, destination);
+    public Mono<String> generate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination, List<String> languages) {
+        LOGGER.info("Mono<String> generate(), verifyType = {}, verifyBusinessType = {}, destination = {}, languages = {}",
+                verifyType, verifyBusinessType, destination, languages);
 
-        return verifyProcessor.handle(verifyType, verifyBusinessType, destination);
+        return verifyProcessor.handle(verifyType, verifyBusinessType, destination, languages);
     }
 
     /**

@@ -17,9 +17,13 @@ import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
+import static com.blue.basic.constant.common.Symbol.HYPHEN;
+import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.lowerCase;
+import static org.apache.commons.lang3.StringUtils.replace;
 
 /**
  * model converters in verify project
@@ -43,9 +47,11 @@ public final class VerifyModelConverters {
         verifyTemplate.setDescription(param.getDescription());
         verifyTemplate.setType(param.getType());
         verifyTemplate.setBusinessType(param.getBusinessType());
+        verifyTemplate.setLanguage(lowerCase(replace(param.getLanguage(), PAR_CONCATENATION.identity, HYPHEN.identity)));
+        verifyTemplate.setPriority(param.getPriority());
         verifyTemplate.setTitle(param.getTitle());
         verifyTemplate.setContent(param.getContent());
-        
+
         Long stamp = TIME_STAMP_GETTER.get();
         verifyTemplate.setCreateTime(stamp);
         verifyTemplate.setUpdateTime(stamp);
@@ -61,7 +67,7 @@ public final class VerifyModelConverters {
             throw new BlueException(EMPTY_PARAM);
 
         return new VerifyTemplateInfo(verifyTemplate.getId(), verifyTemplate.getName(), verifyTemplate.getDescription(), verifyTemplate.getType(),
-                verifyTemplate.getBusinessType(), verifyTemplate.getTitle(), verifyTemplate.getContent());
+                verifyTemplate.getBusinessType(), verifyTemplate.getLanguage(), verifyTemplate.getPriority(), verifyTemplate.getTitle(), verifyTemplate.getContent());
     };
 
     /**

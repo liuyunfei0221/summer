@@ -2,6 +2,7 @@ package com.blue.verify.component.sender.impl;
 
 import com.blue.basic.constant.verify.VerifyType;
 import com.blue.verify.api.model.VerifyMessage;
+import com.blue.verify.api.model.VerifyTemplateInfo;
 import com.blue.verify.component.sender.inter.VerifyMessageSender;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
@@ -21,7 +22,9 @@ public class SmsVerifyMessageSender implements VerifyMessageSender {
     private static final Logger LOGGER = getLogger(SmsVerifyMessageSender.class);
 
     @Override
-    public Mono<Boolean> send(VerifyMessage verifyMessage) {
+    public Mono<Boolean> send(VerifyMessage verifyMessage, VerifyTemplateInfo verifyTemplateInfo) {
+        LOGGER.info("Mono<Boolean> send(), verifyMessage = {}, verifyTemplateInfo = {}", verifyMessage, verifyTemplateInfo);
+
         LOGGER.warn("verifyMessage = {}", verifyMessage);
 
         return just(true);

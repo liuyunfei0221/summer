@@ -9,6 +9,7 @@ import static com.blue.basic.common.base.BlueChecker.isBlank;
 import static com.blue.basic.common.base.ConstantProcessor.assertVerifyBusinessType;
 import static com.blue.basic.common.base.ConstantProcessor.assertVerifyType;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
+import static java.util.Optional.ofNullable;
 
 /**
  * params for insert a new verify template
@@ -19,6 +20,8 @@ import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 public class VerifyTemplateInsertParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = -3640635279642897437L;
+
+    protected static final int DEFAULT_PRIORITY = 0;
 
     protected String name;
 
@@ -34,6 +37,10 @@ public class VerifyTemplateInsertParam implements Serializable, Asserter {
      */
     protected String businessType;
 
+    protected String language;
+
+    protected Integer priority;
+
     protected String title;
 
     protected String content;
@@ -41,11 +48,13 @@ public class VerifyTemplateInsertParam implements Serializable, Asserter {
     public VerifyTemplateInsertParam() {
     }
 
-    public VerifyTemplateInsertParam(String name, String description, String type, String businessType, String title, String content) {
+    public VerifyTemplateInsertParam(String name, String description, String type, String businessType, String language, Integer priority, String title, String content) {
         this.name = name;
         this.description = description;
         this.type = type;
         this.businessType = businessType;
+        this.priority = priority;
+        this.language = language;
         this.title = title;
         this.content = content;
     }
@@ -58,6 +67,8 @@ public class VerifyTemplateInsertParam implements Serializable, Asserter {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid description");
         assertVerifyType(this.type, false);
         assertVerifyBusinessType(this.businessType, false);
+        if (isBlank(this.language))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "language title");
         if (isBlank(this.title))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid title");
         if (isBlank(this.content))
@@ -96,6 +107,22 @@ public class VerifyTemplateInsertParam implements Serializable, Asserter {
         this.businessType = businessType;
     }
 
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public Integer getPriority() {
+        return ofNullable(this.priority).orElse(DEFAULT_PRIORITY);
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = ofNullable(priority).orElse(DEFAULT_PRIORITY);
+    }
+
     public String getTitle() {
         return title;
     }
@@ -119,6 +146,8 @@ public class VerifyTemplateInsertParam implements Serializable, Asserter {
                 ", description='" + description + '\'' +
                 ", type='" + type + '\'' +
                 ", businessType='" + businessType + '\'' +
+                ", language='" + language + '\'' +
+                ", priority=" + priority +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 '}';

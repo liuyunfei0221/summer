@@ -24,7 +24,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class VerifyTemplateManagerRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> verifyTemplateManagerRouter(VerifyTemplateManagerHandler verifyTemplateManagerHandler) {
 
         RequestPredicate pathPredicate = path("/blue-verify/manager");

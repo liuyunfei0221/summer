@@ -44,9 +44,9 @@ final class ElementProcessor {
 
     private static final Logger LOGGER = getLogger(ElementProcessor.class);
 
-    private static final String DEFAULT_LANGUAGE = lowerCase(replace(LANGUAGE, PAR_CONCATENATION.identity, HYPHEN.identity));
-    private static final String DEFAULT_KEY = DEFAULT.key;
-    private static final String DEFAULT_VALUE = DEFAULT.key;
+    static final String DEFAULT_LANGUAGE = lowerCase(replace(LANGUAGE, PAR_CONCATENATION.identity, HYPHEN.identity));
+    static final String DEFAULT_KEY = DEFAULT.key;
+    static final String DEFAULT_VALUE = DEFAULT.key;
 
     private static final UnaryOperator<String> LANGUAGE_IDENTITY_PARSER = n -> {
         int idx = lastIndexOf(n, PERIOD.identity);

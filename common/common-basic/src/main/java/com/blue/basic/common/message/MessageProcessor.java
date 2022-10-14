@@ -48,9 +48,9 @@ final class MessageProcessor {
 
     private static final Logger LOGGER = getLogger(MessageProcessor.class);
 
-    private static final String DEFAULT_LANGUAGE = lowerCase(replace(LANGUAGE, PAR_CONCATENATION.identity, HYPHEN.identity));
-    private static final int DEFAULT_CODE = INTERNAL_SERVER_ERROR.code;
-    private static final String DEFAULT_MESSAGE = INTERNAL_SERVER_ERROR.message;
+    static final String DEFAULT_LANGUAGE = lowerCase(replace(LANGUAGE, PAR_CONCATENATION.identity, HYPHEN.identity));
+    static final int DEFAULT_CODE = INTERNAL_SERVER_ERROR.code;
+    static final String DEFAULT_MESSAGE = INTERNAL_SERVER_ERROR.message;
 
     private static final String LANGUAGE_NAME_KEY = "NAME";
     private static final String LANGUAGE_PRIORITY_KEY = "PRIORITY";

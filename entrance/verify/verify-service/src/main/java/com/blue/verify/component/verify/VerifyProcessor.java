@@ -1,5 +1,6 @@
 package com.blue.verify.component.verify;
 
+import com.blue.basic.common.base.BlueChecker;
 import com.blue.basic.constant.verify.VerifyBusinessType;
 import com.blue.basic.constant.verify.VerifyType;
 import com.blue.basic.model.common.TuringData;
@@ -8,6 +9,7 @@ import com.blue.redis.component.BlueLeakyBucketRateLimiter;
 import com.blue.verify.api.model.VerifyParam;
 import com.blue.verify.component.verify.inter.VerifyHandler;
 import com.blue.verify.config.deploy.TuringDeploy;
+import com.blue.verify.remote.consumer.RpcAuthServiceConsumer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -16,21 +18,23 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
+import reactor.util.Logger;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
 import java.util.stream.Stream;
 
+import static com.blue.basic.common.access.AccessProcessor.jsonToAccess;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.getIpReact;
 import static com.blue.basic.common.base.ConstantProcessor.getVerifyBusinessTypeByIdentity;
 import static com.blue.basic.common.base.TuringDataGetter.getTuringDataReact;
+import static com.blue.basic.constant.auth.CredentialType.NOT_LOGGED_IN;
 import static com.blue.basic.constant.common.BlueCommonThreshold.*;
+import static com.blue.basic.constant.common.BlueHeader.AUTHORIZATION;
 import static com.blue.basic.constant.common.RateLimitKeyPrefix.TURING_TEST_LIMIT_KEY_PRE;
 import static com.blue.basic.constant.common.RateLimitKeyPrefix.VERIFIES_RATE_LIMIT_KEY_PRE;
 import static com.blue.basic.constant.common.ResponseElement.*;
@@ -41,6 +45,7 @@ import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 import static reactor.core.publisher.Mono.*;
+import static reactor.util.Loggers.getLogger;
 
 /**
  * verify processor
@@ -52,9 +57,14 @@ import static reactor.core.publisher.Mono.*;
 @Order(HIGHEST_PRECEDENCE)
 public class VerifyProcessor implements ApplicationListener<ContextRefreshedEvent> {
 
+    private static final Logger LOGGER = getLogger(VerifyProcessor.class);
+
+    private RpcAuthServiceConsumer rpcAuthServiceConsumer;
+
     private final BlueLeakyBucketRateLimiter blueLeakyBucketRateLimiter;
 
-    public VerifyProcessor(BlueLeakyBucketRateLimiter blueLeakyBucketRateLimiter, TuringDeploy turingDeploy) {
+    public VerifyProcessor(RpcAuthServiceConsumer rpcAuthServiceConsumer, BlueLeakyBucketRateLimiter blueLeakyBucketRateLimiter, TuringDeploy turingDeploy) {
+        this.rpcAuthServiceConsumer = rpcAuthServiceConsumer;
         this.blueLeakyBucketRateLimiter = blueLeakyBucketRateLimiter;
 
         Integer allow = turingDeploy.getAllow();
@@ -118,6 +128,26 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
         return TURING_TEST_LIMIT_KEY_PRE.prefix + key;
     };
 
+    private final BiFunction<String, ServerRequest, Mono<Boolean>> ACCESS_ASSERTER = (businessType, serverRequest) ->
+            getVerifyBusinessTypeByIdentity(businessType).withoutSession ?
+                    just(true)
+                    :
+                    justOrEmpty(serverRequest.headers().firstHeader(AUTHORIZATION.name))
+                            .filter(BlueChecker::isNotBlank)
+                            .switchIfEmpty(defer(() -> error(() -> new BlueException(UNAUTHORIZED))))
+                            .flatMap(accessStr ->
+                                    just(jsonToAccess(accessStr))
+                                            .onErrorResume(t -> {
+                                                LOGGER.info("t = {}", t);
+                                                return rpcAuthServiceConsumer.parseAccess(accessStr);
+                                            })
+                            ).map(access ->
+                                    !NOT_LOGGED_IN.identity.equals(access.getCredentialType())
+                            ).onErrorResume(t -> {
+                                LOGGER.info("t = {}", t);
+                                return just(false);
+                            });
+
     private final int ALLOW;
     private final long INTERVAL_MILLIS;
 
@@ -148,16 +178,22 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
      * @param verifyType
      * @param verifyBusinessType
      * @param destination
+     * @param languages
      * @return
      */
-    public Mono<String> handle(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination) {
-        if (isNotNull(verifyType) && isNotNull(verifyBusinessType))
+    public Mono<String> handle(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination, List<String> languages) {
+        LOGGER.info("Mono<String> handle(), verifyType = {}, verifyBusinessType = {}, destination = {}, languages = {}",
+                verifyType, verifyBusinessType, destination, languages);
+
+        if (isNotNull(verifyType) && isNotNull(verifyBusinessType)) {
+            ALLOWED_ASSERTER.accept(verifyBusinessType.identity, verifyType.identity);
             return ofNullable(verifyHandlers.get(verifyType.identity))
                     .map(h -> {
                         ALLOWED_ASSERTER.accept(verifyBusinessType.identity, verifyType.identity);
-                        return h.handle(verifyBusinessType, destination);
+                        return h.handle(verifyBusinessType, destination, languages);
                     })
                     .orElseThrow(() -> new BlueException(INVALID_PARAM));
+        }
 
         return error(() -> new BlueException(INVALID_PARAM));
     }
@@ -176,31 +212,40 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
         )
                 .flatMap(tuple3 -> {
                     VerifyParam vp = tuple3.getT1();
-
-                    String destination = vp.getDestination();
-                    if (isNotBlank(destination) && destination.length() > VFK_LEN_MAX)
-                        return error(() -> new BlueException(INVALID_PARAM));
+                    String ip = tuple3.getT2();
+                    LOGGER.info("Mono<ServerResponse> handle(), vp = {}, ip = {}", vp, ip);
 
                     String verifyType = vp.getVerifyType();
                     String businessType = vp.getBusinessType();
                     ALLOWED_ASSERTER.accept(businessType, verifyType);
 
-                    return just(NEED_TURING_TEST_PRE.test(verifyType))
-                            .flatMap(need -> {
-                                if (need) {
-                                    TuringData turingData = tuple3.getT3();
-                                    return this.turingValidate(TURING_LIMIT_IDENTITY_WRAPPER.apply(tuple3.getT2()), ALLOW, INTERVAL_MILLIS, turingData.getKey(), turingData.getVerify());
-                                } else {
-                                    return just(true);
-                                }
-                            })
-                            .flatMap(allowed ->
-                                    allowed ?
-                                            ofNullable(verifyHandlers.get(verifyType))
-                                                    .map(h -> h.handle(getVerifyBusinessTypeByIdentity(businessType), destination, serverRequest))
-                                                    .orElseThrow(() -> new BlueException(INVALID_PARAM))
+                    String destination = vp.getDestination();
+                    if (isNotBlank(destination) && destination.length() > VFK_LEN_MAX)
+                        return error(() -> new BlueException(INVALID_PARAM));
+
+                    return ACCESS_ASSERTER.apply(businessType, serverRequest)
+                            .flatMap(allow ->
+                                    allow ? just(NEED_TURING_TEST_PRE.test(verifyType))
+                                            .flatMap(need -> {
+                                                if (need) {
+                                                    TuringData turingData = tuple3.getT3();
+                                                    LOGGER.info("Mono<ServerResponse> handle(), turingData = {}", turingData);
+
+                                                    return this.turingValidate(TURING_LIMIT_IDENTITY_WRAPPER.apply(ip), ALLOW, INTERVAL_MILLIS, turingData.getKey(), turingData.getVerify());
+                                                } else {
+                                                    return just(true);
+                                                }
+                                            })
+                                            .flatMap(allowed ->
+                                                    allowed ?
+                                                            ofNullable(verifyHandlers.get(verifyType))
+                                                                    .map(h -> h.handle(getVerifyBusinessTypeByIdentity(businessType), destination, serverRequest))
+                                                                    .orElseThrow(() -> new BlueException(INVALID_PARAM))
+                                                            :
+                                                            error(() -> new BlueException(NEED_TURING_TEST)))
                                             :
-                                            error(() -> new BlueException(NEED_TURING_TEST)));
+                                            error(() -> new BlueException(UNAUTHORIZED))
+                            );
                 });
     }
 
@@ -215,6 +260,9 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
      * @return
      */
     public Mono<Boolean> validate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String key, String verify, Boolean repeatable) {
+        LOGGER.info("Mono<Boolean> validate(), verifyType = {}, verifyBusinessType = {}, key = {}, verify = {}, repeatable = {}",
+                verifyType, verifyBusinessType, key, verify, repeatable);
+
         ALLOWED_ASSERTER.accept(verifyBusinessType.identity, verifyType.identity);
         KEY_ASSERTER.accept(key);
         VERIFY_ASSERTER.accept(verify);
@@ -235,6 +283,9 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
      * @return
      */
     public Mono<Boolean> turingValidate(String identity, Integer allow, Long expiresMillis, String key, String verify) {
+        LOGGER.info("Mono<Boolean> turingValidate(), identity = {}, allow = {}, expiresMillis = {}, key = {}, verify = {}",
+                identity, allow, expiresMillis, key, verify);
+
         if (isBlank(identity) || !isGreaterThanZero(allow) || !isGreaterThanZero(expiresMillis))
             throw new BlueException(INVALID_PARAM);
 

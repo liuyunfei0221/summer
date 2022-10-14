@@ -3,6 +3,7 @@ package com.blue.verify.component.sender;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.verify.api.model.VerifyMessage;
 import com.blue.verify.component.sender.inter.VerifyMessageSender;
+import com.blue.verify.service.inter.VerifyTemplateService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -14,12 +15,13 @@ import java.util.Map;
 
 import static com.blue.basic.common.base.BlueChecker.isEmpty;
 import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.common.base.ConstantProcessor.assertVerifyBusinessType;
 import static com.blue.basic.common.base.ConstantProcessor.assertVerifyType;
-import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
+import static com.blue.basic.constant.common.ResponseElement.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
+import static reactor.core.publisher.Mono.defer;
 import static reactor.core.publisher.Mono.error;
 
 /**
@@ -31,6 +33,12 @@ import static reactor.core.publisher.Mono.error;
 @Component
 @Order(HIGHEST_PRECEDENCE)
 public class VerifyMessageSenderProcessor implements ApplicationListener<ContextRefreshedEvent> {
+
+    private final VerifyTemplateService verifyTemplateService;
+
+    public VerifyMessageSenderProcessor(VerifyTemplateService verifyTemplateService) {
+        this.verifyTemplateService = verifyTemplateService;
+    }
 
     /**
      * verify message type ->verify message sender
@@ -60,10 +68,17 @@ public class VerifyMessageSenderProcessor implements ApplicationListener<Context
 
         String verifyType = verifyMessage.getVerifyType();
         assertVerifyType(verifyType, false);
+        String verifyBusinessType = verifyMessage.getBusinessType();
+        assertVerifyBusinessType(verifyBusinessType, false);
 
-        return ofNullable(verifyMessageSenders.get(verifyType))
-                .map(s -> s.send(verifyMessage))
-                .orElseThrow(() -> new BlueException(INVALID_IDENTITY));
+
+        //TODO 待调试
+        return verifyTemplateService.getVerifyTemplateInfoMonoByTypesAndLanguages(verifyType, verifyBusinessType, verifyMessage.getLanguages())
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(INVALID_PARAM))))
+                .flatMap(verifyTemplateInfo ->
+                        ofNullable(verifyMessageSenders.get(verifyType))
+                                .map(s -> s.send(verifyMessage, verifyTemplateInfo))
+                                .orElseThrow(() -> new BlueException(INVALID_IDENTITY)));
     }
 
 }

@@ -8,6 +8,7 @@ import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
 import reactor.core.scheduler.Scheduler;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static reactor.core.publisher.Mono.just;
@@ -45,8 +46,8 @@ public class RpcVerifyHandleServiceProvider implements RpcVerifyHandleService {
      * @return
      */
     @Override
-    public CompletableFuture<String> generate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination) {
-        return just(true).publishOn(scheduler).flatMap(v -> verifyHandleService.generate(verifyType, verifyBusinessType, destination)).toFuture();
+    public CompletableFuture<String> generate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination, List<String> languages) {
+        return just(true).publishOn(scheduler).flatMap(v -> verifyHandleService.generate(verifyType, verifyBusinessType, destination,languages)).toFuture();
     }
 
     /**

@@ -1,8 +1,7 @@
 package com.blue.verify.api.model;
 
-import com.blue.basic.constant.verify.VerifyBusinessType;
-
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * verify message
@@ -20,7 +19,7 @@ public final class VerifyMessage implements Serializable {
     private String verifyType;
 
     /**
-     * @see VerifyBusinessType
+     * @see com.blue.basic.constant.verify.VerifyBusinessType
      */
     private String businessType;
 
@@ -33,14 +32,17 @@ public final class VerifyMessage implements Serializable {
 
     private String verify;
 
+    private List<String> languages;
+
     public VerifyMessage() {
     }
 
-    public VerifyMessage(String verifyType, String businessType, String destination, String verify) {
+    public VerifyMessage(String verifyType, String businessType, String destination, String verify, List<String> languages) {
         this.verifyType = verifyType;
         this.businessType = businessType;
         this.destination = destination;
         this.verify = verify;
+        this.languages = languages;
     }
 
     public String getVerifyType() {
@@ -75,6 +77,14 @@ public final class VerifyMessage implements Serializable {
         this.verify = verify;
     }
 
+    public List<String> getLanguages() {
+        return languages;
+    }
+
+    public void setLanguages(List<String> languages) {
+        this.languages = languages;
+    }
+
     @Override
     public String toString() {
         return "VerifyMessage{" +
@@ -82,6 +92,7 @@ public final class VerifyMessage implements Serializable {
                 ", businessType='" + businessType + '\'' +
                 ", destination='" + destination + '\'' +
                 ", verify='" + verify + '\'' +
+                ", languages=" + languages +
                 '}';
     }
 

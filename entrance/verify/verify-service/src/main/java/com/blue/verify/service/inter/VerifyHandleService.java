@@ -6,6 +6,8 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 /**
  * verify handle service
  *
@@ -20,9 +22,10 @@ public interface VerifyHandleService {
      * @param verifyType
      * @param verifyBusinessType
      * @param destination
+     * @param languages
      * @return
      */
-    Mono<String> generate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination);
+    Mono<String> generate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination, List<String> languages);
 
     /**
      * generate verify for endpoint

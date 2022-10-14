@@ -22,7 +22,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class VerifyApiRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> verifyApiRouter(VerifyApiHandler verifyApiHandler) {
 
         RequestPredicate pathPredicate = path("/blue-verify/verify");

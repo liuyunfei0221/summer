@@ -22,6 +22,7 @@ import reactor.util.Logger;
 import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -36,6 +37,7 @@ import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION;
 import static com.blue.basic.constant.verify.VerifyType.IMAGE;
 import static java.time.temporal.ChronoUnit.MILLIS;
+import static java.util.Collections.emptyList;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static org.springframework.http.HttpHeaders.CACHE_CONTROL;
 import static org.springframework.http.MediaType.IMAGE_PNG;
@@ -184,8 +186,8 @@ public class ImageVerifyHandler implements VerifyHandler {
     }
 
     @Override
-    public Mono<String> handle(VerifyBusinessType verifyBusinessType, String destination) {
-        LOGGER.info("ImageVerifyHandler -> Mono<String> handle(BusinessType businessType, String destination), businessType = {}, destination = {}", verifyBusinessType, destination);
+    public Mono<String> handle(VerifyBusinessType verifyBusinessType, String destination, List<String> languages) {
+        LOGGER.info("ImageVerifyHandler -> Mono<String> handle(), businessType = {}, destination = {}, languages = {}", verifyBusinessType, destination, languages);
         if (isNull(verifyBusinessType) || isBlank(destination))
             throw new BlueException(BAD_REQUEST);
 
@@ -200,9 +202,9 @@ public class ImageVerifyHandler implements VerifyHandler {
                 .flatMap(identity -> blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(identity), ALLOW, SEND_INTERVAL_MILLIS))
                 .flatMap(allowed ->
                         allowed ?
-                                this.handle(verifyBusinessType, verifyKey)
+                                this.handle(verifyBusinessType, verifyKey, emptyList())
                                         .flatMap(verify -> {
-                                            LOGGER.warn("Mono<ServerResponse> handle(String destination), verifyKey = {}, verify = {}", verifyKey, verify);
+                                            LOGGER.warn("Mono<ServerResponse> handle(), verifyKey = {}, verify = {}", verifyKey, verify);
 
                                             return using(FastByteArrayOutputStream::new,
                                                     outputStream -> IMAGE_WRITER.apply(verify, outputStream)

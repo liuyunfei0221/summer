@@ -80,6 +80,10 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         this.synchronizedProcessor = synchronizedProcessor;
     }
 
+    private static final int
+            REDIS_LIST_START = 0,
+            REDIS_LIST_END = -1;
+
     private final Consumer<RoleResRelation> INSERT_ITEM_VALIDATOR = r -> {
         if (isNull(r))
             throw new BlueException(EMPTY_PARAM);
@@ -136,7 +140,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
             roleResRelationMapper.select();
 
     private final Supplier<List<RoleResRelation>> RELATIONS_REDIS_SUP = () ->
-            ofNullable(stringRedisTemplate.opsForList().range(ROLE_RES_RELS.key, 0, -1))
+            ofNullable(stringRedisTemplate.opsForList().range(ROLE_RES_RELS.key, REDIS_LIST_START, REDIS_LIST_END))
                     .orElseGet(Collections::emptyList).stream().map(s -> GSON.fromJson(s, RoleResRelation.class)).collect(toList());
 
     private final Consumer<List<RoleResRelation>> RELATIONS_REDIS_SETTER = roles -> {

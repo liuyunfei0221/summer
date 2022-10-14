@@ -36,6 +36,10 @@ public final class VerifyTemplateInfo implements Serializable {
      */
     private String businessType;
 
+    private String language;
+
+    private Integer priority;
+
     private String title;
 
     private String content;
@@ -43,12 +47,14 @@ public final class VerifyTemplateInfo implements Serializable {
     public VerifyTemplateInfo() {
     }
 
-    public VerifyTemplateInfo(Long id, String name, String description, String type, String businessType, String title, String content) {
+    public VerifyTemplateInfo(Long id, String name, String description, String type, String businessType, String language, Integer priority, String title, String content) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.type = type;
         this.businessType = businessType;
+        this.language = language;
+        this.priority = priority;
         this.title = title;
         this.content = content;
     }
@@ -93,6 +99,22 @@ public final class VerifyTemplateInfo implements Serializable {
         this.businessType = businessType;
     }
 
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public Integer getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -115,8 +137,10 @@ public final class VerifyTemplateInfo implements Serializable {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", type=" + type +
-                ", businessType=" + businessType +
+                ", type='" + type + '\'' +
+                ", businessType='" + businessType + '\'' +
+                ", language='" + language + '\'' +
+                ", priority=" + priority +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 '}';

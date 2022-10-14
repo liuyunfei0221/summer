@@ -19,6 +19,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
@@ -130,8 +131,8 @@ public class SmsVerifyHandler implements VerifyHandler {
     }
 
     @Override
-    public Mono<String> handle(VerifyBusinessType verifyBusinessType, String destination) {
-        LOGGER.info("SmsVerifyHandler -> Mono<String> handle(BusinessType businessType, String destination), businessType = {}, destination = {}", verifyBusinessType, destination);
+    public Mono<String> handle(VerifyBusinessType verifyBusinessType, String destination, List<String> languages) {
+        LOGGER.info("SmsVerifyHandler -> Mono<String> handle(), businessType = {}, destination = {}, languages = {}", verifyBusinessType, destination, languages);
         if (isNull(verifyBusinessType) || isBlank(destination))
             throw new BlueException(BAD_REQUEST);
 
@@ -142,7 +143,7 @@ public class SmsVerifyHandler implements VerifyHandler {
                         allowed ?
                                 verifyService.generate(SMS, BUSINESS_KEY_WRAPPER.apply(verifyBusinessType, destination), VERIFY_LEN, DEFAULT_DURATION)
                                         .flatMap(verify ->
-                                                fromRunnable(() -> verifyMessageEventProducer.send(new VerifyMessage(SMS.identity, verifyBusinessType.identity, destination, verify)))
+                                                fromRunnable(() -> verifyMessageEventProducer.send(new VerifyMessage(SMS.identity, verifyBusinessType.identity, destination, verify, languages)))
                                                         .then(just(verify)))
                                 :
                                 error(() -> new BlueException(TOO_MANY_REQUESTS.status, TOO_MANY_REQUESTS.code, "operation too frequently")));
@@ -154,9 +155,9 @@ public class SmsVerifyHandler implements VerifyHandler {
                 .flatMap(identity -> blueLeakyBucketRateLimiter.isAllowed(identity, ALLOW, SEND_INTERVAL_MILLIS))
                 .flatMap(allowed ->
                         allowed ?
-                                this.handle(verifyBusinessType, destination)
+                                this.handle(verifyBusinessType, destination, getAcceptLanguages(serverRequest))
                                         .flatMap(verify -> {
-                                            LOGGER.warn("Mono<ServerResponse> handle(String destination), verifyKey = {}, verify = {}", destination, verify);
+                                            LOGGER.warn("Mono<ServerResponse> handle(), verifyKey = {}, verify = {}", destination, verify);
 
                                             return ok().contentType(APPLICATION_JSON)
                                                     .header(VERIFY_KEY.name, destination)

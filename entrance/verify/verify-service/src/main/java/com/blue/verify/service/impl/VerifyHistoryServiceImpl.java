@@ -27,6 +27,8 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.common.base.ConstantProcessor.assertVerifyBusinessType;
+import static com.blue.basic.common.base.ConstantProcessor.assertVerifyType;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.mongo.common.MongoSortProcessor.process;
 import static com.blue.verify.constant.BaseColumnName.CREATE_TIME;
@@ -96,8 +98,14 @@ public class VerifyHistoryServiceImpl implements VerifyHistoryService {
         VerifyHistory probe = new VerifyHistory();
 
         ofNullable(c.getId()).ifPresent(probe::setId);
-        ofNullable(c.getVerifyType()).filter(BlueChecker::isNotBlank).ifPresent(probe::setVerifyType);
-        ofNullable(c.getBusinessType()).filter(BlueChecker::isNotBlank).ifPresent(probe::setBusinessType);
+        ofNullable(c.getVerifyType()).ifPresent(verifyType -> {
+            assertVerifyType(verifyType, false);
+            probe.setVerifyType(verifyType);
+        });
+        ofNullable(c.getBusinessType()).ifPresent(businessType -> {
+            assertVerifyBusinessType(businessType, false);
+            probe.setBusinessType(businessType);
+        });
         ofNullable(c.getDestination()).filter(BlueChecker::isNotBlank).ifPresent(probe::setDestination);
         ofNullable(c.getVerify()).filter(BlueChecker::isNotBlank).ifPresent(probe::setVerify);
         ofNullable(c.getRequestIp()).filter(BlueChecker::isNotBlank).ifPresent(probe::setRequestIp);

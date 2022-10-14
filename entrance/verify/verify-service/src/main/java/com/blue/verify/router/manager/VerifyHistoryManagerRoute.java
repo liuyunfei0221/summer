@@ -22,7 +22,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class VerifyHistoryManagerRoute {
 
     @Bean
-    @SuppressWarnings("NullableProblems")
     RouterFunction<ServerResponse> verifyHistoryManagerRouter(VerifyHistoryManagerHandler verifyHistoryManagerHandler) {
 
         RequestPredicate pathPredicate = path("/blue-verify/manager");

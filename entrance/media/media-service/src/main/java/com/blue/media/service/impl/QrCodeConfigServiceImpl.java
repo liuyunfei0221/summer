@@ -36,6 +36,7 @@ import reactor.util.Loggers;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -184,58 +185,58 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
         return qrCodeConfig;
     };
 
-    private static boolean validateAndPackageAttrForUpdate(QrCodeConfigUpdateParam param, QrCodeConfig qrCodeConfig, Long operatorId) {
-        if (isNull(param) || isNull(qrCodeConfig))
+    public static final BiFunction<QrCodeConfigUpdateParam, QrCodeConfig, Boolean> UPDATE_ITEM_VALIDATOR = (p, t) -> {
+        if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
-        if (!param.getId().equals(qrCodeConfig.getId()))
+        if (!p.getId().equals(t.getId()))
             throw new BlueException(BAD_REQUEST);
 
         boolean alteration = false;
 
-        String name = param.getName();
-        if (isNotBlank(name) && !name.equals(qrCodeConfig.getName())) {
-            qrCodeConfig.setName(name);
+        String name = p.getName();
+        if (isNotBlank(name) && !name.equals(t.getName())) {
+            t.setName(name);
             alteration = true;
         }
 
-        String description = param.getDescription();
-        if (isNotBlank(description) && !description.equals(qrCodeConfig.getDescription())) {
-            qrCodeConfig.setDescription(description);
+        String description = p.getDescription();
+        if (isNotBlank(description) && !description.equals(t.getDescription())) {
+            t.setDescription(description);
             alteration = true;
         }
 
-        Integer type = param.getType();
-        if (isNotNull(type) && !type.equals(qrCodeConfig.getType())) {
-            qrCodeConfig.setType(type);
+        Integer type = p.getType();
+        if (isNotNull(type) && !type.equals(t.getType())) {
+            t.setType(type);
             alteration = true;
         }
 
-        String domain = param.getDomain();
-        if (isNotBlank(domain) && !domain.equals(qrCodeConfig.getDomain())) {
-            qrCodeConfig.setDomain(domain);
+        String domain = p.getDomain();
+        if (isNotBlank(domain) && !domain.equals(t.getDomain())) {
+            t.setDomain(domain);
             alteration = true;
         }
 
-        String pathToBeFilled = param.getPathToBeFilled();
-        if (isNotBlank(pathToBeFilled) && !pathToBeFilled.equals(qrCodeConfig.getPathToBeFilled())) {
-            qrCodeConfig.setPathToBeFilled(pathToBeFilled);
-            qrCodeConfig.setPlaceholderCount(countMatches(pathToBeFilled, TEXT_PLACEHOLDER.identity));
+        String pathToBeFilled = p.getPathToBeFilled();
+        if (isNotBlank(pathToBeFilled) && !pathToBeFilled.equals(t.getPathToBeFilled())) {
+            t.setPathToBeFilled(pathToBeFilled);
+            t.setPlaceholderCount(countMatches(pathToBeFilled, TEXT_PLACEHOLDER.identity));
             alteration = true;
         }
 
-        List<Long> allowedRoles = param.getAllowedRoles();
-        if (isNotEmpty(allowedRoles) && isEquals(allowedRoles, qrCodeConfig.getAllowedRoles())) {
-            qrCodeConfig.setAllowedRoles(allowedRoles);
+        List<Long> allowedRoles = p.getAllowedRoles();
+        if (isNotEmpty(allowedRoles) && isEquals(allowedRoles, t.getAllowedRoles())) {
+            t.setAllowedRoles(allowedRoles);
             alteration = true;
         }
 
-        if (alteration) {
-            qrCodeConfig.setUpdateTime(TIME_STAMP_GETTER.get());
-            qrCodeConfig.setUpdater(operatorId);
-        }
+        if (alteration)
+            t.setUpdateTime(TIME_STAMP_GETTER.get());
 
         return alteration;
-    }
+
+
+    };
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(QrCodeConfigSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
@@ -359,11 +360,10 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
             QrCodeConfig qrCodeConfig = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(qrCodeConfigUpdateParam);
             Integer originalType = qrCodeConfig.getType();
 
-            if (!validateAndPackageAttrForUpdate(qrCodeConfigUpdateParam, qrCodeConfig, operatorId))
+            if (!UPDATE_ITEM_VALIDATOR.apply(qrCodeConfigUpdateParam, qrCodeConfig))
                 throw new BlueException(DATA_HAS_NOT_CHANGED);
 
             qrCodeConfig.setUpdater(operatorId);
-            qrCodeConfig.setUpdateTime(TIME_STAMP_GETTER.get());
 
             return qrCodeConfigRepository.save(qrCodeConfig)
                     .publishOn(scheduler)

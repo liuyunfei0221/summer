@@ -56,12 +56,14 @@ public interface VerifyTemplateService {
     Mono<VerifyTemplate> getVerifyTemplateMono(Long id);
 
     /**
-     * get verify template mono by type and business type
+     * get verify template mono by type and business type and languages
      *
      * @param type
+     * @param businessType
+     * @param languages
      * @return
      */
-    Mono<VerifyTemplateInfo> getVerifyTemplateInfoMonoByType(String type, String businessType);
+    Mono<VerifyTemplateInfo> getVerifyTemplateInfoMonoByTypesAndLanguages(String type, String businessType, List<String> languages);
 
     /**
      * select verify template by limit and query

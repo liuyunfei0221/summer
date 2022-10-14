@@ -79,6 +79,10 @@ public class ResourceServiceImpl implements ResourceService {
         this.synchronizedProcessor = synchronizedProcessor;
     }
 
+    private static final int
+            REDIS_LIST_START = 0,
+            REDIS_LIST_END = -1;
+
     private final Consumer<String> CACHE_DELETER = key ->
             stringRedisTemplate.delete(key);
 
@@ -86,7 +90,7 @@ public class ResourceServiceImpl implements ResourceService {
             resourceMapper.select();
 
     private final Supplier<List<Resource>> RESOURCES_REDIS_SUP = () ->
-            ofNullable(stringRedisTemplate.opsForList().range(RESOURCES.key, 0, -1))
+            ofNullable(stringRedisTemplate.opsForList().range(RESOURCES.key, REDIS_LIST_START, REDIS_LIST_END))
                     .orElseGet(Collections::emptyList).stream().map(s -> GSON.fromJson(s, Resource.class)).collect(toList());
 
     private final Consumer<List<Resource>> RESOURCES_REDIS_SETTER = resources -> {

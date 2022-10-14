@@ -1292,6 +1292,143 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "后台查询验证码模板配置",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiI4MThkYmU0ODVjYjE3NTlhMTZhNjZmZjFhNDkyOTM4ZmNlNzc2NGRlZGM5NzY2NTVhMjVjMjU5NTc1YzE1OWVkOWExYjY2NmEzOTFhYmEzZTc3MThlMWE1NjZkMmU2ZTA0OTljNmVlMGM4ZGYwOWYyMWM1MWFjMjFlNGVlNDRkOCIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTAzODM3MDYyMjQ4NTI5OTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUwMzgzNzA2MjI0ODUyOTkzIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY1NzI0OTAyIiwibmJmIjoxNjY1NzI0OTAyLCJ0IjoiSmtXR25nbFdwVzYiLCJlYXMiOjE2NzM1MDA5MDIzMTcsImV4cCI6MTY3MzUwMDkwMiwiaWF0IjoxNjY1NzI0OTAyLCJqdGkiOiJDT0lZTldtcHZ5RGRWTENHbTZUN3hCdmVRN25FU0pkbiJ9.Ld_XEmj9VeCj72TOgKV2npw1eYQG0AU1zOz208iXHM6vBMZXztP5e9LGVAfjaRy8QFj5YsaiblcZLMVOwBv3oA",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"nameLike\":null,\r\n        \"descriptionLike\":null,\r\n        \"type\":null,\r\n        \"businessType\":null,\r\n        \"language\":null,\r\n        \"titleLike\":null,\r\n        \"contentLike\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"creator\":null,\r\n        \"updater\":null,\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"DESC\"\r\n    }\r\n}"
+						},
+						"url": {
+							"raw": "localhost:15000/blue-verify/manager/verifyTemplates",
+							"host": [
+								"localhost"
+							],
+							"port": "15000",
+							"path": [
+								"blue-verify",
+								"manager",
+								"verifyTemplates"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台添加验证码模板配置",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiIwNmE3YWNkODI2NzUzY2U5MzA2ODhjMzM2NTJjOGY0M2M3NzA1NTRiZDgyNTZjYWQ5ODAyZWY3Y2VmZGRiODlkZDYzOWNiMThlM2QwNDAwYTk1MjkzMzViNTQwMjhiMzU3YjNkYWFjZjcwZTI0YWJlZDE5YjNkOTJiMDA3MDZiOSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDU2Nzk0MjQyNTA1NzY4OTdfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ1Njc5NDI0MjUwNTc2ODk3IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYxMzQxODExIiwibmJmIjoxNjYxMzQxODExLCJ0IjoiNVpxOFVESTM1WmoiLCJlYXMiOjE2NjkxMTc4MTE0MDYsImV4cCI6MTY2OTExNzgxMSwiaWF0IjoxNjYxMzQxODExLCJqdGkiOiJORkl0UEQ3ZjEyaTBGTjZseVZaT2J4a1Z0aHBrZG9lRiJ9.FedMZoJG-WA5WCdTbaSH7WuwgRmkVC8-q880uY1ybJyVoVXE_5oH9j-14Y_4D76jDwAGHtNgktKEQg9uPiRu7A",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"email login verify\",\r\n    \"description\":\"email login verify\",\r\n    \"type\":\"MAIL\",\r\n    \"businessType\":\"EVL_WAR\",\r\n    \"language\":\"en-US\",\r\n    \"priority\":0,\r\n    \"title\":\"email verify\",\r\n    \"content\":\"Your email login verify is %s\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:15000/blue-verify/manager/verifyTemplate",
+							"host": [
+								"localhost"
+							],
+							"port": "15000",
+							"path": [
+								"blue-verify",
+								"manager",
+								"verifyTemplate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台修改验证码模板配置",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiIxMDkxZDY5ZTQxMTFlMDhhMjc2MmI0ZTE4NzJlODViMjUwNzMzOWZhZDY2YjExMDI3ODg5MDA1NDVjMDlmYTM3Njk4Yzc5NzczNjljYjEzMDU1ZDMxZDE2MGE3YWUzZTM4ZDUyNmFmYjkyOTg2YWNmYjFhYTY1NDQ3MTgzZjc3MSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU05fUDo0MTIyMTAwNDQ1NzkzNDg0OV9DTElfTSIsImlzcyI6IkJsdWUiLCJpIjoiNDEyMjEwMDQ0NTc5MzQ4NDkiLCJuIjoiUFZBUiIsImF1ZCI6IkJsdWVyIiwicyI6IjE2NTcxODEyNDIiLCJuYmYiOjE2NTcxODEyNDIsInQiOiJ2R0FKTnNsRFNNRiIsImVhcyI6MTY2NDk1NzI0MjU4NCwiZXhwIjoxNjY0OTU3MjQyLCJpYXQiOjE2NTcxODEyNDIsImp0aSI6IlpxNFYzZ01ialdjdmdOVnJuUXRDRnFDcUx3RVg5c25NIn0.Qpoy6Nex7ALymcBCwomHregAzM_9QtScB3-6xRjBycv2ndZnNDVjcef6ingizxny0Ltw_a0iUbbdtviaN_uhbw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":41232609459571929,\r\n    \"name\":\"member details\",\r\n    \"description\":\"member details\",\r\n    \"type\":2,\r\n    \"genHandlerType\":\"1\",\r\n    \"domain\":\"localhost:11000\",\r\n    \"pathToBeFilled\":\"blue-member/basic/%s\",\r\n    \"placeholderCount\":\"1\",\r\n    \"allowedRoles\":[1,2,3,4,5]\r\n}"
+						},
+						"url": {
+							"raw": "localhost:13000/blue-media/manager/qrCodeConfig",
+							"host": [
+								"localhost"
+							],
+							"port": "13000",
+							"path": [
+								"blue-media",
+								"manager",
+								"qrCodeConfig"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台删除验证码模板配置",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiIxMDkxZDY5ZTQxMTFlMDhhMjc2MmI0ZTE4NzJlODViMjUwNzMzOWZhZDY2YjExMDI3ODg5MDA1NDVjMDlmYTM3Njk4Yzc5NzczNjljYjEzMDU1ZDMxZDE2MGE3YWUzZTM4ZDUyNmFmYjkyOTg2YWNmYjFhYTY1NDQ3MTgzZjc3MSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU05fUDo0MTIyMTAwNDQ1NzkzNDg0OV9DTElfTSIsImlzcyI6IkJsdWUiLCJpIjoiNDEyMjEwMDQ0NTc5MzQ4NDkiLCJuIjoiUFZBUiIsImF1ZCI6IkJsdWVyIiwicyI6IjE2NTcxODEyNDIiLCJuYmYiOjE2NTcxODEyNDIsInQiOiJ2R0FKTnNsRFNNRiIsImVhcyI6MTY2NDk1NzI0MjU4NCwiZXhwIjoxNjY0OTU3MjQyLCJpYXQiOjE2NTcxODEyNDIsImp0aSI6IlpxNFYzZ01ialdjdmdOVnJuUXRDRnFDcUx3RVg5c25NIn0.Qpoy6Nex7ALymcBCwomHregAzM_9QtScB3-6xRjBycv2ndZnNDVjcef6ingizxny0Ltw_a0iUbbdtviaN_uhbw",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:13000/blue-media/manager/qrCodeConfig/41232609459571929",
+							"host": [
+								"localhost"
+							],
+							"port": "13000",
+							"path": [
+								"blue-media",
+								"manager",
+								"qrCodeConfig",
+								"41232609459571929"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -2363,7 +2500,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiIxZDAwNjhjZGZkYTBmOTg3NjMxY2I4MzMyOTU2OGYyYTg2ZmQ0MWIyNGM4OTZhYTY5YzBhNWMwOTQ3MDc1MDIwZGQ1Mjc4NmU3ZmM0NGQ2OGJlZTM1YTMxMzM4MTIzMWNlNmJiOWMzY2NkOTI4OWJlY2Y2N2U1NWFiOWE4ZjhjMyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDg5MTQ3MzgyODkwNDk2MDFfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ4OTE0NzM4Mjg5MDQ5NjAxIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY0MzYxMjYyIiwibmJmIjoxNjY0MzYxMjYzLCJ0IjoiaElaUUZmRFdSRXciLCJlYXMiOjE2NzIxMzcyNjMwMDMsImV4cCI6MTY3MjEzNzI2MywiaWF0IjoxNjY0MzYxMjYzLCJqdGkiOiJiNUJON2hkaEVTNENTQ1cxandqWFhRTEtFTjZlVE5zWSJ9.3yXY3DKXEGmD8uJNlgKiS-K6VaHuXZ8_T_szXdQKzOLyOIuWJbEO3ubtHDHCw95QoLL18D4_bDXq7-wD3odlSw",
+								"value": "eyJraWQiOiIwMzU1MzliNmY4N2I3NDA2NTBiNGYwYWUyNWExM2QwODQxOThmODNiYTQ0ZWYzOGJhNDMxMWZiODc2ZTY0OWU2M2U1MzJmMTQ0MDNmMmJkNTg4MDg0OGEzNWY4NjljN2EwZjkzM2YyZDI2MTY5YmZjYTVjZmQ5MzRiNTJlMWRhOCIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDkwMzAwNzY0MTQ1NTgyMDlfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ5MDMwMDc2NDE0NTU4MjA5IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY0NDUzNTM0IiwibmJmIjoxNjY0NDUzNTM0LCJ0IjoiNEt3alM3N1kzSGYiLCJlYXMiOjE2NzIyMjk1MzQyNjcsImV4cCI6MTY3MjIyOTUzNCwiaWF0IjoxNjY0NDUzNTM0LCJqdGkiOiJQQWc1OGdDbDNrTVptUHJidUpRYTVHTTZqNThvcndXaCJ9.4tGWYYmB87GeimWebhkO_s8CctJ_9VMff72Zf98oV3mLgPo9fMHnCypFk9lmUAfh7LJymTPCeSOAYZWkaokrYQ",
 								"type": "text"
 							}
 						],
@@ -4757,6 +4894,143 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "后台信息模板配置",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiIwNmE3YWNkODI2NzUzY2U5MzA2ODhjMzM2NTJjOGY0M2M3NzA1NTRiZDgyNTZjYWQ5ODAyZWY3Y2VmZGRiODlkZDYzOWNiMThlM2QwNDAwYTk1MjkzMzViNTQwMjhiMzU3YjNkYWFjZjcwZTI0YWJlZDE5YjNkOTJiMDA3MDZiOSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDU2Nzk0MjQyNTA1NzY4OTdfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ1Njc5NDI0MjUwNTc2ODk3IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYxMzQxODExIiwibmJmIjoxNjYxMzQxODExLCJ0IjoiNVpxOFVESTM1WmoiLCJlYXMiOjE2NjkxMTc4MTE0MDYsImV4cCI6MTY2OTExNzgxMSwiaWF0IjoxNjYxMzQxODExLCJqdGkiOiJORkl0UEQ3ZjEyaTBGTjZseVZaT2J4a1Z0aHBrZG9lRiJ9.FedMZoJG-WA5WCdTbaSH7WuwgRmkVC8-q880uY1ybJyVoVXE_5oH9j-14Y_4D76jDwAGHtNgktKEQg9uPiRu7A",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"nameLike\":null,\r\n        \"descriptionLike\":null,\r\n        \"type\":null,\r\n        \"genHandlerType\":null,\r\n        \"domainLike\":null,\r\n        \"pathToBeFilledLike\":null,\r\n        \"placeholderCount\":null,\r\n        \"status\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"creator\":null,\r\n        \"updater\":null,\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"DESC\"\r\n    }\r\n}"
+						},
+						"url": {
+							"raw": "localhost:13000/blue-media/manager/qrCodeConfigs",
+							"host": [
+								"localhost"
+							],
+							"port": "13000",
+							"path": [
+								"blue-media",
+								"manager",
+								"qrCodeConfigs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台添加信息模板",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiIwNmE3YWNkODI2NzUzY2U5MzA2ODhjMzM2NTJjOGY0M2M3NzA1NTRiZDgyNTZjYWQ5ODAyZWY3Y2VmZGRiODlkZDYzOWNiMThlM2QwNDAwYTk1MjkzMzViNTQwMjhiMzU3YjNkYWFjZjcwZTI0YWJlZDE5YjNkOTJiMDA3MDZiOSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDU2Nzk0MjQyNTA1NzY4OTdfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ1Njc5NDI0MjUwNTc2ODk3IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYxMzQxODExIiwibmJmIjoxNjYxMzQxODExLCJ0IjoiNVpxOFVESTM1WmoiLCJlYXMiOjE2NjkxMTc4MTE0MDYsImV4cCI6MTY2OTExNzgxMSwiaWF0IjoxNjYxMzQxODExLCJqdGkiOiJORkl0UEQ3ZjEyaTBGTjZseVZaT2J4a1Z0aHBrZG9lRiJ9.FedMZoJG-WA5WCdTbaSH7WuwgRmkVC8-q880uY1ybJyVoVXE_5oH9j-14Y_4D76jDwAGHtNgktKEQg9uPiRu7A",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"sms login\",\r\n    \"description\":\"sms login\",\r\n    \"type\":\"1\",\r\n    \"businessType\":\"1\",\r\n    \"title\":\"hello, %s\",\r\n    \"content\":\"login verify is %s\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:13000/blue-media/manager/qrCodeConfig",
+							"host": [
+								"localhost"
+							],
+							"port": "13000",
+							"path": [
+								"blue-media",
+								"manager",
+								"qrCodeConfig"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台修改信息模板",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiIxMDkxZDY5ZTQxMTFlMDhhMjc2MmI0ZTE4NzJlODViMjUwNzMzOWZhZDY2YjExMDI3ODg5MDA1NDVjMDlmYTM3Njk4Yzc5NzczNjljYjEzMDU1ZDMxZDE2MGE3YWUzZTM4ZDUyNmFmYjkyOTg2YWNmYjFhYTY1NDQ3MTgzZjc3MSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU05fUDo0MTIyMTAwNDQ1NzkzNDg0OV9DTElfTSIsImlzcyI6IkJsdWUiLCJpIjoiNDEyMjEwMDQ0NTc5MzQ4NDkiLCJuIjoiUFZBUiIsImF1ZCI6IkJsdWVyIiwicyI6IjE2NTcxODEyNDIiLCJuYmYiOjE2NTcxODEyNDIsInQiOiJ2R0FKTnNsRFNNRiIsImVhcyI6MTY2NDk1NzI0MjU4NCwiZXhwIjoxNjY0OTU3MjQyLCJpYXQiOjE2NTcxODEyNDIsImp0aSI6IlpxNFYzZ01ialdjdmdOVnJuUXRDRnFDcUx3RVg5c25NIn0.Qpoy6Nex7ALymcBCwomHregAzM_9QtScB3-6xRjBycv2ndZnNDVjcef6ingizxny0Ltw_a0iUbbdtviaN_uhbw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":41232609459571929,\r\n    \"name\":\"member details\",\r\n    \"description\":\"member details\",\r\n    \"type\":2,\r\n    \"genHandlerType\":\"1\",\r\n    \"domain\":\"localhost:11000\",\r\n    \"pathToBeFilled\":\"blue-member/basic/%s\",\r\n    \"placeholderCount\":\"1\",\r\n    \"allowedRoles\":[1,2,3,4,5]\r\n}"
+						},
+						"url": {
+							"raw": "localhost:13000/blue-media/manager/qrCodeConfig",
+							"host": [
+								"localhost"
+							],
+							"port": "13000",
+							"path": [
+								"blue-media",
+								"manager",
+								"qrCodeConfig"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台删除信息模板",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiIxMDkxZDY5ZTQxMTFlMDhhMjc2MmI0ZTE4NzJlODViMjUwNzMzOWZhZDY2YjExMDI3ODg5MDA1NDVjMDlmYTM3Njk4Yzc5NzczNjljYjEzMDU1ZDMxZDE2MGE3YWUzZTM4ZDUyNmFmYjkyOTg2YWNmYjFhYTY1NDQ3MTgzZjc3MSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU05fUDo0MTIyMTAwNDQ1NzkzNDg0OV9DTElfTSIsImlzcyI6IkJsdWUiLCJpIjoiNDEyMjEwMDQ0NTc5MzQ4NDkiLCJuIjoiUFZBUiIsImF1ZCI6IkJsdWVyIiwicyI6IjE2NTcxODEyNDIiLCJuYmYiOjE2NTcxODEyNDIsInQiOiJ2R0FKTnNsRFNNRiIsImVhcyI6MTY2NDk1NzI0MjU4NCwiZXhwIjoxNjY0OTU3MjQyLCJpYXQiOjE2NTcxODEyNDIsImp0aSI6IlpxNFYzZ01ialdjdmdOVnJuUXRDRnFDcUx3RVg5c25NIn0.Qpoy6Nex7ALymcBCwomHregAzM_9QtScB3-6xRjBycv2ndZnNDVjcef6ingizxny0Ltw_a0iUbbdtviaN_uhbw",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:13000/blue-media/manager/qrCodeConfig/41232609459571929",
+							"host": [
+								"localhost"
+							],
+							"port": "13000",
+							"path": [
+								"blue-media",
+								"manager",
+								"qrCodeConfig",
+								"41232609459571929"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -5110,13 +5384,13 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiJjMDMyYTVjOGQ4NDQyZWJmN2IxZmRjMGVhMDUwNmI2YWNlYjkxYjFjNzk2ZDNjZGQxY2Y3Y2M3MWEyZDhmOWYwOGUyYmUzZTc1M2MzMWFkZTE5N2Y3ZTVhZGUyMzdmYzA4NTA5Mjg3OTZjZDg2MmJkNWM3NDQ3ZTM5ZjRiYWM2ZCIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDg4MzYyMjczNjA2MjA1NDVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ4ODM2MjI3MzYwNjIwNTQ1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY0Mjc5ODMzIiwibmJmIjoxNjY0Mjc5ODMzLCJ0IjoidVlHc09UaTVUTWoiLCJlYXMiOjE2NzIwNTU4MzMzODksImV4cCI6MTY3MjA1NTgzMywiaWF0IjoxNjY0Mjc5ODMzLCJqdGkiOiI3YWs4VmFSR3hWeXlINzJoemhtZ1lLTElMbTNJcGNMYyJ9.zfM-zNRwCJzvSXEoqjnSTWQmQzaP0KQMvO3cv2bYLCITIb4ZDfJOFDXa_wYET18p-tQWMBPd3AffUHLzUg0uqg",
+								"value": "eyJraWQiOiI2NmEwZDcxNDZhZmNhZjkwM2ZmNDMzYWE4NTMyOWFhOTk5NWYwMzdhM2E1NWE5Nzk3Y2E1MjZjNjU2NmNlNTVjMWU2Mjk3ZTcyOGFlZGMyOGIxNzhmYjYxMDU0MzkzNTY5YWQ1ZDIwYzk1ODI1YzRhZmM2ZjY5ZTJkYmFmYjhkZiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTAxMjgxNzgyMTkzMTkyOTdfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUwMTI4MTc4MjE5MzE5Mjk3IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY1NDc2NDYwIiwibmJmIjoxNjY1NDc2NDYwLCJ0IjoiWGtic2hGQk1wYUwiLCJlYXMiOjE2NzMyNTI0NjA0ODQsImV4cCI6MTY3MzI1MjQ2MCwiaWF0IjoxNjY1NDc2NDYwLCJqdGkiOiJIeTdFZXptTFY5dVhObE1TYmR5SFB3QTI0SEhRTlY4OCJ9.UC9GERng_hAaGp_V_gARRIRu3FoOOQb-yxYF7uh7WaXyYEIxvXu5oRQTaIe34h24acUAtU-LIlTuNaefXaMmKg",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"rows\":100\r\n}"
+							"raw": "{\r\n    \"rows\":30\r\n}"
 						},
 						"url": {
 							"raw": "localhost:11000/blue-lake/events",
@@ -5184,6 +5458,11 @@
 							{
 								"key": "Accept-Language",
 								"value": "en-US",
+								"type": "text"
+							},
+							{
+								"key": "Turing-Data",
+								"value": "{\"key\":\"On6AIpXmNK5YQ5eB\",\"verify\":\"bumNHkG\"}",
 								"type": "text"
 							}
 						],

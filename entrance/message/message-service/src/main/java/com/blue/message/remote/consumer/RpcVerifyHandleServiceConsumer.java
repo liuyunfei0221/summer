@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
 
+import java.util.List;
+
 import static reactor.core.publisher.Mono.fromFuture;
 
 /**
@@ -39,10 +41,11 @@ public class RpcVerifyHandleServiceConsumer {
      * @param verifyType
      * @param verifyBusinessType
      * @param destination
+     * @param languages
      * @return
      */
-    public Mono<String> generate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination) {
-        return fromFuture(rpcVerifyHandleService.generate(verifyType, verifyBusinessType, destination)).publishOn(scheduler);
+    public Mono<String> generate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination, List<String> languages) {
+        return fromFuture(rpcVerifyHandleService.generate(verifyType, verifyBusinessType, destination, languages)).publishOn(scheduler);
     }
 
     /**
