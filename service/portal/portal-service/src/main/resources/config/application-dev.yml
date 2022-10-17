@@ -37,7 +37,7 @@ eureka:
     hostname: ${server.address}
   client:
     service-url:
-      defaultZone: http://blue:LiuZhiyi20200805@172.16.204.244:3000/eureka/
+      defaultZone: http://blue:LiuZhiyi20200805@172.16.207.11:3000/eureka/
     registry-fetch-interval-seconds: 60
 
 
@@ -49,19 +49,19 @@ data:
   workerToTableMappings:
   broadcastTables: [ ]
   singleDatabasesWithTables:
-    - url: jdbc:mysql://172.16.204.244:3306/portal
+    - url: jdbc:mysql://172.16.207.11:3306/portal
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
       driverClassName: com.mysql.cj.jdbc.Driver
       connectionTimeout: 120000
       maxLifetime: 1800000
-      maximumPoolSize: 4
-      minimumIdle: 2
+      maxPoolSize: 4
+      minIdle: 2
       idleTimeout: 5
-      testQuery: SELECT 1 FROM DUAL
-      readOnly: false
-      autoCommit: false
+      connectionTestQuery: SELECT 1 FROM DUAL
+      isReadOnly: false
+      isAutoCommit: false
       singleTables: [ bulletin,undo_log ]
   safeRowBoundsEnabled: false
   safeResultHandlerEnabled: false
@@ -117,7 +117,7 @@ identity:
 cache:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  host: 172.16.204.244
+  host: 172.16.207.11
   port: 6379
   password:
   maxRedirects: 4
@@ -180,7 +180,7 @@ scheduler:
 redisson:
   serverMode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  address: 172.16.204.244:6379
+  address: 172.16.207.11:6379
   password:
   scanInterval: 8000
   checkSlotsCoverage: false
@@ -226,7 +226,7 @@ dubbo:
     id: summer-registry
     client: curator
     protocol: zookeeper
-    address: zookeeper://172.16.204.244
+    address: zookeeper://172.16.207.11
     port: 2181
     username:
     password:
@@ -235,7 +235,7 @@ dubbo:
     timeout: 60000
     simplified: false
 #  metadata-report:
-#    address: zookeeper://172.16.204.244
+#    address: zookeeper://172.16.207.11
 #    port: 2181
 #    username:
 #    password:

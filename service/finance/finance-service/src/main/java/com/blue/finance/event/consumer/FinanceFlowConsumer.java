@@ -54,7 +54,7 @@ public final class FinanceFlowConsumer implements BlueLifecycle {
     private void init() {
         Consumer<FinanceFlow> dataConsumer = financeFlow ->
                 ofNullable(financeFlow)
-                        .ifPresent(ff -> just(ff).publishOn(scheduler).map(financeFlowService::insertFinanceFlow)
+                        .ifPresent(ff -> just(ff).publishOn(scheduler).flatMap(financeFlowService::insertFinanceFlow)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
                                 .doOnError(throwable -> LOGGER.info("financeFlowService.insertFinanceFlow(ff) failed, ff = {}, throwable = {}", ff, throwable))
                                 .subscribe(b -> LOGGER.info("financeFlowService.insertFinanceFlow(ff), b = {}, ff = {}", b, ff)));

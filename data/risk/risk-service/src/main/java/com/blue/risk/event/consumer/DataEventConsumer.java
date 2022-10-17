@@ -53,7 +53,7 @@ public final class DataEventConsumer implements BlueLifecycle {
     private void init() {
         Consumer<DataEvent> dataConsumer = dataEvent ->
                 ofNullable(dataEvent)
-                        .ifPresent(de -> just(de).publishOn(scheduler).map(riskService::analyzeEvent)
+                        .ifPresent(de -> just(de).publishOn(scheduler).flatMap(riskService::analyzeEvent)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
                                 .doOnError(throwable -> LOGGER.info("riskService.analyzeEvent(de) failed, de = {}, throwable = {}", de, throwable))
                                 .subscribe(b -> LOGGER.info("riskService.analyzeEvent(de), b = {}, de = {}", b, de)));

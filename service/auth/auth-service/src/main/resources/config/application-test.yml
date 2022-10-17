@@ -50,12 +50,12 @@ data:
       driverClassName: com.mysql.cj.jdbc.Driver
       connectionTimeout: 120000
       maxLifetime: 1800000
-      maximumPoolSize: 4
-      minimumIdle: 2
+      maxPoolSize: 4
+      minIdle: 2
       idleTimeout: 5
-      testQuery: SELECT 1 FROM DUAL
-      readOnly: false
-      autoCommit: false
+      connectionTestQuery: SELECT 1 FROM DUAL
+      isReadOnly: false
+      isAutoCommit: false
 
     - url: jdbc:mysql://43.138.44.171:3306/auth_1
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
@@ -64,12 +64,12 @@ data:
       driverClassName: com.mysql.cj.jdbc.Driver
       connectionTimeout: 120000
       maxLifetime: 1800000
-      maximumPoolSize: 4
-      minimumIdle: 2
+      maxPoolSize: 4
+      minIdle: 2
       idleTimeout: 5
-      testQuery: SELECT 1 FROM DUAL
-      readOnly: false
-      autoCommit: false
+      connectionTestQuery: SELECT 1 FROM DUAL
+      isReadOnly: false
+      isAutoCommit: false
   shardingTables:
     - tableName: member_role_relation
       shardingColumn: id
@@ -103,12 +103,12 @@ data:
       driverClassName: com.mysql.cj.jdbc.Driver
       connectionTimeout: 120000
       maxLifetime: 1800000
-      maximumPoolSize: 4
-      minimumIdle: 2
+      maxPoolSize: 4
+      minIdle: 2
       idleTimeout: 5
-      testQuery: SELECT 1 FROM DUAL
-      readOnly: false
-      autoCommit: false
+      connectionTestQuery: SELECT 1 FROM DUAL
+      isReadOnly: false
+      isAutoCommit: false
       singleTables: [ resource,role,role_res_relation ]
   safeRowBoundsEnabled: false
   safeResultHandlerEnabled: false

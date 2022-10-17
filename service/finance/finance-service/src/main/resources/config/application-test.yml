@@ -50,12 +50,12 @@ data:
       driverClassName: com.mysql.cj.jdbc.Driver
       connectionTimeout: 120000
       maxLifetime: 1800000
-      maximumPoolSize: 4
-      minimumIdle: 2
+      maxPoolSize: 4
+      minIdle: 2
       idleTimeout: 5
-      testQuery: SELECT 1 FROM DUAL
-      readOnly: false
-      autoCommit: false
+      connectionTestQuery: SELECT 1 FROM DUAL
+      isReadOnly: false
+      isAutoCommit: false
 
     - url: jdbc:mysql://43.138.44.171:3306/finance_1
       dataBaseConf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
@@ -64,12 +64,12 @@ data:
       driverClassName: com.mysql.cj.jdbc.Driver
       connectionTimeout: 120000
       maxLifetime: 1800000
-      maximumPoolSize: 4
-      minimumIdle: 2
+      maxPoolSize: 4
+      minIdle: 2
       idleTimeout: 5
-      testQuery: SELECT 1 FROM DUAL
-      readOnly: false
-      autoCommit: false
+      connectionTestQuery: SELECT 1 FROM DUAL
+      isReadOnly: false
+      isAutoCommit: false
   shardingTables:
     - tableName: finance_account
       shardingColumn: id
@@ -464,7 +464,7 @@ dubbo:
 producers:
   configs:
     financeFlow:
-      services: [ 172.16.204.244:6650 ]
+      services: [ 172.16.207.11:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -516,7 +516,7 @@ producers:
       encryptionKey:
       producerCryptoFailureAction: FAIL
     orderSummaryInsert:
-      services: [ 172.16.204.244:6650 ]
+      services: [ 172.16.207.11:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -568,7 +568,7 @@ producers:
       encryptionKey:
       producerCryptoFailureAction: FAIL
     orderSummaryUpdate:
-      services: [ 172.16.204.244:6650 ]
+      services: [ 172.16.207.11:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -624,7 +624,7 @@ producers:
 consumers:
   configs:
     financeFlow:
-      services: [ 172.16.204.244:6650 ]
+      services: [ 172.16.207.11:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -697,7 +697,7 @@ consumers:
       workingThreads: 2
       enableNegativeAcknowledge: true
     orderSummaryInsert:
-      services: [ 172.16.204.244:6650 ]
+      services: [ 172.16.207.11:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -770,7 +770,7 @@ consumers:
       workingThreads: 2
       enableNegativeAcknowledge: true
     orderSummaryUpdate:
-      services: [ 172.16.204.244:6650 ]
+      services: [ 172.16.207.11:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:

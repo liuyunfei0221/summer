@@ -119,7 +119,7 @@ cache:
 es:
   esNodes:
     - server:
-        host: 172.16.204.244
+        host: 172.16.207.11
         port: 9200
         schema: http
       boundServers: [ ]
@@ -268,7 +268,7 @@ rest:
 producers:
   configs:
     shineInsert:
-      services: [ 172.16.204.244:6650 ]
+      services: [ 172.16.207.11:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -320,7 +320,7 @@ producers:
       encryptionKey:
       producerCryptoFailureAction: FAIL
     shineUpdate:
-      services: [ 172.16.204.244:6650 ]
+      services: [ 172.16.207.11:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -372,7 +372,7 @@ producers:
       encryptionKey:
       producerCryptoFailureAction: FAIL
     shineDelete:
-      services: [ 172.16.204.244:6650 ]
+      services: [ 172.16.207.11:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -428,7 +428,7 @@ producers:
 consumers:
   configs:
     shineInsert:
-      services: [ 172.16.204.244:6650 ]
+      services: [ 172.16.207.11:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -501,7 +501,7 @@ consumers:
       workingThreads: 2
       enableNegativeAcknowledge: true
     shineUpdate:
-      services: [ 172.16.204.244:6650 ]
+      services: [ 172.16.207.11:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:
@@ -574,7 +574,7 @@ consumers:
       workingThreads: 2
       enableNegativeAcknowledge: true
     shineDelete:
-      services: [ 172.16.204.244:6650 ]
+      services: [ 172.16.207.11:6650 ]
       enableTls: false
       tlsTrustCertsFilePath:
       tlsCertFilePath:

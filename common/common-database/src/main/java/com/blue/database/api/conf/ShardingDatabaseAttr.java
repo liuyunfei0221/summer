@@ -1,10 +1,17 @@
 package com.blue.database.api.conf;
 
+import com.zaxxer.hikari.metrics.MetricsTrackerFactory;
+
+import javax.sql.DataSource;
+import java.util.Properties;
+import java.util.concurrent.ScheduledExecutorService;
+
 /**
  * sharding database attributes
  *
  * @author liuyunfei
  */
+@SuppressWarnings({"unused", "DuplicatedCode"})
 public class ShardingDatabaseAttr {
 
     /**
@@ -32,45 +39,63 @@ public class ShardingDatabaseAttr {
      */
     protected transient String driverClassName;
 
-    /**
-     * connection timeout
-     */
+    protected String catalog;
+
     protected Integer connectionTimeout;
 
-    /**
-     * max lifetime
-     */
-    protected Integer maxLifetime;
+    protected Integer validationTimeout;
 
-    /**
-     * max connection pool size
-     */
-    protected Integer maximumPoolSize;
-
-    /**
-     * min idle
-     */
-    protected Integer minimumIdle;
-
-    /**
-     * idle timeout
-     */
     protected Integer idleTimeout;
 
-    /**
-     * sql for test
-     */
-    protected String testQuery;
+    protected Long leakDetectionThreshold;
 
-    /**
-     * read only, true means that db is a slave node
-     */
-    protected Boolean readOnly;
+    protected Integer maxLifetime;
 
-    /**
-     * auto commit
-     */
-    protected Boolean autoCommit;
+    protected Integer maxPoolSize;
+
+    protected Integer minIdle;
+
+    protected Long initializationFailTimeout;
+
+    protected String connectionInitSql;
+
+    protected String connectionTestQuery;
+
+    protected String dataSourceClassName;
+
+    protected String dataSourceJndiName;
+
+    protected String exceptionOverrideClassName;
+
+    protected String poolName;
+
+    protected String schema;
+
+    protected String transactionIsolationName;
+
+    protected Boolean isAutoCommit;
+
+    protected Boolean isReadOnly;
+
+    protected Boolean isIsolateInternalQueries;
+
+    protected Boolean isRegisterMbeans;
+
+    protected Boolean isAllowPoolSuspension;
+
+    protected DataSource dataSource;
+
+    protected Properties dataSourceProperties;
+
+    protected ScheduledExecutorService scheduledExecutor;
+
+    protected MetricsTrackerFactory metricsTrackerFactory;
+
+    protected Object metricRegistry;
+
+    protected Object healthCheckRegistry;
+
+    protected Properties healthCheckProperties;
 
     public ShardingDatabaseAttr() {
     }
@@ -115,6 +140,14 @@ public class ShardingDatabaseAttr {
         this.driverClassName = driverClassName;
     }
 
+    public String getCatalog() {
+        return catalog;
+    }
+
+    public void setCatalog(String catalog) {
+        this.catalog = catalog;
+    }
+
     public Integer getConnectionTimeout() {
         return connectionTimeout;
     }
@@ -123,28 +156,12 @@ public class ShardingDatabaseAttr {
         this.connectionTimeout = connectionTimeout;
     }
 
-    public Integer getMaxLifetime() {
-        return maxLifetime;
+    public Integer getValidationTimeout() {
+        return validationTimeout;
     }
 
-    public void setMaxLifetime(Integer maxLifetime) {
-        this.maxLifetime = maxLifetime;
-    }
-
-    public Integer getMaximumPoolSize() {
-        return maximumPoolSize;
-    }
-
-    public void setMaximumPoolSize(Integer maximumPoolSize) {
-        this.maximumPoolSize = maximumPoolSize;
-    }
-
-    public Integer getMinimumIdle() {
-        return minimumIdle;
-    }
-
-    public void setMinimumIdle(Integer minimumIdle) {
-        this.minimumIdle = minimumIdle;
+    public void setValidationTimeout(Integer validationTimeout) {
+        this.validationTimeout = validationTimeout;
     }
 
     public Integer getIdleTimeout() {
@@ -155,28 +172,204 @@ public class ShardingDatabaseAttr {
         this.idleTimeout = idleTimeout;
     }
 
-    public String getTestQuery() {
-        return testQuery;
+    public Long getLeakDetectionThreshold() {
+        return leakDetectionThreshold;
     }
 
-    public void setTestQuery(String testQuery) {
-        this.testQuery = testQuery;
+    public void setLeakDetectionThreshold(Long leakDetectionThreshold) {
+        this.leakDetectionThreshold = leakDetectionThreshold;
     }
 
-    public Boolean getReadOnly() {
-        return readOnly;
+    public Integer getMaxLifetime() {
+        return maxLifetime;
     }
 
-    public void setReadOnly(Boolean readOnly) {
-        this.readOnly = readOnly;
+    public void setMaxLifetime(Integer maxLifetime) {
+        this.maxLifetime = maxLifetime;
     }
 
-    public Boolean getAutoCommit() {
-        return autoCommit;
+    public Integer getMaxPoolSize() {
+        return maxPoolSize;
     }
 
-    public void setAutoCommit(Boolean autoCommit) {
-        this.autoCommit = autoCommit;
+    public void setMaxPoolSize(Integer maxPoolSize) {
+        this.maxPoolSize = maxPoolSize;
+    }
+
+    public Integer getMinIdle() {
+        return minIdle;
+    }
+
+    public void setMinIdle(Integer minIdle) {
+        this.minIdle = minIdle;
+    }
+
+    public Long getInitializationFailTimeout() {
+        return initializationFailTimeout;
+    }
+
+    public void setInitializationFailTimeout(Long initializationFailTimeout) {
+        this.initializationFailTimeout = initializationFailTimeout;
+    }
+
+    public String getConnectionInitSql() {
+        return connectionInitSql;
+    }
+
+    public void setConnectionInitSql(String connectionInitSql) {
+        this.connectionInitSql = connectionInitSql;
+    }
+
+    public String getConnectionTestQuery() {
+        return connectionTestQuery;
+    }
+
+    public void setConnectionTestQuery(String connectionTestQuery) {
+        this.connectionTestQuery = connectionTestQuery;
+    }
+
+    public String getDataSourceClassName() {
+        return dataSourceClassName;
+    }
+
+    public void setDataSourceClassName(String dataSourceClassName) {
+        this.dataSourceClassName = dataSourceClassName;
+    }
+
+    public String getDataSourceJndiName() {
+        return dataSourceJndiName;
+    }
+
+    public void setDataSourceJndiName(String dataSourceJndiName) {
+        this.dataSourceJndiName = dataSourceJndiName;
+    }
+
+    public String getExceptionOverrideClassName() {
+        return exceptionOverrideClassName;
+    }
+
+    public void setExceptionOverrideClassName(String exceptionOverrideClassName) {
+        this.exceptionOverrideClassName = exceptionOverrideClassName;
+    }
+
+    public String getPoolName() {
+        return poolName;
+    }
+
+    public void setPoolName(String poolName) {
+        this.poolName = poolName;
+    }
+
+    public String getSchema() {
+        return schema;
+    }
+
+    public void setSchema(String schema) {
+        this.schema = schema;
+    }
+
+    public String getTransactionIsolationName() {
+        return transactionIsolationName;
+    }
+
+    public void setTransactionIsolationName(String transactionIsolationName) {
+        this.transactionIsolationName = transactionIsolationName;
+    }
+
+    public Boolean getIsAutoCommit() {
+        return isAutoCommit;
+    }
+
+    public void setIsAutoCommit(Boolean autoCommit) {
+        isAutoCommit = autoCommit;
+    }
+
+    public Boolean getIsReadOnly() {
+        return isReadOnly;
+    }
+
+    public void setIsReadOnly(Boolean readOnly) {
+        isReadOnly = readOnly;
+    }
+
+    public Boolean getIsolateInternalQueries() {
+        return isIsolateInternalQueries;
+    }
+
+    public void setIsolateInternalQueries(Boolean isolateInternalQueries) {
+        isIsolateInternalQueries = isolateInternalQueries;
+    }
+
+    public Boolean getIsRegisterMbeans() {
+        return isRegisterMbeans;
+    }
+
+    public void setIsRegisterMbeans(Boolean registerMbeans) {
+        isRegisterMbeans = registerMbeans;
+    }
+
+    public Boolean getAllowPoolSuspension() {
+        return isAllowPoolSuspension;
+    }
+
+    public void setAllowPoolSuspension(Boolean allowPoolSuspension) {
+        isAllowPoolSuspension = allowPoolSuspension;
+    }
+
+    public DataSource getDataSource() {
+        return dataSource;
+    }
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    public Properties getDataSourceProperties() {
+        return dataSourceProperties;
+    }
+
+    public void setDataSourceProperties(Properties dataSourceProperties) {
+        this.dataSourceProperties = dataSourceProperties;
+    }
+
+    public ScheduledExecutorService getScheduledExecutor() {
+        return scheduledExecutor;
+    }
+
+    public void setScheduledExecutor(ScheduledExecutorService scheduledExecutor) {
+        this.scheduledExecutor = scheduledExecutor;
+    }
+
+    public MetricsTrackerFactory getMetricsTrackerFactory() {
+        return metricsTrackerFactory;
+    }
+
+    public void setMetricsTrackerFactory(MetricsTrackerFactory metricsTrackerFactory) {
+        this.metricsTrackerFactory = metricsTrackerFactory;
+    }
+
+    public Object getMetricRegistry() {
+        return metricRegistry;
+    }
+
+    public void setMetricRegistry(Object metricRegistry) {
+        this.metricRegistry = metricRegistry;
+    }
+
+    public Object getHealthCheckRegistry() {
+        return healthCheckRegistry;
+    }
+
+    public void setHealthCheckRegistry(Object healthCheckRegistry) {
+        this.healthCheckRegistry = healthCheckRegistry;
+    }
+
+    public Properties getHealthCheckProperties() {
+        return healthCheckProperties;
+    }
+
+    public void setHealthCheckProperties(Properties healthCheckProperties) {
+        this.healthCheckProperties = healthCheckProperties;
     }
 
     @Override
@@ -187,14 +380,35 @@ public class ShardingDatabaseAttr {
                 ", username='" + ":)" + '\'' +
                 ", password='" + ":)" + '\'' +
                 ", driverClassName='" + driverClassName + '\'' +
+                ", catalog='" + catalog + '\'' +
                 ", connectionTimeout=" + connectionTimeout +
-                ", maxLifetime=" + maxLifetime +
-                ", maximumPoolSize=" + maximumPoolSize +
-                ", minimumIdle=" + minimumIdle +
+                ", validationTimeout=" + validationTimeout +
                 ", idleTimeout=" + idleTimeout +
-                ", testQuery='" + testQuery + '\'' +
-                ", readOnly=" + readOnly +
-                ", autoCommit=" + autoCommit +
+                ", leakDetectionThreshold=" + leakDetectionThreshold +
+                ", maxLifetime=" + maxLifetime +
+                ", maxPoolSize=" + maxPoolSize +
+                ", minIdle=" + minIdle +
+                ", initializationFailTimeout=" + initializationFailTimeout +
+                ", connectionInitSql='" + connectionInitSql + '\'' +
+                ", connectionTestQuery='" + connectionTestQuery + '\'' +
+                ", dataSourceClassName='" + dataSourceClassName + '\'' +
+                ", dataSourceJndiName='" + dataSourceJndiName + '\'' +
+                ", exceptionOverrideClassName='" + exceptionOverrideClassName + '\'' +
+                ", poolName='" + poolName + '\'' +
+                ", schema='" + schema + '\'' +
+                ", transactionIsolationName='" + transactionIsolationName + '\'' +
+                ", isAutoCommit=" + isAutoCommit +
+                ", isReadOnly=" + isReadOnly +
+                ", isIsolateInternalQueries=" + isIsolateInternalQueries +
+                ", isRegisterMbeans=" + isRegisterMbeans +
+                ", isAllowPoolSuspension=" + isAllowPoolSuspension +
+                ", dataSource=" + dataSource +
+                ", dataSourceProperties=" + dataSourceProperties +
+                ", scheduledExecutor=" + scheduledExecutor +
+                ", metricsTrackerFactory=" + metricsTrackerFactory +
+                ", metricRegistry=" + metricRegistry +
+                ", healthCheckRegistry=" + healthCheckRegistry +
+                ", healthCheckProperties=" + healthCheckProperties +
                 '}';
     }
 

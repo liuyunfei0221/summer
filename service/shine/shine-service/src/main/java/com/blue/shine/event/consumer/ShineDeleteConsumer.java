@@ -54,7 +54,7 @@ public final class ShineDeleteConsumer implements BlueLifecycle {
     private void init() {
         Consumer<IdentityEvent> dataConsumer = ie ->
                 ofNullable(ie)
-                        .ifPresent(id -> just(id).publishOn(scheduler).map(shineService::deleteShineEvent)
+                        .ifPresent(id -> just(id).publishOn(scheduler).flatMap(shineService::deleteShineEvent)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
                                 .doOnError(throwable -> LOGGER.info("shineService.deleteShineEvent(IdentityEvent identityEvent) failed, ie = {}, throwable = {}", ie, throwable))
                                 .subscribe(b -> LOGGER.info("shineService.deleteShineEvent(IdentityEvent identityEvent), b = {}, ie = {}", b, ie)));

@@ -24,6 +24,11 @@ public enum SyncKeyPrefix {
     ACCESS_UPDATE_PRE("ACCESS_UPDATE:"),
 
     /**
+     * verify template sync key prefix
+     */
+    VERIFY_TEMPLATES_UPDATE_SYNC_PRE("VERIFY_TEMPLATES_UPDATE_SYNC_PRE:"),
+
+    /**
      * bulletins cache sync key prefix
      */
     BULLETINS_CACHE_PRE("BULLETINS_CACHE:"),

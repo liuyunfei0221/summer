@@ -8,6 +8,7 @@ import com.blue.identity.api.conf.IdentityConf;
 import com.blue.identity.core.exp.IdentityException;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import net.openhft.affinity.AffinityThreadFactory;
 import org.apache.ibatis.logging.stdout.StdOutImpl;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.shardingsphere.api.config.sharding.ShardingRuleConfiguration;
@@ -38,6 +39,8 @@ import static java.lang.Integer.parseInt;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
+import static net.openhft.affinity.AffinityStrategies.DIFFERENT_CORE;
+import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.lastIndexOf;
 import static org.apache.ibatis.session.ExecutorType.BATCH;
@@ -58,6 +61,9 @@ public final class BlueDataAccessGenerator {
      * valid data element parts num
      */
     private static final int MIN_VALID_DB_URL_PARTS_LEN = 4;
+
+    private static final String THREAD_NAME_PRE = "blue-connect-thread" + HYPHEN.identity;
+    private static final int RANDOM_LEN = 6;
 
     /**
      * datasource generator
@@ -80,14 +86,39 @@ public final class BlueDataAccessGenerator {
         hikariConfig.setDriverClassName(driverClassName);
         hikariConfig.setJdbcUrl(url + ofNullable(shardAttr.getDataBaseConf()).map(c -> QUESTION_MARK.identity + c).orElse(EMPTY_VALUE.value));
         hikariConfig.setUsername(username);
-        ofNullable(shardAttr.getPassword()).ifPresent(hikariConfig::setPassword);
 
-        ofNullable(shardAttr.getReadOnly()).ifPresent(hikariConfig::setReadOnly);
+        ofNullable(shardAttr.getPassword()).filter(BlueChecker::isNotBlank).ifPresent(hikariConfig::setPassword);
+        ofNullable(shardAttr.getCatalog()).filter(BlueChecker::isNotBlank).ifPresent(hikariConfig::setCatalog);
         ofNullable(shardAttr.getConnectionTimeout()).ifPresent(hikariConfig::setConnectionTimeout);
+        ofNullable(shardAttr.getValidationTimeout()).ifPresent(hikariConfig::setValidationTimeout);
+        ofNullable(shardAttr.getIdleTimeout()).ifPresent(hikariConfig::setIdleTimeout);
+        ofNullable(shardAttr.getLeakDetectionThreshold()).ifPresent(hikariConfig::setLeakDetectionThreshold);
         ofNullable(shardAttr.getMaxLifetime()).ifPresent(hikariConfig::setMaxLifetime);
-        ofNullable(shardAttr.getMaximumPoolSize()).ifPresent(hikariConfig::setMaximumPoolSize);
-        ofNullable(shardAttr.getMinimumIdle()).ifPresent(hikariConfig::setMinimumIdle);
-        ofNullable(shardAttr.getTestQuery()).ifPresent(hikariConfig::setConnectionTestQuery);
+        ofNullable(shardAttr.getMaxPoolSize()).ifPresent(hikariConfig::setMaximumPoolSize);
+        ofNullable(shardAttr.getMinIdle()).ifPresent(hikariConfig::setMinimumIdle);
+        ofNullable(shardAttr.getInitializationFailTimeout()).ifPresent(hikariConfig::setInitializationFailTimeout);
+        ofNullable(shardAttr.getConnectionInitSql()).filter(BlueChecker::isNotBlank).ifPresent(hikariConfig::setConnectionInitSql);
+        ofNullable(shardAttr.getConnectionTestQuery()).filter(BlueChecker::isNotBlank).filter(BlueChecker::isNotBlank).ifPresent(hikariConfig::setConnectionTestQuery);
+        ofNullable(shardAttr.getDataSourceClassName()).filter(BlueChecker::isNotBlank).ifPresent(hikariConfig::setDataSourceClassName);
+        ofNullable(shardAttr.getDataSourceJndiName()).filter(BlueChecker::isNotBlank).ifPresent(hikariConfig::setDataSourceJNDI);
+        ofNullable(shardAttr.getExceptionOverrideClassName()).filter(BlueChecker::isNotBlank).ifPresent(hikariConfig::setExceptionOverrideClassName);
+        ofNullable(shardAttr.getPoolName()).filter(BlueChecker::isNotBlank).ifPresent(hikariConfig::setPoolName);
+        ofNullable(shardAttr.getSchema()).filter(BlueChecker::isNotBlank).ifPresent(hikariConfig::setSchema);
+        ofNullable(shardAttr.getTransactionIsolationName()).filter(BlueChecker::isNotBlank).ifPresent(hikariConfig::setTransactionIsolation);
+        ofNullable(shardAttr.getIsAutoCommit()).ifPresent(hikariConfig::setAutoCommit);
+        ofNullable(shardAttr.getIsReadOnly()).ifPresent(hikariConfig::setReadOnly);
+        ofNullable(shardAttr.getIsolateInternalQueries()).ifPresent(hikariConfig::setIsolateInternalQueries);
+        ofNullable(shardAttr.getIsRegisterMbeans()).ifPresent(hikariConfig::setRegisterMbeans);
+        ofNullable(shardAttr.getAllowPoolSuspension()).ifPresent(hikariConfig::setAllowPoolSuspension);
+        ofNullable(shardAttr.getDataSource()).ifPresent(hikariConfig::setDataSource);
+        ofNullable(shardAttr.getDataSourceProperties()).ifPresent(hikariConfig::setDataSourceProperties);
+        ofNullable(shardAttr.getScheduledExecutor()).ifPresent(hikariConfig::setScheduledExecutor);
+        ofNullable(shardAttr.getMetricsTrackerFactory()).ifPresent(hikariConfig::setMetricsTrackerFactory);
+        ofNullable(shardAttr.getMetricRegistry()).ifPresent(hikariConfig::setMetricRegistry);
+        ofNullable(shardAttr.getHealthCheckRegistry()).ifPresent(hikariConfig::setHealthCheckRegistry);
+        ofNullable(shardAttr.getHealthCheckProperties()).ifPresent(hikariConfig::setHealthCheckProperties);
+
+        hikariConfig.setThreadFactory(new AffinityThreadFactory(THREAD_NAME_PRE + randomAlphabetic(RANDOM_LEN), DIFFERENT_CORE));
 
         return new HikariDataSource(hikariConfig);
     };

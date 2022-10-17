@@ -53,7 +53,7 @@ public final class DataEventConsumer implements BlueLifecycle {
     private void init() {
         Consumer<DataEvent> dataConsumer = dataEvent ->
                 ofNullable(dataEvent)
-                        .ifPresent(de -> just(de).publishOn(scheduler).map(statisticsProcessor::process)
+                        .ifPresent(de -> just(de).publishOn(scheduler).flatMap(statisticsProcessor::process)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
                                 .doOnError(throwable -> LOGGER.info("statisticsProcessor.process(de) failed, de = {}, throwable = {}", de, throwable))
                                 .subscribe(b -> LOGGER.info("statisticsProcessor.process(de), b = {}, de = {}", b, de)));

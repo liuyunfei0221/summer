@@ -20,6 +20,7 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
  *
  * @author liuyunfei
  */
+@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @AutoConfiguration
 @Order(HIGHEST_PRECEDENCE)
 public class BlueDataAccessConfiguration {

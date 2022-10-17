@@ -50,12 +50,12 @@ data:
       driverClassName: com.mysql.cj.jdbc.Driver
       connectionTimeout: 120000
       maxLifetime: 1800000
-      maximumPoolSize: 4
-      minimumIdle: 2
+      maxPoolSize: 4
+      minIdle: 2
       idleTimeout: 5
-      testQuery: SELECT 1 FROM DUAL
-      readOnly: false
-      autoCommit: false
+      connectionTestQuery: SELECT 1 FROM DUAL
+      isReadOnly: false
+      isAutoCommit: false
       singleTables: [ style ]
   safeRowBoundsEnabled: false
   safeResultHandlerEnabled: false

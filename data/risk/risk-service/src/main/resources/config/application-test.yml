@@ -50,12 +50,12 @@ data:
       driverClassName: ru.yandex.clickhouse.ClickHouseDriver
       connectionTimeout: 120000
       maxLifetime: 1800000
-      maximumPoolSize: 4
-      minimumIdle: 2
+      maxPoolSize: 4
+      minIdle: 2
       idleTimeout: 5
       testQuery: SELECT 1
-      readOnly: false
-      autoCommit: false
+      isReadOnly: false
+      isAutoCommit: true
 
     - url: jdbc:clickhouse://101.43.192.155:8123/ldap_risk_1
       dataBaseConf:
@@ -64,12 +64,12 @@ data:
       driverClassName: ru.yandex.clickhouse.ClickHouseDriver
       connectionTimeout: 120000
       maxLifetime: 1800000
-      maximumPoolSize: 4
-      minimumIdle: 2
+      maxPoolSize: 4
+      minIdle: 2
       idleTimeout: 5
       testQuery: SELECT 1
-      readOnly: false
-      autoCommit: false
+      isReadOnly: false
+      isAutoCommit: true
   shardingTables:
     - tableName: risk_event
       shardingColumn: id

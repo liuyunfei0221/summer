@@ -2,7 +2,6 @@ package com.blue.verify.event.consumer;
 
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.exps.BlueException;
-import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
 import com.blue.pulsar.component.BluePulsarListener;
 import com.blue.verify.api.model.VerifyMessage;
 import com.blue.verify.component.sender.VerifyMessageSenderProcessor;
@@ -16,6 +15,7 @@ import java.util.function.Consumer;
 
 import static com.blue.basic.constant.common.BlueTopic.VERIFY_MESSAGE;
 import static com.blue.basic.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
+import static com.blue.pulsar.api.generator.BluePulsarListenerGenerator.generateListener;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
 import static java.util.Optional.ofNullable;
@@ -54,12 +54,12 @@ public final class VerifyMessageEventConsumer implements BlueLifecycle {
     private void init() {
         Consumer<VerifyMessage> dataConsumer = verifyMessage ->
                 ofNullable(verifyMessage)
-                        .ifPresent(vm -> just(vm).publishOn(scheduler).map(verifyMessageSenderProcessor::send)
+                        .ifPresent(vm -> just(vm).publishOn(scheduler).flatMap(verifyMessageSenderProcessor::send)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
-                                .doOnError(throwable -> LOGGER.info("verifyMessageSenderProcessor.send(VerifyMessage verifyMessage) failed, vm = {}, throwable = {}", vm, throwable))
+                                .doOnError(throwable -> LOGGER.error("verifyMessageSenderProcessor.send(VerifyMessage verifyMessage) failed, vm = {}, throwable = {}", vm, throwable))
                                 .subscribe(b -> LOGGER.info("verifyMessageSenderProcessor.send(VerifyMessage verifyMessage), b = {}, vm = {}", b, vm)));
 
-        this.pulsarListener = BluePulsarListenerGenerator.generateListener(pulsarClient, blueConsumerConfig.getByKey(VERIFY_MESSAGE.name), dataConsumer);
+        this.pulsarListener = generateListener(pulsarClient, blueConsumerConfig.getByKey(VERIFY_MESSAGE.name), dataConsumer);
     }
 
     @Override

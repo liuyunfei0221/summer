@@ -54,7 +54,7 @@ public final class DataEventConsumer implements BlueLifecycle {
     private void init() {
         Consumer<List<DataEvent>> dataConsumer = dataEvents ->
                 ofNullable(dataEvents)
-                        .ifPresent(des -> just(des).publishOn(scheduler).map(lakeService::insertEvents)
+                        .ifPresent(des -> just(des).publishOn(scheduler).flatMap(lakeService::insertEvents)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
                                 .doOnError(throwable -> LOGGER.info("insertEvents(List<DataEvent> dataEvents) failed, des = {}, throwable = {}", des, throwable))
                                 .subscribe(b -> LOGGER.info("insertEvents(List<DataEvent> dataEvents), b = {}, des = {}", b, des)));

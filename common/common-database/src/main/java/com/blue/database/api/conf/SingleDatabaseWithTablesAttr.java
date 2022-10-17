@@ -7,7 +7,7 @@ import java.util.List;
  *
  * @author liuyunfei
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "DuplicatedCode"})
 public final class SingleDatabaseWithTablesAttr extends ShardingDatabaseAttr {
 
     /**
@@ -29,20 +29,42 @@ public final class SingleDatabaseWithTablesAttr extends ShardingDatabaseAttr {
     @Override
     public String toString() {
         return "SingleDatabaseWithTablesAttr{" +
-                "url='" + url + '\'' +
+                "singleTables=" + singleTables +
+                ", url='" + url + '\'' +
                 ", dataBaseConf='" + dataBaseConf + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
+                ", username='" + ":)" + '\'' +
+                ", password='" + ":)" + '\'' +
                 ", driverClassName='" + driverClassName + '\'' +
+                ", catalog='" + catalog + '\'' +
                 ", connectionTimeout=" + connectionTimeout +
-                ", maxLifetime=" + maxLifetime +
-                ", maximumPoolSize=" + maximumPoolSize +
-                ", minimumIdle=" + minimumIdle +
+                ", validationTimeout=" + validationTimeout +
                 ", idleTimeout=" + idleTimeout +
-                ", testQuery='" + testQuery + '\'' +
-                ", readOnly=" + readOnly +
-                ", autoCommit=" + autoCommit +
-                ", singleTables=" + singleTables +
+                ", leakDetectionThreshold=" + leakDetectionThreshold +
+                ", maxLifetime=" + maxLifetime +
+                ", maxPoolSize=" + maxPoolSize +
+                ", minIdle=" + minIdle +
+                ", initializationFailTimeout=" + initializationFailTimeout +
+                ", connectionInitSql='" + connectionInitSql + '\'' +
+                ", connectionTestQuery='" + connectionTestQuery + '\'' +
+                ", dataSourceClassName='" + dataSourceClassName + '\'' +
+                ", dataSourceJndiName='" + dataSourceJndiName + '\'' +
+                ", exceptionOverrideClassName='" + exceptionOverrideClassName + '\'' +
+                ", poolName='" + poolName + '\'' +
+                ", schema='" + schema + '\'' +
+                ", transactionIsolationName='" + transactionIsolationName + '\'' +
+                ", isAutoCommit=" + isAutoCommit +
+                ", isReadOnly=" + isReadOnly +
+                ", isIsolateInternalQueries=" + isIsolateInternalQueries +
+                ", isRegisterMbeans=" + isRegisterMbeans +
+                ", isAllowPoolSuspension=" + isAllowPoolSuspension +
+                ", dataSource=" + dataSource +
+                ", dataSourceProperties=" + dataSourceProperties +
+                ", scheduledExecutor=" + scheduledExecutor +
+                ", metricsTrackerFactory=" + metricsTrackerFactory +
+                ", metricRegistry=" + metricRegistry +
+                ", healthCheckRegistry=" + healthCheckRegistry +
+                ", healthCheckProperties=" + healthCheckProperties +
                 '}';
     }
+
 }

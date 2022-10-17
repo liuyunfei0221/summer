@@ -54,7 +54,7 @@ public final class ShineInsertConsumer implements BlueLifecycle {
     private void init() {
         Consumer<Shine> dataConsumer = shine ->
                 ofNullable(shine)
-                        .ifPresent(s -> just(s).publishOn(scheduler).map(shineService::insertShineEvent)
+                        .ifPresent(s -> just(s).publishOn(scheduler).flatMap(shineService::insertShineEvent)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
                                 .doOnError(throwable -> LOGGER.info("shineService.insertShineEvent(s) failed, s = {}, throwable = {}", s, throwable))
                                 .subscribe(b -> LOGGER.info("shineService.insertShineEvent(s), b = {}, s = {}", b, s)));

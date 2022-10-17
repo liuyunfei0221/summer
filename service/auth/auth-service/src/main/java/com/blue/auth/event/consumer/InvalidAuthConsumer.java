@@ -55,7 +55,7 @@ public final class InvalidAuthConsumer implements BlueLifecycle {
         Consumer<InvalidAuthEvent> dataConsumer = invalidLocalAuthEvent ->
                 ofNullable(invalidLocalAuthEvent)
                         .map(InvalidAuthEvent::getMemberId)
-                        .ifPresent(mid -> just(mid).publishOn(scheduler).map(authControlService::invalidateAuthByMemberId)
+                        .ifPresent(mid -> just(mid).publishOn(scheduler).flatMap(authControlService::invalidateAuthByMemberId)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
                                 .doOnError(throwable -> LOGGER.info("authControlService.invalidateAuthByMemberId(mid) failed, mid = {}, throwable = {}", mid, throwable))
                                 .subscribe(b -> LOGGER.info("authControlService.invalidateAuthByMemberId(mid), b = {}, mid = {}", b, mid)));

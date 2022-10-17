@@ -76,7 +76,7 @@ public class MailVerifyMessageSender implements VerifyMessageSender {
     public Mono<Boolean> send(VerifyMessage verifyMessage, VerifyTemplateInfo verifyTemplateInfo) {
         LOGGER.info("Mono<Boolean> send(), verifyMessage = {}, verifyTemplateInfo = {}", verifyMessage, verifyTemplateInfo);
 
-        LOGGER.warn("verifyMessage = {}, verifyTemplateInfo = {}", verifyMessage, verifyTemplateInfo);
+        LOGGER.error("verifyMessage = {}, verifyTemplateInfo = {}", verifyMessage, verifyTemplateInfo);
 
         return SENDER.apply(verifyMessage, verifyTemplateInfo);
     }

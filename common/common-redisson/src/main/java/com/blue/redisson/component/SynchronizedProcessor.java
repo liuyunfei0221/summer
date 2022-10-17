@@ -39,6 +39,24 @@ public final class SynchronizedProcessor {
     private final boolean BREAK_ON_LOCK_FAIL = false;
 
     /**
+     * get redisson client
+     *
+     * @return
+     */
+    public RedissonClient getRedissonClient() {
+        return this.redissonClient;
+    }
+
+    /**
+     * get default max waiting millis
+     *
+     * @return
+     */
+    public long getDefaultMaxWaitingMillis() {
+        return this.DEFAULT_MAX_WAITING_MILLIS;
+    }
+
+    /**
      * get data from sups and handle cache
      *
      * @param syncKey

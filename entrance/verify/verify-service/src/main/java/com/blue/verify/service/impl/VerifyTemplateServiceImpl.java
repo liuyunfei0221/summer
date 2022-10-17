@@ -21,11 +21,13 @@ import com.blue.verify.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.verify.repository.entity.VerifyTemplate;
 import com.blue.verify.repository.template.VerifyTemplateRepository;
 import com.blue.verify.service.inter.VerifyTemplateService;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Scheduler;
@@ -49,11 +51,14 @@ import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.Symbol.HYPHEN;
 import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION;
 import static com.blue.basic.constant.common.SyncKey.VERIFY_TEMPLATE_UPDATE_SYNC;
+import static com.blue.basic.constant.common.SyncKeyPrefix.VERIFY_TEMPLATES_UPDATE_SYNC_PRE;
 import static com.blue.mongo.common.MongoSortProcessor.process;
 import static com.blue.mongo.constant.LikeElement.PREFIX;
 import static com.blue.mongo.constant.LikeElement.SUFFIX;
 import static com.blue.verify.constant.VerifyTemplateColumnName.*;
 import static com.blue.verify.converter.VerifyModelConverters.*;
+import static java.lang.System.currentTimeMillis;
+import static java.lang.Thread.onSpinWait;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Comparator.comparing;
@@ -80,11 +85,13 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
 
     private final RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer;
 
-    private StringRedisTemplate stringRedisTemplate;
+    private ReactiveStringRedisTemplate reactiveStringRedisTemplate;
 
     private final BlueIdentityProcessor blueIdentityProcessor;
 
     private final SynchronizedProcessor synchronizedProcessor;
+
+    private RedissonClient redissonClient;
 
     private final ReactiveMongoTemplate reactiveMongoTemplate;
 
@@ -92,13 +99,14 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
 
     private VerifyTemplateRepository verifyTemplateRepository;
 
-    public VerifyTemplateServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, StringRedisTemplate stringRedisTemplate,
-                                     BlueIdentityProcessor blueIdentityProcessor, SynchronizedProcessor synchronizedProcessor, ReactiveMongoTemplate reactiveMongoTemplate,
+    public VerifyTemplateServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, ReactiveStringRedisTemplate reactiveStringRedisTemplate,
+                                     BlueIdentityProcessor blueIdentityProcessor, SynchronizedProcessor synchronizedProcessor, RedissonClient redissonClient, ReactiveMongoTemplate reactiveMongoTemplate,
                                      Scheduler scheduler, VerifyTemplateRepository verifyTemplateRepository, VerifyTemplateDeploy verifyTemplateDeploy) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
-        this.stringRedisTemplate = stringRedisTemplate;
+        this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.synchronizedProcessor = synchronizedProcessor;
+        this.redissonClient = redissonClient;
         this.reactiveMongoTemplate = reactiveMongoTemplate;
         this.scheduler = scheduler;
         this.verifyTemplateRepository = verifyTemplateRepository;
@@ -108,6 +116,8 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
             throw new RuntimeException("cacheExpiresSecond can't be null or less than 1");
 
         this.expireDuration = Duration.of(cacheExpiresSecond, ChronoUnit.SECONDS);
+
+        this.defaultMaxWaitingMillis = synchronizedProcessor.getDefaultMaxWaitingMillis();
     }
 
     private static final Map<String, Set<String>> BT_ALLOWED_VTS = Stream.of(VerifyBusinessType.values())
@@ -124,11 +134,15 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
 
     private Duration expireDuration;
 
+    private long defaultMaxWaitingMillis;
+
     private static final BinaryOperator<String> TEMPLATE_CACHE_KEY_GENERATOR = (type, businessType) -> VERIFY_TEMPLATE_PRE.prefix + type + PAR_CONCATENATION.identity + businessType;
 
+    private static final BinaryOperator<String> VERIFY_TEMPLATES_SYNC_KEY_GENERATOR = (type, businessType) -> VERIFY_TEMPLATES_UPDATE_SYNC_PRE.prefix + type + PAR_CONCATENATION.identity + businessType;
+
     private final BiConsumer<String, String> REDIS_CACHE_DELETER = (type, businessType) ->
-            stringRedisTemplate.delete(TEMPLATE_CACHE_KEY_GENERATOR.apply(type, businessType));
-//                    .subscribe(size -> LOGGER.info("REDIS_CACHE_DELETER, type = {}, businessType = {}, size = {}", type, size));
+            reactiveStringRedisTemplate.delete(TEMPLATE_CACHE_KEY_GENERATOR.apply(type, businessType))
+                    .subscribe(size -> LOGGER.info("REDIS_CACHE_DELETER, type = {}, businessType = {}, size = {}", type, size));
 
     private final BiFunction<String, String, Mono<Map<String, VerifyTemplateInfo>>> TEMPLATE_DB_GETTER = (type, businessType) -> {
         assertVerifyType(type, false);
@@ -145,24 +159,59 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
                         verifyTemplateInfos.stream().collect(toMap(VerifyTemplateInfo::getLanguage, vt -> vt, (a, b) -> a)));
     };
 
+    private final BiFunction<String, String, Mono<Map<String, VerifyTemplateInfo>>> TEMPLATE_REDIS_GETTER = (type, businessType) ->
+            reactiveStringRedisTemplate.opsForHash().entries(TEMPLATE_CACHE_KEY_GENERATOR.apply(type, businessType)).collectList()
+                    .map(entries -> entries.stream().collect(toMap(e -> String.valueOf(e.getKey()), e -> GSON.fromJson(String.valueOf(e.getValue()), VerifyTemplateInfo.class), (a, b) -> a)));
+
+    private final BiFunction<String, Map<String, VerifyTemplateInfo>, Mono<Map<String, VerifyTemplateInfo>>> TEMPLATE_REDIS_WITH_RETURN_SETTER = (typeIdentity, verifyTemplateInfo) ->
+            isNotBlank(typeIdentity) && isNotEmpty(verifyTemplateInfo) ?
+                    reactiveStringRedisTemplate.opsForHash().putAll(typeIdentity,
+                                    verifyTemplateInfo.entrySet().stream().filter(e -> isNotNull(e.getValue())).collect(toMap(Map.Entry::getKey, e -> GSON.toJson(e.getValue()), (a, b) -> a)))
+                            .then(reactiveStringRedisTemplate.opsForHash().putAll(typeIdentity,
+                                    verifyTemplateInfo.entrySet().stream().filter(e -> isNotNull(e.getValue())).collect(toMap(Map.Entry::getKey, e -> GSON.toJson(e.getValue()), (a, b) -> a))))
+                            .then(reactiveStringRedisTemplate.expire(typeIdentity, expireDuration))
+                            .then(just(verifyTemplateInfo))
+                    :
+                    error(() -> new BlueException(INVALID_PARAM));
+
     private final BiFunction<String, String, Mono<Map<String, VerifyTemplateInfo>>> TEMPLATE_WITH_REDIS_CACHE_GETTER = (type, businessType) -> {
         assertVerifyType(type, false);
         assertVerifyBusinessType(businessType, false);
 
-        String key = TEMPLATE_CACHE_KEY_GENERATOR.apply(type, businessType);
-
-        return justOrEmpty(stringRedisTemplate.opsForHash().entries(key))
-                .map(entries -> entries.entrySet().stream().collect(toMap(e -> String.valueOf(e.getKey()), e -> GSON.fromJson(String.valueOf(e.getValue()), VerifyTemplateInfo.class), (a, b) -> a)))
+        return TEMPLATE_REDIS_GETTER.apply(type, businessType)
                 .filter(BlueChecker::isNotEmpty)
-                .switchIfEmpty(defer(() ->
-                        TEMPLATE_DB_GETTER.apply(type, businessType)
-                                .filter(BlueChecker::isNotEmpty)
-                                .switchIfEmpty(defer(() -> error(() -> new BlueException(INVALID_PARAM))))
-                                .flatMap(verifyTemplateInfoMap -> {
-                                    stringRedisTemplate.opsForHash().putAll(key, verifyTemplateInfoMap);
-                                    stringRedisTemplate.expire(key, expireDuration);
-                                    return just(verifyTemplateInfoMap);
-                                })));
+                .switchIfEmpty(defer(() -> {
+                    RLock lock = null;
+                    boolean tryLock = false;
+                    try {
+                        lock = redissonClient.getLock(VERIFY_TEMPLATES_SYNC_KEY_GENERATOR.apply(type, businessType));
+
+                        tryLock = lock.tryLock();
+                        if (tryLock) {
+                            return TEMPLATE_DB_GETTER.apply(type, businessType)
+                                    .filter(BlueChecker::isNotEmpty)
+                                    .switchIfEmpty(defer(() -> error(() -> new BlueException(INVALID_PARAM))))
+                                    .flatMap(verifyTemplateInfo ->
+                                            TEMPLATE_REDIS_WITH_RETURN_SETTER.apply(TEMPLATE_CACHE_KEY_GENERATOR.apply(type, businessType), verifyTemplateInfo));
+                        }
+
+                        long start = currentTimeMillis();
+                        while (!(tryLock = lock.tryLock()) && currentTimeMillis() - start <= defaultMaxWaitingMillis)
+                            onSpinWait();
+
+                        return tryLock ? TEMPLATE_REDIS_GETTER.apply(type, businessType) : TEMPLATE_DB_GETTER.apply(type, businessType);
+                    } catch (Exception e) {
+                        LOGGER.error("handle failed, type = {}, businessType = {}, e = {}", type, businessType, e);
+                        throw new BlueException(INTERNAL_SERVER_ERROR);
+                    } finally {
+                        if (isNotNull(lock) && tryLock)
+                            try {
+                                lock.unlock();
+                            } catch (Exception e) {
+                                LOGGER.warn("lock.unlock() failed, e = {}", e);
+                            }
+                    }
+                }));
     };
 
     private static final BiFunction<Map<String, VerifyTemplateInfo>, List<String>, VerifyTemplateInfo> TEMPLATE_GETTER = (templateMap, languages) -> {
@@ -389,6 +438,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
 
             return verifyTemplateRepository.insert(verifyTemplate)
                     .publishOn(scheduler)
+                    .doOnSuccess(template -> REDIS_CACHE_DELETER.accept(template.getType(), template.getBusinessType()))
                     .map(VERIFY_TEMPLATE_2_VERIFY_TEMPLATE_INFO_CONVERTER);
         });
     }
