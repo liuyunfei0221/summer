@@ -6,6 +6,11 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.UnaryOperator;
+
+import static com.blue.basic.constant.common.Symbol.*;
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.substring;
 
 /**
  * i18n processor
@@ -14,6 +19,23 @@ import java.util.Map;
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavaDoc", "unused"})
 public final class InternationalProcessor {
+
+    private static final UnaryOperator<String> LANGUAGE_IDENTITY_PARSER = s -> {
+        if (isBlank(s))
+            throw new RuntimeException("s can't be blank");
+
+        int idx = lastIndexOf(s, PERIOD.identity);
+        return replace(idx >= 0 ? (idx > 0 ? substring(s, 0, idx) : s) : s, PAR_CONCATENATION.identity, HYPHEN.identity);
+    };
+
+    /**
+     * parse language identity
+     *
+     * @return
+     */
+    public static String parseLanguageIdentity(String language) {
+        return LANGUAGE_IDENTITY_PARSER.apply(language);
+    }
 
     /**
      * load i18n messages

@@ -173,6 +173,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         return zip(memberBasicService.selectMemberBasicMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberBasicCondition), memberBasicService.countMemberBasicMonoByCondition(memberBasicCondition))
                 .flatMap(tuple2 -> {
                     List<MemberBasic> members = tuple2.getT1();
+                    Long count = tuple2.getT2();
                     Mono<List<MemberAuthorityInfo>> memberAuthorityInfosMono = members.size() > 0 ?
                             rpcRoleServiceConsumer.selectRoleInfoByMemberIds(members.stream().map(MemberBasic::getId).collect(toList()))
                                     .flatMap(relationInfos -> {
@@ -187,7 +188,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
 
                     return memberAuthorityInfosMono
                             .flatMap(memberAuthorityInfos ->
-                                    just(new PageModelResponse<>(memberAuthorityInfos, tuple2.getT2())));
+                                    just(new PageModelResponse<>(memberAuthorityInfos, count)));
                 });
     }
 

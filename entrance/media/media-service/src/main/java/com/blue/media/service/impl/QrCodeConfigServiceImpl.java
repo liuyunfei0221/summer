@@ -480,6 +480,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
         return zip(selectQrCodeConfigMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), query), countQrCodeConfigMonoByCondition(query))
                 .flatMap(tuple2 -> {
                     List<QrCodeConfig> configs = tuple2.getT1();
+                    Long count = tuple2.getT2();
                     return isNotEmpty(configs) ?
                             zip(rpcRoleServiceConsumer.selectRoleInfo(), rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(OPERATORS_GETTER.apply(configs)))
                                     .flatMap(t2 -> {
@@ -489,9 +490,9 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
                                         return just(configs.stream().map(c ->
                                                 qrCodeConfigToQrCodeConfigManagerInfo(c, idAndRoleInfoMapping, idAndMemberNameMapping)).collect(toList()));
                                     }).flatMap(configManagerInfos ->
-                                            just(new PageModelResponse<>(configManagerInfos, tuple2.getT2())))
+                                            just(new PageModelResponse<>(configManagerInfos, count)))
                             :
-                            just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
+                            just(new PageModelResponse<>(emptyList(), count));
                 });
     }
 

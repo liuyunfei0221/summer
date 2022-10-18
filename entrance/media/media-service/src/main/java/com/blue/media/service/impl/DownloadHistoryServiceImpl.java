@@ -268,7 +268,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
                 countDownloadHistoryMonoByQuery(query)
         ).flatMap(tuple2 -> {
             List<DownloadHistory> downloadHistories = tuple2.getT1();
-
+            Long count = tuple2.getT2();
             return isNotEmpty(downloadHistories) ?
                     zip(attachmentService.selectAttachmentDetailInfoMonoByIds(downloadHistories.parallelStream().map(DownloadHistory::getAttachmentId).collect(toList()))
                                     .map(attachments -> attachments.parallelStream().collect(toMap(AttachmentDetailInfo::getId, AttachmentDetailInfo::getName, (a, b) -> a)))
@@ -284,10 +284,10 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
                                                 ofNullable(memberIdAndNameMapping.get(dh.getCreator())).orElse(EMPTY_VALUE.value)))
                                 .collect(toList()))
                                 .flatMap(downloadHistoryInfos ->
-                                        just(new PageModelResponse<>(downloadHistoryInfos, tuple2.getT2())));
+                                        just(new PageModelResponse<>(downloadHistoryInfos, count)));
                     })
                     :
-                    just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
+                    just(new PageModelResponse<>(emptyList(), count));
         });
     }
 

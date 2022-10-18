@@ -56,31 +56,31 @@ web:
 
 
 cache:
-  serverMode: SINGLE
+  server-mode: SINGLE
   nodes: [ 172.18.7.1:6379, 172.18.7.1:6380, 172.18.7.2:6379, 172.18.7.2:6380, 172.18.7.3:6379, 172.18.7.3:6380 ]
   host: 43.138.111.53
   port: 6379
   password: LiuZhiyi20200805
-  maxRedirects: 4
-  minIdle: 4
-  maxIdle: 64
-  maxTotal: 128
-  maxWaitMillis: 16
-  autoReconnect: true
-  bufferUsageRatio: 32.0
-  cancelCommandsOnReconnectFailure: false
-  pingBeforeActivateConnection: false
-  requestQueueSize: 64
-  publishOnScheduler: true
-  tcpNoDelay: true
-  connectTimeout: 10
-  keepAlive: false
-  suspendReconnectOnProtocolFailure: false
-  fixedTimeout: 4
-  commandTimeout: 4
-  shutdownTimeout: 8
-  shutdownQuietPeriod: 4
-  entryTtl: 60
+  max-redirects: 4
+  min-idle: 4
+  max-idle: 64
+  max-total: 128
+  max-wait-millis: 16
+  auto-reconnect: true
+  buffer-usage-ratio: 32.0
+  cancel-commands-on-reconnect-failure: false
+  ping-before-activate-connection: false
+  request-queue-size: 64
+  publish-on-scheduler: true
+  tcp-no-delay: true
+  connect-timeout: 10
+  keep-alive: false
+  suspend-reconnect-on-protocol-failure: false
+  fixed-timeout: 4
+  command-timeout: 4
+  shutdown-timeout: 8
+  shutdown-quiet-period: 4
+  entry-ttl: 60
 
 
 limit:
@@ -119,22 +119,22 @@ request:
 
 
 executor:
-  corePoolSize: 2
-  maximumPoolSize: 8
-  keepAliveSeconds: 64
-  blockingQueueCapacity: 128
-  threadNamePre: blue-summer
+  core-pool-size: 2
+  maximum-pool-size: 8
+  keep-alive-seconds: 64
+  blocking-queue-capacity: 128
+  thread-name-pre: blue-summer
 
 
 message:
-  messageLocation: classpath:i18n/message
-  elementLocation: classpath:i18n/element
+  message-location: classpath:i18n/message
+  element-location: classpath:i18n/element
 
 
 scheduler:
   threadCap: 4
   queuedTaskCap: 4096
-  threadNamePre: blue-summer-scheduler
+  thread-name-pre: blue-summer-scheduler
   ttlSeconds: 128
 
 

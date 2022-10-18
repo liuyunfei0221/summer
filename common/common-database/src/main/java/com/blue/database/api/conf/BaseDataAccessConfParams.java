@@ -31,7 +31,7 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
     /**
      * table sharding size per db
      */
-    protected transient Integer shardingTableSizePerDataBase;
+    protected transient Integer shardingTableSizePerDatabase;
 
     /**
      * data center id to db index mappings
@@ -151,8 +151,8 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
     }
 
     @Override
-    public Integer getShardingTableSizePerDataBase() {
-        return shardingTableSizePerDataBase;
+    public Integer getShardingTableSizePerDatabase() {
+        return shardingTableSizePerDatabase;
     }
 
     @Override
@@ -314,8 +314,8 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
         this.shardingTables = shardingTables;
     }
 
-    public void setShardingTableSizePerDataBase(Integer shardingTableSizePerDataBase) {
-        this.shardingTableSizePerDataBase = shardingTableSizePerDataBase;
+    public void setShardingTableSizePerDatabase(Integer shardingTableSizePerDatabase) {
+        this.shardingTableSizePerDatabase = shardingTableSizePerDatabase;
     }
 
     public void setDataCenterToDatabaseMappings(List<IdentityToShardingMappingAttr> dataCenterToDatabaseMappings) {
@@ -443,7 +443,7 @@ public abstract class BaseDataAccessConfParams implements DataAccessConf {
         return "BaseDataAccessConfParams{" +
                 "shardingDatabases=" + shardingDatabases +
                 ", shardingTables=" + shardingTables +
-                ", shardingTableSizePerDataBase=" + shardingTableSizePerDataBase +
+                ", shardingTableSizePerDatabase=" + shardingTableSizePerDatabase +
                 ", dataCenterToDatabaseMappings=" + dataCenterToDatabaseMappings +
                 ", workerToTableMappings=" + workerToTableMappings +
                 ", forceWriteTables=" + forceWriteTables +

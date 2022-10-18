@@ -378,6 +378,7 @@ public class RewardServiceImpl implements RewardService {
         return zip(selectRewardMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), rewardCondition), countRewardMonoByCondition(rewardCondition))
                 .flatMap(tuple2 -> {
                     List<Reward> rewards = tuple2.getT1();
+                    Long count = tuple2.getT2();
                     return isNotEmpty(rewards) ?
                             rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(OPERATORS_GETTER.apply(rewards))
                                     .flatMap(memberBasicInfos -> {
@@ -385,9 +386,9 @@ public class RewardServiceImpl implements RewardService {
                                         return just(rewards.stream().map(r ->
                                                 rewardToRewardManagerInfo(r, idAndMemberNameMapping)).collect(toList()));
                                     }).flatMap(rewardManagerInfos ->
-                                            just(new PageModelResponse<>(rewardManagerInfos, tuple2.getT2())))
+                                            just(new PageModelResponse<>(rewardManagerInfos, count)))
                             :
-                            just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
+                            just(new PageModelResponse<>(emptyList(), count));
                 });
     }
 

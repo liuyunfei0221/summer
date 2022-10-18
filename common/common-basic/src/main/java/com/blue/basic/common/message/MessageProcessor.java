@@ -60,9 +60,12 @@ final class MessageProcessor {
     private static volatile List<LanguageInfo> SUPPORT_LANGUAGES;
     private static volatile LanguageInfo DEFAULT_LANGUAGE_INFO;
 
-    private static final UnaryOperator<String> LANGUAGE_IDENTITY_PARSER = n -> {
-        int idx = lastIndexOf(n, PERIOD.identity);
-        return replace(idx >= 0 ? (idx > 0 ? substring(n, 0, idx) : n) : n, PAR_CONCATENATION.identity, HYPHEN.identity);
+    private static final UnaryOperator<String> LANGUAGE_IDENTITY_PARSER = s -> {
+        if (isBlank(s))
+            throw new RuntimeException("s can't be blank");
+
+        int idx = lastIndexOf(s, PERIOD.identity);
+        return replace(idx >= 0 ? (idx > 0 ? substring(s, 0, idx) : s) : s, PAR_CONCATENATION.identity, HYPHEN.identity);
     };
 
     private static final Function<Map<String, String>, Integer> LANGUAGE_PRIORITY_PARSER = map ->
@@ -75,7 +78,6 @@ final class MessageProcessor {
             messages.entrySet().stream()
                     .filter(e -> isDigits(e.getKey()))
                     .collect(toMap(e -> parseInt(e.getKey()), Map.Entry::getValue, (a, b) -> a));
-
 
     private static final Function<Map<Integer, LanguageInfo>, List<LanguageInfo>> SUPPORT_LANGUAGES_PARSER = infoMap ->
             BlueChecker.isNotEmpty(infoMap) ? infoMap.entrySet().stream()
@@ -111,7 +113,7 @@ final class MessageProcessor {
             if (simpleLanguagesMapping.containsKey(simpleLanguage))
                 continue;
 
-            simpleLanguagesMapping.put(simpleLanguage, toRootLowerCase(LANGUAGE_IDENTITY_PARSER.apply(languageIdentity)));
+            simpleLanguagesMapping.put(simpleLanguage, lowerCase(LANGUAGE_IDENTITY_PARSER.apply(languageIdentity)));
         }
 
         return simpleLanguagesMapping;

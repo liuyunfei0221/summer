@@ -458,6 +458,7 @@ public class NoticeServiceImpl implements NoticeService {
                 countNoticeMonoByCondition(noticeCondition))
                 .flatMap(tuple2 -> {
                     List<Notice> notices = tuple2.getT1();
+                    Long count = tuple2.getT2();
                     return isNotEmpty(notices) ?
                             rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(OPERATORS_GETTER.apply(notices))
                                     .flatMap(memberBasicInfos -> {
@@ -465,9 +466,9 @@ public class NoticeServiceImpl implements NoticeService {
                                         return just(notices.stream().map(n ->
                                                 noticeToNoticeManagerInfo(n, idAndMemberNameMapping)).collect(toList()));
                                     }).flatMap(noticeManagerInfos ->
-                                            just(new PageModelResponse<>(noticeManagerInfos, tuple2.getT2())))
+                                            just(new PageModelResponse<>(noticeManagerInfos, count)))
                             :
-                            just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
+                            just(new PageModelResponse<>(emptyList(), count));
                 });
     }
 

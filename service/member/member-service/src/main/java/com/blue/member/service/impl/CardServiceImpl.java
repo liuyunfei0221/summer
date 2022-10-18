@@ -498,6 +498,7 @@ public class CardServiceImpl implements CardService {
         return zip(selectCardMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query), countCardMonoByQuery(query))
                 .flatMap(tuple2 -> {
                     List<Card> cards = tuple2.getT1();
+                    Long count = tuple2.getT2();
                     return isNotEmpty(cards) ?
                             memberBasicService.selectMemberBasicInfoMonoByIds(cards.parallelStream().map(Card::getMemberId).collect(toList()))
                                     .flatMap(memberBasicInfos -> {
@@ -506,9 +507,9 @@ public class CardServiceImpl implements CardService {
                                                         CARD_2_CARD_DETAIL_INFO_CONVERTER.apply(c, ofNullable(idAndNameMapping.get(c.getMemberId())).orElse(EMPTY_VALUE.value)))
                                                 .collect(toList()));
                                     }).flatMap(cardDetailInfos ->
-                                            just(new PageModelResponse<>(cardDetailInfos, tuple2.getT2())))
+                                            just(new PageModelResponse<>(cardDetailInfos, count)))
                             :
-                            just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
+                            just(new PageModelResponse<>(emptyList(), count));
                 });
     }
 

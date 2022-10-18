@@ -48,9 +48,12 @@ final class ElementProcessor {
     static final String DEFAULT_KEY = DEFAULT.key;
     static final String DEFAULT_VALUE = DEFAULT.key;
 
-    private static final UnaryOperator<String> LANGUAGE_IDENTITY_PARSER = n -> {
-        int idx = lastIndexOf(n, PERIOD.identity);
-        return replace(idx >= 0 ? (idx > 0 ? substring(n, 0, idx) : n) : n, PAR_CONCATENATION.identity, HYPHEN.identity);
+    private static final UnaryOperator<String> LANGUAGE_IDENTITY_PARSER = s -> {
+        if (isBlank(s))
+            throw new RuntimeException("s can't be blank");
+
+        int idx = lastIndexOf(s, PERIOD.identity);
+        return replace(idx >= 0 ? (idx > 0 ? substring(s, 0, idx) : s) : s, PAR_CONCATENATION.identity, HYPHEN.identity);
     };
 
     private static volatile Map<String, Map<String, String>> I_18_N;
@@ -74,7 +77,7 @@ final class ElementProcessor {
             if (simpleLanguagesMapping.containsKey(simpleLanguage))
                 continue;
 
-            simpleLanguagesMapping.put(simpleLanguage, toRootLowerCase(LANGUAGE_IDENTITY_PARSER.apply(languageIdentity)));
+            simpleLanguagesMapping.put(simpleLanguage, lowerCase(LANGUAGE_IDENTITY_PARSER.apply(languageIdentity)));
         }
 
         return simpleLanguagesMapping;

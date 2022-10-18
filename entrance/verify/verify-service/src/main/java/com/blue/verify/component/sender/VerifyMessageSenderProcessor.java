@@ -17,11 +17,11 @@ import static com.blue.basic.common.base.BlueChecker.isEmpty;
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.ConstantProcessor.assertVerifyBusinessType;
 import static com.blue.basic.common.base.ConstantProcessor.assertVerifyType;
-import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
+import static com.blue.basic.constant.common.ResponseElement.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
+import static reactor.core.publisher.Mono.defer;
 import static reactor.core.publisher.Mono.error;
 
 /**
@@ -72,9 +72,10 @@ public class VerifyMessageSenderProcessor implements ApplicationListener<Context
         assertVerifyBusinessType(verifyBusinessType, false);
 
         return verifyTemplateService.getVerifyTemplateInfoMonoByTypesAndLanguages(verifyType, verifyBusinessType, verifyMessage.getLanguages())
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .flatMap(templateInfo ->
                         ofNullable(verifyMessageSenders.get(verifyType))
-                                .map(s -> s.send(verifyMessage, templateInfo))
+                                .map(sender -> sender.send(verifyMessage, templateInfo))
                                 .orElseThrow(() -> new BlueException(INVALID_IDENTITY)));
     }
 

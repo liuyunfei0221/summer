@@ -336,6 +336,7 @@ public class AttachmentServiceImpl implements AttachmentService {
         return zip(selectAttachmentMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query), countAttachmentMonoByQuery(query))
                 .flatMap(tuple2 -> {
                     List<Attachment> attachments = tuple2.getT1();
+                    Long count = tuple2.getT2();
                     return isNotEmpty(attachments) ?
                             rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(attachments.parallelStream().map(Attachment::getCreator).collect(toList()))
                                     .flatMap(memberBasicInfos -> {
@@ -344,9 +345,9 @@ public class AttachmentServiceImpl implements AttachmentService {
                                                         ATTACHMENT_2_ATTACHMENT_DETAIL_INFO_CONVERTER.apply(a, ofNullable(idAndNameMapping.get(a.getCreator())).orElse(EMPTY_VALUE.value)))
                                                 .collect(toList()));
                                     }).flatMap(attachmentDetailInfos ->
-                                            just(new PageModelResponse<>(attachmentDetailInfos, tuple2.getT2())))
+                                            just(new PageModelResponse<>(attachmentDetailInfos, count)))
                             :
-                            just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
+                            just(new PageModelResponse<>(emptyList(), count));
                 });
     }
 

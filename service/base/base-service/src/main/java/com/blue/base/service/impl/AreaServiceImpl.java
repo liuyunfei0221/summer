@@ -630,11 +630,11 @@ public class AreaServiceImpl implements AreaService {
                 countAreaMonoByQuery(query)
         ).flatMap(tuple2 -> {
             List<Area> areas = tuple2.getT1();
-
+            Long count = tuple2.getT2();
             return isNotEmpty(areas) ?
-                    just(new PageModelResponse<>(AREAS_2_AREA_INFOS_CONVERTER.apply(areas), tuple2.getT2()))
+                    just(new PageModelResponse<>(AREAS_2_AREA_INFOS_CONVERTER.apply(areas), count))
                     :
-                    just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
+                    just(new PageModelResponse<>(emptyList(), count));
         });
     }
 

@@ -13,14 +13,14 @@ public enum SnowflakeBits {
     TIME_STAMP(33),
 
     /**
-     * Data center ID, length 6, supports up to 64 data centers
+     * Data center ID, length 5, supports up to 32 data centers
      */
-    DATA_CENTER(6),
+    DATA_CENTER(5),
 
     /**
-     * Machine ID, length 9, each data center supports up to 512 machines
+     * Machine ID, length 10, each data center supports up to 1024 machines
      */
-    WORKER(9),
+    WORKER(10),
 
     /**
      * Self-increasing sequence, length 15, single machine single second 32768, can apply to the future time

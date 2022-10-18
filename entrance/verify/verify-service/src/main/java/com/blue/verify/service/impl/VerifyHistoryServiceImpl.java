@@ -212,13 +212,13 @@ public class VerifyHistoryServiceImpl implements VerifyHistoryService {
                 countVerifyHistoryMonoByQuery(query)
         ).flatMap(tuple2 -> {
             List<VerifyHistory> verifyHistories = tuple2.getT1();
-
+            Long count = tuple2.getT2();
             return isNotEmpty(verifyHistories) ?
                     just(VERIFY_HISTORIES_2_VERIFY_HISTORY_INFOS_CONVERTER.apply(verifyHistories))
                             .flatMap(verifyHistoryInfos ->
-                                    just(new PageModelResponse<>(verifyHistoryInfos, tuple2.getT2())))
+                                    just(new PageModelResponse<>(verifyHistoryInfos, count)))
                     :
-                    just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
+                    just(new PageModelResponse<>(emptyList(), count));
         });
     }
 

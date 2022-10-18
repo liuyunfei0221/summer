@@ -100,8 +100,12 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
     private Mono<String> getResponseBodyAndReport(ServerHttpResponse response, HttpStatus responseHttpStatus, Publisher<? extends DataBuffer> body, DataEvent dataEvent) {
         return ClientResponse
                 .create(responseHttpStatus, httpMessageReaders)
-                .headers(hs ->
-                        hs.putAll(response.getHeaders()))
+                .headers(hs -> {
+                    HttpHeaders headers = response.getHeaders();
+                    hs.putAll(headers);
+                    ofNullable(headers.getFirst(BlueHeader.RESPONSE_EXTRA.name))
+                            .ifPresent(extra -> dataEvent.addData(RESPONSE_EXTRA.key, extra));
+                })
                 .body(Flux.from(body)).build()
                 .bodyToMono(String.class)
                 .flatMap(responseBody -> {
@@ -118,9 +122,6 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
 
         HttpStatus httpStatus = ofNullable(response.getStatusCode()).orElse(OK);
         dataEvent.addData(RESPONSE_STATUS.key, valueOf(httpStatus.value()).intern());
-
-        ofNullable(response.getHeaders().getFirst(BlueHeader.RESPONSE_EXTRA.name))
-                .ifPresent(extra -> dataEvent.addData(RESPONSE_EXTRA.key, extra));
 
         if (ofNullable(exchange.getAttributes().get(EXISTENCE_RESPONSE_BODY.key))
                 .map(b -> (boolean) b).orElse(true)) {

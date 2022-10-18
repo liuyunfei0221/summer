@@ -481,6 +481,7 @@ public class BulletinServiceImpl implements BulletinService {
                 countBulletinMonoByCondition(bulletinCondition))
                 .flatMap(tuple2 -> {
                     List<Bulletin> bulletins = tuple2.getT1();
+                    Long count = tuple2.getT2();
                     return isNotEmpty(bulletins) ?
                             rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(OPERATORS_GETTER.apply(bulletins))
                                     .flatMap(memberBasicInfos -> {
@@ -488,9 +489,9 @@ public class BulletinServiceImpl implements BulletinService {
                                         return just(bulletins.stream().map(b ->
                                                 bulletinToBulletinManagerInfo(b, idAndMemberNameMapping)).collect(toList()));
                                     }).flatMap(bulletinManagerInfos ->
-                                            just(new PageModelResponse<>(bulletinManagerInfos, tuple2.getT2())))
+                                            just(new PageModelResponse<>(bulletinManagerInfos, count)))
                             :
-                            just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
+                            just(new PageModelResponse<>(emptyList(), count));
                 });
     }
 

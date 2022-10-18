@@ -102,3 +102,5 @@ db.verifyHistory.createIndex({"verifyBusinessType":1});
 db.verifyHistory.createIndex({"destination":1});
 db.verifyHistory.createIndex({"requestIp":1});
 db.verifyHistory.createIndex({"createTime":-1});
+
+db.verifyTemplate.createIndex({"type":1,"businessType":1,"language":1});

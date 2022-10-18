@@ -702,11 +702,11 @@ public class StateServiceImpl implements StateService {
                 countStateMonoByQuery(query)
         ).flatMap(tuple2 -> {
             List<State> states = tuple2.getT1();
-
+            Long count = tuple2.getT2();
             return isNotEmpty(states) ?
-                    just(new PageModelResponse<>(STATES_2_STATE_INFOS_CONVERTER.apply(states), tuple2.getT2()))
+                    just(new PageModelResponse<>(STATES_2_STATE_INFOS_CONVERTER.apply(states), count))
                     :
-                    just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
+                    just(new PageModelResponse<>(emptyList(), count));
         });
     }
 

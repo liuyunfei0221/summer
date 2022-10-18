@@ -22,7 +22,7 @@ public class ShardingDatabaseAttr {
     /**
      * db conf, for example -> useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
      */
-    protected transient String dataBaseConf;
+    protected transient String databaseConf;
 
     /**
      * username
@@ -108,12 +108,12 @@ public class ShardingDatabaseAttr {
         this.url = url;
     }
 
-    public String getDataBaseConf() {
-        return dataBaseConf;
+    public String getDatabaseConf() {
+        return databaseConf;
     }
 
-    public void setDataBaseConf(String dataBaseConf) {
-        this.dataBaseConf = dataBaseConf;
+    public void setDatabaseConf(String databaseConf) {
+        this.databaseConf = databaseConf;
     }
 
     public String getUsername() {
@@ -376,7 +376,7 @@ public class ShardingDatabaseAttr {
     public String toString() {
         return "ShardingDatabaseAttr{" +
                 "url='" + url + '\'' +
-                ", dataBaseConf='" + dataBaseConf + '\'' +
+                ", databaseConf='" + databaseConf + '\'' +
                 ", username='" + ":)" + '\'' +
                 ", password='" + ":)" + '\'' +
                 ", driverClassName='" + driverClassName + '\'' +

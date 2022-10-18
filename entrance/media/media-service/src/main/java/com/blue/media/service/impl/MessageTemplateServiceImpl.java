@@ -485,6 +485,7 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
         return zip(selectMessageTemplateMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), query), countMessageTemplateMonoByCondition(query))
                 .flatMap(tuple2 -> {
                     List<MessageTemplate> templates = tuple2.getT1();
+                    Long count = tuple2.getT2();
                     return isNotEmpty(templates) ?
                             rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(OPERATORS_GETTER.apply(templates))
                                     .flatMap(memberBasicInfos -> {
@@ -493,9 +494,9 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
                                                         MESSAGE_TEMPLATE_2_MESSAGE_TEMPLATE_MANAGER_INFO_CONVERTER.apply(m, idAndNameMapping))
                                                 .collect(toList()));
                                     }).flatMap(messageTemplateManagerInfos ->
-                                            just(new PageModelResponse<>(messageTemplateManagerInfos, tuple2.getT2())))
+                                            just(new PageModelResponse<>(messageTemplateManagerInfos, count)))
                             :
-                            just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
+                            just(new PageModelResponse<>(emptyList(), count));
                 });
     }
 

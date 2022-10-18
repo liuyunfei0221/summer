@@ -15,15 +15,13 @@ import java.util.function.Function;
 
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
+import static com.blue.basic.common.message.InternationalProcessor.parseLanguageIdentity;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
-import static com.blue.basic.constant.common.Symbol.HYPHEN;
-import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
-import static org.apache.commons.lang3.StringUtils.replace;
 
 /**
  * model converters in verify project
@@ -47,7 +45,7 @@ public final class VerifyModelConverters {
         verifyTemplate.setDescription(param.getDescription());
         verifyTemplate.setType(param.getType());
         verifyTemplate.setBusinessType(param.getBusinessType());
-        verifyTemplate.setLanguage(lowerCase(replace(param.getLanguage(), PAR_CONCATENATION.identity, HYPHEN.identity)));
+        verifyTemplate.setLanguage(lowerCase(parseLanguageIdentity(param.getLanguage())));
         verifyTemplate.setPriority(param.getPriority());
         verifyTemplate.setTitle(param.getTitle());
         verifyTemplate.setContent(param.getContent());

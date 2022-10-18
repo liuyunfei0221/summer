@@ -39,7 +39,7 @@ spring:
 
     gateway:
       httpclient:
-        connectTimeout: 100000
+        connect-timeout: 100000
         responseTimeout: 30s
         maxHeaderSize: 2048
         maxInitialLineLength: 2048

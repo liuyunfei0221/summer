@@ -39,7 +39,7 @@ public interface DataAccessConf {
      *
      * @return
      */
-    Integer getShardingTableSizePerDataBase();
+    Integer getShardingTableSizePerDatabase();
 
     /**
      * data center id to db index mappings

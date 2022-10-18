@@ -56,98 +56,98 @@ web:
 
 
 identity:
-  dataCenter: 0
+  data-center: 0
   worker: 0
-  serviceName: blue-message
-  bootSeconds: 1618790400
-  bufferPower: 3
-  paddingFactor: 50
-  paddingCorePoolSize: 1
-  paddingMaximumPoolSize: 2
-  keepAliveSeconds: 128
-  paddingBlockingQueueSize: 1024
-  paddingScheduled: true
-  paddingScheduledCorePoolSize: 2
-  paddingScheduledInitialDelayMillis: 5000
-  paddingScheduledDelayMillis: 15000
+  service-name: blue-message
+  boot-seconds: 1618790400
+  buffer-power: 3
+  padding-factor: 50
+  padding-core-pool-size: 1
+  padding-maximum-pool-size: 2
+  keep-alive-seconds: 128
+  padding-blocking-queue-size: 1024
+  padding-scheduled: true
+  padding-scheduled-core-pool-size: 2
+  padding-scheduled-initial-delay-millis: 5000
+  padding-scheduled-delay-millis: 15000
 
 
 mongo:
-  addressAttrs:
+  address-attrs:
     - address: 172.16.207.11
       port: 27017
   auth: false
-  authBase: admin
-  userName:
+  auth-base: admin
+  user-name:
   password:
   database: message
-  retryReads: false
-  retryWrites: false
-  applicationName: blue-message
-  uuidRepresentation: JAVA_LEGACY
-  socketConnectTimeoutMillis: 60000
-  socketReadTimeoutMillis: 60000
-  socketReceiveBufferSize: 10000
-  socketSendBufferSize: 256
-  clusterConnectionMode: SINGLE
-  clusterType: STANDALONE
-  clusterLocalThresholdMillis: 60000
-  serverSelectionTimeoutMillis: 60000
-  poolMaxSize: 12
-  poolMinSize: 2
-  poolMaxWaitTimeMillis: 60000
-  poolMaxConnectionLifeTimeMillis: 60000
-  poolMaxConnectionIdleTimeMillis: 60000
-  poolMaintenanceInitialDelayMillis: 60000
-  poolMaintenanceFrequencyMillis: 60000
+  retry-reads: false
+  retry-writes: false
+  application-name: blue-message
+  uuid-representation: JAVA_LEGACY
+  socket-connect-timeout-millis: 60000
+  socket-read-timeout-millis: 60000
+  socket-receive-buffer-size: 10000
+  socket-send-buffer-size: 256
+  cluster-connection-mode: SINGLE
+  cluster-type: STANDALONE
+  cluster-local-threshold-millis: 60000
+  server-selection-timeout-millis: 60000
+  pool-max-size: 12
+  pool-min-size: 2
+  pool-max-wait-time-millis: 60000
+  pool-max-connection-lifeTime-millis: 60000
+  pool-max-connection-idle-time-millis: 60000
+  pool-maintenance-initial-delay-millis: 60000
+  pool-maintenance-frequency-millis: 60000
 
 
 executor:
-  corePoolSize: 2
-  maximumPoolSize: 8
-  keepAliveSeconds: 64
-  blockingQueueCapacity: 2048
-  threadNamePre: blue-summer
+  core-pool-size: 2
+  maximum-pool-size: 8
+  keep-alive-seconds: 64
+  blocking-queue-capacity: 2048
+  thread-name-pre: blue-summer
 
 
 message:
-  messageLocation: classpath:i18n/message
-  elementLocation: classpath:i18n/element
+  message-location: classpath:i18n/message
+  element-location: classpath:i18n/element
 
 
 scheduler:
   threadCap: 4
   queuedTaskCap: 4096
-  threadNamePre: blue-summer-scheduler
+  thread-name-pre: blue-summer-scheduler
   ttlSeconds: 128
 
 
 cache:
-  serverMode: SINGLE
+  server-mode: SINGLE
   nodes: [ 172.18.7.1:6379,172.18.7.1:6380,172.18.7.2:6379,172.18.7.2:6380,172.18.7.3:6379,172.18.7.3:6380 ]
   password: LiuZhiyi20200805
-  maxRedirects: 4
+  max-redirects: 4
   host: 172.16.207.11
   port: 6379
-  minIdle: 4
-  maxIdle: 64
-  maxTotal: 128
-  maxWaitMillis: 16
-  autoReconnect: true
-  bufferUsageRatio: 32.0
-  cancelCommandsOnReconnectFailure: false
-  pingBeforeActivateConnection: false
-  requestQueueSize: 64
-  publishOnScheduler: true
-  tcpNoDelay: true
-  connectTimeout: 10
-  keepAlive: false
-  suspendReconnectOnProtocolFailure: false
-  fixedTimeout: 4
-  commandTimeout: 4
-  shutdownTimeout: 8
-  shutdownQuietPeriod: 4
-  entryTtl: 60
+  min-idle: 4
+  max-idle: 64
+  max-total: 128
+  max-wait-millis: 16
+  auto-reconnect: true
+  buffer-usage-ratio: 32.0
+  cancel-commands-on-reconnect-failure: false
+  ping-before-activate-connection: false
+  request-queue-size: 64
+  publish-on-scheduler: true
+  tcp-no-delay: true
+  connect-timeout: 10
+  keep-alive: false
+  suspend-reconnect-on-protocol-failure: false
+  fixed-timeout: 4
+  command-timeout: 4
+  shutdown-timeout: 8
+  shutdown-quiet-period: 4
+  entry-ttl: 60
 
 
 jwt:

@@ -84,7 +84,7 @@ public final class BlueDataAccessGenerator {
             throw new RuntimeException("username can't be blank");
 
         hikariConfig.setDriverClassName(driverClassName);
-        hikariConfig.setJdbcUrl(url + ofNullable(shardAttr.getDataBaseConf()).map(c -> QUESTION_MARK.identity + c).orElse(EMPTY_VALUE.value));
+        hikariConfig.setJdbcUrl(url + ofNullable(shardAttr.getDatabaseConf()).map(c -> QUESTION_MARK.identity + c).orElse(EMPTY_VALUE.value));
         hikariConfig.setUsername(username);
 
         ofNullable(shardAttr.getPassword()).filter(BlueChecker::isNotBlank).ifPresent(hikariConfig::setPassword);
@@ -337,7 +337,7 @@ public final class BlueDataAccessGenerator {
         if (!assertDisorderIntegerContinuous(assertIndexList))
             throw new RuntimeException("The database index set should be a continuous number starting from 0");
 
-        Integer shardingTableSizePerDataBase = dataAccessConf.getShardingTableSizePerDataBase();
+        Integer shardingTableSizePerDataBase = dataAccessConf.getShardingTableSizePerDatabase();
         if (isNull(shardingTableSizePerDataBase) || shardingTableSizePerDataBase < 1 || shardingTableSizePerDataBase > MAX_WORKER_ID.max)
             throw new RuntimeException("the number of table splits in each database cannot be less than 1 or greater than the maximum number of machines in each data center -> " + MAX_WORKER_ID.max);
 

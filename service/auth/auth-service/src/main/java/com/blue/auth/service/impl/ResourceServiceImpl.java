@@ -466,6 +466,7 @@ public class ResourceServiceImpl implements ResourceService {
         return zip(selectResourceMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), resourceCondition), countResourceMonoByCondition(resourceCondition))
                 .flatMap(tuple2 -> {
                     List<Resource> resources = tuple2.getT1();
+                    Long count = tuple2.getT2();
                     return isNotEmpty(resources) ?
                             rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(OPERATORS_GETTER.apply(resources))
                                     .flatMap(memberBasicInfos -> {
@@ -473,9 +474,9 @@ public class ResourceServiceImpl implements ResourceService {
                                         return just(resources.stream().map(r ->
                                                 resourceToResourceManagerInfo(r, idAndMemberNameMapping)).collect(toList()));
                                     }).flatMap(resourceManagerInfos ->
-                                            just(new PageModelResponse<>(resourceManagerInfos, tuple2.getT2())))
+                                            just(new PageModelResponse<>(resourceManagerInfos, count)))
                             :
-                            just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
+                            just(new PageModelResponse<>(emptyList(), count));
                 });
     }
 }

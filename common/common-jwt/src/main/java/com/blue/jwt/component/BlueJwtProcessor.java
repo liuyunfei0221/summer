@@ -220,6 +220,7 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
 
         if (jwt.getKeyId().equals(KEY_ID_GENERATOR.apply(jwt.getId(), expiresAtStamp)))
             return;
+
         throw new BlueException(UNAUTHORIZED);
     };
 

@@ -46,8 +46,10 @@ import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.common.base.ConstantProcessor.assertVerifyBusinessType;
 import static com.blue.basic.common.base.ConstantProcessor.assertVerifyType;
 import static com.blue.basic.common.message.InternationalProcessor.defaultLanguageIdentity;
+import static com.blue.basic.common.message.InternationalProcessor.parseLanguageIdentity;
 import static com.blue.basic.constant.common.CacheKeyPrefix.VERIFY_TEMPLATE_PRE;
 import static com.blue.basic.constant.common.ResponseElement.*;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.common.Symbol.HYPHEN;
 import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION;
 import static com.blue.basic.constant.common.SyncKey.VERIFY_TEMPLATE_UPDATE_SYNC;
@@ -166,9 +168,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
     private final BiFunction<String, Map<String, VerifyTemplateInfo>, Mono<Map<String, VerifyTemplateInfo>>> TEMPLATE_REDIS_WITH_RETURN_SETTER = (typeIdentity, verifyTemplateInfo) ->
             isNotBlank(typeIdentity) && isNotEmpty(verifyTemplateInfo) ?
                     reactiveStringRedisTemplate.opsForHash().putAll(typeIdentity,
-                                    verifyTemplateInfo.entrySet().stream().filter(e -> isNotNull(e.getValue())).collect(toMap(Map.Entry::getKey, e -> GSON.toJson(e.getValue()), (a, b) -> a)))
-                            .then(reactiveStringRedisTemplate.opsForHash().putAll(typeIdentity,
-                                    verifyTemplateInfo.entrySet().stream().filter(e -> isNotNull(e.getValue())).collect(toMap(Map.Entry::getKey, e -> GSON.toJson(e.getValue()), (a, b) -> a))))
+                                    verifyTemplateInfo.entrySet().stream().filter(e -> isNotBlank(e.getKey()) && isNotNull(e.getValue())).collect(toMap(Map.Entry::getKey, e -> GSON.toJson(e.getValue()), (a, b) -> a)))
                             .then(reactiveStringRedisTemplate.expire(typeIdentity, expireDuration))
                             .then(just(verifyTemplateInfo))
                     :
@@ -187,19 +187,21 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
                         lock = redissonClient.getLock(VERIFY_TEMPLATES_SYNC_KEY_GENERATOR.apply(type, businessType));
 
                         tryLock = lock.tryLock();
-                        if (tryLock) {
+                        if (tryLock)
                             return TEMPLATE_DB_GETTER.apply(type, businessType)
                                     .filter(BlueChecker::isNotEmpty)
                                     .switchIfEmpty(defer(() -> error(() -> new BlueException(INVALID_PARAM))))
                                     .flatMap(verifyTemplateInfo ->
                                             TEMPLATE_REDIS_WITH_RETURN_SETTER.apply(TEMPLATE_CACHE_KEY_GENERATOR.apply(type, businessType), verifyTemplateInfo));
-                        }
 
                         long start = currentTimeMillis();
                         while (!(tryLock = lock.tryLock()) && currentTimeMillis() - start <= defaultMaxWaitingMillis)
                             onSpinWait();
 
-                        return tryLock ? TEMPLATE_REDIS_GETTER.apply(type, businessType) : TEMPLATE_DB_GETTER.apply(type, businessType);
+                        return tryLock ?
+                                TEMPLATE_REDIS_GETTER.apply(type, businessType).switchIfEmpty(defer(() -> TEMPLATE_DB_GETTER.apply(type, businessType)))
+                                :
+                                TEMPLATE_DB_GETTER.apply(type, businessType);
                     } catch (Exception e) {
                         LOGGER.error("handle failed, type = {}, businessType = {}, e = {}", type, businessType, e);
                         throw new BlueException(INTERNAL_SERVER_ERROR);
@@ -304,7 +306,9 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
             alteration = true;
         }
 
-        String language = p.getLanguage();
+        String language = ofNullable(p.getLanguage())
+                .map(l -> lowerCase(parseLanguageIdentity(l)))
+                .orElse(EMPTY_VALUE.value);
         if (isNotBlank(language) && !language.equals(t.getLanguage())) {
             t.setLanguage(language);
             alteration = true;
@@ -586,6 +590,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
         return zip(selectVerifyTemplateMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), query), countVerifyTemplateMonoByCondition(query))
                 .flatMap(tuple2 -> {
                     List<VerifyTemplate> templates = tuple2.getT1();
+                    Long count = tuple2.getT2();
                     return isNotEmpty(templates) ?
                             rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(OPERATORS_GETTER.apply(templates))
                                     .flatMap(memberBasicInfos -> {
@@ -594,9 +599,9 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
                                         return just(templates.stream().map(t ->
                                                 VERIFY_TEMPLATE_2_VERIFY_TEMPLATE_MANAGER_INFO_CONVERTER.apply(t, idAndMemberNameMapping)).collect(toList()));
                                     }).flatMap(configManagerInfos ->
-                                            just(new PageModelResponse<>(configManagerInfos, tuple2.getT2())))
+                                            just(new PageModelResponse<>(configManagerInfos, count)))
                             :
-                            just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
+                            just(new PageModelResponse<>(emptyList(), count));
                 });
     }
 

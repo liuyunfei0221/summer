@@ -513,6 +513,7 @@ public class StyleServiceImpl implements StyleService {
                 countStyleMonoByCondition(styleCondition))
                 .flatMap(tuple2 -> {
                     List<Style> styles = tuple2.getT1();
+                    Long count = tuple2.getT2();
                     return isNotEmpty(styles) ?
                             rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(OPERATORS_GETTER.apply(styles))
                                     .flatMap(memberBasicInfos -> {
@@ -520,9 +521,9 @@ public class StyleServiceImpl implements StyleService {
                                         return just(styles.stream().map(s ->
                                                 styleToStyleManagerInfo(s, idAndMemberNameMapping)).collect(toList()));
                                     }).flatMap(styleManagerInfos ->
-                                            just(new PageModelResponse<>(styleManagerInfos, tuple2.getT2())))
+                                            just(new PageModelResponse<>(styleManagerInfos, count)))
                             :
-                            just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
+                            just(new PageModelResponse<>(emptyList(), count));
                 });
     }
 

@@ -501,7 +501,7 @@ public class RoleServiceImpl implements RoleService {
         return zip(selectRoleMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), roleCondition), countRoleMonoByCondition(roleCondition))
                 .flatMap(tuple2 -> {
                     List<Role> roles = tuple2.getT1();
-
+                    Long count = tuple2.getT2();
                     return isNotEmpty(roles) ?
                             rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(OPERATORS_GETTER.apply(roles))
                                     .flatMap(memberBasicInfos -> {
@@ -509,9 +509,9 @@ public class RoleServiceImpl implements RoleService {
                                         return just(roles.stream().map(r ->
                                                 roleToRoleManagerInfo(r, idAndMemberNameMapping)).collect(toList()));
                                     }).flatMap(resourceManagerInfos ->
-                                            just(new PageModelResponse<>(resourceManagerInfos, tuple2.getT2())))
+                                            just(new PageModelResponse<>(resourceManagerInfos, count)))
                             :
-                            just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
+                            just(new PageModelResponse<>(emptyList(), count));
                 });
     }
 

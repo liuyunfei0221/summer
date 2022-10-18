@@ -678,11 +678,11 @@ public class CityServiceImpl implements CityService {
                 countCityMonoByQuery(query)
         ).flatMap(tuple2 -> {
             List<City> cities = tuple2.getT1();
-
+            Long count = tuple2.getT2();
             return isNotEmpty(cities) ?
-                    just(new PageModelResponse<>(CITIES_2_CITY_INFOS_CONVERTER.apply(cities), tuple2.getT2()))
+                    just(new PageModelResponse<>(CITIES_2_CITY_INFOS_CONVERTER.apply(cities), count))
                     :
-                    just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
+                    just(new PageModelResponse<>(emptyList(), count));
         });
     }
 

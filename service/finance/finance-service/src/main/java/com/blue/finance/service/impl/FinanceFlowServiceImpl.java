@@ -257,13 +257,14 @@ public class FinanceFlowServiceImpl implements FinanceFlowService {
                 countFinanceFlowMonoByMemberId(memberId)
         ).flatMap(tuple2 -> {
             List<FinanceFlow> financeFlows = tuple2.getT1();
+            Long count = tuple2.getT2();
             return isNotEmpty(financeFlows) ?
                     just(financeFlows.stream().map(FINANCE_FLOW_2_FINANCE_FLOW_INFO_CONVERTER)
                             .collect(toList()))
                             .flatMap(financeFlowInfos ->
-                                    just(new PageModelResponse<>(financeFlowInfos, tuple2.getT2())))
+                                    just(new PageModelResponse<>(financeFlowInfos, count)))
                     :
-                    just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
+                    just(new PageModelResponse<>(emptyList(), count));
         });
     }
 
@@ -319,6 +320,7 @@ public class FinanceFlowServiceImpl implements FinanceFlowService {
                 countFinanceFlowMonoByQuery(query)
         ).flatMap(tuple2 -> {
             List<FinanceFlow> financeFlows = tuple2.getT1();
+            Long count = tuple2.getT2();
             return isNotEmpty(financeFlows) ?
                     rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(financeFlows.stream().map(FinanceFlow::getMemberId).collect(toList()))
                             .flatMap(memberBasicInfos -> {
@@ -326,9 +328,9 @@ public class FinanceFlowServiceImpl implements FinanceFlowService {
                                 return just(financeFlows.stream().map(ff ->
                                         FINANCE_FLOW_2_FINANCE_FLOW_MANAGER_INFO_CONVERTER.apply(ff, idAndMemberNameMapping)).collect(toList()));
                             }).flatMap(financeFlowManagerInfos ->
-                                    just(new PageModelResponse<>(financeFlowManagerInfos, tuple2.getT2())))
+                                    just(new PageModelResponse<>(financeFlowManagerInfos, count)))
                     :
-                    just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
+                    just(new PageModelResponse<>(emptyList(), count));
         });
     }
 

@@ -272,6 +272,7 @@ public class EventRecordServiceImpl implements EventRecordService {
         return zip(selectEventRecordMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), eventRecordCondition), countEventRecordMonoByCondition(eventRecordCondition))
                 .flatMap(tuple2 -> {
                     List<EventRecord> eventRecords = tuple2.getT1();
+                    Long count = tuple2.getT2();
                     return isNotEmpty(eventRecords) ?
                             rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(eventRecords.parallelStream().map(EventRecord::getCreator).collect(toList()))
                                     .flatMap(memberBasicInfos -> {
@@ -280,9 +281,9 @@ public class EventRecordServiceImpl implements EventRecordService {
                                                         EVENT_RECORD_2_EVENT_RECORD_INFO_CONVERTER.apply(e, ofNullable(idAndNameMapping.get(e.getCreator())).orElse(EMPTY_VALUE.value)))
                                                 .collect(toList()));
                                     }).flatMap(eventRecordInfos ->
-                                            just(new PageModelResponse<>(eventRecordInfos, tuple2.getT2())))
+                                            just(new PageModelResponse<>(eventRecordInfos, count)))
                             :
-                            just(new PageModelResponse<>(emptyList(), tuple2.getT2()));
+                            just(new PageModelResponse<>(emptyList(), count));
                 });
     }
 

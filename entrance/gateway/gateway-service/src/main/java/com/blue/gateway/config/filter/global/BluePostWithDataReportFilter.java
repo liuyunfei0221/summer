@@ -101,6 +101,9 @@ public final class BluePostWithDataReportFilter implements GlobalFilter, Ordered
     private Mono<String> getResponseBodyAndReport(ServerWebExchange exchange, HttpStatus responseHttpStatus, Publisher<? extends DataBuffer> body, DataEvent dataEvent) {
         ServerHttpResponse response = exchange.getResponse();
 
+        ofNullable(response.getHeaders().getFirst(BlueHeader.RESPONSE_EXTRA.name))
+                .ifPresent(extra -> dataEvent.addData(RESPONSE_EXTRA.key, extra));
+
         return ClientResponse
                 .create(responseHttpStatus, httpMessageReaders)
                 .headers(hs ->
@@ -122,9 +125,6 @@ public final class BluePostWithDataReportFilter implements GlobalFilter, Ordered
         HttpStatus httpStatus = ofNullable(response.getStatusCode()).orElse(OK);
         dataEvent.addData(RESPONSE_STATUS.key, valueOf(httpStatus.value()).intern());
 
-        ofNullable(response.getHeaders().getFirst(BlueHeader.RESPONSE_EXTRA.name))
-                .ifPresent(extra -> dataEvent.addData(RESPONSE_EXTRA.key, extra));
-
         if (ofNullable(exchange.getAttributes().get(EXISTENCE_RESPONSE_BODY.key))
                 .map(b -> (boolean) b).orElse(true)) {
             //noinspection NullableProblems
@@ -132,7 +132,7 @@ public final class BluePostWithDataReportFilter implements GlobalFilter, Ordered
                 @Override
                 public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
                     CachedBodyOutputMessage outputMessage = new CachedBodyOutputMessage(
-                            exchange, exchange.getResponse().getHeaders());
+                            exchange, response.getHeaders());
 
                     return fromPublisher(getResponseBodyAndReport(exchange, httpStatus, body, dataEvent), String.class)
                             .insert(outputMessage, new BodyInserterContext())

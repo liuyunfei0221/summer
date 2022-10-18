@@ -31,7 +31,7 @@ public final class SingleDatabaseWithTablesAttr extends ShardingDatabaseAttr {
         return "SingleDatabaseWithTablesAttr{" +
                 "singleTables=" + singleTables +
                 ", url='" + url + '\'' +
-                ", dataBaseConf='" + dataBaseConf + '\'' +
+                ", databaseConf='" + databaseConf + '\'' +
                 ", username='" + ":)" + '\'' +
                 ", password='" + ":)" + '\'' +
                 ", driverClassName='" + driverClassName + '\'' +
