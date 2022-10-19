@@ -50,4 +50,4 @@ eureka:
 
 websocket:
   direct: false
-  bufferSize: 1024
+  defaultZone: 1024

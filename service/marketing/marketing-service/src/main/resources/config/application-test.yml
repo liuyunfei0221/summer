@@ -226,10 +226,10 @@ message:
 
 
 scheduler:
-  threadCap: 4
-  queuedTaskCap: 4096
+  thread-cap: 4
+  queued-task-cap: 4096
   thread-name-pre: blue-summer-scheduler
-  ttlSeconds: 128
+  ttl-seconds: 128
 
 
 redisson:
@@ -237,30 +237,30 @@ redisson:
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
   address: 101.43.192.155:6379
   password: LiuZhiyi20200805
-  scanInterval: 8000
-  checkSlotsCoverage: false
+  scan-interval: 8000
+  check-slots-coverage: false
   tcp-no-delay: true
-  masterConnectionMinimumIdleSize: 2
-  slaveConnectionMinimumIdleSize: 2
-  masterConnectionPoolSize: 2
-  slaveConnectionPoolSize: 2
-  subscriptionConnectionMinimumIdleSize: 2
-  subscriptionConnectionPoolSize: 2
-  subscriptionsPerConnection: 2
-  subscriptionMode: MASTER
+  master-connection-minimum-idle-size: 2
+  slave-connection-minimum-idle-size: 2
+  master-connection-pool-size: 2
+  slave-connection-pool-size: 2
+  subscription-connection-minimum-idle-size: 2
+  subscription-connection-pool-size: 2
+  subscriptions-per-connection: 2
+  subscription-mode: MASTER
   timeout: 60000
   connect-timeout: 60000
-  idleConnectionTimeout: 32000
-  retryAttempts: 2
-  retryInterval: 4000
+  idle-connection-timeout: 32000
+  retry-attempts: 2
+  retry-interval: 4000
   keep-alive: true
-  dnsMonitoringInterval: -1
-  pingConnectionInterval: 300000
-  executorCorePoolSize: 4
-  executorMaximumPoolSize: 8
-  executorKeepAliveSeconds: 64
-  executorBlockingQueueCapacity: 128
-  maxTryLockWaitingMillis: 10000
+  dns-monitoring-interval: -1
+  ping-connection-interval: 300000
+  executor-core-pool-size: 4
+  executor-maximum-pool-size: 8
+  executor-keep-alive-seconds: 64
+  executor-blocking-queue-capacity: 128
+  max-tryLock-waiting-millis: 10000
 
 
 blocking:
@@ -271,331 +271,331 @@ producers:
   configs:
     refreshRewards:
       services: [ 43.138.111.53:6650 ]
-      enableTls: false
-      tlsTrustCertsFilePath:
-      tlsCertFilePath:
-      tlsKeyFilePath:
-      tlsAllowInsecureConnection:
-      tlsHostnameVerificationEnable:
-      listenerName:
-      operationTimeoutMillis: 30000
-      statsIntervalMillis: 60000
-      ioThreads: 1
-      listenerThreads: 1
-      connectionsPerBroker: 1
-      useTcpNoDelay: true
-      memoryLimitKiloBytes: 512
-      maxConcurrentLookupRequests: 60
-      maxLookupRequest: 50000
-      maxLookupRedirects: 3
-      maxNumberOfRejectedRequestPerConnection: 50
-      keepAliveIntervalMillis: 30000
-      connectionTimeoutMillis: 60000
-      startingBackoffIntervalMillis: 300
-      maxBackoffIntervalMillis: 600
-      enableBusyWait: false
-      clockZoneId: Asia/Shanghai
-      enableTransaction: false
-      enableProxy: false
-      proxyServiceUrl:
-      proxyProtocol: SNI
+      enable-tls: false
+      tlsTrust-certs-file-path:
+      tls-cert-file-path:
+      tls-key-file-path:
+      tls-allow-insecure-connection:
+      tls-hostname-verification-enable:
+      listener-name:
+      operation-timeout-millis: 30000
+      statsInterval-millis: 60000
+      io-threads: 1
+      listener-threads: 1
+      connections-per-broker: 1
+      use-tcp-no-delay: true
+      memory-limit-kilo-bytes: 512
+      max-concurrent-lookup-requests: 60
+      max-lookup-request: 50000
+      max-lookup-redirects: 3
+      max-number-of-rejected-request-per-connection: 50
+      keep-alive-interval-millis: 30000
+      connection-timeout-millis: 60000
+      starting-backoff-interval-millis: 300
+      max-backoff-interval-millis: 600
+      enable-busy-wait: false
+      clock-zone-id: Asia/Shanghai
+      enable-transaction: false
+      enable-proxy: false
+      proxy-service-url:
+      proxy-protocol: SNI
       topic: marketing
-      producerName: refreshRewardsProducer000
-      accessMode: Shared
-      sendTimeoutMillis: 30000
-      maxPendingMessages: 1000
-      blockIfQueueFull: false
-      messageRoutingMode: RoundRobinPartition
-      compressionType: NONE
-      enableBatching: true
-      enableChunking: false
-      batchingMaxPublishDelayMillis: 1000
-      roundRobinRouterBatchingPartitionSwitchFrequency: 2
-      batchingMaxMessages: 512
-      batchingMaxBytes: 512
-      initialSequenceId: 0
-      autoUpdatePartitions: true
-      autoUpdatePartitionsIntervalMillis: 30000
-      enableMultiSchema: false
-      hashingSchemes: [ JavaStringHash ]
-      enableEncrypt: false
-      encryptionKey:
-      producerCryptoFailureAction: FAIL
+      producer-name: refreshRewardsProducer000
+      access-mode: Shared
+      send-timeout-millis: 30000
+      max-pending-messages: 1000
+      block-if-queue-full: false
+      message-routing-mode: RoundRobinPartition
+      compression-type: NONE
+      enable-batching: true
+      enable-chunking: false
+      batching-max-publish-delay-millis: 1000
+      round-robin-router-batching-partition-switch-frequency: 2
+      batching-max-messages: 512
+      batching-max-bytes: 512
+      initial-sequence-id: 0
+      auto-update-partitions: true
+      auto-update-partitions-interval-millis: 30000
+      enable-multi-schema: false
+      hashing-schemes: [ JavaStringHash ]
+      enable-encrypt: false
+      encryption-key:
+      producer-crypto-failure-action: FAIL
     marketing:
       services: [ 43.138.111.53:6650 ]
-      enableTls: false
-      tlsTrustCertsFilePath:
-      tlsCertFilePath:
-      tlsKeyFilePath:
-      tlsAllowInsecureConnection:
-      tlsHostnameVerificationEnable:
-      listenerName:
-      operationTimeoutMillis: 30000
-      statsIntervalMillis: 60000
-      ioThreads: 1
-      listenerThreads: 1
-      connectionsPerBroker: 1
-      useTcpNoDelay: true
-      memoryLimitKiloBytes: 512
-      maxConcurrentLookupRequests: 60
-      maxLookupRequest: 50000
-      maxLookupRedirects: 3
-      maxNumberOfRejectedRequestPerConnection: 50
-      keepAliveIntervalMillis: 30000
-      connectionTimeoutMillis: 60000
-      startingBackoffIntervalMillis: 300
-      maxBackoffIntervalMillis: 600
-      enableBusyWait: false
-      clockZoneId: Asia/Shanghai
-      enableTransaction: false
-      enableProxy: false
-      proxyServiceUrl:
-      proxyProtocol: SNI
+      enable-tls: false
+      tlsTrust-certs-file-path:
+      tls-cert-file-path:
+      tls-key-file-path:
+      tls-allow-insecure-connection:
+      tls-hostname-verification-enable:
+      listener-name:
+      operation-timeout-millis: 30000
+      statsInterval-millis: 60000
+      io-threads: 1
+      listener-threads: 1
+      connections-per-broker: 1
+      use-tcp-no-delay: true
+      memory-limit-kilo-bytes: 512
+      max-concurrent-lookup-requests: 60
+      max-lookup-request: 50000
+      max-lookup-redirects: 3
+      max-number-of-rejected-request-per-connection: 50
+      keep-alive-interval-millis: 30000
+      connection-timeout-millis: 60000
+      starting-backoff-interval-millis: 300
+      max-backoff-interval-millis: 600
+      enable-busy-wait: false
+      clock-zone-id: Asia/Shanghai
+      enable-transaction: false
+      enable-proxy: false
+      proxy-service-url:
+      proxy-protocol: SNI
       topic: marketing
-      producerName: marketingProducer000
-      accessMode: Shared
-      sendTimeoutMillis: 30000
-      maxPendingMessages: 1000
-      blockIfQueueFull: false
-      messageRoutingMode: RoundRobinPartition
-      compressionType: NONE
-      enableBatching: true
-      enableChunking: false
-      batchingMaxPublishDelayMillis: 1000
-      roundRobinRouterBatchingPartitionSwitchFrequency: 2
-      batchingMaxMessages: 512
-      batchingMaxBytes: 512
-      initialSequenceId: 0
-      autoUpdatePartitions: true
-      autoUpdatePartitionsIntervalMillis: 30000
-      enableMultiSchema: false
-      hashingSchemes: [ JavaStringHash ]
-      enableEncrypt: false
-      encryptionKey:
-      producerCryptoFailureAction: FAIL
+      producer-name: marketingProducer000
+      access-mode: Shared
+      send-timeout-millis: 30000
+      max-pending-messages: 1000
+      block-if-queue-full: false
+      message-routing-mode: RoundRobinPartition
+      compression-type: NONE
+      enable-batching: true
+      enable-chunking: false
+      batching-max-publish-delay-millis: 1000
+      round-robin-router-batching-partition-switch-frequency: 2
+      batching-max-messages: 512
+      batching-max-bytes: 512
+      initial-sequence-id: 0
+      auto-update-partitions: true
+      auto-update-partitions-interval-millis: 30000
+      enable-multi-schema: false
+      hashing-schemes: [ JavaStringHash ]
+      enable-encrypt: false
+      encryption-key:
+      producer-crypto-failure-action: FAIL
 
 
 consumers:
   configs:
     refreshRewards:
       services: [ 43.138.111.53:6650 ]
-      enableTls: false
-      tlsTrustCertsFilePath:
-      tlsCertFilePath:
-      tlsKeyFilePath:
-      tlsAllowInsecureConnection:
-      tlsHostnameVerificationEnable:
-      listenerName:
-      operationTimeoutMillis: 30000
-      statsIntervalMillis: 60
-      ioThreads: 1
-      listenerThreads: 1
-      connectionsPerBroker: 2
-      useTcpNoDelay: true
-      memoryLimitKiloBytes: 1024
-      maxConcurrentLookupRequests: 60
-      maxLookupRequest: 1000
-      maxLookupRedirects: 2
-      maxNumberOfRejectedRequestPerConnection: 50
-      keepAliveIntervalMillis: 30000
-      connectionTimeoutMillis: 10000
-      startingBackoffIntervalMillis: 1000
-      maxBackoffIntervalMillis: 30000
-      enableBusyWait: true
-      clockZoneId: Asia/Shanghai
-      enableTransaction: false
-      enableProxy: false
-      proxyServiceUrl:
-      proxyProtocol: SNI
+      enable-tls: false
+      tlsTrust-certs-file-path:
+      tls-cert-file-path:
+      tls-key-file-path:
+      tls-allow-insecure-connection:
+      tls-hostname-verification-enable:
+      listener-name:
+      operation-timeout-millis: 30000
+      statsInterval-millis: 60
+      io-threads: 1
+      listener-threads: 1
+      connections-per-broker: 2
+      use-tcp-no-delay: true
+      memory-limit-kilo-bytes: 1024
+      max-concurrent-lookup-requests: 60
+      max-lookup-request: 1000
+      max-lookup-redirects: 2
+      max-number-of-rejected-request-per-connection: 50
+      keep-alive-interval-millis: 30000
+      connection-timeout-millis: 10000
+      starting-backoff-interval-millis: 1000
+      max-backoff-interval-millis: 30000
+      enable-busy-wait: true
+      clock-zone-id: Asia/Shanghai
+      enable-transaction: false
+      enable-proxy: false
+      proxy-service-url:
+      proxy-protocol: SNI
       topics: [ refreshRewards ]
-      topicsPattern:
-      subscriptionName: refreshRewardsSubscription
-      ackTimeoutMillis: 2000
-      enableAckReceipt: true
-      ackTimeoutTickTimeMillis: 1000
-      negativeAckRedeliveryDelayMillis: 100
-      subscriptionType: Shared
-      subscriptionMode: Durable
-      receiverQueueSize: 1000
-      acknowledgementsGroupTimeMillis: 100
-      replicateSubscriptionState: false
-      maxTotalReceiverQueueSizeAcrossPartitions: 5
-      consumerName: refreshRewardsConsumer000
-      readCompacted: false
-      patternAutoDiscoveryPeriodMillis: 1
-      priorityLevel: 0
-      subscriptionInitialPosition: Latest
-      regexSubscriptionMode: PersistentOnly
-      autoUpdatePartitions: true
-      autoUpdatePartitionsIntervalMillis: 30000
-      batchReceivePolicy: DEFAULT_POLICY
-      enableRetry: true
-      enableBatchIndexAcknowledgment: false
-      maxPendingChunkedMessage: 10
-      autoAckOldestChunkedMessageOnQueueFull: true
-      expireTimeOfIncompleteChunkedMessageMillis: 2000
-      poolMessages: false
-      enableEncrypt: false
-      encryptionKey:
-      consumerCryptoFailureAction: FAIL
-      enableDeadLetter: true
-      deadLetterTopic: refreshRewards
-      retryLetterTopic: refreshRewards
-      maxRedeliverCount: 1000
-      startMessageIdInclusive: false
-      enableBatchReceive: false
-      batchReceiveMaxNumMessages: -1
-      batchReceiveMaxNumBytes: 10485760
-      batchReceiveTimeoutMillis: 100
-      pollDurationMills: 1000
-      workingThreads: 2
-      enableNegativeAcknowledge: true
+      topics-pattern:
+      subscription-name: refreshRewardsSubscription
+      ack-timeout-millis: 2000
+      enable-ack-receipt: true
+      ack-timeout-tick-time-millis: 1000
+      negative-ack-redelivery-delay-millis: 100
+      subscription-type: Shared
+      subscription-mode: Durable
+      receiver-queue-size: 1000
+      acknowledgements-group-time-millis: 100
+      replicate-subscription-state: false
+      max-total-receiver-queue-size-across-partitions: 5
+      consumer-name: refreshRewardsConsumer000
+      read-compacted: false
+      pattern-auto-discovery-period-millis: 1
+      priority-level: 0
+      subscription-initial-position: Latest
+      regex-subscription-mode: PersistentOnly
+      auto-update-partitions: true
+      auto-update-partitions-interval-millis: 30000
+      batch-receive-policy: DEFAULT_POLICY
+      enable-retry: true
+      enable-batch-index-acknowledgment: false
+      max-pending-chunked-message: 10
+      auto-ack-oldest-chunked-message-on-queue-full: true
+      expire-time-of-incomplete-chunked-message-millis: 2000
+      pool-messages: false
+      enable-encrypt: false
+      encryption-key:
+      consumer-crypto-failure-action: FAIL
+      enable-dead-letter: true
+      dead-letter-topic: refreshRewards
+      retry-letter-topic: refreshRewards
+      max-redeliver-count: 1000
+      start-message-id-inclusive: false
+      enable-batch-receive: false
+      batch-receive-max-num-messages: -1
+      batch-receive-max-num-bytes: 10485760
+      batch-receive-timeout-millis: 100
+      poll-duration-mills: 1000
+      working-threads: 2
+      enable-negative-acknowledge: true
     marketing:
       services: [ 43.138.111.53:6650 ]
-      enableTls: false
-      tlsTrustCertsFilePath:
-      tlsCertFilePath:
-      tlsKeyFilePath:
-      tlsAllowInsecureConnection:
-      tlsHostnameVerificationEnable:
-      listenerName:
-      operationTimeoutMillis: 30000
-      statsIntervalMillis: 60
-      ioThreads: 1
-      listenerThreads: 1
-      connectionsPerBroker: 2
-      useTcpNoDelay: true
-      memoryLimitKiloBytes: 1024
-      maxConcurrentLookupRequests: 60
-      maxLookupRequest: 1000
-      maxLookupRedirects: 2
-      maxNumberOfRejectedRequestPerConnection: 50
-      keepAliveIntervalMillis: 30000
-      connectionTimeoutMillis: 10000
-      startingBackoffIntervalMillis: 1000
-      maxBackoffIntervalMillis: 30000
-      enableBusyWait: true
-      clockZoneId: Asia/Shanghai
-      enableTransaction: false
-      enableProxy: false
-      proxyServiceUrl:
-      proxyProtocol: SNI
+      enable-tls: false
+      tlsTrust-certs-file-path:
+      tls-cert-file-path:
+      tls-key-file-path:
+      tls-allow-insecure-connection:
+      tls-hostname-verification-enable:
+      listener-name:
+      operation-timeout-millis: 30000
+      statsInterval-millis: 60
+      io-threads: 1
+      listener-threads: 1
+      connections-per-broker: 2
+      use-tcp-no-delay: true
+      memory-limit-kilo-bytes: 1024
+      max-concurrent-lookup-requests: 60
+      max-lookup-request: 1000
+      max-lookup-redirects: 2
+      max-number-of-rejected-request-per-connection: 50
+      keep-alive-interval-millis: 30000
+      connection-timeout-millis: 10000
+      starting-backoff-interval-millis: 1000
+      max-backoff-interval-millis: 30000
+      enable-busy-wait: true
+      clock-zone-id: Asia/Shanghai
+      enable-transaction: false
+      enable-proxy: false
+      proxy-service-url:
+      proxy-protocol: SNI
       topics: [ marketing ]
-      topicsPattern:
-      subscriptionName: marketingSubscription
-      ackTimeoutMillis: 2000
-      enableAckReceipt: true
-      ackTimeoutTickTimeMillis: 1000
-      negativeAckRedeliveryDelayMillis: 100
-      subscriptionType: Failover
-      subscriptionMode: Durable
-      receiverQueueSize: 1000
-      acknowledgementsGroupTimeMillis: 100
-      replicateSubscriptionState: false
-      maxTotalReceiverQueueSizeAcrossPartitions: 5
-      consumerName: marketingConsumer000
-      readCompacted: false
-      patternAutoDiscoveryPeriodMillis: 1
-      priorityLevel: 0
-      subscriptionInitialPosition: Latest
-      regexSubscriptionMode: PersistentOnly
-      autoUpdatePartitions: true
-      autoUpdatePartitionsIntervalMillis: 30000
-      batchReceivePolicy: DEFAULT_POLICY
-      enableRetry: true
-      enableBatchIndexAcknowledgment: false
-      maxPendingChunkedMessage: 10
-      autoAckOldestChunkedMessageOnQueueFull: true
-      expireTimeOfIncompleteChunkedMessageMillis: 2000
-      poolMessages: false
-      enableEncrypt: false
-      encryptionKey:
-      consumerCryptoFailureAction: FAIL
-      enableDeadLetter: true
-      deadLetterTopic: marketing
-      retryLetterTopic: marketing
-      maxRedeliverCount: 1000
-      startMessageIdInclusive: false
-      enableBatchReceive: false
-      batchReceiveMaxNumMessages: -1
-      batchReceiveMaxNumBytes: 10485760
-      batchReceiveTimeoutMillis: 100
-      pollDurationMills: 1000
-      workingThreads: 2
-      enableNegativeAcknowledge: true
-    requestEvent:
+      topics-pattern:
+      subscription-name: marketingSubscription
+      ack-timeout-millis: 2000
+      enable-ack-receipt: true
+      ack-timeout-tick-time-millis: 1000
+      negative-ack-redelivery-delay-millis: 100
+      subscription-type: Failover
+      subscription-mode: Durable
+      receiver-queue-size: 1000
+      acknowledgements-group-time-millis: 100
+      replicate-subscription-state: false
+      max-total-receiver-queue-size-across-partitions: 5
+      consumer-name: marketingConsumer000
+      read-compacted: false
+      pattern-auto-discovery-period-millis: 1
+      priority-level: 0
+      subscription-initial-position: Latest
+      regex-subscription-mode: PersistentOnly
+      auto-update-partitions: true
+      auto-update-partitions-interval-millis: 30000
+      batch-receive-policy: DEFAULT_POLICY
+      enable-retry: true
+      enable-batch-index-acknowledgment: false
+      max-pending-chunked-message: 10
+      auto-ack-oldest-chunked-message-on-queue-full: true
+      expire-time-of-incomplete-chunked-message-millis: 2000
+      pool-messages: false
+      enable-encrypt: false
+      encryption-key:
+      consumer-crypto-failure-action: FAIL
+      enable-dead-letter: true
+      dead-letter-topic: marketing
+      retry-letter-topic: marketing
+      max-redeliver-count: 1000
+      start-message-id-inclusive: false
+      enable-batch-receive: false
+      batch-receive-max-num-messages: -1
+      batch-receive-max-num-bytes: 10485760
+      batch-receive-timeout-millis: 100
+      poll-duration-mills: 1000
+      working-threads: 2
+      enable-negative-acknowledge: true
+    request-event:
       services: [ 43.138.111.53:6650 ]
-      enableTls: false
-      tlsTrustCertsFilePath:
-      tlsCertFilePath:
-      tlsKeyFilePath:
-      tlsAllowInsecureConnection:
-      tlsHostnameVerificationEnable:
-      listenerName:
-      operationTimeoutMillis: 30000
-      statsIntervalMillis: 60
-      ioThreads: 1
-      listenerThreads: 1
-      connectionsPerBroker: 2
-      useTcpNoDelay: true
-      memoryLimitKiloBytes: 1024
-      maxConcurrentLookupRequests: 60
-      maxLookupRequest: 1000
-      maxLookupRedirects: 2
-      maxNumberOfRejectedRequestPerConnection: 50
-      keepAliveIntervalMillis: 30000
-      connectionTimeoutMillis: 10000
-      startingBackoffIntervalMillis: 1000
-      maxBackoffIntervalMillis: 30000
-      enableBusyWait: true
-      clockZoneId: Asia/Shanghai
-      enableTransaction: false
-      enableProxy: false
-      proxyServiceUrl:
-      proxyProtocol: SNI
+      enable-tls: false
+      tlsTrust-certs-file-path:
+      tls-cert-file-path:
+      tls-key-file-path:
+      tls-allow-insecure-connection:
+      tls-hostname-verification-enable:
+      listener-name:
+      operation-timeout-millis: 30000
+      statsInterval-millis: 60
+      io-threads: 1
+      listener-threads: 1
+      connections-per-broker: 2
+      use-tcp-no-delay: true
+      memory-limit-kilo-bytes: 1024
+      max-concurrent-lookup-requests: 60
+      max-lookup-request: 1000
+      max-lookup-redirects: 2
+      max-number-of-rejected-request-per-connection: 50
+      keep-alive-interval-millis: 30000
+      connection-timeout-millis: 10000
+      starting-backoff-interval-millis: 1000
+      max-backoff-interval-millis: 30000
+      enable-busy-wait: true
+      clock-zone-id: Asia/Shanghai
+      enable-transaction: false
+      enable-proxy: false
+      proxy-service-url:
+      proxy-protocol: SNI
       topics: [ requestEvent ]
-      topicsPattern:
-      subscriptionName: marketingRequestEventSubscription
-      ackTimeoutMillis: 2000
-      enableAckReceipt: true
-      ackTimeoutTickTimeMillis: 1000
-      negativeAckRedeliveryDelayMillis: 100
-      subscriptionType: Failover
-      subscriptionMode: Durable
-      receiverQueueSize: 1000
-      acknowledgementsGroupTimeMillis: 100
-      replicateSubscriptionState: false
-      maxTotalReceiverQueueSizeAcrossPartitions: 5
-      consumerName: marketingRequestEventSubscription
-      readCompacted: false
-      patternAutoDiscoveryPeriodMillis: 1
-      priorityLevel: 0
-      subscriptionInitialPosition: Latest
-      regexSubscriptionMode: PersistentOnly
-      autoUpdatePartitions: true
-      autoUpdatePartitionsIntervalMillis: 30000
-      batchReceivePolicy: DEFAULT_POLICY
-      enableRetry: true
-      enableBatchIndexAcknowledgment: false
-      maxPendingChunkedMessage: 10
-      autoAckOldestChunkedMessageOnQueueFull: true
-      expireTimeOfIncompleteChunkedMessageMillis: 2000
-      poolMessages: false
-      enableEncrypt: false
-      encryptionKey:
-      consumerCryptoFailureAction: FAIL
-      enableDeadLetter: true
-      deadLetterTopic: requestEvent
-      retryLetterTopic: requestEvent
-      maxRedeliverCount: 1000
-      startMessageIdInclusive: false
-      enableBatchReceive: false
-      batchReceiveMaxNumMessages: -1
-      batchReceiveMaxNumBytes: 10485760
-      batchReceiveTimeoutMillis: 100
-      pollDurationMills: 1000
-      workingThreads: 2
-      enableNegativeAcknowledge: true
+      topics-pattern:
+      subscription-name: marketingRequestEventSubscription
+      ack-timeout-millis: 2000
+      enable-ack-receipt: true
+      ack-timeout-tick-time-millis: 1000
+      negative-ack-redelivery-delay-millis: 100
+      subscription-type: Failover
+      subscription-mode: Durable
+      receiver-queue-size: 1000
+      acknowledgements-group-time-millis: 100
+      replicate-subscription-state: false
+      max-total-receiver-queue-size-across-partitions: 5
+      consumer-name: marketingRequestEventSubscription
+      read-compacted: false
+      pattern-auto-discovery-period-millis: 1
+      priority-level: 0
+      subscription-initial-position: Latest
+      regex-subscription-mode: PersistentOnly
+      auto-update-partitions: true
+      auto-update-partitions-interval-millis: 30000
+      batch-receive-policy: DEFAULT_POLICY
+      enable-retry: true
+      enable-batch-index-acknowledgment: false
+      max-pending-chunked-message: 10
+      auto-ack-oldest-chunked-message-on-queue-full: true
+      expire-time-of-incomplete-chunked-message-millis: 2000
+      pool-messages: false
+      enable-encrypt: false
+      encryption-key:
+      consumer-crypto-failure-action: FAIL
+      enable-dead-letter: true
+      dead-letter-topic: requestEvent
+      retry-letter-topic: requestEvent
+      max-redeliver-count: 1000
+      start-message-id-inclusive: false
+      enable-batch-receive: false
+      batch-receive-max-num-messages: -1
+      batch-receive-max-num-bytes: 10485760
+      batch-receive-timeout-millis: 100
+      poll-duration-mills: 1000
+      working-threads: 2
+      enable-negative-acknowledge: true
 
 
 dubbo:

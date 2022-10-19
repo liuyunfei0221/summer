@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  * @author liuyunfei
  */
 @Component
-@ConfigurationProperties(prefix = "qrcode")
+@ConfigurationProperties(prefix = "qr-code")
 public class QrCodeDeploy {
 
     private Long cacheExpiresSecond;

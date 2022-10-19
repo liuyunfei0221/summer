@@ -11,7 +11,7 @@ import java.util.List;
  * @author liuyunfei
  */
 @Component
-@ConfigurationProperties(prefix = "cosfiles")
+@ConfigurationProperties(prefix = "cos-files")
 public class CosFileDeploy {
 
     private String handlerType;

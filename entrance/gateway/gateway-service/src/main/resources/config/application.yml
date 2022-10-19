@@ -46,7 +46,7 @@ spring:
         pool:
           type: ELASTIC
           name: proxy
-          maxConnections: 32
+          max-connections: 32
           acquireTimeout: 4000
           maxIdleTime: 4s
           maxLifeTime: 32s

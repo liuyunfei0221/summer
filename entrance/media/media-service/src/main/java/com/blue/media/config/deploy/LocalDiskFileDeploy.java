@@ -11,7 +11,7 @@ import java.util.List;
  * @author liuyunfei
  */
 @Component
-@ConfigurationProperties(prefix = "ldfiles")
+@ConfigurationProperties(prefix = "ld-files")
 public class LocalDiskFileDeploy {
 
     private String handlerType;

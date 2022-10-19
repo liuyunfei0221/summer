@@ -9,9 +9,8 @@ import org.springframework.stereotype.Component;
  *
  * @author liuyunfei
  */
-@SuppressWarnings("SpellCheckingInspection")
 @Component
-@ConfigurationProperties(prefix = "imagev")
+@ConfigurationProperties(prefix = "image-verify")
 public class ImageVerifyDeploy {
 
     private Integer keyLength;

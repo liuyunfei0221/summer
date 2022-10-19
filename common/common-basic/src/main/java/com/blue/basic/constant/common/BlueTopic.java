@@ -10,62 +10,62 @@ public enum BlueTopic {
     /**
      * verify message Events
      */
-    VERIFY_MESSAGE("verifyMessage"),
+    VERIFY_MESSAGE("verify-message"),
 
     /**
      * Illegal ip or jwt prefix mark
      */
-    ILLEGAL_MARK("illegalMark"),
+    ILLEGAL_MARK("illegal-mark"),
 
     /**
      * Data reporting channel/pre-reporting and post-reporting are common
      */
-    REQUEST_EVENT("requestEvent"),
+    REQUEST_EVENT("request-event"),
 
     /**
      * invalid local access
      */
-    INVALID_LOCAL_ACCESS("invalidLocalAccess"),
+    INVALID_LOCAL_ACCESS("invalid-local-access"),
 
     /**
      * invalid global auth
      */
-    INVALID_AUTH("invalidAuth"),
+    INVALID_AUTH("invalid-auth"),
 
     /**
      * System authority infos Refresh
      */
-    SYSTEM_AUTHORITY_INFOS_REFRESH("systemAuthorityInfosRefresh"),
+    SYSTEM_AUTHORITY_INFOS_REFRESH("system-authority-infos-refresh"),
 
     /**
      * finance flow
      */
-    FINANCE_FLOW("financeFlow"),
+    FINANCE_FLOW("finance-flow"),
 
     /**
      * order summary insert
      */
-    ORDER_SUMMARY_INSERT("orderSummaryInsert"),
+    ORDER_SUMMARY_INSERT("order-summary-insert"),
 
     /**
      * order summary update
      */
-    ORDER_SUMMARY_UPDATE("orderSummaryUpdate"),
+    ORDER_SUMMARY_UPDATE("order-summary-update"),
 
     /**
      * Region infos invalid
      */
-    REGION_INFOS_INVALID("regionInfosInvalid"),
+    REGION_INFOS_INVALID("region-infos-invalid"),
 
     /**
      * Refresh the sign-in data expiration time
      */
-    SIGN_EXPIRE("signExpire"),
+    SIGN_EXPIRE("sign-expire"),
 
     /**
      * Refresh rewards
      */
-    REWARDS_REFRESH("refreshRewards"),
+    REWARDS_REFRESH("refresh-rewards"),
 
     /**
      * Marketing/Promotional Events
@@ -75,17 +75,17 @@ public enum BlueTopic {
     /**
      * shine insert event
      */
-    SHINE_INSERT("shineInsert"),
+    SHINE_INSERT("shine-insert"),
 
     /**
      * shine update event
      */
-    SHINE_UPDATE("shineUpdate"),
+    SHINE_UPDATE("shine-update"),
 
     /**
      * shine delete event
      */
-    SHINE_DELETE("shineDelete");
+    SHINE_DELETE("shine-delete");
 
     /**
      * topic name

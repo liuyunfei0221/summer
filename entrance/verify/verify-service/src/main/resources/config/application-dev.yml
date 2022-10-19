@@ -42,17 +42,17 @@ eureka:
 
 
 cors:
-  allowedOrigins: [ "*" ]
-  allowedMethods: [ "*" ]
-  allowedHeaders: [ "*" ]
-  exposedHeaders: [ ]
-  allowCredentials: true
-  maxAgeSeconds: 1728000
-  allowedOriginPatterns: [ /** ]
+  allowed-origins: [ "*" ]
+  allowed-methods: [ "*" ]
+  allowed-headers: [ "*" ]
+  exposed-headers: [ ]
+  allow-credentials: true
+  max-age-seconds: 1728000
+  allowed-origin-patterns: [ /** ]
 
 
 web:
-  maxInMemorySize: 4096
+  max-in-memory-size: 4096
 
 
 identity:
@@ -116,10 +116,10 @@ message:
 
 
 scheduler:
-  threadCap: 4
-  queuedTaskCap: 4096
+  thread-cap: 4
+  queued-task-cap: 4096
   thread-name-pre: blue-summer-scheduler
-  ttlSeconds: 128
+  ttl-seconds: 128
 
 
 cache:
@@ -155,47 +155,47 @@ redisson:
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
   address: 172.16.207.11:6379
   password:
-  scanInterval: 8000
-  checkSlotsCoverage: false
+  scan-interval: 8000
+  check-slots-coverage: false
   tcp-no-delay: true
-  masterConnectionMinimumIdleSize: 2
-  slaveConnectionMinimumIdleSize: 2
-  masterConnectionPoolSize: 2
-  slaveConnectionPoolSize: 2
-  subscriptionConnectionMinimumIdleSize: 2
-  subscriptionConnectionPoolSize: 2
-  subscriptionsPerConnection: 2
-  subscriptionMode: MASTER
+  master-connection-minimum-idle-size: 2
+  slave-connection-minimum-idle-size: 2
+  master-connection-pool-size: 2
+  slave-connection-pool-size: 2
+  subscription-connection-minimum-idle-size: 2
+  subscription-connection-pool-size: 2
+  subscriptions-per-connection: 2
+  subscription-mode: MASTER
   timeout: 60000
   connect-timeout: 60000
-  idleConnectionTimeout: 32000
-  retryAttempts: 2
-  retryInterval: 4000
+  idle-connection-timeout: 32000
+  retry-attempts: 2
+  retry-interval: 4000
   keep-alive: true
-  dnsMonitoringInterval: -1
-  pingConnectionInterval: 300000
-  executorCorePoolSize: 4
-  executorMaximumPoolSize: 8
-  executorKeepAliveSeconds: 64
-  executorBlockingQueueCapacity: 128
-  maxTryLockWaitingMillis: 10000
+  dns-monitoring-interval: -1
+  ping-connection-interval: 300000
+  executor-core-pool-size: 4
+  executor-maximum-pool-size: 8
+  executor-keep-alive-seconds: 64
+  executor-blocking-queue-capacity: 128
+  max-tryLock-waiting-millis: 10000
 
 
 limit:
-  replenishRate: 1
-  burstCapacity: 3
+  replenish-rate: 1
+  burst-capacity: 3
 
 
 risk:
-  illegalExpiresSecond: 10
+  illegal-expires-second: 10
 
 
 request:
-  validContentTypes: [ application/json ]
-  maxUriLength: 256
-  maxHeaderCount: 16
-  maxHeaderLength: 2048
-  maxContentLength: 2048
+  valid-content-types: [ application/json ]
+  max-uri-length: 256
+  max-header-count: 16
+  max-header-length: 2048
+  max-content-length: 2048
 
 
 dubbo:
@@ -245,229 +245,229 @@ dubbo:
 
 pulsar:
   services: [ 172.16.207.11:6650 ]
-  enableTls: false
-  tlsTrustCertsFilePath:
-  tlsCertFilePath:
-  tlsKeyFilePath:
-  tlsAllowInsecureConnection:
-  tlsHostnameVerificationEnable:
-  listenerName:
-  operationTimeoutMillis: 30000
-  statsIntervalMillis: 60000
-  ioThreads: 1
-  listenerThreads: 1
-  connectionsPerBroker: 1
-  useTcpNoDelay: true
-  memoryLimitKiloBytes: 512
-  maxConcurrentLookupRequests: 60
-  maxLookupRequest: 50000
-  maxLookupRedirects: 3
-  maxNumberOfRejectedRequestPerConnection: 50
-  keepAliveIntervalMillis: 30000
-  connectionTimeoutMillis: 60000
-  startingBackoffIntervalMillis: 300
-  maxBackoffIntervalMillis: 600
-  enableBusyWait: false
-  clockZoneId: Asia/Shanghai
-  enableTransaction: false
-  enableProxy: false
-  proxyServiceUrl:
-  proxyProtocol: SNI
+  enable-tls: false
+  tlsTrust-certs-file-path:
+  tls-cert-file-path:
+  tls-key-file-path:
+  tls-allow-insecure-connection:
+  tls-hostname-verification-enable:
+  listener-name:
+  operation-timeout-millis: 30000
+  statsInterval-millis: 60000
+  io-threads: 1
+  listener-threads: 1
+  connections-per-broker: 1
+  use-tcp-no-delay: true
+  memory-limit-kilo-bytes: 512
+  max-concurrent-lookup-requests: 60
+  max-lookup-request: 50000
+  max-lookup-redirects: 3
+  max-number-of-rejected-request-per-connection: 50
+  keep-alive-interval-millis: 30000
+  connection-timeout-millis: 60000
+  starting-backoff-interval-millis: 300
+  max-backoff-interval-millis: 600
+  enable-busy-wait: false
+  clock-zone-id: Asia/Shanghai
+  enable-transaction: false
+  enable-proxy: false
+  proxy-service-url:
+  proxy-protocol: SNI
 
 
 producers:
   configs:
-    requestEvent:
+    request-event:
       topic: requestEvent
-      producerName: verifyRequestEventProducer000
-      accessMode: Shared
-      sendTimeoutMillis: 30000
-      maxPendingMessages: 1000
-      blockIfQueueFull: false
-      messageRoutingMode: RoundRobinPartition
-      compressionType: NONE
-      enableBatching: true
-      enableChunking: false
-      batchingMaxPublishDelayMillis: 1000
-      roundRobinRouterBatchingPartitionSwitchFrequency: 2
-      batchingMaxMessages: 512
-      batchingMaxBytes: 512
-      initialSequenceId: 0
-      autoUpdatePartitions: true
-      autoUpdatePartitionsIntervalMillis: 30000
-      enableMultiSchema: false
-      hashingSchemes: [ JavaStringHash ]
-      enableEncrypt: false
-      encryptionKey:
-      producerCryptoFailureAction: FAIL
+      producer-name: verifyRequestEventProducer000
+      access-mode: Shared
+      send-timeout-millis: 30000
+      max-pending-messages: 1000
+      block-if-queue-full: false
+      message-routing-mode: RoundRobinPartition
+      compression-type: NONE
+      enable-batching: true
+      enable-chunking: false
+      batching-max-publish-delay-millis: 1000
+      round-robin-router-batching-partition-switch-frequency: 2
+      batching-max-messages: 512
+      batching-max-bytes: 512
+      initial-sequence-id: 0
+      auto-update-partitions: true
+      auto-update-partitions-interval-millis: 30000
+      enable-multi-schema: false
+      hashing-schemes: [ JavaStringHash ]
+      enable-encrypt: false
+      encryption-key:
+      producer-crypto-failure-action: FAIL
     verifyMessage:
       topic: verifyMessage
-      producerName: verifyMessageProducer000
-      accessMode: Shared
-      sendTimeoutMillis: 30000
-      maxPendingMessages: 1000
-      blockIfQueueFull: false
-      messageRoutingMode: RoundRobinPartition
-      compressionType: NONE
-      enableBatching: true
-      enableChunking: false
-      batchingMaxPublishDelayMillis: 1000
-      roundRobinRouterBatchingPartitionSwitchFrequency: 2
-      batchingMaxMessages: 512
-      batchingMaxBytes: 512
-      initialSequenceId: 0
-      autoUpdatePartitions: true
-      autoUpdatePartitionsIntervalMillis: 30000
-      enableMultiSchema: false
-      hashingSchemes: [ JavaStringHash ]
-      enableEncrypt: false
-      encryptionKey:
-      producerCryptoFailureAction: FAIL
+      producer-name: verifyMessageProducer000
+      access-mode: Shared
+      send-timeout-millis: 30000
+      max-pending-messages: 1000
+      block-if-queue-full: false
+      message-routing-mode: RoundRobinPartition
+      compression-type: NONE
+      enable-batching: true
+      enable-chunking: false
+      batching-max-publish-delay-millis: 1000
+      round-robin-router-batching-partition-switch-frequency: 2
+      batching-max-messages: 512
+      batching-max-bytes: 512
+      initial-sequence-id: 0
+      auto-update-partitions: true
+      auto-update-partitions-interval-millis: 30000
+      enable-multi-schema: false
+      hashing-schemes: [ JavaStringHash ]
+      enable-encrypt: false
+      encryption-key:
+      producer-crypto-failure-action: FAIL
 
 
 consumers:
   configs:
-    illegalMark:
+    illegal-mark:
       topics: [ illegalMark ]
-      topicsPattern:
-      subscriptionName: illegalMarkSubscription
-      ackTimeoutMillis: 2000
-      enableAckReceipt: true
-      ackTimeoutTickTimeMillis: 1000
-      negativeAckRedeliveryDelayMillis: 100
-      subscriptionType: Failover
-      subscriptionMode: Durable
-      receiverQueueSize: 1000
-      acknowledgementsGroupTimeMillis: 100
-      replicateSubscriptionState: false
-      maxTotalReceiverQueueSizeAcrossPartitions: 5
-      consumerName: verifyIllegalMarkConsumer000
-      readCompacted: false
-      patternAutoDiscoveryPeriodMillis: 1
-      priorityLevel: 0
-      subscriptionInitialPosition: Latest
-      regexSubscriptionMode: PersistentOnly
-      autoUpdatePartitions: true
-      autoUpdatePartitionsIntervalMillis: 30000
-      batchReceivePolicy: DEFAULT_POLICY
-      enableRetry: true
-      enableBatchIndexAcknowledgment: false
-      maxPendingChunkedMessage: 10
-      autoAckOldestChunkedMessageOnQueueFull: true
-      expireTimeOfIncompleteChunkedMessageMillis: 2000
-      poolMessages: false
-      enableEncrypt: false
-      encryptionKey:
-      consumerCryptoFailureAction: FAIL
-      enableDeadLetter: true
-      deadLetterTopic: illegalMark
-      retryLetterTopic: illegalMark
-      maxRedeliverCount: 1000
-      startMessageIdInclusive: false
-      enableBatchReceive: false
-      batchReceiveMaxNumMessages: -1
-      batchReceiveMaxNumBytes: 10485760
-      batchReceiveTimeoutMillis: 100
-      pollDurationMills: 1000
-      workingThreads: 2
-      enableNegativeAcknowledge: true
+      topics-pattern:
+      subscription-name: illegalMarkSubscription
+      ack-timeout-millis: 2000
+      enable-ack-receipt: true
+      ack-timeout-tick-time-millis: 1000
+      negative-ack-redelivery-delay-millis: 100
+      subscription-type: Failover
+      subscription-mode: Durable
+      receiver-queue-size: 1000
+      acknowledgements-group-time-millis: 100
+      replicate-subscription-state: false
+      max-total-receiver-queue-size-across-partitions: 5
+      consumer-name: verifyIllegalMarkConsumer000
+      read-compacted: false
+      pattern-auto-discovery-period-millis: 1
+      priority-level: 0
+      subscription-initial-position: Latest
+      regex-subscription-mode: PersistentOnly
+      auto-update-partitions: true
+      auto-update-partitions-interval-millis: 30000
+      batch-receive-policy: DEFAULT_POLICY
+      enable-retry: true
+      enable-batch-index-acknowledgment: false
+      max-pending-chunked-message: 10
+      auto-ack-oldest-chunked-message-on-queue-full: true
+      expire-time-of-incomplete-chunked-message-millis: 2000
+      pool-messages: false
+      enable-encrypt: false
+      encryption-key:
+      consumer-crypto-failure-action: FAIL
+      enable-dead-letter: true
+      dead-letter-topic: illegalMark
+      retry-letter-topic: illegalMark
+      max-redeliver-count: 1000
+      start-message-id-inclusive: false
+      enable-batch-receive: false
+      batch-receive-max-num-messages: -1
+      batch-receive-max-num-bytes: 10485760
+      batch-receive-timeout-millis: 100
+      poll-duration-mills: 1000
+      working-threads: 2
+      enable-negative-acknowledge: true
     verifyMessage:
       topics: [ verifyMessage ]
-      topicsPattern:
-      subscriptionName: verifyMessageSubscription
-      ackTimeoutMillis: 2000
-      enableAckReceipt: true
-      ackTimeoutTickTimeMillis: 1000
-      negativeAckRedeliveryDelayMillis: 100
-      subscriptionType: Failover
-      subscriptionMode: Durable
-      receiverQueueSize: 1000
-      acknowledgementsGroupTimeMillis: 100
-      replicateSubscriptionState: false
-      maxTotalReceiverQueueSizeAcrossPartitions: 5
-      consumerName: verifyMessageConsumer000
-      readCompacted: false
-      patternAutoDiscoveryPeriodMillis: 1
-      priorityLevel: 0
-      subscriptionInitialPosition: Latest
-      regexSubscriptionMode: PersistentOnly
-      autoUpdatePartitions: true
-      autoUpdatePartitionsIntervalMillis: 30000
-      batchReceivePolicy: DEFAULT_POLICY
-      enableRetry: true
-      enableBatchIndexAcknowledgment: false
-      maxPendingChunkedMessage: 10
-      autoAckOldestChunkedMessageOnQueueFull: true
-      expireTimeOfIncompleteChunkedMessageMillis: 2000
-      poolMessages: false
-      enableMessageListener: false
-      enableConsumerEventListener: false
-      enableIntercept: false
+      topics-pattern:
+      subscription-name: verifyMessageSubscription
+      ack-timeout-millis: 2000
+      enable-ack-receipt: true
+      ack-timeout-tick-time-millis: 1000
+      negative-ack-redelivery-delay-millis: 100
+      subscription-type: Failover
+      subscription-mode: Durable
+      receiver-queue-size: 1000
+      acknowledgements-group-time-millis: 100
+      replicate-subscription-state: false
+      max-total-receiver-queue-size-across-partitions: 5
+      consumer-name: verifyMessageConsumer000
+      read-compacted: false
+      pattern-auto-discovery-period-millis: 1
+      priority-level: 0
+      subscription-initial-position: Latest
+      regex-subscription-mode: PersistentOnly
+      auto-update-partitions: true
+      auto-update-partitions-interval-millis: 30000
+      batch-receive-policy: DEFAULT_POLICY
+      enable-retry: true
+      enable-batch-index-acknowledgment: false
+      max-pending-chunked-message: 10
+      auto-ack-oldest-chunked-message-on-queue-full: true
+      expire-time-of-incomplete-chunked-message-millis: 2000
+      pool-messages: false
+      enable-message-listener: false
+      enable-consumer-event-listener: false
+      enable-intercept: false
       interceptors:
-      enableEncrypt: false
-      encryptionKey:
-      consumerCryptoFailureAction: FAIL
-      enableDeadLetter: true
-      deadLetterTopic: verifyMessage
-      retryLetterTopic: verifyMessage
-      maxRedeliverCount: 1000
-      startMessageIdInclusive: false
-      enableBatchReceive: false
-      batchReceiveMaxNumMessages: -1
-      batchReceiveMaxNumBytes: 10485760
-      batchReceiveTimeoutMillis: 100
-      pollDurationMills: 1000
-      workingThreads: 2
-      enableNegativeAcknowledge: true
+      enable-encrypt: false
+      encryption-key:
+      consumer-crypto-failure-action: FAIL
+      enable-dead-letter: true
+      dead-letter-topic: verifyMessage
+      retry-letter-topic: verifyMessage
+      max-redeliver-count: 1000
+      start-message-id-inclusive: false
+      enable-batch-receive: false
+      batch-receive-max-num-messages: -1
+      batch-receive-max-num-bytes: 10485760
+      batch-receive-timeout-millis: 100
+      poll-duration-mills: 1000
+      working-threads: 2
+      enable-negative-acknowledge: true
 
 
 verify:
-  keyLength: 16
-  randomType: ALPHANUMERIC
-  verifyLength: 16
-  minLength: 4
-  maxLength: 32
-  expiresMillis: 300000
+  key-length: 16
+  random-type: ALPHANUMERIC
+  verify-length: 16
+  min-length: 4
+  max-length: 32
+  expires-millis: 300000
   repeatable: true
 
 
-imagev:
-  keyLength: 16
-  keyRandomType: ALPHANUMERIC
-  randomType: ALPHANUMERIC
-  imageType: png
-  verifyLength: 7
-  expiresMillis: 300000
+image-verify:
+  key-length: 16
+  key-random-type: ALPHANUMERIC
+  random-type: ALPHANUMERIC
+  image-type: png
+  verify-length: 7
+  expires-millis: 300000
   allow: 10
-  sendIntervalMillis: 30000
+  send-interval-millis: 30000
 
-smsv:
-  verifyLength: 7
-  expiresMillis: 300000
+sms-verify:
+  verify-length: 7
+  expires-millis: 300000
   allow: 1
-  sendIntervalMillis: 10000
+  send-interval-millis: 10000
 
-mailv:
-  verifyLength: 7
-  expiresMillis: 300000
+mail-verify:
+  verify-length: 7
+  expires-millis: 300000
   allow: 1
-  sendIntervalMillis: 10000
+  send-interval-millis: 10000
 
 image:
   border: true
-  borderColor: green
-  borderThickness: 1
-  producerImpl: com.google.code.kaptcha.impl.DefaultKaptcha
-  textProducerImpl: com.google.code.kaptcha.text.impl.DefaultTextCreator
-  textProducerChar: blue summer
-  textProducerCharLength: 5
-  textProducerFontNames: Arial,Courier
-  textProducerFontSize: 40
-  textProducerFontColor: cyan
-  textProducerCharSpace: 2
-  noiseImpl: com.google.code.kaptcha.impl.DefaultNoise
-  noiseColor: cyan
-  obscurificatorImpl: com.google.code.kaptcha.impl.WaterRipple
+  border-color: green
+  border-thickness: 1
+  producer-impl: com.google.code.kaptcha.impl.DefaultKaptcha
+  text-producer-impl: com.google.code.kaptcha.text.impl.DefaultTextCreator
+  text-producer-char: blue summer
+  text-producer-char-length: 5
+  text-producer-font-names: Arial,Courier
+  text-producer-font-size: 40
+  text-producer-font-color: cyan
+  text-producer-char-space: 2
+  noise-impl: com.google.code.kaptcha.impl.DefaultNoise
+  noise-color: cyan
+  obscurificator-impl: com.google.code.kaptcha.impl.WaterRipple
   wordImpl: com.google.code.kaptcha.text.impl.DefaultWordRenderer
   backgroundImpl: com.google.code.kaptcha.impl.DefaultBackground
   backgroundClearFrom: red
@@ -477,15 +477,15 @@ image:
 
 turing:
   allow: 5
-  intervalMillis: 12000000
+  interval-millis: 12000000
   targetVerifyTypes: [ SMS,MAIL ]
 
 vtemplate:
-  cacheExpiresSecond: 21600
+  cache-expires-second: 21600
 
 
 sender:
-  smtpAttrs:
+  smtp-attrs:
     - user: yunfei0221@outlook.com
       password: Fei19890116
       props:
@@ -501,11 +501,11 @@ sender:
   keep-alive-seconds: 64
   blocking-queue-capacity: 2048
   thread-name-pre: blue-mail-sender
-  bufferSize: 2
-  throwableForRetry: [ jakarta.mail.FolderClosedException ]
-  retryTimes: 1
+  defaultZone: 2
+  throwable-forRetry: [ jakarta.mail.FolderClosedException ]
+  retry-times: 1
   withDKIM: false
-  domainKeyFile: classpath:dkim/selector1.pem
+  domain-key-file: classpath:dkim/selector1.pem
   domain: outlook.com
   selector: selector1
 

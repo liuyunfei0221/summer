@@ -242,10 +242,10 @@ message:
 
 
 scheduler:
-  threadCap: 4
-  queuedTaskCap: 4096
+  thread-cap: 4
+  queued-task-cap: 4096
   thread-name-pre: blue-summer-scheduler
-  ttlSeconds: 128
+  ttl-seconds: 128
 
 
 redisson:
@@ -253,43 +253,43 @@ redisson:
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
   address: 43.138.111.53:6379
   password: LiuZhiyi20200805
-  scanInterval: 8000
-  checkSlotsCoverage: false
+  scan-interval: 8000
+  check-slots-coverage: false
   tcp-no-delay: true
-  masterConnectionMinimumIdleSize: 2
-  slaveConnectionMinimumIdleSize: 2
-  masterConnectionPoolSize: 2
-  slaveConnectionPoolSize: 2
-  subscriptionConnectionMinimumIdleSize: 2
-  subscriptionConnectionPoolSize: 2
-  subscriptionsPerConnection: 2
-  subscriptionMode: MASTER
+  master-connection-minimum-idle-size: 2
+  slave-connection-minimum-idle-size: 2
+  master-connection-pool-size: 2
+  slave-connection-pool-size: 2
+  subscription-connection-minimum-idle-size: 2
+  subscription-connection-pool-size: 2
+  subscriptions-per-connection: 2
+  subscription-mode: MASTER
   timeout: 60000
   connect-timeout: 60000
-  idleConnectionTimeout: 32000
-  retryAttempts: 2
-  retryInterval: 4000
+  idle-connection-timeout: 32000
+  retry-attempts: 2
+  retry-interval: 4000
   keep-alive: true
-  dnsMonitoringInterval: -1
-  pingConnectionInterval: 300000
-  executorCorePoolSize: 4
-  executorMaximumPoolSize: 8
-  executorKeepAliveSeconds: 64
-  executorBlockingQueueCapacity: 128
-  maxTryLockWaitingMillis: 10000
+  dns-monitoring-interval: -1
+  ping-connection-interval: 300000
+  executor-core-pool-size: 4
+  executor-maximum-pool-size: 8
+  executor-keep-alive-seconds: 64
+  executor-blocking-queue-capacity: 128
+  max-tryLock-waiting-millis: 10000
 
 
 rest:
-  maxConnections: 64
-  workerCount: 64
-  useGlobalResources: false
-  connectTimeoutMillis: 7000
-  useTcpNoDelay: false
+  max-connections: 64
+  worker-count: 64
+  use-global-resources: false
+  connect-timeout-millis: 7000
+  use-tcp-no-delay: false
   protocols: [ HTTP11,H2,H2C ]
-  responseTimeoutMillis: 3000
-  readTimeoutMillis: 3000
-  writeTimeoutMillis: 3000
-  maxByteInMemorySize: 1048576
+  response-timeout-millis: 3000
+  read-timeout-millis: 3000
+  write-timeout-millis: 3000
+  max-byte-in-memory-size: 1048576
 
 
 dubbo:

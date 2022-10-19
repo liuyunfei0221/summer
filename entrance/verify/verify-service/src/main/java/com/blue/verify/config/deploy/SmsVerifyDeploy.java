@@ -8,9 +8,8 @@ import org.springframework.stereotype.Component;
  *
  * @author liuyunfei
  */
-@SuppressWarnings("SpellCheckingInspection")
 @Component
-@ConfigurationProperties(prefix = "smsv")
+@ConfigurationProperties(prefix = "sms-verify")
 public class SmsVerifyDeploy {
 
     private Integer verifyLength;

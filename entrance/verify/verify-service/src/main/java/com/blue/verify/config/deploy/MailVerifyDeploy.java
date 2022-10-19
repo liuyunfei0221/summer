@@ -8,9 +8,8 @@ import org.springframework.stereotype.Component;
  *
  * @author liuyunfei
  */
-@SuppressWarnings("SpellCheckingInspection")
 @Component
-@ConfigurationProperties(prefix = "mailv")
+@ConfigurationProperties(prefix = "mail-verify")
 public class MailVerifyDeploy {
 
     private Integer verifyLength;

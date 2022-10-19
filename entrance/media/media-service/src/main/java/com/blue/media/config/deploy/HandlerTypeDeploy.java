@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  * @author liuyunfei
  */
 @Component
-@ConfigurationProperties(prefix = "handlertype")
+@ConfigurationProperties(prefix = "handler-type")
 public class HandlerTypeDeploy {
 
     private String type;
