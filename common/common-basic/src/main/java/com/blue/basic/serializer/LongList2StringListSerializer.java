@@ -16,7 +16,7 @@ import static java.util.stream.Collectors.toList;
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class AsStringsSerializer extends JsonSerializer<List<Long>> {
+public final class LongList2StringListSerializer extends JsonSerializer<List<Long>> {
 
     @Override
     public void serialize(List<Long> value, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {

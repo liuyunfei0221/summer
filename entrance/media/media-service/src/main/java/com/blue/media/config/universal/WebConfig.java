@@ -2,7 +2,6 @@ package com.blue.media.config.universal;
 
 import com.blue.media.config.deploy.RequestAttributeDeploy;
 import com.blue.media.config.deploy.WebDeploy;
-import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.codec.HttpMessageReader;
@@ -14,7 +13,6 @@ import org.springframework.web.reactive.config.WebFluxConfigurer;
 
 import java.util.List;
 
-import static com.blue.basic.common.base.CommonFunctions.HTTP_MESSAGE_CONVERTERS;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Optional.ofNullable;
 import static reactor.core.scheduler.Schedulers.single;
@@ -35,11 +33,6 @@ public class WebConfig implements WebFluxConfigurer {
     public WebConfig(WebDeploy webDeploy, RequestAttributeDeploy requestAttributeDeploy) {
         this.webDeploy = webDeploy;
         this.requestAttributeDeploy = requestAttributeDeploy;
-    }
-
-    @Bean
-    HttpMessageConverters httpMessageConverters() {
-        return HTTP_MESSAGE_CONVERTERS;
     }
 
     @Override

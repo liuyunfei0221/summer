@@ -14,7 +14,7 @@ import static com.blue.basic.common.base.BlueChecker.isNotNull;
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class AsStringDeserializer extends JsonDeserializer<Long> {
+public final class Long2StringDeserializer extends JsonDeserializer<Long> {
 
     @Override
     public Long deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {

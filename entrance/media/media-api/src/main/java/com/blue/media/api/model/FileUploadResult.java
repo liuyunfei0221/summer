@@ -1,5 +1,8 @@
 package com.blue.media.api.model;
 
+import com.blue.basic.serializer.Long2StringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 
 /**
@@ -27,6 +30,7 @@ public final class FileUploadResult implements Serializable {
 
     private String message;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long length;
 
     public FileUploadResult() {

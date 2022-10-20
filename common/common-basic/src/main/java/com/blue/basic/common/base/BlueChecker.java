@@ -66,6 +66,18 @@ public final class BlueChecker {
         return list == null || list.size() < 1;
     }
 
+
+    /**
+     * check not an empty list
+     *
+     * @param array
+     * @param <T>
+     * @return
+     */
+    public static <T> boolean isNotEmpty(T[] array) {
+        return array != null && array.length > 0;
+    }
+
     /**
      * check not an empty list
      *

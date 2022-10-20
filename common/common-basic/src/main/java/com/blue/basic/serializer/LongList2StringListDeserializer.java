@@ -16,9 +16,9 @@ import static com.blue.basic.common.base.BlueChecker.isNotNull;
  * @author liuyunfei
  */
 @SuppressWarnings({"unchecked", "unused"})
-public final class AsStringsDeserializer extends JsonDeserializer<List<Long>> {
+public final class LongList2StringListDeserializer extends JsonDeserializer<List<Long>> {
 
-    private static final ListTypeReference REFERENCE = new ListTypeReference();
+    private static final LongListTypeReference REFERENCE = new LongListTypeReference();
 
     @Override
     public List<Long> deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
@@ -29,9 +29,7 @@ public final class AsStringsDeserializer extends JsonDeserializer<List<Long>> {
         return null;
     }
 
-    private static class ListTypeReference extends TypeReference<List<Long>> {
-        private ListTypeReference() {
-        }
+    private static class LongListTypeReference extends TypeReference<List<Long>> {
     }
 
 }
