@@ -6,14 +6,15 @@ import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.codec.HttpMessageReader;
+import org.springframework.http.codec.HttpMessageWriter;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.http.codec.multipart.DefaultPartHttpMessageReader;
 import org.springframework.http.codec.multipart.MultipartHttpMessageReader;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 
 import java.util.List;
 
+import static com.blue.basic.common.base.CommonFunctions.HTTP_MESSAGE_CONVERTERS;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Optional.ofNullable;
 import static reactor.core.scheduler.Schedulers.single;
@@ -38,7 +39,7 @@ public class WebConfig implements WebFluxConfigurer {
 
     @Bean
     HttpMessageConverters httpMessageConverters() {
-        return new HttpMessageConverters(new MappingJackson2HttpMessageConverter());
+        return HTTP_MESSAGE_CONVERTERS;
     }
 
     @Override
@@ -70,6 +71,11 @@ public class WebConfig implements WebFluxConfigurer {
     @Bean
     List<HttpMessageReader<?>> httpMessageReaders(ServerCodecConfigurer configurer) {
         return configurer.getReaders();
+    }
+
+    @Bean
+    List<HttpMessageWriter<?>> httpMessageWriters(ServerCodecConfigurer configurer) {
+        return configurer.getWriters();
     }
 
 }

@@ -1,10 +1,5 @@
 package com.blue.article.api.model;
 
-import com.blue.basic.serializer.IdentityDeserializer;
-import com.blue.basic.serializer.IdentitySerializer;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -18,14 +13,10 @@ public final class ArticleInfo implements Serializable {
 
     private static final long serialVersionUID = -9167970886461067666L;
 
-    @JsonSerialize(using = IdentitySerializer.class)
-    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long id;
 
     private String title;
 
-    @JsonSerialize(using = IdentitySerializer.class)
-    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long authorId;
 
     private String author;
@@ -34,12 +25,8 @@ public final class ArticleInfo implements Serializable {
 
     private String typeDisc;
 
-    @JsonSerialize(using = IdentitySerializer.class)
-    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long createTime;
 
-    @JsonSerialize(using = IdentitySerializer.class)
-    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long updateTime;
 
     private String content;

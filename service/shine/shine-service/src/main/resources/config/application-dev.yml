@@ -117,22 +117,22 @@ cache:
 
 
 es:
-  esNodes:
+  es-nodes:
     - server:
         host: localhost
         port: 9200
         schema: http
-      boundServers: [ ]
+      bound-servers: [ ]
       name: blue-es
       version: 8.4.3
       roles: [ ]
       attributes: [ ]
 
-  defaultHeaders:
-  pathPrefix: /
-  strictDeprecationMode: false
-  metaHeaderEnabled: false
-  compressionEnabled: false
+  default-headers:
+  path-prefix: /
+  strict-deprecation-mode: false
+  meta-header-enabled: false
+  compression-enabled: false
 
 
 executor:
@@ -156,8 +156,8 @@ scheduler:
 
 
 caffeine:
-  cityMaximumSize: 32768
-  expiresSecond: 30
+  city-maximum-size: 32768
+  expires-second: 30
 
 
 pit:
@@ -299,7 +299,7 @@ pulsar:
 
 producers:
   configs:
-    shineInsert:
+    shine-insert:
       topic: shineInsert
       producer-name: shineInsertProducer000
       access-mode: Shared
@@ -322,7 +322,7 @@ producers:
       enable-encrypt: false
       encryption-key:
       producer-crypto-failure-action: FAIL
-    shineUpdate:
+    shine-update:
       topic: shineUpdate
       producer-name: shineUpdateProducer000
       access-mode: Shared
@@ -345,7 +345,7 @@ producers:
       enable-encrypt: false
       encryption-key:
       producer-crypto-failure-action: FAIL
-    shineDelete:
+    shine-delete:
       topic: shineDelete
       producer-name: shineDeleteProducer000
       access-mode: Shared
@@ -372,7 +372,7 @@ producers:
 
 consumers:
   configs:
-    shineInsert:
+    shine-insert:
       topics: [ shineInsert ]
       topics-pattern:
       subscription-name: shineInsertSubscription
@@ -416,7 +416,7 @@ consumers:
       poll-duration-mills: 1000
       working-threads: 2
       enable-negative-acknowledge: true
-    shineUpdate:
+    shine-update:
       topics: [ shineUpdate ]
       topics-pattern:
       subscription-name: shineUpdateSubscription
@@ -460,7 +460,7 @@ consumers:
       poll-duration-mills: 1000
       working-threads: 2
       enable-negative-acknowledge: true
-    shineDelete:
+    shine-delete:
       topics: [ shineDelete ]
       topics-pattern:
       subscription-name: shineDeleteSubscription

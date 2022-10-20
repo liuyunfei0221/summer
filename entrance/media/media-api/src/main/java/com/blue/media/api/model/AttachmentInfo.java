@@ -1,10 +1,5 @@
 package com.blue.media.api.model;
 
-import com.blue.basic.serializer.IdentityDeserializer;
-import com.blue.basic.serializer.IdentitySerializer;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.io.Serializable;
 
 /**
@@ -17,8 +12,6 @@ public final class AttachmentInfo implements Serializable {
 
     private static final long serialVersionUID = -697205574047584331L;
 
-    @JsonSerialize(using = IdentitySerializer.class)
-    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long id;
 
     /**
@@ -34,18 +27,12 @@ public final class AttachmentInfo implements Serializable {
 
     private String fileType;
 
-    @JsonSerialize(using = IdentitySerializer.class)
-    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long size;
 
     private Integer status;
 
-    @JsonSerialize(using = IdentitySerializer.class)
-    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long createTime;
 
-    @JsonSerialize(using = IdentitySerializer.class)
-    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long creator;
 
     public AttachmentInfo() {

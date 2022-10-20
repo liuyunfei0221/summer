@@ -117,22 +117,22 @@ cache:
 
 
 es:
-  esNodes:
+  es-nodes:
     - server:
         host: localhost
         port: 9200
         schema: http
-      boundServers: [ ]
+      bound-servers: [ ]
       name: blue-es
       version: 8.4.3
       roles: [ ]
       attributes: [ ]
 
-  defaultHeaders:
-  pathPrefix: /
-  strictDeprecationMode: false
-  metaHeaderEnabled: false
-  compressionEnabled: false
+  default-headers:
+  path-prefix: /
+  strict-deprecation-mode: false
+  meta-header-enabled: false
+  compression-enabled: false
 
 
 executor:
@@ -156,8 +156,8 @@ scheduler:
 
 
 caffeine:
-  cityMaximumSize: 32768
-  expiresSecond: 30
+  city-maximum-size: 32768
+  expires-second: 30
 
 
 pit:
@@ -267,7 +267,7 @@ rest:
 
 producers:
   configs:
-    shineInsert:
+    shine-insert:
       services: [ 172.16.207.11:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:
@@ -319,7 +319,7 @@ producers:
       enable-encrypt: false
       encryption-key:
       producer-crypto-failure-action: FAIL
-    shineUpdate:
+    shine-update:
       services: [ 172.16.207.11:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:
@@ -371,7 +371,7 @@ producers:
       enable-encrypt: false
       encryption-key:
       producer-crypto-failure-action: FAIL
-    shineDelete:
+    shine-delete:
       services: [ 172.16.207.11:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:
@@ -427,7 +427,7 @@ producers:
 
 consumers:
   configs:
-    shineInsert:
+    shine-insert:
       services: [ 172.16.207.11:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:
@@ -500,7 +500,7 @@ consumers:
       poll-duration-mills: 1000
       working-threads: 2
       enable-negative-acknowledge: true
-    shineUpdate:
+    shine-update:
       services: [ 172.16.207.11:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:
@@ -573,7 +573,7 @@ consumers:
       poll-duration-mills: 1000
       working-threads: 2
       enable-negative-acknowledge: true
-    shineDelete:
+    shine-delete:
       services: [ 172.16.207.11:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:

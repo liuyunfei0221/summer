@@ -1,10 +1,5 @@
 package com.blue.finance.api.model;
 
-import com.blue.basic.serializer.IdentityDeserializer;
-import com.blue.basic.serializer.IdentitySerializer;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.io.Serializable;
 
 /**
@@ -20,8 +15,6 @@ public final class FinanceInfo implements Serializable {
     /**
      * balance/fen
      */
-    @JsonSerialize(using = IdentitySerializer.class)
-    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long balance;
 
     public FinanceInfo(Long balance) {

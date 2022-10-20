@@ -87,7 +87,7 @@ public class ShineServiceImpl implements ShineService {
 
     private final Scheduler scheduler;
 
-    private final ElasticsearchAsyncClient elasticsearchAsyncClient;
+    private ElasticsearchAsyncClient elasticsearchAsyncClient;
 
     private CityService cityService;
 
@@ -112,7 +112,7 @@ public class ShineServiceImpl implements ShineService {
         this.shineUpdateProducer = shineUpdateProducer;
         this.shineDeleteProducer = shineDeleteProducer;
 
-        this.PIT_TIME = Time.of(builder -> builder.time(pitDeploy.getTime()));
+        this.pitTime = Time.of(builder -> builder.time(pitDeploy.getTime()));
         this.fuzziness = ofNullable(fuzzinessDeploy.getFuzziness()).filter(f -> f >= 0 && f <= 2).map(String::valueOf).orElseThrow(() -> new RuntimeException("Invalid Fuzziness"));
         this.preTags = ofNullable(highlightDeploy.getPreTags()).orElseGet(() -> singletonList(EMPTY_VALUE.value));
         this.postTags = ofNullable(highlightDeploy.getPostTags()).orElseGet(() -> singletonList(EMPTY_VALUE.value));
@@ -120,13 +120,13 @@ public class ShineServiceImpl implements ShineService {
         this.defaultPriority = defaultPriorityDeploy.getPriority();
     }
 
-    private final Time PIT_TIME;
+    private Time pitTime;
 
     private String fuzziness;
 
-    private final List<String> preTags;
+    private List<String> preTags;
 
-    private final List<String> postTags;
+    private List<String> postTags;
 
     private int defaultPriority;
 
@@ -341,6 +341,84 @@ public class ShineServiceImpl implements ShineService {
                 builder.must(TermQuery.of(b -> b.field(UPDATER.name).value(updater))._toQuery()));
 
         return new QueryAndHighlightColumns(Query.of(b -> b.bool(builder.build())), highlightColumns);
+    };
+
+    private final Function<ScrollModelRequest<ShineCondition, SearchAfterCursor>, Mono<SearchRequest>> SEARCH_REQUEST_PARSER_FOR_SCROLL = scrollModelRequest -> {
+        if (isNull(scrollModelRequest))
+            throw new BlueException(EMPTY_PARAM);
+
+        ShineCondition condition = scrollModelRequest.getCondition();
+        QueryAndHighlightColumns queryAndHighlightColumns = CONDITION_PROCESSOR.apply(condition);
+
+        return just(SearchRequest.of(builder -> {
+            builder
+                    .index(INDEX_NAME)
+                    .query(queryAndHighlightColumns.getQuery())
+                    .sort(SORT_PROCESSOR.apply(condition))
+                    .from(scrollModelRequest.getFrom().intValue())
+                    .size(scrollModelRequest.getRows().intValue());
+
+            packageHighlight(builder, queryAndHighlightColumns.getColumns(), preTags, postTags);
+            packageSearchAfter(builder, ofNullable(scrollModelRequest.getCursor())
+                    .map(SearchAfterCursor::getSearchAfter)
+                    .filter(BlueChecker::isNotEmpty).orElseGet(Collections::emptyList));
+
+            return builder;
+        }));
+    };
+
+    private final Function<ScrollModelRequest<ShineCondition, PitCursor>, Mono<SearchRequest>> SEARCH_REQUEST_PARSER_FOR_SCROLL_WITH_PIT = scrollModelRequest -> {
+        if (isNull(scrollModelRequest))
+            throw new BlueException(EMPTY_PARAM);
+
+        PitCursor cursor = scrollModelRequest.getCursor();
+
+        ShineCondition condition = scrollModelRequest.getCondition();
+        QueryAndHighlightColumns queryAndHighlightColumns = CONDITION_PROCESSOR.apply(condition);
+
+        return justOrEmpty(cursor).map(PitCursor::getId).filter(BlueChecker::isNotBlank)
+                .switchIfEmpty(defer(() ->
+                        fromFuture(elasticsearchAsyncClient.openPointInTime(OpenPointInTimeRequest.of(builder -> builder.index(INDEX_NAME).keepAlive(pitTime))))
+                                .flatMap(response -> just(response.id()))
+                                .filter(BlueChecker::isNotBlank)
+                                .switchIfEmpty(defer(() -> just(EMPTY_VALUE.value)))
+                )).map(id ->
+                        SearchRequest.of(builder -> {
+                            builder
+                                    .query(queryAndHighlightColumns.getQuery())
+                                    .sort(SORT_PROCESSOR.apply(condition))
+                                    .from(scrollModelRequest.getFrom().intValue())
+                                    .size(scrollModelRequest.getRows().intValue());
+
+                            packageHighlight(builder, queryAndHighlightColumns.getColumns(), preTags, postTags);
+                            packageSearchAfter(builder, ofNullable(cursor).map(PitCursor::getSearchAfter).filter(BlueChecker::isNotEmpty).orElseGet(Collections::emptyList));
+                            packagePit(builder, id, pitTime);
+
+                            return builder;
+                        })
+                );
+    };
+
+    private final Function<PageModelRequest<ShineCondition>, Mono<SearchRequest>> SEARCH_REQUEST_PARSER_FOR_PAGE = pageModelRequest -> {
+        if (isNull(pageModelRequest))
+            throw new BlueException(EMPTY_PARAM);
+
+        ShineCondition condition = pageModelRequest.getCondition();
+
+        QueryAndHighlightColumns queryAndHighlightColumns = CONDITION_PROCESSOR.apply(condition);
+
+        return just(SearchRequest.of(builder -> {
+            builder
+                    .index(INDEX_NAME)
+                    .query(queryAndHighlightColumns.getQuery())
+                    .sort(SORT_PROCESSOR.apply(condition))
+                    .from(pageModelRequest.getLimit().intValue())
+                    .size(pageModelRequest.getRows().intValue());
+
+            packageHighlight(builder, queryAndHighlightColumns.getColumns(), preTags, postTags);
+
+            return builder;
+        }));
     };
 
     /**
@@ -611,27 +689,8 @@ public class ShineServiceImpl implements ShineService {
         if (isNull(scrollModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        ShineCondition condition = scrollModelRequest.getCondition();
-        QueryAndHighlightColumns queryAndHighlightColumns = CONDITION_PROCESSOR.apply(condition);
-
-        return fromFuture(elasticsearchAsyncClient.search(
-                SearchRequest.of(builder -> {
-                    builder
-                            .index(INDEX_NAME)
-                            .query(queryAndHighlightColumns.getQuery())
-                            .sort(SORT_PROCESSOR.apply(condition))
-                            .from(scrollModelRequest.getFrom().intValue())
-                            .size(scrollModelRequest.getRows().intValue());
-
-                    packageHighlight(builder, queryAndHighlightColumns.getColumns(), preTags, postTags);
-                    packageSearchAfter(builder, ofNullable(scrollModelRequest.getCursor())
-                            .map(SearchAfterCursor::getSearchAfter)
-                            .filter(BlueChecker::isNotEmpty).orElseGet(Collections::emptyList));
-
-                    return builder;
-                }), Shine.class)
-        )
-                .filter(BlueChecker::isNotNull)
+        return SEARCH_REQUEST_PARSER_FOR_SCROLL.apply(scrollModelRequest)
+                .flatMap(searchRequest -> fromFuture(elasticsearchAsyncClient.search(searchRequest, Shine.class)))
                 .flatMap(searchResponse ->
                         ofNullable(searchResponse.hits())
                                 .map(HitsMetadata::hits)
@@ -657,44 +716,18 @@ public class ShineServiceImpl implements ShineService {
         if (isNull(scrollModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        PitCursor cursor = scrollModelRequest.getCursor();
-
-        ShineCondition condition = scrollModelRequest.getCondition();
-        QueryAndHighlightColumns queryAndHighlightColumns = CONDITION_PROCESSOR.apply(condition);
-
-        return just(ofNullable(cursor).map(PitCursor::getId).filter(BlueChecker::isNotBlank).orElse(EMPTY_VALUE.value))
-                .filter(BlueChecker::isNotBlank)
-                .switchIfEmpty(defer(() ->
-                        fromFuture(elasticsearchAsyncClient.openPointInTime(OpenPointInTimeRequest.of(builder -> builder.index(INDEX_NAME).keepAlive(PIT_TIME))))
-                                .flatMap(response -> just(response.id()))
-                                .filter(BlueChecker::isNotBlank)
-                                .switchIfEmpty(defer(() -> just(EMPTY_VALUE.value)))
-                )).flatMap(id ->
-                        fromFuture(elasticsearchAsyncClient.search(
-                                SearchRequest.of(builder -> {
-                                    builder
-                                            .query(queryAndHighlightColumns.getQuery())
-                                            .sort(SORT_PROCESSOR.apply(condition))
-                                            .from(scrollModelRequest.getFrom().intValue())
-                                            .size(scrollModelRequest.getRows().intValue());
-
-                                    packageHighlight(builder, queryAndHighlightColumns.getColumns(), preTags, postTags);
-                                    packageSearchAfter(builder, ofNullable(cursor).map(PitCursor::getSearchAfter).filter(BlueChecker::isNotEmpty).orElseGet(Collections::emptyList));
-                                    packagePit(builder, id, PIT_TIME);
-
-                                    return builder;
-                                }), Shine.class)
-                        ).filter(BlueChecker::isNotNull)
-                                .flatMap(searchResponse ->
-                                        ofNullable(searchResponse.hits())
-                                                .map(HitsMetadata::hits)
-                                                .filter(BlueChecker::isNotEmpty)
-                                                .map(hits ->
-                                                        just(new ScrollModelResponse<>(parseHighlight(hits, HIGH_LIGHT_PROCESSORS).stream().map(SHINE_2_SHINE_INFO).collect(toList()),
-                                                                new PitCursor(parsePit(searchResponse), parseSearchAfter(hits))))
-                                                ).orElseGet(() -> just(new ScrollModelResponse<>(emptyList(), new PitCursor())))
-                                )
-                                .switchIfEmpty(defer(() -> just(new ScrollModelResponse<>(emptyList(), new PitCursor())))));
+        return SEARCH_REQUEST_PARSER_FOR_SCROLL_WITH_PIT.apply(scrollModelRequest)
+                .flatMap(searchRequest -> fromFuture(elasticsearchAsyncClient.search(searchRequest, Shine.class)))
+                .flatMap(searchResponse ->
+                        ofNullable(searchResponse.hits())
+                                .map(HitsMetadata::hits)
+                                .filter(BlueChecker::isNotEmpty)
+                                .map(hits ->
+                                        just(new ScrollModelResponse<>(parseHighlight(hits, HIGH_LIGHT_PROCESSORS).stream().map(SHINE_2_SHINE_INFO).collect(toList()),
+                                                new PitCursor(parsePit(searchResponse), parseSearchAfter(hits))))
+                                ).orElseGet(() -> just(new ScrollModelResponse<>(emptyList(), new PitCursor())))
+                )
+                .switchIfEmpty(defer(() -> just(new ScrollModelResponse<>(emptyList()))));
     }
 
     /**
@@ -710,24 +743,8 @@ public class ShineServiceImpl implements ShineService {
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        ShineCondition condition = pageModelRequest.getCondition();
-        QueryAndHighlightColumns queryAndHighlightColumns = CONDITION_PROCESSOR.apply(condition);
-
-        return fromFuture(elasticsearchAsyncClient.search(
-                SearchRequest.of(builder -> {
-                    builder
-                            .index(INDEX_NAME)
-                            .query(queryAndHighlightColumns.getQuery())
-                            .sort(SORT_PROCESSOR.apply(condition))
-                            .from(pageModelRequest.getLimit().intValue())
-                            .size(pageModelRequest.getRows().intValue());
-
-                    packageHighlight(builder, queryAndHighlightColumns.getColumns(), preTags, postTags);
-
-                    return builder;
-                }), Shine.class)
-        )
-                .filter(BlueChecker::isNotNull)
+        return SEARCH_REQUEST_PARSER_FOR_PAGE.apply(pageModelRequest)
+                .flatMap(searchRequest -> fromFuture(elasticsearchAsyncClient.search(searchRequest, Shine.class)))
                 .flatMap(searchResponse -> {
                     HitsMetadata<Shine> hits = searchResponse.hits();
                     return just(new PageModelResponse<>(parseHighlight(hits.hits(), HIGH_LIGHT_PROCESSORS).stream().map(SHINE_2_SHINE_INFO).collect(toList()),

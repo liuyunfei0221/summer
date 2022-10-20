@@ -1,10 +1,5 @@
 package com.blue.article.api.model;
 
-import com.blue.basic.serializer.IdentityDeserializer;
-import com.blue.basic.serializer.IdentitySerializer;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.io.Serializable;
 
 /**
@@ -17,32 +12,20 @@ public final class LinkInfo implements Serializable {
 
     private static final long serialVersionUID = -1399542570751999295L;
 
-    @JsonSerialize(using = IdentitySerializer.class)
-    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long id;
 
     private String linkUrl;
 
     private String content;
 
-    @JsonSerialize(using = IdentitySerializer.class)
-    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long favorites;
 
-    @JsonSerialize(using = IdentitySerializer.class)
-    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long readings;
 
-    @JsonSerialize(using = IdentitySerializer.class)
-    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long comments;
 
-    @JsonSerialize(using = IdentitySerializer.class)
-    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long likes;
 
-    @JsonSerialize(using = IdentitySerializer.class)
-    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long boring;
 
     public LinkInfo() {

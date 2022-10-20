@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  * @author liuyunfei
  */
 @Component
-@ConfigurationProperties(prefix = "vtemplate")
+@ConfigurationProperties(prefix = "verify-template")
 public class VerifyTemplateDeploy {
 
     private Long cacheExpiresSecond;

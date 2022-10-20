@@ -9,11 +9,12 @@ import java.io.IOException;
 import static com.blue.basic.common.base.BlueChecker.isNotNull;
 
 /**
- * id long2string
+ * long2string
  *
  * @author liuyunfei
  */
-public final class IdentitySerializer extends JsonSerializer<Long> {
+@SuppressWarnings("unused")
+public final class AsStringSerializer extends JsonSerializer<Long> {
 
     @Override
     public void serialize(Long value, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {

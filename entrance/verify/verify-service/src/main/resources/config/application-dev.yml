@@ -300,7 +300,7 @@ producers:
       enable-encrypt: false
       encryption-key:
       producer-crypto-failure-action: FAIL
-    verifyMessage:
+    verify-message:
       topic: verifyMessage
       producer-name: verifyMessageProducer000
       access-mode: Shared
@@ -371,7 +371,7 @@ consumers:
       poll-duration-mills: 1000
       working-threads: 2
       enable-negative-acknowledge: true
-    verifyMessage:
+    verify-message:
       topics: [ verifyMessage ]
       topics-pattern:
       subscription-name: verifyMessageSubscription
@@ -468,19 +468,19 @@ image:
   noise-impl: com.google.code.kaptcha.impl.DefaultNoise
   noise-color: cyan
   obscurificator-impl: com.google.code.kaptcha.impl.WaterRipple
-  wordImpl: com.google.code.kaptcha.text.impl.DefaultWordRenderer
-  backgroundImpl: com.google.code.kaptcha.impl.DefaultBackground
-  backgroundClearFrom: red
-  backgroundClearTo: yellow
-  imageWidth: 200
-  imageHeight: 50
+  word-impl: com.google.code.kaptcha.text.impl.DefaultWordRenderer
+  background-impl: com.google.code.kaptcha.impl.DefaultBackground
+  background-clear-from: red
+  background-clear-to: yellow
+  image-width: 200
+  image-height: 50
 
 turing:
   allow: 5
   interval-millis: 12000000
-  targetVerifyTypes: [ SMS,MAIL ]
+  target-verify-types: [ SMS,MAIL ]
 
-vtemplate:
+verify-template:
   cache-expires-second: 21600
 
 
@@ -501,8 +501,9 @@ sender:
   keep-alive-seconds: 64
   blocking-queue-capacity: 2048
   thread-name-pre: blue-mail-sender
-  defaultZone: 2
-  throwable-forRetry: [ jakarta.mail.FolderClosedException ]
+  buffer-size: 4
+  default-zone: 2
+  throwable-for-retry: [ jakarta.mail.FolderClosedException ]
   retry-times: 1
   withDKIM: false
   domain-key-file: classpath:dkim/selector1.pem

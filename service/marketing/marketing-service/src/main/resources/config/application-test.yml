@@ -269,7 +269,7 @@ blocking:
 
 producers:
   configs:
-    refreshRewards:
+    refresh-rewards:
       services: [ 43.138.111.53:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:
@@ -377,7 +377,7 @@ producers:
 
 consumers:
   configs:
-    refreshRewards:
+    refresh-rewards:
       services: [ 43.138.111.53:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:

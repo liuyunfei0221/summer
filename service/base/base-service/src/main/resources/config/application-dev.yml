@@ -275,18 +275,18 @@ dubbo:
 
 
 caffeine:
-  countryMaximumSize: 1
-  stateMaximumSize: 1024
-  cityMaximumSize: 32768
-  areaMaximumSize: 65536
-  styleMaximumSize: 32
-  expiresSecond: 30
+  country-maximum-size: 1
+  state-maximum-size: 1024
+  city-maximum-size: 32768
+  area-maximum-size: 65536
+  style-maximum-size: 32
+  expires-second: 30
 
 
 dict:
-  dictTypeMaximumSize: 1
-  dictMaximumSize: 1024
-  expiresSecond: 259200
+  dictType-maximum-size: 1
+  dict-maximum-size: 1024
+  expires-second: 259200
 
 
 pulsar:
@@ -323,7 +323,7 @@ pulsar:
 
 producers:
   configs:
-    regionInfosInvalid:
+    region-infos-invalid:
       topic: regionInfosInvalid
       producer-name: regionInfosInvalidProducer000
       access-mode: Shared
@@ -350,7 +350,7 @@ producers:
 
 consumers:
   configs:
-    regionInfosInvalid:
+    region-infos-invalid:
       topics: [ regionInfosInvalid ]
       topics-pattern:
       subscription-name: regionInfosInvalidSubscription

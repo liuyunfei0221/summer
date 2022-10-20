@@ -11,12 +11,12 @@ import java.util.List;
 import static com.blue.basic.common.base.BlueChecker.isNotNull;
 
 /**
- * ids string2long
+ * string2long
  *
  * @author liuyunfei
  */
-@SuppressWarnings("unchecked")
-public final class IdentitiesDeserializer extends JsonDeserializer<List<Long>> {
+@SuppressWarnings({"unchecked", "unused"})
+public final class AsStringsDeserializer extends JsonDeserializer<List<Long>> {
 
     private static final ListTypeReference REFERENCE = new ListTypeReference();
 

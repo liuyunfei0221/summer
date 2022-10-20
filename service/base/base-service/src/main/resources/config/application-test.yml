@@ -275,23 +275,23 @@ dubbo:
 
 
 caffeine:
-  countryMaximumSize: 1
-  stateMaximumSize: 1024
-  cityMaximumSize: 32768
-  areaMaximumSize: 65536
-  styleMaximumSize: 32
-  expiresSecond: 30
+  country-maximum-size: 1
+  state-maximum-size: 1024
+  city-maximum-size: 32768
+  area-maximum-size: 65536
+  style-maximum-size: 32
+  expires-second: 30
 
 
 dict:
-  dictTypeMaximumSize: 1
-  dictMaximumSize: 1024
-  expiresSecond: 259200
+  dictType-maximum-size: 1
+  dict-maximum-size: 1024
+  expires-second: 259200
 
 
 producers:
   configs:
-    regionInfosInvalid:
+    region-infos-invalid:
       services: [ 43.138.111.53:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:
@@ -347,7 +347,7 @@ producers:
 
 consumers:
   configs:
-    regionInfosInvalid:
+    region-infos-invalid:
       services: [ 43.138.111.53:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:

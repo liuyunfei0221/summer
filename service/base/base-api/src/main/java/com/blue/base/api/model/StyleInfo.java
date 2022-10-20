@@ -1,10 +1,5 @@
 package com.blue.base.api.model;
 
-import com.blue.basic.serializer.IdentityDeserializer;
-import com.blue.basic.serializer.IdentitySerializer;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.io.Serializable;
 
 
@@ -18,8 +13,6 @@ public final class StyleInfo implements Serializable {
 
     private static final long serialVersionUID = -6705469024881953415L;
 
-    @JsonSerialize(using = IdentitySerializer.class)
-    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long id;
 
     private String name;

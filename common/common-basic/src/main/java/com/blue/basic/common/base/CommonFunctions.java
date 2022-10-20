@@ -5,19 +5,30 @@ import com.blue.basic.constant.common.*;
 import com.blue.basic.model.common.*;
 import com.blue.basic.model.event.DataEvent;
 import com.blue.basic.model.exps.BlueException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.time.Clock;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.*;
 import java.util.stream.Stream;
@@ -33,6 +44,7 @@ import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.common.SummerAttr.LANGUAGE;
 import static com.blue.basic.constant.common.Symbol.*;
 import static com.blue.basic.constant.common.SyncKeyPrefix.REQUEST_SYNC_PRE;
+import static com.fasterxml.jackson.databind.DeserializationFeature.*;
 import static java.lang.Double.compare;
 import static java.lang.System.currentTimeMillis;
 import static java.time.Instant.now;
@@ -53,8 +65,6 @@ import static reactor.core.publisher.Mono.just;
  */
 @SuppressWarnings({"WeakerAccess", "JavaDoc", "AliControlFlowStatementWithoutBraces", "unused", "ConstantConditions"})
 public class CommonFunctions {
-
-    public static final Gson GSON = new GsonBuilder().serializeNulls().create();
 
     /**
      * symbols
@@ -117,6 +127,58 @@ public class CommonFunctions {
      * default languages
      */
     public static final List<String> DEFAULT_LANGUAGES = singletonList(DEFAULT_LANGUAGE);
+
+    protected static Supplier<Gson> GSON_SUP = () -> new GsonBuilder().serializeNulls().create();
+
+    protected static Supplier<HttpMessageConverter<?>> HTTP_MESSAGE_CONVERTER_SUP = () -> {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        objectMapper.configure(USE_BIG_DECIMAL_FOR_FLOATS, false);
+        objectMapper.configure(USE_BIG_INTEGER_FOR_INTS, false);
+        objectMapper.configure(USE_LONG_FOR_INTS, false);
+        objectMapper.configure(USE_JAVA_ARRAY_FOR_JSON_ARRAY, false);
+        objectMapper.configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.configure(FAIL_ON_NULL_FOR_PRIMITIVES, false);
+        objectMapper.configure(FAIL_ON_NUMBERS_FOR_ENUMS, false);
+        objectMapper.configure(FAIL_ON_INVALID_SUBTYPE, true);
+        objectMapper.configure(FAIL_ON_READING_DUP_TREE_KEY, false);
+        objectMapper.configure(FAIL_ON_IGNORED_PROPERTIES, false);
+        objectMapper.configure(FAIL_ON_UNRESOLVED_OBJECT_IDS, true);
+        objectMapper.configure(FAIL_ON_MISSING_CREATOR_PROPERTIES, false);
+        objectMapper.configure(FAIL_ON_NULL_CREATOR_PROPERTIES, false);
+        objectMapper.configure(FAIL_ON_MISSING_EXTERNAL_TYPE_ID_PROPERTY, true);
+        objectMapper.configure(FAIL_ON_TRAILING_TOKENS, false);
+        objectMapper.configure(WRAP_EXCEPTIONS, true);
+        objectMapper.configure(ACCEPT_SINGLE_VALUE_AS_ARRAY, false);
+        objectMapper.configure(UNWRAP_SINGLE_VALUE_ARRAYS, false);
+        objectMapper.configure(UNWRAP_ROOT_VALUE, false);
+        objectMapper.configure(ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, false);
+        objectMapper.configure(ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, false);
+        objectMapper.configure(ACCEPT_FLOAT_AS_INT, false);
+        objectMapper.configure(READ_ENUMS_USING_TO_STRING, false);
+        objectMapper.configure(READ_UNKNOWN_ENUM_VALUES_AS_NULL, false);
+        objectMapper.configure(READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE, false);
+        objectMapper.configure(READ_DATE_TIMESTAMPS_AS_NANOSECONDS, true);
+        objectMapper.configure(ADJUST_DATES_TO_CONTEXT_TIME_ZONE, true);
+        objectMapper.configure(EAGER_DESERIALIZER_FETCH, true);
+
+        SimpleModule simpleModule = new SimpleModule();
+
+        simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
+        simpleModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
+        simpleModule.addSerializer(BigInteger.class, ToStringSerializer.instance);
+        simpleModule.addSerializer(BigDecimal.class, ToStringSerializer.instance);
+
+        objectMapper.registerModule(simpleModule);
+
+        return new MappingJackson2HttpMessageConverter(objectMapper);
+    };
+
+    public static final Gson GSON = GSON_SUP.get();
+
+    public static final HttpMessageConverter<?> HTTP_MESSAGE_CONVERTER = HTTP_MESSAGE_CONVERTER_SUP.get();
+
+    public static final HttpMessageConverters HTTP_MESSAGE_CONVERTERS = new HttpMessageConverters(HTTP_MESSAGE_CONVERTER);
 
     /**
      * valid freemarker /.html/.js

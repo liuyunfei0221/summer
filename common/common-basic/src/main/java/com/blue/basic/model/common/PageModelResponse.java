@@ -1,10 +1,5 @@
 package com.blue.basic.model.common;
 
-import com.blue.basic.serializer.IdentityDeserializer;
-import com.blue.basic.serializer.IdentitySerializer;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
@@ -32,8 +27,6 @@ public final class PageModelResponse<T extends Serializable> implements Serializ
     /**
      * total count
      */
-    @JsonSerialize(using = IdentitySerializer.class)
-    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long count;
 
     public PageModelResponse() {

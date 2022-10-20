@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  * @author liuyunfei
  */
 @Component
-@ConfigurationProperties(prefix = "validatortype")
+@ConfigurationProperties(prefix = "validator-type")
 public class ValidatorTypeDeploy {
 
     private String type;

@@ -8,9 +8,8 @@ import org.springframework.stereotype.Component;
  *
  * @author liuyunfei
  */
-@SuppressWarnings("SpellCheckingInspection")
 @Component
-@ConfigurationProperties(prefix = "dynamicapi")
+@ConfigurationProperties(prefix = "dynamic-api")
 public class DynamicApiDeploy {
 
     private transient String path;

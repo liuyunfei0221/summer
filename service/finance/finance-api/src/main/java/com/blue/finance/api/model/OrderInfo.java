@@ -1,10 +1,5 @@
 package com.blue.finance.api.model;
 
-import com.blue.basic.serializer.IdentityDeserializer;
-import com.blue.basic.serializer.IdentitySerializer;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.io.Serializable;
 
 /**
@@ -17,12 +12,8 @@ public final class OrderInfo implements Serializable {
 
     private static final long serialVersionUID = -560325284957024821L;
 
-    @JsonSerialize(using = IdentitySerializer.class)
-    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long id;
 
-    @JsonSerialize(using = IdentitySerializer.class)
-    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long memberId;
 
     private String orderNo;
@@ -33,12 +24,8 @@ public final class OrderInfo implements Serializable {
 
     private Integer paymentType;
 
-    @JsonSerialize(using = IdentitySerializer.class)
-    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long amount;
 
-    @JsonSerialize(using = IdentitySerializer.class)
-    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long payAmount;
 
     private String extra;

@@ -11,7 +11,7 @@ import java.time.temporal.ChronoUnit;
  * @author liuyunfei
  */
 @Component
-@ConfigurationProperties(prefix = "localcache")
+@ConfigurationProperties(prefix = "local-cache")
 public class LocalCacheDeploy {
 
     private int size;

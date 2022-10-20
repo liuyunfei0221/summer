@@ -1,11 +1,6 @@
 package com.blue.marketing.api.model;
 
 
-import com.blue.basic.serializer.IdentityDeserializer;
-import com.blue.basic.serializer.IdentitySerializer;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.io.Serializable;
 
 /**
@@ -18,8 +13,6 @@ public final class EventRecordInfo implements Serializable {
 
     private static final long serialVersionUID = 6569268133204313196L;
 
-    @JsonSerialize(using = IdentitySerializer.class)
-    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long id;
 
     /**
@@ -44,15 +37,11 @@ public final class EventRecordInfo implements Serializable {
     /**
      * event time
      */
-    @JsonSerialize(using = IdentitySerializer.class)
-    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long createTime;
 
     /**
      * creator
      */
-    @JsonSerialize(using = IdentitySerializer.class)
-    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long creator;
 
     private String creatorName;

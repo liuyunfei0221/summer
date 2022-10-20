@@ -264,8 +264,8 @@ redisson:
 
 
 rewards:
-  maxBlockingMillis: 5000
-  maxBackup: 36
+  max-blocking-millis: 5000
+  max-backup: 36
 
 
 pulsar:
@@ -302,7 +302,7 @@ pulsar:
 
 producers:
   configs:
-    refreshRewards:
+    refresh-rewards:
       topic: refreshRewards
       producer-name: refreshRewardsProducer000
       access-mode: Shared
@@ -352,7 +352,7 @@ producers:
 
 consumers:
   configs:
-    refreshRewards:
+    refresh-rewards:
       topics: [ refreshRewards ]
       topics-pattern:
       subscription-name: refreshRewardsSubscription

@@ -276,7 +276,7 @@ reader:
     mail.imap.port: 993
     mail.imap.ssl.enable: true
   folder-name: INBOX
-  throwable-forRetry: [ jakarta.mail.FolderClosedException ]
+  throwable-for-retry: [ jakarta.mail.FolderClosedException ]
   max-waiting-millis-for-refresh: 5000
   debug: false
 
@@ -298,8 +298,9 @@ sender:
   keep-alive-seconds: 64
   blocking-queue-capacity: 2048
   thread-name-pre: blue-mail-sender
+  buffer-size: 4
   default-zone: 8
-  throwable-forRetry: [ jakarta.mail.FolderClosedException ]
+  throwable-for-retry: [ jakarta.mail.FolderClosedException ]
   retry-times: 1
   withDKIM: false
   domain-key-file: classpath:dkim/selector1.pem

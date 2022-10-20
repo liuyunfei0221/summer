@@ -11,11 +11,12 @@ import static com.blue.basic.common.base.BlueChecker.isNotEmpty;
 import static java.util.stream.Collectors.toList;
 
 /**
- * ids long2string
+ * long2string
  *
  * @author liuyunfei
  */
-public final class IdentitiesSerializer extends JsonSerializer<List<Long>> {
+@SuppressWarnings("unused")
+public final class AsStringsSerializer extends JsonSerializer<List<Long>> {
 
     @Override
     public void serialize(List<Long> value, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {

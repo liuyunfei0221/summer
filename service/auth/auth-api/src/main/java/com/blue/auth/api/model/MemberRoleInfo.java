@@ -1,10 +1,5 @@
 package com.blue.auth.api.model;
 
-import com.blue.basic.serializer.IdentityDeserializer;
-import com.blue.basic.serializer.IdentitySerializer;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -18,8 +13,6 @@ public final class MemberRoleInfo implements Serializable {
 
     private static final long serialVersionUID = -8445536816680117649L;
 
-    @JsonSerialize(using = IdentitySerializer.class)
-    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long memberId;
 
     private List<RoleInfo> roleInfos;

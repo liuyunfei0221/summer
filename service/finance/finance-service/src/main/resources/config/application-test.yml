@@ -182,26 +182,26 @@ mongo:
 
 
 es:
-  esNodes:
+  es-nodes:
     - server:
         host: 127.0.0.1
         port: 9200
         schema: http
-      boundServers: [ ]
+      bound-servers: [ ]
       name: blue-es
       version: 8.4.3
       roles: [ ]
       attributes: [ ]
-  defaultHeaders:
-  pathPrefix: /
-  strictDeprecationMode: false
-  metaHeaderEnabled: false
-  compressionEnabled: false
+  default-headers:
+  path-prefix: /
+  strict-deprecation-mode: false
+  meta-header-enabled: false
+  compression-enabled: false
 
 
-dynamicapi:
+dynamic-api:
   path: /blue-finance/dynamic
-  blockingMillis: 5000
+  blocking-millis: 5000
 
 
 seata:
@@ -363,14 +363,14 @@ scheduler:
 
 
 curator:
-  connectString: 43.138.44.171:2181
-  connectionTimeoutMs: 60000
-  sessionTimeoutMs: 60000
-  maxCloseWaitMs: 12000
+  connect-string: 43.138.44.171:2181
+  connection-timeout-ms: 60000
+  session-timeout-ms: 60000
+  max-close-wait-ms: 12000
   namespace: finance
-  retryBaseSleepTimeMs: 3000
-  retryMaxSleepTimeMs: 5000
-  retryMaxRetries: 2
+  retry-base-sleep-time-ms: 3000
+  retry-max-sleep-time-ms: 5000
+  retry-max-retries: 2
 
 
 redisson:
@@ -463,7 +463,7 @@ dubbo:
 
 producers:
   configs:
-    financeFlow:
+    finance-flow:
       services: [ 172.16.207.11:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:
@@ -515,7 +515,7 @@ producers:
       enable-encrypt: false
       encryption-key:
       producer-crypto-failure-action: FAIL
-    orderSummaryInsert:
+    order-summary-insert:
       services: [ 172.16.207.11:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:
@@ -567,7 +567,7 @@ producers:
       enable-encrypt: false
       encryption-key:
       producer-crypto-failure-action: FAIL
-    orderSummaryUpdate:
+    order-summary-update:
       services: [ 172.16.207.11:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:
@@ -623,7 +623,7 @@ producers:
 
 consumers:
   configs:
-    financeFlow:
+    finance-flow:
       services: [ 172.16.207.11:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:
@@ -696,7 +696,7 @@ consumers:
       poll-duration-mills: 1000
       working-threads: 2
       enable-negative-acknowledge: true
-    orderSummaryInsert:
+    order-summary-insert:
       services: [ 172.16.207.11:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:
@@ -769,7 +769,7 @@ consumers:
       poll-duration-mills: 1000
       working-threads: 2
       enable-negative-acknowledge: true
-    orderSummaryUpdate:
+    order-summary-update:
       services: [ 172.16.207.11:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:

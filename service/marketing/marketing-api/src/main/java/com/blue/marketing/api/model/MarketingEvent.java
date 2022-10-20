@@ -1,10 +1,5 @@
 package com.blue.marketing.api.model;
 
-import com.blue.basic.serializer.IdentityDeserializer;
-import com.blue.basic.serializer.IdentitySerializer;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.io.Serializable;
 
 /**
@@ -22,8 +17,6 @@ public final class MarketingEvent implements Serializable {
      */
     private Integer marketingEventType;
 
-    @JsonSerialize(using = IdentitySerializer.class)
-    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long memberId;
 
     /**
@@ -31,8 +24,6 @@ public final class MarketingEvent implements Serializable {
      */
     private String event;
 
-    @JsonSerialize(using = IdentitySerializer.class)
-    @JsonDeserialize(using = IdentityDeserializer.class)
     private Long eventTime;
 
     public MarketingEvent() {
