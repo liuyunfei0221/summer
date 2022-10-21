@@ -69,13 +69,12 @@ public final class BlueRestGenerator {
             ofNullable(restConf.getResponseTimeoutMillis())
                     .ifPresent(responseTimeoutMillis -> httpClient.responseTimeout(Duration.of(responseTimeoutMillis, MILLIS)));
 
-            httpClient
-                    .doOnConnected(
-                            connection -> connection
-                                    .addHandlerFirst(new ReadTimeoutHandler(
-                                            ofNullable(restConf.getReadTimeoutMillis()).filter(v -> v > 0).orElse(DEFAULT_READ_TIMEOUT_MILLIS), MILLISECONDS))
-                                    .addHandlerFirst(new WriteTimeoutHandler(
-                                            ofNullable(restConf.getWriteTimeoutMillis()).filter(v -> v > 0).orElse(DEFAULT_WRITE_TIMEOUT_MILLIS), MILLISECONDS)));
+            httpClient.doOnConnected(
+                    connection -> connection
+                            .addHandlerFirst(new ReadTimeoutHandler(
+                                    ofNullable(restConf.getReadTimeoutMillis()).filter(v -> v > 0).orElse(DEFAULT_READ_TIMEOUT_MILLIS), MILLISECONDS))
+                            .addHandlerFirst(new WriteTimeoutHandler(
+                                    ofNullable(restConf.getWriteTimeoutMillis()).filter(v -> v > 0).orElse(DEFAULT_WRITE_TIMEOUT_MILLIS), MILLISECONDS)));
 
             return httpClient;
         };

@@ -104,7 +104,6 @@ public final class AccessInfoCache {
 
         this.globalExpiresMillis = globalExpiresMillis;
         this.differenceToHandleExpire = globalExpiresMillis - millisLeftToHandleExpire;
-
         this.globalExpireDuration = Duration.of(globalExpiresMillis, UNIT);
 
         CaffeineConf caffeineConf = new CaffeineConfParams(capacity, Duration.of(localExpiresMillis, MILLIS),
@@ -117,7 +116,7 @@ public final class AccessInfoCache {
      * expire?
      */
     private final Predicate<Long> EXPIRE_PRE = loginMillisTimeStamp ->
-            (MILLIS_STAMP_SUP.get() > (loginMillisTimeStamp + differenceToHandleExpire));
+            MILLIS_STAMP_SUP.get() > (loginMillisTimeStamp + differenceToHandleExpire);
 
     /**
      * accessInfo parser

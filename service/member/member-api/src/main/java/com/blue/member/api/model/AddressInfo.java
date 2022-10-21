@@ -1,5 +1,8 @@
 package com.blue.member.api.model;
 
+import com.blue.basic.serializer.Long2StringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 
 /**
@@ -12,8 +15,10 @@ public final class AddressInfo implements Serializable {
 
     private static final long serialVersionUID = -4519466380783813252L;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long id;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long memberId;
 
     private String contact;
@@ -30,18 +35,22 @@ public final class AddressInfo implements Serializable {
 
     private String email;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long countryId;
 
     private String country;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long stateId;
 
     private String state;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long cityId;
 
     private String city;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long areaId;
 
     private String area;

@@ -1,5 +1,8 @@
 package com.blue.finance.api.model;
 
+import com.blue.basic.serializer.Long2StringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 
 /**
@@ -12,12 +15,15 @@ public final class FinanceFlowManagerInfo implements Serializable {
 
     private static final long serialVersionUID = 2200463703072833307L;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long id;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long memberId;
 
     private String memberName;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long orderId;
 
     private String orderNo;
@@ -34,12 +40,16 @@ public final class FinanceFlowManagerInfo implements Serializable {
      */
     private Integer changeType;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long amountChanged;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long amountBeforeChanged;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long amountAfterChanged;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long createTime;
 
     public FinanceFlowManagerInfo() {

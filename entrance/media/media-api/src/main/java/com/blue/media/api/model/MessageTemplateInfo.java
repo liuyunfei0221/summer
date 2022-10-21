@@ -1,6 +1,9 @@
 package com.blue.media.api.model;
 
 
+import com.blue.basic.serializer.Long2StringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 
 /**
@@ -13,6 +16,7 @@ public final class MessageTemplateInfo implements Serializable {
 
     private static final long serialVersionUID = -5148017852176419254L;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long id;
 
     private String name;

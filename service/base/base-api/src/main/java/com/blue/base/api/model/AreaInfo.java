@@ -1,5 +1,8 @@
 package com.blue.base.api.model;
 
+import com.blue.basic.serializer.Long2StringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 
 /**
@@ -12,12 +15,16 @@ public final class AreaInfo implements Serializable {
 
     private static final long serialVersionUID = 6113836087899954124L;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long id;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long countryId;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long stateId;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long cityId;
 
     private String name;

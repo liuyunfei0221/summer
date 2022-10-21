@@ -1,5 +1,8 @@
 package com.blue.article.api.model;
 
+import com.blue.basic.serializer.Long2StringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 
 /**
@@ -12,14 +15,19 @@ public final class ReadingInfo implements Serializable {
 
     private static final long serialVersionUID = 7589886728954681798L;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long favorites;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long readings;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long comments;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long likes;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long boring;
 
     public ReadingInfo() {

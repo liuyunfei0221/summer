@@ -1,6 +1,9 @@
 package com.blue.marketing.api.model;
 
 
+import com.blue.basic.serializer.Long2StringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 
 /**
@@ -13,6 +16,7 @@ public final class EventRecordInfo implements Serializable {
 
     private static final long serialVersionUID = 6569268133204313196L;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long id;
 
     /**
@@ -37,11 +41,13 @@ public final class EventRecordInfo implements Serializable {
     /**
      * event time
      */
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long createTime;
 
     /**
      * creator
      */
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long creator;
 
     private String creatorName;

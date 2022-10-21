@@ -46,8 +46,8 @@
         <jakarta-mail.version>2.0.1</jakarta-mail.version>
         <java-jwt.version>4.1.0</java-jwt.version>
         <kaptcha.version>2.3.2</kaptcha.version>
-        <mysql-connector-java.version>8.0.30</mysql-connector-java.version>
-        <pulsar.version>2.10.1</pulsar.version>
+        <mysql-connector-java.version>8.0.31</mysql-connector-java.version>
+        <pulsar.version>2.10.2</pulsar.version>
         <redisson.version>3.17.7</redisson.version>
         <sharding-jdbc.version>4.1.1</sharding-jdbc.version>
         <seata-spring.version>1.4.2</seata-spring.version>

@@ -1,5 +1,8 @@
 package com.blue.finance.api.model;
 
+import com.blue.basic.serializer.Long2StringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 
 /**
@@ -15,6 +18,7 @@ public final class FinanceInfo implements Serializable {
     /**
      * balance/fen
      */
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long balance;
 
     public FinanceInfo(Long balance) {

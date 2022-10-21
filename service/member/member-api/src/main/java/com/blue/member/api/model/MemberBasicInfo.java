@@ -1,5 +1,8 @@
 package com.blue.member.api.model;
 
+import com.blue.basic.serializer.Long2StringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 
 /**
@@ -12,6 +15,7 @@ public final class MemberBasicInfo implements Serializable {
 
     private static final long serialVersionUID = -8231116867917923473L;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long id;
 
     private String phone;
@@ -36,8 +40,10 @@ public final class MemberBasicInfo implements Serializable {
      */
     private Integer status;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long createTime;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long updateTime;
 
     public MemberBasicInfo() {

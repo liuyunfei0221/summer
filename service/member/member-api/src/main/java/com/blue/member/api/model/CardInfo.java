@@ -1,5 +1,8 @@
 package com.blue.member.api.model;
 
+import com.blue.basic.serializer.Long2StringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 
 /**
@@ -12,8 +15,10 @@ public final class CardInfo implements Serializable {
 
     private static final long serialVersionUID = 8508950545229880917L;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long id;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long memberId;
 
     private String name;
@@ -23,6 +28,7 @@ public final class CardInfo implements Serializable {
     /**
      * cover attachment id
      */
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long coverId;
 
     /**
@@ -33,6 +39,7 @@ public final class CardInfo implements Serializable {
     /**
      * content attachment id
      */
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long contentId;
 
     /**
@@ -42,8 +49,10 @@ public final class CardInfo implements Serializable {
 
     private String extra;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long createTime;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long updateTime;
 
     public CardInfo() {

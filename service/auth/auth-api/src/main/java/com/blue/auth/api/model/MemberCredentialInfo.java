@@ -2,6 +2,8 @@ package com.blue.auth.api.model;
 
 import com.blue.basic.inter.Asserter;
 import com.blue.basic.model.exps.BlueException;
+import com.blue.basic.serializer.Long2StringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.io.Serializable;
 import java.util.List;
@@ -20,6 +22,7 @@ public final class MemberCredentialInfo implements Serializable, Asserter {
 
     private static final long serialVersionUID = 8079056879120261243L;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long memberId;
 
     private List<CredentialInfo> credentials;

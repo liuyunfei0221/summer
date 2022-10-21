@@ -1,5 +1,8 @@
 package com.blue.base.api.model;
 
+import com.blue.basic.serializer.Long2StringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 
 /**
@@ -12,6 +15,7 @@ public final class DictInfo implements Serializable {
 
     private static final long serialVersionUID = 945497603248391168L;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long id;
 
     private String name;

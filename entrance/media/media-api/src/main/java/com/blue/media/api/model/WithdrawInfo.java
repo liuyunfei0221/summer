@@ -1,5 +1,8 @@
 package com.blue.media.api.model;
 
+import com.blue.basic.serializer.Long2StringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 
 /**
@@ -12,8 +15,10 @@ public final class WithdrawInfo implements Serializable {
 
     private static final long serialVersionUID = 1417300777577441966L;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long amount;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long bankCardId;
 
     private String remark;

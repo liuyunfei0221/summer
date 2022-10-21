@@ -1,5 +1,8 @@
 package com.blue.auth.api.model;
 
+import com.blue.basic.serializer.Long2StringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 
 /**
@@ -15,6 +18,7 @@ public final class RoleInfo implements Serializable {
     /**
      * id
      */
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long id;
 
     /**

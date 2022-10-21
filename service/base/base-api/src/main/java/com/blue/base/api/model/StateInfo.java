@@ -1,5 +1,8 @@
 package com.blue.base.api.model;
 
+import com.blue.basic.serializer.Long2StringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 
 /**
@@ -12,8 +15,10 @@ public final class StateInfo implements Serializable {
 
     private static final long serialVersionUID = 8273318922366078046L;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long id;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long countryId;
 
     private String name;

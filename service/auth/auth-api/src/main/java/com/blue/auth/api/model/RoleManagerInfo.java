@@ -1,5 +1,8 @@
 package com.blue.auth.api.model;
 
+import com.blue.basic.serializer.Long2StringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 
 /**
@@ -15,6 +18,7 @@ public final class RoleManagerInfo implements Serializable {
     /**
      * id
      */
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long id;
 
     /**
@@ -42,14 +46,18 @@ public final class RoleManagerInfo implements Serializable {
      */
     private Boolean isDefault;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long createTime;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long updateTime;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long creator;
 
     private String creatorName;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long updater;
 
     private String updaterName;

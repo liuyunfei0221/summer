@@ -1,5 +1,8 @@
 package com.blue.article.api.model;
 
+import com.blue.basic.serializer.Long2StringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -13,10 +16,12 @@ public final class ArticleInfo implements Serializable {
 
     private static final long serialVersionUID = -9167970886461067666L;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long id;
 
     private String title;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long authorId;
 
     private String author;
@@ -25,8 +30,10 @@ public final class ArticleInfo implements Serializable {
 
     private String typeDisc;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long createTime;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long updateTime;
 
     private String content;

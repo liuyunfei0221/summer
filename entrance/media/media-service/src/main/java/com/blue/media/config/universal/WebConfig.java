@@ -67,7 +67,7 @@ public class WebConfig implements WebFluxConfigurer {
     }
 
     @Bean
-    List<HttpMessageWriter<?>> httpMessageWriters(ServerCodecConfigurer configurer) {
+    List<HttpMessageWriter<?>> HttpMessageWriters(ServerCodecConfigurer configurer) {
         return configurer.getWriters();
     }
 

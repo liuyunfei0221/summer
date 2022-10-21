@@ -12,6 +12,7 @@ import java.util.Date;
 import static com.blue.basic.common.base.BlueChecker.isNotBlank;
 import static com.blue.basic.common.base.BlueChecker.isNotNull;
 import static com.blue.basic.constant.common.ResponseElement.TIME_FORMAT_IS_INVALID;
+import static com.blue.basic.constant.common.SpecialLongElement.MILLIS_SEC_DURATION;
 import static com.blue.basic.constant.common.SummerAttr.DATE_TIME_FORMATTER;
 import static com.blue.basic.constant.common.SummerAttr.TIME_ZONE;
 import static java.time.Instant.now;
@@ -63,7 +64,7 @@ public final class TimeUnity {
      */
     public static long convertEpochMilliToSecond(long epochMilli) {
         Assert.isTrue(epochMilli > 0L, "epochMilli can't be less than 1");
-        return epochMilli / 1000L;
+        return epochMilli / MILLIS_SEC_DURATION.value;
     }
 
     /**

@@ -1,5 +1,8 @@
 package com.blue.shine.api.model;
 
+import com.blue.basic.serializer.Long2StringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 
 /**
@@ -12,6 +15,7 @@ public final class ShineInfo implements Serializable {
 
     private static final long serialVersionUID = 4417623130276820000L;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long id;
 
     private String title;
@@ -24,14 +28,17 @@ public final class ShineInfo implements Serializable {
 
     private String contactDetail;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long countryId;
 
     private String country;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long stateId;
 
     private String state;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long cityId;
 
     private String city;
@@ -42,6 +49,7 @@ public final class ShineInfo implements Serializable {
 
     private Integer priority;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long createTime;
 
     public ShineInfo() {

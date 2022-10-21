@@ -1,6 +1,8 @@
 package com.blue.verify.api.model;
 
 import com.blue.basic.constant.verify.VerifyBusinessType;
+import com.blue.basic.serializer.Long2StringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.io.Serializable;
 
@@ -14,6 +16,7 @@ public final class VerifyHistoryInfo implements Serializable {
 
     private static final long serialVersionUID = -3829756530290630049L;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long id;
 
     /**
@@ -32,6 +35,7 @@ public final class VerifyHistoryInfo implements Serializable {
 
     private String requestIp;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long createTime;
 
     public VerifyHistoryInfo() {

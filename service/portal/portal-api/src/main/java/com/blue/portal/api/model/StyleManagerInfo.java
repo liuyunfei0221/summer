@@ -1,5 +1,8 @@
 package com.blue.portal.api.model;
 
+import com.blue.basic.serializer.Long2StringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
 
 
@@ -13,6 +16,7 @@ public final class StyleManagerInfo implements Serializable {
 
     private static final long serialVersionUID = 2353772661918508963L;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long id;
 
     private String name;
@@ -28,14 +32,18 @@ public final class StyleManagerInfo implements Serializable {
      */
     private Integer status;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long createTime;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long updateTime;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long creator;
 
     private String creatorName;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long updater;
 
     private String updaterName;
