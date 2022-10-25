@@ -208,7 +208,7 @@ public class RoleServiceImpl implements RoleService {
         return role;
     };
 
-    public static final BiFunction<RoleUpdateParam, Role, Boolean> UPDATE_ITEM_VALIDATOR = (p, t) -> {
+    public static final BiConsumer<RoleUpdateParam, Role> UPDATE_ITEM_VALIDATOR = (p, t) -> {
         if (!p.getId().equals(t.getId()))
             throw new BlueException(BAD_REQUEST);
 
@@ -232,7 +232,8 @@ public class RoleServiceImpl implements RoleService {
             alteration = true;
         }
 
-        return alteration;
+        if (!alteration)
+            throw new BlueException(DATA_HAS_NOT_CHANGED);
     };
 
     /**
@@ -278,8 +279,7 @@ public class RoleServiceImpl implements RoleService {
             throw new BlueException(UNAUTHORIZED);
 
         Role role = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(roleUpdateParam);
-        if (!UPDATE_ITEM_VALIDATOR.apply(roleUpdateParam, role))
-            throw new BlueException(DATA_HAS_NOT_CHANGED);
+        UPDATE_ITEM_VALIDATOR.accept(roleUpdateParam, role);
 
         role.setUpdater(operatorId);
         role.setUpdateTime(TIME_STAMP_GETTER.get());

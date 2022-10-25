@@ -36,7 +36,7 @@ import reactor.util.Loggers;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.function.BiFunction;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -185,7 +185,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
         return qrCodeConfig;
     };
 
-    public static final BiFunction<QrCodeConfigUpdateParam, QrCodeConfig, Boolean> UPDATE_ITEM_VALIDATOR = (p, t) -> {
+    public static final BiConsumer<QrCodeConfigUpdateParam, QrCodeConfig> UPDATE_ITEM_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
         if (!p.getId().equals(t.getId()))
@@ -230,12 +230,10 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
             alteration = true;
         }
 
-        if (alteration)
-            t.setUpdateTime(TIME_STAMP_GETTER.get());
+        if (!alteration)
+            throw new BlueException(DATA_HAS_NOT_CHANGED);
 
-        return alteration;
-
-
+        t.setUpdateTime(TIME_STAMP_GETTER.get());
     };
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(QrCodeConfigSortAttribute.values())
@@ -360,9 +358,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
             QrCodeConfig qrCodeConfig = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(qrCodeConfigUpdateParam);
             Integer originalType = qrCodeConfig.getType();
 
-            if (!UPDATE_ITEM_VALIDATOR.apply(qrCodeConfigUpdateParam, qrCodeConfig))
-                throw new BlueException(DATA_HAS_NOT_CHANGED);
-
+            UPDATE_ITEM_VALIDATOR.accept(qrCodeConfigUpdateParam, qrCodeConfig);
             qrCodeConfig.setUpdater(operatorId);
 
             return qrCodeConfigRepository.save(qrCodeConfig)

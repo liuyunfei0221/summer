@@ -250,8 +250,8 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
 
 -- finance api
 
-       (200001, 'GET', 'blue-finance', '/balance', '', b'1', b'1', b'1', b'0', b'1', 1,
-        'query balance', 'query balance', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (200001, 'GET', 'blue-finance', '/account', '', b'1', b'1', b'1', b'0', b'1', 1,
+        'get finance account', 'get finance account', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (200002, 'POST', 'blue-finance', '/withdraw', '', b'1', b'0', b'0', b'1', b'1', 1,
         'withdraw/test encrypt in finance', 'withdraw/test encrypt in finance', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
         1),

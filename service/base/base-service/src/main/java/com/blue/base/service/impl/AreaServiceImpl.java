@@ -6,9 +6,6 @@ import com.blue.base.config.deploy.CaffeineDeploy;
 import com.blue.base.model.AreaCondition;
 import com.blue.base.model.AreaInsertParam;
 import com.blue.base.model.AreaUpdateParam;
-import com.blue.basic.model.common.PageModelRequest;
-import com.blue.basic.model.common.PageModelResponse;
-import com.blue.basic.model.exps.BlueException;
 import com.blue.base.repository.entity.Area;
 import com.blue.base.repository.entity.City;
 import com.blue.base.repository.template.AreaRepository;
@@ -16,6 +13,9 @@ import com.blue.base.service.inter.AreaService;
 import com.blue.base.service.inter.CityService;
 import com.blue.base.service.inter.CountryService;
 import com.blue.base.service.inter.StateService;
+import com.blue.basic.model.common.PageModelRequest;
+import com.blue.basic.model.common.PageModelResponse;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -32,20 +32,20 @@ import reactor.util.Loggers;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
-import java.util.function.BiFunction;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static com.blue.base.constant.BaseColumnName.NAME;
+import static com.blue.base.converter.BaseModelConverters.AREAS_2_AREA_INFOS_CONVERTER;
+import static com.blue.base.converter.BaseModelConverters.AREA_2_AREA_INFO_CONVERTER;
 import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.base.constant.BaseColumnName.NAME;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
 import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.Status.VALID;
-import static com.blue.base.converter.BaseModelConverters.AREAS_2_AREA_INFOS_CONVERTER;
-import static com.blue.base.converter.BaseModelConverters.AREA_2_AREA_INFO_CONVERTER;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
 import static com.blue.mongo.constant.LikeElement.PREFIX;
@@ -271,7 +271,7 @@ public class AreaServiceImpl implements AreaService {
         return area;
     };
 
-    public final BiFunction<AreaUpdateParam, Area, Boolean> UPDATE_ITEM_VALIDATOR = (p, t) -> {
+    public final BiConsumer<AreaUpdateParam, Area> UPDATE_ITEM_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
         if (!p.getId().equals(t.getId()))
@@ -297,7 +297,8 @@ public class AreaServiceImpl implements AreaService {
             alteration = true;
         }
 
-        return alteration;
+        if (!alteration)
+            throw new BlueException(DATA_HAS_NOT_CHANGED);
     };
 
     private static final Function<AreaCondition, Query> CONDITION_PROCESSOR = c -> {
@@ -358,9 +359,7 @@ public class AreaServiceImpl implements AreaService {
 
         Area area = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(areaUpdateParam);
 
-        Boolean changed = UPDATE_ITEM_VALIDATOR.apply(areaUpdateParam, area);
-        if (changed != null && !changed)
-            throw new BlueException(DATA_HAS_NOT_CHANGED);
+        UPDATE_ITEM_VALIDATOR.accept(areaUpdateParam, area);
 
         area.setUpdateTime(TIME_STAMP_GETTER.get());
         return areaRepository.save(area)

@@ -19,11 +19,11 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
  */
 @SuppressWarnings("JavaDoc")
 @Component
-public final class BalanceApiHandler {
+public final class FinanceAccountApiHandler {
 
     private final FinanceAccountService financeAccountService;
 
-    public BalanceApiHandler(FinanceAccountService financeAccountService) {
+    public FinanceAccountApiHandler(FinanceAccountService financeAccountService) {
         this.financeAccountService = financeAccountService;
     }
 
@@ -36,11 +36,11 @@ public final class BalanceApiHandler {
     public Mono<ServerResponse> get(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
-                        financeAccountService.getBalanceByMemberId(acc.getId())
-                                .flatMap(fi ->
+                        financeAccountService.getFinanceAccountInfoMonoByMemberId(acc.getId())
+                                .flatMap(fai ->
                                         ok()
                                                 .contentType(APPLICATION_JSON)
-                                                .body(success(fi, serverRequest), BlueResponse.class))
+                                                .body(success(fai, serverRequest), BlueResponse.class))
                 );
     }
 

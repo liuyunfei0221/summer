@@ -55,7 +55,7 @@ data:
       idle-timeout: 5
       connection-test-query: SELECT 1 FROM DUAL
       is-read-only: false
-      is-auto-commit: false
+      is-auto-commit: true
 
     - url: jdbc:mysql://43.138.44.171:3306/finance_1
       database-conf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
@@ -69,7 +69,7 @@ data:
       idle-timeout: 5
       connection-test-query: SELECT 1 FROM DUAL
       is-read-only: false
-      is-auto-commit: false
+      is-auto-commit: true
   sharding-tables:
     - table-name: finance_account
       sharding-column: id

@@ -25,7 +25,7 @@ public interface RealNameService {
      * @param memberId
      * @return
      */
-    RealNameInfo initRealName(Long memberId);
+    RealName initRealName(Long memberId);
 
     /**
      * update real name
@@ -39,11 +39,11 @@ public interface RealNameService {
     /**
      * update real name status
      *
-     * @param id
+     * @param memberId
      * @param statusParam
      * @return
      */
-    RealNameInfo updateRealNameStatus(Long id, StatusParam statusParam);
+    RealNameInfo updateRealNameStatus(Long memberId, StatusParam statusParam);
 
     /**
      * get by id
@@ -70,20 +70,12 @@ public interface RealNameService {
     Mono<RealNameInfo> getRealNameInfoMonoWithAssert(Long id);
 
     /**
-     * get by member id
+     * get real name info mono by member id
      *
      * @param memberId
      * @return
      */
-    RealName getRealNameByMemberId(Long memberId);
-
-    /**
-     * get mono by member id
-     *
-     * @param memberId
-     * @return
-     */
-    Mono<RealName> getRealNameMonoByMemberId(Long memberId);
+    Mono<RealNameInfo> getRealNameInfoMonoByMemberId(Long memberId);
 
     /**
      * query real name info by member id with assert

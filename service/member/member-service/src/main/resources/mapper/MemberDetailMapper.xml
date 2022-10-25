@@ -13,15 +13,13 @@
                 typeHandler="com.blue.database.type.StringColumnEncodeTypeHandler"/>
         <result column="email" jdbcType="VARCHAR" property="email"
                 typeHandler="com.blue.database.type.StringColumnEncodeTypeHandler"/>
-
         <result column="year_of_birth" jdbcType="SMALLINT" property="yearOfBirth"/>
         <result column="month_of_birth" jdbcType="TINYINT" property="monthOfBirth"/>
         <result column="day_of_birth" jdbcType="TINYINT" property="dayOfBirth"/>
         <result column="chinese_zodiac" jdbcType="TINYINT" property="chineseZodiac"/>
         <result column="zodiac_sign" jdbcType="TINYINT" property="zodiacSign"/>
-        <result column="height" jdbcType="TINYINT" property="height"/>
-        <result column="weight" jdbcType="TINYINT" property="weight"/>
-
+        <result column="height" jdbcType="SMALLINT" property="height"/>
+        <result column="weight" jdbcType="SMALLINT" property="weight"/>
         <result column="country_id" jdbcType="BIGINT" property="countryId"/>
         <result column="country" jdbcType="VARCHAR" property="country"/>
         <result column="state_id" jdbcType="BIGINT" property="stateId"/>
@@ -366,11 +364,11 @@
         where id = #{id,jdbcType=BIGINT}
     </delete>
 
-    <update id="updateStatus">
+    <update id="updateStatusByMemberId">
         UPDATE member_detail
         SET status      = #{status,jdbcType=TINYINT},
             update_time = #{updateTime,jdbcType=BIGINT}
-        WHERE id = #{id,jdbcType=BIGINT}
+        WHERE member_id = #{memberId,jdbcType=BIGINT}
     </update>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">

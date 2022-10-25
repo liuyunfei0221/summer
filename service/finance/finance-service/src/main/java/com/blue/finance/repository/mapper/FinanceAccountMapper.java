@@ -25,7 +25,7 @@ public interface FinanceAccountMapper {
 
     FinanceAccount selectByPrimaryKey(Long id);
 
-    FinanceAccount getByMemberId(@Param("memberId") Long memberId);
+    FinanceAccount selectByMemberId(@Param("memberId") Long memberId);
 
     List<FinanceAccount> selectByIds(@Param("ids") List<Long> ids);
 }

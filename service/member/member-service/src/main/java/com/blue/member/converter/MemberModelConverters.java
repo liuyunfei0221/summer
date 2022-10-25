@@ -150,7 +150,7 @@ public final class MemberModelConverters {
                     memberDetail.getHeight(), memberDetail.getWeight(), memberDetail.getCountryId(), memberDetail.getCountry(),
                     memberDetail.getStateId(), memberDetail.getState(), memberDetail.getCityId(),
                     memberDetail.getCity(), memberDetail.getAddress(), memberDetail.getProfile(),
-                    memberDetail.getHobby(), memberDetail.getHomepage(), memberDetail.getExtra()
+                    memberDetail.getHobby(), memberDetail.getHomepage(), memberDetail.getExtra(), memberDetail.getStatus()
             );
 
         throw new BlueException(EMPTY_PARAM);

@@ -147,7 +147,7 @@
         where id = #{id,jdbcType=BIGINT}
     </select>
 
-    <select id="getByMemberId" resultMap="BaseResultMap">
+    <select id="selectByMemberId" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM

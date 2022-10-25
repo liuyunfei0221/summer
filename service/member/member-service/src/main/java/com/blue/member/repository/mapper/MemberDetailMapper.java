@@ -24,7 +24,7 @@ public interface MemberDetailMapper {
 
     int deleteByPrimaryKey(Long id);
 
-    int updateStatus(@Param("id") Long id, @Param("status") Integer status, @Param("updateTime") Long updateTime);
+    int updateStatusByMemberId(@Param("memberId") Long memberId, @Param("status") Integer status, @Param("updateTime") Long updateTime);
 
     MemberDetail selectByPrimaryKey(Long id);
 

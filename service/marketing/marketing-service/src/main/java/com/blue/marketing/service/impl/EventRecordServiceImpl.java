@@ -213,7 +213,7 @@ public class EventRecordServiceImpl implements EventRecordService {
         return zip(
                 selectEventRecordMonoByLimitAndCreator(pageModelRequest.getLimit(), pageModelRequest.getRows(), creator),
                 countEventRecordMonoByCreator(creator),
-                rpcMemberBasicServiceConsumer.getMemberBasicInfoByPrimaryKey(creator)
+                rpcMemberBasicServiceConsumer.getMemberBasicInfo(creator)
         ).flatMap(tuple3 -> {
             List<EventRecord> eventRecords = tuple3.getT1();
             String creatorName = tuple3.getT3().getName();

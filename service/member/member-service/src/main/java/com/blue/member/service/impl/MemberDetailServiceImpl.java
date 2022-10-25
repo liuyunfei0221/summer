@@ -15,10 +15,12 @@ import com.blue.member.constant.MemberDetailSortAttribute;
 import com.blue.member.model.MemberDetailCondition;
 import com.blue.member.model.MemberDetailUpdateParam;
 import com.blue.member.remote.consumer.RpcCityServiceConsumer;
+import com.blue.member.repository.entity.MemberBasic;
 import com.blue.member.repository.entity.MemberDetail;
-import com.blue.member.repository.entity.RealName;
 import com.blue.member.repository.mapper.MemberDetailMapper;
+import com.blue.member.service.inter.MemberBasicService;
 import com.blue.member.service.inter.MemberDetailService;
+import com.blue.redisson.component.SynchronizedProcessor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +32,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
@@ -37,7 +40,6 @@ import java.util.stream.Stream;
 import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.database.common.ConditionSortProcessor.process;
 import static com.blue.basic.common.base.ConstantProcessor.*;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
 import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
@@ -46,7 +48,9 @@ import static com.blue.basic.constant.common.Status.INVALID;
 import static com.blue.basic.constant.common.Status.VALID;
 import static com.blue.basic.constant.common.SummerAttr.DATE_FORMATTER;
 import static com.blue.basic.constant.common.Symbol.PERCENT;
+import static com.blue.basic.constant.common.SyncKeyPrefix.MEMBER_DETAIL_INSERT_SYNC_PRE;
 import static com.blue.basic.constant.member.MemberThreshold.*;
+import static com.blue.database.common.ConditionSortProcessor.process;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_DETAILS_2_MEMBER_DETAILS_INFO;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_DETAIL_2_MEMBER_DETAIL_INFO;
 import static java.util.Collections.emptyList;
@@ -63,7 +67,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "DuplicatedCode"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "DuplicatedCode", "BlockingMethodInNonBlockingContext"})
 @Service
 public class MemberDetailServiceImpl implements MemberDetailService {
 
@@ -71,24 +75,41 @@ public class MemberDetailServiceImpl implements MemberDetailService {
 
     private RpcCityServiceConsumer rpcCityServiceConsumer;
 
-    private final MemberDetailMapper memberDetailMapper;
+    private MemberBasicService memberBasicService;
+
+    private final SynchronizedProcessor synchronizedProcessor;
 
     private BlueIdentityProcessor blueIdentityProcessor;
 
+    private MemberDetailMapper memberDetailMapper;
+
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public MemberDetailServiceImpl(RpcCityServiceConsumer rpcCityServiceConsumer, MemberDetailMapper memberDetailMapper,
-                                   BlueIdentityProcessor blueIdentityProcessor) {
+    public MemberDetailServiceImpl(RpcCityServiceConsumer rpcCityServiceConsumer, MemberBasicService memberBasicService, SynchronizedProcessor synchronizedProcessor,
+                                   BlueIdentityProcessor blueIdentityProcessor, MemberDetailMapper memberDetailMapper) {
         this.rpcCityServiceConsumer = rpcCityServiceConsumer;
-        this.memberDetailMapper = memberDetailMapper;
+        this.memberBasicService = memberBasicService;
+        this.synchronizedProcessor = synchronizedProcessor;
         this.blueIdentityProcessor = blueIdentityProcessor;
+        this.memberDetailMapper = memberDetailMapper;
     }
 
-    private final Function<Long, MemberDetail> MEMBER_DETAIL_INITIALIZER_WITHOUT_EXIST_VALIDATE = mid -> {
+    private static final Function<Long, String> MEMBER_DETAIL_INSERT_SYNC_KEY_GEN = memberId -> {
+        if (isValidIdentity(memberId))
+            return MEMBER_DETAIL_INSERT_SYNC_PRE.prefix + memberId;
+
+        throw new BlueException(BAD_REQUEST);
+    };
+
+    private final Function<Long, MemberDetail> INIT_MEMBER_DETAIL_GEN = mid -> {
         if (isInvalidIdentity(mid))
             throw new BlueException(INVALID_IDENTITY);
 
+        MemberBasic memberBasic = memberBasicService.getMemberBasic(mid);
+        if (isNull(memberBasic))
+            throw new BlueException(INVALID_PARAM);
+
         MemberDetail memberDetail = new MemberDetail();
-        memberDetail.setId(blueIdentityProcessor.generate(RealName.class));
+        memberDetail.setId(blueIdentityProcessor.generate(MemberDetail.class));
         memberDetail.setMemberId(mid);
         memberDetail.setStatus(INVALID.status);
 
@@ -99,110 +120,164 @@ public class MemberDetailServiceImpl implements MemberDetailService {
         return memberDetail;
     };
 
-    private final BiConsumer<MemberDetailUpdateParam, MemberDetail> ATTR_PACKAGER = (p, t) -> {
-        if (isNull(p) || isNull(t))
+    private final Consumer<MemberDetail> INSERT_ITEM_VALIDATOR = t -> {
+        if (isNull(t))
             throw new BlueException(EMPTY_PARAM);
 
-        ofNullable(p.getName()).filter(BlueChecker::isNotBlank)
-                .ifPresent(t::setName);
-        ofNullable(p.getGender()).ifPresent(gender -> {
+        if (isInvalidIdentity(t.getId()) || isInvalidIdentity(t.getMemberId()))
+            throw new BlueException(INVALID_PARAM);
+
+        assertStatus(t.getStatus(), false);
+
+        if (isNull(t.getCreateTime()) || isNull(t.getUpdateTime()))
+            throw new BlueException(INVALID_PARAM);
+
+        if (isNotNull(memberDetailMapper.selectByPrimaryKey(t.getId())))
+            throw new BlueException(DATA_ALREADY_EXIST);
+
+        if (isNotNull(memberDetailMapper.selectByMemberId(t.getMemberId())))
+            throw new BlueException(DATA_ALREADY_EXIST);
+    };
+
+    private final BiConsumer<MemberDetailUpdateParam, MemberDetail> UPDATE_ITEM_VALIDATOR = (p, t) -> {
+        if (isNull(p) || isNull(t))
+            throw new BlueException(EMPTY_PARAM);
+        p.asserts();
+
+        boolean alteration = false;
+
+        String name = p.getName();
+        if (isNotBlank(name) && !name.equals(t.getName())) {
+            t.setName(name);
+            alteration = true;
+        }
+
+        Integer gender = p.getGender();
+        if (isNotNull(gender) && !gender.equals(t.getGender())) {
             assertGender(gender, false);
             t.setGender(gender);
-        });
-        ofNullable(p.getPhone()).filter(BlueChecker::isNotBlank)
-                .ifPresent(t::setPhone);
-        ofNullable(p.getEmail()).filter(BlueChecker::isNotBlank)
-                .ifPresent(t::setEmail);
+            alteration = true;
+        }
 
-        ofNullable(p.getBirthDay()).filter(BlueChecker::isNotBlank)
-                .ifPresent(birthDay -> {
-                    LocalDate localDate;
-                    try {
-                        localDate = LocalDate.parse(birthDay, DATE_FORMATTER);
-                    } catch (Exception e) {
-                        throw new BlueException(INVALID_PARAM);
-                    }
+        String phone = p.getPhone();
+        if (isNotBlank(phone) && !phone.equals(t.getPhone())) {
+            t.setPhone(phone);
+            alteration = true;
+        }
 
-                    Integer yearOfBirth = localDate.getYear();
-                    Integer monthOfBirth = localDate.getMonthValue();
-                    Integer dayOfBirth = localDate.getDayOfMonth();
+        String email = p.getEmail();
+        if (isNotBlank(email) && !email.equals(t.getEmail())) {
+            t.setEmail(email);
+            alteration = true;
+        }
 
-                    if (yearOfBirth.equals(t.getYearOfBirth()) && monthOfBirth.equals(t.getMonthOfBirth()) && dayOfBirth.equals(t.getDayOfBirth()))
-                        return;
+        String birthDay = p.getBirthDay();
+        if (isNotBlank(birthDay)) {
+            LocalDate localDate;
+            try {
+                localDate = LocalDate.parse(birthDay, DATE_FORMATTER);
+            } catch (Exception e) {
+                throw new BlueException(INVALID_PARAM);
+            }
 
-                    t.setYearOfBirth(yearOfBirth);
-                    t.setMonthOfBirth(monthOfBirth);
-                    t.setDayOfBirth(dayOfBirth);
-                });
+            Integer yearOfBirth = localDate.getYear();
+            Integer monthOfBirth = localDate.getMonthValue();
+            Integer dayOfBirth = localDate.getDayOfMonth();
 
-        ofNullable(p.getChineseZodiac())
-                .ifPresent(chineseZodiac -> {
-                    assertChineseZodiac(chineseZodiac, false);
-                    t.setChineseZodiac(chineseZodiac);
-                });
+            if (!yearOfBirth.equals(t.getYearOfBirth()) || !monthOfBirth.equals(t.getMonthOfBirth()) || !dayOfBirth.equals(t.getDayOfBirth())) {
+                t.setYearOfBirth(yearOfBirth);
+                t.setMonthOfBirth(monthOfBirth);
+                t.setDayOfBirth(dayOfBirth);
+                alteration = true;
+            }
+        }
 
-        ofNullable(p.getZodiacSign())
-                .ifPresent(zodiacSign -> {
-                    assertZodiacSign(zodiacSign, false);
-                    t.setZodiacSign(zodiacSign);
-                });
+        Integer chineseZodiac = p.getChineseZodiac();
+        if (isNotNull(chineseZodiac) && !chineseZodiac.equals(t.getChineseZodiac())) {
+            t.setChineseZodiac(chineseZodiac);
+            alteration = true;
+        }
 
-        ofNullable(p.getHeight())
-                .ifPresent(height -> {
-                    if (height < MIN_HEIGHT.threshold || height > MAX_HEIGHT.threshold)
-                        throw new BlueException(INVALID_PARAM);
-                    t.setHeight(height);
-                });
+        Integer zodiacSign = p.getZodiacSign();
+        if (isNotNull(zodiacSign) && !zodiacSign.equals(t.getZodiacSign())) {
+            t.setZodiacSign(zodiacSign);
+            alteration = true;
+        }
 
-        ofNullable(p.getWeight())
-                .ifPresent(weight -> {
-                    if (weight < MIN_WEIGHT.threshold || weight > MAX_WEIGHT.threshold)
-                        throw new BlueException(INVALID_PARAM);
-                    t.setWeight(weight);
-                });
+        Integer height = p.getHeight();
+        if (isNotNull(height) && !height.equals(t.getHeight())) {
+            if (height < MIN_HEIGHT.threshold || height > MAX_HEIGHT.threshold)
+                throw new BlueException(INVALID_PARAM);
 
-        ofNullable(p.getCityId())
-                .filter(cityId -> !cityId.equals(t.getCityId()))
-                .ifPresent(cityId -> {
-                    if (isInvalidIdentity(cityId))
-                        throw new BlueException(INVALID_IDENTITY);
+            t.setHeight(height);
+            alteration = true;
+        }
 
-                    CityRegion cityRegion = rpcCityServiceConsumer.getCityRegionById(cityId).toFuture().join();
-                    if (isNull(cityRegion))
-                        throw new BlueException(DATA_NOT_EXIST);
+        Integer weight = p.getWeight();
+        if (isNotNull(weight) && !weight.equals(t.getWeight())) {
+            if (weight < MIN_WEIGHT.threshold || weight > MAX_WEIGHT.threshold)
+                throw new BlueException(INVALID_PARAM);
 
-                    CountryInfo countryInfo = cityRegion.getCountry();
-                    t.setCountryId(countryInfo.getId());
-                    t.setCountry(countryInfo.getName());
+            t.setWeight(weight);
+            alteration = true;
+        }
 
-                    StateInfo stateInfo = cityRegion.getState();
-                    t.setStateId(stateInfo.getId());
-                    t.setState(stateInfo.getName());
+        Long cityId = p.getCityId();
+        if (isNotNull(cityId) && !cityId.equals(t.getCityId())) {
+            if (isInvalidIdentity(cityId))
+                throw new BlueException(INVALID_IDENTITY);
 
-                    CityInfo cityInfo = cityRegion.getCity();
-                    t.setCityId(cityInfo.getId());
-                    t.setCity(cityInfo.getName());
-                });
+            CityRegion cityRegion = rpcCityServiceConsumer.getCityRegionById(cityId).toFuture().join();
+            if (isNull(cityRegion))
+                throw new BlueException(DATA_NOT_EXIST);
 
-        ofNullable(p.getAddress())
-                .filter(BlueChecker::isNotBlank)
-                .ifPresent(t::setAddress);
+            CountryInfo countryInfo = cityRegion.getCountry();
+            t.setCountryId(countryInfo.getId());
+            t.setCountry(countryInfo.getName());
 
-        ofNullable(p.getProfile())
-                .filter(BlueChecker::isNotBlank)
-                .ifPresent(t::setProfile);
+            StateInfo stateInfo = cityRegion.getState();
+            t.setStateId(stateInfo.getId());
+            t.setState(stateInfo.getName());
 
-        ofNullable(p.getHobby())
-                .filter(BlueChecker::isNotBlank)
-                .ifPresent(t::setHobby);
+            CityInfo cityInfo = cityRegion.getCity();
+            t.setCityId(cityInfo.getId());
+            t.setCity(cityInfo.getName());
 
-        ofNullable(p.getHomepage())
-                .filter(BlueChecker::isNotBlank)
-                .ifPresent(t::setHomepage);
+            alteration = true;
+        }
 
-        ofNullable(p.getExtra())
-                .filter(BlueChecker::isNotBlank)
-                .ifPresent(t::setExtra);
+        String address = p.getAddress();
+        if (isNotBlank(address) && !address.equals(t.getAddress())) {
+            t.setAddress(address);
+            alteration = true;
+        }
+
+        String profile = p.getProfile();
+        if (isNotBlank(profile) && !profile.equals(t.getProfile())) {
+            t.setProfile(profile);
+            alteration = true;
+        }
+
+        String hobby = p.getHobby();
+        if (isNotBlank(hobby) && !hobby.equals(t.getHobby())) {
+            t.setHobby(hobby);
+            alteration = true;
+        }
+
+        String homepage = p.getHomepage();
+        if (isNotBlank(homepage) && !homepage.equals(t.getHomepage())) {
+            t.setHomepage(homepage);
+            alteration = true;
+        }
+
+        String extra = p.getExtra();
+        if (isNotBlank(extra) && !extra.equals(t.getExtra())) {
+            t.setExtra(extra);
+            alteration = true;
+        }
+
+        if (!alteration)
+            throw new BlueException(DATA_HAS_NOT_CHANGED);
 
         t.setStatus(VALID.status);
         t.setUpdateTime(TIME_STAMP_GETTER.get());
@@ -231,13 +306,19 @@ public class MemberDetailServiceImpl implements MemberDetailService {
      */
     @Override
     @Transactional(propagation = Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
-    public MemberDetailInfo initMemberDetail(Long memberId) {
-        LOGGER.info("MemberDetailInfo initMemberDetail(Long memberId), memberId = {}", memberId);
+    public MemberDetail initMemberDetail(Long memberId) {
+        LOGGER.info("MemberDetail initMemberDetail(Long memberId), memberId = {}", memberId);
 
-        MemberDetail memberDetail = MEMBER_DETAIL_INITIALIZER_WITHOUT_EXIST_VALIDATE.apply(memberId);
-        memberDetailMapper.insert(memberDetail);
+        MemberDetail memberDetail = INIT_MEMBER_DETAIL_GEN.apply(memberId);
 
-        return MEMBER_DETAIL_2_MEMBER_DETAIL_INFO.apply(memberDetail);
+        synchronizedProcessor.handleTaskWithSync(MEMBER_DETAIL_INSERT_SYNC_KEY_GEN.apply(memberId), () -> {
+            INSERT_ITEM_VALIDATOR.accept(memberDetail);
+
+            int inserted = memberDetailMapper.insert(memberDetail);
+            LOGGER.info("inserted = {}", inserted);
+        });
+
+        return memberDetail;
     }
 
     /**
@@ -260,9 +341,12 @@ public class MemberDetailServiceImpl implements MemberDetailService {
 
         MemberDetail memberDetail = memberDetailMapper.selectByMemberId(memberId);
         if (isNull(memberDetail))
-            throw new BlueException(DATA_NOT_EXIST);
+            memberDetail = this.initMemberDetail(memberId);
 
-        ATTR_PACKAGER.accept(memberDetailUpdateParam, memberDetail);
+        if (isNull(memberDetail))
+            throw new BlueException(INTERNAL_SERVER_ERROR);
+
+        UPDATE_ITEM_VALIDATOR.accept(memberDetailUpdateParam, memberDetail);
 
         memberDetailMapper.updateByPrimaryKey(memberDetail);
 
@@ -286,7 +370,10 @@ public class MemberDetailServiceImpl implements MemberDetailService {
 
         MemberDetail memberDetail = memberDetailMapper.selectByMemberId(memberId);
         if (isNull(memberDetail))
-            throw new BlueException(DATA_NOT_EXIST);
+            memberDetail = this.initMemberDetail(memberId);
+
+        if (isNull(memberDetail))
+            throw new BlueException(INTERNAL_SERVER_ERROR);
 
         Integer status = statusParam.getStatus();
         if (memberDetail.getStatus().equals(status))
@@ -294,7 +381,7 @@ public class MemberDetailServiceImpl implements MemberDetailService {
 
         memberDetail.setStatus(status);
 
-        memberDetailMapper.updateStatus(memberId, status, TIME_STAMP_GETTER.get());
+        memberDetailMapper.updateStatusByMemberId(memberId, status, TIME_STAMP_GETTER.get());
 
         return MEMBER_DETAIL_2_MEMBER_DETAIL_INFO.apply(memberDetail);
     }
@@ -350,30 +437,21 @@ public class MemberDetailServiceImpl implements MemberDetailService {
     }
 
     /**
-     * get by member id
+     * get member detail info mono by member id
      *
      * @param memberId
      * @return
      */
     @Override
-    public MemberDetail getMemberDetailByMemberId(Long memberId) {
-        LOGGER.info("MemberDetail getMemberDetailByMemberId(Long memberId), memberId = {}", memberId);
+    public Mono<MemberDetailInfo> getMemberDetailInfoMonoByMemberId(Long memberId) {
+        LOGGER.info("Mono<MemberDetailInfo> getMemberDetailInfoMonoByMemberId(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
 
-        return ofNullable(memberDetailMapper.selectByMemberId(memberId)).orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
-    }
-
-    /**
-     * get member detail mono by member id
-     *
-     * @param memberId
-     * @return
-     */
-    @Override
-    public Mono<MemberDetail> getMemberDetailMonoByMemberId(Long memberId) {
-        LOGGER.info("Mono<MemberDetail> getMemberDetailMonoByMemberId(Long memberId), memberId = {}", memberId);
-        return just(getMemberDetailByMemberId(memberId));
+        return justOrEmpty(memberDetailMapper.selectByMemberId(memberId))
+                .map(MEMBER_DETAIL_2_MEMBER_DETAIL_INFO)
+                .switchIfEmpty(defer(() -> justOrEmpty(this.initMemberDetail(memberId)).map(MEMBER_DETAIL_2_MEMBER_DETAIL_INFO)))
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))));
     }
 
     /**
@@ -388,14 +466,12 @@ public class MemberDetailServiceImpl implements MemberDetailService {
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
 
-        return getMemberDetailMonoByMemberId(memberId)
-                .flatMap(md ->
-                        isValidStatus(md.getStatus()) ?
-                                just(md)
+        return getMemberDetailInfoMonoByMemberId(memberId)
+                .flatMap(mdi ->
+                        isValidStatus(mdi.getStatus()) ?
+                                just(mdi)
                                 :
                                 error(() -> new BlueException(DATA_HAS_BEEN_FROZEN))
-                ).flatMap(md ->
-                        just(MEMBER_DETAIL_2_MEMBER_DETAIL_INFO.apply(md))
                 );
     }
 

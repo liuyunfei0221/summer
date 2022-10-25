@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.function.BiConsumer;
 
+import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.CommonFunctions.*;
 import static com.blue.basic.constant.common.BlueDataAttrKey.*;
 import static com.blue.basic.constant.common.BlueHeader.AUTHORIZATION;
@@ -108,6 +109,17 @@ public final class BluePreWithErrorReportFilter implements GlobalFilter, Ordered
         REQUEST_IP_REPACKAGER.accept(request, ip);
     };
 
+    private static final BiConsumer<Map<String, Object>, DataEvent> REQUEST_INFO_PACKAGER = (attributes, dataEvent) -> {
+        if (isNull(dataEvent))
+            return;
+
+        dataEvent.setDataEventType(UNIFIED.identity);
+        dataEvent.setDataEventOpType(CLICK.identity);
+        dataEvent.setStamp(TIME_STAMP_GETTER.get());
+
+        EVENT_ATTR_PACKAGER.accept(attributes, dataEvent);
+    };
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
@@ -123,11 +135,9 @@ public final class BluePreWithErrorReportFilter implements GlobalFilter, Ordered
                                 .switchIfEmpty(defer(() -> just(EMPTY_VALUE.value)))
                                 .flatMap(requestBody -> {
                                     DataEvent dataEvent = new DataEvent();
-                                    dataEvent.setDataEventType(UNIFIED.identity);
-                                    dataEvent.setDataEventOpType(CLICK.identity);
 
-                                    dataEvent.setStamp(TIME_STAMP_GETTER.get());
-                                    EVENT_ATTR_PACKAGER.accept(attributes, dataEvent);
+                                    REQUEST_INFO_PACKAGER.accept(exchange.getAttributes(), dataEvent);
+
                                     if (!EMPTY_VALUE.value.equals(requestBody))
                                         dataEvent.addData(REQUEST_BODY.key, requestBody);
                                     report(throwable, request, dataEvent);

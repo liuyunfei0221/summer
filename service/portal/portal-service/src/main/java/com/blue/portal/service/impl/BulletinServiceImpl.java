@@ -207,7 +207,7 @@ public class BulletinServiceImpl implements BulletinService {
         return bulletin;
     };
 
-    public static final BiFunction<BulletinUpdateParam, Bulletin, Boolean> UPDATE_ITEM_VALIDATOR = (p, t) -> {
+    public static final BiConsumer<BulletinUpdateParam, Bulletin> UPDATE_ITEM_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
 
@@ -259,7 +259,8 @@ public class BulletinServiceImpl implements BulletinService {
             alteration = true;
         }
 
-        return alteration;
+        if (!alteration)
+            throw new BlueException(DATA_HAS_NOT_CHANGED);
     };
 
     /**
@@ -313,9 +314,7 @@ public class BulletinServiceImpl implements BulletinService {
         List<Integer> changedTypes = new LinkedList<>();
         changedTypes.add(bulletin.getType());
 
-        Boolean changed = UPDATE_ITEM_VALIDATOR.apply(bulletinUpdateParam, bulletin);
-        if (changed != null && !changed)
-            throw new BlueException(DATA_HAS_NOT_CHANGED);
+        UPDATE_ITEM_VALIDATOR.accept(bulletinUpdateParam, bulletin);
         changedTypes.add(bulletin.getType());
 
         bulletin.setUpdater(operatorId);

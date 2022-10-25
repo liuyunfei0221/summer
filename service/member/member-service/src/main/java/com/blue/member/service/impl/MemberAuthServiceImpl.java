@@ -6,7 +6,6 @@ import com.blue.basic.common.base.BlueChecker;
 import com.blue.basic.model.common.PageModelRequest;
 import com.blue.basic.model.common.PageModelResponse;
 import com.blue.basic.model.exps.BlueException;
-import com.blue.finance.api.model.MemberFinanceInfo;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.api.model.MemberRegistryParam;
@@ -14,13 +13,10 @@ import com.blue.member.component.credential.CredentialCollectProcessor;
 import com.blue.member.constant.MemberBasicSortAttribute;
 import com.blue.member.model.MemberAuthorityInfo;
 import com.blue.member.model.MemberBasicCondition;
-import com.blue.member.remote.consumer.RpcFinanceControlServiceConsumer;
 import com.blue.member.remote.consumer.RpcRoleServiceConsumer;
 import com.blue.member.repository.entity.MemberBasic;
 import com.blue.member.service.inter.MemberAuthService;
 import com.blue.member.service.inter.MemberBasicService;
-import com.blue.member.service.inter.MemberDetailService;
-import com.blue.member.service.inter.RealNameService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
@@ -59,28 +55,18 @@ public class MemberAuthServiceImpl implements MemberAuthService {
 
     private final MemberBasicService memberBasicService;
 
-    private final MemberDetailService memberDetailService;
-
-    private final RealNameService realNameService;
-
     private final BlueIdentityProcessor blueIdentityProcessor;
 
     private final CredentialCollectProcessor credentialCollectProcessor;
 
     private final RpcRoleServiceConsumer rpcRoleServiceConsumer;
 
-    private final RpcFinanceControlServiceConsumer rpcFinanceControlServiceConsumer;
-
-    public MemberAuthServiceImpl(MemberBasicService memberBasicService, MemberDetailService memberDetailService, RealNameService realNameService,
-                                 BlueIdentityProcessor blueIdentityProcessor, CredentialCollectProcessor credentialCollectProcessor,
-                                 RpcRoleServiceConsumer rpcRoleServiceConsumer, RpcFinanceControlServiceConsumer rpcFinanceControlServiceConsumer) {
+    public MemberAuthServiceImpl(MemberBasicService memberBasicService, BlueIdentityProcessor blueIdentityProcessor,
+                                 CredentialCollectProcessor credentialCollectProcessor, RpcRoleServiceConsumer rpcRoleServiceConsumer) {
         this.memberBasicService = memberBasicService;
-        this.memberDetailService = memberDetailService;
-        this.realNameService = realNameService;
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.credentialCollectProcessor = credentialCollectProcessor;
         this.rpcRoleServiceConsumer = rpcRoleServiceConsumer;
-        this.rpcFinanceControlServiceConsumer = rpcFinanceControlServiceConsumer;
     }
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(MemberBasicSortAttribute.values())
@@ -124,13 +110,8 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         long id = blueIdentityProcessor.generate(MemberBasic.class);
         memberBasic.setId(id);
 
-        rpcFinanceControlServiceConsumer.initMemberFinanceInfo(new MemberFinanceInfo(id));
-
         MemberBasicInfo memberBasicInfo = memberBasicService.insertMemberBasic(memberBasic);
         LOGGER.info("autoRegisterMemberBasic -> memberBasicInfo = {}", memberBasicInfo);
-
-        memberDetailService.initMemberDetail(id);
-        realNameService.initRealName(id);
 
         return memberBasicInfo;
     }

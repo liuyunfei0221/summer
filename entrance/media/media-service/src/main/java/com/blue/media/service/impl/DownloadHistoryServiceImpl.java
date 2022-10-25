@@ -196,7 +196,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
         query.skip(scrollModelRequest.getFrom()).limit(scrollModelRequest.getRows().intValue());
 
         return zip(reactiveMongoTemplate.find(query, DownloadHistory.class).publishOn(scheduler).collectList(),
-                rpcMemberBasicServiceConsumer.getMemberBasicInfoByPrimaryKey(memberId)
+                rpcMemberBasicServiceConsumer.getMemberBasicInfo(memberId)
         ).flatMap(tuple2 -> {
             List<DownloadHistory> downloadHistories = tuple2.getT1();
             String memberName = ofNullable(tuple2.getT2().getName()).filter(BlueChecker::isNotBlank).orElse(EMPTY_VALUE.value);

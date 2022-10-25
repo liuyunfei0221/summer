@@ -214,7 +214,7 @@ public class NoticeServiceImpl implements NoticeService {
         return notice;
     };
 
-    public static final BiFunction<NoticeUpdateParam, Notice, Boolean> UPDATE_ITEM_VALIDATOR = (p, t) -> {
+    public static final BiConsumer<NoticeUpdateParam, Notice> UPDATE_ITEM_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
 
@@ -248,7 +248,8 @@ public class NoticeServiceImpl implements NoticeService {
             alteration = true;
         }
 
-        return alteration;
+        if (!alteration)
+            throw new BlueException(DATA_HAS_NOT_CHANGED);
     };
 
     /**
@@ -301,9 +302,7 @@ public class NoticeServiceImpl implements NoticeService {
         List<Integer> changedTypes = new LinkedList<>();
         changedTypes.add(notice.getType());
 
-        Boolean changed = UPDATE_ITEM_VALIDATOR.apply(noticeUpdateParam, notice);
-        if (changed != null && !changed)
-            throw new BlueException(DATA_HAS_NOT_CHANGED);
+        UPDATE_ITEM_VALIDATOR.accept(noticeUpdateParam, notice);
         changedTypes.add(notice.getType());
 
         notice.setUpdater(operatorId);

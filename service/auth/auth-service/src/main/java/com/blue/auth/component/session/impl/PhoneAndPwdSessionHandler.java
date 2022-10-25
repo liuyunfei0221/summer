@@ -90,7 +90,7 @@ public class PhoneAndPwdSessionHandler implements SessionHandler {
                                 .filter(c -> matchAccess(access, c.getAccess()))
                                 .map(Credential::getMemberId)
                                 .orElseThrow(() -> new BlueException(INVALID_ACCT_OR_PWD)))
-                ).flatMap(rpcMemberBasicServiceConsumer::getMemberBasicInfoByPrimaryKey)
+                ).flatMap(rpcMemberBasicServiceConsumer::getMemberBasicInfo)
                 .flatMap(mbi -> {
                     MEMBER_STATUS_ASSERTER.accept(mbi);
                     return authService.generateAuthMono(mbi.getId(), PHONE_PWD.identity, loginParam.getDeviceType().intern())

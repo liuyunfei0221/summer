@@ -28,10 +28,7 @@ import reactor.util.Loggers;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
 import static com.blue.basic.common.base.BlueChecker.*;
@@ -248,7 +245,7 @@ public class CountryServiceImpl implements CountryService {
         return country;
     };
 
-    public final BiFunction<CountryUpdateParam, Country, Boolean> UPDATE_ITEM_VALIDATOR = (p, t) -> {
+    public final BiConsumer<CountryUpdateParam, Country> UPDATE_ITEM_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
         if (!p.getId().equals(t.getId()))
@@ -286,7 +283,8 @@ public class CountryServiceImpl implements CountryService {
             alteration = true;
         }
 
-        return alteration;
+        if (!alteration)
+            throw new BlueException(DATA_HAS_NOT_CHANGED);
     };
 
     private static final Function<CountryCondition, Query> CONDITION_PROCESSOR = c -> {
@@ -360,11 +358,9 @@ public class CountryServiceImpl implements CountryService {
 
         Country country = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(countryUpdateParam);
 
-        Boolean changed = UPDATE_ITEM_VALIDATOR.apply(countryUpdateParam, country);
-        if (changed != null && !changed)
-            throw new BlueException(DATA_HAS_NOT_CHANGED);
-
+        UPDATE_ITEM_VALIDATOR.accept(countryUpdateParam, country);
         country.setUpdateTime(TIME_STAMP_GETTER.get());
+        
         return countryRepository.save(country)
                 .publishOn(scheduler)
                 .map(COUNTRY_2_COUNTRY_INFO_CONVERTER)

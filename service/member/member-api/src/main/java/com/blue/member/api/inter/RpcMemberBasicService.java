@@ -19,7 +19,7 @@ public interface RpcMemberBasicService {
      * @param id
      * @return
      */
-    CompletableFuture<MemberBasicInfo> getMemberBasicInfoByPrimaryKey(Long id);
+    CompletableFuture<MemberBasicInfo> getMemberBasicInfo(Long id);
 
     /**
      * select member basic by ids

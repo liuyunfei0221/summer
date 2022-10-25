@@ -61,7 +61,7 @@ data:
       idle-timeout: 5
       connection-test-query: SELECT 1 FROM DUAL
       is-read-only: false
-      is-auto-commit: false
+      is-auto-commit: true
       singleTables: [ bulletin,undo_log ]
   safe-row-bounds-enabled: false
   safe-result-handler-enabled: false

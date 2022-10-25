@@ -72,13 +72,15 @@ public final class MemberDetailInfo implements Serializable {
 
     private String extra;
 
+    private Integer status;
+
     public MemberDetailInfo() {
     }
 
     public MemberDetailInfo(Long id, Long memberId, String name, Integer gender, String phone, String email,
                             Integer yearOfBirth, Integer monthOfBirth, Integer dayOfBirth, Integer chineseZodiac, Integer zodiacSign,
                             Integer height, Integer weight, Long countryId, String country, Long stateId, String state, Long cityId, String city, String address,
-                            String profile, String hobby, String homepage, String extra) {
+                            String profile, String hobby, String homepage, String extra, Integer status) {
         this.id = id;
         this.memberId = memberId;
         this.name = name;
@@ -103,6 +105,7 @@ public final class MemberDetailInfo implements Serializable {
         this.hobby = hobby;
         this.homepage = homepage;
         this.extra = extra;
+        this.status = status;
     }
 
     public Long getId() {
@@ -297,6 +300,14 @@ public final class MemberDetailInfo implements Serializable {
         this.extra = extra;
     }
 
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "MemberDetailInfo{" +
@@ -324,7 +335,8 @@ public final class MemberDetailInfo implements Serializable {
                 ", hobby='" + hobby + '\'' +
                 ", homepage='" + homepage + '\'' +
                 ", extra='" + extra + '\'' +
+                ", status=" + status +
                 '}';
     }
-
+    
 }

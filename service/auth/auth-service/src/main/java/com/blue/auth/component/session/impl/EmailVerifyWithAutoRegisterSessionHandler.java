@@ -137,7 +137,7 @@ public class EmailVerifyWithAutoRegisterSessionHandler implements SessionHandler
                                         .flatMap(credential -> {
                                             extra.put(NEW_MEMBER.key, false);
 
-                                            return rpcMemberBasicServiceConsumer.getMemberBasicInfoByPrimaryKey(credential.getMemberId())
+                                            return rpcMemberBasicServiceConsumer.getMemberBasicInfo(credential.getMemberId())
                                                     .flatMap(mbi -> {
                                                         MEMBER_STATUS_ASSERTER.accept(mbi);
                                                         return zip(authService.generateAuthMono(mbi.getId(), EMAIL_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern()), just(mbi));

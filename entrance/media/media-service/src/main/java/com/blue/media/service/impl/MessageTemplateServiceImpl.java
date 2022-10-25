@@ -190,7 +190,7 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
         return messageTemplate;
     };
 
-    private static boolean validateAndPackageAttrForUpdate(MessageTemplateUpdateParam param, MessageTemplate messageTemplate, Long operatorId) {
+    private static void validateAndPackageAttrForUpdate(MessageTemplateUpdateParam param, MessageTemplate messageTemplate, Long operatorId) {
         if (isNull(param) || isNull(messageTemplate))
             throw new BlueException(BAD_REQUEST);
         if (!param.getId().equals(messageTemplate.getId()))
@@ -236,12 +236,11 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
             alteration = true;
         }
 
-        if (alteration) {
-            messageTemplate.setUpdateTime(TIME_STAMP_GETTER.get());
-            messageTemplate.setUpdater(operatorId);
-        }
+        if (!alteration)
+            throw new BlueException(DATA_HAS_NOT_CHANGED);
 
-        return alteration;
+        messageTemplate.setUpdateTime(TIME_STAMP_GETTER.get());
+        messageTemplate.setUpdater(operatorId);
     }
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(MessageTemplateSortAttribute.values())
@@ -363,8 +362,7 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
             Integer originalType = messageTemplate.getType();
             Integer originalBusinessType = messageTemplate.getBusinessType();
 
-            if (!validateAndPackageAttrForUpdate(messageTemplateUpdateParam, messageTemplate, operatorId))
-                throw new BlueException(DATA_HAS_NOT_CHANGED);
+            validateAndPackageAttrForUpdate(messageTemplateUpdateParam, messageTemplate, operatorId);
 
             messageTemplate.setUpdater(operatorId);
             messageTemplate.setUpdateTime(TIME_STAMP_GETTER.get());

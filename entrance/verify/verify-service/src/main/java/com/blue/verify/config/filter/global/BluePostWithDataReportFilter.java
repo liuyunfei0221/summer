@@ -30,6 +30,7 @@ import reactor.core.publisher.Mono;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import static com.blue.basic.common.base.BlueChecker.isNull;
@@ -88,14 +89,13 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
         requestEventReporter.report(dataEvent);
     }
 
-    private void packageRequestInfo(DataEvent dataEvent, Map<String, Object> attributes) {
+    private static final BiConsumer<Map<String, Object>, DataEvent> REQUEST_INFO_PACKAGER = (attributes, dataEvent) -> {
         dataEvent.setDataEventType(UNIFIED.identity);
         dataEvent.setDataEventOpType(CLICK.identity);
-
         dataEvent.setStamp(TIME_STAMP_GETTER.get());
 
         EVENT_ATTR_PACKAGER.accept(attributes, dataEvent);
-    }
+    };
 
     private Mono<String> getResponseBodyAndReport(ServerHttpResponse response, HttpStatus responseHttpStatus, Publisher<? extends DataBuffer> body, DataEvent dataEvent) {
         return ClientResponse
@@ -150,7 +150,7 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
     }
 
     private Mono<Void> reportWithoutRequestBody(ServerWebExchange exchange, WebFilterChain chain, DataEvent dataEvent) {
-        packageRequestInfo(dataEvent, exchange.getAttributes());
+        REQUEST_INFO_PACKAGER.accept(exchange.getAttributes(), dataEvent);
         return chain.filter(
                 exchange.mutate().response(
                         getResponseAndReport(exchange, dataEvent)
@@ -169,7 +169,7 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
     };
 
     private Mono<Void> reportWithRequestBody(ServerHttpRequest request, ServerWebExchange exchange, WebFilterChain chain, DataEvent dataEvent) {
-        packageRequestInfo(dataEvent, exchange.getAttributes());
+        REQUEST_INFO_PACKAGER.accept(exchange.getAttributes(), dataEvent);
         return REQUEST_BODY_PROCESSOR_GETTER.apply(request.getHeaders()).processor(request, exchange, chain, requestEventReporter, dataEvent);
     }
 

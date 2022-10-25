@@ -27,6 +27,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
 import static com.blue.basic.common.base.CommonFunctions.*;
@@ -90,13 +91,13 @@ public final class BluePostWithDataReportFilter implements GlobalFilter, Ordered
         dataEvent.addData(RESPONSE_BODY.key, GSON.toJson(EXP_ELE_2_RESP.apply(exceptionElement)));
     }
 
-    private void packageRequestInfo(DataEvent dataEvent, Map<String, Object> attributes) {
+    private static final BiConsumer<Map<String, Object>, DataEvent> REQUEST_INFO_PACKAGER = (attributes, dataEvent) -> {
         dataEvent.setDataEventType(UNIFIED.identity);
         dataEvent.setDataEventOpType(CLICK.identity);
         dataEvent.setStamp(TIME_STAMP_GETTER.get());
 
         EVENT_ATTR_PACKAGER.accept(attributes, dataEvent);
-    }
+    };
 
     private Mono<String> getResponseBodyAndReport(ServerWebExchange exchange, HttpStatus responseHttpStatus, Publisher<? extends DataBuffer> body, DataEvent dataEvent) {
         ServerHttpResponse response = exchange.getResponse();
@@ -158,7 +159,7 @@ public final class BluePostWithDataReportFilter implements GlobalFilter, Ordered
     }
 
     private Mono<Void> reportWithoutRequestBody(ServerWebExchange exchange, GatewayFilterChain chain, DataEvent dataEvent) {
-        packageRequestInfo(dataEvent, exchange.getAttributes());
+        REQUEST_INFO_PACKAGER.accept(exchange.getAttributes(), dataEvent);
         return chain.filter(
                 exchange.mutate().response(
                         getResponseAndReport(exchange, dataEvent)
@@ -173,7 +174,8 @@ public final class BluePostWithDataReportFilter implements GlobalFilter, Ordered
         CachedBodyOutputMessage outputMessage = new CachedBodyOutputMessage(
                 exchange, headers);
 
-        packageRequestInfo(dataEvent, attributes);
+        REQUEST_INFO_PACKAGER.accept(exchange.getAttributes(), dataEvent);
+
         return fromPublisher(
                 ServerRequest.create(exchange, httpMessageReaders)
                         .bodyToMono(String.class)

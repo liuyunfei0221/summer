@@ -24,7 +24,7 @@ public class RpcMemberBasicServiceConsumer {
     @DubboReference(version = "1.0",
             providedBy = {"summer-member"},
             methods = {
-                    @Method(name = "getMemberBasicInfoByPrimaryKey", async = true),
+                    @Method(name = "getMemberBasicInfo", async = true),
                     @Method(name = "selectMemberBasicInfoByIds", async = true),
                     @Method(name = "getMemberBasicInfoByPhone", async = true),
                     @Method(name = "getMemberBasicInfoByEmail", async = true)
@@ -43,8 +43,8 @@ public class RpcMemberBasicServiceConsumer {
      * @param id
      * @return
      */
-    public Mono<MemberBasicInfo> getMemberBasicInfoByPrimaryKey(Long id) {
-        return fromFuture(rpcMemberBasicService.getMemberBasicInfoByPrimaryKey(id)).publishOn(scheduler);
+    public Mono<MemberBasicInfo> getMemberBasicInfo(Long id) {
+        return fromFuture(rpcMemberBasicService.getMemberBasicInfo(id)).publishOn(scheduler);
     }
 
     /**

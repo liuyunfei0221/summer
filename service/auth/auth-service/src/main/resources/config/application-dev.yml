@@ -55,7 +55,7 @@ data:
       idle-timeout: 5
       connection-test-query: SELECT 1 FROM DUAL
       is-read-only: false
-      is-auto-commit: false
+      is-auto-commit: true
 
     - url: jdbc:mysql://172.16.202.219:3306/auth_1
       database-conf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
@@ -69,7 +69,7 @@ data:
       idle-timeout: 5
       connection-test-query: SELECT 1 FROM DUAL
       is-read-only: false
-      is-auto-commit: false
+      is-auto-commit: true
   sharding-tables:
     - table-name: member_role_relation
       sharding-column: id
@@ -108,7 +108,7 @@ data:
       idle-timeout: 5
       connection-connection-test-query: SELECT 1 FROM DUAL FROM DUAL
       is-read-only: false
-      is-auto-commit: false
+      is-auto-commit: true
       single-tables: [ resource,role,role_res_relation ]
   safe-row-bounds-enabled: false
   safe-result-handler-enabled: false

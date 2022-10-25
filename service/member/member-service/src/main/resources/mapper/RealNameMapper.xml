@@ -251,11 +251,11 @@
         where id = #{id,jdbcType=BIGINT}
     </delete>
 
-    <update id="updateStatus">
+    <update id="updateStatusByMemberId">
         UPDATE real_name
         SET status      = #{status,jdbcType=TINYINT},
             update_time = #{updateTime,jdbcType=BIGINT}
-        WHERE id = #{id,jdbcType=BIGINT}
+        WHERE member_id = #{memberId,jdbcType=BIGINT}
     </update>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">

@@ -1,9 +1,11 @@
 package com.blue.finance.converter;
 
 import com.blue.basic.model.exps.BlueException;
+import com.blue.finance.api.model.FinanceAccountInfo;
 import com.blue.finance.api.model.FinanceFlowInfo;
 import com.blue.finance.api.model.FinanceFlowManagerInfo;
 import com.blue.finance.api.model.OrderInfo;
+import com.blue.finance.repository.entity.FinanceAccount;
 import com.blue.finance.repository.entity.FinanceFlow;
 import com.blue.finance.repository.entity.Order;
 
@@ -23,6 +25,17 @@ import static java.util.Optional.ofNullable;
  */
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
 public final class FinanceModelConverters {
+
+    /**
+     * finance account -> finance account info
+     */
+    public static final Function<FinanceAccount, FinanceAccountInfo> FINANCE_ACCOUNT_2_FINANCE_ACCOUNT_INFO_CONVERTER = financeAccount -> {
+        if (isNull(financeAccount))
+            throw new BlueException(EMPTY_PARAM);
+
+        return new FinanceAccountInfo(financeAccount.getId(), financeAccount.getMemberId(),
+                financeAccount.getBalance(), financeAccount.getFrozen(), financeAccount.getIncome(), financeAccount.getOutlay(), financeAccount.getStatus());
+    };
 
     /**
      * finance flow -> finance flow info

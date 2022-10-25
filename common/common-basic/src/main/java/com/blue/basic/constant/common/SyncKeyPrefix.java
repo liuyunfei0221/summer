@@ -19,6 +19,16 @@ public enum SyncKeyPrefix {
     CREDENTIAL_UPDATE_PRE("CREDENTIAL_UPDATE_PRE:"),
 
     /**
+     * finance account insert sync prefix
+     */
+    FINANCE_ACCOUNT_INSERT_SYNC_PRE("FINANCE_ACCOUNT_INSERT_SYNC_PRE:"),
+
+    /**
+     * member detail insert sync prefix
+     */
+    MEMBER_DETAIL_INSERT_SYNC_PRE("MEMBER_DETAIL_INSERT_SYNC_PRE:"),
+
+    /**
      * access update sync prefix
      */
     ACCESS_UPDATE_PRE("ACCESS_UPDATE:"),

@@ -217,7 +217,7 @@ public class StyleServiceImpl implements StyleService {
         return style;
     };
 
-    public static final BiFunction<StyleUpdateParam, Style, Boolean> UPDATE_STYLE_VALIDATOR = (p, t) -> {
+    public static final BiConsumer<StyleUpdateParam, Style> UPDATE_STYLE_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
         if (!p.getId().equals(t.getId()))
@@ -244,7 +244,8 @@ public class StyleServiceImpl implements StyleService {
             alteration = true;
         }
 
-        return alteration;
+        if (!alteration)
+            throw new BlueException(DATA_HAS_NOT_CHANGED);
     };
 
     /**
@@ -296,9 +297,7 @@ public class StyleServiceImpl implements StyleService {
         List<Integer> changedTypes = new LinkedList<>();
         changedTypes.add(style.getType());
 
-        Boolean changed = UPDATE_STYLE_VALIDATOR.apply(styleUpdateParam, style);
-        if (changed != null && !changed)
-            throw new BlueException(DATA_HAS_NOT_CHANGED);
+        UPDATE_STYLE_VALIDATOR.accept(styleUpdateParam, style);
         changedTypes.add(style.getType());
 
         style.setUpdater(operatorId);

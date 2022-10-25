@@ -458,7 +458,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     @Override
     public Mono<MemberBasic> getMemberBasicMono(Long id) {
         LOGGER.info("Mono<MemberBasic> getMemberBasicMonoByPrimaryKey(Long id), id = {}", id);
-        return just(getMemberBasic(id));
+        return justOrEmpty(getMemberBasic(id));
     }
 
     /**

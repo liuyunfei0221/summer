@@ -1,11 +1,9 @@
 package com.blue.finance.service.inter;
 
 
-import com.blue.finance.api.model.FinanceInfo;
+import com.blue.finance.api.model.FinanceAccountInfo;
 import com.blue.finance.repository.entity.FinanceAccount;
 import reactor.core.publisher.Mono;
-
-import java.util.Optional;
 
 /**
  * finance account service
@@ -16,27 +14,26 @@ import java.util.Optional;
 public interface FinanceAccountService {
 
     /**
-     * create a finance account
+     * init finance account for a new member
      *
-     * @param financeAccount
-     * @return
+     * @param memberId
      */
-    int insertFinanceAccount(FinanceAccount financeAccount);
+    FinanceAccount initMemberFinance(Long memberId);
 
     /**
-     * get finance account by member id
+     * query finance account mono by id
+     *
+     * @param id
+     * @return
+     */
+    Mono<FinanceAccountInfo> getFinanceAccountInfoMono(Long id);
+
+    /**
+     * get finance account mono by member id
      *
      * @param memberId
      * @return
      */
-    Optional<FinanceAccount> getFinanceAccountByMemberId(Long memberId);
-
-    /**
-     * get balance by member id
-     *
-     * @param memberId
-     * @return
-     */
-    Mono<FinanceInfo> getBalanceByMemberId(Long memberId);
+    Mono<FinanceAccountInfo> getFinanceAccountInfoMonoByMemberId(Long memberId);
 
 }

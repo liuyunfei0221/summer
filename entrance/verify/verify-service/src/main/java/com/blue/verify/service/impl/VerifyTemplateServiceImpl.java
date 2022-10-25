@@ -272,7 +272,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
         return verifyTemplate;
     };
 
-    public static final BiFunction<VerifyTemplateUpdateParam, VerifyTemplate, Boolean> UPDATE_ITEM_VALIDATOR = (p, t) -> {
+    public static final BiConsumer<VerifyTemplateUpdateParam, VerifyTemplate> UPDATE_ITEM_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
         if (!p.getId().equals(t.getId()))
@@ -332,10 +332,10 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
             alteration = true;
         }
 
-        if (alteration)
-            t.setUpdateTime(TIME_STAMP_GETTER.get());
+        if (!alteration)
+            throw new BlueException(DATA_HAS_NOT_CHANGED);
 
-        return alteration;
+        t.setUpdateTime(TIME_STAMP_GETTER.get());
     };
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(VerifyTemplateSortAttribute.values())
@@ -464,9 +464,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
             String originalType = verifyTemplate.getType();
             String originalBusinessType = verifyTemplate.getBusinessType();
 
-            if (!UPDATE_ITEM_VALIDATOR.apply(verifyTemplateUpdateParam, verifyTemplate))
-                throw new BlueException(DATA_HAS_NOT_CHANGED);
-
+            UPDATE_ITEM_VALIDATOR.accept(verifyTemplateUpdateParam, verifyTemplate);
             verifyTemplate.setUpdater(operatorId);
 
             return verifyTemplateRepository.save(verifyTemplate)

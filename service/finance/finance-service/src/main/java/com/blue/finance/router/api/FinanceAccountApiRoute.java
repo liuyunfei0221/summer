@@ -1,6 +1,6 @@
 package com.blue.finance.router.api;
 
-import com.blue.finance.handler.api.BalanceApiHandler;
+import com.blue.finance.handler.api.FinanceAccountApiHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RequestPredicate;
@@ -12,20 +12,20 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
- * finance api routers
+ * finance account api routers
  *
  * @author liuyunfei
  */
 @Configuration
-public class BalanceApiRoute {
+public class FinanceAccountApiRoute {
 
     @Bean
-    RouterFunction<ServerResponse> financeApiRouter(BalanceApiHandler balanceApiHandler) {
+    RouterFunction<ServerResponse> financeAccountApiRouter(FinanceAccountApiHandler balanceApiHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-finance");
+        RequestPredicate pathPredicate = path("/blue-finance/account");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .GET("/balance", balanceApiHandler::get)
+                .GET("", balanceApiHandler::get)
                 .build();
 
         return nest(pathPredicate, routerFunction);

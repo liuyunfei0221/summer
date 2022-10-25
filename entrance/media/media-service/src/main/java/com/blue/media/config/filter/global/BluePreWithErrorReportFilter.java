@@ -141,6 +141,17 @@ public final class BluePreWithErrorReportFilter implements WebFilter, Ordered {
         REQUEST_IP_REPACKAGER.accept(request, ip);
     };
 
+    private static final BiConsumer<Map<String, Object>, DataEvent> REQUEST_INFO_PACKAGER = (attributes, dataEvent) -> {
+        if (isNull(dataEvent))
+            return;
+
+        dataEvent.setDataEventType(UNIFIED.identity);
+        dataEvent.setDataEventOpType(CLICK.identity);
+        dataEvent.setStamp(TIME_STAMP_GETTER.get());
+
+        EVENT_ATTR_PACKAGER.accept(attributes, dataEvent);
+    };
+
     @SuppressWarnings({"NullableProblems", "DuplicatedCode"})
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
@@ -153,12 +164,8 @@ public final class BluePreWithErrorReportFilter implements WebFilter, Ordered {
         return chain.filter(exchange)
                 .onErrorResume(throwable -> {
                     DataEvent dataEvent = new DataEvent();
-                    dataEvent.setDataEventType(UNIFIED.identity);
-                    dataEvent.setDataEventOpType(CLICK.identity);
 
-                    dataEvent.setStamp(TIME_STAMP_GETTER.get());
-                    EVENT_ATTR_PACKAGER.accept(attributes, dataEvent);
-                    report(throwable, request, dataEvent);
+                    REQUEST_INFO_PACKAGER.accept(exchange.getAttributes(), dataEvent);
 
                     if (WITH_REQUEST_BODY_PRE.test(HEADER_VALUE_GETTER.apply(request.getHeaders(), HttpHeaders.CONTENT_TYPE))) {
                         return REQUEST_BODY_PROCESSOR_GETTER.apply(request.getHeaders())

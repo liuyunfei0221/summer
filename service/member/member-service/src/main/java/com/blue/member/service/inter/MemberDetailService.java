@@ -25,7 +25,7 @@ public interface MemberDetailService {
      * @param memberId
      * @return
      */
-    MemberDetailInfo initMemberDetail(Long memberId);
+    MemberDetail initMemberDetail(Long memberId);
 
     /**
      * update member detail
@@ -70,20 +70,12 @@ public interface MemberDetailService {
     Mono<MemberDetailInfo> getMemberDetailInfoMonoWithAssert(Long id);
 
     /**
-     * get by member id
+     * get member detail info mono by member id
      *
      * @param memberId
      * @return
      */
-    MemberDetail getMemberDetailByMemberId(Long memberId);
-
-    /**
-     * get member detail mono by member id
-     *
-     * @param memberId
-     * @return
-     */
-    Mono<MemberDetail> getMemberDetailMonoByMemberId(Long memberId);
+    Mono<MemberDetailInfo> getMemberDetailInfoMonoByMemberId(Long memberId);
 
     /**
      * query member detail by member id with assert

@@ -271,7 +271,7 @@ public class AttachmentServiceImpl implements AttachmentService {
         query.skip(scrollModelRequest.getFrom()).limit(scrollModelRequest.getRows().intValue());
 
         return zip(reactiveMongoTemplate.find(query, Attachment.class).publishOn(scheduler).collectList(),
-                rpcMemberBasicServiceConsumer.getMemberBasicInfoByPrimaryKey(memberId)
+                rpcMemberBasicServiceConsumer.getMemberBasicInfo(memberId)
         ).map(tuple2 -> {
             List<Attachment> attachments = tuple2.getT1();
             String memberName = ofNullable(tuple2.getT2().getName()).filter(BlueChecker::isNotBlank).orElse(EMPTY_VALUE.value);

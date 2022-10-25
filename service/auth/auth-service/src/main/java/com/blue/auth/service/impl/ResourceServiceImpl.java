@@ -186,7 +186,7 @@ public class ResourceServiceImpl implements ResourceService {
         return resource;
     };
 
-    public static final BiFunction<ResourceUpdateParam, Resource, Boolean> UPDATE_ITEM_VALIDATOR = (p, t) -> {
+    public static final BiConsumer<ResourceUpdateParam, Resource> UPDATE_ITEM_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
 
@@ -263,7 +263,8 @@ public class ResourceServiceImpl implements ResourceService {
             alteration = true;
         }
 
-        return alteration;
+        if (!alteration)
+            throw new BlueException(DATA_HAS_NOT_CHANGED);
     };
 
     /**
@@ -310,8 +311,7 @@ public class ResourceServiceImpl implements ResourceService {
             throw new BlueException(UNAUTHORIZED);
 
         Resource resource = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(resourceUpdateParam);
-        if (!UPDATE_ITEM_VALIDATOR.apply(resourceUpdateParam, resource))
-            throw new BlueException(DATA_HAS_NOT_CHANGED);
+        UPDATE_ITEM_VALIDATOR.accept(resourceUpdateParam, resource);
 
         resource.setUpdater(operatorId);
         resource.setUpdateTime(TIME_STAMP_GETTER.get());

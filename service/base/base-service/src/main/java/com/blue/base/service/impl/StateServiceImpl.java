@@ -6,15 +6,15 @@ import com.blue.base.config.deploy.CaffeineDeploy;
 import com.blue.base.model.StateCondition;
 import com.blue.base.model.StateInsertParam;
 import com.blue.base.model.StateUpdateParam;
-import com.blue.basic.model.common.PageModelRequest;
-import com.blue.basic.model.common.PageModelResponse;
-import com.blue.basic.model.exps.BlueException;
 import com.blue.base.repository.entity.Area;
 import com.blue.base.repository.entity.City;
 import com.blue.base.repository.entity.State;
 import com.blue.base.repository.template.StateRepository;
 import com.blue.base.service.inter.CountryService;
 import com.blue.base.service.inter.StateService;
+import com.blue.basic.model.common.PageModelRequest;
+import com.blue.basic.model.common.PageModelResponse;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -32,19 +32,21 @@ import reactor.util.Loggers;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
-import java.util.function.BiFunction;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static com.blue.base.constant.BaseColumnName.COUNTRY_ID;
+import static com.blue.base.constant.BaseColumnName.NAME;
+import static com.blue.base.converter.BaseModelConverters.STATES_2_STATE_INFOS_CONVERTER;
+import static com.blue.base.converter.BaseModelConverters.STATE_2_STATE_INFO_CONVERTER;
 import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.base.constant.BaseColumnName.*;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
 import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.Status.VALID;
-import static com.blue.base.converter.BaseModelConverters.*;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
 import static com.blue.mongo.constant.LikeElement.PREFIX;
@@ -254,7 +256,7 @@ public class StateServiceImpl implements StateService {
         return state;
     };
 
-    public final BiFunction<StateUpdateParam, State, Boolean> UPDATE_ITEM_VALIDATOR = (p, t) -> {
+    public final BiConsumer<StateUpdateParam, State> UPDATE_ITEM_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
         if (!p.getId().equals(t.getId()))
@@ -288,7 +290,8 @@ public class StateServiceImpl implements StateService {
             alteration = true;
         }
 
-        return alteration;
+        if (!alteration)
+            throw new BlueException(DATA_HAS_NOT_CHANGED);
     };
 
     private static final Function<StateCondition, Query> CONDITION_PROCESSOR = c -> {
@@ -349,11 +352,9 @@ public class StateServiceImpl implements StateService {
 
         Long originalCountryId = state.getCountryId();
 
-        Boolean changed = UPDATE_ITEM_VALIDATOR.apply(stateUpdateParam, state);
-        if (changed != null && !changed)
-            throw new BlueException(DATA_HAS_NOT_CHANGED);
-
+        UPDATE_ITEM_VALIDATOR.accept(stateUpdateParam, state);
         state.setUpdateTime(TIME_STAMP_GETTER.get());
+
         return stateRepository.save(state)
                 .publishOn(scheduler)
                 .map(STATE_2_STATE_INFO_CONVERTER)

@@ -23,10 +23,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
 import java.util.stream.Stream;
 
 import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
@@ -129,7 +126,7 @@ public class RewardServiceImpl implements RewardService {
         return reward;
     };
 
-    public static final BiFunction<RewardUpdateParam, Reward, Boolean> UPDATE_ITEM_VALIDATOR = (p, t) -> {
+    public static final BiConsumer<RewardUpdateParam, Reward> UPDATE_ITEM_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
 
@@ -169,7 +166,8 @@ public class RewardServiceImpl implements RewardService {
             alteration = true;
         }
 
-        return alteration;
+        if (!alteration)
+            throw new BlueException(DATA_HAS_NOT_CHANGED);
     };
 
     /**
@@ -215,8 +213,7 @@ public class RewardServiceImpl implements RewardService {
             throw new BlueException(UNAUTHORIZED);
 
         Reward reward = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(rewardUpdateParam);
-        if (!UPDATE_ITEM_VALIDATOR.apply(rewardUpdateParam, reward))
-            throw new BlueException(DATA_HAS_NOT_CHANGED);
+        UPDATE_ITEM_VALIDATOR.accept(rewardUpdateParam, reward);
 
         reward.setUpdater(operatorId);
         reward.setUpdateTime(TIME_STAMP_GETTER.get());

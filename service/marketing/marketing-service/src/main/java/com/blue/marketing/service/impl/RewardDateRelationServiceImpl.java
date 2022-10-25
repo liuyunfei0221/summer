@@ -27,10 +27,7 @@ import reactor.util.Logger;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -141,7 +138,7 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
         return rewardDateRelation;
     };
 
-    public static final BiFunction<RewardDateRelationUpdateParam, RewardDateRelation, Boolean> UPDATE_ITEM_VALIDATOR = (p, t) -> {
+    public static final BiConsumer<RewardDateRelationUpdateParam, RewardDateRelation> UPDATE_ITEM_VALIDATOR = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
 
@@ -174,7 +171,8 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
             alteration = true;
         }
 
-        return alteration;
+        if (!alteration)
+            throw new BlueException(DATA_HAS_NOT_CHANGED);
     };
 
     private final Function<List<RewardDateRelation>, Mono<List<RewardDateRelationManagerInfo>>> REWARD_DATE_REL_MANAGER_INFO_CONVERTER = relations -> {
@@ -328,8 +326,7 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
             throw new BlueException(UNAUTHORIZED);
 
         RewardDateRelation rewardDateRelation = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(rewardDateRelationUpdateParam);
-        if (!UPDATE_ITEM_VALIDATOR.apply(rewardDateRelationUpdateParam, rewardDateRelation))
-            throw new BlueException(DATA_HAS_NOT_CHANGED);
+        UPDATE_ITEM_VALIDATOR.accept(rewardDateRelationUpdateParam, rewardDateRelation);
 
         rewardDateRelation.setUpdater(operatorId);
         rewardDateRelation.setUpdateTime(TIME_STAMP_GETTER.get());
