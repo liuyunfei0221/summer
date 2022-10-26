@@ -7,7 +7,6 @@ import com.blue.shine.config.blue.BlueConsumerConfig;
 import com.blue.shine.repository.entity.Shine;
 import com.blue.shine.service.inter.ShineService;
 import org.apache.pulsar.client.api.PulsarClient;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
@@ -37,16 +36,13 @@ public final class ShineInsertConsumer implements BlueLifecycle {
 
     private final BlueConsumerConfig blueConsumerConfig;
 
-    private final Scheduler scheduler;
-
     private final ShineService shineService;
 
     private BluePulsarListener<Shine> pulsarListener;
 
-    public ShineInsertConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, ShineService shineService) {
+    public ShineInsertConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, ShineService shineService) {
         this.pulsarClient = pulsarClient;
         this.blueConsumerConfig = blueConsumerConfig;
-        this.scheduler = scheduler;
         this.shineService = shineService;
     }
 
@@ -54,7 +50,7 @@ public final class ShineInsertConsumer implements BlueLifecycle {
     private void init() {
         Consumer<Shine> dataConsumer = shine ->
                 ofNullable(shine)
-                        .ifPresent(s -> just(s).publishOn(scheduler).flatMap(shineService::insertShineEvent)
+                        .ifPresent(s -> just(s).flatMap(shineService::insertShineEvent)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
                                 .doOnError(throwable -> LOGGER.info("shineService.insertShineEvent(s) failed, s = {}, throwable = {}", s, throwable))
                                 .subscribe(b -> LOGGER.info("shineService.insertShineEvent(s), b = {}, s = {}", b, s)));

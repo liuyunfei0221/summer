@@ -7,7 +7,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 
@@ -31,12 +30,6 @@ public class RpcAuthControlServiceConsumer {
             })
     private RpcAuthControlService rpcAuthControlService;
 
-    private final Scheduler scheduler;
-
-    public RpcAuthControlServiceConsumer(Scheduler scheduler) {
-        this.scheduler = scheduler;
-    }
-
     /**
      * query authority by access
      *
@@ -44,7 +37,7 @@ public class RpcAuthControlServiceConsumer {
      * @return
      */
     public Mono<List<AuthorityBaseOnRole>> selectAuthorityByAccess(Access access) {
-        return fromFuture(rpcAuthControlService.selectAuthorityByAccess(access)).publishOn(scheduler);
+        return fromFuture(rpcAuthControlService.selectAuthorityByAccess(access));
     }
 
     /**
@@ -54,7 +47,7 @@ public class RpcAuthControlServiceConsumer {
      * @return
      */
     public Mono<List<AuthorityBaseOnRole>> selectAuthorityByMemberId(Long memberId) {
-        return fromFuture(rpcAuthControlService.selectAuthorityByMemberId(memberId)).publishOn(scheduler);
+        return fromFuture(rpcAuthControlService.selectAuthorityByMemberId(memberId));
     }
 
 }

@@ -10,7 +10,6 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 
 import static com.blue.basic.common.base.CommonFunctions.SERVER_HTTP_REQUEST_IDENTITY_SYNC_KEY_GETTER;
 import static com.blue.basic.constant.common.ResponseElement.TOO_MANY_REQUESTS;
@@ -28,8 +27,8 @@ public final class BlueRateLimitFilter implements WebFilter, Ordered {
 
     private final BlueFixedTokenBucketRateLimiter blueFixedTokenBucketRateLimiter;
 
-    public BlueRateLimitFilter(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler, RateLimiterDeploy rateLimiterDeploy) {
-        this.blueFixedTokenBucketRateLimiter = generateFixedTokenBucketRateLimiter(reactiveStringRedisTemplate, scheduler, rateLimiterDeploy.getReplenishRate(), rateLimiterDeploy.getBurstCapacity());
+    public BlueRateLimitFilter(ReactiveStringRedisTemplate reactiveStringRedisTemplate, RateLimiterDeploy rateLimiterDeploy) {
+        this.blueFixedTokenBucketRateLimiter = generateFixedTokenBucketRateLimiter(reactiveStringRedisTemplate, rateLimiterDeploy.getReplenishRate(), rateLimiterDeploy.getBurstCapacity());
     }
 
     @SuppressWarnings("NullableProblems")

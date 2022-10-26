@@ -5,7 +5,6 @@ import com.blue.base.api.model.CountryInfo;
 import com.blue.base.service.inter.CountryService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
-import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 import java.util.Map;
@@ -30,11 +29,8 @@ public class RpcCountryServiceProvider implements RpcCountryService {
 
     private final CountryService countryService;
 
-    private final Scheduler scheduler;
-
-    public RpcCountryServiceProvider(CountryService countryService, Scheduler scheduler) {
+    public RpcCountryServiceProvider(CountryService countryService) {
         this.countryService = countryService;
-        this.scheduler = scheduler;
     }
 
     /**
@@ -46,7 +42,7 @@ public class RpcCountryServiceProvider implements RpcCountryService {
     @Override
     public CompletableFuture<CountryInfo> getCountryInfoById(Long id) {
         return just(id)
-                .publishOn(scheduler)
+
                 .flatMap(countryService::getCountryInfoMonoById)
                 .toFuture();
     }
@@ -59,7 +55,7 @@ public class RpcCountryServiceProvider implements RpcCountryService {
     @Override
     public CompletableFuture<List<CountryInfo>> selectCountryInfo() {
         return just(true)
-                .publishOn(scheduler)
+
                 .flatMap(v -> countryService.selectCountryInfoMono())
                 .toFuture();
     }
@@ -73,7 +69,7 @@ public class RpcCountryServiceProvider implements RpcCountryService {
     @Override
     public CompletableFuture<Map<Long, CountryInfo>> selectCountryInfoByIds(List<Long> ids) {
         return just(ids)
-                .publishOn(scheduler)
+
                 .flatMap(countryService::selectCountryInfoMonoByIds)
                 .toFuture();
     }

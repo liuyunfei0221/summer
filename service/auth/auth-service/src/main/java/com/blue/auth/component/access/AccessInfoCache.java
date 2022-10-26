@@ -9,7 +9,6 @@ import com.google.gson.JsonSyntaxException;
 import net.openhft.affinity.AffinityThreadFactory;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.time.Duration;
@@ -49,8 +48,6 @@ public final class AccessInfoCache {
 
     private AccessBatchExpireProcessor accessBatchExpireProcessor;
 
-    private Scheduler scheduler;
-
     private ExecutorService executorService;
 
     /**
@@ -81,7 +78,7 @@ public final class AccessInfoCache {
     private static final String THREAD_NAME_PRE = "AccessInfoCache-thread-";
     private static final int RANDOM_LEN = 4;
 
-    public AccessInfoCache(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AccessBatchExpireProcessor accessBatchExpireProcessor, Scheduler scheduler,
+    public AccessInfoCache(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AccessBatchExpireProcessor accessBatchExpireProcessor,
                            Integer refresherCorePoolSize, Integer refresherMaximumPoolSize, Long refresherKeepAliveSeconds,
                            Integer refresherBlockingQueueCapacity, Long globalExpiresMillis, Long localExpiresMillis, Long millisLeftToHandleExpire, Integer capacity) {
 
@@ -90,7 +87,6 @@ public final class AccessInfoCache {
 
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
         this.accessBatchExpireProcessor = accessBatchExpireProcessor;
-        this.scheduler = scheduler;
 
         ThreadFactory threadFactory = new AffinityThreadFactory(THREAD_NAME_PRE + randomAlphabetic(RANDOM_LEN), SAME_CORE);
 
@@ -151,7 +147,7 @@ public final class AccessInfoCache {
         LOGGER.warn("REDIS_ACCESS_WITH_LOCAL_CACHE_GETTER, get accessInfo from redis and set in caff, keyId = {}", keyId);
 
         return reactiveStringRedisTemplate.opsForValue().get(keyId)
-                .publishOn(scheduler)
+
                 .doOnSuccess(v -> {
                     if (isNotBlank(v))
                         ACCESS_EXPIRE_PROCESSOR.accept(keyId, v);
@@ -180,7 +176,7 @@ public final class AccessInfoCache {
         String access = GSON.toJson(accessInfo);
         return reactiveStringRedisTemplate.opsForValue()
                 .set(keyId, access, globalExpireDuration)
-                .publishOn(scheduler)
+
                 .onErrorResume(throwable -> {
                     LOGGER.error("setAccessInfo(String keyId, String accessInfo) failed, throwable = {}", throwable);
                     return just(false);
@@ -196,7 +192,7 @@ public final class AccessInfoCache {
      */
     public Mono<AccessInfo> getAccessInfo(String keyId) {
         return isNotBlank(keyId) ?
-                ACCESS_GETTER_WITH_CACHE.apply(keyId).publishOn(scheduler)
+                ACCESS_GETTER_WITH_CACHE.apply(keyId)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(UNAUTHORIZED))))
                         .flatMap(v ->
                                 isNotBlank(v) ?
@@ -227,7 +223,7 @@ public final class AccessInfoCache {
         LOGGER.info("invalidAuthInfo(), keyId = {}", keyId);
         return isNotBlank(keyId) ?
                 reactiveStringRedisTemplate.delete(keyId)
-                        .publishOn(scheduler)
+
                         .map(l -> l > 0L)
                         .doOnEach(ig -> cache.synchronous().invalidate(keyId))
                 :

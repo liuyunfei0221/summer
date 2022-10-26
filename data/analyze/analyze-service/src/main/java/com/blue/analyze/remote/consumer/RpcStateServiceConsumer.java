@@ -7,7 +7,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 import java.util.Map;
@@ -34,12 +33,6 @@ public class RpcStateServiceConsumer {
             })
     private RpcStateService rpcStateService;
 
-    private final Scheduler scheduler;
-
-    public RpcStateServiceConsumer(Scheduler scheduler) {
-        this.scheduler = scheduler;
-    }
-
     /**
      * get state info mono by id
      *
@@ -47,7 +40,7 @@ public class RpcStateServiceConsumer {
      * @return
      */
     public Mono<StateInfo> getStateInfoById(Long id) {
-        return fromFuture(rpcStateService.getStateInfoById(id)).publishOn(scheduler);
+        return fromFuture(rpcStateService.getStateInfoById(id));
     }
 
     /**
@@ -57,7 +50,7 @@ public class RpcStateServiceConsumer {
      * @return
      */
     public Mono<List<StateInfo>> selectStateInfoByCountryId(Long countryId) {
-        return fromFuture(rpcStateService.selectStateInfoByCountryId(countryId)).publishOn(scheduler);
+        return fromFuture(rpcStateService.selectStateInfoByCountryId(countryId));
     }
 
     /**
@@ -67,7 +60,7 @@ public class RpcStateServiceConsumer {
      * @return
      */
     public Mono<Map<Long, StateInfo>> selectStateInfoByIds(List<Long> ids) {
-        return fromFuture(rpcStateService.selectStateInfoByIds(ids)).publishOn(scheduler);
+        return fromFuture(rpcStateService.selectStateInfoByIds(ids));
     }
 
     /**
@@ -77,7 +70,7 @@ public class RpcStateServiceConsumer {
      * @return
      */
     public Mono<StateRegion> getStateRegionById(Long id) {
-        return fromFuture(rpcStateService.getStateRegionById(id)).publishOn(scheduler);
+        return fromFuture(rpcStateService.getStateRegionById(id));
     }
 
     /**
@@ -87,7 +80,7 @@ public class RpcStateServiceConsumer {
      * @return
      */
     public Mono<Map<Long, StateRegion>> selectStateRegionByIds(List<Long> ids) {
-        return fromFuture(rpcStateService.selectStateRegionByIds(ids)).publishOn(scheduler);
+        return fromFuture(rpcStateService.selectStateRegionByIds(ids));
     }
 
 }

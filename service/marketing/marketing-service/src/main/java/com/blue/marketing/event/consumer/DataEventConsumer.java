@@ -7,7 +7,6 @@ import com.blue.marketing.config.blue.BlueConsumerConfig;
 import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
 import com.blue.pulsar.component.BluePulsarListener;
 import org.apache.pulsar.client.api.PulsarClient;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
@@ -35,21 +34,18 @@ public final class DataEventConsumer implements BlueLifecycle {
 
     private final BlueConsumerConfig blueConsumerConfig;
 
-    private final Scheduler scheduler;
-
     private BluePulsarListener<DataEvent> pulsarListener;
 
-    public DataEventConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, Scheduler scheduler) {
+    public DataEventConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig) {
         this.pulsarClient = pulsarClient;
         this.blueConsumerConfig = blueConsumerConfig;
-        this.scheduler = scheduler;
     }
 
     @PostConstruct
     private void init() {
         Consumer<DataEvent> dataConsumer = dataEvent ->
                 ofNullable(dataEvent)
-                        .ifPresent(de -> just(de).publishOn(scheduler).map(a -> a)
+                        .ifPresent(de -> just(de).map(a -> a)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
                                 .doOnError(throwable -> LOGGER.info("test(de) failed, ff = {}, throwable = {}", de, throwable))
                                 .subscribe(b -> LOGGER.info("test(de), b = {}, de = {}", b, de)));

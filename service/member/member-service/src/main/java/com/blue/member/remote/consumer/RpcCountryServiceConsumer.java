@@ -6,7 +6,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 import java.util.Map;
@@ -31,12 +30,6 @@ public class RpcCountryServiceConsumer {
             })
     private RpcCountryService rpcCountryService;
 
-    private final Scheduler scheduler;
-
-    public RpcCountryServiceConsumer(Scheduler scheduler) {
-        this.scheduler = scheduler;
-    }
-
     /**
      * get country info mono by country id
      *
@@ -44,7 +37,7 @@ public class RpcCountryServiceConsumer {
      * @return
      */
     public Mono<CountryInfo> getCountryInfoById(Long id) {
-        return fromFuture(rpcCountryService.getCountryInfoById(id)).publishOn(scheduler);
+        return fromFuture(rpcCountryService.getCountryInfoById(id));
     }
 
     /**
@@ -53,7 +46,7 @@ public class RpcCountryServiceConsumer {
      * @return
      */
     public Mono<List<CountryInfo>> selectCountryInfo() {
-        return fromFuture(rpcCountryService.selectCountryInfo()).publishOn(scheduler);
+        return fromFuture(rpcCountryService.selectCountryInfo());
     }
 
     /**
@@ -63,7 +56,7 @@ public class RpcCountryServiceConsumer {
      * @return
      */
     public Mono<Map<Long, CountryInfo>> selectCountryInfoByIds(List<Long> ids) {
-        return fromFuture(rpcCountryService.selectCountryInfoByIds(ids)).publishOn(scheduler);
+        return fromFuture(rpcCountryService.selectCountryInfoByIds(ids));
     }
 
 }

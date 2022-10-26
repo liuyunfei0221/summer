@@ -7,7 +7,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 import java.util.Map;
@@ -34,12 +33,6 @@ public class RpcCityServiceConsumer {
             })
     private RpcCityService rpcCityService;
 
-    private final Scheduler scheduler;
-
-    public RpcCityServiceConsumer(Scheduler scheduler) {
-        this.scheduler = scheduler;
-    }
-
     /**
      * get city info mono by id
      *
@@ -47,7 +40,7 @@ public class RpcCityServiceConsumer {
      * @return
      */
     public Mono<CityInfo> getCityInfoById(Long id) {
-        return fromFuture(rpcCityService.getCityInfoById(id)).publishOn(scheduler);
+        return fromFuture(rpcCityService.getCityInfoById(id));
     }
 
     /**
@@ -57,7 +50,7 @@ public class RpcCityServiceConsumer {
      * @return
      */
     public Mono<List<CityInfo>> selectCityInfoByStateId(Long stateId) {
-        return fromFuture(rpcCityService.selectCityInfoByStateId(stateId)).publishOn(scheduler);
+        return fromFuture(rpcCityService.selectCityInfoByStateId(stateId));
     }
 
     /**
@@ -67,7 +60,7 @@ public class RpcCityServiceConsumer {
      * @return
      */
     public Mono<Map<Long, CityInfo>> selectCityInfoByIds(List<Long> ids) {
-        return fromFuture(rpcCityService.selectCityInfoByIds(ids)).publishOn(scheduler);
+        return fromFuture(rpcCityService.selectCityInfoByIds(ids));
     }
 
     /**
@@ -77,7 +70,7 @@ public class RpcCityServiceConsumer {
      * @return
      */
     public Mono<CityRegion> getCityRegionById(Long id) {
-        return fromFuture(rpcCityService.getCityRegionById(id)).publishOn(scheduler);
+        return fromFuture(rpcCityService.getCityRegionById(id));
     }
 
     /**
@@ -87,7 +80,7 @@ public class RpcCityServiceConsumer {
      * @return
      */
     public Mono<Map<Long, CityRegion>> selectCityRegionByIds(List<Long> ids) {
-        return fromFuture(rpcCityService.selectCityRegionByIds(ids)).publishOn(scheduler);
+        return fromFuture(rpcCityService.selectCityRegionByIds(ids));
     }
 
 }

@@ -7,7 +7,6 @@ import com.blue.basic.model.exps.BlueException;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.util.List;
@@ -30,11 +29,8 @@ public class RefreshInfoServiceImpl implements RefreshInfoService {
 
     private final RefreshInfoRepository refreshInfoRepository;
 
-    private final Scheduler scheduler;
-
-    public RefreshInfoServiceImpl(RefreshInfoRepository refreshInfoRepository, Scheduler scheduler) {
+    public RefreshInfoServiceImpl(RefreshInfoRepository refreshInfoRepository) {
         this.refreshInfoRepository = refreshInfoRepository;
-        this.scheduler = scheduler;
     }
 
     /**
@@ -49,7 +45,7 @@ public class RefreshInfoServiceImpl implements RefreshInfoService {
         if (isNull(refreshInfo))
             throw new BlueException(EMPTY_PARAM);
 
-        return refreshInfoRepository.save(refreshInfo).publishOn(scheduler);
+        return refreshInfoRepository.save(refreshInfo);
     }
 
     /**
@@ -64,7 +60,7 @@ public class RefreshInfoServiceImpl implements RefreshInfoService {
         if (isBlank(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return refreshInfoRepository.deleteById(id).publishOn(scheduler);
+        return refreshInfoRepository.deleteById(id);
     }
 
     /**
@@ -79,7 +75,7 @@ public class RefreshInfoServiceImpl implements RefreshInfoService {
         if (isEmpty(refreshInfos))
             throw new BlueException(EMPTY_PARAM);
 
-        return refreshInfoRepository.deleteAll(refreshInfos).publishOn(scheduler);
+        return refreshInfoRepository.deleteAll(refreshInfos);
     }
 
     /**
@@ -94,7 +90,7 @@ public class RefreshInfoServiceImpl implements RefreshInfoService {
         if (isBlank(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return refreshInfoRepository.findById(id).publishOn(scheduler);
+        return refreshInfoRepository.findById(id);
     }
 
     /**
@@ -109,7 +105,7 @@ public class RefreshInfoServiceImpl implements RefreshInfoService {
         if (isNull(probe))
             throw new BlueException(EMPTY_PARAM);
 
-        return refreshInfoRepository.findAll(Example.of(probe)).publishOn(scheduler).collectList();
+        return refreshInfoRepository.findAll(Example.of(probe)).collectList();
     }
 
 }

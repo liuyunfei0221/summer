@@ -7,7 +7,6 @@ import com.blue.marketing.service.inter.SignInService;
 import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
 import com.blue.pulsar.component.BluePulsarListener;
 import org.apache.pulsar.client.api.PulsarClient;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
@@ -33,16 +32,13 @@ public final class RewardsRefreshConsumer implements BlueLifecycle {
 
     private final BlueConsumerConfig blueConsumerConfig;
 
-    private final Scheduler scheduler;
-
     private final SignInService signInService;
 
     private BluePulsarListener<EmptyEvent> pulsarListener;
 
-    public RewardsRefreshConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, SignInService signInService) {
+    public RewardsRefreshConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, SignInService signInService) {
         this.pulsarClient = pulsarClient;
         this.blueConsumerConfig = blueConsumerConfig;
-        this.scheduler = scheduler;
         this.signInService = signInService;
     }
 
@@ -50,7 +46,7 @@ public final class RewardsRefreshConsumer implements BlueLifecycle {
     private void init() {
         Consumer<EmptyEvent> dataConsumer = emptyEvent ->
                 ofNullable(emptyEvent)
-                        .ifPresent(ee -> just(ee).publishOn(scheduler)
+                        .ifPresent(ee -> just(ee)
                                 .then(signInService.refreshDayRewards())
                                 .doOnError(throwable -> LOGGER.info("signInService.refreshDayRewards() failed, ee = {}, throwable = {}", ee, throwable))
                                 .subscribe(ig -> LOGGER.info("signInService.refreshDayRewards(), ig = {}, ee = {}", ig, ee)));

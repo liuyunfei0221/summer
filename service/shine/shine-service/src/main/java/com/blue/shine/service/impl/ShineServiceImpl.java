@@ -37,7 +37,6 @@ import com.blue.shine.service.inter.ShineService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.util.*;
@@ -85,8 +84,6 @@ public class ShineServiceImpl implements ShineService {
 
     private BlueIdentityProcessor blueIdentityProcessor;
 
-    private final Scheduler scheduler;
-
     private ElasticsearchAsyncClient elasticsearchAsyncClient;
 
     private CityService cityService;
@@ -99,12 +96,11 @@ public class ShineServiceImpl implements ShineService {
 
     private final ShineRepository shineRepository;
 
-    public ShineServiceImpl(BlueIdentityProcessor blueIdentityProcessor, Scheduler scheduler, ElasticsearchAsyncClient elasticsearchAsyncClient,
+    public ShineServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ElasticsearchAsyncClient elasticsearchAsyncClient,
                             CityService cityService, ShineRepository shineRepository, ShineInsertProducer shineInsertProducer, ShineUpdateProducer shineUpdateProducer,
                             ShineDeleteProducer shineDeleteProducer, PitDeploy pitDeploy, FuzzinessDeploy fuzzinessDeploy, HighlightDeploy highlightDeploy,
                             DefaultPriorityDeploy defaultPriorityDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
-        this.scheduler = scheduler;
         this.elasticsearchAsyncClient = elasticsearchAsyncClient;
         this.cityService = cityService;
         this.shineRepository = shineRepository;
@@ -439,7 +435,7 @@ public class ShineServiceImpl implements ShineService {
 
         return SHINE_INSERT_PARAM_2_SHINE.apply(shineInsertParam, memberId)
                 .flatMap(shineRepository::insert)
-                .publishOn(scheduler)
+
                 .flatMap(shine -> {
                     try {
                         shineInsertProducer.send(shine);
@@ -495,13 +491,13 @@ public class ShineServiceImpl implements ShineService {
             throw new BlueException(UNAUTHORIZED);
 
         return shineRepository.findById(shineUpdateParam.getId())
-                .publishOn(scheduler)
+
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .flatMap(shine ->
                         SHINE_UPDATE_PARAM_2_SHINE.apply(shineUpdateParam, shine)
                 )
                 .flatMap(shineRepository::save)
-                .publishOn(scheduler)
+
                 .flatMap(shine -> {
                     try {
                         shineUpdateProducer.send(shine);
@@ -554,10 +550,10 @@ public class ShineServiceImpl implements ShineService {
             throw new BlueException(INVALID_IDENTITY);
 
         return shineRepository.findById(id)
-                .publishOn(scheduler)
+
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .flatMap(s ->
-                        shineRepository.delete(s).publishOn(scheduler).then(just(s))
+                        shineRepository.delete(s).then(just(s))
                 )
                 .flatMap(shine -> {
                     try {
@@ -619,7 +615,7 @@ public class ShineServiceImpl implements ShineService {
                         getResponse.found() ?
                                 just(getResponse.source())
                                 :
-                                shineRepository.findById(id).publishOn(scheduler)
+                                shineRepository.findById(id)
                 );
     }
 
@@ -670,7 +666,7 @@ public class ShineServiceImpl implements ShineService {
                 .filter(BlueChecker::isNotEmpty)
                 .switchIfEmpty(defer(() -> fromIterable(allotByMax(ids, (int) DB_SELECT.value, false))
                         .map(shardIds -> shineRepository.findAllById(shardIds)
-                                .publishOn(scheduler)
+
                                 .map(SHINE_2_SHINE_INFO))
                         .reduce(Flux::concat)
                         .flatMap(Flux::collectList)));

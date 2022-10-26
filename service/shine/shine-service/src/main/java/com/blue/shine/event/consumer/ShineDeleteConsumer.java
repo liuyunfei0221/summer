@@ -7,7 +7,6 @@ import com.blue.pulsar.component.BluePulsarListener;
 import com.blue.shine.config.blue.BlueConsumerConfig;
 import com.blue.shine.service.inter.ShineService;
 import org.apache.pulsar.client.api.PulsarClient;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
@@ -37,16 +36,13 @@ public final class ShineDeleteConsumer implements BlueLifecycle {
 
     private final BlueConsumerConfig blueConsumerConfig;
 
-    private final Scheduler scheduler;
-
     private final ShineService shineService;
 
     private BluePulsarListener<IdentityEvent> pulsarListener;
 
-    public ShineDeleteConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, ShineService shineService) {
+    public ShineDeleteConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, ShineService shineService) {
         this.pulsarClient = pulsarClient;
         this.blueConsumerConfig = blueConsumerConfig;
-        this.scheduler = scheduler;
         this.shineService = shineService;
     }
 
@@ -54,7 +50,7 @@ public final class ShineDeleteConsumer implements BlueLifecycle {
     private void init() {
         Consumer<IdentityEvent> dataConsumer = ie ->
                 ofNullable(ie)
-                        .ifPresent(id -> just(id).publishOn(scheduler).flatMap(shineService::deleteShineEvent)
+                        .ifPresent(id -> just(id).flatMap(shineService::deleteShineEvent)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
                                 .doOnError(throwable -> LOGGER.info("shineService.deleteShineEvent(IdentityEvent identityEvent) failed, ie = {}, throwable = {}", ie, throwable))
                                 .subscribe(b -> LOGGER.info("shineService.deleteShineEvent(IdentityEvent identityEvent), b = {}, ie = {}", b, ie)));

@@ -6,7 +6,6 @@ import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.event.EmptyEvent;
 import com.blue.pulsar.component.BluePulsarListener;
 import org.apache.pulsar.client.api.PulsarClient;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
@@ -33,16 +32,13 @@ public final class RegionInfosInvalidConsumer implements BlueLifecycle {
 
     private final BlueConsumerConfig blueConsumerConfig;
 
-    private final Scheduler scheduler;
-
     private final RegionControlService regionControlService;
 
     private BluePulsarListener<EmptyEvent> pulsarListener;
 
-    public RegionInfosInvalidConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, RegionControlService regionControlService) {
+    public RegionInfosInvalidConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, RegionControlService regionControlService) {
         this.pulsarClient = pulsarClient;
         this.blueConsumerConfig = blueConsumerConfig;
-        this.scheduler = scheduler;
         this.regionControlService = regionControlService;
     }
 
@@ -50,7 +46,7 @@ public final class RegionInfosInvalidConsumer implements BlueLifecycle {
     private void init() {
         Consumer<EmptyEvent> dataConsumer = emptyEvent ->
                 ofNullable(emptyEvent)
-                        .ifPresent(ee -> just(ee).publishOn(scheduler)
+                        .ifPresent(ee -> just(ee)
                                 .then(regionControlService.invalidAllCache())
                                 .doOnError(throwable -> LOGGER.info("regionControlService.invalidAllCache() failed, ee = {}, throwable = {}", ee, throwable))
                                 .subscribe(ig -> LOGGER.info("regionControlService.invalidAllCache(), ig = {}, ee = {}", ig, ee)));

@@ -6,7 +6,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 
@@ -31,12 +30,6 @@ public class RpcCredentialServiceConsumer {
             })
     private RpcCredentialService rpcCredentialService;
 
-    private final Scheduler scheduler;
-
-    public RpcCredentialServiceConsumer(Scheduler scheduler) {
-        this.scheduler = scheduler;
-    }
-
     /**
      * get by member id and type
      *
@@ -45,7 +38,7 @@ public class RpcCredentialServiceConsumer {
      * @return
      */
     public Mono<CredentialInfo> getCredentialByMemberIdAndType(Long memberId, String credentialType) {
-        return fromFuture(rpcCredentialService.getCredentialByMemberIdAndType(memberId, credentialType)).publishOn(scheduler);
+        return fromFuture(rpcCredentialService.getCredentialByMemberIdAndType(memberId, credentialType));
     }
 
     /**
@@ -56,7 +49,7 @@ public class RpcCredentialServiceConsumer {
      * @return
      */
     public Mono<List<CredentialInfo>> selectCredentialByMemberIdAndTypes(Long memberId, List<String> credentialTypes) {
-        return fromFuture(rpcCredentialService.selectCredentialByMemberIdAndTypes(memberId, credentialTypes)).publishOn(scheduler);
+        return fromFuture(rpcCredentialService.selectCredentialByMemberIdAndTypes(memberId, credentialTypes));
     }
 
     /**
@@ -67,7 +60,7 @@ public class RpcCredentialServiceConsumer {
      * @return
      */
     public Mono<CredentialInfo> getCredentialByCredentialAndType(String credential, String credentialType) {
-        return fromFuture(rpcCredentialService.getCredentialByCredentialAndType(credential, credentialType)).publishOn(scheduler);
+        return fromFuture(rpcCredentialService.getCredentialByCredentialAndType(credential, credentialType));
     }
 
     /**
@@ -78,7 +71,7 @@ public class RpcCredentialServiceConsumer {
      * @return
      */
     public Mono<List<CredentialInfo>> selectCredentialByCredentialAndTypes(String credential, List<String> credentialTypes) {
-        return fromFuture(rpcCredentialService.selectCredentialByCredentialAndTypes(credential, credentialTypes)).publishOn(scheduler);
+        return fromFuture(rpcCredentialService.selectCredentialByCredentialAndTypes(credential, credentialTypes));
     }
 
 }

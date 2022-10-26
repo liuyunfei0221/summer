@@ -7,7 +7,6 @@ import com.blue.lake.config.blue.BlueConsumerConfig;
 import com.blue.lake.service.inter.LakeService;
 import com.blue.pulsar.component.BluePulsarBatchListener;
 import org.apache.pulsar.client.api.PulsarClient;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
@@ -37,16 +36,13 @@ public final class DataEventConsumer implements BlueLifecycle {
 
     private final BlueConsumerConfig blueConsumerConfig;
 
-    private final Scheduler scheduler;
-
     private final LakeService lakeService;
 
     private BluePulsarBatchListener<DataEvent> pulsarBatchListener;
 
-    public DataEventConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, LakeService lakeService) {
+    public DataEventConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, LakeService lakeService) {
         this.pulsarClient = pulsarClient;
         this.blueConsumerConfig = blueConsumerConfig;
-        this.scheduler = scheduler;
         this.lakeService = lakeService;
     }
 
@@ -54,7 +50,7 @@ public final class DataEventConsumer implements BlueLifecycle {
     private void init() {
         Consumer<List<DataEvent>> dataConsumer = dataEvents ->
                 ofNullable(dataEvents)
-                        .ifPresent(des -> just(des).publishOn(scheduler).flatMap(lakeService::insertEvents)
+                        .ifPresent(des -> just(des).flatMap(lakeService::insertEvents)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
                                 .doOnError(throwable -> LOGGER.info("insertEvents(List<DataEvent> dataEvents) failed, des = {}, throwable = {}", des, throwable))
                                 .subscribe(b -> LOGGER.info("insertEvents(List<DataEvent> dataEvents), b = {}, des = {}", b, des)));

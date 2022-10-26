@@ -6,7 +6,6 @@ import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.service.inter.MemberBasicService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
-import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -33,11 +32,8 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
 
     private final MemberBasicService memberBasicService;
 
-    private final Scheduler scheduler;
-
-    public RpcMemberBasicServiceProvider(MemberBasicService memberBasicService, Scheduler scheduler) {
+    public RpcMemberBasicServiceProvider(MemberBasicService memberBasicService) {
         this.memberBasicService = memberBasicService;
-        this.scheduler = scheduler;
     }
 
     /**
@@ -48,7 +44,7 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
      */
     @Override
     public CompletableFuture<MemberBasicInfo> getMemberBasicInfo(Long id) {
-        return just(id).publishOn(scheduler)
+        return just(id)
                 .flatMap(memberBasicService::getMemberBasicMono)
                 .map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                 .toFuture();
@@ -62,7 +58,7 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
      */
     @Override
     public CompletableFuture<List<MemberBasicInfo>> selectMemberBasicInfoByIds(List<Long> ids) {
-        return just(ids).publishOn(scheduler)
+        return just(ids)
                 .flatMap(memberBasicService::selectMemberBasicInfoMonoByIds)
                 .toFuture();
     }
@@ -75,7 +71,7 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
      */
     @Override
     public CompletableFuture<MemberBasicInfo> getMemberBasicInfoByPhone(String phone) {
-        return just(phone).publishOn(scheduler)
+        return just(phone)
                 .flatMap(memberBasicService::getMemberBasicMonoByPhone)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
@@ -90,7 +86,7 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
      */
     @Override
     public CompletableFuture<MemberBasicInfo> getMemberBasicInfoByEmail(String email) {
-        return just(email).publishOn(scheduler)
+        return just(email)
                 .flatMap(memberBasicService::getMemberBasicMonoByEmail)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)

@@ -11,7 +11,6 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import static com.blue.redis.api.generator.BlueBitMarkerGenerator.generateBitMarker;
@@ -64,23 +63,23 @@ public class BlueRedisConfiguration {
     }
 
     @Bean
-    BlueBitMarker blueBitMarker(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler) {
-        return generateBitMarker(reactiveStringRedisTemplate, scheduler);
+    BlueBitMarker blueBitMarker(ReactiveStringRedisTemplate reactiveStringRedisTemplate) {
+        return generateBitMarker(reactiveStringRedisTemplate);
     }
 
     @Bean
-    BlueLeakyBucketRateLimiter blueLeakyBucketRateLimiter(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler) {
-        return generateLeakyBucketRateLimiter(reactiveStringRedisTemplate, scheduler);
+    BlueLeakyBucketRateLimiter blueLeakyBucketRateLimiter(ReactiveStringRedisTemplate reactiveStringRedisTemplate) {
+        return generateLeakyBucketRateLimiter(reactiveStringRedisTemplate);
     }
 
     @Bean
-    BlueTokenBucketRateLimiter blueTokenBucketRateLimiter(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler) {
-        return generateTokenBucketRateLimiter(reactiveStringRedisTemplate, scheduler);
+    BlueTokenBucketRateLimiter blueTokenBucketRateLimiter(ReactiveStringRedisTemplate reactiveStringRedisTemplate) {
+        return generateTokenBucketRateLimiter(reactiveStringRedisTemplate);
     }
 
     @Bean
-    BlueValidator blueValidator(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler) {
-        return generateValidator(reactiveStringRedisTemplate, scheduler);
+    BlueValidator blueValidator(ReactiveStringRedisTemplate reactiveStringRedisTemplate) {
+        return generateValidator(reactiveStringRedisTemplate);
     }
 
     @Bean

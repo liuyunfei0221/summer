@@ -7,7 +7,6 @@ import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.pulsar.component.BluePulsarListener;
 import org.apache.pulsar.client.api.PulsarClient;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
@@ -37,16 +36,13 @@ public final class InvalidLocalAccessConsumer implements BlueLifecycle {
 
     private final BlueConsumerConfig blueConsumerConfig;
 
-    private final Scheduler scheduler;
-
     private final AccessInfoCache accessInfoCache;
 
     private BluePulsarListener<InvalidLocalAccessEvent> pulsarListener;
 
-    public InvalidLocalAccessConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, AccessInfoCache accessInfoCache) {
+    public InvalidLocalAccessConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, AccessInfoCache accessInfoCache) {
         this.pulsarClient = pulsarClient;
         this.blueConsumerConfig = blueConsumerConfig;
-        this.scheduler = scheduler;
         this.accessInfoCache = accessInfoCache;
     }
 
@@ -55,7 +51,7 @@ public final class InvalidLocalAccessConsumer implements BlueLifecycle {
         Consumer<InvalidLocalAccessEvent> dataConsumer = invalidLocalAccessEvent ->
                 ofNullable(invalidLocalAccessEvent)
                         .map(InvalidLocalAccessEvent::getKeyId)
-                        .ifPresent(kid -> just(kid).publishOn(scheduler).flatMap(accessInfoCache::invalidLocalAccessInfo)
+                        .ifPresent(kid -> just(kid).flatMap(accessInfoCache::invalidLocalAccessInfo)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
                                 .doOnError(throwable -> LOGGER.info("accessInfoCache.invalidLocalAccessInfo(kid) failed, kid = {}, throwable = {}", kid, throwable))
                                 .subscribe(b -> LOGGER.info("accessInfoCache.invalidLocalAccessInfo(kid), b = {}, kid = {}", b, kid)));

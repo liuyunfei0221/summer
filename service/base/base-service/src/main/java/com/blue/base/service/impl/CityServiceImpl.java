@@ -26,7 +26,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 import reactor.util.Loggers;
 
@@ -86,17 +85,14 @@ public class CityServiceImpl implements CityService {
 
     private final ReactiveMongoTemplate reactiveMongoTemplate;
 
-    private Scheduler scheduler;
-
     public CityServiceImpl(BlueIdentityProcessor blueIdentityProcessor, StateService stateService, CountryService countryService,
-                           CityRepository cityRepository, ReactiveMongoTemplate reactiveMongoTemplate, Scheduler scheduler,
+                           CityRepository cityRepository, ReactiveMongoTemplate reactiveMongoTemplate,
                            ExecutorService executorService, CaffeineDeploy caffeineDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.stateService = stateService;
         this.countryService = countryService;
         this.cityRepository = cityRepository;
         this.reactiveMongoTemplate = reactiveMongoTemplate;
-        this.scheduler = scheduler;
 
         idCityCache = generateCache(new CaffeineConfParams(
                 caffeineDeploy.getCityMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
@@ -146,7 +142,7 @@ public class CityServiceImpl implements CityService {
                 .stream().map(l ->
                         idCityCache.getAll(l, is -> cityRepository.findAllById(l)
                                         .flatMap(c -> just(CITY_2_CITY_INFO_CONVERTER.apply(c)))
-                                        .publishOn(scheduler).collectList().toFuture().join()
+                                        .collectList().toFuture().join()
                                         .parallelStream()
                                         .collect(toMap(CityInfo::getId, i -> i, (a, b) -> a)))
                                 .entrySet()
@@ -213,7 +209,7 @@ public class CityServiceImpl implements CityService {
         probe.setStateId(p.getStateId());
         probe.setName(p.getName());
 
-        if (ofNullable(cityRepository.count(Example.of(probe)).publishOn(scheduler).toFuture().join()).orElse(0L) > 0L)
+        if (ofNullable(cityRepository.count(Example.of(probe)).toFuture().join()).orElse(0L) > 0L)
             throw new BlueException(CITY_ALREADY_EXIST);
     };
 
@@ -253,13 +249,13 @@ public class CityServiceImpl implements CityService {
         probe.setName(p.getName());
 
         List<City> cities = ofNullable(cityRepository.findAll(Example.of(probe))
-                .publishOn(scheduler).collectList().toFuture().join())
+                .collectList().toFuture().join())
                 .orElseGet(Collections::emptyList);
 
         if (cities.stream().anyMatch(c -> !id.equals(c.getId())))
             throw new BlueException(DATA_ALREADY_EXIST);
 
-        City city = cityRepository.findById(id).publishOn(scheduler).toFuture().join();
+        City city = cityRepository.findById(id).toFuture().join();
         if (isNull(city))
             throw new BlueException(DATA_NOT_EXIST);
 
@@ -334,7 +330,7 @@ public class CityServiceImpl implements CityService {
         City city = CITY_INSERT_PARAM_2_CITY_CONVERTER.apply(cityInsertParam);
 
         return cityRepository.insert(city)
-                .publishOn(scheduler)
+
                 .map(CITY_2_CITY_INFO_CONVERTER)
                 .doOnSuccess(ci -> {
                     LOGGER.info("ci = {}", ci);
@@ -360,7 +356,7 @@ public class CityServiceImpl implements CityService {
         UPDATE_ITEM_WITH_ASSERT_PACKAGER.accept(cityUpdateParam, city);
 
         return cityRepository.save(city)
-                .publishOn(scheduler)
+
                 .map(CITY_2_CITY_INFO_CONVERTER)
                 .doOnSuccess(ci -> {
                     LOGGER.info("ci = {}", ci);
@@ -390,7 +386,7 @@ public class CityServiceImpl implements CityService {
             throw new BlueException(INVALID_IDENTITY);
 
         return cityRepository.findById(id)
-                .publishOn(scheduler)
+
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .flatMap(city -> {
                     Area probe = new Area();
@@ -444,7 +440,7 @@ public class CityServiceImpl implements CityService {
 
         return reactiveMongoTemplate.updateMulti(query(byExample(probe)), new Update()
                         .set(COUNTRY_ID.name, countryId).set(STATE_ID.name, stateId), Area.class)
-                .publishOn(scheduler)
+
                 .flatMap(updateResult -> {
                     long modifiedCount = updateResult.getModifiedCount();
 
@@ -463,7 +459,7 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public Optional<City> getCityById(Long id) {
-        return ofNullable(cityRepository.findById(id).publishOn(scheduler).toFuture().join());
+        return ofNullable(cityRepository.findById(id).toFuture().join());
     }
 
     /**
@@ -481,7 +477,7 @@ public class CityServiceImpl implements CityService {
         probe.setStateId(stateId);
 
         return cityRepository.findAll(Example.of(probe), by(Sort.Order.asc(NAME.name)))
-                .publishOn(scheduler).collectList().toFuture().join();
+                .collectList().toFuture().join();
     }
 
     /**
@@ -500,7 +496,7 @@ public class CityServiceImpl implements CityService {
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream()
                 .map(l -> cityRepository.findAllById(l)
-                        .publishOn(scheduler).collectList().toFuture().join())
+                        .collectList().toFuture().join())
                 .flatMap(List::stream)
                 .collect(toList());
     }
@@ -644,7 +640,7 @@ public class CityServiceImpl implements CityService {
         Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
         listQuery.skip(limit).limit(rows.intValue());
 
-        return reactiveMongoTemplate.find(listQuery, City.class).publishOn(scheduler).collectList();
+        return reactiveMongoTemplate.find(listQuery, City.class).collectList();
     }
 
     /**
@@ -656,7 +652,7 @@ public class CityServiceImpl implements CityService {
     @Override
     public Mono<Long> countCityMonoByQuery(Query query) {
         LOGGER.info("Mono<Long> countCityMonoByQuery(Query query), query = {}", query);
-        return reactiveMongoTemplate.count(query, City.class).publishOn(scheduler);
+        return reactiveMongoTemplate.count(query, City.class);
     }
 
     /**

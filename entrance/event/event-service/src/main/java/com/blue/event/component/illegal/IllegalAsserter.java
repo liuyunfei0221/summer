@@ -7,7 +7,6 @@ import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -40,11 +39,8 @@ public final class IllegalAsserter {
 
     private ReactiveStringRedisTemplate reactiveStringRedisTemplate;
 
-    private Scheduler scheduler;
-
-    public IllegalAsserter(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler, RiskControlDeploy riskControlDeploy) {
+    public IllegalAsserter(ReactiveStringRedisTemplate reactiveStringRedisTemplate, RiskControlDeploy riskControlDeploy) {
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
-        this.scheduler = scheduler;
 
         Long illegalExpiresSecond = riskControlDeploy.getIllegalExpiresSecond();
         if (isNull(illegalExpiresSecond) || illegalExpiresSecond < 1L)
@@ -75,11 +71,11 @@ public final class IllegalAsserter {
                 .any(s -> s.equals(ALL_RESOURCE) || s.equals(resKey))
                 .flatMap(b ->
                         b ? just(false)
-                                .publishOn(scheduler)
+
                                 :
                                 this.reactiveStringRedisTemplate
                                         .opsForSet().add(key, resKey)
-                                        .publishOn(scheduler)
+
                                         .flatMap(l -> this.reactiveStringRedisTemplate.expire(key,
                                                 ofNullable(expiresSecond).map(s -> Duration.of(s, SECONDS))
                                                         .orElse(defaultIllegalExpireDuration))));
@@ -87,9 +83,9 @@ public final class IllegalAsserter {
 
     private Mono<Boolean> clearMark(String key, String resKey) {
         return isBlank(resKey) || ALL_RESOURCE.equals(resKey) ?
-                this.reactiveStringRedisTemplate.delete(key).map(l -> l > 0).publishOn(scheduler)
+                this.reactiveStringRedisTemplate.delete(key).map(l -> l > 0)
                 :
-                this.reactiveStringRedisTemplate.opsForSet().remove(key, resKey).map(l -> l > 0).publishOn(scheduler);
+                this.reactiveStringRedisTemplate.opsForSet().remove(key, resKey).map(l -> l > 0);
     }
 
     /**
@@ -137,7 +133,7 @@ public final class IllegalAsserter {
      */
     private final BiFunction<String, String, Mono<Boolean>> KEY_VALIDATOR = (key, res) ->
             this.reactiveStringRedisTemplate.opsForSet()
-                    .members(key).publishOn(scheduler).collectList()
+                    .members(key).collectList()
                     .flatMap(s -> RES_VALIDATOR.apply(s, res));
 
     /**

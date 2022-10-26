@@ -6,7 +6,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 
 import java.time.Duration;
 
@@ -27,12 +26,6 @@ public class RpcVerifyServiceConsumer {
             })
     private RpcVerifyService rpcVerifyService;
 
-    private final Scheduler scheduler;
-
-    public RpcVerifyServiceConsumer(Scheduler scheduler) {
-        this.scheduler = scheduler;
-    }
-
     /**
      * generate pair
      *
@@ -43,7 +36,7 @@ public class RpcVerifyServiceConsumer {
      * @return
      */
     public Mono<String> generate(VerifyType type, String key, Integer length, Duration expire) {
-        return fromFuture(rpcVerifyService.generate(type, key, length, expire)).publishOn(scheduler);
+        return fromFuture(rpcVerifyService.generate(type, key, length, expire));
     }
 
     /**
@@ -56,7 +49,7 @@ public class RpcVerifyServiceConsumer {
      * @return
      */
     public Mono<Boolean> validate(VerifyType type, String key, String verify, Boolean repeatable) {
-        return fromFuture(rpcVerifyService.validate(type, key, verify, repeatable)).publishOn(scheduler);
+        return fromFuture(rpcVerifyService.validate(type, key, verify, repeatable));
     }
 
 }

@@ -5,7 +5,6 @@ import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 import java.util.function.BiFunction;
@@ -21,7 +20,6 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
-import static reactor.core.scheduler.Schedulers.boundedElastic;
 
 /**
  * leaky bucket rate limiter
@@ -33,14 +31,11 @@ public final class BlueLeakyBucketRateLimiter {
 
     private final ReactiveStringRedisTemplate reactiveStringRedisTemplate;
 
-    private final Scheduler scheduler;
-
-    public BlueLeakyBucketRateLimiter(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler) {
+    public BlueLeakyBucketRateLimiter(ReactiveStringRedisTemplate reactiveStringRedisTemplate) {
         if (isNull(reactiveStringRedisTemplate))
             throw new RuntimeException("reactiveStringRedisTemplate can't be null");
 
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
-        this.scheduler = isNotNull(scheduler) ? scheduler : boundedElastic();
     }
 
     private static final RedisScript<Boolean> SCRIPT = generateScriptByScriptStr(LEAKY_BUCKET_RATE_LIMITER.str, Boolean.class);
@@ -72,7 +67,7 @@ public final class BlueLeakyBucketRateLimiter {
 
         return reactiveStringRedisTemplate.execute(SCRIPT, SCRIPT_KEYS_WRAPPER.apply(limitKey),
                         SCRIPT_ARGS_WRAPPER.apply(allow, expiresMillis))
-                .publishOn(scheduler)
+
                 .onErrorResume(FALL_BACKER)
                 .elementAt(0);
     }
@@ -97,7 +92,7 @@ public final class BlueLeakyBucketRateLimiter {
      */
     public Mono<Boolean> delete(String key) {
         return isNotBlank(key) ?
-                reactiveStringRedisTemplate.delete(key).publishOn(scheduler)
+                reactiveStringRedisTemplate.delete(key)
                         .flatMap(r -> just(r > 0))
                 :
                 error(() -> new BlueException(EMPTY_PARAM));

@@ -6,7 +6,6 @@ import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.event.EmptyEvent;
 import com.blue.pulsar.component.BluePulsarListener;
 import org.apache.pulsar.client.api.PulsarClient;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
@@ -33,16 +32,13 @@ public final class SystemAuthorityInfosRefreshConsumer implements BlueLifecycle 
 
     private final BlueConsumerConfig blueConsumerConfig;
 
-    private final Scheduler scheduler;
-
     private final AuthControlService authControlService;
 
     private BluePulsarListener<EmptyEvent> pulsarListener;
 
-    public SystemAuthorityInfosRefreshConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, AuthControlService authControlService) {
+    public SystemAuthorityInfosRefreshConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, AuthControlService authControlService) {
         this.pulsarClient = pulsarClient;
         this.blueConsumerConfig = blueConsumerConfig;
-        this.scheduler = scheduler;
         this.authControlService = authControlService;
     }
 
@@ -50,7 +46,7 @@ public final class SystemAuthorityInfosRefreshConsumer implements BlueLifecycle 
     private void init() {
         Consumer<EmptyEvent> dataConsumer = emptyEvent ->
                 ofNullable(emptyEvent)
-                        .ifPresent(ee -> just(ee).publishOn(scheduler)
+                        .ifPresent(ee -> just(ee)
                                 .then(authControlService.refreshSystemAuthorityInfos())
                                 .doOnError(throwable -> LOGGER.info("authControlService.refreshSystemAuthorityInfos() failed, ee = {}, throwable = {}", ee, throwable))
                                 .subscribe(ig -> LOGGER.info("authControlService.refreshSystemAuthorityInfos(), ig = {}, ee = {}", ig, ee)));

@@ -6,7 +6,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 
@@ -29,12 +28,6 @@ public class RpcAttachmentServiceConsumer {
             })
     private RpcAttachmentService rpcAttachmentService;
 
-    private final Scheduler scheduler;
-
-    public RpcAttachmentServiceConsumer(Scheduler scheduler) {
-        this.scheduler = scheduler;
-    }
-
     /**
      * get attachment by id
      *
@@ -42,7 +35,7 @@ public class RpcAttachmentServiceConsumer {
      * @return
      */
     public Mono<AttachmentInfo> getAttachmentInfoByPrimaryKey(Long id) {
-        return fromFuture(rpcAttachmentService.getAttachmentInfoByPrimaryKey(id)).publishOn(scheduler);
+        return fromFuture(rpcAttachmentService.getAttachmentInfoByPrimaryKey(id));
     }
 
     /**
@@ -52,7 +45,7 @@ public class RpcAttachmentServiceConsumer {
      * @return
      */
     public Mono<List<AttachmentInfo>> selectAttachmentInfoByIds(List<Long> ids) {
-        return fromFuture(rpcAttachmentService.selectAttachmentInfoByIds(ids)).publishOn(scheduler);
+        return fromFuture(rpcAttachmentService.selectAttachmentInfoByIds(ids));
     }
 
 }

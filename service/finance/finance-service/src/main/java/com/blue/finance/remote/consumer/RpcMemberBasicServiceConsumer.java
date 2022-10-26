@@ -6,7 +6,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 
@@ -31,12 +30,6 @@ public class RpcMemberBasicServiceConsumer {
             })
     private RpcMemberBasicService rpcMemberBasicService;
 
-    private final Scheduler scheduler;
-
-    public RpcMemberBasicServiceConsumer(Scheduler scheduler) {
-        this.scheduler = scheduler;
-    }
-
     /**
      * query member by id
      *
@@ -44,7 +37,7 @@ public class RpcMemberBasicServiceConsumer {
      * @return
      */
     public Mono<MemberBasicInfo> getMemberBasicInfo(Long id) {
-        return fromFuture(rpcMemberBasicService.getMemberBasicInfo(id)).publishOn(scheduler);
+        return fromFuture(rpcMemberBasicService.getMemberBasicInfo(id));
     }
 
     /**
@@ -54,7 +47,7 @@ public class RpcMemberBasicServiceConsumer {
      * @return
      */
     public Mono<List<MemberBasicInfo>> selectMemberBasicInfoByIds(List<Long> ids) {
-        return fromFuture(rpcMemberBasicService.selectMemberBasicInfoByIds(ids)).publishOn(scheduler);
+        return fromFuture(rpcMemberBasicService.selectMemberBasicInfoByIds(ids));
     }
 
     /**
@@ -64,7 +57,7 @@ public class RpcMemberBasicServiceConsumer {
      * @return
      */
     public Mono<MemberBasicInfo> getMemberBasicInfoByPhone(String phone) {
-        return fromFuture(rpcMemberBasicService.getMemberBasicInfoByPhone(phone)).publishOn(scheduler);
+        return fromFuture(rpcMemberBasicService.getMemberBasicInfoByPhone(phone));
     }
 
     /**
@@ -74,7 +67,7 @@ public class RpcMemberBasicServiceConsumer {
      * @return
      */
     public Mono<MemberBasicInfo> getMemberBasicInfoByEmail(String email) {
-        return fromFuture(rpcMemberBasicService.getMemberBasicInfoByEmail(email)).publishOn(scheduler);
+        return fromFuture(rpcMemberBasicService.getMemberBasicInfoByEmail(email));
     }
 
 }

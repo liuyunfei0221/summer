@@ -19,7 +19,6 @@ import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.util.List;
@@ -60,18 +59,15 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
 
     private final ReactiveMongoTemplate reactiveMongoTemplate;
 
-    private final Scheduler scheduler;
-
     private final RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer;
 
     private final AttachmentService attachmentService;
 
     private final DownloadHistoryRepository downloadHistoryRepository;
 
-    public DownloadHistoryServiceImpl(ReactiveMongoTemplate reactiveMongoTemplate, Scheduler scheduler, RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer,
+    public DownloadHistoryServiceImpl(ReactiveMongoTemplate reactiveMongoTemplate, RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer,
                                       AttachmentService attachmentService, DownloadHistoryRepository downloadHistoryRepository) {
         this.reactiveMongoTemplate = reactiveMongoTemplate;
-        this.scheduler = scheduler;
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.attachmentService = attachmentService;
         this.downloadHistoryRepository = downloadHistoryRepository;
@@ -134,7 +130,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
         if (isNull(downloadHistory))
             return error(() -> new BlueException(EMPTY_PARAM));
 
-        return downloadHistoryRepository.insert(downloadHistory).publishOn(scheduler);
+        return downloadHistoryRepository.insert(downloadHistory);
     }
 
     /**
@@ -149,7 +145,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return downloadHistoryRepository.findById(id).publishOn(scheduler);
+        return downloadHistoryRepository.findById(id);
     }
 
     /**
@@ -195,7 +191,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
 
         query.skip(scrollModelRequest.getFrom()).limit(scrollModelRequest.getRows().intValue());
 
-        return zip(reactiveMongoTemplate.find(query, DownloadHistory.class).publishOn(scheduler).collectList(),
+        return zip(reactiveMongoTemplate.find(query, DownloadHistory.class).collectList(),
                 rpcMemberBasicServiceConsumer.getMemberBasicInfo(memberId)
         ).flatMap(tuple2 -> {
             List<DownloadHistory> downloadHistories = tuple2.getT1();
@@ -234,7 +230,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
         Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
         listQuery.skip(limit).limit(rows.intValue());
 
-        return reactiveMongoTemplate.find(listQuery, DownloadHistory.class).publishOn(scheduler).collectList();
+        return reactiveMongoTemplate.find(listQuery, DownloadHistory.class).collectList();
     }
 
     /**
@@ -246,7 +242,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
     @Override
     public Mono<Long> countDownloadHistoryMonoByQuery(Query query) {
         LOGGER.info("Mono<Long> countDownloadHistoryMonoByQuery(Query query), query = {}", query);
-        return reactiveMongoTemplate.count(query, DownloadHistory.class).publishOn(scheduler);
+        return reactiveMongoTemplate.count(query, DownloadHistory.class);
     }
 
     /**

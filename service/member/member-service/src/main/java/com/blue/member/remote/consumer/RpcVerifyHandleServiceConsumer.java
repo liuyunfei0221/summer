@@ -7,7 +7,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 
@@ -29,12 +28,6 @@ public class RpcVerifyHandleServiceConsumer {
             })
     private RpcVerifyHandleService rpcVerifyHandleService;
 
-    private final Scheduler scheduler;
-
-    public RpcVerifyHandleServiceConsumer(Scheduler scheduler) {
-        this.scheduler = scheduler;
-    }
-
     /**
      * generate verify for api
      *
@@ -45,7 +38,7 @@ public class RpcVerifyHandleServiceConsumer {
      * @return
      */
     public Mono<String> generate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination, List<String> languages) {
-        return fromFuture(rpcVerifyHandleService.generate(verifyType, verifyBusinessType, destination, languages)).publishOn(scheduler);
+        return fromFuture(rpcVerifyHandleService.generate(verifyType, verifyBusinessType, destination, languages));
     }
 
     /**
@@ -59,7 +52,7 @@ public class RpcVerifyHandleServiceConsumer {
      * @return
      */
     public Mono<Boolean> validate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String key, String verify, Boolean repeatable) {
-        return fromFuture(rpcVerifyHandleService.validate(verifyType, verifyBusinessType, key, verify, repeatable)).publishOn(scheduler);
+        return fromFuture(rpcVerifyHandleService.validate(verifyType, verifyBusinessType, key, verify, repeatable));
     }
 
     /**
@@ -73,7 +66,7 @@ public class RpcVerifyHandleServiceConsumer {
      * @return
      */
     public Mono<Boolean> turingValidate(String identity, Integer allow, Long expiresMillis, String key, String verify) {
-        return fromFuture(rpcVerifyHandleService.turingValidate(identity, allow, expiresMillis, key, verify)).publishOn(scheduler);
+        return fromFuture(rpcVerifyHandleService.turingValidate(identity, allow, expiresMillis, key, verify));
     }
 
 }

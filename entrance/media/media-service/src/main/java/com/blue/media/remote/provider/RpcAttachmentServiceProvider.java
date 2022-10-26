@@ -6,7 +6,6 @@ import com.blue.media.api.model.AttachmentInfo;
 import com.blue.media.service.inter.AttachmentService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
-import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -30,11 +29,8 @@ public class RpcAttachmentServiceProvider implements RpcAttachmentService {
 
     private final AttachmentService attachmentService;
 
-    private final Scheduler scheduler;
-
-    public RpcAttachmentServiceProvider(AttachmentService attachmentService, Scheduler scheduler) {
+    public RpcAttachmentServiceProvider(AttachmentService attachmentService) {
         this.attachmentService = attachmentService;
-        this.scheduler = scheduler;
     }
 
     /**
@@ -45,7 +41,7 @@ public class RpcAttachmentServiceProvider implements RpcAttachmentService {
      */
     @Override
     public CompletableFuture<AttachmentInfo> getAttachmentInfoByPrimaryKey(Long id) {
-        return just(id).publishOn(scheduler).flatMap(attachmentService::getAttachmentInfoMono)
+        return just(id).flatMap(attachmentService::getAttachmentInfoMono)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .toFuture();
     }
@@ -58,7 +54,7 @@ public class RpcAttachmentServiceProvider implements RpcAttachmentService {
      */
     @Override
     public CompletableFuture<List<AttachmentInfo>> selectAttachmentInfoByIds(List<Long> ids) {
-        return just(ids).publishOn(scheduler).flatMap(attachmentService::selectAttachmentInfoMonoByIds)
+        return just(ids).flatMap(attachmentService::selectAttachmentInfoMonoByIds)
                 .toFuture();
     }
 

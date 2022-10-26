@@ -3,6 +3,7 @@ package com.blue.basic.component.rest.api.conf;
 import reactor.netty.http.HttpProtocol;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * reactive rest conf
@@ -31,5 +32,7 @@ public interface RestConf {
     Integer getWriteTimeoutMillis();
 
     Integer getMaxByteInMemorySize();
+
+    Map<String, String> getDefaultHeaders();
 
 }

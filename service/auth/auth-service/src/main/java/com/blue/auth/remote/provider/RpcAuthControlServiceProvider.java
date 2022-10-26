@@ -8,7 +8,6 @@ import com.blue.auth.service.inter.AuthControlService;
 import com.blue.basic.model.common.Access;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
-import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -36,11 +35,8 @@ public class RpcAuthControlServiceProvider implements RpcAuthControlService {
 
     private final AuthControlService authControlService;
 
-    private final Scheduler scheduler;
-
-    public RpcAuthControlServiceProvider(AuthControlService authControlService, Scheduler scheduler) {
+    public RpcAuthControlServiceProvider(AuthControlService authControlService) {
         this.authControlService = authControlService;
-        this.scheduler = scheduler;
     }
 
     /**
@@ -85,7 +81,7 @@ public class RpcAuthControlServiceProvider implements RpcAuthControlService {
      */
     @Override
     public CompletableFuture<Boolean> refreshMemberRoleById(Long memberId, List<Long> roleIds) {
-        return authControlService.refreshMemberRoleByIds(memberId, roleIds).publishOn(scheduler).toFuture();
+        return authControlService.refreshMemberRoleByIds(memberId, roleIds).toFuture();
     }
 
     /**
@@ -96,7 +92,7 @@ public class RpcAuthControlServiceProvider implements RpcAuthControlService {
      */
     @Override
     public CompletableFuture<List<AuthorityBaseOnRole>> selectAuthorityByAccess(Access access) {
-        return just(access).publishOn(scheduler).flatMap(authControlService::selectAuthoritiesMonoByAccess).toFuture();
+        return just(access).flatMap(authControlService::selectAuthoritiesMonoByAccess).toFuture();
     }
 
     /**
@@ -107,7 +103,7 @@ public class RpcAuthControlServiceProvider implements RpcAuthControlService {
      */
     @Override
     public CompletableFuture<List<AuthorityBaseOnRole>> selectAuthorityByMemberId(Long memberId) {
-        return just(memberId).publishOn(scheduler).flatMap(authControlService::selectAuthoritiesMonoByMemberId).toFuture();
+        return just(memberId).flatMap(authControlService::selectAuthoritiesMonoByMemberId).toFuture();
     }
 
 }

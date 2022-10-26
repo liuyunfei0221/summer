@@ -17,7 +17,6 @@ import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.util.List;
@@ -57,13 +56,10 @@ public class VerifyHistoryServiceImpl implements VerifyHistoryService {
 
     private final ReactiveMongoTemplate reactiveMongoTemplate;
 
-    private final Scheduler scheduler;
-
     private final VerifyHistoryRepository verifyHistoryRepository;
 
-    public VerifyHistoryServiceImpl(ReactiveMongoTemplate reactiveMongoTemplate, Scheduler scheduler, VerifyHistoryRepository verifyHistoryRepository) {
+    public VerifyHistoryServiceImpl(ReactiveMongoTemplate reactiveMongoTemplate, VerifyHistoryRepository verifyHistoryRepository) {
         this.reactiveMongoTemplate = reactiveMongoTemplate;
-        this.scheduler = scheduler;
         this.verifyHistoryRepository = verifyHistoryRepository;
     }
 
@@ -131,7 +127,7 @@ public class VerifyHistoryServiceImpl implements VerifyHistoryService {
     @Override
     public Mono<VerifyHistory> insertVerifyHistory(VerifyHistory verifyHistory) {
         LOGGER.info("Mono<VerifyHistory> insertVerifyHistory(VerifyHistory verifyHistory), verifyHistory = {}", verifyHistory);
-        return verifyHistoryRepository.insert(verifyHistory).publishOn(scheduler);
+        return verifyHistoryRepository.insert(verifyHistory);
     }
 
     /**
@@ -157,7 +153,7 @@ public class VerifyHistoryServiceImpl implements VerifyHistoryService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return verifyHistoryRepository.findById(id).publishOn(scheduler);
+        return verifyHistoryRepository.findById(id);
     }
 
     /**
@@ -178,7 +174,7 @@ public class VerifyHistoryServiceImpl implements VerifyHistoryService {
         Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
         listQuery.skip(limit).limit(rows.intValue());
 
-        return reactiveMongoTemplate.find(listQuery, VerifyHistory.class).publishOn(scheduler).collectList();
+        return reactiveMongoTemplate.find(listQuery, VerifyHistory.class).collectList();
     }
 
     /**
@@ -190,7 +186,7 @@ public class VerifyHistoryServiceImpl implements VerifyHistoryService {
     @Override
     public Mono<Long> countVerifyHistoryMonoByQuery(Query query) {
         LOGGER.info("Mono<Long> countVerifyHistoryMonoByQuery(Query query), query = {}", query);
-        return reactiveMongoTemplate.count(query, VerifyHistory.class).publishOn(scheduler);
+        return reactiveMongoTemplate.count(query, VerifyHistory.class);
     }
 
     /**

@@ -30,7 +30,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 import reactor.util.Loggers;
 
@@ -97,20 +96,17 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
 
     private final ReactiveMongoTemplate reactiveMongoTemplate;
 
-    private Scheduler scheduler;
-
     private VerifyTemplateRepository verifyTemplateRepository;
 
     public VerifyTemplateServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, ReactiveStringRedisTemplate reactiveStringRedisTemplate,
                                      BlueIdentityProcessor blueIdentityProcessor, SynchronizedProcessor synchronizedProcessor, RedissonClient redissonClient, ReactiveMongoTemplate reactiveMongoTemplate,
-                                     Scheduler scheduler, VerifyTemplateRepository verifyTemplateRepository, VerifyTemplateDeploy verifyTemplateDeploy) {
+                                     VerifyTemplateRepository verifyTemplateRepository, VerifyTemplateDeploy verifyTemplateDeploy) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.synchronizedProcessor = synchronizedProcessor;
         this.redissonClient = redissonClient;
         this.reactiveMongoTemplate = reactiveMongoTemplate;
-        this.scheduler = scheduler;
         this.verifyTemplateRepository = verifyTemplateRepository;
 
         Long cacheExpiresSecond = verifyTemplateDeploy.getCacheExpiresSecond();
@@ -154,7 +150,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
         probe.setType(type);
         probe.setBusinessType(businessType);
 
-        return verifyTemplateRepository.findAll(Example.of(probe)).publishOn(scheduler)
+        return verifyTemplateRepository.findAll(Example.of(probe))
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .map(VERIFY_TEMPLATE_2_VERIFY_TEMPLATE_INFO_CONVERTER).collectList()
                 .map(verifyTemplateInfos ->
@@ -242,7 +238,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
         probe.setBusinessType(p.getBusinessType());
         probe.setLanguage(lowerCase(replace(p.getLanguage(), PAR_CONCATENATION.identity, HYPHEN.identity)));
 
-        if (ofNullable(verifyTemplateRepository.count(Example.of(probe)).publishOn(scheduler).toFuture().join()).orElse(0L) > 0L)
+        if (ofNullable(verifyTemplateRepository.count(Example.of(probe)).toFuture().join()).orElse(0L) > 0L)
             throw new BlueException(DATA_ALREADY_EXIST);
     };
 
@@ -259,13 +255,13 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
         probe.setLanguage(p.getLanguage());
 
         List<VerifyTemplate> templates = ofNullable(verifyTemplateRepository.findAll(Example.of(probe)).collectList()
-                .publishOn(scheduler).toFuture().join())
+                .toFuture().join())
                 .orElseGet(Collections::emptyList);
 
         if (templates.stream().anyMatch(c -> !id.equals(c.getId())))
             throw new BlueException(DATA_ALREADY_EXIST);
 
-        VerifyTemplate verifyTemplate = verifyTemplateRepository.findById(id).publishOn(scheduler).toFuture().join();
+        VerifyTemplate verifyTemplate = verifyTemplateRepository.findById(id).toFuture().join();
         if (isNull(verifyTemplate))
             throw new BlueException(DATA_NOT_EXIST);
 
@@ -441,7 +437,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
             verifyTemplate.setUpdater(operatorId);
 
             return verifyTemplateRepository.insert(verifyTemplate)
-                    .publishOn(scheduler)
+
                     .doOnSuccess(template -> REDIS_CACHE_DELETER.accept(template.getType(), template.getBusinessType()))
                     .map(VERIFY_TEMPLATE_2_VERIFY_TEMPLATE_INFO_CONVERTER);
         });
@@ -468,7 +464,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
             verifyTemplate.setUpdater(operatorId);
 
             return verifyTemplateRepository.save(verifyTemplate)
-                    .publishOn(scheduler)
+
                     .doOnSuccess(template -> {
                         String tarType = template.getType();
                         String tarBusinessType = template.getBusinessType();
@@ -495,7 +491,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
 
         return synchronizedProcessor.handleSupWithSync(VERIFY_TEMPLATE_UPDATE_SYNC.key, () ->
                 verifyTemplateRepository.findById(id)
-                        .publishOn(scheduler)
+
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                         .flatMap(template -> verifyTemplateRepository.delete(template).then(just(template)))
                         .doOnSuccess(template -> REDIS_CACHE_DELETER.accept(template.getType(), template.getBusinessType()))
@@ -513,7 +509,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
     public Mono<VerifyTemplate> getVerifyTemplateMono(Long id) {
         LOGGER.info("Mono<VerifyTemplate> getVerifyTemplateMono(Long id), id = {}", id);
 
-        return verifyTemplateRepository.findById(id).publishOn(scheduler);
+        return verifyTemplateRepository.findById(id);
     }
 
     /**
@@ -555,7 +551,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
         Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
         listQuery.skip(limit).limit(rows.intValue());
 
-        return reactiveMongoTemplate.find(listQuery, VerifyTemplate.class).publishOn(scheduler).collectList();
+        return reactiveMongoTemplate.find(listQuery, VerifyTemplate.class).collectList();
     }
 
     /**
@@ -568,7 +564,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
     public Mono<Long> countVerifyTemplateMonoByCondition(Query query) {
         LOGGER.info("Mono<Long> countVerifyTemplateMonoByCondition(), query = {}", query);
 
-        return reactiveMongoTemplate.count(query, VerifyTemplate.class).publishOn(scheduler);
+        return reactiveMongoTemplate.count(query, VerifyTemplate.class);
     }
 
     /**

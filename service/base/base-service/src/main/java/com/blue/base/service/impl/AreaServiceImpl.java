@@ -25,7 +25,6 @@ import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 import reactor.util.Loggers;
 
@@ -86,17 +85,14 @@ public class AreaServiceImpl implements AreaService {
 
     private final ReactiveMongoTemplate reactiveMongoTemplate;
 
-    private Scheduler scheduler;
-
     public AreaServiceImpl(BlueIdentityProcessor blueIdentityProcessor, CityService cityService, StateService stateService, CountryService countryService,
-                           AreaRepository areaRepository, ReactiveMongoTemplate reactiveMongoTemplate, Scheduler scheduler, ExecutorService executorService, CaffeineDeploy caffeineDeploy) {
+                           AreaRepository areaRepository, ReactiveMongoTemplate reactiveMongoTemplate, ExecutorService executorService, CaffeineDeploy caffeineDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.cityService = cityService;
         this.stateService = stateService;
         this.countryService = countryService;
         this.areaRepository = areaRepository;
         this.reactiveMongoTemplate = reactiveMongoTemplate;
-        this.scheduler = scheduler;
 
         idAreaCache = generateCache(new CaffeineConfParams(
                 caffeineDeploy.getAreaMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
@@ -145,7 +141,7 @@ public class AreaServiceImpl implements AreaService {
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(l ->
                         idAreaCache.getAll(l, is -> areaRepository.findAllById(l)
-                                        .publishOn(scheduler)
+
                                         .flatMap(a -> just(AREA_2_AREA_INFO_CONVERTER.apply(a)))
                                         .collectList().toFuture().join()
                                         .parallelStream()
@@ -217,7 +213,7 @@ public class AreaServiceImpl implements AreaService {
         probe.setCityId(p.getCityId());
         probe.setName(p.getName());
 
-        if (ofNullable(areaRepository.count(Example.of(probe)).publishOn(scheduler).toFuture().join()).orElse(0L) > 0L)
+        if (ofNullable(areaRepository.count(Example.of(probe)).toFuture().join()).orElse(0L) > 0L)
             throw new BlueException(AREA_ALREADY_EXIST);
     };
 
@@ -257,14 +253,14 @@ public class AreaServiceImpl implements AreaService {
         probe.setCityId(p.getCityId());
         probe.setName(p.getName());
 
-        List<Area> areas = ofNullable(areaRepository.findAll(Example.of(probe)).publishOn(scheduler)
+        List<Area> areas = ofNullable(areaRepository.findAll(Example.of(probe))
                 .collectList().toFuture().join())
                 .orElseGet(Collections::emptyList);
 
         if (areas.stream().anyMatch(a -> !id.equals(a.getId())))
             throw new BlueException(DATA_ALREADY_EXIST);
 
-        Area area = areaRepository.findById(id).publishOn(scheduler).toFuture().join();
+        Area area = areaRepository.findById(id).toFuture().join();
         if (isNull(area))
             throw new BlueException(DATA_NOT_EXIST);
 
@@ -341,7 +337,7 @@ public class AreaServiceImpl implements AreaService {
         Area area = AREA_INSERT_PARAM_2_AREA_CONVERTER.apply(areaInsertParam);
 
         return areaRepository.insert(area)
-                .publishOn(scheduler)
+
                 .map(AREA_2_AREA_INFO_CONVERTER)
                 .doOnSuccess(ai -> {
                     LOGGER.info("ai = {}", ai);
@@ -364,7 +360,7 @@ public class AreaServiceImpl implements AreaService {
         UPDATE_ITEM_WITH_ASSERT_PACKAGER.accept(areaUpdateParam, area);
 
         return areaRepository.save(area)
-                .publishOn(scheduler)
+
                 .map(AREA_2_AREA_INFO_CONVERTER)
                 .doOnSuccess(ai -> {
                     LOGGER.info("ai = {}", ai);
@@ -385,10 +381,10 @@ public class AreaServiceImpl implements AreaService {
             throw new BlueException(INVALID_IDENTITY);
 
         return areaRepository.findById(id)
-                .publishOn(scheduler)
+
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .flatMap(area -> areaRepository.delete(area)
-                        .publishOn(scheduler)
+
                         .then(just(AREA_2_AREA_INFO_CONVERTER.apply(area)))
                         .doOnSuccess(ai -> {
                             LOGGER.info("ai = {}", ai);
@@ -414,7 +410,7 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public Optional<Area> getAreaById(Long id) {
-        return ofNullable(areaRepository.findById(id).publishOn(scheduler).toFuture().join());
+        return ofNullable(areaRepository.findById(id).toFuture().join());
     }
 
     /**
@@ -432,7 +428,7 @@ public class AreaServiceImpl implements AreaService {
         probe.setCityId(cityId);
 
         return areaRepository.findAll(Example.of(probe), by(Sort.Order.asc(NAME.name)))
-                .publishOn(scheduler).collectList().toFuture().join();
+                .collectList().toFuture().join();
     }
 
     /**
@@ -451,7 +447,7 @@ public class AreaServiceImpl implements AreaService {
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream()
                 .map(l -> areaRepository.findAllById(l)
-                        .publishOn(scheduler).collectList().toFuture().join())
+                        .collectList().toFuture().join())
                 .flatMap(List::stream)
                 .collect(toList());
     }
@@ -595,7 +591,7 @@ public class AreaServiceImpl implements AreaService {
         Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
         listQuery.skip(limit).limit(rows.intValue());
 
-        return reactiveMongoTemplate.find(listQuery, Area.class).publishOn(scheduler).collectList();
+        return reactiveMongoTemplate.find(listQuery, Area.class).collectList();
     }
 
     /**
@@ -607,7 +603,7 @@ public class AreaServiceImpl implements AreaService {
     @Override
     public Mono<Long> countAreaMonoByQuery(Query query) {
         LOGGER.info("Mono<Long> countAreaMonoByQuery(Query query), query = {}", query);
-        return reactiveMongoTemplate.count(query, Area.class).publishOn(scheduler);
+        return reactiveMongoTemplate.count(query, Area.class);
     }
 
     /**

@@ -7,7 +7,6 @@ import com.blue.finance.repository.entity.FinanceFlow;
 import com.blue.finance.service.inter.FinanceFlowService;
 import com.blue.pulsar.component.BluePulsarListener;
 import org.apache.pulsar.client.api.PulsarClient;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
@@ -37,16 +36,13 @@ public final class FinanceFlowConsumer implements BlueLifecycle {
 
     private final BlueConsumerConfig blueConsumerConfig;
 
-    private final Scheduler scheduler;
-
     private final FinanceFlowService financeFlowService;
 
     private BluePulsarListener<FinanceFlow> pulsarListener;
 
-    public FinanceFlowConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, FinanceFlowService financeFlowService) {
+    public FinanceFlowConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, FinanceFlowService financeFlowService) {
         this.pulsarClient = pulsarClient;
         this.blueConsumerConfig = blueConsumerConfig;
-        this.scheduler = scheduler;
         this.financeFlowService = financeFlowService;
     }
 
@@ -54,7 +50,7 @@ public final class FinanceFlowConsumer implements BlueLifecycle {
     private void init() {
         Consumer<FinanceFlow> dataConsumer = financeFlow ->
                 ofNullable(financeFlow)
-                        .ifPresent(ff -> just(ff).publishOn(scheduler).flatMap(financeFlowService::insertFinanceFlow)
+                        .ifPresent(ff -> just(ff).flatMap(financeFlowService::insertFinanceFlow)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
                                 .doOnError(throwable -> LOGGER.info("financeFlowService.insertFinanceFlow(ff) failed, ff = {}, throwable = {}", ff, throwable))
                                 .subscribe(b -> LOGGER.info("financeFlowService.insertFinanceFlow(ff), b = {}, ff = {}", b, ff)));

@@ -6,7 +6,6 @@ import com.blue.auth.service.inter.CredentialService;
 import com.blue.basic.model.exps.BlueException;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
-import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -33,11 +32,8 @@ public class RpcCredentialServiceProvider implements RpcCredentialService {
 
     private final CredentialService credentialService;
 
-    private final Scheduler scheduler;
-
-    public RpcCredentialServiceProvider(CredentialService credentialService, Scheduler scheduler) {
+    public RpcCredentialServiceProvider(CredentialService credentialService) {
         this.credentialService = credentialService;
-        this.scheduler = scheduler;
     }
 
     /**
@@ -49,7 +45,7 @@ public class RpcCredentialServiceProvider implements RpcCredentialService {
      */
     @Override
     public CompletableFuture<CredentialInfo> getCredentialByMemberIdAndType(Long memberId, String credentialType) {
-        return just(true).publishOn(scheduler)
+        return just(true)
                 .flatMap(v -> credentialService.getCredentialMonoByMemberIdAndType(memberId, credentialType))
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .map(CREDENTIAL_2_CREDENTIAL_INFO_CONVERTER)
@@ -65,7 +61,7 @@ public class RpcCredentialServiceProvider implements RpcCredentialService {
      */
     @Override
     public CompletableFuture<List<CredentialInfo>> selectCredentialByMemberIdAndTypes(Long memberId, List<String> credentialTypes) {
-        return just(true).publishOn(scheduler)
+        return just(true)
                 .flatMap(v -> credentialService.selectCredentialInfoMonoByMemberIdAndTypes(memberId, credentialTypes))
                 .toFuture();
     }
@@ -79,7 +75,7 @@ public class RpcCredentialServiceProvider implements RpcCredentialService {
      */
     @Override
     public CompletableFuture<CredentialInfo> getCredentialByCredentialAndType(String credential, String credentialType) {
-        return just(true).publishOn(scheduler)
+        return just(true)
                 .flatMap(v -> credentialService.getCredentialMonoByCredentialAndType(credential, credentialType))
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .map(CREDENTIAL_2_CREDENTIAL_INFO_CONVERTER)
@@ -95,7 +91,7 @@ public class RpcCredentialServiceProvider implements RpcCredentialService {
      */
     @Override
     public CompletableFuture<List<CredentialInfo>> selectCredentialByCredentialAndTypes(String credential, List<String> credentialTypes) {
-        return just(true).publishOn(scheduler)
+        return just(true)
                 .flatMap(v -> credentialService.selectCredentialInfoMonoByCredentialAndTypes(credential, credentialTypes))
                 .toFuture();
     }

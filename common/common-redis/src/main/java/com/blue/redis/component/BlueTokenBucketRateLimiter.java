@@ -5,7 +5,6 @@ import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 import java.util.function.BiFunction;
@@ -23,7 +22,6 @@ import static java.time.Instant.now;
 import static java.util.Arrays.asList;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
-import static reactor.core.scheduler.Schedulers.boundedElastic;
 
 /**
  * token bucket rate limiter
@@ -35,14 +33,11 @@ public final class BlueTokenBucketRateLimiter {
 
     private final ReactiveStringRedisTemplate reactiveStringRedisTemplate;
 
-    private final Scheduler scheduler;
-
-    public BlueTokenBucketRateLimiter(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler) {
+    public BlueTokenBucketRateLimiter(ReactiveStringRedisTemplate reactiveStringRedisTemplate) {
         if (isNull(reactiveStringRedisTemplate))
             throw new RuntimeException("reactiveStringRedisTemplate can't be null");
 
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
-        this.scheduler = isNotNull(scheduler) ? scheduler : boundedElastic();
     }
 
     private static final Supplier<String> CURRENT_SEC_STAMP_SUP = () -> now().getEpochSecond() + EMPTY_VALUE.value;
@@ -68,7 +63,7 @@ public final class BlueTokenBucketRateLimiter {
 
         return reactiveStringRedisTemplate.execute(SCRIPT, SCRIPT_KEYS_WRAPPER.apply(limitKey),
                         SCRIPT_ARGS_FUNC.apply(replenishRate, burstCapacity))
-                .publishOn(scheduler)
+                
                 .onErrorResume(FALL_BACKER)
                 .elementAt(0);
     }
@@ -106,7 +101,7 @@ public final class BlueTokenBucketRateLimiter {
     public Mono<Boolean> delete(String key) {
         return isNotBlank(key) ?
                 reactiveStringRedisTemplate.delete(key)
-                        .publishOn(scheduler).flatMap(r -> just(r > 0))
+                        .flatMap(r -> just(r > 0))
                 :
                 error(() -> new BlueException(EMPTY_PARAM));
     }

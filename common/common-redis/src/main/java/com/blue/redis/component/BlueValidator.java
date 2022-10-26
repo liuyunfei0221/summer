@@ -5,7 +5,6 @@ import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 
 import java.time.Duration;
 import java.util.Collections;
@@ -21,7 +20,6 @@ import static com.blue.redis.constant.RedisScripts.UNREPEATABLE_VALIDATION;
 import static java.util.Collections.singletonList;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
-import static reactor.core.scheduler.Schedulers.boundedElastic;
 
 /**
  * validator
@@ -33,14 +31,11 @@ public final class BlueValidator {
 
     private final ReactiveStringRedisTemplate reactiveStringRedisTemplate;
 
-    private final Scheduler scheduler;
-
-    public BlueValidator(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler) {
+    public BlueValidator(ReactiveStringRedisTemplate reactiveStringRedisTemplate) {
         if (isNull(reactiveStringRedisTemplate))
             throw new RuntimeException("reactiveStringRedisTemplate can't be null");
 
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
-        this.scheduler = isNotNull(scheduler) ? scheduler : boundedElastic();
     }
 
     private static final String KEY_PREFIX = "VK_";
@@ -75,11 +70,11 @@ public final class BlueValidator {
         return isNotNull(expire) ?
                 reactiveStringRedisTemplate.opsForValue()
                         .set(KEY_WRAPPER.apply(key), value, expire)
-                        .publishOn(scheduler)
+                        
                 :
                 reactiveStringRedisTemplate.opsForValue()
                         .set(KEY_WRAPPER.apply(key), value)
-                        .publishOn(scheduler);
+                        ;
     }
 
     /**
@@ -95,7 +90,7 @@ public final class BlueValidator {
         return reactiveStringRedisTemplate.execute(UNREPEATABLE_VALIDATION_SCRIPT,
                         SCRIPT_KEYS_WRAPPER.apply(key), SCRIPT_ARGS_WRAPPER.apply(value))
                 .onErrorResume(FALL_BACKER)
-                .publishOn(scheduler)
+                
                 .elementAt(0);
     }
 
@@ -112,7 +107,7 @@ public final class BlueValidator {
         return reactiveStringRedisTemplate.execute(REPEATABLE_UNTIL_SUCCESS_OR_TIMEOUT_VALIDATION_SCRIPT,
                         SCRIPT_KEYS_WRAPPER.apply(key), SCRIPT_ARGS_WRAPPER.apply(value))
                 .onErrorResume(FALL_BACKER)
-                .publishOn(scheduler)
+                
                 .elementAt(0);
     }
 
@@ -127,7 +122,7 @@ public final class BlueValidator {
         assertParam(key, value);
 
         return reactiveStringRedisTemplate.opsForValue().get(KEY_WRAPPER.apply(key))
-                .publishOn(scheduler)
+                
                 .flatMap(v -> just(value.equals(v)));
     }
 
@@ -140,7 +135,7 @@ public final class BlueValidator {
     public Mono<Boolean> delete(String key) {
         return isNotBlank(key) ?
                 reactiveStringRedisTemplate.delete(key)
-                        .publishOn(scheduler).flatMap(r -> just(r > 0))
+                        .flatMap(r -> just(r > 0))
                 :
                 error(() -> new BlueException(EMPTY_PARAM));
     }

@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import static reactor.util.Loggers.getLogger;
@@ -37,9 +36,9 @@ public class AuthConfig {
     }
 
     @Bean
-    AccessInfoCache accessInfoCache(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler, AccessBatchExpireProcessor accessBatchExpireProcessor) {
+    AccessInfoCache accessInfoCache(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AccessBatchExpireProcessor accessBatchExpireProcessor) {
         LOGGER.info("accessDeploy = {}", accessDeploy);
-        return new AccessInfoCache(reactiveStringRedisTemplate, accessBatchExpireProcessor, scheduler, accessDeploy.getRefresherCorePoolSize(),
+        return new AccessInfoCache(reactiveStringRedisTemplate, accessBatchExpireProcessor, accessDeploy.getRefresherCorePoolSize(),
                 accessDeploy.getRefresherMaximumPoolSize(), accessDeploy.getRefresherKeepAliveSeconds(), accessDeploy.getRefresherBlockingQueueCapacity(),
                 accessDeploy.getGlobalExpiresMillis(), accessDeploy.getLocalExpiresMillis(), accessDeploy.getMillisLeftToHandleExpire(), accessDeploy.getLocalCacheCapacity());
     }

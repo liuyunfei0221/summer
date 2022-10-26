@@ -57,8 +57,6 @@ public interface RedisConf {
 
     Boolean getSuspendReconnectOnProtocolFailure();
 
-    Integer getFixedTimeout();
-
     Long getCommandTimeout();
 
     Long getShutdownTimeout();
@@ -70,4 +68,5 @@ public interface RedisConf {
     Long getEntryTtl();
 
     Boolean getExposeConnection();
+
 }

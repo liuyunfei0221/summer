@@ -68,13 +68,6 @@ message:
   element-location: classpath:i18n/element
 
 
-scheduler:
-  thread-cap: 4
-  queued-task-cap: 4096
-  thread-name-pre: blue-summer-scheduler
-  ttl-seconds: 128
-
-
 cache:
   server-mode: SINGLE
   nodes: [ 172.18.7.1:6379,172.18.7.1:6380,172.18.7.2:6379,172.18.7.2:6380,172.18.7.3:6379,172.18.7.3:6380 ]
@@ -96,7 +89,6 @@ cache:
   connect-timeout: 10
   keep-alive: false
   suspend-reconnect-on-protocol-failure: false
-  fixed-timeout: 4
   command-timeout: 4
   shutdown-timeout: 8
   shutdown-quiet-period: 4

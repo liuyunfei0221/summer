@@ -6,7 +6,6 @@ import com.blue.verify.api.inter.RpcVerifyService;
 import com.blue.verify.service.inter.VerifyService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
-import reactor.core.scheduler.Scheduler;
 
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
@@ -29,11 +28,8 @@ public class RpcVerifyServiceProvider implements RpcVerifyService {
 
     private final VerifyService verifyService;
 
-    private final Scheduler scheduler;
-
-    public RpcVerifyServiceProvider(VerifyService verifyService, Scheduler scheduler) {
+    public RpcVerifyServiceProvider(VerifyService verifyService) {
         this.verifyService = verifyService;
-        this.scheduler = scheduler;
     }
 
     /**
@@ -47,7 +43,7 @@ public class RpcVerifyServiceProvider implements RpcVerifyService {
      */
     @Override
     public CompletableFuture<String> generate(VerifyType type, String key, Integer length, Duration expire) {
-        return just(true).publishOn(scheduler).flatMap(v -> verifyService.generate(type, key, length, expire)).toFuture();
+        return just(true).flatMap(v -> verifyService.generate(type, key, length, expire)).toFuture();
     }
 
     /**
@@ -61,7 +57,7 @@ public class RpcVerifyServiceProvider implements RpcVerifyService {
      */
     @Override
     public CompletableFuture<Boolean> validate(VerifyType type, String key, String verify, Boolean repeatable) {
-        return just(true).publishOn(scheduler).flatMap(v -> verifyService.validate(type, key, verify, repeatable)).toFuture();
+        return just(true).flatMap(v -> verifyService.validate(type, key, verify, repeatable)).toFuture();
     }
 
 }

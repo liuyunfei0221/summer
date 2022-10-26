@@ -6,7 +6,6 @@ import com.blue.message.component.illegal.IllegalAsserter;
 import com.blue.message.config.blue.BlueConsumerConfig;
 import com.blue.pulsar.component.BluePulsarListener;
 import org.apache.pulsar.client.api.PulsarClient;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
@@ -32,16 +31,13 @@ public final class IllegalMarkConsumer implements BlueLifecycle {
 
     private final IllegalAsserter illegalAsserter;
 
-    private final Scheduler scheduler;
-
     private final BlueConsumerConfig blueConsumerConfig;
 
     private BluePulsarListener<IllegalMarkEvent> pulsarListener;
 
-    public IllegalMarkConsumer(PulsarClient pulsarClient, IllegalAsserter illegalAsserter, Scheduler scheduler, BlueConsumerConfig blueConsumerConfig) {
+    public IllegalMarkConsumer(PulsarClient pulsarClient, IllegalAsserter illegalAsserter, BlueConsumerConfig blueConsumerConfig) {
         this.pulsarClient = pulsarClient;
         this.illegalAsserter = illegalAsserter;
-        this.scheduler = scheduler;
         this.blueConsumerConfig = blueConsumerConfig;
     }
 
@@ -49,7 +45,7 @@ public final class IllegalMarkConsumer implements BlueLifecycle {
     private void init() {
         Consumer<IllegalMarkEvent> dataConsumer = illegalMarkEvent ->
                 just(illegalMarkEvent)
-                        .publishOn(scheduler)
+                        
                         .flatMap(illegalAsserter::handleIllegalMarkEvent)
                         .doOnError(t -> LOGGER.error("mark jwt or ip -> FAILED,illegalMarkEvent = {}, t = {}", illegalMarkEvent, t))
                         .subscribe(b ->

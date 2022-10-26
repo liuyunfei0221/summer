@@ -5,13 +5,13 @@ import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.common.base.BlueChecker.isNotBlank;
+import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
@@ -22,7 +22,6 @@ import static java.time.Instant.now;
 import static java.util.Arrays.asList;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
-import static reactor.core.scheduler.Schedulers.boundedElastic;
 
 /**
  * token bucket rate limiter
@@ -34,16 +33,12 @@ public final class BlueFixedTokenBucketRateLimiter {
 
     private ReactiveStringRedisTemplate reactiveStringRedisTemplate;
 
-    private Scheduler scheduler;
-
     private String replenishRate, burstCapacity;
 
-    public BlueFixedTokenBucketRateLimiter(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler, Integer replenishRate, Integer burstCapacity) {
+    public BlueFixedTokenBucketRateLimiter(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Integer replenishRate, Integer burstCapacity) {
         assertParam(reactiveStringRedisTemplate, replenishRate, burstCapacity);
 
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
-        this.scheduler = isNotNull(scheduler) ? scheduler : boundedElastic();
-
         this.replenishRate = valueOf(replenishRate);
         this.burstCapacity = valueOf(burstCapacity);
     }
@@ -69,7 +64,7 @@ public final class BlueFixedTokenBucketRateLimiter {
     private final Function<String, Mono<Boolean>> ALLOWED_GETTER = limitKey ->
             reactiveStringRedisTemplate.execute(SCRIPT, SCRIPT_KEYS_WRAPPER.apply(limitKey),
                             SCRIPT_ARGS_SUP.get())
-                    .publishOn(scheduler)
+
                     .onErrorResume(FALL_BACKER)
                     .elementAt(0);
 
@@ -102,7 +97,7 @@ public final class BlueFixedTokenBucketRateLimiter {
     public Mono<Boolean> delete(String key) {
         return isNotBlank(key) ?
                 reactiveStringRedisTemplate.delete(key)
-                        .publishOn(scheduler).flatMap(r -> just(r > 0))
+                        .flatMap(r -> just(r > 0))
                 :
                 error(() -> new BlueException(EMPTY_PARAM));
     }

@@ -5,21 +5,23 @@ import org.springframework.data.redis.connection.BitFieldSubCommands;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.data.redis.core.script.RedisScript;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static com.blue.basic.common.base.BlueChecker.*;
-import static com.blue.basic.constant.common.ResponseElement.*;
+import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 import static com.blue.redis.api.generator.BlueRedisScriptGenerator.generateScriptByScriptStr;
 import static com.blue.redis.constant.RedisScripts.SET_BIT_WITH_EXPIRE;
 import static java.nio.ByteBuffer.wrap;
 import static java.util.Arrays.asList;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
-import static reactor.core.scheduler.Schedulers.boundedElastic;
 
 /**
  * bit marker
@@ -31,14 +33,11 @@ public final class BlueBitMarker {
 
     private ReactiveStringRedisTemplate reactiveStringRedisTemplate;
 
-    private Scheduler scheduler;
-
-    public BlueBitMarker(ReactiveStringRedisTemplate reactiveStringRedisTemplate, Scheduler scheduler) {
+    public BlueBitMarker(ReactiveStringRedisTemplate reactiveStringRedisTemplate) {
         if (isNull(reactiveStringRedisTemplate))
             throw new RuntimeException("reactiveStringRedisTemplate can't be null");
 
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
-        this.scheduler = isNotNull(scheduler) ? scheduler : boundedElastic();
     }
 
     private static final int
@@ -59,7 +58,7 @@ public final class BlueBitMarker {
     private static final Function<String, List<String>> SCRIPT_KEYS_WRAPPER = Collections::singletonList;
 
     private final BiFunction<String, Integer, Mono<Boolean>> BITMAP_BIT_GETTER = (key, offset) ->
-            reactiveStringRedisTemplate.opsForValue().getBit(key, (long) offset).publishOn(scheduler);
+            reactiveStringRedisTemplate.opsForValue().getBit(key, (long) offset);
 
     private static final BiFunction<List<Long>, Integer, boolean[]> BITS_PARSER = (records, limit) -> {
         if (limit < MIN_LIMIT || limit > MAX_LIMIT)
@@ -92,7 +91,7 @@ public final class BlueBitMarker {
                                         BitFieldSubCommands.create()
                                                 .get(BitFieldSubCommands.BitFieldType.signed(limit))
                                                 .valueAt(MARK_BIT)))
-                .publishOn(scheduler)
+
                 .elementAt(FLUX_ELEMENT_INDEX);
     }
 
@@ -142,7 +141,7 @@ public final class BlueBitMarker {
         return isNotBlank(key) ?
                 reactiveStringRedisTemplate.execute(BIT_SET_SCRIPT, SCRIPT_KEYS_WRAPPER.apply(key),
                                 generateArgs(offset, bit, expiresSecond))
-                        .publishOn(scheduler)
+
                         .elementAt(FLUX_ELEMENT_INDEX)
                 :
                 error(() -> new BlueException(EMPTY_PARAM));
@@ -157,7 +156,7 @@ public final class BlueBitMarker {
     public Mono<Boolean> delete(String key) {
         return isNotBlank(key) ?
                 reactiveStringRedisTemplate.delete(key)
-                        .publishOn(scheduler).flatMap(r -> just(r > 0))
+                        .flatMap(r -> just(r > 0))
                 :
                 error(() -> new BlueException(EMPTY_PARAM));
     }

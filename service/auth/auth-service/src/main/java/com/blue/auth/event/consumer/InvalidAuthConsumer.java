@@ -7,7 +7,6 @@ import com.blue.basic.model.event.InvalidAuthEvent;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.pulsar.component.BluePulsarListener;
 import org.apache.pulsar.client.api.PulsarClient;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
@@ -37,16 +36,13 @@ public final class InvalidAuthConsumer implements BlueLifecycle {
 
     private final BlueConsumerConfig blueConsumerConfig;
 
-    private final Scheduler scheduler;
-
     private final AuthControlService authControlService;
 
     private BluePulsarListener<InvalidAuthEvent> pulsarListener;
 
-    public InvalidAuthConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, AuthControlService authControlService) {
+    public InvalidAuthConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, AuthControlService authControlService) {
         this.pulsarClient = pulsarClient;
         this.blueConsumerConfig = blueConsumerConfig;
-        this.scheduler = scheduler;
         this.authControlService = authControlService;
     }
 
@@ -55,7 +51,7 @@ public final class InvalidAuthConsumer implements BlueLifecycle {
         Consumer<InvalidAuthEvent> dataConsumer = invalidLocalAuthEvent ->
                 ofNullable(invalidLocalAuthEvent)
                         .map(InvalidAuthEvent::getMemberId)
-                        .ifPresent(mid -> just(mid).publishOn(scheduler).flatMap(authControlService::invalidateAuthByMemberId)
+                        .ifPresent(mid -> just(mid).flatMap(authControlService::invalidateAuthByMemberId)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
                                 .doOnError(throwable -> LOGGER.info("authControlService.invalidateAuthByMemberId(mid) failed, mid = {}, throwable = {}", mid, throwable))
                                 .subscribe(b -> LOGGER.info("authControlService.invalidateAuthByMemberId(mid), b = {}, mid = {}", b, mid)));

@@ -6,7 +6,6 @@ import com.blue.base.api.model.StateRegion;
 import com.blue.base.service.inter.StateService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
-import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 import java.util.Map;
@@ -33,11 +32,8 @@ public class RpcStateServiceProvider implements RpcStateService {
 
     private final StateService stateService;
 
-    private final Scheduler scheduler;
-
-    public RpcStateServiceProvider(StateService stateService, Scheduler scheduler) {
+    public RpcStateServiceProvider(StateService stateService) {
         this.stateService = stateService;
-        this.scheduler = scheduler;
     }
 
     /**
@@ -49,7 +45,7 @@ public class RpcStateServiceProvider implements RpcStateService {
     @Override
     public CompletableFuture<StateInfo> getStateInfoById(Long id) {
         return just(id)
-                .publishOn(scheduler)
+
                 .flatMap(stateService::getStateInfoMonoById)
                 .toFuture();
     }
@@ -63,7 +59,7 @@ public class RpcStateServiceProvider implements RpcStateService {
     @Override
     public CompletableFuture<List<StateInfo>> selectStateInfoByCountryId(Long countryId) {
         return just(countryId)
-                .publishOn(scheduler)
+
                 .flatMap(stateService::selectStateInfoMonoByCountryId)
                 .toFuture();
     }
@@ -77,7 +73,7 @@ public class RpcStateServiceProvider implements RpcStateService {
     @Override
     public CompletableFuture<Map<Long, StateInfo>> selectStateInfoByIds(List<Long> ids) {
         return just(ids)
-                .publishOn(scheduler)
+
                 .flatMap(stateService::selectStateInfoMonoByIds)
                 .toFuture();
     }
@@ -91,7 +87,7 @@ public class RpcStateServiceProvider implements RpcStateService {
     @Override
     public CompletableFuture<StateRegion> getStateRegionById(Long id) {
         return just(id)
-                .publishOn(scheduler)
+
                 .flatMap(stateService::getStateRegionMonoById)
                 .toFuture();
     }
@@ -105,7 +101,7 @@ public class RpcStateServiceProvider implements RpcStateService {
     @Override
     public CompletableFuture<Map<Long, StateRegion>> selectStateRegionByIds(List<Long> ids) {
         return just(ids)
-                .publishOn(scheduler)
+
                 .flatMap(stateService::selectStateRegionMonoByIds)
                 .toFuture();
     }

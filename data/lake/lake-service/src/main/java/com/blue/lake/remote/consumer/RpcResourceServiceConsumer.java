@@ -6,7 +6,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 
@@ -28,19 +27,13 @@ public class RpcResourceServiceConsumer {
             })
     private RpcResourceService rpcResourceService;
 
-    private final Scheduler scheduler;
-
-    public RpcResourceServiceConsumer(Scheduler scheduler) {
-        this.scheduler = scheduler;
-    }
-
     /**
      * select all resource info
      *
      * @return
      */
     public Mono<List<ResourceInfo>> selectResourceInfo() {
-        return fromFuture(rpcResourceService.selectResourceInfo()).publishOn(scheduler);
+        return fromFuture(rpcResourceService.selectResourceInfo());
     }
 
 }

@@ -7,7 +7,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 import java.util.Map;
@@ -34,12 +33,6 @@ public class RpcAreaServiceConsumer {
             })
     private RpcAreaService rpcAreaService;
 
-    private final Scheduler scheduler;
-
-    public RpcAreaServiceConsumer(Scheduler scheduler) {
-        this.scheduler = scheduler;
-    }
-
     /**
      * get area info mono by id
      *
@@ -47,7 +40,7 @@ public class RpcAreaServiceConsumer {
      * @return
      */
     public Mono<AreaInfo> getAreaInfoById(Long id) {
-        return fromFuture(rpcAreaService.getAreaInfoById(id)).publishOn(scheduler);
+        return fromFuture(rpcAreaService.getAreaInfoById(id));
     }
 
     /**
@@ -57,7 +50,7 @@ public class RpcAreaServiceConsumer {
      * @return
      */
     public Mono<List<AreaInfo>> selectAreaInfoByCityId(Long cityId) {
-        return fromFuture(rpcAreaService.selectAreaInfoByCityId(cityId)).publishOn(scheduler);
+        return fromFuture(rpcAreaService.selectAreaInfoByCityId(cityId));
     }
 
     /**
@@ -67,7 +60,7 @@ public class RpcAreaServiceConsumer {
      * @return
      */
     public Mono<Map<Long, AreaInfo>> selectAreaInfoByIds(List<Long> ids) {
-        return fromFuture(rpcAreaService.selectAreaInfoByIds(ids)).publishOn(scheduler);
+        return fromFuture(rpcAreaService.selectAreaInfoByIds(ids));
     }
 
     /**
@@ -77,7 +70,7 @@ public class RpcAreaServiceConsumer {
      * @return
      */
     public Mono<AreaRegion> getAreaRegionById(Long id) {
-        return fromFuture(rpcAreaService.getAreaRegionById(id)).publishOn(scheduler);
+        return fromFuture(rpcAreaService.getAreaRegionById(id));
     }
 
     /**
@@ -87,7 +80,7 @@ public class RpcAreaServiceConsumer {
      * @return
      */
     public Mono<Map<Long, AreaRegion>> selectAreaRegionByIds(List<Long> ids) {
-        return fromFuture(rpcAreaService.selectAreaRegionByIds(ids)).publishOn(scheduler);
+        return fromFuture(rpcAreaService.selectAreaRegionByIds(ids));
     }
 
 }

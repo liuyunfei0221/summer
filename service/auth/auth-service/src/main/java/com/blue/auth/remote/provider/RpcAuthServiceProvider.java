@@ -9,7 +9,6 @@ import com.blue.basic.model.common.Access;
 import com.blue.basic.model.common.Session;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
-import reactor.core.scheduler.Scheduler;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -37,11 +36,8 @@ public class RpcAuthServiceProvider implements RpcAuthService {
 
     private final AuthService authService;
 
-    private final Scheduler scheduler;
-
-    public RpcAuthServiceProvider(AuthService authService, Scheduler scheduler) {
+    public RpcAuthServiceProvider(AuthService authService) {
         this.authService = authService;
-        this.scheduler = scheduler;
     }
 
     /**
@@ -52,7 +48,7 @@ public class RpcAuthServiceProvider implements RpcAuthService {
      */
     @Override
     public CompletableFuture<AccessAsserted> assertAccess(AccessAssert accessAssert) {
-        return just(accessAssert).publishOn(scheduler).flatMap(authService::assertAccessMono).toFuture();
+        return just(accessAssert).flatMap(authService::assertAccessMono).toFuture();
     }
 
     /**
@@ -63,7 +59,7 @@ public class RpcAuthServiceProvider implements RpcAuthService {
      */
     @Override
     public CompletableFuture<Boolean> invalidateAuthByAccess(Access access) {
-        return just(access).publishOn(scheduler).flatMap(authService::invalidateAuthByAccess).toFuture();
+        return just(access).flatMap(authService::invalidateAuthByAccess).toFuture();
     }
 
     /**
@@ -74,7 +70,7 @@ public class RpcAuthServiceProvider implements RpcAuthService {
      */
     @Override
     public CompletableFuture<Boolean> invalidateAuthByJwt(String jwt) {
-        return just(jwt).publishOn(scheduler).flatMap(authService::invalidateAuthByJwt).toFuture();
+        return just(jwt).flatMap(authService::invalidateAuthByJwt).toFuture();
     }
 
     /**
@@ -85,7 +81,7 @@ public class RpcAuthServiceProvider implements RpcAuthService {
      */
     @Override
     public CompletableFuture<Boolean> invalidateAuthByMemberId(Long memberId) {
-        return just(memberId).publishOn(scheduler).flatMap(authService::invalidateAuthByMemberId).toFuture();
+        return just(memberId).flatMap(authService::invalidateAuthByMemberId).toFuture();
     }
 
     /**
@@ -96,7 +92,7 @@ public class RpcAuthServiceProvider implements RpcAuthService {
      */
     @Override
     public CompletableFuture<MemberPayload> parsePayload(String authentication) {
-        return just(authentication).publishOn(scheduler).flatMap(authService::parsePayload).toFuture();
+        return just(authentication).flatMap(authService::parsePayload).toFuture();
     }
 
     /**
@@ -107,7 +103,7 @@ public class RpcAuthServiceProvider implements RpcAuthService {
      */
     @Override
     public CompletableFuture<Access> parseAccess(String authentication) {
-        return just(authentication).publishOn(scheduler).flatMap(authService::parseAccess).toFuture();
+        return just(authentication).flatMap(authService::parseAccess).toFuture();
     }
 
     /**
@@ -118,7 +114,7 @@ public class RpcAuthServiceProvider implements RpcAuthService {
      */
     @Override
     public CompletableFuture<Session> parseSession(String authentication) {
-        return just(authentication).publishOn(scheduler).flatMap(authService::parseSession).toFuture();
+        return just(authentication).flatMap(authService::parseSession).toFuture();
     }
 
 }

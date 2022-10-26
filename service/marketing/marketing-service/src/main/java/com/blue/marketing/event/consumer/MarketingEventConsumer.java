@@ -8,7 +8,6 @@ import com.blue.marketing.service.inter.MarketingEventHandleService;
 import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
 import com.blue.pulsar.component.BluePulsarListener;
 import org.apache.pulsar.client.api.PulsarClient;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
@@ -36,17 +35,14 @@ public final class MarketingEventConsumer implements BlueLifecycle {
 
     private final BlueConsumerConfig blueConsumerConfig;
 
-    private final Scheduler scheduler;
-
     private final MarketingEventHandleService marketingEventHandleService;
 
     private BluePulsarListener<MarketingEvent> pulsarListener;
 
-    public MarketingEventConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, Scheduler schedule,
+    public MarketingEventConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig,
                                   MarketingEventHandleService marketingEventHandleService) {
         this.pulsarClient = pulsarClient;
         this.blueConsumerConfig = blueConsumerConfig;
-        this.scheduler = schedule;
         this.marketingEventHandleService = marketingEventHandleService;
     }
 
@@ -54,7 +50,7 @@ public final class MarketingEventConsumer implements BlueLifecycle {
     private void init() {
         Consumer<MarketingEvent> dataConsumer = marketingEvent ->
                 ofNullable(marketingEvent)
-                        .ifPresent(me -> just(me).publishOn(scheduler).map(marketingEventHandleService::handleEvent)
+                        .ifPresent(me -> just(me).map(marketingEventHandleService::handleEvent)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
                                 .doOnError(throwable -> LOGGER.info("marketingEventHandleService.handleEvent(me) failed, me = {}, throwable = {}", me, throwable))
                                 .subscribe(er -> LOGGER.info("marketingEventHandleService.handleEvent(me), er = {}, me = {}", er, me)));

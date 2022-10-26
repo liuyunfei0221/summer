@@ -6,7 +6,6 @@ import com.blue.base.api.model.CityRegion;
 import com.blue.base.service.inter.CityService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
-import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 import java.util.Map;
@@ -33,11 +32,8 @@ public class RpcCityServiceProvider implements RpcCityService {
 
     private final CityService cityService;
 
-    private final Scheduler scheduler;
-
-    public RpcCityServiceProvider(CityService cityService, Scheduler scheduler) {
+    public RpcCityServiceProvider(CityService cityService) {
         this.cityService = cityService;
-        this.scheduler = scheduler;
     }
 
     /**
@@ -49,7 +45,7 @@ public class RpcCityServiceProvider implements RpcCityService {
     @Override
     public CompletableFuture<CityInfo> getCityInfoById(Long id) {
         return just(id)
-                .publishOn(scheduler)
+
                 .flatMap(cityService::getCityInfoMonoById)
                 .toFuture();
     }
@@ -63,7 +59,7 @@ public class RpcCityServiceProvider implements RpcCityService {
     @Override
     public CompletableFuture<List<CityInfo>> selectCityInfoByStateId(Long stateId) {
         return just(stateId)
-                .publishOn(scheduler)
+
                 .flatMap(cityService::selectCityInfoMonoByStateId)
                 .toFuture();
     }
@@ -77,7 +73,7 @@ public class RpcCityServiceProvider implements RpcCityService {
     @Override
     public CompletableFuture<Map<Long, CityInfo>> selectCityInfoByIds(List<Long> ids) {
         return just(ids)
-                .publishOn(scheduler)
+
                 .flatMap(cityService::selectCityInfoMonoByIds)
                 .toFuture();
     }
@@ -91,7 +87,7 @@ public class RpcCityServiceProvider implements RpcCityService {
     @Override
     public CompletableFuture<CityRegion> getCityRegionById(Long id) {
         return just(id)
-                .publishOn(scheduler)
+
                 .flatMap(cityService::getCityRegionMonoById)
                 .toFuture();
     }
@@ -105,7 +101,7 @@ public class RpcCityServiceProvider implements RpcCityService {
     @Override
     public CompletableFuture<Map<Long, CityRegion>> selectCityRegionByIds(List<Long> ids) {
         return just(ids)
-                .publishOn(scheduler)
+
                 .flatMap(cityService::selectCityRegionMonoByIds)
                 .toFuture();
     }

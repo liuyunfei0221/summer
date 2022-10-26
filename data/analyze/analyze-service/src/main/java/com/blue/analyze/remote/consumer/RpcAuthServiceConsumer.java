@@ -9,7 +9,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 
 import static reactor.core.publisher.Mono.fromFuture;
 
@@ -31,12 +30,6 @@ public class RpcAuthServiceConsumer {
             })
     private RpcAuthService rpcAuthService;
 
-    private final Scheduler scheduler;
-
-    public RpcAuthServiceConsumer(Scheduler scheduler) {
-        this.scheduler = scheduler;
-    }
-
     /**
      * authentication and authorization
      *
@@ -44,7 +37,7 @@ public class RpcAuthServiceConsumer {
      * @return
      */
     public Mono<AccessAsserted> assertAccess(AccessAssert accessAssert) {
-        return fromFuture(rpcAuthService.assertAccess(accessAssert)).publishOn(scheduler);
+        return fromFuture(rpcAuthService.assertAccess(accessAssert));
     }
 
     /**
@@ -54,7 +47,7 @@ public class RpcAuthServiceConsumer {
      * @return
      */
     public Mono<Access> parseAccess(String authentication) {
-        return fromFuture(rpcAuthService.parseAccess(authentication)).publishOn(scheduler);
+        return fromFuture(rpcAuthService.parseAccess(authentication));
     }
 
     /**
@@ -64,7 +57,7 @@ public class RpcAuthServiceConsumer {
      * @return
      */
     public Mono<Session> parseSession(String authentication) {
-        return fromFuture(rpcAuthService.parseSession(authentication)).publishOn(scheduler);
+        return fromFuture(rpcAuthService.parseSession(authentication));
     }
 
 }

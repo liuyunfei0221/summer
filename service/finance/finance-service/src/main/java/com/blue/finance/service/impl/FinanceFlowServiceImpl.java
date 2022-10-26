@@ -22,7 +22,6 @@ import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.util.List;
@@ -61,8 +60,6 @@ public class FinanceFlowServiceImpl implements FinanceFlowService {
 
     private final ReactiveMongoTemplate reactiveMongoTemplate;
 
-    private final Scheduler scheduler;
-
     private final ExecutorService executorService;
 
     private final RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer;
@@ -71,10 +68,9 @@ public class FinanceFlowServiceImpl implements FinanceFlowService {
 
     private final FinanceFlowRepository financeFlowRepository;
 
-    public FinanceFlowServiceImpl(ReactiveMongoTemplate reactiveMongoTemplate, Scheduler scheduler, ExecutorService executorService,
-                                  RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, FinanceFlowProducer financeFlowProducer, FinanceFlowRepository financeFlowRepository) {
+    public FinanceFlowServiceImpl(ReactiveMongoTemplate reactiveMongoTemplate, ExecutorService executorService, RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer,
+                                  FinanceFlowProducer financeFlowProducer, FinanceFlowRepository financeFlowRepository) {
         this.reactiveMongoTemplate = reactiveMongoTemplate;
-        this.scheduler = scheduler;
         this.executorService = executorService;
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.financeFlowProducer = financeFlowProducer;
@@ -162,7 +158,7 @@ public class FinanceFlowServiceImpl implements FinanceFlowService {
         if (isNull(financeFlow))
             return error(() -> new BlueException(EMPTY_PARAM));
 
-        return financeFlowRepository.insert(financeFlow).publishOn(scheduler);
+        return financeFlowRepository.insert(financeFlow);
     }
 
     /**
@@ -177,7 +173,7 @@ public class FinanceFlowServiceImpl implements FinanceFlowService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return financeFlowRepository.findById(id).publishOn(scheduler);
+        return financeFlowRepository.findById(id);
     }
 
     /**
@@ -213,7 +209,7 @@ public class FinanceFlowServiceImpl implements FinanceFlowService {
         probe.setMemberId(memberId);
 
         return financeFlowRepository.findAll(Example.of(probe), Sort.by(Sort.Order.desc(ID.name)))
-                .publishOn(scheduler)
+
                 .skip(limit).take(rows)
                 .collectList();
     }
@@ -233,7 +229,7 @@ public class FinanceFlowServiceImpl implements FinanceFlowService {
         FinanceFlow probe = new FinanceFlow();
         probe.setMemberId(memberId);
 
-        return financeFlowRepository.count(Example.of(probe)).publishOn(scheduler);
+        return financeFlowRepository.count(Example.of(probe));
     }
 
     /**
@@ -286,7 +282,7 @@ public class FinanceFlowServiceImpl implements FinanceFlowService {
         Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
         listQuery.skip(limit).limit(rows.intValue());
 
-        return reactiveMongoTemplate.find(listQuery, FinanceFlow.class).publishOn(scheduler).collectList();
+        return reactiveMongoTemplate.find(listQuery, FinanceFlow.class).collectList();
     }
 
     /**
@@ -298,7 +294,7 @@ public class FinanceFlowServiceImpl implements FinanceFlowService {
     @Override
     public Mono<Long> countFinanceFlowMonoByQuery(Query query) {
         LOGGER.info("Mono<Long> countFinanceFlowMonoByQuery(Query query), query = {}", query);
-        return reactiveMongoTemplate.count(query, FinanceFlow.class).publishOn(scheduler);
+        return reactiveMongoTemplate.count(query, FinanceFlow.class);
     }
 
     /**

@@ -6,7 +6,6 @@ import com.blue.finance.api.model.FinanceAccountInfo;
 import com.blue.finance.service.inter.FinanceAccountService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.util.concurrent.CompletableFuture;
@@ -34,13 +33,10 @@ public class RpcFinanceAccountServiceProvider implements RpcFinanceAccountServic
 
     private final FinanceAccountService financeAccountService;
 
-    private final Scheduler scheduler;
-
     private final ExecutorService executorService;
 
-    public RpcFinanceAccountServiceProvider(FinanceAccountService financeAccountService, Scheduler scheduler, ExecutorService executorService) {
+    public RpcFinanceAccountServiceProvider(FinanceAccountService financeAccountService, ExecutorService executorService) {
         this.financeAccountService = financeAccountService;
-        this.scheduler = scheduler;
         this.executorService = executorService;
     }
 
@@ -52,7 +48,7 @@ public class RpcFinanceAccountServiceProvider implements RpcFinanceAccountServic
      */
     @Override
     public CompletableFuture<FinanceAccountInfo> getFinanceAccountInfo(Long id) {
-        return just(id).publishOn(scheduler)
+        return just(id)
                 .flatMap(financeAccountService::getFinanceAccountInfoMono)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .toFuture();
@@ -66,7 +62,7 @@ public class RpcFinanceAccountServiceProvider implements RpcFinanceAccountServic
      */
     @Override
     public CompletableFuture<FinanceAccountInfo> getFinanceAccountInfoByMemberId(Long memberId) {
-        return just(memberId).publishOn(scheduler)
+        return just(memberId)
                 .flatMap(financeAccountService::getFinanceAccountInfoMonoByMemberId)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .toFuture();

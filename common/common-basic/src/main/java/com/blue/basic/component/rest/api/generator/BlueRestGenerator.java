@@ -88,10 +88,16 @@ public final class BlueRestGenerator {
                                 .maxInMemorySize(ofNullable(restConf.getMaxByteInMemorySize()).filter(v -> v > 0).orElse(DEFAULT_MAX_BYTE_IN_MEMORY_SIZE))
                 ).build();
 
-        return builder()
+        WebClient.Builder builder = builder()
                 .clientConnector(reactorClientHttpConnector)
-                .exchangeStrategies(exchangeStrategies)
-                .build();
+                .exchangeStrategies(exchangeStrategies);
+
+        ofNullable(restConf.getDefaultHeaders())
+                .filter(BlueChecker::isNotEmpty)
+                .ifPresent(defaultHeaders ->
+                        builder.defaultHeaders(httpHeaders -> defaultHeaders.forEach(httpHeaders::add)));
+
+        return builder.build();
     }
 
 }

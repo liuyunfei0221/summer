@@ -6,7 +6,6 @@ import com.blue.base.api.model.AreaRegion;
 import com.blue.base.service.inter.AreaService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
-import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 import java.util.Map;
@@ -33,11 +32,8 @@ public class RpcAreaServiceProvider implements RpcAreaService {
 
     private final AreaService areaService;
 
-    private final Scheduler scheduler;
-
-    public RpcAreaServiceProvider(AreaService areaService, Scheduler scheduler) {
+    public RpcAreaServiceProvider(AreaService areaService) {
         this.areaService = areaService;
-        this.scheduler = scheduler;
     }
 
     /**
@@ -49,7 +45,7 @@ public class RpcAreaServiceProvider implements RpcAreaService {
     @Override
     public CompletableFuture<AreaInfo> getAreaInfoById(Long id) {
         return just(id)
-                .publishOn(scheduler)
+
                 .flatMap(areaService::getAreaInfoMonoById)
                 .toFuture();
     }
@@ -63,7 +59,7 @@ public class RpcAreaServiceProvider implements RpcAreaService {
     @Override
     public CompletableFuture<List<AreaInfo>> selectAreaInfoByCityId(Long cityId) {
         return just(cityId)
-                .publishOn(scheduler)
+
                 .flatMap(areaService::selectAreaInfoMonoByCityId)
                 .toFuture();
     }
@@ -77,7 +73,7 @@ public class RpcAreaServiceProvider implements RpcAreaService {
     @Override
     public CompletableFuture<Map<Long, AreaInfo>> selectAreaInfoByIds(List<Long> ids) {
         return just(ids)
-                .publishOn(scheduler)
+
                 .flatMap(areaService::selectAreaInfoMonoByIds)
                 .toFuture();
     }
@@ -91,7 +87,7 @@ public class RpcAreaServiceProvider implements RpcAreaService {
     @Override
     public CompletableFuture<AreaRegion> getAreaRegionById(Long id) {
         return just(id)
-                .publishOn(scheduler)
+
                 .flatMap(areaService::getAreaRegionMonoById)
                 .toFuture();
     }
@@ -105,7 +101,7 @@ public class RpcAreaServiceProvider implements RpcAreaService {
     @Override
     public CompletableFuture<Map<Long, AreaRegion>> selectAreaRegionByIds(List<Long> ids) {
         return just(ids)
-                .publishOn(scheduler)
+
                 .flatMap(areaService::selectAreaRegionMonoByIds)
                 .toFuture();
     }

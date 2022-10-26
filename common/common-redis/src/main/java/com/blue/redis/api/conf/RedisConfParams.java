@@ -56,8 +56,6 @@ public class RedisConfParams implements RedisConf {
 
     protected Boolean suspendReconnectOnProtocolFailure;
 
-    protected Integer fixedTimeout;
-
     protected Long commandTimeout;
 
     protected Long shutdownTimeout;
@@ -174,11 +172,6 @@ public class RedisConfParams implements RedisConf {
     }
 
     @Override
-    public Integer getFixedTimeout() {
-        return fixedTimeout;
-    }
-
-    @Override
     public Long getCommandTimeout() {
         return commandTimeout;
     }
@@ -288,10 +281,6 @@ public class RedisConfParams implements RedisConf {
         this.suspendReconnectOnProtocolFailure = suspendReconnectOnProtocolFailure;
     }
 
-    public void setFixedTimeout(Integer fixedTimeout) {
-        this.fixedTimeout = fixedTimeout;
-    }
-
     public void setCommandTimeout(Long commandTimeout) {
         this.commandTimeout = commandTimeout;
     }
@@ -339,7 +328,6 @@ public class RedisConfParams implements RedisConf {
                 ", connectTimeout=" + connectTimeout +
                 ", keepAlive=" + keepAlive +
                 ", suspendReconnectOnProtocolFailure=" + suspendReconnectOnProtocolFailure +
-                ", fixedTimeout=" + fixedTimeout +
                 ", commandTimeout=" + commandTimeout +
                 ", shutdownTimeout=" + shutdownTimeout +
                 ", shutdownQuietPeriod=" + shutdownQuietPeriod +

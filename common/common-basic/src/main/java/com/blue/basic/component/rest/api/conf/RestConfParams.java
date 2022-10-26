@@ -3,6 +3,7 @@ package com.blue.basic.component.rest.api.conf;
 import reactor.netty.http.HttpProtocol;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * reactive rest conf param
@@ -32,13 +33,15 @@ public class RestConfParams implements RestConf {
 
     protected Integer maxByteInMemorySize;
 
+    protected Map<String, String> defaultHeaders;
+
     public RestConfParams() {
     }
 
     public RestConfParams(Integer maxConnections, Integer workerCount, Boolean useGlobalResources,
                           Integer connectTimeoutMillis, Boolean useTcpNoDelay, List<HttpProtocol> protocols,
                           Integer responseTimeoutMillis, Integer readTimeoutMillis, Integer writeTimeoutMillis,
-                          Integer maxByteInMemorySize) {
+                          Integer maxByteInMemorySize, Map<String, String> defaultHeaders) {
         this.maxConnections = maxConnections;
         this.workerCount = workerCount;
         this.useGlobalResources = useGlobalResources;
@@ -49,6 +52,7 @@ public class RestConfParams implements RestConf {
         this.readTimeoutMillis = readTimeoutMillis;
         this.writeTimeoutMillis = writeTimeoutMillis;
         this.maxByteInMemorySize = maxByteInMemorySize;
+        this.defaultHeaders = defaultHeaders;
     }
 
     @Override
@@ -101,6 +105,11 @@ public class RestConfParams implements RestConf {
         return maxByteInMemorySize;
     }
 
+    @Override
+    public Map<String, String> getDefaultHeaders() {
+        return defaultHeaders;
+    }
+
     public void setMaxConnections(Integer maxConnections) {
         this.maxConnections = maxConnections;
     }
@@ -141,6 +150,10 @@ public class RestConfParams implements RestConf {
         this.maxByteInMemorySize = maxByteInMemorySize;
     }
 
+    public void setDefaultHeaders(Map<String, String> defaultHeaders) {
+        this.defaultHeaders = defaultHeaders;
+    }
+
     @Override
     public String toString() {
         return "RestConfParams{" +
@@ -154,6 +167,7 @@ public class RestConfParams implements RestConf {
                 ", readTimeoutMillis=" + readTimeoutMillis +
                 ", writeTimeoutMillis=" + writeTimeoutMillis +
                 ", maxByteInMemorySize=" + maxByteInMemorySize +
+                ", defaultHeaders=" + defaultHeaders +
                 '}';
     }
 

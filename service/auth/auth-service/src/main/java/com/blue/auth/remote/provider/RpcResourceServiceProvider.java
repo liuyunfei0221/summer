@@ -6,7 +6,6 @@ import com.blue.auth.converter.AuthModelConverters;
 import com.blue.auth.service.inter.ResourceService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
-import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -29,11 +28,8 @@ public class RpcResourceServiceProvider implements RpcResourceService {
 
     private final ResourceService resourceService;
 
-    private final Scheduler scheduler;
-
-    public RpcResourceServiceProvider(ResourceService resourceService, Scheduler scheduler) {
+    public RpcResourceServiceProvider(ResourceService resourceService) {
         this.resourceService = resourceService;
-        this.scheduler = scheduler;
     }
 
     /**
@@ -44,7 +40,7 @@ public class RpcResourceServiceProvider implements RpcResourceService {
     @Override
     public CompletableFuture<List<ResourceInfo>> selectResourceInfo() {
         return just(true)
-                .publishOn(scheduler)
+
                 .flatMap(v -> resourceService.selectResource())
                 .flatMap(resources -> just(resources.stream().map(AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER).collect(toList())))
                 .toFuture();

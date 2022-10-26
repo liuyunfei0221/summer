@@ -6,7 +6,6 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 
 import java.util.List;
 
@@ -28,19 +27,13 @@ public class RpcRoleServiceConsumer {
             })
     private RpcRoleService rpcRoleService;
 
-    private final Scheduler scheduler;
-
-    public RpcRoleServiceConsumer(Scheduler scheduler) {
-        this.scheduler = scheduler;
-    }
-
     /**
      * select all role info
      *
      * @return
      */
     public Mono<List<RoleInfo>> selectRoleInfo() {
-        return fromFuture(rpcRoleService.selectRoleInfo()).publishOn(scheduler);
+        return fromFuture(rpcRoleService.selectRoleInfo());
     }
 
 }

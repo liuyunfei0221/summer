@@ -7,7 +7,6 @@ import com.blue.finance.repository.entity.OrderSummary;
 import com.blue.finance.service.inter.OrderSummaryService;
 import com.blue.pulsar.component.BluePulsarListener;
 import org.apache.pulsar.client.api.PulsarClient;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
@@ -37,16 +36,13 @@ public final class OrderSummaryInsertConsumer implements BlueLifecycle {
 
     private final BlueConsumerConfig blueConsumerConfig;
 
-    private final Scheduler scheduler;
-
     private final OrderSummaryService orderSummaryService;
 
     private BluePulsarListener<OrderSummary> pulsarListener;
 
-    public OrderSummaryInsertConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, Scheduler scheduler, OrderSummaryService orderSummaryService) {
+    public OrderSummaryInsertConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, OrderSummaryService orderSummaryService) {
         this.pulsarClient = pulsarClient;
         this.blueConsumerConfig = blueConsumerConfig;
-        this.scheduler = scheduler;
         this.orderSummaryService = orderSummaryService;
     }
 
@@ -54,7 +50,7 @@ public final class OrderSummaryInsertConsumer implements BlueLifecycle {
     private void init() {
         Consumer<OrderSummary> dataConsumer = orderSummary ->
                 ofNullable(orderSummary)
-                        .ifPresent(os -> just(os).publishOn(scheduler).map(orderSummaryService::insertOrderSummary)
+                        .ifPresent(os -> just(os).map(orderSummaryService::insertOrderSummary)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
                                 .doOnError(throwable -> LOGGER.info("orderSummaryService.insertOrderSummary(os) failed, os = {}, throwable = {}", os, throwable))
                                 .subscribe(b -> LOGGER.info("orderSummaryService.insertOrderSummary(os), b = {}, os = {}", b, os)));

@@ -13,7 +13,6 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 
 import java.util.List;
@@ -44,17 +43,13 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
 
     private final CredentialHistoryRepository credentialHistoryRepository;
 
-    private final Scheduler scheduler;
-
     private final BlueIdentityProcessor blueIdentityProcessor;
 
     private final ExecutorService executorService;
 
-    public CredentialHistoryServiceImpl(CredentialHistoryRepository credentialHistoryRepository, Scheduler scheduler,
-                                        BlueIdentityProcessor blueIdentityProcessor,
+    public CredentialHistoryServiceImpl(CredentialHistoryRepository credentialHistoryRepository, BlueIdentityProcessor blueIdentityProcessor,
                                         ExecutorService executorService, CredentialHistoryDeploy credentialHistoryDeploy) {
         this.credentialHistoryRepository = credentialHistoryRepository;
-        this.scheduler = scheduler;
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.executorService = executorService;
 
@@ -79,7 +74,7 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
             credentialHistory.setId(blueIdentityProcessor.generate(CredentialHistory.class));
 
         credentialHistory.setCredential(encryptString(credentialHistory.getCredential()));
-        return credentialHistoryRepository.insert(credentialHistory).publishOn(scheduler);
+        return credentialHistoryRepository.insert(credentialHistory);
     }
 
     /**
@@ -99,7 +94,7 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
                     credentialHistory.setCredential(encryptString(credentialHistory.getCredential()));
                     if (isInvalidIdentity(credentialHistory.getId()))
                         credentialHistory.setId(blueIdentityProcessor.generate(CredentialHistory.class));
-                }).collect(toList())).publishOn(scheduler).collectList();
+                }).collect(toList())).collectList();
     }
 
     /**
@@ -118,7 +113,7 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
             try {
                 CredentialHistory credentialHistory = this.insertCredentialHistory(
                                 new CredentialHistory(blueIdentityProcessor.generate(CredentialHistory.class), memberId, credential, TIME_STAMP_GETTER.get()))
-                        .publishOn(scheduler).toFuture().join();
+                        .toFuture().join();
                 LOGGER.info("executorService.submit(), insertCredentialHistory success, credentialHistory = {}", credentialHistory);
             } catch (Exception e) {
                 LOGGER.error("executorService.submit(), insertCredentialHistory failed, credential = {}, memberId = {}", credential, memberId);
@@ -142,7 +137,7 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
             try {
                 List<CredentialHistory> credentialHistories = this.insertCredentialHistories(credentials.stream().map(Credential::getCredential).distinct().filter(BlueChecker::isNotBlank)
                                 .map(cre -> new CredentialHistory(blueIdentityProcessor.generate(CredentialHistory.class), memberId, cre, TIME_STAMP_GETTER.get())).collect(toList()))
-                        .publishOn(scheduler).toFuture().join();
+                        .toFuture().join();
                 LOGGER.info("executorService.submit(), insertCredentialHistories success, credentialHistories = {}", credentialHistories);
             } catch (Exception e) {
                 LOGGER.error("executorService.submit(), insertCredentialHistories failed, credentials = {}, memberId = {}", credentials, memberId);
@@ -173,7 +168,7 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
                     credentialHistory.setCredential(decryptString(credentialHistory.getCredential()));
                     return just(credentialHistory);
                 })
-                .publishOn(scheduler).collectList();
+                .collectList();
     }
 
     /**
@@ -192,7 +187,7 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
         probe.setMemberId(memberId);
 
         return credentialHistoryRepository.findAll(Example.of(probe), Sort.by(Sort.Order.desc(CREATE_TIME.attribute)))
-                .publishOn(scheduler).take(HISTORY_SELECT_LIMIT)
+                .take(HISTORY_SELECT_LIMIT)
                 .flatMap(credentialHistory -> {
                     credentialHistory.setCredential(decryptString(credentialHistory.getCredential()));
                     return just(CREDENTIAL_HISTORY_2_CREDENTIAL_HISTORY_INFO_CONVERTER.apply(credentialHistory));

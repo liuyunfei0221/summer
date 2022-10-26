@@ -29,7 +29,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
 import reactor.util.Logger;
 import reactor.util.Loggers;
 
@@ -90,19 +89,16 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
 
     private final ReactiveMongoTemplate reactiveMongoTemplate;
 
-    private Scheduler scheduler;
-
     private MessageTemplateRepository messageTemplateRepository;
 
     public MessageTemplateServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, ReactiveStringRedisTemplate reactiveStringRedisTemplate,
                                       BlueIdentityProcessor blueIdentityProcessor, SynchronizedProcessor synchronizedProcessor,
-                                      ReactiveMongoTemplate reactiveMongoTemplate, Scheduler scheduler, MessageTemplateRepository messageTemplateRepository, MessageTemplateDeploy messageTemplateDeploy) {
+                                      ReactiveMongoTemplate reactiveMongoTemplate, MessageTemplateRepository messageTemplateRepository, MessageTemplateDeploy messageTemplateDeploy) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.synchronizedProcessor = synchronizedProcessor;
         this.reactiveMongoTemplate = reactiveMongoTemplate;
-        this.scheduler = scheduler;
         this.messageTemplateRepository = messageTemplateRepository;
 
         Long cacheExpiresSecond = messageTemplateDeploy.getCacheExpiresSecond();
@@ -128,7 +124,7 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
         probe.setType(type);
         probe.setBusinessType(businessType);
 
-        return messageTemplateRepository.findOne(Example.of(probe)).publishOn(scheduler)
+        return messageTemplateRepository.findOne(Example.of(probe))
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .map(MESSAGE_TEMPLATE_2_MESSAGE_TEMPLATE_INFO_CONVERTER);
     };
@@ -161,7 +157,7 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
         probe.setType(p.getType());
         probe.setBusinessType(p.getBusinessType());
 
-        if (ofNullable(messageTemplateRepository.count(Example.of(probe)).publishOn(scheduler).toFuture().join()).orElse(0L) > 0L)
+        if (ofNullable(messageTemplateRepository.count(Example.of(probe)).toFuture().join()).orElse(0L) > 0L)
             throw new BlueException(DATA_ALREADY_EXIST);
     };
 
@@ -177,13 +173,13 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
         probe.setBusinessType(p.getBusinessType());
 
         List<MessageTemplate> configs = ofNullable(messageTemplateRepository.findAll(Example.of(probe)).collectList()
-                .publishOn(scheduler).toFuture().join())
+                .toFuture().join())
                 .orElseGet(Collections::emptyList);
 
         if (configs.stream().anyMatch(c -> !id.equals(c.getId())))
             throw new BlueException(DATA_ALREADY_EXIST);
 
-        MessageTemplate messageTemplate = messageTemplateRepository.findById(id).publishOn(scheduler).toFuture().join();
+        MessageTemplate messageTemplate = messageTemplateRepository.findById(id).toFuture().join();
         if (isNull(messageTemplate))
             throw new BlueException(DATA_NOT_EXIST);
 
@@ -335,7 +331,7 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
             messageTemplate.setUpdater(operatorId);
 
             return messageTemplateRepository.insert(messageTemplate)
-                    .publishOn(scheduler)
+
                     .map(MESSAGE_TEMPLATE_2_MESSAGE_TEMPLATE_INFO_CONVERTER);
         });
     }
@@ -365,7 +361,7 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
             messageTemplate.setUpdater(operatorId);
 
             return messageTemplateRepository.save(messageTemplate)
-                    .publishOn(scheduler)
+
                     .doOnSuccess(config -> {
                         Integer tarType = config.getType();
                         Integer tarBusinessType = config.getBusinessType();
@@ -392,7 +388,7 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
 
         return synchronizedProcessor.handleSupWithSync(MESSAGE_TEMPLATE_UPDATE_SYNC.key, () ->
                 messageTemplateRepository.findById(id)
-                        .publishOn(scheduler)
+
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                         .flatMap(template -> messageTemplateRepository.delete(template).then(just(template)))
                         .doOnSuccess(template -> REDIS_CACHE_DELETER.accept(template.getType(), template.getBusinessType()))
@@ -410,7 +406,7 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
     public Mono<MessageTemplate> getMessageTemplateMono(Long id) {
         LOGGER.info("Mono<MessageTemplate> getMessageTemplateMono(Long id), id = {}", id);
 
-        return messageTemplateRepository.findById(id).publishOn(scheduler);
+        return messageTemplateRepository.findById(id);
     }
 
     /**
@@ -446,7 +442,7 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
         Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
         listQuery.skip(limit).limit(rows.intValue());
 
-        return reactiveMongoTemplate.find(listQuery, MessageTemplate.class).publishOn(scheduler).collectList();
+        return reactiveMongoTemplate.find(listQuery, MessageTemplate.class).collectList();
     }
 
     /**
@@ -459,7 +455,7 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
     public Mono<Long> countMessageTemplateMonoByCondition(Query query) {
         LOGGER.info("Mono<Long> countMessageTemplateMonoByCondition(Query query), query = {}", query);
 
-        return reactiveMongoTemplate.count(query, MessageTemplate.class).publishOn(scheduler);
+        return reactiveMongoTemplate.count(query, MessageTemplate.class);
     }
 
     /**

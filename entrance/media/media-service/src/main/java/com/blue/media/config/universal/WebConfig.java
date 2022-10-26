@@ -15,7 +15,7 @@ import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Optional.ofNullable;
-import static reactor.core.scheduler.Schedulers.single;
+import static reactor.core.scheduler.Schedulers.boundedElastic;
 
 
 /**
@@ -41,7 +41,7 @@ public class WebConfig implements WebFluxConfigurer {
 
         partReader.setStreaming(false);
         partReader.setHeadersCharset(UTF_8);
-        partReader.setBlockingOperationScheduler(single());
+        partReader.setBlockingOperationScheduler(boundedElastic());
 
         ofNullable(requestAttributeDeploy.getMaxInMemorySize())
                 .map(Long::intValue).ifPresent(partReader::setMaxInMemorySize);

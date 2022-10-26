@@ -3,4 +3,3 @@ com.blue.basic.component.exception.ioc.ReactiveBlueExceptionHandler
 com.blue.basic.component.executor.ioc.BlueExecutorConfiguration
 com.blue.basic.component.message.ioc.BlueMessageLoadConfiguration
 com.blue.basic.component.rest.ioc.BlueRestConfiguration
-com.blue.basic.component.scheduler.ioc.BlueSchedulerConfiguration

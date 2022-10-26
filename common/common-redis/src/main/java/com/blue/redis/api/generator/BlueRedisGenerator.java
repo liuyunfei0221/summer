@@ -191,6 +191,8 @@ public final class BlueRedisGenerator {
                 .ifPresent(coBuilder::autoReconnect);
         ofNullable(redisConf.getAutoReconnect())
                 .ifPresent(coBuilder::autoReconnect);
+        ofNullable(redisConf.getSuspendReconnectOnProtocolFailure())
+                .ifPresent(coBuilder::suspendReconnectOnProtocolFailure);
 
         SocketOptions.Builder soBuilder = SocketOptions.builder();
         ofNullable(redisConf.getTcpNoDelay())
