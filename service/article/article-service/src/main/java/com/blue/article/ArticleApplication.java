@@ -15,7 +15,7 @@ import static org.springframework.boot.SpringApplication.run;
  */
 @SummerSpringBootApplication
 @EnableDiscoveryClient
-@EnableBlueLifecycle(basePackages = "com.blue.article.config.mq")
+@EnableBlueLifecycle(basePackages = "com.blue.article.event")
 @EnableBlueDataAccess(basePackages = "com.blue.article.repository.mapper")
 @DubboComponentScan(basePackages = "com.blue.article.remote")
 public class ArticleApplication {

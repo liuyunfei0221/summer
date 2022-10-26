@@ -39,6 +39,7 @@
         <module>common/common-mongo</module>
         <module>common/common-pulsar</module>
         <module>common/common-qr</module>
+        <module>common/common-rdatabase</module>
         <module>common/common-redis</module>
         <module>common/common-redisson</module>
         <module>common/common-seata</module>
@@ -61,6 +62,8 @@
         <module>entrance/verify/verify-api</module>
         <module>entrance/verify/verify-service</module>
 
+        <module>service/agreement/agreement-api</module>
+        <module>service/agreement/agreement-service</module>
         <module>service/article/article-api</module>
         <module>service/article/article-service</module>
         <module>service/auth/auth-api</module>

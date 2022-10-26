@@ -29,12 +29,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
-import reactor.util.Loggers;
 
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
-import java.util.function.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import static com.blue.basic.common.base.BlueChecker.*;
@@ -60,6 +62,7 @@ import static java.util.stream.Stream.of;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static reactor.core.publisher.Mono.*;
+import static reactor.util.Loggers.getLogger;
 
 /**
  * notice service impl
@@ -70,7 +73,7 @@ import static reactor.core.publisher.Mono.*;
 @Service
 public class NoticeServiceImpl implements NoticeService {
 
-    private static final Logger LOGGER = Loggers.getLogger(BulletinServiceImpl.class);
+    private static final Logger LOGGER = getLogger(BulletinServiceImpl.class);
 
     private final RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer;
 

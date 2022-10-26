@@ -1262,8 +1262,8 @@ CREATE TABLE `member_detail_0`
     `day_of_birth`   tinyint      DEFAULT '0' COMMENT 'day of birth',
     `chinese_zodiac` tinyint      DEFAULT '0' COMMENT 'chinese zodiac',
     `zodiac_sign`    tinyint      DEFAULT '0' COMMENT 'zodiac sign',
-    `height`         smallint      DEFAULT '0' COMMENT 'height/cm',
-    `weight`         smallint      DEFAULT '0' COMMENT 'weight/kg',
+    `height`         smallint     DEFAULT '0' COMMENT 'height/cm',
+    `weight`         smallint     DEFAULT '0' COMMENT 'weight/kg',
     `country_id`     bigint       DEFAULT '0' COMMENT 'country id',
     `country`        varchar(256) DEFAULT '' COMMENT 'country name',
     `state_id`       bigint       DEFAULT '0' COMMENT 'state id',
@@ -1299,8 +1299,8 @@ CREATE TABLE `member_detail_1`
     `day_of_birth`   tinyint      DEFAULT '0' COMMENT 'day of birth',
     `chinese_zodiac` tinyint      DEFAULT '0' COMMENT 'chinese zodiac',
     `zodiac_sign`    tinyint      DEFAULT '0' COMMENT 'zodiac sign',
-    `height`         smallint      DEFAULT '0' COMMENT 'height/cm',
-    `weight`         smallint      DEFAULT '0' COMMENT 'weight/kg',
+    `height`         smallint     DEFAULT '0' COMMENT 'height/cm',
+    `weight`         smallint     DEFAULT '0' COMMENT 'weight/kg',
     `country_id`     bigint       DEFAULT '0' COMMENT 'country id',
     `country`        varchar(256) DEFAULT '' COMMENT 'country name',
     `state_id`       bigint       DEFAULT '0' COMMENT 'state id',
@@ -2133,6 +2133,157 @@ DATABASE base_1 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE
 base_1;
 
+
+
+CREATE TABLE "public"."agreement"
+(
+    "id"          bigint       NOT NULL,
+    "title"       varchar(128) NOT NULL,
+    "content"     varchar(256) DEFAULT '',
+    "link"        varchar(256) DEFAULT '',
+    "type"        smallint     NOT NULL,
+    "status"      smallint     NOT NULL,
+    "priority"    int          NOT NULL,
+    "create_time" bigint       NOT NULL,
+    "update_time" bigint       NOT NULL,
+    "creator"     bigint       NOT NULL,
+    "updater"     bigint       NOT NULL,
+    PRIMARY KEY ("id")
+);
+
+CREATE UNIQUE INDEX idx_title ON "public"."agreement" USING BTREE (title);
+CREATE UNIQUE INDEX idx_type ON "public"."agreement" USING BTREE (type);
+CREATE INDEX idx_type_stat_pri ON "public"."agreement" USING BTREE (type,status,priority);
+CREATE INDEX idx_pri_stat ON "public"."agreement" USING BTREE (priority,status);
+
+
+COMMENT
+ON TABLE "public"."agreement" IS 'table of agreement';
+COMMENT
+ON COLUMN "public"."agreement"."id" IS 'id';
+COMMENT
+ON COLUMN "public"."agreement"."title" IS 'greement title';
+COMMENT
+ON COLUMN "public"."agreement"."content" IS 'agreement content';
+COMMENT
+ON COLUMN "public"."agreement"."link" IS 'agreement link';
+COMMENT
+ON COLUMN "public"."agreement"."type" IS 'agreement type 1.PLATFORM 2.SERVICE 3.PRIVACY 4.MEMBER 5.BUSINESS 6.EXCLUSION_CLAUSE';
+COMMENT
+ON COLUMN "public"."agreement"."status" IS 'data status: 1-valid 0-invalid';
+COMMENT
+ON COLUMN "public"."agreement"."priority" IS 'agreement priority';
+COMMENT
+ON COLUMN "public"."agreement"."create_time" IS 'data create time';
+COMMENT
+ON COLUMN "public"."agreement"."update_time" IS 'update_time';
+COMMENT
+ON COLUMN "public"."agreement"."creator" IS 'creator id';
+COMMENT
+ON COLUMN "public"."agreement"."updater" IS 'updater id';
+
+
+
+
+
+CREATE
+DATABASE agreement_0;
+
+CREATE TABLE "public"."member_agreement_record_0"
+(
+    "id"           bigint   NOT NULL,
+    "member_id"    bigint   NOT NULL,
+    "agreement_id" bigint   NOT NULL,
+    "agree"        smallint NOT NULL,
+    "create_time"  bigint   NOT NULL,
+    "update_time"  bigint   NOT NULL,
+    PRIMARY KEY ("id")
+);
+
+CREATE INDEX idx_member_agreement_0 ON "public"."member_agreement_record_0" USING BTREE (member_id,agreement_id);
+
+COMMENT
+ON TABLE "public"."member_agreement_record_0" IS 'table of member agreement record 0';
+COMMENT
+ON COLUMN "public"."member_agreement_record_0"."id" IS 'id';
+COMMENT
+ON COLUMN "public"."member_agreement_record_0"."member_id" IS 'member id';
+COMMENT
+ON COLUMN "public"."member_agreement_record_0"."agreement_id" IS 'agreement id';
+COMMENT
+ON COLUMN "public"."member_agreement_record_0"."agree" IS 'agree: 1-yes 0-no';
+COMMENT
+ON COLUMN "public"."member_agreement_record_0"."create_time" IS 'data create time';
+COMMENT
+ON COLUMN "public"."member_agreement_record_0"."update_time" IS 'data update time';
+
+
+
+
+
+
+CREATE TABLE "public"."member_agreement_record_1"
+(
+    "id"           bigint   NOT NULL,
+    "member_id"    bigint   NOT NULL,
+    "agreement_id" bigint   NOT NULL,
+    "agree"        smallint NOT NULL,
+    "create_time"  bigint   NOT NULL,
+    "update_time"  bigint   NOT NULL,
+    PRIMARY KEY ("id")
+);
+
+CREATE INDEX idx_member_agreement_1 ON "public"."member_agreement_record_1" USING BTREE (member_id,agreement_id);
+
+COMMENT
+ON TABLE "public"."member_agreement_record_1" IS 'table of member agreement record 1';
+COMMENT
+ON COLUMN "public"."member_agreement_record_1"."id" IS 'id';
+COMMENT
+ON COLUMN "public"."member_agreement_record_1"."member_id" IS 'member id';
+COMMENT
+ON COLUMN "public"."member_agreement_record_1"."agreement_id" IS 'agreement id';
+COMMENT
+ON COLUMN "public"."member_agreement_record_1"."agree" IS 'agree: 1-yes 0-no';
+COMMENT
+ON COLUMN "public"."member_agreement_record_1"."create_time" IS 'data create time';
+COMMENT
+ON COLUMN "public"."member_agreement_record_1"."update_time" IS 'data update time';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE TABLE `member_agreement_record_1`
+(
+    `id`           bigint  NOT NULL COMMENT 'id',
+    `member_id`    bigint  NOT NULL COMMENT 'member id',
+    `agreement_id` bigint  NOT NULL COMMENT 'agreement id',
+    `agree`        tinyint NOT NULL COMMENT 'agree: 1-yes 0-no',
+    `create_time`  bigint  NOT NULL COMMENT 'data create time',
+    `update_time`  bigint  NOT NULL COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_member_agreement`(`member_id`,`agreement_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member agreement record 1';
+
+
+
 CREATE
 DATABASE agreement CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 USE
@@ -2165,28 +2316,27 @@ agreement_0;
 
 CREATE TABLE `member_agreement_record_0`
 (
-    `id`          bigint NOT NULL COMMENT 'id',
-    `member_id`   bigint NOT NULL COMMENT 'member id',
-    `agreement_id`     bigint NOT NULL COMMENT 'agreement id',
-    `agree`      tinyint      NOT NULL COMMENT 'agree: 1-yes 0-no',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    `id`           bigint  NOT NULL COMMENT 'id',
+    `member_id`    bigint  NOT NULL COMMENT 'member id',
+    `agreement_id` bigint  NOT NULL COMMENT 'agreement id',
+    `agree`        tinyint NOT NULL COMMENT 'agree: 1-yes 0-no',
+    `create_time`  bigint  NOT NULL COMMENT 'data create time',
+    `update_time`  bigint  NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member_agreement`(`member_id`,`agreement_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member agreement record 0';
 
 CREATE TABLE `member_agreement_record_1`
 (
-    `id`          bigint NOT NULL COMMENT 'id',
-    `member_id`   bigint NOT NULL COMMENT 'member id',
-    `agreement_id`     bigint NOT NULL COMMENT 'agreement id',
-    `agree`      tinyint      NOT NULL COMMENT 'agree: 1-yes 0-no',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    `id`           bigint  NOT NULL COMMENT 'id',
+    `member_id`    bigint  NOT NULL COMMENT 'member id',
+    `agreement_id` bigint  NOT NULL COMMENT 'agreement id',
+    `agree`        tinyint NOT NULL COMMENT 'agree: 1-yes 0-no',
+    `create_time`  bigint  NOT NULL COMMENT 'data create time',
+    `update_time`  bigint  NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member_agreement`(`member_id`,`agreement_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member agreement record 1';
-
 
 
 
@@ -2197,25 +2347,24 @@ agreement_1;
 
 CREATE TABLE `member_agreement_record_0`
 (
-    `id`          bigint NOT NULL COMMENT 'id',
-    `member_id`   bigint NOT NULL COMMENT 'member id',
-    `agreement_id`     bigint NOT NULL COMMENT 'agreement id',
-    `agree`      tinyint      NOT NULL COMMENT 'agree: 1-yes 0-no',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    `id`           bigint  NOT NULL COMMENT 'id',
+    `member_id`    bigint  NOT NULL COMMENT 'member id',
+    `agreement_id` bigint  NOT NULL COMMENT 'agreement id',
+    `agree`        tinyint NOT NULL COMMENT 'agree: 1-yes 0-no',
+    `create_time`  bigint  NOT NULL COMMENT 'data create time',
+    `update_time`  bigint  NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member_agreement`(`member_id`,`agreement_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member agreement record 0';
 
 CREATE TABLE `member_agreement_record_1`
 (
-    `id`          bigint NOT NULL COMMENT 'id',
-    `member_id`   bigint NOT NULL COMMENT 'member id',
-    `agreement_id`     bigint NOT NULL COMMENT 'agreement id',
-    `agree`      tinyint      NOT NULL COMMENT 'agree: 1-yes 0-no',
-    `create_time` bigint       NOT NULL COMMENT 'data create time',
-    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    `id`           bigint  NOT NULL COMMENT 'id',
+    `member_id`    bigint  NOT NULL COMMENT 'member id',
+    `agreement_id` bigint  NOT NULL COMMENT 'agreement id',
+    `agree`        tinyint NOT NULL COMMENT 'agree: 1-yes 0-no',
+    `create_time`  bigint  NOT NULL COMMENT 'data create time',
+    `update_time`  bigint  NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
     UNIQUE KEY `idx_member_agreement`(`member_id`,`agreement_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member agreement record 1';
-
