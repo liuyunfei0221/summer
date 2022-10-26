@@ -266,7 +266,7 @@ public class CityServiceImpl implements CityService {
         return city;
     };
 
-    public final BiConsumer<CityUpdateParam, City> UPDATE_ITEM_VALIDATOR = (p, t) -> {
+    public final BiConsumer<CityUpdateParam, City> UPDATE_ITEM_WITH_ASSERT_PACKAGER = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
         if (!p.getId().equals(t.getId()))
@@ -293,6 +293,8 @@ public class CityServiceImpl implements CityService {
 
         if (!alteration)
             throw new BlueException(DATA_HAS_NOT_CHANGED);
+
+        t.setUpdateTime(TIME_STAMP_GETTER.get());
     };
 
     private static final Function<CityCondition, Query> CONDITION_PROCESSOR = c -> {
@@ -355,9 +357,8 @@ public class CityServiceImpl implements CityService {
         Long originalCountryId = city.getCountryId();
         Long originalStateId = city.getStateId();
 
-        UPDATE_ITEM_VALIDATOR.accept(cityUpdateParam, city);
+        UPDATE_ITEM_WITH_ASSERT_PACKAGER.accept(cityUpdateParam, city);
 
-        city.setUpdateTime(TIME_STAMP_GETTER.get());
         return cityRepository.save(city)
                 .publishOn(scheduler)
                 .map(CITY_2_CITY_INFO_CONVERTER)

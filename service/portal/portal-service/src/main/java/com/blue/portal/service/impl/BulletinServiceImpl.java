@@ -207,7 +207,7 @@ public class BulletinServiceImpl implements BulletinService {
         return bulletin;
     };
 
-    public static final BiConsumer<BulletinUpdateParam, Bulletin> UPDATE_ITEM_VALIDATOR = (p, t) -> {
+    public static final BiConsumer<BulletinUpdateParam, Bulletin> UPDATE_ITEM_WITH_ASSERT_PACKAGER = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
 
@@ -261,6 +261,8 @@ public class BulletinServiceImpl implements BulletinService {
 
         if (!alteration)
             throw new BlueException(DATA_HAS_NOT_CHANGED);
+
+        t.setUpdateTime(TIME_STAMP_GETTER.get());
     };
 
     /**
@@ -314,11 +316,10 @@ public class BulletinServiceImpl implements BulletinService {
         List<Integer> changedTypes = new LinkedList<>();
         changedTypes.add(bulletin.getType());
 
-        UPDATE_ITEM_VALIDATOR.accept(bulletinUpdateParam, bulletin);
-        changedTypes.add(bulletin.getType());
+        UPDATE_ITEM_WITH_ASSERT_PACKAGER.accept(bulletinUpdateParam, bulletin);
 
+        changedTypes.add(bulletin.getType());
         bulletin.setUpdater(operatorId);
-        bulletin.setUpdateTime(TIME_STAMP_GETTER.get());
 
         changedTypes.forEach(CACHE_DELETER);
         bulletinMapper.updateByPrimaryKeySelective(bulletin);

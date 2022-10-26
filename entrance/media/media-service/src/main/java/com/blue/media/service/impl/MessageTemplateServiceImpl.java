@@ -190,58 +190,57 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
         return messageTemplate;
     };
 
-    private static void validateAndPackageAttrForUpdate(MessageTemplateUpdateParam param, MessageTemplate messageTemplate, Long operatorId) {
-        if (isNull(param) || isNull(messageTemplate))
+    public static final BiConsumer<MessageTemplateUpdateParam, MessageTemplate> UPDATE_ITEM_WITH_ASSERT_PACKAGER = (p, t) -> {
+        if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
-        if (!param.getId().equals(messageTemplate.getId()))
+        if (!p.getId().equals(t.getId()))
             throw new BlueException(BAD_REQUEST);
 
         boolean alteration = false;
 
-        String name = param.getName();
-        if (isNotBlank(name) && !name.equals(messageTemplate.getName())) {
-            messageTemplate.setName(name);
+        String name = p.getName();
+        if (isNotBlank(name) && !name.equals(t.getName())) {
+            t.setName(name);
             alteration = true;
         }
 
-        String description = param.getDescription();
-        if (isNotBlank(description) && !description.equals(messageTemplate.getDescription())) {
-            messageTemplate.setDescription(description);
+        String description = p.getDescription();
+        if (isNotBlank(description) && !description.equals(t.getDescription())) {
+            t.setDescription(description);
             alteration = true;
         }
 
-        Integer type = param.getType();
-        if (isNotNull(type) && !type.equals(messageTemplate.getType())) {
-            messageTemplate.setType(type);
+        Integer type = p.getType();
+        if (isNotNull(type) && !type.equals(t.getType())) {
+            t.setType(type);
             alteration = true;
         }
 
-        Integer businessType = param.getBusinessType();
-        if (isNotNull(businessType) && !businessType.equals(messageTemplate.getType())) {
-            messageTemplate.setBusinessType(businessType);
+        Integer businessType = p.getBusinessType();
+        if (isNotNull(businessType) && !businessType.equals(t.getType())) {
+            t.setBusinessType(businessType);
             alteration = true;
         }
 
-        String title = param.getTitle();
-        if (isNotBlank(title) && !title.equals(messageTemplate.getTitle())) {
-            messageTemplate.setTitle(title);
-            messageTemplate.setTitlePlaceholderCount(countMatches(title, TEXT_PLACEHOLDER.identity));
+        String title = p.getTitle();
+        if (isNotBlank(title) && !title.equals(t.getTitle())) {
+            t.setTitle(title);
+            t.setTitlePlaceholderCount(countMatches(title, TEXT_PLACEHOLDER.identity));
             alteration = true;
         }
 
-        String content = param.getContent();
-        if (isNotBlank(content) && !content.equals(messageTemplate.getContent())) {
-            messageTemplate.setContent(content);
-            messageTemplate.setContentPlaceholderCount(countMatches(content, TEXT_PLACEHOLDER.identity));
+        String content = p.getContent();
+        if (isNotBlank(content) && !content.equals(t.getContent())) {
+            t.setContent(content);
+            t.setContentPlaceholderCount(countMatches(content, TEXT_PLACEHOLDER.identity));
             alteration = true;
         }
 
         if (!alteration)
             throw new BlueException(DATA_HAS_NOT_CHANGED);
 
-        messageTemplate.setUpdateTime(TIME_STAMP_GETTER.get());
-        messageTemplate.setUpdater(operatorId);
-    }
+        t.setUpdateTime(TIME_STAMP_GETTER.get());
+    };
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(MessageTemplateSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
@@ -362,10 +361,8 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
             Integer originalType = messageTemplate.getType();
             Integer originalBusinessType = messageTemplate.getBusinessType();
 
-            validateAndPackageAttrForUpdate(messageTemplateUpdateParam, messageTemplate, operatorId);
-
+            UPDATE_ITEM_WITH_ASSERT_PACKAGER.accept(messageTemplateUpdateParam, messageTemplate);
             messageTemplate.setUpdater(operatorId);
-            messageTemplate.setUpdateTime(TIME_STAMP_GETTER.get());
 
             return messageTemplateRepository.save(messageTemplate)
                     .publishOn(scheduler)

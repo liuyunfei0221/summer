@@ -139,7 +139,7 @@ public class MemberDetailServiceImpl implements MemberDetailService {
             throw new BlueException(DATA_ALREADY_EXIST);
     };
 
-    private final BiConsumer<MemberDetailUpdateParam, MemberDetail> UPDATE_ITEM_VALIDATOR = (p, t) -> {
+    private final BiConsumer<MemberDetailUpdateParam, MemberDetail> UPDATE_ITEM_WITH_ASSERT_PACKAGER = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(EMPTY_PARAM);
         p.asserts();
@@ -346,7 +346,7 @@ public class MemberDetailServiceImpl implements MemberDetailService {
         if (isNull(memberDetail))
             throw new BlueException(INTERNAL_SERVER_ERROR);
 
-        UPDATE_ITEM_VALIDATOR.accept(memberDetailUpdateParam, memberDetail);
+        UPDATE_ITEM_WITH_ASSERT_PACKAGER.accept(memberDetailUpdateParam, memberDetail);
 
         memberDetailMapper.updateByPrimaryKey(memberDetail);
 

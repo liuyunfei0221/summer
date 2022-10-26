@@ -271,7 +271,7 @@ public class AreaServiceImpl implements AreaService {
         return area;
     };
 
-    public final BiConsumer<AreaUpdateParam, Area> UPDATE_ITEM_VALIDATOR = (p, t) -> {
+    public final BiConsumer<AreaUpdateParam, Area> UPDATE_ITEM_WITH_ASSERT_PACKAGER = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
         if (!p.getId().equals(t.getId()))
@@ -299,6 +299,8 @@ public class AreaServiceImpl implements AreaService {
 
         if (!alteration)
             throw new BlueException(DATA_HAS_NOT_CHANGED);
+
+        t.setUpdateTime(TIME_STAMP_GETTER.get());
     };
 
     private static final Function<AreaCondition, Query> CONDITION_PROCESSOR = c -> {
@@ -359,9 +361,8 @@ public class AreaServiceImpl implements AreaService {
 
         Area area = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(areaUpdateParam);
 
-        UPDATE_ITEM_VALIDATOR.accept(areaUpdateParam, area);
+        UPDATE_ITEM_WITH_ASSERT_PACKAGER.accept(areaUpdateParam, area);
 
-        area.setUpdateTime(TIME_STAMP_GETTER.get());
         return areaRepository.save(area)
                 .publishOn(scheduler)
                 .map(AREA_2_AREA_INFO_CONVERTER)

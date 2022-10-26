@@ -1,5 +1,6 @@
 package com.blue.basic.common.base;
 
+import com.blue.basic.constant.agreement.AgreementType;
 import com.blue.basic.constant.analyze.StatisticsRange;
 import com.blue.basic.constant.analyze.StatisticsType;
 import com.blue.basic.constant.article.ArticleType;
@@ -33,6 +34,7 @@ import static com.blue.basic.common.base.BlueChecker.isNotNull;
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Stream.of;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -51,184 +53,190 @@ public final class ConstantProcessor {
      * boolean
      */
     private static final Map<Integer, BlueBoolean> BOOL_STATUS_MAPPING =
-            of(BlueBoolean.values()).collect(toMap(b -> b.status, b -> b, (a, b) -> a));
+            of(BlueBoolean.values()).collect(toMap(b -> b.status, identity(), (a, b) -> a));
 
     private static final Map<Boolean, BlueBoolean> STATUS_BOOL_MAPPING =
-            of(BlueBoolean.values()).collect(toMap(b -> b.bool, b -> b, (a, b) -> a));
+            of(BlueBoolean.values()).collect(toMap(b -> b.bool, identity(), (a, b) -> a));
 
     /**
      * http response status and response element mapping
      */
     private static final Map<Integer, ResponseElement> RESPONSE_ELEMENT_MAPPING =
-            of(ResponseElement.values()).collect(toMap(e -> e.status, e -> e, (a, b) -> a));
+            of(ResponseElement.values()).collect(toMap(e -> e.status, identity(), (a, b) -> a));
 
     /**
      * http method name and method mapping
      */
     private static final Map<String, HttpMethod> HTTP_METHOD_MAPPING =
-            of(BlueHttpMethod.values()).collect(toMap(bhm -> bhm.value.toUpperCase(), bhm -> bhm.method));
+            of(BlueHttpMethod.values()).collect(toMap(bhm -> bhm.value.toUpperCase(), bhm -> bhm.method, (a, b) -> a));
 
     /**
      * media type identity and media mapping
      */
     private static final Map<String, MediaType> MEDIA_TYPE_MAPPING =
-            of(BlueMediaType.values()).collect(toMap(t -> t.identity.toLowerCase(), t -> t.mediaType));
+            of(BlueMediaType.values()).collect(toMap(t -> t.identity.toLowerCase(), t -> t.mediaType, (a, b) -> a));
 
     /**
      * file type identity and media mapping
      */
     private static final Map<String, MediaType> FILE_MEDIA_TYPE_MAPPING =
-            of(BlueFileType.values()).collect(toMap(t -> t.identity.toLowerCase(), t -> t.mediaType));
+            of(BlueFileType.values()).collect(toMap(t -> t.identity.toLowerCase(), t -> t.mediaType, (a, b) -> a));
 
     /**
      * attachment type identity and attachment type mapping
      */
     private static final Map<Integer, AttachmentType> ATTACHMENT_TYPE_MAPPING =
-            of(AttachmentType.values()).collect(toMap(t -> t.identity, at -> at));
+            of(AttachmentType.values()).collect(toMap(t -> t.identity, identity(), (a, b) -> a));
 
     /**
      * message type identity and message type mapping
      */
     private static final Map<Integer, MessageType> MESSAGE_TYPE_MAPPING =
-            of(MessageType.values()).collect(toMap(t -> t.identity, t -> t));
+            of(MessageType.values()).collect(toMap(t -> t.identity, identity(), (a, b) -> a));
 
     /**
      * message business type identity and message business type mapping
      */
     private static final Map<Integer, MessageBusinessType> MESSAGE_BUSINESS_TYPE_MAPPING =
-            of(MessageBusinessType.values()).collect(toMap(t -> t.identity, t -> t));
+            of(MessageBusinessType.values()).collect(toMap(t -> t.identity, identity(), (a, b) -> a));
 
     /**
      * qr code type identity and qr code type mapping
      */
     private static final Map<Integer, QrCodeType> QR_CODE_TYPE_MAPPING =
-            of(QrCodeType.values()).collect(toMap(t -> t.identity, t -> t));
+            of(QrCodeType.values()).collect(toMap(t -> t.identity, identity(), (a, b) -> a));
 
     /**
      * valid resource type identity and type mapping
      */
     private static final Map<Integer, ResourceType> RESOURCE_TYPE_MAPPING =
-            of(ResourceType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
+            of(ResourceType.values()).collect(toMap(t -> t.identity, identity(), (a, b) -> a));
 
     /**
      * valid role type identity and type mapping
      */
     private static final Map<Integer, RoleType> ROLE_TYPE_MAPPING =
-            of(RoleType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
+            of(RoleType.values()).collect(toMap(t -> t.identity, identity(), (a, b) -> a));
 
     /**
      * valid credential type identity and type mapping
      */
     private static final Map<String, CredentialType> CREDENTIAL_TYPE_MAPPING =
-            of(CredentialType.values()).collect(toMap(e -> e.identity.toUpperCase(), e -> e, (a, b) -> a));
+            of(CredentialType.values()).collect(toMap(e -> e.identity.toUpperCase(), identity(), (a, b) -> a));
 
     /**
      * valid device type identity and type mapping
      */
     private static final Map<String, DeviceType> DEVICE_TYPE_MAPPING =
-            of(DeviceType.values()).collect(toMap(e -> e.identity.toUpperCase(), e -> e, (a, b) -> a));
+            of(DeviceType.values()).collect(toMap(e -> e.identity.toUpperCase(), identity(), (a, b) -> a));
 
     /**
      * valid gender type identity and type mapping
      */
     private static final Map<Integer, Gender> GENDER_MAPPING =
-            of(Gender.values()).collect(toMap(g -> g.identity, g -> g, (a, b) -> a));
+            of(Gender.values()).collect(toMap(g -> g.identity, identity(), (a, b) -> a));
 
     /**
      * valid source type identity and type mapping
      */
     private static final Map<String, SourceType> SOURCE_MAPPING =
-            of(SourceType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
+            of(SourceType.values()).collect(toMap(t -> t.identity, identity(), (a, b) -> a));
 
     /**
      * valid chinese zodiac identity and type mapping
      */
     private static final Map<Integer, ChineseZodiac> CHINESE_ZODIAC_MAPPING =
-            of(ChineseZodiac.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
+            of(ChineseZodiac.values()).collect(toMap(t -> t.identity, identity(), (a, b) -> a));
 
     /**
      * valid zodiac sign identity and type mapping
      */
     private static final Map<Integer, ZodiacSign> ZODIAC_SIGN_MAPPING =
-            of(ZodiacSign.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
+            of(ZodiacSign.values()).collect(toMap(t -> t.identity, identity(), (a, b) -> a));
 
     /**
      * valid status type identity and type mapping
      */
     private static final Map<Integer, Status> STATUS_MAPPING =
-            of(Status.values()).collect(toMap(s -> s.status, s -> s, (a, b) -> a));
+            of(Status.values()).collect(toMap(s -> s.status, identity(), (a, b) -> a));
 
     /**
      * valid sort type identity and type mapping
      */
     private static final Map<String, SortType> SORT_TYPE_MAPPING =
-            of(SortType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
+            of(SortType.values()).collect(toMap(t -> t.identity, identity(), (a, b) -> a));
 
     /**
      * valid bulletin type identity and type mapping
      */
     private static final Map<Integer, BulletinType> BULLETIN_TYPE_MAPPING =
-            of(BulletinType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
+            of(BulletinType.values()).collect(toMap(t -> t.identity, identity(), (a, b) -> a));
 
     /**
      * valid notice type identity and type mapping
      */
     private static final Map<Integer, NoticeType> NOTICE_TYPE_MAPPING =
-            of(NoticeType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
+            of(NoticeType.values()).collect(toMap(t -> t.identity, identity(), (a, b) -> a));
 
     /**
      * valid reward type identity and type mapping
      */
     private static final Map<Integer, RewardType> REWARD_TYPE_MAPPING =
-            of(RewardType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
+            of(RewardType.values()).collect(toMap(t -> t.identity, identity(), (a, b) -> a));
 
     /**
      * valid style type identity and type mapping
      */
     private static final Map<Integer, StyleType> STYLE_TYPE_MAPPING =
-            of(StyleType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
+            of(StyleType.values()).collect(toMap(t -> t.identity, identity(), (a, b) -> a));
 
     /**
      * valid statistics range identity and range mapping
      */
     private static final Map<String, StatisticsRange> STATISTICS_RANGE_MAPPING =
-            of(StatisticsRange.values()).collect(toMap(t -> t.identity.toUpperCase(), t -> t, (a, b) -> a));
+            of(StatisticsRange.values()).collect(toMap(t -> t.identity.toUpperCase(), identity(), (a, b) -> a));
 
     /**
      * valid statistics type identity and type mapping
      */
     private static final Map<String, StatisticsType> STATISTICS_TYPE_MAPPING =
-            of(StatisticsType.values()).collect(toMap(t -> t.identity.toUpperCase(), t -> t, (a, b) -> a));
+            of(StatisticsType.values()).collect(toMap(t -> t.identity.toUpperCase(), identity(), (a, b) -> a));
 
     /**
      * valid subject type identity and type mapping
      */
     private static final Map<Integer, SubjectType> SUBJECT_TYPE_MAPPING =
-            of(SubjectType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
+            of(SubjectType.values()).collect(toMap(t -> t.identity, identity(), (a, b) -> a));
 
     /**
      * valid article type identity and type mapping
      */
     private static final Map<Integer, ArticleType> ARTICLE_TYPE_MAPPING =
-            of(ArticleType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
+            of(ArticleType.values()).collect(toMap(t -> t.identity, identity(), (a, b) -> a));
 
     /**
      * business verify type identity and type mapping
      */
     private static final Map<String, VerifyBusinessType> VERIFY_BUSINESS_TYPE_MAPPING =
-            of(VerifyBusinessType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
+            of(VerifyBusinessType.values()).collect(toMap(t -> t.identity, identity(), (a, b) -> a));
 
     /**
      * verify type identity and type mapping
      */
     private static final Map<String, VerifyType> VERIFY_TYPE_MAPPING =
-            of(VerifyType.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
+            of(VerifyType.values()).collect(toMap(t -> t.identity, identity(), (a, b) -> a));
+
+    /**
+     * agreement type identity and type mapping
+     */
+    private static final Map<Integer, AgreementType> AGREEMENT_TYPE_MAPPING =
+            of(AgreementType.values()).collect(toMap(t -> t.identity, identity(), (a, b) -> a));
 
     /**
      * rsa decrypt mode identity and rsa decrypt mode mapping
      */
     private static final Map<Integer, RsaDecryptMode> RSA_DECRYPT_MODE_MAPPING =
-            of(RsaDecryptMode.values()).collect(toMap(t -> t.identity, t -> t, (a, b) -> a));
+            of(RsaDecryptMode.values()).collect(toMap(t -> t.identity, identity(), (a, b) -> a));
 
     //</editor-fold>
 
@@ -602,6 +610,19 @@ public final class ConstantProcessor {
             return;
 
         if (!VERIFY_TYPE_MAPPING.containsKey(identity))
+            throw new BlueException(INVALID_IDENTITY);
+    }
+
+    /**
+     * assert agreement type
+     *
+     * @param identity
+     */
+    public static void assertAgreementType(Integer identity, boolean nullable) {
+        if (nullable && isNull(identity))
+            return;
+
+        if (!AGREEMENT_TYPE_MAPPING.containsKey(identity))
             throw new BlueException(INVALID_IDENTITY);
     }
 
@@ -1128,6 +1149,22 @@ public final class ConstantProcessor {
         return type;
     }
 
+    /**
+     * get agreement type by identity
+     *
+     * @param identity
+     * @return
+     */
+    public static AgreementType getAgreementTypeByIdentity(Integer identity) {
+        if (isNull(identity))
+            throw new BlueException(INVALID_IDENTITY);
+
+        AgreementType type = AGREEMENT_TYPE_MAPPING.get(identity);
+        if (isNull(type))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return type;
+    }
 
     /**
      * get rsa decrypt mode by identity

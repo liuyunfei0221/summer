@@ -245,7 +245,7 @@ public class CountryServiceImpl implements CountryService {
         return country;
     };
 
-    public final BiConsumer<CountryUpdateParam, Country> UPDATE_ITEM_VALIDATOR = (p, t) -> {
+    public final BiConsumer<CountryUpdateParam, Country> UPDATE_ITEM_WITH_ASSERT_PACKAGER = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
         if (!p.getId().equals(t.getId()))
@@ -285,6 +285,8 @@ public class CountryServiceImpl implements CountryService {
 
         if (!alteration)
             throw new BlueException(DATA_HAS_NOT_CHANGED);
+
+        t.setUpdateTime(TIME_STAMP_GETTER.get());
     };
 
     private static final Function<CountryCondition, Query> CONDITION_PROCESSOR = c -> {
@@ -358,8 +360,7 @@ public class CountryServiceImpl implements CountryService {
 
         Country country = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(countryUpdateParam);
 
-        UPDATE_ITEM_VALIDATOR.accept(countryUpdateParam, country);
-        country.setUpdateTime(TIME_STAMP_GETTER.get());
+        UPDATE_ITEM_WITH_ASSERT_PACKAGER.accept(countryUpdateParam, country);
         
         return countryRepository.save(country)
                 .publishOn(scheduler)

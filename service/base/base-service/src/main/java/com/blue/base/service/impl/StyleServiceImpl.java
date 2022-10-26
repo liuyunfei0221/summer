@@ -185,7 +185,7 @@ public class StyleServiceImpl implements StyleService {
         return new ArrayList<>(operatorIds);
     };
 
-    private final Consumer<StyleInsertParam> INSERT_STYLE_VALIDATOR = p -> {
+    private final Consumer<StyleInsertParam> INSERT_ITEM_VALIDATOR = p -> {
         if (isNull(p))
             throw new BlueException(EMPTY_PARAM);
         p.asserts();
@@ -194,7 +194,7 @@ public class StyleServiceImpl implements StyleService {
             throw new BlueException(RESOURCE_NAME_ALREADY_EXIST);
     };
 
-    private final Function<StyleUpdateParam, Style> UPDATE_STYLE_VALIDATOR_AND_ORIGIN_RETURNER = p -> {
+    private final Function<StyleUpdateParam, Style> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = p -> {
         if (isNull(p))
             throw new BlueException(EMPTY_PARAM);
         p.asserts();
@@ -217,7 +217,7 @@ public class StyleServiceImpl implements StyleService {
         return style;
     };
 
-    public static final BiConsumer<StyleUpdateParam, Style> UPDATE_STYLE_VALIDATOR = (p, t) -> {
+    public static final BiConsumer<StyleUpdateParam, Style> UPDATE_ITEM_WITH_ASSERT_PACKAGER = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
         if (!p.getId().equals(t.getId()))
@@ -246,6 +246,8 @@ public class StyleServiceImpl implements StyleService {
 
         if (!alteration)
             throw new BlueException(DATA_HAS_NOT_CHANGED);
+
+        t.setUpdateTime(TIME_STAMP_GETTER.get());
     };
 
     /**
@@ -263,7 +265,7 @@ public class StyleServiceImpl implements StyleService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
-        INSERT_STYLE_VALIDATOR.accept(styleInsertParam);
+        INSERT_ITEM_VALIDATOR.accept(styleInsertParam);
 
         Style style = STYLE_INSERT_PARAM_2_STYLE_CONVERTER.apply(styleInsertParam);
 
@@ -292,16 +294,15 @@ public class StyleServiceImpl implements StyleService {
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
-        Style style = UPDATE_STYLE_VALIDATOR_AND_ORIGIN_RETURNER.apply(styleUpdateParam);
+        Style style = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(styleUpdateParam);
 
         List<Integer> changedTypes = new LinkedList<>();
         changedTypes.add(style.getType());
 
-        UPDATE_STYLE_VALIDATOR.accept(styleUpdateParam, style);
+        UPDATE_ITEM_WITH_ASSERT_PACKAGER.accept(styleUpdateParam, style);
         changedTypes.add(style.getType());
 
         style.setUpdater(operatorId);
-        style.setUpdateTime(TIME_STAMP_GETTER.get());
 
         styleMapper.updateByPrimaryKeySelective(style);
         changedTypes.forEach(CACHE_DELETER);

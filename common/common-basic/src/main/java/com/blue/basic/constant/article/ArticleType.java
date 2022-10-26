@@ -5,7 +5,6 @@ package com.blue.basic.constant.article;
  *
  * @author liuyunfei
  */
-@SuppressWarnings("GrazieInspection")
 public enum ArticleType {
 
     //Article type 1.TRICKED 2.RECOMMEND 3.SHITS 4.GRUMBLE 5.SHARE 6.WATERING

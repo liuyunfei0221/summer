@@ -2806,3 +2806,96 @@ VALUES (1, 'blue1', '{}', 1, b'1', 1, 1, 1, 1, 1),
 
 
 
+
+
+
+
+
+
+
+
+CREATE
+DATABASE agreement CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+USE
+agreement;
+
+CREATE TABLE `agreement`
+(
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `title`       varchar(128) NOT NULL COMMENT 'agreement title',
+    `content`     varchar(256) DEFAULT '' COMMENT 'agreement content',
+    `link`        varchar(256) DEFAULT '' COMMENT 'agreement link',
+    `type`        tinyint      NOT NULL COMMENT 'agreement type 1.PLATFORM 2.SERVICE 3.PRIVACY 4.MEMBER 5.BUSINESS 6.EXCLUSION_CLAUSE',
+    `status`      tinyint      NOT NULL COMMENT 'data status: 1-valid 0-invalid',
+    `priority`    int          NOT NULL COMMENT 'agreement priority',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    `creator`     bigint       NOT NULL COMMENT 'creator id',
+    `updater`     bigint       NOT NULL COMMENT 'updater id',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_title`(`title`) USING BTREE,
+    KEY           `idx_type_stat_pri`(`type`,`status`,`priority`) USING BTREE,
+    KEY           `idx_pri_stat`(`priority`,`status`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of agreement';
+
+
+CREATE
+DATABASE agreement_0 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+USE
+agreement_0;
+
+CREATE TABLE `member_agreement_record_0`
+(
+    `id`          bigint NOT NULL COMMENT 'id',
+    `member_id`   bigint NOT NULL COMMENT 'member id',
+    `agreement_id`     bigint NOT NULL COMMENT 'agreement id',
+    `agree`      tinyint      NOT NULL COMMENT 'agree: 1-yes 0-no',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_member_agreement`(`member_id`,`agreement_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member agreement record 0';
+
+CREATE TABLE `member_agreement_record_1`
+(
+    `id`          bigint NOT NULL COMMENT 'id',
+    `member_id`   bigint NOT NULL COMMENT 'member id',
+    `agreement_id`     bigint NOT NULL COMMENT 'agreement id',
+    `agree`      tinyint      NOT NULL COMMENT 'agree: 1-yes 0-no',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_member_agreement`(`member_id`,`agreement_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member agreement record 1';
+
+
+
+
+CREATE
+DATABASE agreement_1 CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+USE
+agreement_1;
+
+CREATE TABLE `member_agreement_record_0`
+(
+    `id`          bigint NOT NULL COMMENT 'id',
+    `member_id`   bigint NOT NULL COMMENT 'member id',
+    `agreement_id`     bigint NOT NULL COMMENT 'agreement id',
+    `agree`      tinyint      NOT NULL COMMENT 'agree: 1-yes 0-no',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_member_agreement`(`member_id`,`agreement_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member agreement record 0';
+
+CREATE TABLE `member_agreement_record_1`
+(
+    `id`          bigint NOT NULL COMMENT 'id',
+    `member_id`   bigint NOT NULL COMMENT 'member id',
+    `agreement_id`     bigint NOT NULL COMMENT 'agreement id',
+    `agree`      tinyint      NOT NULL COMMENT 'agree: 1-yes 0-no',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_member_agreement`(`member_id`,`agreement_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member agreement record 1';

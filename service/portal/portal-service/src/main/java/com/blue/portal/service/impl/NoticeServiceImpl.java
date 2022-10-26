@@ -214,7 +214,7 @@ public class NoticeServiceImpl implements NoticeService {
         return notice;
     };
 
-    public static final BiConsumer<NoticeUpdateParam, Notice> UPDATE_ITEM_VALIDATOR = (p, t) -> {
+    public static final BiConsumer<NoticeUpdateParam, Notice> UPDATE_ITEM_WITH_ASSERT_PACKAGER = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
 
@@ -250,6 +250,8 @@ public class NoticeServiceImpl implements NoticeService {
 
         if (!alteration)
             throw new BlueException(DATA_HAS_NOT_CHANGED);
+
+        t.setUpdateTime(TIME_STAMP_GETTER.get());
     };
 
     /**
@@ -302,11 +304,10 @@ public class NoticeServiceImpl implements NoticeService {
         List<Integer> changedTypes = new LinkedList<>();
         changedTypes.add(notice.getType());
 
-        UPDATE_ITEM_VALIDATOR.accept(noticeUpdateParam, notice);
+        UPDATE_ITEM_WITH_ASSERT_PACKAGER.accept(noticeUpdateParam, notice);
         changedTypes.add(notice.getType());
 
         notice.setUpdater(operatorId);
-        notice.setUpdateTime(TIME_STAMP_GETTER.get());
 
         changedTypes.forEach(CACHE_DELETER);
         noticeMapper.updateByPrimaryKeySelective(notice);

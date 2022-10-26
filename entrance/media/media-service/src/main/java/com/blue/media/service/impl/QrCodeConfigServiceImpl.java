@@ -185,7 +185,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
         return qrCodeConfig;
     };
 
-    public static final BiConsumer<QrCodeConfigUpdateParam, QrCodeConfig> UPDATE_ITEM_VALIDATOR = (p, t) -> {
+    public static final BiConsumer<QrCodeConfigUpdateParam, QrCodeConfig> UPDATE_ITEM_WITH_ASSERT_PACKAGER = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
         if (!p.getId().equals(t.getId()))
@@ -358,7 +358,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
             QrCodeConfig qrCodeConfig = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(qrCodeConfigUpdateParam);
             Integer originalType = qrCodeConfig.getType();
 
-            UPDATE_ITEM_VALIDATOR.accept(qrCodeConfigUpdateParam, qrCodeConfig);
+            UPDATE_ITEM_WITH_ASSERT_PACKAGER.accept(qrCodeConfigUpdateParam, qrCodeConfig);
             qrCodeConfig.setUpdater(operatorId);
 
             return qrCodeConfigRepository.save(qrCodeConfig)

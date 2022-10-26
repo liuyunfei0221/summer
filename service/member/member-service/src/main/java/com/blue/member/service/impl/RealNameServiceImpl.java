@@ -131,7 +131,7 @@ public class RealNameServiceImpl implements RealNameService {
             throw new BlueException(DATA_ALREADY_EXIST);
     };
 
-    private final BiConsumer<RealNameUpdateParam, RealName> UPDATE_ITEM_VALIDATOR = (p, t) -> {
+    private final BiConsumer<RealNameUpdateParam, RealName> UPDATE_ITEM_WITH_ASSERT_PACKAGER = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(EMPTY_PARAM);
         p.asserts();
@@ -278,7 +278,7 @@ public class RealNameServiceImpl implements RealNameService {
         if (isNull(realName))
             throw new BlueException(INTERNAL_SERVER_ERROR);
 
-        UPDATE_ITEM_VALIDATOR.accept(realNameUpdateParam, realName);
+        UPDATE_ITEM_WITH_ASSERT_PACKAGER.accept(realNameUpdateParam, realName);
 
         REAL_NAME_INFO_VALIDATOR.accept(realName);
 

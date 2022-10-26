@@ -126,7 +126,7 @@ public class RewardServiceImpl implements RewardService {
         return reward;
     };
 
-    public static final BiConsumer<RewardUpdateParam, Reward> UPDATE_ITEM_VALIDATOR = (p, t) -> {
+    public static final BiConsumer<RewardUpdateParam, Reward> UPDATE_ITEM_WITH_ASSERT_PACKAGER = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
 
@@ -168,6 +168,8 @@ public class RewardServiceImpl implements RewardService {
 
         if (!alteration)
             throw new BlueException(DATA_HAS_NOT_CHANGED);
+
+        t.setUpdateTime(TIME_STAMP_GETTER.get());
     };
 
     /**
@@ -213,10 +215,9 @@ public class RewardServiceImpl implements RewardService {
             throw new BlueException(UNAUTHORIZED);
 
         Reward reward = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(rewardUpdateParam);
-        UPDATE_ITEM_VALIDATOR.accept(rewardUpdateParam, reward);
+        UPDATE_ITEM_WITH_ASSERT_PACKAGER.accept(rewardUpdateParam, reward);
 
         reward.setUpdater(operatorId);
-        reward.setUpdateTime(TIME_STAMP_GETTER.get());
 
         rewardMapper.updateByPrimaryKeySelective(reward);
 

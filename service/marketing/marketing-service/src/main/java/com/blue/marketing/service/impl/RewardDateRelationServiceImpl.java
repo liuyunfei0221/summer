@@ -138,7 +138,7 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
         return rewardDateRelation;
     };
 
-    public static final BiConsumer<RewardDateRelationUpdateParam, RewardDateRelation> UPDATE_ITEM_VALIDATOR = (p, t) -> {
+    public static final BiConsumer<RewardDateRelationUpdateParam, RewardDateRelation> UPDATE_ITEM_WITH_ASSERT_PACKAGER = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
 
@@ -173,6 +173,8 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
 
         if (!alteration)
             throw new BlueException(DATA_HAS_NOT_CHANGED);
+
+        t.setUpdateTime(TIME_STAMP_GETTER.get());
     };
 
     private final Function<List<RewardDateRelation>, Mono<List<RewardDateRelationManagerInfo>>> REWARD_DATE_REL_MANAGER_INFO_CONVERTER = relations -> {
@@ -326,10 +328,9 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
             throw new BlueException(UNAUTHORIZED);
 
         RewardDateRelation rewardDateRelation = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(rewardDateRelationUpdateParam);
-        UPDATE_ITEM_VALIDATOR.accept(rewardDateRelationUpdateParam, rewardDateRelation);
 
+        UPDATE_ITEM_WITH_ASSERT_PACKAGER.accept(rewardDateRelationUpdateParam, rewardDateRelation);
         rewardDateRelation.setUpdater(operatorId);
-        rewardDateRelation.setUpdateTime(TIME_STAMP_GETTER.get());
 
         RewardInfo rewardInfo = rewardService.getReward(rewardDateRelation.getRewardId())
                 .map(REWARD_2_REWARD_INFO_CONVERTER)

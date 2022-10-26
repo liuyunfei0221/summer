@@ -272,7 +272,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
         return verifyTemplate;
     };
 
-    public static final BiConsumer<VerifyTemplateUpdateParam, VerifyTemplate> UPDATE_ITEM_VALIDATOR = (p, t) -> {
+    public static final BiConsumer<VerifyTemplateUpdateParam, VerifyTemplate> UPDATE_ITEM_WITH_ASSERT_PACKAGER = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
         if (!p.getId().equals(t.getId()))
@@ -464,7 +464,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
             String originalType = verifyTemplate.getType();
             String originalBusinessType = verifyTemplate.getBusinessType();
 
-            UPDATE_ITEM_VALIDATOR.accept(verifyTemplateUpdateParam, verifyTemplate);
+            UPDATE_ITEM_WITH_ASSERT_PACKAGER.accept(verifyTemplateUpdateParam, verifyTemplate);
             verifyTemplate.setUpdater(operatorId);
 
             return verifyTemplateRepository.save(verifyTemplate)

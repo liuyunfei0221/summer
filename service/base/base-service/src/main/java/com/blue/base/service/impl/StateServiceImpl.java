@@ -256,7 +256,7 @@ public class StateServiceImpl implements StateService {
         return state;
     };
 
-    public final BiConsumer<StateUpdateParam, State> UPDATE_ITEM_VALIDATOR = (p, t) -> {
+    public final BiConsumer<StateUpdateParam, State> UPDATE_ITEM_WITH_ASSERT_PACKAGER = (p, t) -> {
         if (isNull(p) || isNull(t))
             throw new BlueException(BAD_REQUEST);
         if (!p.getId().equals(t.getId()))
@@ -292,6 +292,8 @@ public class StateServiceImpl implements StateService {
 
         if (!alteration)
             throw new BlueException(DATA_HAS_NOT_CHANGED);
+
+        t.setUpdateTime(TIME_STAMP_GETTER.get());
     };
 
     private static final Function<StateCondition, Query> CONDITION_PROCESSOR = c -> {
@@ -352,8 +354,7 @@ public class StateServiceImpl implements StateService {
 
         Long originalCountryId = state.getCountryId();
 
-        UPDATE_ITEM_VALIDATOR.accept(stateUpdateParam, state);
-        state.setUpdateTime(TIME_STAMP_GETTER.get());
+        UPDATE_ITEM_WITH_ASSERT_PACKAGER.accept(stateUpdateParam, state);
 
         return stateRepository.save(state)
                 .publishOn(scheduler)
