@@ -12,19 +12,9 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "bulletin")
 public class BulletinDeploy {
 
-    private int maximumSize;
-
     private int expiresSecond;
 
     public BulletinDeploy() {
-    }
-
-    public int getMaximumSize() {
-        return maximumSize;
-    }
-
-    public void setMaximumSize(int maximumSize) {
-        this.maximumSize = maximumSize;
     }
 
     public int getExpiresSecond() {
@@ -38,8 +28,7 @@ public class BulletinDeploy {
     @Override
     public String toString() {
         return "BulletinDeploy{" +
-                "maximumSize=" + maximumSize +
-                ", expiresSecond=" + expiresSecond +
+                "expiresSecond=" + expiresSecond +
                 '}';
     }
 

@@ -25,15 +25,9 @@ public final class AgreementCondition extends SortCondition implements Serializa
 
     private Integer type;
 
-    private String nameLike;
-
     private Long createTimeBegin;
 
     private Long createTimeEnd;
-
-    private Long updateTimeBegin;
-
-    private Long updateTimeEnd;
 
     public AgreementCondition() {
         super(AgreementSortAttribute.CREATE_TIME.attribute, DESC.identity);
@@ -43,17 +37,14 @@ public final class AgreementCondition extends SortCondition implements Serializa
         super(sortAttribute, sortType);
     }
 
-    public AgreementCondition(Long id, String titleLike, String linkLike, Integer type, String nameLike, Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, String sortAttribute, String sortType) {
+    public AgreementCondition(Long id, String titleLike, String linkLike, Integer type, Long createTimeBegin, Long createTimeEnd, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.id = id;
         this.titleLike = titleLike;
         this.linkLike = linkLike;
         this.type = type;
-        this.nameLike = nameLike;
         this.createTimeBegin = createTimeBegin;
         this.createTimeEnd = createTimeEnd;
-        this.updateTimeBegin = updateTimeBegin;
-        this.updateTimeEnd = updateTimeEnd;
     }
 
     public Long getId() {
@@ -88,14 +79,6 @@ public final class AgreementCondition extends SortCondition implements Serializa
         this.type = type;
     }
 
-    public String getNameLike() {
-        return nameLike;
-    }
-
-    public void setNameLike(String nameLike) {
-        this.nameLike = nameLike;
-    }
-
     public Long getCreateTimeBegin() {
         return createTimeBegin;
     }
@@ -112,22 +95,6 @@ public final class AgreementCondition extends SortCondition implements Serializa
         this.createTimeEnd = createTimeEnd;
     }
 
-    public Long getUpdateTimeBegin() {
-        return updateTimeBegin;
-    }
-
-    public void setUpdateTimeBegin(Long updateTimeBegin) {
-        this.updateTimeBegin = updateTimeBegin;
-    }
-
-    public Long getUpdateTimeEnd() {
-        return updateTimeEnd;
-    }
-
-    public void setUpdateTimeEnd(Long updateTimeEnd) {
-        this.updateTimeEnd = updateTimeEnd;
-    }
-
     @Override
     public String toString() {
         return "AgreementCondition{" +
@@ -135,11 +102,8 @@ public final class AgreementCondition extends SortCondition implements Serializa
                 ", titleLike='" + titleLike + '\'' +
                 ", linkLike='" + linkLike + '\'' +
                 ", type=" + type +
-                ", nameLike='" + nameLike + '\'' +
                 ", createTimeBegin=" + createTimeBegin +
                 ", createTimeEnd=" + createTimeEnd +
-                ", updateTimeBegin=" + updateTimeBegin +
-                ", updateTimeEnd=" + updateTimeEnd +
                 ", sortAttribute='" + sortAttribute + '\'' +
                 ", sortType='" + sortType + '\'' +
                 '}';

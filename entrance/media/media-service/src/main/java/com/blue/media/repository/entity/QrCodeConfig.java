@@ -1,7 +1,6 @@
 package com.blue.media.repository.entity;
 
 
-import com.blue.basic.constant.media.QrCodeType;
 import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
@@ -25,7 +24,7 @@ public final class QrCodeConfig implements Serializable {
     private String description;
 
     /**
-     * @see QrCodeType
+     * @see com.blue.basic.constant.media.QrCodeType
      */
     private Integer type;
 

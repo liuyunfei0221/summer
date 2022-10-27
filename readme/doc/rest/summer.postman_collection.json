@@ -2784,7 +2784,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiJkMDM5ZGExMjlmN2RhNzUyZDI1MTVlYWU0YTVkNGE4MDVlMmM5ZjlhM2EyYTIyMDhhNTA5MTU1OTk4OTAzMTdhZGY2NTFlMWI2NTEzOWI5MmNmZmM4N2ZkOWU1Y2ZmZmMzNjllM2Q2ZDJhZDBlMjY1MWQzODI5MDU2OTBhZTQxMCIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU05fUDo0MDY2MTE3Njk0NTczNzcyOV9DTElfTSIsImlzcyI6IkJsdWUiLCJpIjoiNDA2NjExNzY5NDU3Mzc3MjkiLCJuIjoiUFZBUiIsImF1ZCI6IkJsdWVyIiwicyI6IjE2NTY2NTkxNTQiLCJuYmYiOjE2NTY2NTkxNTQsInQiOiJ0ZUNZRjBEWHl6SCIsImVhcyI6MTY2NDQzNTE1NDA5MSwiZXhwIjoxNjY0NDM1MTU0LCJpYXQiOjE2NTY2NTkxNTQsImp0aSI6IkV1R3Z5WXpWWmxNWTFoS1dtVnN3aURtR3RCYVlPZWlUIn0.aGmXq26MySfKWcsAlVEv3enD147wg7rHdgYfWJEzDiVZjd_183SjHd3tiUf1krAFR84oCtiw3DGjISN-wQOcEQ",
+								"value": "eyJraWQiOiI0OTQ3NTU0YzllMzMzZTFjZTFlYWM4ODVlM2QzZDczMzRiOTg1MzI5NGFkOWNkNjY3YTg5Y2IxM2ViZjE1MmM3Y2RmYjE2ZDU2YzhhODk2Y2U1YmE1YTdlNGYyMWViY2RhYWU3MzdhYmU1ZDg1ODY1OWIwYTA1MjlmN2FmNjRlZiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE2MDE4ODc3OTkwMjUxMDRfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNjAxODg3Nzk5MDI1MTA0IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY2ODU3NTg0IiwibmJmIjoxNjY2ODU3NTg0LCJ0IjoiRnNWdTBINWVmcnciLCJlYXMiOjE2NzQ2MzM1ODQ1NTIsImV4cCI6MTY3NDYzMzU4NCwiaWF0IjoxNjY2ODU3NTg0LCJqdGkiOiJVdWw0UzR1SU1wS0EyNElJMTl6ZmhhaVJHd3cwVFNnbiJ9.dg2ojeCO_5Y3eqsoOr7QlpuYVLuCctxOsTB3aJaYEZUEIh5L54QIIdnPOolX5-knjdf6HnPodi9y0eo3G9K4PQ",
 								"type": "text"
 							}
 						],
@@ -2814,13 +2814,13 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiJkMDM5ZGExMjlmN2RhNzUyZDI1MTVlYWU0YTVkNGE4MDVlMmM5ZjlhM2EyYTIyMDhhNTA5MTU1OTk4OTAzMTdhZGY2NTFlMWI2NTEzOWI5MmNmZmM4N2ZkOWU1Y2ZmZmMzNjllM2Q2ZDJhZDBlMjY1MWQzODI5MDU2OTBhZTQxMCIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU05fUDo0MDY2MTE3Njk0NTczNzcyOV9DTElfTSIsImlzcyI6IkJsdWUiLCJpIjoiNDA2NjExNzY5NDU3Mzc3MjkiLCJuIjoiUFZBUiIsImF1ZCI6IkJsdWVyIiwicyI6IjE2NTY2NTkxNTQiLCJuYmYiOjE2NTY2NTkxNTQsInQiOiJ0ZUNZRjBEWHl6SCIsImVhcyI6MTY2NDQzNTE1NDA5MSwiZXhwIjoxNjY0NDM1MTU0LCJpYXQiOjE2NTY2NTkxNTQsImp0aSI6IkV1R3Z5WXpWWmxNWTFoS1dtVnN3aURtR3RCYVlPZWlUIn0.aGmXq26MySfKWcsAlVEv3enD147wg7rHdgYfWJEzDiVZjd_183SjHd3tiUf1krAFR84oCtiw3DGjISN-wQOcEQ",
+								"value": "eyJraWQiOiI0OTQ3NTU0YzllMzMzZTFjZTFlYWM4ODVlM2QzZDczMzRiOTg1MzI5NGFkOWNkNjY3YTg5Y2IxM2ViZjE1MmM3Y2RmYjE2ZDU2YzhhODk2Y2U1YmE1YTdlNGYyMWViY2RhYWU3MzdhYmU1ZDg1ODY1OWIwYTA1MjlmN2FmNjRlZiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE2MDE4ODc3OTkwMjUxMDRfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNjAxODg3Nzk5MDI1MTA0IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY2ODU3NTg0IiwibmJmIjoxNjY2ODU3NTg0LCJ0IjoiRnNWdTBINWVmcnciLCJlYXMiOjE2NzQ2MzM1ODQ1NTIsImV4cCI6MTY3NDYzMzU4NCwiaWF0IjoxNjY2ODU3NTg0LCJqdGkiOiJVdWw0UzR1SU1wS0EyNElJMTl6ZmhhaVJHd3cwVFNnbiJ9.dg2ojeCO_5Y3eqsoOr7QlpuYVLuCctxOsTB3aJaYEZUEIh5L54QIIdnPOolX5-knjdf6HnPodi9y0eo3G9K4PQ",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\":\"yunfei\",\r\n    \"gender\":1,\r\n    \"phone\":\"\",\r\n    \"email\":\"\",\r\n    \"birthDay\":\"\",\r\n    \"chineseZodiac\":1,\r\n    \"zodiacSign\":1,\r\n    \"height\":\"\",\r\n    \"weight\":\"\",\r\n    \"cityId\":19332,\r\n    \"address\":\"\",\r\n    \"profile\":\"\",\r\n    \"hobby\":\"\",\r\n    \"homepage\":\"\",\r\n    \"extra\":\"\"\r\n}"
+							"raw": "{\r\n    \"name\":\"yunfei\",\r\n    \"gender\":1,\r\n    \"phone\":\"13131693996\",\r\n    \"email\":\"liuyunfei0221@outlook.com\",\r\n    \"birthDay\":\"1989-02-14\",\r\n    \"chineseZodiac\":1,\r\n    \"zodiacSign\":1,\r\n    \"height\":169,\r\n    \"weight\":110,\r\n    \"cityId\":19332,\r\n    \"address\":\"朝阳区朝阳北路22号院柏林爱乐3期5-6-8\",\r\n    \"profile\":\"coding...\",\r\n    \"hobby\":\"coding......\",\r\n    \"homepage\":\"www.bing.cn\",\r\n    \"extra\":\"no\"\r\n}"
 						},
 						"url": {
 							"raw": "localhost:11000/blue-member/detail",
@@ -2848,7 +2848,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiJkMDM5ZGExMjlmN2RhNzUyZDI1MTVlYWU0YTVkNGE4MDVlMmM5ZjlhM2EyYTIyMDhhNTA5MTU1OTk4OTAzMTdhZGY2NTFlMWI2NTEzOWI5MmNmZmM4N2ZkOWU1Y2ZmZmMzNjllM2Q2ZDJhZDBlMjY1MWQzODI5MDU2OTBhZTQxMCIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU05fUDo0MDY2MTE3Njk0NTczNzcyOV9DTElfTSIsImlzcyI6IkJsdWUiLCJpIjoiNDA2NjExNzY5NDU3Mzc3MjkiLCJuIjoiUFZBUiIsImF1ZCI6IkJsdWVyIiwicyI6IjE2NTY2NTkxNTQiLCJuYmYiOjE2NTY2NTkxNTQsInQiOiJ0ZUNZRjBEWHl6SCIsImVhcyI6MTY2NDQzNTE1NDA5MSwiZXhwIjoxNjY0NDM1MTU0LCJpYXQiOjE2NTY2NTkxNTQsImp0aSI6IkV1R3Z5WXpWWmxNWTFoS1dtVnN3aURtR3RCYVlPZWlUIn0.aGmXq26MySfKWcsAlVEv3enD147wg7rHdgYfWJEzDiVZjd_183SjHd3tiUf1krAFR84oCtiw3DGjISN-wQOcEQ",
+								"value": "eyJraWQiOiI0OTQ3NTU0YzllMzMzZTFjZTFlYWM4ODVlM2QzZDczMzRiOTg1MzI5NGFkOWNkNjY3YTg5Y2IxM2ViZjE1MmM3Y2RmYjE2ZDU2YzhhODk2Y2U1YmE1YTdlNGYyMWViY2RhYWU3MzdhYmU1ZDg1ODY1OWIwYTA1MjlmN2FmNjRlZiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE2MDE4ODc3OTkwMjUxMDRfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNjAxODg3Nzk5MDI1MTA0IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY2ODU3NTg0IiwibmJmIjoxNjY2ODU3NTg0LCJ0IjoiRnNWdTBINWVmcnciLCJlYXMiOjE2NzQ2MzM1ODQ1NTIsImV4cCI6MTY3NDYzMzU4NCwiaWF0IjoxNjY2ODU3NTg0LCJqdGkiOiJVdWw0UzR1SU1wS0EyNElJMTl6ZmhhaVJHd3cwVFNnbiJ9.dg2ojeCO_5Y3eqsoOr7QlpuYVLuCctxOsTB3aJaYEZUEIh5L54QIIdnPOolX5-knjdf6HnPodi9y0eo3G9K4PQ",
 								"type": "text"
 							}
 						],
@@ -3385,20 +3385,19 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYWE3NGRmNjE0MjA4YjBiOGE1NjIwYmVmODI2MzM1YmYwZTE2NGJjOGZjOTY3NWY3NDNmM2VjNDYwMWFiMzU3ZGNkZWI0YTk5MGZlYTllNjVhNWU3OTBiMzAxNGE2ZjA4MzE2NTNjYWZhMTZmZmEyOTRjOGYyYjA4MWNjMDIyNzkiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1MDM3MTIyNCIsIm5iZiI6MTY1MDM3MTIyNCwidCI6InZsU3JTYndlZGgzIiwiZyI6Ik0iLCJoIjoiQl9TTjozMzgxNTQ1MjE5NDk2MzQ1N19DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MzA0OTYyNDMyMywiaSI6IjMzODE1NDUyMTk0OTYzNDU3IiwiZXhwIjoxNjUzMDQ5NjI0LCJpYXQiOjE2NTAzNzEyMjQsImp0aSI6Ik9oZFBUYUtoc01mc2FkY1NwYTVuWElack91S1Y5YUs1IiwibiI6IlBWQVIifQ.cC0JdKQIik2vE_ljbvCWDhb9YbpFbj1iq_nnS9Y_r0cCEDiDnCXjt42gsp-aw_KjAP7vL1IwNJY9UiJdaox0lw",
+								"value": "eyJraWQiOiI5OGQ1ZGFiNTdhM2U5NDU5NWQyM2Y0NzdkZDhjMjQ0MTE4NTAxNTVmODc0ODE4M2I0NDhjMGZkMWIzYmNlMmMzNmMyMGY2YTEyZTEyM2M2OTRiMGU5YzExMjE2YzE4MWVhMGJmYTM3YjJlNmViMzczNzJmMjk4MWY0NDNlZTA2NiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE0MjkxODM5NDI4MTk4NDJfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNDI5MTgzOTQyODE5ODQyIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY2Njg3ODk4IiwibmJmIjoxNjY2Njg3ODk4LCJ0Ijoid2pSQ3Y1dzVyUFoiLCJlYXMiOjE2NzQ0NjM4OTg1OTcsImV4cCI6MTY3NDQ2Mzg5OCwiaWF0IjoxNjY2Njg3ODk4LCJqdGkiOiIwTUxaUlRjSXJIdnRHUDNEUnJiSnVxNGw3OVV0OHVObSJ9.RcNY3STHx-mKhX0m7vawJ9BZpg2wvjHl5VhuFyE4_OFJ4DwmHQ_ZZn6BMWz1v21kvxKJBvpKnu3zMghPVk1N1w",
 								"type": "text"
 							}
 						],
 						"url": {
-							"raw": "localhost:11000/blue-finance/finance/balance",
+							"raw": "localhost:11000/blue-finance/account",
 							"host": [
 								"localhost"
 							],
 							"port": "11000",
 							"path": [
 								"blue-finance",
-								"finance",
-								"balance"
+								"account"
 							]
 						}
 					},
@@ -5443,6 +5442,117 @@
 			]
 		},
 		{
+			"name": "agreement",
+			"item": [
+				{
+					"name": "用户协议查询",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZ1VFUkJNS1BiSW9FYVZ2biIsInR5cCI6IkpXVCIsImFsZyI6IkhTMjU2In0.eyJzdWIiOiJhdSIsImQiOiJNT0JJTEUiLCJnIjoiUm9ZelZFRHB0S1EiLCJpc3MiOiJfYmx1ZV8xNjI2NzUxODg0NjI3IiwiaSI6IjgyMDE5ODg0NTgxNTE5MzYiLCJrIjoiQl9TTjo4MjAxOTg4NDU4MTUxOTM2X0FQX01PQklMRSIsImwiOiJBUCIsInAiOiJNRnd3RFFZSktvWklodmNOQVFFQkJRQURTd0F3U0FKQkFQQ2M1Z2p0cHFYNmlPUlhZb3ljYnJBV2plWGpOd1lGZ08rUlhxL2l6N2IzYlI3YUxTcUcrZXpmckoyWGEwLzRyR1pyWlVvbE9HWjc4R1BONXB6VlJBTUNBd0VBQVE9PSIsImF1ZCI6ImNuIiwiciI6IjEzOTU5NDg1ODUxNSIsIm5iZiI6MTYyNjc1MTg4NCwiZXhwIjoxNjI5NDMwMjg0LCJpYXQiOjE2MjY3NTE4ODQsImp0aSI6InVrckZwSEpza0JOUllaaFoifQ.A-oE_g7U5hDop0PvgCoDBjqrexWeLTuONypC-4IvCv4",
+								"type": "text"
+							},
+							{
+								"key": "Metadata",
+								"value": "{\"meta\":\"123456789\"}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:11000/blue-agreement/agreement/1",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-agreement",
+								"agreement",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台用户协议列表查询",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiJmZmM5Njk5MzllMjI1NWMwZWRhNzU0YzViZmRmYWFmYzUzMzM4MGRlMjQwYmE2ZWQ5MDkyYTM4MmJjNTdiZTllZWYyMWE1YmEwMmI2YTVkMWZkODEyYmRiNWJlOWMxNTg4YTE1YzQxNDZkNDlhNjdmZjViMjBlZmEyNTZhM2Y0YiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE2MDE4ODc3OTkwMjUxMDRfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNjAxODg3Nzk5MDI1MTA0IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY2ODU4MTc4IiwibmJmIjoxNjY2ODU4MTc4LCJ0IjoiRkdsUDRwY1FIUlciLCJlYXMiOjE2NzQ2MzQxNzgwNTIsImV4cCI6MTY3NDYzNDE3OCwiaWF0IjoxNjY2ODU4MTc4LCJqdGkiOiJSOVIxS3lCdVlLMklhZ1BPOVBSbncxaWkydE5Hc21MMSJ9.eKNEXFd2Kyp0Gt_FKposb4pMOBtcEbSDZ6qVCUjbR2WDzpk4KuzE4lVpHdT8y0N6O186elxD_PD9zT5ET1Eecw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"titleLike\":null,\r\n        \"linkLike\":null,\r\n        \"type\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"ASC\"\r\n    }\r\n}"
+						},
+						"url": {
+							"raw": "localhost:11000/blue-agreement/manager/agreements",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-agreement",
+								"manager",
+								"agreements"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台添加用户协议",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiJmZmM5Njk5MzllMjI1NWMwZWRhNzU0YzViZmRmYWFmYzUzMzM4MGRlMjQwYmE2ZWQ5MDkyYTM4MmJjNTdiZTllZWYyMWE1YmEwMmI2YTVkMWZkODEyYmRiNWJlOWMxNTg4YTE1YzQxNDZkNDlhNjdmZjViMjBlZmEyNTZhM2Y0YiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE2MDE4ODc3OTkwMjUxMDRfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNjAxODg3Nzk5MDI1MTA0IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY2ODU4MTc4IiwibmJmIjoxNjY2ODU4MTc4LCJ0IjoiRkdsUDRwY1FIUlciLCJlYXMiOjE2NzQ2MzQxNzgwNTIsImV4cCI6MTY3NDYzNDE3OCwiaWF0IjoxNjY2ODU4MTc4LCJqdGkiOiJSOVIxS3lCdVlLMklhZ1BPOVBSbncxaWkydE5Hc21MMSJ9.eKNEXFd2Kyp0Gt_FKposb4pMOBtcEbSDZ6qVCUjbR2WDzpk4KuzE4lVpHdT8y0N6O186elxD_PD9zT5ET1Eecw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"agreement k\",\r\n    \"content\":\"agreement 22222\",\r\n    \"link\":\"www.bing.con\",\r\n    \"type\":3\r\n}"
+						},
+						"url": {
+							"raw": "localhost:11000/blue-agreement/manager/agreement",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-agreement",
+								"manager",
+								"agreement"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "auth-flow",
 			"item": [
 				{
@@ -5508,7 +5618,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"9611840\"\r\n    }\r\n}"
+							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"18633783158\",\r\n        \"access\":\"9154347\"\r\n    }\r\n}"
 						},
 						"url": {
 							"raw": "localhost:11000/blue-auth/session",
@@ -5999,6 +6109,40 @@
 			"name": "other",
 			"item": [
 				{
+					"name": "ES状态",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:9200",
+							"host": [
+								"localhost"
+							],
+							"port": "9200"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "查询",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:9200/shine/_search",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"shine",
+								"_search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "设置分片",
 					"request": {
 						"method": "PUT",
@@ -6057,40 +6201,6 @@
 							"path": [
 								"_cluster",
 								"reroute"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "ES状态",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:9200",
-							"host": [
-								"localhost"
-							],
-							"port": "9200"
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "查询",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "localhost:9200/shine/_search",
-							"host": [
-								"localhost"
-							],
-							"port": "9200",
-							"path": [
-								"shine",
-								"_search"
 							]
 						}
 					},

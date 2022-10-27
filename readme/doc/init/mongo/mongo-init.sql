@@ -17,12 +17,11 @@ use analyze;
 use auth;
 
 db.refreshInfo.createIndex({"id":1});
-db.refreshInfo.createIndex({"memberId":1,"credentialType":1,"deviceType":1});
+db.refreshInfo.createIndex({"memberId":1},{"credentialType":1},{"deviceType":1});
 db.refreshInfo.createIndex({"expireAt":1},{expireAfterSeconds:0});
 
 db.credentialHistory.createIndex({"memberId":1});
 db.credentialHistory.createIndex({"credential":1});
-
 
 
 
@@ -41,6 +40,7 @@ db.area.createIndex({"id":1});
 db.area.createIndex({"cityId":1});
 
 
+
 -- member
 use member;
 
@@ -51,6 +51,7 @@ db.card.createIndex({"createTime":-1});
 db.address.createIndex({"id":1});
 db.address.createIndex({"memberId":1});
 db.address.createIndex({"createTime":-1});
+
 
 
 -- media
@@ -93,6 +94,7 @@ db.qrCodeConfig.createIndex({"type":1});
 db.qrCodeConfig.createIndex({"createTime":-1});
 
 
+
 -- verify
 use verify;
 
@@ -103,4 +105,20 @@ db.verifyHistory.createIndex({"destination":1});
 db.verifyHistory.createIndex({"requestIp":1});
 db.verifyHistory.createIndex({"createTime":-1});
 
-db.verifyTemplate.createIndex({"type":1,"businessType":1,"language":1});
+db.verifyTemplate.createIndex({"type":1},{"businessType":1},{"language":1});
+
+
+
+-- agreement
+use agreement;
+
+db.agreementRecord.createIndex({"memberId":1,"agreementId":1});
+
+
+
+
+
+
+
+
+

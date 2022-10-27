@@ -107,22 +107,21 @@ public class ResourceServiceImpl implements ResourceService {
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final UnaryOperator<ResourceCondition> CONDITION_PROCESSOR = c -> {
-        if (isNull(c))
-            return new ResourceCondition();
+        ResourceCondition rc = isNotNull(c) ? c : new ResourceCondition();
 
-        process(c, SORT_ATTRIBUTE_MAPPING, ResourceSortAttribute.CREATE_TIME.column);
+        process(rc, SORT_ATTRIBUTE_MAPPING, ResourceSortAttribute.CREATE_TIME.column);
 
-        ofNullable(c.getRequestMethod())
-                .filter(StringUtils::hasText).map(String::toUpperCase).ifPresent(c::setRequestMethod);
-        ofNullable(c.getModule())
-                .filter(StringUtils::hasText).map(String::toLowerCase).ifPresent(c::setModule);
+        ofNullable(rc.getRequestMethod())
+                .filter(StringUtils::hasText).map(String::toUpperCase).ifPresent(rc::setRequestMethod);
+        ofNullable(rc.getModule())
+                .filter(StringUtils::hasText).map(String::toLowerCase).ifPresent(rc::setModule);
 
-        ofNullable(c.getUriLike())
-                .filter(StringUtils::hasText).map(String::toLowerCase).ifPresent(uriLike -> c.setUriLike(PERCENT.identity + uriLike + PERCENT.identity));
-        ofNullable(c.getNameLike())
-                .filter(StringUtils::hasText).ifPresent(nameLike -> c.setNameLike(PERCENT.identity + nameLike + PERCENT.identity));
+        ofNullable(rc.getUriLike())
+                .filter(StringUtils::hasText).map(String::toLowerCase).ifPresent(uriLike -> rc.setUriLike(PERCENT.identity + uriLike + PERCENT.identity));
+        ofNullable(rc.getNameLike())
+                .filter(StringUtils::hasText).ifPresent(nameLike -> rc.setNameLike(PERCENT.identity + nameLike + PERCENT.identity));
 
-        return c;
+        return rc;
     };
 
     private static final Function<List<Resource>, List<Long>> OPERATORS_GETTER = rs -> {
@@ -473,7 +472,7 @@ public class ResourceServiceImpl implements ResourceService {
                                     .flatMap(memberBasicInfos -> {
                                         Map<Long, String> idAndMemberNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(resources.stream().map(r ->
-                                                resourceToResourceManagerInfo(r, idAndMemberNameMapping)).collect(toList()));
+                                                RESOURCE_2_RESOURCE_MANAGER_INFO_CONVERTER.apply(r, idAndMemberNameMapping)).collect(toList()));
                                     }).flatMap(resourceManagerInfos ->
                                             just(new PageModelResponse<>(resourceManagerInfos, count)))
                             :

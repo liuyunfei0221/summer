@@ -1,6 +1,5 @@
 package com.blue.verify.repository.entity;
 
-import com.blue.basic.constant.verify.VerifyBusinessType;
 import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
@@ -24,7 +23,7 @@ public final class VerifyHistory implements Serializable {
     private String verifyType;
 
     /**
-     * @see VerifyBusinessType
+     * @see com.blue.basic.constant.verify.VerifyBusinessType
      */
     private String businessType;
 

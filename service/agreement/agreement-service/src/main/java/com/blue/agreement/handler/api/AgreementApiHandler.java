@@ -6,8 +6,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
-import reactor.util.Loggers;
 
 import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.common.base.PathVariableGetter.getIntegerVariable;
@@ -24,8 +22,6 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 @Component
 public class AgreementApiHandler {
 
-    private static final Logger LOGGER = Loggers.getLogger(AgreementApiHandler.class);
-
     private final AgreementService agreementService;
 
     public AgreementApiHandler(AgreementService agreementService) {
@@ -39,7 +35,7 @@ public class AgreementApiHandler {
      * @return
      */
     public Mono<ServerResponse> get(ServerRequest serverRequest) {
-        return agreementService.getAgreementInfoMonoByTypeWithCache(getIntegerVariable(serverRequest, TYPE.key))
+        return agreementService.getNewestAgreementInfoMonoByTypeWithCache(getIntegerVariable(serverRequest, TYPE.key))
                 .flatMap(ai -> ok()
                         .contentType(APPLICATION_JSON)
                         .body(success(ai, serverRequest), BlueResponse.class)

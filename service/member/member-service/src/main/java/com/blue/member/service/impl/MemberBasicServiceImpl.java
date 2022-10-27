@@ -235,12 +235,11 @@ public class MemberBasicServiceImpl implements MemberBasicService {
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final UnaryOperator<MemberBasicCondition> CONDITION_PROCESSOR = c -> {
-        if (isNull(c))
-            return new MemberBasicCondition();
+        MemberBasicCondition mbc = isNotNull(c) ? c : new MemberBasicCondition();
 
-        process(c, SORT_ATTRIBUTE_MAPPING, MemberBasicSortAttribute.CREATE_TIME.column);
+        process(mbc, SORT_ATTRIBUTE_MAPPING, MemberBasicSortAttribute.CREATE_TIME.column);
 
-        return c;
+        return mbc;
     };
 
     /**

@@ -1,26 +1,41 @@
-package com.blue.agreement.repository.entity;
+package com.blue.agreement.api.model;
 
-import org.springframework.data.annotation.Id;
+import com.blue.basic.serializer.Long2StringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.io.Serializable;
 
-@SuppressWarnings("unused")
-public class MemberAgreementRecord implements Serializable {
+/**
+ * agreement record info for rest
+ *
+ * @author liuyunfei
+ */
+@SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
+public class AgreementRecordInfo implements Serializable {
 
-    private static final long serialVersionUID = -4675634237640261834L;
+    private static final long serialVersionUID = 8782949181149183651L;
 
-    @Id
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long id;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long memberId;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long agreementId;
 
-    private Integer agree;
-
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long createTime;
 
-    private Long updateTime;
+    public AgreementRecordInfo() {
+    }
+
+    public AgreementRecordInfo(Long id, Long memberId, Long agreementId, Long createTime) {
+        this.id = id;
+        this.memberId = memberId;
+        this.agreementId = agreementId;
+        this.createTime = createTime;
+    }
 
     public Long getId() {
         return id;
@@ -46,14 +61,6 @@ public class MemberAgreementRecord implements Serializable {
         this.agreementId = agreementId;
     }
 
-    public Integer getAgree() {
-        return agree;
-    }
-
-    public void setAgree(Integer agree) {
-        this.agree = agree;
-    }
-
     public Long getCreateTime() {
         return createTime;
     }
@@ -62,23 +69,13 @@ public class MemberAgreementRecord implements Serializable {
         this.createTime = createTime;
     }
 
-    public Long getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Long updateTime) {
-        this.updateTime = updateTime;
-    }
-
     @Override
     public String toString() {
-        return "MemberAgreementRecord{" +
+        return "AgreementRecordInfo{" +
                 "id=" + id +
                 ", memberId=" + memberId +
                 ", agreementId=" + agreementId +
-                ", agree=" + agree +
                 ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
                 '}';
     }
 

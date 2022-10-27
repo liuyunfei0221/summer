@@ -2,7 +2,6 @@ package com.blue.member.service.impl;
 
 import com.blue.auth.api.model.MemberRoleInfo;
 import com.blue.auth.api.model.RoleInfo;
-import com.blue.basic.common.base.BlueChecker;
 import com.blue.basic.model.common.PageModelRequest;
 import com.blue.basic.model.common.PageModelResponse;
 import com.blue.basic.model.exps.BlueException;
@@ -27,14 +26,13 @@ import java.util.Map;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
-import static com.blue.basic.common.base.BlueChecker.isEmpty;
-import static com.blue.basic.common.base.BlueChecker.isNull;
-import static com.blue.basic.common.base.ConstantProcessor.getSortTypeByIdentity;
-import static com.blue.basic.constant.common.ResponseElement.*;
+import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.database.common.ConditionSortProcessor.process;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_BASIC_INFO;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_REGISTRY_INFO_2_MEMBER_BASIC;
 import static java.util.Collections.emptyList;
-import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
@@ -73,19 +71,11 @@ public class MemberAuthServiceImpl implements MemberAuthService {
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final UnaryOperator<MemberBasicCondition> CONDITION_PROCESSOR = c -> {
-        if (isNull(c))
-            return new MemberBasicCondition();
+        MemberBasicCondition mbc = isNotNull(c) ? c : new MemberBasicCondition();
 
-        c.setSortAttribute(
-                ofNullable(c.getSortAttribute())
-                        .filter(BlueChecker::isNotBlank)
-                        .map(SORT_ATTRIBUTE_MAPPING::get)
-                        .filter(BlueChecker::isNotBlank)
-                        .orElseThrow(() -> new BlueException(INVALID_PARAM)));
+        process(mbc, SORT_ATTRIBUTE_MAPPING, MemberBasicSortAttribute.CREATE_TIME.column);
 
-        c.setSortType(getSortTypeByIdentity(c.getSortType()).identity);
-
-        return c;
+        return mbc;
     };
 
     /**

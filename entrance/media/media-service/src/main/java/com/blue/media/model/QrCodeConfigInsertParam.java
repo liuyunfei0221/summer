@@ -1,13 +1,13 @@
 package com.blue.media.model;
 
-import com.blue.basic.constant.media.QrCodeType;
 import com.blue.basic.inter.Asserter;
 import com.blue.basic.model.exps.BlueException;
 
 import java.io.Serializable;
 import java.util.List;
 
-import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.common.base.BlueChecker.isBlank;
+import static com.blue.basic.common.base.BlueChecker.isEmpty;
 import static com.blue.basic.common.base.ConstantProcessor.assertQrCodeType;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 
@@ -26,7 +26,7 @@ public class QrCodeConfigInsertParam implements Serializable, Asserter {
     protected String description;
 
     /**
-     * @see QrCodeType
+     * @see com.blue.basic.constant.media.QrCodeType
      */
     protected Integer type;
 

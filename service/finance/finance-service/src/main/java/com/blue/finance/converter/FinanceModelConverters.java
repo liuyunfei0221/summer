@@ -55,7 +55,7 @@ public final class FinanceModelConverters {
         if (isNull(financeFlow))
             throw new BlueException(EMPTY_PARAM);
 
-        return new FinanceFlowManagerInfo(financeFlow.getId(), financeFlow.getMemberId(), ofNullable(idAndMemberNameMapping.get(financeFlow.getMemberId())).orElse(EMPTY_VALUE.value),
+        return new FinanceFlowManagerInfo(financeFlow.getId(), financeFlow.getMemberId(), ofNullable(idAndMemberNameMapping).map(m -> m.get(financeFlow.getMemberId())).orElse(EMPTY_VALUE.value),
                 financeFlow.getOrderId(), financeFlow.getOrderNo(), financeFlow.getFlowNo(), financeFlow.getType(),
                 financeFlow.getChangeType(), financeFlow.getAmountChanged(), financeFlow.getAmountBeforeChanged(), financeFlow.getAmountAfterChanged(), financeFlow.getCreateTime());
     };

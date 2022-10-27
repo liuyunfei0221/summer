@@ -1,6 +1,5 @@
 package com.blue.auth.model;
 
-import com.blue.basic.constant.auth.CredentialType;
 import com.blue.basic.inter.Asserter;
 
 import java.io.Serializable;
@@ -26,7 +25,7 @@ public final class LoginParam implements Serializable, Asserter {
     /**
      * credential type
      *
-     * @see CredentialType
+     * @see com.blue.basic.constant.auth.CredentialType
      */
     private String credentialType;
 

@@ -12,8 +12,6 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "notice")
 public class NoticeDeploy {
 
-    private int maximumSize;
-
     private int expiresSecond;
 
     private Long id;
@@ -27,14 +25,6 @@ public class NoticeDeploy {
     private Integer type;
 
     public NoticeDeploy() {
-    }
-
-    public int getMaximumSize() {
-        return maximumSize;
-    }
-
-    public void setMaximumSize(int maximumSize) {
-        this.maximumSize = maximumSize;
     }
 
     public int getExpiresSecond() {
@@ -88,8 +78,7 @@ public class NoticeDeploy {
     @Override
     public String toString() {
         return "NoticeDeploy{" +
-                "maximumSize=" + maximumSize +
-                ", expiresSecond=" + expiresSecond +
+                "expiresSecond=" + expiresSecond +
                 ", id=" + id +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +

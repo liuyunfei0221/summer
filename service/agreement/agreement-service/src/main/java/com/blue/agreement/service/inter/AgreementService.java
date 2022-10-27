@@ -4,7 +4,6 @@ import com.blue.agreement.api.model.AgreementInfo;
 import com.blue.agreement.model.AgreementCondition;
 import com.blue.agreement.model.AgreementInsertParam;
 import com.blue.agreement.model.AgreementManagerInfo;
-import com.blue.agreement.model.AgreementUpdateParam;
 import com.blue.agreement.repository.entity.Agreement;
 import com.blue.basic.model.common.PageModelRequest;
 import com.blue.basic.model.common.PageModelResponse;
@@ -28,24 +27,7 @@ public interface AgreementService {
      * @param operatorId
      * @return
      */
-    Mono<AgreementInfo> insertAgreement(AgreementInsertParam agreementInsertParam, Long operatorId);
-
-    /**
-     * update agreement
-     *
-     * @param agreementUpdateParam
-     * @param operatorId
-     * @return
-     */
-    Mono<AgreementInfo> updateAgreement(AgreementUpdateParam agreementUpdateParam, Long operatorId);
-
-    /**
-     * delete agreement
-     *
-     * @param id
-     * @return
-     */
-    Mono<AgreementInfo> deleteAgreement(Long id);
+    AgreementInfo insertAgreement(AgreementInsertParam agreementInsertParam, Long operatorId);
 
     /**
      * expire agreement info
@@ -71,20 +53,27 @@ public interface AgreementService {
     Mono<Agreement> getAgreementMono(Long id);
 
     /**
-     * get agreement by type
+     * get newest agreement by type
      *
      * @param agreementType
      * @return
      */
-    Mono<Agreement> getAgreementByType(Integer agreementType);
+    Optional<Agreement> getNewestAgreementByType(Integer agreementType);
 
     /**
-     * get agreement info
+     * get newest agreement info
      *
      * @param agreementType
      * @return
      */
-    Mono<AgreementInfo> getAgreementInfoMonoByTypeWithCache(Integer agreementType);
+    Mono<AgreementInfo> getNewestAgreementInfoMonoByTypeWithCache(Integer agreementType);
+
+    /**
+     * select all newest agreement info
+     *
+     * @return
+     */
+    Mono<List<AgreementInfo>> selectNewestAgreementInfosMonoByAllTypeWithCache();
 
     /**
      * select agreement by page and condition

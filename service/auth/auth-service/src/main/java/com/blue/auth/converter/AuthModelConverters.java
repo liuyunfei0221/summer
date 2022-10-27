@@ -6,6 +6,7 @@ import com.blue.auth.repository.entity.*;
 import com.blue.basic.model.exps.BlueException;
 
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static com.blue.basic.common.base.BlueChecker.isNull;
@@ -22,7 +23,7 @@ import static java.util.Optional.ofNullable;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavadocDeclaration"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces"})
 public final class AuthModelConverters {
 
     /**
@@ -57,21 +58,14 @@ public final class AuthModelConverters {
         return new RoleInfo(role.getId(), role.getType(), role.getName(), role.getDescription(), role.getLevel(), role.getIsDefault());
     };
 
-    /**
-     * role -> role manager indo
-     *
-     * @param role
-     * @param idAndMemberNameMapping
-     * @return
-     */
-    public static RoleManagerInfo roleToRoleManagerInfo(Role role, Map<Long, String> idAndMemberNameMapping) {
+    public static final BiFunction<Role, Map<Long, String>, RoleManagerInfo> ROLE_2_ROLE_MANAGER_INFO_CONVERTER = (role, idAndMemberNameMapping) -> {
         if (isNull(role))
             throw new BlueException(EMPTY_PARAM);
 
         return new RoleManagerInfo(role.getId(), role.getType(), role.getName(), role.getDescription(), role.getLevel(), role.getIsDefault(),
-                role.getCreateTime(), role.getUpdateTime(), role.getCreator(), ofNullable(idAndMemberNameMapping.get(role.getCreator())).orElse(EMPTY_VALUE.value),
-                role.getUpdater(), ofNullable(idAndMemberNameMapping.get(role.getUpdater())).orElse(EMPTY_VALUE.value));
-    }
+                role.getCreateTime(), role.getUpdateTime(), role.getCreator(), ofNullable(idAndMemberNameMapping).map(m -> m.get(role.getCreator())).orElse(EMPTY_VALUE.value),
+                role.getUpdater(), ofNullable(idAndMemberNameMapping).map(m -> m.get(role.getUpdater())).orElse(EMPTY_VALUE.value));
+    };
 
     /**
      * resource insert param -> resource
@@ -118,14 +112,7 @@ public final class AuthModelConverters {
                 resource.getType(), resource.getName(), resource.getDescription());
     };
 
-    /**
-     * resource -> resource manager indo
-     *
-     * @param resource
-     * @param idAndMemberNameMapping
-     * @return
-     */
-    public static ResourceManagerInfo resourceToResourceManagerInfo(Resource resource, Map<Long, String> idAndMemberNameMapping) {
+    public static final BiFunction<Resource, Map<Long, String>, ResourceManagerInfo> RESOURCE_2_RESOURCE_MANAGER_INFO_CONVERTER = (resource, idAndMemberNameMapping) -> {
         if (isNull(resource))
             throw new BlueException(EMPTY_PARAM);
 
@@ -134,9 +121,9 @@ public final class AuthModelConverters {
 
         return new ResourceManagerInfo(resource.getId(), resource.getRequestMethod().intern(), module, relativeUri, (SLASH.identity.intern() + module + relativeUri).intern(), resource.getRelationView(), resource.getAuthenticate(),
                 resource.getRequestUnDecryption(), resource.getResponseUnEncryption(), resource.getExistenceRequestBody(), resource.getExistenceResponseBody(), getResourceTypeByIdentity(resource.getType()).disc.intern(),
-                resource.getName(), resource.getDescription(), resource.getCreateTime(), resource.getUpdateTime(), resource.getCreator(), ofNullable(idAndMemberNameMapping.get(resource.getCreator())).orElse(EMPTY_VALUE.value),
-                resource.getUpdater(), ofNullable(idAndMemberNameMapping.get(resource.getUpdater())).orElse(EMPTY_VALUE.value));
-    }
+                resource.getName(), resource.getDescription(), resource.getCreateTime(), resource.getUpdateTime(), resource.getCreator(), ofNullable(idAndMemberNameMapping).map(m -> m.get(resource.getCreator())).orElse(EMPTY_VALUE.value),
+                resource.getUpdater(), ofNullable(idAndMemberNameMapping).map(m -> m.get(resource.getUpdater())).orElse(EMPTY_VALUE.value));
+    };
 
     /**
      * credential -> credential info

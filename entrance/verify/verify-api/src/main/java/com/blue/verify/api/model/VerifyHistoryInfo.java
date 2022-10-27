@@ -1,6 +1,5 @@
 package com.blue.verify.api.model;
 
-import com.blue.basic.constant.verify.VerifyBusinessType;
 import com.blue.basic.serializer.Long2StringSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -25,7 +24,7 @@ public final class VerifyHistoryInfo implements Serializable {
     private String verifyType;
 
     /**
-     * @see VerifyBusinessType
+     * @see com.blue.basic.constant.verify.VerifyBusinessType
      */
     private String businessType;
 

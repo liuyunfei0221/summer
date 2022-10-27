@@ -7,6 +7,7 @@ import com.blue.base.repository.entity.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static com.blue.basic.common.base.BlueChecker.*;
@@ -24,7 +25,7 @@ import static java.util.stream.Collectors.toList;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavadocDeclaration"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces"})
 public final class BaseModelConverters {
 
     /**
@@ -134,21 +135,14 @@ public final class BaseModelConverters {
         return style;
     };
 
-    /**
-     * style -> style manager indo
-     *
-     * @param style
-     * @param idAndMemberNameMapping
-     * @return
-     */
-    public static StyleManagerInfo styleToStyleManagerInfo(Style style, Map<Long, String> idAndMemberNameMapping) {
+    public static final BiFunction<Style, Map<Long, String>, StyleManagerInfo> STYLE_2_STYLE_MANAGER_INFO_CONVERTER = (style, idAndMemberNameMapping) -> {
         if (isNull(style))
             throw new BlueException(EMPTY_PARAM);
 
         return new StyleManagerInfo(style.getId(), style.getName(), style.getAttributes(), style.getType(), style.getIsActive(), style.getStatus(),
-                style.getCreateTime(), style.getUpdateTime(), style.getCreator(), ofNullable(idAndMemberNameMapping.get(style.getCreator())).orElse(EMPTY_VALUE.value),
-                style.getUpdater(), ofNullable(idAndMemberNameMapping.get(style.getUpdater())).orElse(EMPTY_VALUE.value));
-    }
+                style.getCreateTime(), style.getUpdateTime(), style.getCreator(), ofNullable(idAndMemberNameMapping).map(m -> m.get(style.getCreator())).orElse(EMPTY_VALUE.value),
+                style.getUpdater(), ofNullable(idAndMemberNameMapping).map(m -> m.get(style.getUpdater())).orElse(EMPTY_VALUE.value));
+    };
 
     /**
      * type -> type info

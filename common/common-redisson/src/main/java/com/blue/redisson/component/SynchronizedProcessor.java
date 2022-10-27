@@ -88,14 +88,15 @@ public final class SynchronizedProcessor {
                         if (validator.test(res = firstSup.get()))
                             return res;
 
-                        if (validator.test(res = secondSup.get())) {
+                        if (validator.test(res = secondSup.get()))
                             firstSupStorage.accept(res);
-                            return res;
-                        }
 
-                        throw new BlueException(INTERNAL_SERVER_ERROR);
+                        return res;
                     } catch (Exception e) {
                         LOGGER.error("handle failed, syncKey = {}, firstSup = {}, secondSup = {}, firstSupStorage = {}, validator = {}, e = {}", syncKey, firstSup, secondSup, firstSupStorage, validator, e);
+                        if (e instanceof RuntimeException)
+                            throw (RuntimeException) e;
+
                         throw new BlueException(INTERNAL_SERVER_ERROR);
                     } finally {
                         if (isNotNull(lock) && tryLock)
@@ -185,6 +186,9 @@ public final class SynchronizedProcessor {
 
             if (isNotNull(fallbackSup))
                 return fallbackSup.get();
+
+            if (e instanceof RuntimeException)
+                throw (RuntimeException) e;
 
             throw new BlueException(INTERNAL_SERVER_ERROR);
         } finally {

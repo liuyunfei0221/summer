@@ -39,7 +39,6 @@
         <module>common/common-mongo</module>
         <module>common/common-pulsar</module>
         <module>common/common-qr</module>
-        <module>common/common-rdatabase</module>
         <module>common/common-redis</module>
         <module>common/common-redisson</module>
         <module>common/common-seata</module>

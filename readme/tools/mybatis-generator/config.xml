@@ -43,7 +43,7 @@
         </javaClientGenerator>
 
         <!-- tables -->
-        <table tableName="member_agreement_record" domainObjectName="MemberAgreementRecord"/>
+        <table tableName="agreement" domainObjectName="Agreement"/>
 
     </context>
 </generatorConfiguration>

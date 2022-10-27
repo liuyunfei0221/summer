@@ -42,8 +42,7 @@ import java.util.stream.Stream;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.GSON;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.basic.common.base.ConstantProcessor.assertBulletinType;
-import static com.blue.basic.common.base.ConstantProcessor.assertNoticeType;
+import static com.blue.basic.common.base.ConstantProcessor.*;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_JSON;
 import static com.blue.basic.constant.common.Symbol.PERCENT;
@@ -87,7 +86,7 @@ public class NoticeServiceImpl implements NoticeService {
 
     public NoticeServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BlueIdentityProcessor blueIdentityProcessor,
                              NoticeMapper noticeMapper, StringRedisTemplate stringRedisTemplate, SynchronizedProcessor synchronizedProcessor,
-                             BlueRedisConfig blueRedisConfig, ExecutorService executorService, NoticeDeploy noticeDeploy) {
+                             ExecutorService executorService, BlueRedisConfig blueRedisConfig, NoticeDeploy noticeDeploy) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.noticeMapper = noticeMapper;
@@ -97,7 +96,7 @@ public class NoticeServiceImpl implements NoticeService {
         this.expireDuration = Duration.of(blueRedisConfig.getEntryTtl(), SECONDS);
 
         CaffeineConf caffeineConf = new CaffeineConfParams(
-                noticeDeploy.getMaximumSize(), Duration.of(noticeDeploy.getExpiresSecond(), SECONDS),
+                NoticeType.values().length, Duration.of(noticeDeploy.getExpiresSecond(), SECONDS),
                 AFTER_WRITE, executorService);
 
         LOCAL_CACHE = generateCache(caffeineConf);
@@ -148,8 +147,7 @@ public class NoticeServiceImpl implements NoticeService {
                     noticeInfo -> NOTICE_INFO_REDIS_SETTER.accept(t, noticeInfo), BlueChecker::isNotNull);
 
     private final Function<Integer, NoticeInfo> NOTICE_INFO_WITH_ALL_CACHE_GETTER = t -> {
-        if (isNull(t))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "type can't be null");
+        assertNoticeType(t, false);
 
         return LOCAL_CACHE.get(t, NOTICE_INFO_WITH_REDIS_CACHE_GETTER);
     };
@@ -158,17 +156,16 @@ public class NoticeServiceImpl implements NoticeService {
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final UnaryOperator<NoticeCondition> CONDITION_PROCESSOR = c -> {
-        if (isNull(c))
-            return new NoticeCondition();
+        NoticeCondition nc = isNotNull(c) ? c : new NoticeCondition();
 
-        process(c, SORT_ATTRIBUTE_MAPPING, NoticeSortAttribute.ID.column);
+        process(nc, SORT_ATTRIBUTE_MAPPING, NoticeSortAttribute.CREATE_TIME.column);
 
-        ofNullable(c.getTitleLike())
-                .filter(StringUtils::hasText).ifPresent(titleLike -> c.setTitleLike(PERCENT.identity + titleLike + PERCENT.identity));
-        ofNullable(c.getLinkLike())
-                .filter(StringUtils::hasText).ifPresent(linkLike -> c.setLinkLike(PERCENT.identity + linkLike + PERCENT.identity));
+        ofNullable(nc.getTitleLike())
+                .filter(StringUtils::hasText).ifPresent(titleLike -> nc.setTitleLike(PERCENT.identity + titleLike + PERCENT.identity));
+        ofNullable(nc.getLinkLike())
+                .filter(StringUtils::hasText).ifPresent(linkLike -> nc.setLinkLike(PERCENT.identity + linkLike + PERCENT.identity));
 
-        return c;
+        return nc;
     };
 
     private static final Function<List<Notice>, List<Long>> OPERATORS_GETTER = ns -> {
@@ -207,7 +204,7 @@ public class NoticeServiceImpl implements NoticeService {
                 .map(Notice::getId)
                 .ifPresent(eid -> {
                     if (!id.equals(eid))
-                        throw new BlueException(NOTICE_TYPE_ALREADY_EXIST, new String[]{String.valueOf(p.getType())});
+                        throw new BlueException(NOTICE_TYPE_ALREADY_EXIST, new String[]{getNoticeTypeByIdentity(p.getType()).disc});
                 });
 
         Notice notice = noticeMapper.selectByPrimaryKey(id);
@@ -296,6 +293,7 @@ public class NoticeServiceImpl implements NoticeService {
      * @return
      */
     @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public NoticeInfo updateNotice(NoticeUpdateParam noticeUpdateParam, Long operatorId) {
         LOGGER.info("NoticeInfo updateNotice(NoticeUpdateParam noticeUpdateParam, Long operatorId), noticeUpdateParam = {}, operatorId = {}",
                 noticeUpdateParam, operatorId);
@@ -326,6 +324,7 @@ public class NoticeServiceImpl implements NoticeService {
      * @return
      */
     @Override
+    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public NoticeInfo deleteNotice(Long id) {
         LOGGER.info("NoticeInfo deleteNotice(Long id), id = {}", id);
         if (isInvalidIdentity(id))
@@ -467,7 +466,7 @@ public class NoticeServiceImpl implements NoticeService {
                                     .flatMap(memberBasicInfos -> {
                                         Map<Long, String> idAndMemberNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(notices.stream().map(n ->
-                                                noticeToNoticeManagerInfo(n, idAndMemberNameMapping)).collect(toList()));
+                                                NOTICES_2_NOTICE_MANAGER_INFOS_CONVERTER.apply(n, idAndMemberNameMapping)).collect(toList()));
                                     }).flatMap(noticeManagerInfos ->
                                             just(new PageModelResponse<>(noticeManagerInfos, count)))
                             :

@@ -68,12 +68,11 @@ public class EventRecordServiceImpl implements EventRecordService {
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final UnaryOperator<EventRecordCondition> CONDITION_PROCESSOR = c -> {
-        if (isNull(c))
-            return new EventRecordCondition();
+        EventRecordCondition erc = isNotNull(c) ? c : new EventRecordCondition();
 
-        process(c, SORT_ATTRIBUTE_MAPPING, EventRecordSortAttribute.ID.column);
+        process(erc, SORT_ATTRIBUTE_MAPPING, EventRecordSortAttribute.CREATE_TIME.column);
 
-        return c;
+        return erc;
     };
 
     /**

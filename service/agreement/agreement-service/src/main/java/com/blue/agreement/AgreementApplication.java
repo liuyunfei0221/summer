@@ -1,8 +1,10 @@
 package com.blue.agreement;
 
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.blue.basic.anno.EnableBlueLifecycle;
+import com.blue.basic.anno.SummerSpringBootApplication;
+import com.blue.database.anno.EnableBlueDataAccess;
+import org.apache.dubbo.config.spring.context.annotation.DubboComponentScan;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 
 import static org.springframework.boot.SpringApplication.run;
 
@@ -11,15 +13,11 @@ import static org.springframework.boot.SpringApplication.run;
  *
  * @author liuyunfei
  */
-//@SummerSpringBootApplication
-@SpringBootApplication
+@SummerSpringBootApplication
 @EnableDiscoveryClient
-//@EnableBlueLifecycle(basePackages = "com.blue.agreement.event")
-//@DubboComponentScan(basePackages = "com.blue.agreement.remote")
-
-@EnableR2dbcRepositories(basePackages = {"com.blue.agreement.repository.template"})
-//@EnableTransactionManagement
-//@EnableR2dbcAuditing
+@EnableBlueLifecycle(basePackages = "com.blue.agreement.event")
+@EnableBlueDataAccess(basePackages = "com.blue.agreement.repository.mapper")
+@DubboComponentScan(basePackages = "com.blue.agreement.remote")
 public class AgreementApplication {
 
     public static void main(String[] args) {

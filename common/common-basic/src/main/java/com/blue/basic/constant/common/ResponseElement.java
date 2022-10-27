@@ -105,9 +105,13 @@ public enum ResponseElement {
     ILLEGAL_REQUEST(HttpStatus.NOT_ACCEPTABLE.value(), 400900002, "Illegal request"),
     FILE_NOT_EXIST(HttpStatus.BAD_REQUEST.value(), 400900003, "File not exist"),
     FILE_INVALID(HttpStatus.BAD_REQUEST.value(), 400900004, "Invalid file: %s"),
-    INVALID_EMAIL_ADDRESS(HttpStatus.BAD_REQUEST.value(), 400900005, "Invalid email address: %s");
+    INVALID_EMAIL_ADDRESS(HttpStatus.BAD_REQUEST.value(), 400900005, "Invalid email address: %s"),
     //</editor-fold>
 
+    //<editor-fold desc="agreement">
+    AGREEMENT_TITLE_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 401000001, "Agreement title already exists"),
+    AGREEMENT_TYPE_ALREADY_EXIST(HttpStatus.BAD_REQUEST.value(), 401000002, "Agreement type already exists");
+    //</editor-fold>
 
     /**
      * http status

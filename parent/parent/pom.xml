@@ -47,9 +47,7 @@
         <java-jwt.version>4.2.0</java-jwt.version>
         <kaptcha.version>2.3.2</kaptcha.version>
         <mysql-connector-java.version>8.0.31</mysql-connector-java.version>
-        <postgresql.version>42.5.0</postgresql.version>
         <pulsar.version>2.10.2</pulsar.version>
-        <r2dbc-postgresql.version>1.0.0.RC1</r2dbc-postgresql.version>
         <redisson.version>3.17.7</redisson.version>
         <sharding-jdbc.version>4.1.1</sharding-jdbc.version>
         <seata-spring.version>1.4.2</seata-spring.version>

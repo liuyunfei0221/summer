@@ -1,7 +1,5 @@
 package com.blue.auth.repository.entity;
 
-import com.blue.basic.constant.auth.CredentialType;
-
 import java.io.Serializable;
 
 import static com.blue.basic.common.base.BlueChecker.isNull;
@@ -26,7 +24,7 @@ public final class Credential implements Serializable {
     /**
      * credential type: SV-SMS_VERIFY, PP-PHONE_PWD, EP-EMAIL_PWD, WE-WECHAT, MP-MINI_PRO, NLI-NOT_LOGGED_IN
      *
-     * @see CredentialType
+     * @see com.blue.basic.constant.auth.CredentialType
      */
     private String type;
 

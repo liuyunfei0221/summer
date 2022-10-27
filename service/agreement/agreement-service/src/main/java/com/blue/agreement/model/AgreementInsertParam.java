@@ -6,9 +6,7 @@ import com.blue.basic.model.exps.BlueException;
 import java.io.Serializable;
 
 import static com.blue.basic.common.base.BlueChecker.isBlank;
-import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.ConstantProcessor.assertAgreementType;
-import static com.blue.basic.common.base.ConstantProcessor.assertStatus;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 
 /**
@@ -17,32 +15,26 @@ import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
-public class AgreementInsertParam implements Serializable, Asserter {
+public final class AgreementInsertParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = 15008478386309529L;
 
-    protected String title;
+    private String title;
 
-    protected String content;
+    private String content;
 
-    protected String link;
+    private String link;
 
-    protected Integer type;
-
-    protected Integer status;
-
-    protected Integer priority;
+    private Integer type;
 
     public AgreementInsertParam() {
     }
 
-    public AgreementInsertParam(String title, String content, String link, Integer type, Integer status, Integer priority) {
+    public AgreementInsertParam(String title, String content, String link, Integer type) {
         this.title = title;
         this.content = content;
         this.link = link;
         this.type = type;
-        this.status = status;
-        this.priority = priority;
     }
 
     @Override
@@ -54,9 +46,6 @@ public class AgreementInsertParam implements Serializable, Asserter {
         if (isBlank(this.link))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "link can't be blank");
         assertAgreementType(this.type, false);
-        assertStatus(this.status, false);
-        if (isNull(this.priority))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "priority can't be blank");
     }
 
     public String getTitle() {
@@ -91,22 +80,6 @@ public class AgreementInsertParam implements Serializable, Asserter {
         this.type = type;
     }
 
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public Integer getPriority() {
-        return priority;
-    }
-
-    public void setPriority(Integer priority) {
-        this.priority = priority;
-    }
-
     @Override
     public String toString() {
         return "AgreementInsertParam{" +
@@ -114,8 +87,6 @@ public class AgreementInsertParam implements Serializable, Asserter {
                 ", content='" + content + '\'' +
                 ", link='" + link + '\'' +
                 ", type=" + type +
-                ", status=" + status +
-                ", priority=" + priority +
                 '}';
     }
 

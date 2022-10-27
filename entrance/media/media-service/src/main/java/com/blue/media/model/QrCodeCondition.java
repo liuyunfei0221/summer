@@ -1,6 +1,5 @@
 package com.blue.media.model;
 
-import com.blue.basic.constant.media.QrCodeType;
 import com.blue.basic.model.common.SortCondition;
 import com.blue.media.constant.QrCodeConfigSortAttribute;
 
@@ -25,7 +24,7 @@ public final class QrCodeCondition extends SortCondition implements Serializable
     private String descriptionLike;
 
     /**
-     * @see QrCodeType
+     * @see com.blue.basic.constant.media.QrCodeType
      */
     private Integer type;
 

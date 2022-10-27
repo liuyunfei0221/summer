@@ -222,12 +222,11 @@ public class RealNameServiceImpl implements RealNameService {
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final UnaryOperator<RealNameCondition> CONDITION_PROCESSOR = c -> {
-        if (isNull(c))
-            return new RealNameCondition();
+        RealNameCondition rnc = isNotNull(c) ? c : new RealNameCondition();
 
-        process(c, SORT_ATTRIBUTE_MAPPING, RealNameSortAttribute.CREATE_TIME.column);
+        process(rnc, SORT_ATTRIBUTE_MAPPING, RealNameSortAttribute.CREATE_TIME.column);
 
-        return c;
+        return rnc;
     };
 
     /**

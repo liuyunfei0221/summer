@@ -23,18 +23,21 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.util.*;
-import java.util.function.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.database.common.ConditionSortProcessor.process;
 import static com.blue.basic.common.base.ConstantProcessor.assertResourceType;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
 import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.Symbol.PERCENT;
+import static com.blue.database.common.ConditionSortProcessor.process;
 import static com.blue.marketing.converter.MarketingModelConverters.*;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
@@ -73,14 +76,14 @@ public class RewardServiceImpl implements RewardService {
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final UnaryOperator<RewardCondition> CONDITION_PROCESSOR = c -> {
-        if (isNull(c))
-            return new RewardCondition();
+        RewardCondition rc = isNotNull(c) ? c : new RewardCondition();
 
-        process(c, SORT_ATTRIBUTE_MAPPING, RewardSortAttribute.ID.column);
-        ofNullable(c.getNameLike())
-                .filter(StringUtils::hasText).ifPresent(nameLike -> c.setNameLike(PERCENT.identity + nameLike + PERCENT.identity));
+        process(rc, SORT_ATTRIBUTE_MAPPING, RewardSortAttribute.CREATE_TIME.column);
 
-        return c;
+        ofNullable(rc.getNameLike())
+                .filter(StringUtils::hasText).ifPresent(nameLike -> rc.setNameLike(PERCENT.identity + nameLike + PERCENT.identity));
+
+        return rc;
     };
 
     private static final Function<List<Reward>, List<Long>> OPERATORS_GETTER = rewards -> {
@@ -382,7 +385,7 @@ public class RewardServiceImpl implements RewardService {
                                     .flatMap(memberBasicInfos -> {
                                         Map<Long, String> idAndMemberNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(rewards.stream().map(r ->
-                                                rewardToRewardManagerInfo(r, idAndMemberNameMapping)).collect(toList()));
+                                                REWARD_2_REWARD_MANAGER_INFO_CONVERTER.apply(r, idAndMemberNameMapping)).collect(toList()));
                                     }).flatMap(rewardManagerInfos ->
                                             just(new PageModelResponse<>(rewardManagerInfos, count)))
                             :

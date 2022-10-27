@@ -33,9 +33,6 @@ import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.GSON;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.basic.constant.common.SyncKey.DEFAULT_ROLE_REFRESH_SYNC;
-import static com.blue.basic.constant.common.SyncKey.ROLES_REFRESH_SYNC;
-import static com.blue.database.common.ConditionSortProcessor.process;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
 import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
 import static com.blue.basic.constant.common.CacheKey.DEFAULT_ROLE;
@@ -44,6 +41,9 @@ import static com.blue.basic.constant.common.Default.DEFAULT;
 import static com.blue.basic.constant.common.Default.NOT_DEFAULT;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.Symbol.PERCENT;
+import static com.blue.basic.constant.common.SyncKey.DEFAULT_ROLE_REFRESH_SYNC;
+import static com.blue.basic.constant.common.SyncKey.ROLES_REFRESH_SYNC;
+import static com.blue.database.common.ConditionSortProcessor.process;
 import static java.util.Collections.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -143,15 +143,14 @@ public class RoleServiceImpl implements RoleService {
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final UnaryOperator<RoleCondition> CONDITION_PROCESSOR = c -> {
-        if (isNull(c))
-            return new RoleCondition();
+        RoleCondition rc = isNotNull(c) ? c : new RoleCondition();
 
-        process(c, SORT_ATTRIBUTE_MAPPING, RoleSortAttribute.CREATE_TIME.column);
+        process(rc, SORT_ATTRIBUTE_MAPPING, RoleSortAttribute.CREATE_TIME.column);
 
-        ofNullable(c.getNameLike())
-                .filter(StringUtils::hasText).ifPresent(nameLike -> c.setNameLike(PERCENT.identity + nameLike + PERCENT.identity));
+        ofNullable(rc.getNameLike())
+                .filter(StringUtils::hasText).ifPresent(nameLike -> rc.setNameLike(PERCENT.identity + nameLike + PERCENT.identity));
 
-        return c;
+        return rc;
     };
 
     private static final Function<List<Role>, List<Long>> OPERATORS_GETTER = rs -> {
@@ -364,7 +363,7 @@ public class RoleServiceImpl implements RoleService {
             idAndMemberNameMapping = emptyMap();
         }
 
-        return roleToRoleManagerInfo(newDefaultRole, idAndMemberNameMapping);
+        return ROLE_2_ROLE_MANAGER_INFO_CONVERTER.apply(newDefaultRole, idAndMemberNameMapping);
     }
 
     /**
@@ -508,7 +507,7 @@ public class RoleServiceImpl implements RoleService {
                                     .flatMap(memberBasicInfos -> {
                                         Map<Long, String> idAndMemberNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(roles.stream().map(r ->
-                                                roleToRoleManagerInfo(r, idAndMemberNameMapping)).collect(toList()));
+                                                ROLE_2_ROLE_MANAGER_INFO_CONVERTER.apply(r, idAndMemberNameMapping)).collect(toList()));
                                     }).flatMap(resourceManagerInfos ->
                                             just(new PageModelResponse<>(resourceManagerInfos, count)))
                             :

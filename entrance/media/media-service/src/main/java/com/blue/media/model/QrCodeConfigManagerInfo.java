@@ -1,7 +1,6 @@
 package com.blue.media.model;
 
 import com.blue.auth.api.model.RoleInfo;
-import com.blue.basic.constant.media.QrCodeType;
 import com.blue.basic.serializer.Long2StringSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -26,7 +25,7 @@ public final class QrCodeConfigManagerInfo implements Serializable {
     private String description;
 
     /**
-     * @see QrCodeType
+     * @see com.blue.basic.constant.media.QrCodeType
      */
     private Integer type;
 

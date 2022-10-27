@@ -12,6 +12,7 @@ import com.blue.portal.repository.entity.Notice;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static com.blue.basic.common.base.BlueChecker.isNotNull;
@@ -29,7 +30,7 @@ import static java.util.stream.Collectors.toList;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "JavadocDeclaration", "unused"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "unused"})
 public final class PortalModelConverters {
 
     /**
@@ -103,8 +104,6 @@ public final class PortalModelConverters {
             throw new BlueException(EMPTY_PARAM);
         param.asserts();
 
-        Long stamp = TIME_STAMP_GETTER.get();
-
         Notice notice = new Notice();
 
         notice.setTitle(param.getTitle());
@@ -112,43 +111,31 @@ public final class PortalModelConverters {
         notice.setLink(param.getLink());
         notice.setType(param.getType());
 
+        Long stamp = TIME_STAMP_GETTER.get();
+
         notice.setCreateTime(stamp);
         notice.setUpdateTime(stamp);
 
         return notice;
     };
 
-    /**
-     * bulletin -> bulletin manager info
-     *
-     * @param bulletin
-     * @param idAndMemberNameMapping
-     * @return
-     */
-    public static BulletinManagerInfo bulletinToBulletinManagerInfo(Bulletin bulletin, Map<Long, String> idAndMemberNameMapping) {
+    public static final BiFunction<Bulletin, Map<Long, String>, BulletinManagerInfo> BULLETIN_2_BULLETIN_MANAGER_INFO_CONVERTER = (bulletin, idAndMemberNameMapping) -> {
         if (isNull(bulletin))
             throw new BlueException(EMPTY_PARAM);
 
         return new BulletinManagerInfo(bulletin.getId(), bulletin.getTitle(), bulletin.getContent(), bulletin.getLink(), bulletin.getType(), bulletin.getStatus(),
                 bulletin.getPriority(), bulletin.getActiveTime(), bulletin.getExpireTime(), bulletin.getCreateTime(), bulletin.getUpdateTime(),
-                bulletin.getCreator(), ofNullable(idAndMemberNameMapping.get(bulletin.getCreator())).orElse(EMPTY_VALUE.value), bulletin.getUpdater(),
-                ofNullable(idAndMemberNameMapping.get(bulletin.getUpdater())).orElse(EMPTY_VALUE.value));
-    }
+                bulletin.getCreator(), ofNullable(idAndMemberNameMapping).map(m -> m.get(bulletin.getCreator())).orElse(EMPTY_VALUE.value), bulletin.getUpdater(),
+                ofNullable(idAndMemberNameMapping).map(m -> m.get(bulletin.getUpdater())).orElse(EMPTY_VALUE.value));
+    };
 
-    /**
-     * notice -> notice manager info
-     *
-     * @param notice
-     * @param idAndMemberNameMapping
-     * @return
-     */
-    public static NoticeManagerInfo noticeToNoticeManagerInfo(Notice notice, Map<Long, String> idAndMemberNameMapping) {
+    public static final BiFunction<Notice, Map<Long, String>, NoticeManagerInfo> NOTICES_2_NOTICE_MANAGER_INFOS_CONVERTER = (notice, idAndMemberNameMapping) -> {
         if (isNull(notice))
             throw new BlueException(EMPTY_PARAM);
 
         return new NoticeManagerInfo(notice.getId(), notice.getTitle(), notice.getContent(), notice.getLink(), notice.getType(), notice.getCreateTime(), notice.getUpdateTime(),
-                notice.getCreator(), ofNullable(idAndMemberNameMapping.get(notice.getCreator())).orElse(EMPTY_VALUE.value), notice.getUpdater(),
-                ofNullable(idAndMemberNameMapping.get(notice.getUpdater())).orElse(EMPTY_VALUE.value));
-    }
+                notice.getCreator(), ofNullable(idAndMemberNameMapping).map(m -> m.get(notice.getCreator())).orElse(EMPTY_VALUE.value), notice.getUpdater(),
+                ofNullable(idAndMemberNameMapping).map(m -> m.get(notice.getUpdater())).orElse(EMPTY_VALUE.value));
+    };
 
 }

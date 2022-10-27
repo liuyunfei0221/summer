@@ -1,7 +1,5 @@
 package com.blue.agreement.repository.entity;
 
-import org.springframework.data.annotation.Id;
-
 import java.io.Serializable;
 
 @SuppressWarnings("unused")
@@ -9,7 +7,6 @@ public class Agreement implements Serializable {
 
     private static final long serialVersionUID = 5643505155711301981L;
 
-    @Id
     private Long id;
 
     private String title;
@@ -20,17 +17,9 @@ public class Agreement implements Serializable {
 
     private Integer type;
 
-    private Integer status;
-
-    private Integer priority;
-
     private Long createTime;
 
-    private Long updateTime;
-
     private Long creator;
-
-    private Long updater;
 
     public Long getId() {
         return id;
@@ -45,7 +34,7 @@ public class Agreement implements Serializable {
     }
 
     public void setTitle(String title) {
-        this.title = title == null ? null : title.trim();
+        this.title = title;
     }
 
     public String getContent() {
@@ -53,7 +42,7 @@ public class Agreement implements Serializable {
     }
 
     public void setContent(String content) {
-        this.content = content == null ? null : content.trim();
+        this.content = content;
     }
 
     public String getLink() {
@@ -61,7 +50,7 @@ public class Agreement implements Serializable {
     }
 
     public void setLink(String link) {
-        this.link = link == null ? null : link.trim();
+        this.link = link;
     }
 
     public Integer getType() {
@@ -72,36 +61,12 @@ public class Agreement implements Serializable {
         this.type = type;
     }
 
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public Integer getPriority() {
-        return priority;
-    }
-
-    public void setPriority(Integer priority) {
-        this.priority = priority;
-    }
-
     public Long getCreateTime() {
         return createTime;
     }
 
     public void setCreateTime(Long createTime) {
         this.createTime = createTime;
-    }
-
-    public Long getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Long updateTime) {
-        this.updateTime = updateTime;
     }
 
     public Long getCreator() {
@@ -112,14 +77,6 @@ public class Agreement implements Serializable {
         this.creator = creator;
     }
 
-    public Long getUpdater() {
-        return updater;
-    }
-
-    public void setUpdater(Long updater) {
-        this.updater = updater;
-    }
-
     @Override
     public String toString() {
         return "Agreement{" +
@@ -128,12 +85,8 @@ public class Agreement implements Serializable {
                 ", content='" + content + '\'' +
                 ", link='" + link + '\'' +
                 ", type=" + type +
-                ", status=" + status +
-                ", priority=" + priority +
                 ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
                 ", creator=" + creator +
-                ", updater=" + updater +
                 '}';
     }
 

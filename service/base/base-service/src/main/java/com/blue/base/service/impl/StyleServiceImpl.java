@@ -96,7 +96,7 @@ public class StyleServiceImpl implements StyleService {
         this.expireDuration = Duration.of(blueRedisConfig.getEntryTtl(), SECONDS);
 
         CaffeineConf caffeineConf = new CaffeineConfParams(
-                caffeineDeploy.getStyleMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
+                StyleType.values().length, Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
                 AFTER_WRITE, executorService);
 
         LOCAL_CACHE = generateCache(caffeineConf);
@@ -120,31 +120,31 @@ public class StyleServiceImpl implements StyleService {
         LOCAL_CACHE.invalidate(type);
     };
 
-    private final Function<Integer, Style> ACTIVE_STYLE_DB_GETTER = type -> {
-        assertStyleType(type, false);
+    private final Function<Integer, Style> ACTIVE_STYLE_DB_GETTER = t -> {
+        assertStyleType(t, false);
 
-        List<Style> activeStyles = this.selectStyleByTypeAndActive(type, TRUE.bool);
-        LOGGER.info("ACTIVE_STYLE_INFO_DB_GETTER, activeStyles = {}, type = {}", activeStyles, type);
+        List<Style> activeStyles = this.selectStyleByTypeAndActive(t, TRUE.bool);
+        LOGGER.info("ACTIVE_STYLE_INFO_DB_GETTER, activeStyles = {}, t = {}", activeStyles, t);
 
         if (isEmpty(activeStyles))
             throw new BlueException(DATA_NOT_EXIST);
 
         if (activeStyles.size() > 1)
-            LOGGER.error("active style by type more than 1, type = {}", type);
+            LOGGER.error("active style by type more than 1, t = {}", t);
 
         return activeStyles.get(0);
     };
 
-    private final Function<Integer, StyleInfo> ACTIVE_STYLE_INFO_DB_GETTER = type ->
-            STYLE_2_STYLE_INFO_CONVERTER.apply(ACTIVE_STYLE_DB_GETTER.apply(type));
+    private final Function<Integer, StyleInfo> ACTIVE_STYLE_INFO_DB_GETTER = t ->
+            STYLE_2_STYLE_INFO_CONVERTER.apply(ACTIVE_STYLE_DB_GETTER.apply(t));
 
-    private final Function<Integer, StyleInfo> ACTIVE_STYLE_INFO_REDIS_GETTER = type ->
-            ofNullable(stringRedisTemplate.opsForValue().get(STYLE_CACHE_KEY_GENERATOR.apply(type)))
+    private final Function<Integer, StyleInfo> ACTIVE_STYLE_INFO_REDIS_GETTER = t ->
+            ofNullable(stringRedisTemplate.opsForValue().get(STYLE_CACHE_KEY_GENERATOR.apply(t)))
                     .map(s -> GSON.fromJson(s, StyleInfo.class)).orElse(null);
 
-    private final BiConsumer<Integer, StyleInfo> ACTIVE_STYLE_INFO_REDIS_SETTER = (type, styleInfo) -> {
-        REDIS_CACHE_DELETER.accept(type);
-        stringRedisTemplate.opsForValue().set(STYLE_CACHE_KEY_GENERATOR.apply(type), GSON.toJson(styleInfo), expireDuration);
+    private final BiConsumer<Integer, StyleInfo> ACTIVE_STYLE_INFO_REDIS_SETTER = (t, si) -> {
+        REDIS_CACHE_DELETER.accept(t);
+        stringRedisTemplate.opsForValue().set(STYLE_CACHE_KEY_GENERATOR.apply(t), GSON.toJson(si), expireDuration);
     };
 
     private final Function<Integer, StyleInfo> ACTIVE_STYLE_INFO_WITH_REDIS_CACHE_GETTER = type ->
@@ -152,26 +152,24 @@ public class StyleServiceImpl implements StyleService {
                     () -> ACTIVE_STYLE_INFO_REDIS_GETTER.apply(type), () -> ACTIVE_STYLE_INFO_DB_GETTER.apply(type),
                     bulletinInfos -> ACTIVE_STYLE_INFO_REDIS_SETTER.accept(type, bulletinInfos), BlueChecker::isNotNull);
 
-    private final Function<Integer, StyleInfo> ACTIVE_STYLE_INFO_WITH_ALL_CACHE_GETTER = type -> {
-        if (isNull(type))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "type can't be null");
+    private final Function<Integer, StyleInfo> ACTIVE_STYLE_INFO_WITH_ALL_CACHE_GETTER = t -> {
+        assertStyleType(t, false);
 
-        return LOCAL_CACHE.get(type, ACTIVE_STYLE_INFO_WITH_REDIS_CACHE_GETTER);
+        return LOCAL_CACHE.get(t, ACTIVE_STYLE_INFO_WITH_REDIS_CACHE_GETTER);
     };
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(StyleSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final UnaryOperator<StyleCondition> CONDITION_PROCESSOR = c -> {
-        if (isNull(c))
-            return new StyleCondition();
+        StyleCondition sc = isNotNull(c) ? c : new StyleCondition();
 
-        process(c, SORT_ATTRIBUTE_MAPPING, StyleSortAttribute.ID.column);
+        process(sc, SORT_ATTRIBUTE_MAPPING, StyleSortAttribute.CREATE_TIME.column);
 
-        ofNullable(c.getNameLike())
-                .filter(StringUtils::hasText).ifPresent(titleLike -> c.setNameLike(PERCENT.identity + titleLike + PERCENT.identity));
+        ofNullable(sc.getNameLike())
+                .filter(StringUtils::hasText).ifPresent(titleLike -> sc.setNameLike(PERCENT.identity + titleLike + PERCENT.identity));
 
-        return c;
+        return sc;
     };
 
     private static final Function<List<Style>, List<Long>> OPERATORS_GETTER = styles -> {
@@ -383,7 +381,7 @@ public class StyleServiceImpl implements StyleService {
             idAndMemberNameMapping = emptyMap();
         }
 
-        return styleToStyleManagerInfo(newActiveStyle, idAndMemberNameMapping);
+        return STYLE_2_STYLE_MANAGER_INFO_CONVERTER.apply(newActiveStyle, idAndMemberNameMapping);
     }
 
     /**
@@ -519,7 +517,7 @@ public class StyleServiceImpl implements StyleService {
                                     .flatMap(memberBasicInfos -> {
                                         Map<Long, String> idAndMemberNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(styles.stream().map(s ->
-                                                styleToStyleManagerInfo(s, idAndMemberNameMapping)).collect(toList()));
+                                                STYLE_2_STYLE_MANAGER_INFO_CONVERTER.apply(s, idAndMemberNameMapping)).collect(toList()));
                                     }).flatMap(styleManagerInfos ->
                                             just(new PageModelResponse<>(styleManagerInfos, count)))
                             :

@@ -9,10 +9,7 @@ import com.blue.marketing.api.model.RewardDateRelationInfo;
 import com.blue.marketing.api.model.RewardDateRelationManagerInfo;
 import com.blue.marketing.api.model.RewardInfo;
 import com.blue.marketing.constant.RewardDateRelationSortAttribute;
-import com.blue.marketing.model.RewardDateRelationBatchInsertParam;
-import com.blue.marketing.model.RewardDateRelationCondition;
-import com.blue.marketing.model.RewardDateRelationInsertParam;
-import com.blue.marketing.model.RewardDateRelationUpdateParam;
+import com.blue.marketing.model.*;
 import com.blue.marketing.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.marketing.repository.entity.Reward;
 import com.blue.marketing.repository.entity.RewardDateRelation;
@@ -79,12 +76,11 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final UnaryOperator<RewardDateRelationCondition> CONDITION_PROCESSOR = c -> {
-        if (isNull(c))
-            return new RewardDateRelationCondition();
+        RewardDateRelationCondition rc = isNotNull(c) ? c : new RewardDateRelationCondition();
 
-        process(c, SORT_ATTRIBUTE_MAPPING, RewardDateRelationSortAttribute.ID.column);
+        process(rc, SORT_ATTRIBUTE_MAPPING, RewardDateRelationSortAttribute.CREATE_TIME.column);
 
-        return c;
+        return rc;
     };
 
     private static final Function<List<RewardDateRelation>, List<Long>> OPERATORS_GETTER = relations -> {

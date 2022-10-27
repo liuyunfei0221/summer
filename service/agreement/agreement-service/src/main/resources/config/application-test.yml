@@ -1,6 +1,6 @@
 server:
   address: 127.0.0.1
-  port: 59000
+  port: 63000
   netty:
     connection-timeout: 6s
     h2c-max-content-length: 0B
@@ -37,65 +37,32 @@ eureka:
     hostname: ${server.address}
   client:
     service-url:
-      defaultZone: http://blue:LiuZhiyi20200805@101.43.192.155:3000/eureka/
+      defaultZone: http://blue:LiuZhiyi20200805@172.16.202.219:3000/eureka/
     registry-fetch-interval-seconds: 60
 
 
 data:
   sharding-databases:
-    - url: jdbc:mysql://101.43.192.155:3306/article_0
-      database-conf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
-      username: root
-      password: LiuZhiyi20200805
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      connection-timeout: 120000
-      max-lifetime: 1800000
-      max-pool-size: 4
-      min-idle: 2
-      idle-timeout: 5
-      connection-test-query: SELECT 1 FROM DUAL
-      is-read-only: false
-      is-auto-commit: true
-
-    - url: jdbc:mysql://43.138.44.171:3306/article_1
-      database-conf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
-      username: root
-      password: LiuZhiyi20200805
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      connection-timeout: 120000
-      max-lifetime: 1800000
-      max-pool-size: 4
-      min-idle: 2
-      idle-timeout: 5
-      connection-test-query: SELECT 1 FROM DUAL
-      is-read-only: false
-      is-auto-commit: true
   sharding-tables:
-    - table-name: article
-      sharding-column: id
-
-    - table-name: link
-      sharding-column: id
-
-    - table-name: comment
-      sharding-column: id
-
-    - table-name: reply
-      sharding-column: id
   sharding-table-size-per-database: 2
   data-center-to-database-mappings:
-    - id: 0
-      index: 0
-
-    - id: 1
-      index: 1
   worker-to-table-mappings:
-    - id: 0
-      index: 0
-
-    - id: 1
-      index: 1
   broadcast-tables: [ ]
+  single-databases-with-tables:
+    - url: jdbc:mysql://172.16.202.219:3306/agreement
+      database-conf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+      username: root
+      password: 1024
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      connection-timeout: 120000
+      max-lifetime: 1800000
+      max-pool-size: 4
+      min-idle: 2
+      idle-timeout: 5
+      connection-test-query: SELECT 1 FROM DUAL
+      is-read-only: false
+      is-auto-commit: true
+      singleTables: [ agreement ]
   safe-row-bounds-enabled: false
   safe-result-handler-enabled: false
   map-underscore-to-camel-case: true
@@ -147,12 +114,42 @@ identity:
   padding-scheduled-delay-millis: 15000
 
 
+mongo:
+  address-attrs:
+    - address: 172.16.202.219
+      port: 27017
+  auth: false
+  auth-base: admin
+  user-name:
+  password:
+  database: agreement
+  retry-reads: false
+  retry-writes: false
+  application-name: blue-auth
+  uuid-representation: JAVA_LEGACY
+  socket-connect-timeout-millis: 60000
+  socket-read-timeout-millis: 60000
+  socket-receive-buffer-size: 10000
+  socket-send-buffer-size: 256
+  cluster-connection-mode: SINGLE
+  cluster-type: STANDALONE
+  cluster-local-threshold-millis: 60000
+  server-selection-timeout-millis: 60000
+  pool-max-size: 12
+  pool-min-size: 2
+  pool-max-wait-time-millis: 60000
+  pool-max-connection-lifeTime-millis: 60000
+  pool-max-connection-idle-time-millis: 60000
+  pool-maintenance-initial-delay-millis: 60000
+  pool-maintenance-frequency-millis: 60000
+
+
 cache:
   server-mode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  host: 43.138.111.53
+  host: 172.16.202.219
   port: 6379
-  password: LiuZhiyi20200805
+  password:
   max-redirects: 4
   min-idle: 4
   max-idle: 64
@@ -174,9 +171,8 @@ cache:
   entry-ttl: 60
 
 
-local-cache:
-  size: 300
-  expire-time: 120
+agreement:
+  expires-second: 10
 
 
 executor:
@@ -192,14 +188,11 @@ message:
   element-location: classpath:i18n/element
 
 
-
-
-
 redisson:
   server-mode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  address: 43.138.111.53:6379
-  password: LiuZhiyi20200805
+  address: 172.16.202.219:6379
+  password:
   scan-interval: 8000
   check-slots-coverage: false
   tcp-no-delay: true
@@ -244,26 +237,33 @@ dubbo:
     id: summer-registry
     client: curator
     protocol: zookeeper
-    address: zookeeper://43.138.44.171
+    address: zookeeper://172.16.202.219
     port: 2181
-    username: blue
-    password: LiuZhiyi20200805
+    username:
+    password:
     file: /usr/env/log/dubbo/agreement/registry.properties
     check: false
     timeout: 60000
     simplified: false
-#  metadata-report:
-#    address: zookeeper://43.138.44.171
-#    port: 2181
-#    username: blue
-#    password: LiuZhiyi20200805
-#    timeout: 120000
-#    default: true
-#    check: false
+  #  metadata-report:
+  #    address: zookeeper://172.16.202.219
+  #    port: 2181
+  #    username:
+  #    password:
+  #    timeout: 120000
+  #    default: true
+  #    check: false
+  application:
+    id: summer-agreement
+    name: summer-agreement
+    owner: blue
+    organization: blue
+    shutwait: 20s
+    enable-file-cache: true
   protocol:
     name: dubbo
     host: localhost
-    port: 60000
+    port: 64000
     accesslog: /usr/env/log/dubbo/agreement/access.log
   provider:
     retries: 0

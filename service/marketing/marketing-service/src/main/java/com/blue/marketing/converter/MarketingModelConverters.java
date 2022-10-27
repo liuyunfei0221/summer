@@ -62,21 +62,14 @@ public final class MarketingModelConverters {
         return new RewardInfo(reward.getId(), reward.getName(), reward.getDetail(), reward.getLink(), reward.getType(), reward.getData());
     };
 
-    /**
-     * reward -> reward manager indo
-     *
-     * @param reward
-     * @param idAndMemberNameMapping
-     * @return
-     */
-    public static RewardManagerInfo rewardToRewardManagerInfo(Reward reward, Map<Long, String> idAndMemberNameMapping) {
+    public static final BiFunction<Reward, Map<Long, String>, RewardManagerInfo> REWARD_2_REWARD_MANAGER_INFO_CONVERTER = (reward, idAndMemberNameMapping) -> {
         if (isNull(reward))
             throw new BlueException(EMPTY_PARAM);
 
         return new RewardManagerInfo(reward.getId(), reward.getName(), reward.getDetail(), reward.getLink(), reward.getType(), reward.getData(), reward.getStatus(),
-                reward.getCreateTime(), reward.getUpdateTime(), reward.getCreator(), ofNullable(idAndMemberNameMapping.get(reward.getCreator())).orElse(EMPTY_VALUE.value),
-                reward.getUpdater(), ofNullable(idAndMemberNameMapping.get(reward.getUpdater())).orElse(EMPTY_VALUE.value));
-    }
+                reward.getCreateTime(), reward.getUpdateTime(), reward.getCreator(), ofNullable(idAndMemberNameMapping).map(m -> m.get(reward.getCreator())).orElse(EMPTY_VALUE.value),
+                reward.getUpdater(), ofNullable(idAndMemberNameMapping).map(m -> m.get(reward.getUpdater())).orElse(EMPTY_VALUE.value));
+    };
 
     /**
      * reward date rel insert param -> reward date rel
@@ -123,8 +116,8 @@ public final class MarketingModelConverters {
             throw new BlueException(EMPTY_PARAM);
 
         return new RewardDateRelationManagerInfo(relation.getId(), relation.getRewardId(), rewardInfoIdAndNameMapping.get(relation.getRewardId()), relation.getYear(), relation.getMonth(), relation.getDay(),
-                relation.getCreateTime(), relation.getUpdateTime(), relation.getCreator(), ofNullable(idAndMemberNameMapping.get(relation.getCreator())).orElse(EMPTY_VALUE.value),
-                relation.getUpdater(), ofNullable(idAndMemberNameMapping.get(relation.getUpdater())).orElse(EMPTY_VALUE.value));
+                relation.getCreateTime(), relation.getUpdateTime(), relation.getCreator(), ofNullable(idAndMemberNameMapping).map(m -> m.get(relation.getCreator())).orElse(EMPTY_VALUE.value),
+                relation.getUpdater(), ofNullable(idAndMemberNameMapping).map(m -> m.get(relation.getUpdater())).orElse(EMPTY_VALUE.value));
     }
 
     /**

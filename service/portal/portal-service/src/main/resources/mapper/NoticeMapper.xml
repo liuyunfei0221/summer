@@ -20,9 +20,7 @@
     </sql>
 
     <insert id="insert" parameterType="com.blue.portal.repository.entity.Notice">
-        insert into notice (id, title, content, link,
-                            type, create_time, update_time,
-                            creator, updater)
+        insert into notice (id, title, content, link, type, create_time, update_time, creator, updater)
         values (#{id,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{content,jdbcType=LONGVARCHAR},
                 #{link,jdbcType=VARCHAR},
                 #{type,jdbcType=TINYINT}, #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT},
@@ -176,14 +174,6 @@
                     AND
                     type = #{noticeCondition.type,jdbcType=TINYINT}
                 </if>
-                <if test="noticeCondition.updateTimeBegin != null">
-                    AND
-                    update_time &gt;= #{noticeCondition.updateTimeBegin,jdbcType=BIGINT}
-                </if>
-                <if test="noticeCondition.updateTimeEnd != null">
-                    AND
-                    update_time &lt;= #{noticeCondition.updateTimeEnd,jdbcType=BIGINT}
-                </if>
                 <if test="noticeCondition.createTimeBegin != null">
                     AND
                     create_time &gt;= #{noticeCondition.createTimeBegin,jdbcType=BIGINT}
@@ -191,6 +181,14 @@
                 <if test="noticeCondition.createTimeEnd != null">
                     AND
                     create_time &lt;= #{noticeCondition.createTimeEnd,jdbcType=BIGINT}
+                </if>
+                <if test="noticeCondition.updateTimeBegin != null">
+                    AND
+                    update_time &gt;= #{noticeCondition.updateTimeBegin,jdbcType=BIGINT}
+                </if>
+                <if test="noticeCondition.updateTimeEnd != null">
+                    AND
+                    update_time &lt;= #{noticeCondition.updateTimeEnd,jdbcType=BIGINT}
                 </if>
                 <if test="noticeCondition.creator != null">
                     AND

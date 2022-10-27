@@ -26,44 +26,27 @@ public final class AgreementManagerInfo implements Serializable {
 
     private Integer type;
 
-    private Integer status;
-
-    private Integer priority;
-
     @JsonSerialize(using = Long2StringSerializer.class)
     private Long createTime;
-
-    @JsonSerialize(using = Long2StringSerializer.class)
-    private Long updateTime;
 
     @JsonSerialize(using = Long2StringSerializer.class)
     private Long creator;
 
     private String creatorName;
 
-    @JsonSerialize(using = Long2StringSerializer.class)
-    private Long updater;
-
-    private String updaterName;
-
     public AgreementManagerInfo() {
     }
 
-    public AgreementManagerInfo(Long id, String title, String content, String link, Integer type, Integer status, Integer priority,
-                                Long createTime, Long updateTime, Long creator, String creatorName, Long updater, String updaterName) {
+    public AgreementManagerInfo(Long id, String title, String content, String link, Integer type,
+                                Long createTime, Long creator, String creatorName) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.link = link;
         this.type = type;
-        this.status = status;
-        this.priority = priority;
         this.createTime = createTime;
-        this.updateTime = updateTime;
         this.creator = creator;
         this.creatorName = creatorName;
-        this.updater = updater;
-        this.updaterName = updaterName;
     }
 
     public Long getId() {
@@ -106,36 +89,12 @@ public final class AgreementManagerInfo implements Serializable {
         this.type = type;
     }
 
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public Integer getPriority() {
-        return priority;
-    }
-
-    public void setPriority(Integer priority) {
-        this.priority = priority;
-    }
-
     public Long getCreateTime() {
         return createTime;
     }
 
     public void setCreateTime(Long createTime) {
         this.createTime = createTime;
-    }
-
-    public Long getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Long updateTime) {
-        this.updateTime = updateTime;
     }
 
     public Long getCreator() {
@@ -154,22 +113,6 @@ public final class AgreementManagerInfo implements Serializable {
         this.creatorName = creatorName;
     }
 
-    public Long getUpdater() {
-        return updater;
-    }
-
-    public void setUpdater(Long updater) {
-        this.updater = updater;
-    }
-
-    public String getUpdaterName() {
-        return updaterName;
-    }
-
-    public void setUpdaterName(String updaterName) {
-        this.updaterName = updaterName;
-    }
-
     @Override
     public String toString() {
         return "AgreementManagerInfo{" +
@@ -178,14 +121,9 @@ public final class AgreementManagerInfo implements Serializable {
                 ", content='" + content + '\'' +
                 ", link='" + link + '\'' +
                 ", type=" + type +
-                ", status=" + status +
-                ", priority=" + priority +
                 ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
                 ", creator=" + creator +
                 ", creatorName='" + creatorName + '\'' +
-                ", updater=" + updater +
-                ", updaterName='" + updaterName + '\'' +
                 '}';
     }
 

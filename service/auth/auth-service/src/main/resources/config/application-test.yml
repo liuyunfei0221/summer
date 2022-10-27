@@ -340,9 +340,6 @@ message:
   element-location: classpath:i18n/element
 
 
-
-
-
 jwt:
   global-max-expires-millis: 7776000000
   global-min-expires-millis: 259200000

@@ -142,12 +142,10 @@ cache:
 
 
 bulletin:
-  maximum-size: 1024
   expires-second: 10
 
 
 notice:
-  maximum-size: 1024
   expires-second: 10
   id: -1
   title: blue
@@ -167,9 +165,6 @@ executor:
 message:
   message-location: classpath:i18n/message
   element-location: classpath:i18n/element
-
-
-
 
 
 redisson:

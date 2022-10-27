@@ -59,6 +59,16 @@ public enum SyncKeyPrefix {
     NOTICE_UPDATE_SYNC_PRE("NOTICE_UPDATE_SYNC:"),
 
     /**
+     * agreement cache sync key prefix
+     */
+    AGREEMENT_CACHE_PRE("AGREEMENT_CACHE:"),
+
+    /**
+     * agreement sync key prefix
+     */
+    AGREEMENT_UPDATE_SYNC_PRE("AGREEMENT_UPDATE_SYNC:"),
+
+    /**
      * styles cache key prefix
      */
     STYLES_CACHE_PRE("STYLES_CACHE:"),

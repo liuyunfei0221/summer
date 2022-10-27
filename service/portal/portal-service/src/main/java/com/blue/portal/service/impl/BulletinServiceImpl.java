@@ -94,7 +94,7 @@ public class BulletinServiceImpl implements BulletinService {
         this.expireDuration = Duration.of(blueRedisConfig.getEntryTtl(), SECONDS);
 
         CaffeineConf caffeineConf = new CaffeineConfParams(
-                bulletinDeploy.getMaximumSize(), Duration.of(bulletinDeploy.getExpiresSecond(), SECONDS),
+                BulletinType.values().length, Duration.of(bulletinDeploy.getExpiresSecond(), SECONDS),
                 AFTER_WRITE, executorService);
 
         LOCAL_CACHE = generateCache(caffeineConf);
@@ -141,8 +141,7 @@ public class BulletinServiceImpl implements BulletinService {
                     bulletinInfos -> BULLETIN_INFOS_REDIS_SETTER.accept(t, bulletinInfos), BlueChecker::isNotEmpty);
 
     private final Function<Integer, List<BulletinInfo>> BULLETIN_INFOS_WITH_ALL_CACHE_GETTER = t -> {
-        if (isNull(t))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "type can't be null");
+        assertBulletinType(t, false);
 
         return LOCAL_CACHE.get(t, BULLETIN_INFOS_WITH_REDIS_CACHE_GETTER);
     };
@@ -151,17 +150,16 @@ public class BulletinServiceImpl implements BulletinService {
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final UnaryOperator<BulletinCondition> CONDITION_PROCESSOR = c -> {
-        if (isNull(c))
-            return new BulletinCondition();
+        BulletinCondition bc = isNotNull(c) ? c : new BulletinCondition();
 
-        process(c, SORT_ATTRIBUTE_MAPPING, BulletinSortAttribute.ID.column);
+        process(bc, SORT_ATTRIBUTE_MAPPING, BulletinSortAttribute.CREATE_TIME.column);
 
-        ofNullable(c.getTitleLike())
-                .filter(StringUtils::hasText).ifPresent(titleLike -> c.setTitleLike(PERCENT.identity + titleLike + PERCENT.identity));
-        ofNullable(c.getLinkLike())
-                .filter(StringUtils::hasText).ifPresent(linkLike -> c.setLinkLike(PERCENT.identity + linkLike + PERCENT.identity));
+        ofNullable(bc.getTitleLike())
+                .filter(StringUtils::hasText).ifPresent(titleLike -> bc.setTitleLike(PERCENT.identity + titleLike + PERCENT.identity));
+        ofNullable(bc.getLinkLike())
+                .filter(StringUtils::hasText).ifPresent(linkLike -> bc.setLinkLike(PERCENT.identity + linkLike + PERCENT.identity));
 
-        return c;
+        return bc;
     };
 
     private static final Function<List<Bulletin>, List<Long>> OPERATORS_GETTER = bs -> {
@@ -487,7 +485,7 @@ public class BulletinServiceImpl implements BulletinService {
                                     .flatMap(memberBasicInfos -> {
                                         Map<Long, String> idAndMemberNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(bulletins.stream().map(b ->
-                                                bulletinToBulletinManagerInfo(b, idAndMemberNameMapping)).collect(toList()));
+                                                BULLETIN_2_BULLETIN_MANAGER_INFO_CONVERTER.apply(b, idAndMemberNameMapping)).collect(toList()));
                                     }).flatMap(bulletinManagerInfos ->
                                             just(new PageModelResponse<>(bulletinManagerInfos, count)))
                             :

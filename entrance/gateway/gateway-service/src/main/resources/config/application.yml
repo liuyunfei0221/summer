@@ -148,15 +148,25 @@ spring:
           enabled: false
 
       routes:
+        - id: blue-agreement
+          uri: lb://blue-agreement
+          predicates:
+            - Path=/blue-agreement/**
+
+        - id: blue-article
+          uri: lb://blue-article
+          predicates:
+            - Path=/blue-article/**
+
+        - id: blue-auth
+          uri: lb://blue-auth
+          predicates:
+            - Path=/blue-auth/**
+
         - id: blue-base
           uri: lb://blue-base
           predicates:
             - Path=/blue-base/**
-
-        - id: blue-business
-          uri: lb://blue-business
-          predicates:
-            - Path=/blue-business/**
 
         - id: blue-finance
           uri: lb://blue-finance
@@ -177,11 +187,6 @@ spring:
           uri: lb://blue-portal
           predicates:
             - Path=/blue-portal/**
-
-        - id: blue-auth
-          uri: lb://blue-auth
-          predicates:
-            - Path=/blue-auth/**
 
         - id: blue-shine
           uri: lb://blue-shine

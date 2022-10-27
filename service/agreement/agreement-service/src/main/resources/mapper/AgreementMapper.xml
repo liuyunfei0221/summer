@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress SqlNoDataSourceInspection, SqlDialectInspection -->
+<mapper namespace="com.blue.agreement.repository.mapper.AgreementMapper">
+    <resultMap id="BaseResultMap" type="com.blue.agreement.repository.entity.Agreement">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="link" jdbcType="VARCHAR" property="link"/>
+        <result column="type" jdbcType="TINYINT" property="type"/>
+        <result column="create_time" jdbcType="BIGINT" property="createTime"/>
+        <result column="creator" jdbcType="BIGINT" property="creator"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        , title, content, link, type, create_time, creator
+    </sql>
+
+    <insert id="insert" parameterType="com.blue.agreement.repository.entity.Agreement">
+        insert into agreement (id, title, content, link, type,
+                               create_time, creator)
+        values (#{id,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR},
+                #{link,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT},
+                #{createTime,jdbcType=BIGINT}, #{creator,jdbcType=BIGINT})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.blue.agreement.repository.entity.Agreement">
+        insert into agreement
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="title != null">
+                title,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+            <if test="link != null">
+                link,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="title != null">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="link != null">
+                #{link,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.blue.agreement.repository.entity.Agreement">
+        update agreement
+        set title       = #{title,jdbcType=VARCHAR},
+            content     = #{content,jdbcType=VARCHAR},
+            link        = #{link,jdbcType=VARCHAR},
+            type        = #{type,jdbcType=TINYINT},
+            create_time = #{createTime,jdbcType=BIGINT},
+            creator     = #{creator,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.blue.agreement.repository.entity.Agreement">
+        update agreement
+        <set>
+            <if test="title != null">
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="link != null">
+                link = #{link,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="creator != null">
+                creator = #{creator,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from agreement
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from agreement
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectNewestByType" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        agreement FORCE INDEX(idx_type_create)
+        WHERE
+        type = #{type,jdbcType=TINYINT}
+        ORDER BY create_time DESC
+        LIMIT 1;
+    </select>
+
+    <sql id="Agreement_Conditions">
+        <if test="agreementCondition != null">
+            <where>
+                <if test="agreementCondition.id != null">
+                    AND
+                    id = #{agreementCondition.id,jdbcType=BIGINT}
+                </if>
+                <if test="agreementCondition.titleLike != null and agreementCondition.titleLike != ''">
+                    AND
+                    title LIKE #{agreementCondition.titleLike,jdbcType=VARCHAR}
+                </if>
+                <if test="agreementCondition.linkLike != null and agreementCondition.linkLike != ''">
+                    AND
+                    link LIKE #{agreementCondition.linkLike,jdbcType=VARCHAR}
+                </if>
+                <if test="agreementCondition.type != null">
+                    AND
+                    type = #{agreementCondition.type,jdbcType=TINYINT}
+                </if>
+                <if test="agreementCondition.createTimeBegin != null">
+                    AND
+                    create_time &gt;= #{agreementCondition.createTimeBegin,jdbcType=BIGINT}
+                </if>
+                <if test="agreementCondition.createTimeEnd != null">
+                    AND
+                    create_time &lt;= #{agreementCondition.createTimeEnd,jdbcType=BIGINT}
+                </if>
+            </where>
+        </if>
+    </sql>
+
+    <select id="selectByLimitAndCondition" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        agreement
+        <include refid="Agreement_Conditions"/>
+        <if test="agreementCondition != null and agreementCondition.sortAttribute != null and agreementCondition.sortAttribute != '' and agreementCondition.sortType != null and agreementCondition.sortType != ''">
+            ORDER BY
+            ${agreementCondition.sortAttribute} ${agreementCondition.sortType}
+        </if>
+        LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
+    </select>
+
+    <select id="countByCondition" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM
+        agreement
+        <include refid="Agreement_Conditions"/>
+    </select>
+
+</mapper>

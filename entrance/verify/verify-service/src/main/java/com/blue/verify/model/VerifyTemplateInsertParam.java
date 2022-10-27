@@ -9,7 +9,6 @@ import static com.blue.basic.common.base.BlueChecker.isBlank;
 import static com.blue.basic.common.base.ConstantProcessor.assertVerifyBusinessType;
 import static com.blue.basic.common.base.ConstantProcessor.assertVerifyType;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
-import static java.util.Optional.ofNullable;
 
 /**
  * params for insert a new verify template
@@ -20,8 +19,6 @@ import static java.util.Optional.ofNullable;
 public class VerifyTemplateInsertParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = -3640635279642897437L;
-
-    protected static final int DEFAULT_PRIORITY = 0;
 
     protected String name;
 
@@ -116,11 +113,11 @@ public class VerifyTemplateInsertParam implements Serializable, Asserter {
     }
 
     public Integer getPriority() {
-        return ofNullable(this.priority).orElse(DEFAULT_PRIORITY);
+        return this.priority;
     }
 
     public void setPriority(Integer priority) {
-        this.priority = ofNullable(priority).orElse(DEFAULT_PRIORITY);
+        this.priority = priority;
     }
 
     public String getTitle() {

@@ -287,15 +287,14 @@ public class MemberDetailServiceImpl implements MemberDetailService {
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
     private static final UnaryOperator<MemberDetailCondition> CONDITION_PROCESSOR = c -> {
-        if (isNull(c))
-            return new MemberDetailCondition();
+        MemberDetailCondition mdc = isNotNull(c) ? c : new MemberDetailCondition();
 
-        process(c, SORT_ATTRIBUTE_MAPPING, MemberDetailSortAttribute.CREATE_TIME.column);
+        process(mdc, SORT_ATTRIBUTE_MAPPING, MemberDetailSortAttribute.CREATE_TIME.column);
 
-        ofNullable(c.getHobbyLike()).filter(BlueChecker::isNotBlank).ifPresent(hobbyLike ->
-                c.setHobbyLike(PERCENT.identity + hobbyLike + PERCENT.identity));
+        ofNullable(mdc.getHobbyLike()).filter(BlueChecker::isNotBlank).ifPresent(hobbyLike ->
+                mdc.setHobbyLike(PERCENT.identity + hobbyLike + PERCENT.identity));
 
-        return c;
+        return mdc;
     };
 
     /**

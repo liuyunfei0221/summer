@@ -137,13 +137,13 @@ public final class MediaModelConverters {
      * @return
      */
     public static QrCodeConfigManagerInfo qrCodeConfigToQrCodeConfigManagerInfo(QrCodeConfig qrCodeConfig, Map<Long, RoleInfo> idAndRoleInfoMapping, Map<Long, String> idAndMemberNameMapping) {
-        if (isNull(qrCodeConfig) || isNull(idAndRoleInfoMapping) || isNull(idAndMemberNameMapping))
+        if (isNull(qrCodeConfig) || isNull(idAndRoleInfoMapping))
             throw new BlueException(EMPTY_PARAM);
 
         return new QrCodeConfigManagerInfo(
                 qrCodeConfig.getId(), qrCodeConfig.getName(), qrCodeConfig.getDescription(), qrCodeConfig.getType(), qrCodeConfig.getDomain(), qrCodeConfig.getPathToBeFilled(), qrCodeConfig.getPlaceholderCount(),
                 qrCodeConfig.getAllowedRoles().stream().map(idAndRoleInfoMapping::get).collect(toList()), qrCodeConfig.getCreateTime(), qrCodeConfig.getUpdateTime(), qrCodeConfig.getCreator(),
-                ofNullable(idAndMemberNameMapping.get(qrCodeConfig.getCreator())).orElse(EMPTY_VALUE.value), qrCodeConfig.getUpdater(), ofNullable(idAndMemberNameMapping.get(qrCodeConfig.getUpdater())).orElse(EMPTY_VALUE.value));
+                ofNullable(idAndMemberNameMapping).map(m -> m.get(qrCodeConfig.getCreator())).orElse(EMPTY_VALUE.value), qrCodeConfig.getUpdater(), ofNullable(idAndMemberNameMapping).map(m -> m.get(qrCodeConfig.getUpdater())).orElse(EMPTY_VALUE.value));
     }
 
     /**
@@ -191,14 +191,14 @@ public final class MediaModelConverters {
      * message template -> message template manager indo
      */
     public static final BiFunction<MessageTemplate, Map<Long, String>, MessageTemplateManagerInfo> MESSAGE_TEMPLATE_2_MESSAGE_TEMPLATE_MANAGER_INFO_CONVERTER = (messageTemplate, idAndMemberNameMapping) -> {
-        if (isNull(messageTemplate) || isNull(idAndMemberNameMapping))
+        if (isNull(messageTemplate))
             throw new BlueException(EMPTY_PARAM);
 
         return new MessageTemplateManagerInfo(
                 messageTemplate.getId(), messageTemplate.getName(), messageTemplate.getDescription(), messageTemplate.getType(), messageTemplate.getBusinessType(),
                 messageTemplate.getTitle(), messageTemplate.getTitlePlaceholderCount(), messageTemplate.getContent(), messageTemplate.getContentPlaceholderCount(),
-                messageTemplate.getCreateTime(), messageTemplate.getUpdateTime(), messageTemplate.getCreator(), ofNullable(idAndMemberNameMapping.get(messageTemplate.getCreator())).orElse(EMPTY_VALUE.value)
-                , messageTemplate.getUpdater(), ofNullable(idAndMemberNameMapping.get(messageTemplate.getUpdater())).orElse(EMPTY_VALUE.value)
+                messageTemplate.getCreateTime(), messageTemplate.getUpdateTime(), messageTemplate.getCreator(), ofNullable(idAndMemberNameMapping).map(m -> m.get(messageTemplate.getCreator())).orElse(EMPTY_VALUE.value)
+                , messageTemplate.getUpdater(), ofNullable(idAndMemberNameMapping).map(m -> m.get(messageTemplate.getUpdater())).orElse(EMPTY_VALUE.value)
         );
     };
 

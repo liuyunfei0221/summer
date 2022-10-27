@@ -178,9 +178,6 @@ message:
   element-location: classpath:i18n/element
 
 
-
-
-
 redisson:
   server-mode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
@@ -274,7 +271,6 @@ caffeine:
   state-maximum-size: 1024
   city-maximum-size: 32768
   area-maximum-size: 65536
-  style-maximum-size: 32
   expires-second: 30
 
 

@@ -1,5 +1,6 @@
 package com.blue.verify.converter;
 
+import com.blue.basic.constant.common.Priority;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.verify.api.model.VerifyHistoryInfo;
 import com.blue.verify.api.model.VerifyTemplateInfo;
@@ -46,7 +47,7 @@ public final class VerifyModelConverters {
         verifyTemplate.setType(param.getType());
         verifyTemplate.setBusinessType(param.getBusinessType());
         verifyTemplate.setLanguage(lowerCase(parseLanguageIdentity(param.getLanguage())));
-        verifyTemplate.setPriority(param.getPriority());
+        verifyTemplate.setPriority(ofNullable(param.getPriority()).orElse(Priority.DEFAULT.value));
         verifyTemplate.setTitle(param.getTitle());
         verifyTemplate.setContent(param.getContent());
 
@@ -72,12 +73,12 @@ public final class VerifyModelConverters {
      * verify template -> verify template manager info
      */
     public static final BiFunction<VerifyTemplate, Map<Long, String>, VerifyTemplateManagerInfo> VERIFY_TEMPLATE_2_VERIFY_TEMPLATE_MANAGER_INFO_CONVERTER = (verifyTemplate, idAndMemberNameMapping) -> {
-        if (isNull(verifyTemplate) || isNull(idAndMemberNameMapping))
+        if (isNull(verifyTemplate))
             throw new BlueException(EMPTY_PARAM);
 
         return new VerifyTemplateManagerInfo(verifyTemplate.getId(), verifyTemplate.getName(), verifyTemplate.getDescription(), verifyTemplate.getType(), verifyTemplate.getBusinessType(), verifyTemplate.getTitle(), verifyTemplate.getContent(),
-                verifyTemplate.getCreateTime(), verifyTemplate.getUpdateTime(), verifyTemplate.getCreator(), ofNullable(idAndMemberNameMapping.get(verifyTemplate.getCreator())).orElse(EMPTY_VALUE.value), verifyTemplate.getUpdater(),
-                ofNullable(idAndMemberNameMapping.get(verifyTemplate.getUpdater())).orElse(EMPTY_VALUE.value));
+                verifyTemplate.getCreateTime(), verifyTemplate.getUpdateTime(), verifyTemplate.getCreator(), ofNullable(idAndMemberNameMapping).map(m -> m.get(verifyTemplate.getCreator())).orElse(EMPTY_VALUE.value), verifyTemplate.getUpdater(),
+                ofNullable(idAndMemberNameMapping).map(m -> m.get(verifyTemplate.getUpdater())).orElse(EMPTY_VALUE.value));
     };
 
     /**
