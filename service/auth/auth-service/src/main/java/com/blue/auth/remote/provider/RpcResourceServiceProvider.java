@@ -40,7 +40,6 @@ public class RpcResourceServiceProvider implements RpcResourceService {
     @Override
     public CompletableFuture<List<ResourceInfo>> selectResourceInfo() {
         return just(true)
-
                 .flatMap(v -> resourceService.selectResource())
                 .flatMap(resources -> just(resources.stream().map(AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER).collect(toList())))
                 .toFuture();

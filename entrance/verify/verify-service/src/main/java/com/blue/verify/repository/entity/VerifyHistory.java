@@ -1,6 +1,7 @@
 package com.blue.verify.repository.entity;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 
@@ -10,6 +11,7 @@ import java.io.Serializable;
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
+@Document(collection = "verifyHistory")
 public final class VerifyHistory implements Serializable {
 
     private static final long serialVersionUID = -2430618760264577569L;

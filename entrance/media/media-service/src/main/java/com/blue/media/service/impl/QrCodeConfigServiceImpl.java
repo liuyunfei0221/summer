@@ -329,7 +329,6 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
             qrCodeConfig.setUpdater(operatorId);
 
             return qrCodeConfigRepository.insert(qrCodeConfig)
-
                     .map(QR_CODE_CONFIG_2_QR_CODE_CONFIG_INFO_CONVERTER);
         });
     }
@@ -358,7 +357,6 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
             qrCodeConfig.setUpdater(operatorId);
 
             return qrCodeConfigRepository.save(qrCodeConfig)
-
                     .doOnSuccess(config -> {
                         Integer tarType = config.getType();
                         REDIS_CACHE_DELETER.accept(tarType);
@@ -384,7 +382,6 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
 
         return synchronizedProcessor.handleSupWithSync(QR_CODE_CONFIG_UPDATE_SYNC.key, () ->
                 qrCodeConfigRepository.findById(id)
-
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                         .flatMap(config -> qrCodeConfigRepository.delete(config).then(just(config)))
                         .doOnSuccess(config -> REDIS_CACHE_DELETER.accept(config.getType()))

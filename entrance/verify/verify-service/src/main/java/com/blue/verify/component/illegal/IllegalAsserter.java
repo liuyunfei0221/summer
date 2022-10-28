@@ -71,11 +71,9 @@ public final class IllegalAsserter {
                 .any(s -> s.equals(ALL_RESOURCE) || s.equals(resKey))
                 .flatMap(b ->
                         b ? just(false)
-
                                 :
                                 this.reactiveStringRedisTemplate
                                         .opsForSet().add(key, resKey)
-
                                         .flatMap(l -> this.reactiveStringRedisTemplate.expire(key,
                                                 ofNullable(expiresSecond).map(s -> Duration.of(s, SECONDS))
                                                         .orElse(defaultIllegalExpireDuration))));

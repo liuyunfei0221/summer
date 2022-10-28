@@ -435,7 +435,6 @@ public class ShineServiceImpl implements ShineService {
 
         return SHINE_INSERT_PARAM_2_SHINE.apply(shineInsertParam, memberId)
                 .flatMap(shineRepository::insert)
-
                 .flatMap(shine -> {
                     try {
                         shineInsertProducer.send(shine);
@@ -491,13 +490,11 @@ public class ShineServiceImpl implements ShineService {
             throw new BlueException(UNAUTHORIZED);
 
         return shineRepository.findById(shineUpdateParam.getId())
-
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .flatMap(shine ->
                         SHINE_UPDATE_PARAM_2_SHINE.apply(shineUpdateParam, shine)
                 )
                 .flatMap(shineRepository::save)
-
                 .flatMap(shine -> {
                     try {
                         shineUpdateProducer.send(shine);
@@ -550,7 +547,6 @@ public class ShineServiceImpl implements ShineService {
             throw new BlueException(INVALID_IDENTITY);
 
         return shineRepository.findById(id)
-
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .flatMap(s ->
                         shineRepository.delete(s).then(just(s))

@@ -2,6 +2,7 @@ package com.blue.media.repository.entity;
 
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 
@@ -13,6 +14,7 @@ import static com.blue.basic.common.base.BlueChecker.isNull;
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
+@Document(collection = "attachment")
 public final class Attachment implements Serializable {
 
     private static final long serialVersionUID = -9017169609442683728L;

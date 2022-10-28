@@ -10,7 +10,7 @@ import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static java.lang.Integer.parseInt;
 import static java.lang.Long.parseLong;
-import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.justOrEmpty;
 
 /**
  * get data from uri placeholder
@@ -48,7 +48,7 @@ public class PathVariableGetter {
      * @return
      */
     public static Mono<Long> getLongVariableReact(ServerRequest serverRequest, String placeHolder) {
-        return just(getLongVariable(serverRequest, placeHolder));
+        return justOrEmpty(getLongVariable(serverRequest, placeHolder));
     }
 
     /**
@@ -79,36 +79,8 @@ public class PathVariableGetter {
      * @return
      */
     public static Mono<Integer> getIntegerVariableReact(ServerRequest serverRequest, String placeHolder) {
-        return just(getIntegerVariable(serverRequest, placeHolder));
+        return justOrEmpty(getIntegerVariable(serverRequest, placeHolder));
     }
-
-    /**
-     * get path variable
-     *
-     * @param serverRequest
-     * @param placeHolder
-     * @return
-     */
-    public static String getStringVariable(ServerRequest serverRequest, String placeHolder) {
-        assertParam(serverRequest, placeHolder);
-
-        String pathVariable = serverRequest.pathVariable(placeHolder);
-        assertPathVariable(pathVariable);
-
-        return pathVariable;
-    }
-
-    /**
-     * get path variable
-     *
-     * @param serverRequest
-     * @param placeHolder
-     * @return
-     */
-    public static Mono<String> getStringVariableReact(ServerRequest serverRequest, String placeHolder) {
-        return just(getStringVariable(serverRequest, placeHolder));
-    }
-
 
     /**
      * asserter

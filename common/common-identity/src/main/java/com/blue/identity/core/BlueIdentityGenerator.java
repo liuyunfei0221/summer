@@ -24,11 +24,6 @@ public final class BlueIdentityGenerator {
     private static final Logger LOGGER = getLogger(BlueIdentityGenerator.class);
 
     /**
-     * generator
-     */
-    private final SnowflakeIdentityGenerator snowflakeIdentityGenerator;
-
-    /**
      * buffer
      */
     private final SnowflakeIdentityBuffer snowflakeIdentityBuffer;
@@ -44,13 +39,11 @@ public final class BlueIdentityGenerator {
         int sequenceBits = SEQUENCE.len;
 
         ExecutorService executorService = idGenParam.getExecutorService();
-
-        this.snowflakeIdentityGenerator = new SnowflakeIdentityGenerator(new SnowIdGenParam(idGenParam.getDataCenter(), idGenParam.getWorker(), idGenParam.getLastSeconds(),
-                idGenParam.getBootSeconds(), idGenParam.getSecondsRecorder(), idGenParam.getRecordInterval(), idGenParam.getMaximumTimeAlarm(), executorService));
-
+        
         int bufferSize = ((int) ~(-1L << sequenceBits) + 1) <<
                 ofNullable(idGenParam.getBufferPower()).filter(p -> p >= MIN_POWER.threshold && p <= MAX_POWER.threshold).orElse(DEFAULT_POWER.threshold);
-        this.snowflakeIdentityBuffer = new SnowflakeIdentityBuffer(new IdBufferParam(snowflakeIdentityGenerator, executorService, idGenParam.getPaddingScheduled(),
+        this.snowflakeIdentityBuffer = new SnowflakeIdentityBuffer(new IdBufferParam(new SnowflakeIdentityGenerator(new SnowIdGenParam(idGenParam.getDataCenter(), idGenParam.getWorker(), idGenParam.getLastSeconds(),
+                idGenParam.getBootSeconds(), idGenParam.getSecondsRecorder(), idGenParam.getRecordInterval(), idGenParam.getMaximumTimeAlarm(), executorService)), executorService, idGenParam.getPaddingScheduled(),
                 idGenParam.getScheduledExecutorService(), idGenParam.getPaddingScheduledInitialDelayMillis(), idGenParam.getPaddingScheduledDelayMillis(), bufferSize,
                 ofNullable(idGenParam.getPaddingFactor()).filter(f -> f >= MIN_PADDING_FACTOR.threshold && f <= MAX_PADDING_FACTOR.threshold).orElse(DEFAULT_PADDING_FACTOR.threshold)));
 
@@ -63,12 +56,7 @@ public final class BlueIdentityGenerator {
      * @return
      */
     public long generate() {
-        try {
-            return snowflakeIdentityBuffer.take();
-        } catch (Exception e) {
-            LOGGER.error("take id from buffer fail, e =  ", e);
-            return snowflakeIdentityGenerator.generate();
-        }
+        return snowflakeIdentityBuffer.take();
     }
 
     /**

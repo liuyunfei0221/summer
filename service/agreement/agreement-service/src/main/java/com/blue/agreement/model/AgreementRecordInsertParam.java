@@ -18,32 +18,19 @@ public final class AgreementRecordInsertParam implements Serializable, Asserter 
 
     private static final long serialVersionUID = 15008478386309529L;
 
-    private Long memberId;
-
     private Long agreementId;
 
     public AgreementRecordInsertParam() {
     }
 
-    public AgreementRecordInsertParam(Long memberId, Long agreementId) {
-        this.memberId = memberId;
+    public AgreementRecordInsertParam(Long agreementId) {
         this.agreementId = agreementId;
     }
 
     @Override
     public void asserts() {
-        if (isInvalidIdentity(this.memberId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid memberId");
         if (isInvalidIdentity(this.agreementId))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid agreementId");
-    }
-
-    public Long getMemberId() {
-        return memberId;
-    }
-
-    public void setMemberId(Long memberId) {
-        this.memberId = memberId;
     }
 
     public Long getAgreementId() {
@@ -57,8 +44,7 @@ public final class AgreementRecordInsertParam implements Serializable, Asserter 
     @Override
     public String toString() {
         return "AgreementRecordInsertParam{" +
-                "memberId=" + memberId +
-                ", agreementId=" + agreementId +
+                "agreementId=" + agreementId +
                 '}';
     }
 

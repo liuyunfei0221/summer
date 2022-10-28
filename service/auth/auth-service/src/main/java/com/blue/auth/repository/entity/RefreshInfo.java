@@ -2,6 +2,7 @@ package com.blue.auth.repository.entity;
 
 import com.blue.basic.model.exps.BlueException;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -17,6 +18,7 @@ import static com.blue.basic.constant.common.SpecialStringElement.PRIVACY_VALUE;
  * @author liuyunfei
  */
 @SuppressWarnings({"AliControlFlowStatementWithoutBraces", "unused"})
+@Document(collection = "refreshInfo")
 public class RefreshInfo implements Serializable {
 
     private static final long serialVersionUID = -2732456864958923965L;

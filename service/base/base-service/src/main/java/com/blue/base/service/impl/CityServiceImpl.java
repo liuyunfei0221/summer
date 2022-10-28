@@ -440,7 +440,6 @@ public class CityServiceImpl implements CityService {
 
         return reactiveMongoTemplate.updateMulti(query(byExample(probe)), new Update()
                         .set(COUNTRY_ID.name, countryId).set(STATE_ID.name, stateId), Area.class)
-
                 .flatMap(updateResult -> {
                     long modifiedCount = updateResult.getModifiedCount();
 

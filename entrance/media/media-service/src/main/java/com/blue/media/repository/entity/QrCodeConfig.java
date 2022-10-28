@@ -2,6 +2,7 @@ package com.blue.media.repository.entity;
 
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
+@Document(collection = "qrCodeConfig")
 public final class QrCodeConfig implements Serializable {
 
     private static final long serialVersionUID = 7723764623524543097L;

@@ -42,7 +42,6 @@ public class RpcCountryServiceProvider implements RpcCountryService {
     @Override
     public CompletableFuture<CountryInfo> getCountryInfoById(Long id) {
         return just(id)
-
                 .flatMap(countryService::getCountryInfoMonoById)
                 .toFuture();
     }
@@ -55,7 +54,6 @@ public class RpcCountryServiceProvider implements RpcCountryService {
     @Override
     public CompletableFuture<List<CountryInfo>> selectCountryInfo() {
         return just(true)
-
                 .flatMap(v -> countryService.selectCountryInfoMono())
                 .toFuture();
     }
@@ -69,7 +67,6 @@ public class RpcCountryServiceProvider implements RpcCountryService {
     @Override
     public CompletableFuture<Map<Long, CountryInfo>> selectCountryInfoByIds(List<Long> ids) {
         return just(ids)
-
                 .flatMap(countryService::selectCountryInfoMonoByIds)
                 .toFuture();
     }

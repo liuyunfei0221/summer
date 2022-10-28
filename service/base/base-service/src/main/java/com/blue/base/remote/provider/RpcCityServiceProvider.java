@@ -45,7 +45,6 @@ public class RpcCityServiceProvider implements RpcCityService {
     @Override
     public CompletableFuture<CityInfo> getCityInfoById(Long id) {
         return just(id)
-
                 .flatMap(cityService::getCityInfoMonoById)
                 .toFuture();
     }
@@ -59,7 +58,6 @@ public class RpcCityServiceProvider implements RpcCityService {
     @Override
     public CompletableFuture<List<CityInfo>> selectCityInfoByStateId(Long stateId) {
         return just(stateId)
-
                 .flatMap(cityService::selectCityInfoMonoByStateId)
                 .toFuture();
     }
@@ -73,7 +71,6 @@ public class RpcCityServiceProvider implements RpcCityService {
     @Override
     public CompletableFuture<Map<Long, CityInfo>> selectCityInfoByIds(List<Long> ids) {
         return just(ids)
-
                 .flatMap(cityService::selectCityInfoMonoByIds)
                 .toFuture();
     }
@@ -87,7 +84,6 @@ public class RpcCityServiceProvider implements RpcCityService {
     @Override
     public CompletableFuture<CityRegion> getCityRegionById(Long id) {
         return just(id)
-
                 .flatMap(cityService::getCityRegionMonoById)
                 .toFuture();
     }
@@ -101,7 +97,6 @@ public class RpcCityServiceProvider implements RpcCityService {
     @Override
     public CompletableFuture<Map<Long, CityRegion>> selectCityRegionByIds(List<Long> ids) {
         return just(ids)
-
                 .flatMap(cityService::selectCityRegionMonoByIds)
                 .toFuture();
     }

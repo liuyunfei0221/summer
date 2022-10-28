@@ -50,7 +50,6 @@ public class RpcRoleServiceProvider implements RpcRoleService {
     @Override
     public CompletableFuture<List<RoleInfo>> selectRoleInfo() {
         return just(true)
-
                 .flatMap(v -> roleService.selectRole())
                 .flatMap(roles -> just(roles.stream().map(ROLE_2_ROLE_INFO_CONVERTER).collect(toList())))
                 .toFuture();

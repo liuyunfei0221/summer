@@ -1,6 +1,7 @@
 package com.blue.base.repository.entity;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 
@@ -12,6 +13,7 @@ import static com.blue.basic.common.base.BlueChecker.isNull;
  * @author liuyunfei
  */
 @SuppressWarnings({"SpellCheckingInspection", "unused"})
+@Document(collection = "country")
 public final class Country implements Serializable {
 
     private static final long serialVersionUID = 8387327953062438082L;

@@ -266,11 +266,11 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
             List<DownloadHistory> downloadHistories = tuple2.getT1();
             Long count = tuple2.getT2();
             return isNotEmpty(downloadHistories) ?
-                    zip(attachmentService.selectAttachmentDetailInfoMonoByIds(downloadHistories.parallelStream().map(DownloadHistory::getAttachmentId).collect(toList()))
-                                    .map(attachments -> attachments.parallelStream().collect(toMap(AttachmentDetailInfo::getId, AttachmentDetailInfo::getName, (a, b) -> a)))
+                    zip(attachmentService.selectAttachmentDetailInfoMonoByIds(downloadHistories.stream().map(DownloadHistory::getAttachmentId).collect(toList()))
+                                    .map(attachments -> attachments.stream().collect(toMap(AttachmentDetailInfo::getId, AttachmentDetailInfo::getName, (a, b) -> a)))
                             ,
-                            rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(downloadHistories.parallelStream().map(DownloadHistory::getCreator).collect(toList()))
-                                    .map(memberBasicInfos -> memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a)))
+                            rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(downloadHistories.stream().map(DownloadHistory::getCreator).collect(toList()))
+                                    .map(memberBasicInfos -> memberBasicInfos.stream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a)))
                     ).flatMap(t2 -> {
                         Map<Long, String> attachmentIdAndNameMapping = t2.getT1();
                         Map<Long, String> memberIdAndNameMapping = t2.getT2();

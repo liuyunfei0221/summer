@@ -135,6 +135,18 @@
         LIMIT 1;
     </select>
 
+    <select id="selectByIds" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        agreement
+        WHERE
+        id IN
+        <foreach collection="ids" open="(" close=")" separator="," item="id" index="index">
+            #{id,jdbcType=BIGINT}
+        </foreach>
+    </select>
+
     <sql id="Agreement_Conditions">
         <if test="agreementCondition != null">
             <where>

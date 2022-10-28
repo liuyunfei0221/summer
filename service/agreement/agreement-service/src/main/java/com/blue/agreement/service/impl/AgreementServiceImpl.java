@@ -38,9 +38,12 @@ import java.util.function.*;
 import java.util.stream.Stream;
 
 import static com.blue.agreement.converter.AgreementModelConverters.*;
+import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.GSON;
 import static com.blue.basic.common.base.ConstantProcessor.assertAgreementType;
+import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
+import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_JSON;
 import static com.blue.basic.constant.common.Symbol.PERCENT;
@@ -273,6 +276,27 @@ public class AgreementServiceImpl implements AgreementService {
     @Override
     public Mono<List<AgreementInfo>> selectNewestAgreementInfosMonoByAllTypeWithCache() {
         return justOrEmpty(NEWEST_AGREEMENTS_SUP.get());
+    }
+
+    /**
+     * select agreements by ids
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public Mono<List<AgreementInfo>> selectAgreementInfoMonoByIds(List<Long> ids) {
+        LOGGER.info("List<Resource> selectResourceByIds(List<Long> ids), ids = {}", ids);
+        if (isEmpty(ids))
+            return just(emptyList());
+        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+            throw new BlueException(PAYLOAD_TOO_LARGE);
+
+        return just(allotByMax(ids, (int) DB_SELECT.value, false)
+                .stream().map(agreementMapper::selectByIds)
+                .flatMap(List::stream)
+                .map(AGREEMENT_2_AGREEMENT_INFO)
+                .collect(toList()));
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.blue.media.repository.entity;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 
@@ -10,6 +11,7 @@ import java.io.Serializable;
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
+@Document(collection = "downloadHistory")
 public final class DownloadHistory implements Serializable {
 
     private static final long serialVersionUID = -1824231125493320466L;

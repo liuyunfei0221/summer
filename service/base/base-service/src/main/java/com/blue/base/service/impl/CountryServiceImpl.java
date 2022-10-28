@@ -125,7 +125,6 @@ public class CountryServiceImpl implements CountryService {
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(l ->
                         idCountryCache.getAll(l, is -> countryRepository.findAllById(l)
-
                                         .flatMap(c -> just(COUNTRY_2_COUNTRY_INFO_CONVERTER.apply(c)))
                                         .collectList().toFuture().join()
                                         .parallelStream()
@@ -393,7 +392,6 @@ public class CountryServiceImpl implements CountryService {
                     query.addCriteria(byExample(probe));
 
                     return reactiveMongoTemplate.count(query, State.class)
-
                             .flatMap(stateCount ->
                                     stateCount <= 0L ?
                                             countryRepository.delete(country)

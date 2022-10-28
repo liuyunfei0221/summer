@@ -1340,7 +1340,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiIwMDUyMzgwYzU3MDUwYjRmZDBjNDNmMDU2NTUzZDUzNmMxM2RiNTk3MTVlZGJiNGEzZTg4YmVmNDliOGZlMGQ5YWQyZTk3YjlhZDRmNTMzYzA2NmNkMjUxOGNhZmU0MWEwODg3MWI5YmQ4MWFhOGY4N2JkNTU0NTAzZWNhODVjNiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTA3ODM3NDE2MjYyOTMyNDhfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUwNzgzNzQxNjI2MjkzMjQ4IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY2MDg3OTg3IiwibmJmIjoxNjY2MDg3OTg3LCJ0IjoiN3BJdXZ5V2Q2V2IiLCJlYXMiOjE2NzM4NjM5ODcyMDgsImV4cCI6MTY3Mzg2Mzk4NywiaWF0IjoxNjY2MDg3OTg3LCJqdGkiOiJuNGNVWGRaVTZWSUpubGdzeFNFY2ZmRXYzaGRpS3lVbSJ9._xPC6bSWI2NNiXDv8xD_Fx_Uq6iNPg6te42oOv-49_aTxO4TLUgaJAXwJtqIsZvY3-sINRy45phbNVOqD-4WNQ",
+								"value": "eyJraWQiOiJjOTA3MDM4YmRlMzU0ZWViODc2MjNkZjk3YjY3OGY2ZDc5NjcxZDAyODcyODJlZGU3ZDU4Yjc0NzJjOTRlYmM5MGMwZGRmMjI3MjRlZTg4ZTJmZDg1MDkyZDY5YzJiM2I0ZjAwOGRmMmZjMDZlMmE3OGY4M2MxMWVhYzViMjI1YyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE3MTc3NDIzOTQzNDM0MjVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNzE3NzQyMzk0MzQzNDI1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY2OTU2NDUyIiwibmJmIjoxNjY2OTU2NDUyLCJ0Ijoidjc3eU9WVDRsOWoiLCJlYXMiOjE2NzQ3MzI0NTI3NzksImV4cCI6MTY3NDczMjQ1MiwiaWF0IjoxNjY2OTU2NDUyLCJqdGkiOiJ5dXlVeWJ4ZjRuSTlucURlemY4bEJzOGpZaTZmVFZyeCJ9.3Lcfh8H3IbytYFtKLItGFgKMsMuKGwJWvUdcCse31s_AFFibHCXcWe3_QPFybd1AbGwuwGZ_3s2pgMyLNtjVpg",
 								"type": "text"
 							}
 						],
@@ -5156,7 +5156,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiI2ZDZiMzVhOTY2NjM3ZTA3Zjg3ZTA5MDljMTRlZjg2MWExMGU3Y2Y0OGEyNjBhMzIwMjMyM2IyNDUxMzM4OGY2MWZhZWE5OTI5YzY2ZDIyODE2NTU5NGY0YThmNjUzZTE3MjBmYmJhZTcwNmMwODE1ZDE0MjRmYzU4NjYyYWE5MiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDUyMTU2MTUwMjcyNDkxNTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ1MjE1NjE1MDI3MjQ5MTUzIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYwOTAwODgwIiwibmJmIjoxNjYwOTAwODgwLCJ0IjoiNXVTbUVwWnprWlgiLCJlYXMiOjE2Njg2NzY4ODAwOTgsImV4cCI6MTY2ODY3Njg4MCwiaWF0IjoxNjYwOTAwODgwLCJqdGkiOiI2dFVLaWtGRVdxQ1dVY2lONWtMZmtzQWtPdHhVMTJqUyJ9.2PTdS4a4vgyCm67LmHjHo5BiA2QQ0ZSK87PWYdj3hRHfVMIRo5k1uoLYOosmof8Q_fek4Js1IE3y8edz3GALsg",
+								"value": "eyJraWQiOiJlYzhlNGNlMWE3Y2M1YmFhNWM4NDAxYTI5MjQyN2QwMTU1OTFkZGQyZGE0MjY4YjgyYTE3ZTllYjM4M2YyN2Y0ZTA3ZGY4ZmE4YzY5MjcyZTJkOGVlNjllNWEwZDI1Y2JlOWYzYzhiNDUyYWE3NTJkZmJlOWM0OGQ4ZTdhMDMzYSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE2OTc3Njg2NDg5MzMzNzdfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNjk3NzY4NjQ4OTMzMzc3IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY2OTM4NjU5IiwibmJmIjoxNjY2OTM4NjU5LCJ0IjoiMEJGaGFkOElHTUoiLCJlYXMiOjE2NzQ3MTQ2NTkxODMsImV4cCI6MTY3NDcxNDY1OSwiaWF0IjoxNjY2OTM4NjU5LCJqdGkiOiJZSmtuSjkzejRDTkxxTEdUT2k1ZGhMYXFvNTJiMjJGaCJ9.PD-CYE6gxHascO3AOsI_pNj4azwEjMTnZRu8VDw8azoUWVUSJZb5-XTrMROoyZFRCvBEgV9NjvRwFglIKMFU7A",
 								"type": "text"
 							},
 							{
@@ -5545,6 +5545,116 @@
 								"blue-agreement",
 								"manager",
 								"agreement"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "查询最新的未签署协议",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiJjOTA3MDM4YmRlMzU0ZWViODc2MjNkZjk3YjY3OGY2ZDc5NjcxZDAyODcyODJlZGU3ZDU4Yjc0NzJjOTRlYmM5MGMwZGRmMjI3MjRlZTg4ZTJmZDg1MDkyZDY5YzJiM2I0ZjAwOGRmMmZjMDZlMmE3OGY4M2MxMWVhYzViMjI1YyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE3MTc3NDIzOTQzNDM0MjVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNzE3NzQyMzk0MzQzNDI1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY2OTU2NDUyIiwibmJmIjoxNjY2OTU2NDUyLCJ0Ijoidjc3eU9WVDRsOWoiLCJlYXMiOjE2NzQ3MzI0NTI3NzksImV4cCI6MTY3NDczMjQ1MiwiaWF0IjoxNjY2OTU2NDUyLCJqdGkiOiJ5dXlVeWJ4ZjRuSTlucURlemY4bEJzOGpZaTZmVFZyeCJ9.3Lcfh8H3IbytYFtKLItGFgKMsMuKGwJWvUdcCse31s_AFFibHCXcWe3_QPFybd1AbGwuwGZ_3s2pgMyLNtjVpg",
+								"type": "text"
+							},
+							{
+								"key": "Metadata",
+								"value": "{\"meta\":\"123456789\"}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:11000/blue-agreement/agreementRecord/unsigned",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-agreement",
+								"agreementRecord",
+								"unsigned"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "签署协议",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiJjOTA3MDM4YmRlMzU0ZWViODc2MjNkZjk3YjY3OGY2ZDc5NjcxZDAyODcyODJlZGU3ZDU4Yjc0NzJjOTRlYmM5MGMwZGRmMjI3MjRlZTg4ZTJmZDg1MDkyZDY5YzJiM2I0ZjAwOGRmMmZjMDZlMmE3OGY4M2MxMWVhYzViMjI1YyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE3MTc3NDIzOTQzNDM0MjVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNzE3NzQyMzk0MzQzNDI1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY2OTU2NDUyIiwibmJmIjoxNjY2OTU2NDUyLCJ0Ijoidjc3eU9WVDRsOWoiLCJlYXMiOjE2NzQ3MzI0NTI3NzksImV4cCI6MTY3NDczMjQ1MiwiaWF0IjoxNjY2OTU2NDUyLCJqdGkiOiJ5dXlVeWJ4ZjRuSTlucURlemY4bEJzOGpZaTZmVFZyeCJ9.3Lcfh8H3IbytYFtKLItGFgKMsMuKGwJWvUdcCse31s_AFFibHCXcWe3_QPFybd1AbGwuwGZ_3s2pgMyLNtjVpg",
+								"type": "text"
+							},
+							{
+								"key": "Metadata",
+								"value": "{\"meta\":\"123456789\"}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"agreementId\":51717811113820167\r\n}"
+						},
+						"url": {
+							"raw": "localhost:11000/blue-agreement/agreementRecord",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-agreement",
+								"agreementRecord"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台用户协议签署列表查询",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiJmZmM5Njk5MzllMjI1NWMwZWRhNzU0YzViZmRmYWFmYzUzMzM4MGRlMjQwYmE2ZWQ5MDkyYTM4MmJjNTdiZTllZWYyMWE1YmEwMmI2YTVkMWZkODEyYmRiNWJlOWMxNTg4YTE1YzQxNDZkNDlhNjdmZjViMjBlZmEyNTZhM2Y0YiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE2MDE4ODc3OTkwMjUxMDRfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNjAxODg3Nzk5MDI1MTA0IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY2ODU4MTc4IiwibmJmIjoxNjY2ODU4MTc4LCJ0IjoiRkdsUDRwY1FIUlciLCJlYXMiOjE2NzQ2MzQxNzgwNTIsImV4cCI6MTY3NDYzNDE3OCwiaWF0IjoxNjY2ODU4MTc4LCJqdGkiOiJSOVIxS3lCdVlLMklhZ1BPOVBSbncxaWkydE5Hc21MMSJ9.eKNEXFd2Kyp0Gt_FKposb4pMOBtcEbSDZ6qVCUjbR2WDzpk4KuzE4lVpHdT8y0N6O186elxD_PD9zT5ET1Eecw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"titleLike\":null,\r\n        \"linkLike\":null,\r\n        \"type\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"ASC\"\r\n    }\r\n}"
+						},
+						"url": {
+							"raw": "localhost:11000/blue-agreement/manager/agreements",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-agreement",
+								"manager",
+								"agreements"
 							]
 						}
 					},

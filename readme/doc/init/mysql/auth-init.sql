@@ -446,13 +446,22 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
 
        (350001, 'GET', 'blue-agreement', '/agreement/{type}', '', b'0', b'1', b'1', b'0', b'1', 1,
         'agreement of api', 'agreement of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (350002, 'GET', 'blue-agreement', '/agreementRecord/unsigned', '', b'1', b'1', b'1', b'0', b'1', 1,
+        'query newest agreements unsigned', 'query newest agreements unsigned', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
+        1),
+       (350003, 'POST', 'blue-agreement', '/agreementRecord', '', b'1', b'1', b'1', b'0', b'1', 1,
+        'sign agreement', 'sign agreement', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+
 
 -- agreement manage
 
        (360001, 'POST', 'blue-agreement', '/manager/agreements', '', b'1', b'1', b'1', b'0', b'1', 3,
         'agreement page of manager', 'agreement page of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (360002, 'POST', 'blue-agreement', '/manager/agreement', '', b'1', b'1', b'1', b'1', b'1', 3,
-        'insert agreement', 'insert agreement', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+        'insert agreement', 'insert agreement', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (360003, 'POST', 'blue-agreement', '/manager/agreementRecords', '', b'1', b'1', b'1', b'0', b'1', 3,
+        'agreement record page of manager', 'agreement record page of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
+        1);
 
 
 -- role

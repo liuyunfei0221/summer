@@ -27,7 +27,9 @@ public interface AgreementMapper {
     Agreement selectByPrimaryKey(Long id);
 
     Agreement selectNewestByType(@Param("type") Integer type);
-    
+
+    List<Agreement> selectByIds(@Param("ids") List<Long> ids);
+
     List<Agreement> selectByLimitAndCondition(@Param("limit") Long limit, @Param("rows") Long rows, @Param("agreementCondition") AgreementCondition agreementCondition);
 
     Long countByCondition(@Param("agreementCondition") AgreementCondition agreementCondition);

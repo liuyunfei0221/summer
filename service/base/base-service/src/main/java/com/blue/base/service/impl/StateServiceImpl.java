@@ -437,7 +437,6 @@ public class StateServiceImpl implements StateService {
 
         return reactiveMongoTemplate.updateMulti(query(byExample(probe)), new Update()
                         .set(COUNTRY_ID.name, countryId), City.class)
-
                 .flatMap(updateResult -> {
                     long modifiedCount = updateResult.getModifiedCount();
 
@@ -466,7 +465,6 @@ public class StateServiceImpl implements StateService {
 
         return reactiveMongoTemplate.updateMulti(query(byExample(probe)), new Update()
                         .set(COUNTRY_ID.name, countryId), Area.class)
-
                 .flatMap(updateResult -> {
                     long modifiedCount = updateResult.getModifiedCount();
 

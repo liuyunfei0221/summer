@@ -141,7 +141,6 @@ public class AreaServiceImpl implements AreaService {
         return allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(l ->
                         idAreaCache.getAll(l, is -> areaRepository.findAllById(l)
-
                                         .flatMap(a -> just(AREA_2_AREA_INFO_CONVERTER.apply(a)))
                                         .collectList().toFuture().join()
                                         .parallelStream()

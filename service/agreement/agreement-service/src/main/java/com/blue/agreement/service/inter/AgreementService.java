@@ -76,6 +76,14 @@ public interface AgreementService {
     Mono<List<AgreementInfo>> selectNewestAgreementInfosMonoByAllTypeWithCache();
 
     /**
+     * select agreements by ids
+     *
+     * @param ids
+     * @return
+     */
+    Mono<List<AgreementInfo>> selectAgreementInfoMonoByIds(List<Long> ids);
+
+    /**
      * select agreement by page and condition
      *
      * @param limit

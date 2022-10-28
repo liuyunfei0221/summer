@@ -18,9 +18,6 @@ DROP DATABASE portal;
 DROP DATABASE portal_0;
 DROP DATABASE portal_1;
 
-DROP DATABASE article_0;
-DROP DATABASE article_1;
-
 DROP DATABASE agreement;
 
 DROP DATABASE base;

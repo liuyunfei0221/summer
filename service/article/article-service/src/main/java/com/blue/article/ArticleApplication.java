@@ -2,7 +2,6 @@ package com.blue.article;
 
 import com.blue.basic.anno.EnableBlueLifecycle;
 import com.blue.basic.anno.SummerSpringBootApplication;
-import com.blue.database.anno.EnableBlueDataAccess;
 import org.apache.dubbo.config.spring.context.annotation.DubboComponentScan;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
@@ -16,7 +15,6 @@ import static org.springframework.boot.SpringApplication.run;
 @SummerSpringBootApplication
 @EnableDiscoveryClient
 @EnableBlueLifecycle(basePackages = "com.blue.article.event")
-@EnableBlueDataAccess(basePackages = "com.blue.article.repository.mapper")
 @DubboComponentScan(basePackages = "com.blue.article.remote")
 public class ArticleApplication {
 

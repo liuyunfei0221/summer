@@ -53,7 +53,7 @@ public final class SnowflakeIdentityBuffer {
     /**
      * padding mark
      */
-    private final IdentityAtomicBoolean padding = new IdentityAtomicBoolean(false);
+    private final IdentityAtomicBoolean paddingFlag = new IdentityAtomicBoolean(false);
 
     /**
      * threshold for padding
@@ -113,7 +113,7 @@ public final class SnowflakeIdentityBuffer {
             bufferPadSchedule.scheduleWithFixedDelay(this::asyncPadding, paddingScheduledInitialDelayMillis, paddingScheduledDelayMillis, MILLISECONDS);
         }
 
-        this.asyncPadding();
+        this.padding();
         LOGGER.info("Initialized BlueIdentityBuffer successfully, idBufferParam = {}, indexMask = {}, slots.length = {}, paddingThreshold = {}", idBufferParam, indexMask, slots.length, paddingThreshold);
     }
 
@@ -128,10 +128,10 @@ public final class SnowflakeIdentityBuffer {
     }
 
     /**
-     * put
+     * padding
      */
-    private void put() {
-        if (!padding.compareAndSet(false, true))
+    private void padding() {
+        if (!paddingFlag.compareAndSet(false, true))
             return;
 
         long curTail;
@@ -149,14 +149,14 @@ public final class SnowflakeIdentityBuffer {
             break;
         }
 
-        padding.compareAndSet(true, false);
+        paddingFlag.compareAndSet(true, false);
     }
 
     /**
      * padding async
      */
     private void asyncPadding() {
-        bufferPadExecutor.submit(this::put);
+        bufferPadExecutor.submit(this::padding);
     }
 
     /**

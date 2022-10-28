@@ -223,7 +223,6 @@ public class AttachmentServiceImpl implements AttachmentService {
 
         return fromIterable(allotByMax(ids, (int) DB_SELECT.value, false))
                 .map(shardIds -> attachmentRepository.findAllById(shardIds)
-                        
                         .collectList()
                         .flatMap(attachments ->
                                 zip(rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(attachments.stream().map(Attachment::getCreator).collect(toList()))

@@ -1,8 +1,12 @@
 package com.blue.member.repository.entity;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
+
+import static org.springframework.data.mongodb.core.index.IndexDirection.DESCENDING;
 
 /**
  * card entity
@@ -10,6 +14,7 @@ import java.io.Serializable;
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
+@Document(collection = "card")
 public class Card implements Serializable {
 
     private static final long serialVersionUID = -2386167098351023193L;

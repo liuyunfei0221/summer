@@ -26,17 +26,17 @@
         </dependency>
         <dependency>
             <groupId>com.blue</groupId>
-            <artifactId>common-database</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.blue</groupId>
             <artifactId>common-dubbo</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.blue</groupId>
             <artifactId>common-es</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.blue</groupId>
+            <artifactId>common-identity</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
