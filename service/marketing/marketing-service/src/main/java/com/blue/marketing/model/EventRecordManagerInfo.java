@@ -1,28 +1,31 @@
-package com.blue.marketing.repository.entity;
+package com.blue.marketing.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+
+import com.blue.basic.serializer.Long2StringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.io.Serializable;
 
 /**
- * marketing event entity
+ * event info
  *
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-@Document(collection = "eventRecord")
-public final class EventRecord implements Serializable {
+public final class EventRecordManagerInfo implements Serializable {
 
-    private static final long serialVersionUID = 4304981563007771288L;
+    private static final long serialVersionUID = 6569268133204313196L;
 
-    @Id
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long id;
 
     /**
      * member id
      */
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long memberId;
+
+    private String memberName;
 
     /**
      * event type
@@ -46,14 +49,16 @@ public final class EventRecord implements Serializable {
     /**
      * event time
      */
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long createTime;
 
-    public EventRecord() {
+    public EventRecordManagerInfo() {
     }
 
-    public EventRecord(Long id, Long memberId, Integer type, String data, Integer status, Long createTime) {
+    public EventRecordManagerInfo(Long id, Long memberId, String memberName, Integer type, String data, Integer status, Long createTime) {
         this.id = id;
         this.memberId = memberId;
+        this.memberName = memberName;
         this.type = type;
         this.data = data;
         this.status = status;
@@ -74,6 +79,14 @@ public final class EventRecord implements Serializable {
 
     public void setMemberId(Long memberId) {
         this.memberId = memberId;
+    }
+
+    public String getMemberName() {
+        return memberName;
+    }
+
+    public void setMemberName(String memberName) {
+        this.memberName = memberName;
     }
 
     public Integer getType() {
@@ -110,9 +123,10 @@ public final class EventRecord implements Serializable {
 
     @Override
     public String toString() {
-        return "EventRecord{" +
+        return "EventRecordInfo{" +
                 "id=" + id +
                 ", memberId=" + memberId +
+                ", memberName='" + memberName + '\'' +
                 ", type=" + type +
                 ", data='" + data + '\'' +
                 ", status=" + status +

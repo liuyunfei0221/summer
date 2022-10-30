@@ -52,10 +52,10 @@ public class MarketingEventHandleServiceImpl implements MarketingEventHandleServ
         EventRecord eventRecord = new EventRecord();
 
         eventRecord.setId(blueIdentityProcessor.generate(EventRecord.class));
+        eventRecord.setMemberId(marketingEvent.getMemberId());
         eventRecord.setType(ofNullable(marketingEvent.getEventType()).orElse(MarketingEventType.UNKNOWN.identity));
         eventRecord.setData(marketingEvent.getEvent());
         eventRecord.setCreateTime(marketingEvent.getEventTime());
-        eventRecord.setCreator(marketingEvent.getMemberId());
 
         return eventRecord;
     };
@@ -80,10 +80,14 @@ public class MarketingEventHandleServiceImpl implements MarketingEventHandleServ
         } catch (Exception exception) {
             eventRecord.setStatus(HandleStatus.BROKEN.status);
             LOGGER.error("handleEvent(MarketingEvent marketingEvent) failed, marketingEvent = {}, e = {}", marketingEvent, exception);
-        } finally {
-            eventRecordService.insertEventRecord(eventRecord);
-            LOGGER.info("eventMapper.insert(event) success, eventRecord = {}", eventRecord);
         }
+
+        eventRecordService.insertEventRecord(eventRecord)
+                .subscribe(er ->
+                                LOGGER.info("er = {}", er),
+                        throwable ->
+                                LOGGER.error("eventRecord = {}, throwable = {}", eventRecord, throwable)
+                );
 
         return eventRecord;
     }

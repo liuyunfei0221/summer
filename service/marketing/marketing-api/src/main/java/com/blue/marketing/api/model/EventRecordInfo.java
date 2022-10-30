@@ -20,6 +20,12 @@ public final class EventRecordInfo implements Serializable {
     private Long id;
 
     /**
+     * member id
+     */
+    @JsonSerialize(using = Long2StringSerializer.class)
+    private Long memberId;
+
+    /**
      * event type
      *
      * @see com.blue.basic.constant.marketing.MarketingEventType
@@ -44,22 +50,16 @@ public final class EventRecordInfo implements Serializable {
     @JsonSerialize(using = Long2StringSerializer.class)
     private Long createTime;
 
-    /**
-     * creator
-     */
-    @JsonSerialize(using = Long2StringSerializer.class)
-    private Long creator;
+    public EventRecordInfo() {
+    }
 
-    private String creatorName;
-
-    public EventRecordInfo(Long id, Integer type, String data, Integer status, Long createTime, Long creator, String creatorName) {
+    public EventRecordInfo(Long id, Long memberId, Integer type, String data, Integer status, Long createTime) {
         this.id = id;
+        this.memberId = memberId;
         this.type = type;
         this.data = data;
         this.status = status;
         this.createTime = createTime;
-        this.creator = creator;
-        this.creatorName = creatorName;
     }
 
     public Long getId() {
@@ -68,6 +68,14 @@ public final class EventRecordInfo implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(Long memberId) {
+        this.memberId = memberId;
     }
 
     public Integer getType() {
@@ -102,32 +110,15 @@ public final class EventRecordInfo implements Serializable {
         this.createTime = createTime;
     }
 
-    public Long getCreator() {
-        return creator;
-    }
-
-    public void setCreator(Long creator) {
-        this.creator = creator;
-    }
-
-    public String getCreatorName() {
-        return creatorName;
-    }
-
-    public void setCreatorName(String creatorName) {
-        this.creatorName = creatorName;
-    }
-
     @Override
     public String toString() {
         return "EventRecordInfo{" +
                 "id=" + id +
+                ", memberId=" + memberId +
                 ", type=" + type +
                 ", data='" + data + '\'' +
                 ", status=" + status +
                 ", createTime=" + createTime +
-                ", creator=" + creator +
-                ", creatorName='" + creatorName + '\'' +
                 '}';
     }
 

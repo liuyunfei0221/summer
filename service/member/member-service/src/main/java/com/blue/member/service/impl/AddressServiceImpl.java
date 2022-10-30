@@ -329,7 +329,6 @@ public class AddressServiceImpl implements AddressService {
                     probe.setMemberId(memberId);
 
                     return addressRepository.count(Example.of(probe))
-
                             .switchIfEmpty(defer(() -> just(0L)))
                             .flatMap(count ->
                                     count < MAX_ADDRESS ?
@@ -361,7 +360,6 @@ public class AddressServiceImpl implements AddressService {
 
         return synchronizedProcessor.handleSupWithSync(ADDRESS_UPDATE_SYNC_KEY_GEN.apply(memberId), () ->
                 addressRepository.findById(addressUpdateParam.getId())
-
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                         .flatMap(address ->
                                 address.getMemberId().equals(memberId) ?
@@ -390,7 +388,6 @@ public class AddressServiceImpl implements AddressService {
 
         return synchronizedProcessor.handleSupWithSync(ADDRESS_UPDATE_SYNC_KEY_GEN.apply(memberId), () ->
                 addressRepository.findById(id)
-
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                         .flatMap(address ->
                                 address.getMemberId().equals(memberId) ?
@@ -494,7 +491,6 @@ public class AddressServiceImpl implements AddressService {
 
         return fromIterable(allotByMax(ids, (int) DB_SELECT.value, false))
                 .map(shardIds -> addressRepository.findAllById(shardIds)
-
                         .map(ADDRESS_2_ADDRESS_INFO))
                 .reduce(Flux::concat)
                 .flatMap(Flux::collectList);

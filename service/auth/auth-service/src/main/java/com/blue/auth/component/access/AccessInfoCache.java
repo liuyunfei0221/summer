@@ -223,7 +223,6 @@ public final class AccessInfoCache {
         LOGGER.info("invalidAuthInfo(), keyId = {}", keyId);
         return isNotBlank(keyId) ?
                 reactiveStringRedisTemplate.delete(keyId)
-
                         .map(l -> l > 0L)
                         .doOnEach(ig -> cache.synchronous().invalidate(keyId))
                 :

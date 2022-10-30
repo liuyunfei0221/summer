@@ -331,7 +331,6 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
             messageTemplate.setUpdater(operatorId);
 
             return messageTemplateRepository.insert(messageTemplate)
-
                     .map(MESSAGE_TEMPLATE_2_MESSAGE_TEMPLATE_INFO_CONVERTER);
         });
     }
@@ -361,7 +360,6 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
             messageTemplate.setUpdater(operatorId);
 
             return messageTemplateRepository.save(messageTemplate)
-
                     .doOnSuccess(config -> {
                         Integer tarType = config.getType();
                         Integer tarBusinessType = config.getBusinessType();
@@ -388,7 +386,6 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
 
         return synchronizedProcessor.handleSupWithSync(MESSAGE_TEMPLATE_UPDATE_SYNC.key, () ->
                 messageTemplateRepository.findById(id)
-
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                         .flatMap(template -> messageTemplateRepository.delete(template).then(just(template)))
                         .doOnSuccess(template -> REDIS_CACHE_DELETER.accept(template.getType(), template.getBusinessType()))

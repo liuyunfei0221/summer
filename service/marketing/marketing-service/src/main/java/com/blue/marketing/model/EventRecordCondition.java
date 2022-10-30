@@ -20,6 +20,11 @@ public final class EventRecordCondition extends SortCondition implements Seriali
     private Long id;
 
     /**
+     * member id
+     */
+    private Long memberId;
+
+    /**
      * event type
      *
      * @see com.blue.basic.constant.marketing.MarketingEventType
@@ -27,16 +32,16 @@ public final class EventRecordCondition extends SortCondition implements Seriali
     private Integer type;
 
     /**
+     * event json
+     */
+    private String data;
+
+    /**
      * handling status
      *
      * @see com.blue.basic.constant.marketing.HandleStatus
      */
     private Integer status;
-
-    /**
-     * creator
-     */
-    private Long creator;
 
     private Long createTimeBegin;
 
@@ -50,12 +55,13 @@ public final class EventRecordCondition extends SortCondition implements Seriali
         super(sortAttribute, sortType);
     }
 
-    public EventRecordCondition(Long id, Integer type, Integer status, Long creator, Long createTimeBegin, Long createTimeEnd, String sortAttribute, String sortType) {
+    public EventRecordCondition(Long id, Long memberId, Integer type, String data, Integer status, Long createTimeBegin, Long createTimeEnd, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.id = id;
+        this.memberId = memberId;
         this.type = type;
+        this.data = data;
         this.status = status;
-        this.creator = creator;
         this.createTimeBegin = createTimeBegin;
         this.createTimeEnd = createTimeEnd;
     }
@@ -68,6 +74,14 @@ public final class EventRecordCondition extends SortCondition implements Seriali
         this.id = id;
     }
 
+    public Long getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(Long memberId) {
+        this.memberId = memberId;
+    }
+
     public Integer getType() {
         return type;
     }
@@ -76,20 +90,20 @@ public final class EventRecordCondition extends SortCondition implements Seriali
         this.type = type;
     }
 
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
     public Integer getStatus() {
         return status;
     }
 
     public void setStatus(Integer status) {
         this.status = status;
-    }
-
-    public Long getCreator() {
-        return creator;
-    }
-
-    public void setCreator(Long creator) {
-        this.creator = creator;
     }
 
     public Long getCreateTimeBegin() {
@@ -112,9 +126,10 @@ public final class EventRecordCondition extends SortCondition implements Seriali
     public String toString() {
         return "EventRecordCondition{" +
                 "id=" + id +
+                ", memberId=" + memberId +
                 ", type=" + type +
+                ", data='" + data + '\'' +
                 ", status=" + status +
-                ", creator=" + creator +
                 ", createTimeBegin=" + createTimeBegin +
                 ", createTimeEnd=" + createTimeEnd +
                 ", sortAttribute='" + sortAttribute + '\'' +

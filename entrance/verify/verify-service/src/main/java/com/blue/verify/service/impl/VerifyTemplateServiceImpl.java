@@ -437,7 +437,6 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
             verifyTemplate.setUpdater(operatorId);
 
             return verifyTemplateRepository.insert(verifyTemplate)
-
                     .doOnSuccess(template -> REDIS_CACHE_DELETER.accept(template.getType(), template.getBusinessType()))
                     .map(VERIFY_TEMPLATE_2_VERIFY_TEMPLATE_INFO_CONVERTER);
         });
@@ -464,7 +463,6 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
             verifyTemplate.setUpdater(operatorId);
 
             return verifyTemplateRepository.save(verifyTemplate)
-
                     .doOnSuccess(template -> {
                         String tarType = template.getType();
                         String tarBusinessType = template.getBusinessType();
@@ -491,7 +489,6 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
 
         return synchronizedProcessor.handleSupWithSync(VERIFY_TEMPLATE_UPDATE_SYNC.key, () ->
                 verifyTemplateRepository.findById(id)
-
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                         .flatMap(template -> verifyTemplateRepository.delete(template).then(just(template)))
                         .doOnSuccess(template -> REDIS_CACHE_DELETER.accept(template.getType(), template.getBusinessType()))

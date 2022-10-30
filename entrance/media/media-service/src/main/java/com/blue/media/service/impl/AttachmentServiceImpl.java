@@ -125,7 +125,6 @@ public class AttachmentServiceImpl implements AttachmentService {
         return query;
     };
 
-
     /**
      * insert attachment
      *
@@ -244,8 +243,8 @@ public class AttachmentServiceImpl implements AttachmentService {
      * @return
      */
     @Override
-    public Mono<ScrollModelResponse<AttachmentDetailInfo, String>> selectShineInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<Void, Long> scrollModelRequest, Long memberId) {
-        LOGGER.info("Mono<ScrollModelResponse<AttachmentDetailInfo, String>> selectShineInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<Void, Long> scrollModelRequest, Long memberId), " +
+    public Mono<ScrollModelResponse<AttachmentDetailInfo, String>> selectAttachmentDetailInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<Void, Long> scrollModelRequest, Long memberId) {
+        LOGGER.info("Mono<ScrollModelResponse<AttachmentDetailInfo, String>> selectAttachmentDetailInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<Void, Long> scrollModelRequest, Long memberId), " +
                 "scrollModelRequest = {}, memberId = {}", scrollModelRequest, memberId);
         if (isNull(scrollModelRequest))
             throw new BlueException(EMPTY_PARAM);

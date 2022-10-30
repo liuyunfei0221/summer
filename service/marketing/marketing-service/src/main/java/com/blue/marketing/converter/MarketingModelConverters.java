@@ -2,6 +2,7 @@ package com.blue.marketing.converter;
 
 import com.blue.basic.model.exps.BlueException;
 import com.blue.marketing.api.model.*;
+import com.blue.marketing.model.EventRecordManagerInfo;
 import com.blue.marketing.model.RewardDateRelationInsertParam;
 import com.blue.marketing.model.RewardInsertParam;
 import com.blue.marketing.repository.entity.EventRecord;
@@ -123,12 +124,23 @@ public final class MarketingModelConverters {
     /**
      * event record -> event record info
      */
-    public static final BiFunction<EventRecord, String, EventRecordInfo> EVENT_RECORD_2_EVENT_RECORD_INFO_CONVERTER = (eventRecord, creatorName) -> {
+    public static final Function<EventRecord, EventRecordInfo> EVENT_RECORD_2_EVENT_RECORD_INFO_CONVERTER = eventRecord -> {
         if (isNull(eventRecord))
             throw new BlueException(EMPTY_PARAM);
 
-        return new EventRecordInfo(eventRecord.getId(), eventRecord.getType(),
-                eventRecord.getData(), eventRecord.getStatus(), eventRecord.getCreateTime(), eventRecord.getCreator(), isNotBlank(creatorName) ? creatorName : EMPTY_VALUE.value);
+        return new EventRecordInfo(eventRecord.getId(), eventRecord.getMemberId(),
+                eventRecord.getType(), eventRecord.getData(), eventRecord.getStatus(), eventRecord.getCreateTime());
+    };
+
+    /**
+     * event record -> event record manager info
+     */
+    public static final BiFunction<EventRecord, String, EventRecordManagerInfo> EVENT_RECORD_2_EVENT_RECORD_MANAGER_INFO_CONVERTER = (eventRecord, memberName) -> {
+        if (isNull(eventRecord))
+            throw new BlueException(EMPTY_PARAM);
+
+        return new EventRecordManagerInfo(eventRecord.getId(), eventRecord.getMemberId(), isNotBlank(memberName) ? memberName : EMPTY_VALUE.value,
+                eventRecord.getType(), eventRecord.getData(), eventRecord.getStatus(), eventRecord.getCreateTime());
     };
 
 

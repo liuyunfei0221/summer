@@ -83,8 +83,7 @@ public final class BlueRestGenerator {
 
         ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
                 .codecs(clientCodecConfigurer ->
-                        clientCodecConfigurer
-                                .defaultCodecs()
+                        clientCodecConfigurer.defaultCodecs()
                                 .maxInMemorySize(ofNullable(restConf.getMaxByteInMemorySize()).filter(v -> v > 0).orElse(DEFAULT_MAX_BYTE_IN_MEMORY_SIZE))
                 ).build();
 

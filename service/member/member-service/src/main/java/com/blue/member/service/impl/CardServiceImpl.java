@@ -273,7 +273,6 @@ public class CardServiceImpl implements CardService {
                     probe.setMemberId(memberId);
 
                     return cardRepository.count(Example.of(probe))
-
                             .switchIfEmpty(defer(() -> just(0L)))
                             .flatMap(count ->
                                     count < MAX_CARD ?
@@ -305,7 +304,6 @@ public class CardServiceImpl implements CardService {
 
         return synchronizedProcessor.handleSupWithSync(CARD_UPDATE_SYNC_KEY_GEN.apply(memberId), () ->
                 cardRepository.findById(cardUpdateParam.getId())
-
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                         .flatMap(card ->
                                 card.getMemberId().equals(memberId) ?
@@ -334,7 +332,6 @@ public class CardServiceImpl implements CardService {
 
         return synchronizedProcessor.handleSupWithSync(CARD_UPDATE_SYNC_KEY_GEN.apply(memberId), () ->
                 cardRepository.findById(id)
-
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                         .flatMap(card ->
                                 card.getMemberId().equals(memberId) ?

@@ -383,7 +383,6 @@ public class AreaServiceImpl implements AreaService {
 
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .flatMap(area -> areaRepository.delete(area)
-
                         .then(just(AREA_2_AREA_INFO_CONVERTER.apply(area)))
                         .doOnSuccess(ai -> {
                             LOGGER.info("ai = {}", ai);

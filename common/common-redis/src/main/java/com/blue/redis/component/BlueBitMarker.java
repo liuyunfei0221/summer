@@ -141,7 +141,6 @@ public final class BlueBitMarker {
         return isNotBlank(key) ?
                 reactiveStringRedisTemplate.execute(BIT_SET_SCRIPT, SCRIPT_KEYS_WRAPPER.apply(key),
                                 generateArgs(offset, bit, expiresSecond))
-
                         .elementAt(FLUX_ELEMENT_INDEX)
                 :
                 error(() -> new BlueException(EMPTY_PARAM));

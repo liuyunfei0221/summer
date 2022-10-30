@@ -1,43 +1,53 @@
 package com.blue.marketing.service.impl;
 
-import com.blue.basic.model.common.PageModelRequest;
-import com.blue.basic.model.common.PageModelResponse;
+import com.blue.basic.common.base.BlueChecker;
+import com.blue.basic.constant.common.SortType;
+import com.blue.basic.model.common.*;
 import com.blue.basic.model.exps.BlueException;
-import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.marketing.api.model.EventRecordInfo;
 import com.blue.marketing.constant.EventRecordSortAttribute;
 import com.blue.marketing.model.EventRecordCondition;
+import com.blue.marketing.model.EventRecordManagerInfo;
 import com.blue.marketing.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.marketing.repository.entity.EventRecord;
-import com.blue.marketing.repository.mapper.EventRecordMapper;
+import com.blue.marketing.repository.template.EventRecordRepository;
 import com.blue.marketing.service.inter.EventRecordService;
 import com.blue.member.api.model.MemberBasicInfo;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.UnaryOperator;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
 import static com.blue.basic.common.base.BlueChecker.*;
-import static com.blue.database.common.ConditionSortProcessor.process;
-import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
-import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
+import static com.blue.basic.constant.common.BlueCommonThreshold.DB_WRITE;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
+import static com.blue.marketing.constant.EventRecordColumnName.CREATE_TIME;
 import static com.blue.marketing.converter.MarketingModelConverters.EVENT_RECORD_2_EVENT_RECORD_INFO_CONVERTER;
+import static com.blue.marketing.converter.MarketingModelConverters.EVENT_RECORD_2_EVENT_RECORD_MANAGER_INFO_CONVERTER;
+import static com.blue.mongo.common.MongoSearchAfterProcessor.packageSearchAfter;
+import static com.blue.mongo.common.MongoSearchAfterProcessor.parseSearchAfter;
+import static com.blue.mongo.common.MongoSortProcessor.process;
+import static com.blue.mongo.constant.SortSchema.DESC;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
-import static org.springframework.transaction.annotation.Propagation.REQUIRED;
-import static reactor.core.publisher.Mono.*;
+import static org.springframework.data.mongodb.core.query.Criteria.byExample;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static reactor.core.publisher.Flux.fromIterable;
+import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.zip;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -46,7 +56,6 @@ import static reactor.util.Loggers.getLogger;
  * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
-//TODO use mongo
 @Service
 public class EventRecordServiceImpl implements EventRecordService {
 
@@ -54,26 +63,61 @@ public class EventRecordServiceImpl implements EventRecordService {
 
     private final RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer;
 
-    private final BlueIdentityProcessor blueIdentityProcessor;
+    private final ReactiveMongoTemplate reactiveMongoTemplate;
 
-    private final EventRecordMapper eventRecordMapper;
+    private final EventRecordRepository eventRecordRepository;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public EventRecordServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BlueIdentityProcessor blueIdentityProcessor, EventRecordMapper eventRecordMapper) {
+    public EventRecordServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, ReactiveMongoTemplate reactiveMongoTemplate,
+                                  EventRecordRepository eventRecordRepository) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
-        this.blueIdentityProcessor = blueIdentityProcessor;
-        this.eventRecordMapper = eventRecordMapper;
+        this.reactiveMongoTemplate = reactiveMongoTemplate;
+        this.eventRecordRepository = eventRecordRepository;
     }
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(EventRecordSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final UnaryOperator<EventRecordCondition> CONDITION_PROCESSOR = c -> {
-        EventRecordCondition erc = isNotNull(c) ? c : new EventRecordCondition();
+    private static final Function<EventRecordCondition, Sort> SORTER_CONVERTER = c -> {
+        String sortAttribute = ofNullable(c).map(EventRecordCondition::getSortAttribute)
+                .map(SORT_ATTRIBUTE_MAPPING::get)
+                .filter(BlueChecker::isNotBlank)
+                .orElse(EventRecordSortAttribute.CREATE_TIME.column);
 
-        process(erc, SORT_ATTRIBUTE_MAPPING, EventRecordSortAttribute.CREATE_TIME.column);
+        String sortType = ofNullable(c).map(EventRecordCondition::getSortType)
+                .filter(BlueChecker::isNotBlank)
+                .orElse(SortType.DESC.identity);
 
-        return erc;
+        return sortAttribute.equals(EventRecordSortAttribute.ID.column) ?
+                process(singletonList(new SortElement(sortAttribute, sortType)))
+                :
+                process(Stream.of(sortAttribute, EventRecordSortAttribute.ID.column)
+                        .map(attr -> new SortElement(attr, sortType)).collect(toList()));
+    };
+
+    private static final Function<EventRecordCondition, Query> CONDITION_PROCESSOR = c -> {
+        Query query = new Query();
+
+        if (c == null) {
+            query.with(SORTER_CONVERTER.apply(new EventRecordCondition()));
+            return query;
+        }
+
+        EventRecord probe = new EventRecord();
+
+        ofNullable(c.getId()).ifPresent(probe::setId);
+        ofNullable(c.getMemberId()).ifPresent(probe::setMemberId);
+        ofNullable(c.getType()).ifPresent(probe::setType);
+        ofNullable(c.getStatus()).ifPresent(probe::setStatus);
+
+        ofNullable(c.getCreateTimeBegin()).ifPresent(createTimeBegin ->
+                query.addCriteria(where(CREATE_TIME.name).gte(createTimeBegin)));
+        ofNullable(c.getCreateTimeEnd()).ifPresent(createTimeEnd ->
+                query.addCriteria(where(CREATE_TIME.name).lte(createTimeEnd)));
+        query.addCriteria(byExample(probe));
+
+        query.with(SORTER_CONVERTER.apply(c));
+
+        return query;
     };
 
     /**
@@ -83,16 +127,12 @@ public class EventRecordServiceImpl implements EventRecordService {
      * @return
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public int insertEventRecord(EventRecord eventRecord) {
-        LOGGER.info("int insertEvent(EventRecord eventRecord), eventRecord = {}", eventRecord);
-        if (isNull(eventRecord))
+    public Mono<EventRecord> insertEventRecord(EventRecord eventRecord) {
+        LOGGER.info("Mono<EventRecord> insertEventRecord(EventRecord eventRecord), eventRecord = {}", eventRecord);
+        if (eventRecord == null)
             throw new BlueException(EMPTY_PARAM);
 
-        if (isInvalidIdentity(eventRecord.getId()))
-            eventRecord.setId(blueIdentityProcessor.generate(EventRecord.class));
-
-        return eventRecordMapper.insert(eventRecord);
+        return eventRecordRepository.insert(eventRecord);
     }
 
     /**
@@ -102,27 +142,16 @@ public class EventRecordServiceImpl implements EventRecordService {
      * @return
      */
     @Override
-    public int insertEventRecords(List<EventRecord> eventRecords) {
-        LOGGER.info("int insertBatch(List<EventRecord> eventRecords), eventRecords = {}", eventRecords);
-        return ofNullable(eventRecords)
-                .filter(as -> as.size() > 0)
-                .map(eventRecordMapper::insertBatch)
-                .orElse(0);
-    }
+    public Mono<List<EventRecord>> insertEventRecords(List<EventRecord> eventRecords) {
+        LOGGER.info("Mono<List<EventRecord>> insertEventRecords(List<EventRecord> eventRecords), eventRecords = {}", eventRecords);
 
-    /**
-     * get event record by id
-     *
-     * @param id
-     * @return
-     */
-    @Override
-    public Optional<EventRecord> getEventRecord(Long id) {
-        LOGGER.info("Optional<EventRecord> getEventRecord(Long id), id = {}", id);
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
-
-        return ofNullable(eventRecordMapper.selectByPrimaryKey(id));
+        return isNotEmpty(eventRecords) ?
+                fromIterable(allotByMax(eventRecords, (int) DB_WRITE.value, false))
+                        .map(eventRecordRepository::saveAll)
+                        .reduce(Flux::concat)
+                        .flatMap(Flux::collectList)
+                :
+                just(emptyList());
     }
 
     /**
@@ -133,98 +162,59 @@ public class EventRecordServiceImpl implements EventRecordService {
      */
     @Override
     public Mono<EventRecord> getEventRecordMono(Long id) {
-        return justOrEmpty(eventRecordMapper.selectByPrimaryKey(id));
-    }
-
-    /**
-     * select event records by ids
-     *
-     * @param ids
-     * @return
-     */
-    @Override
-    public List<EventRecord> selectEventRecordByIds(List<Long> ids) {
-        LOGGER.info("List<EventRecord> selectEventRecordByIds(List<Long> ids), ids = {}", ids);
-        if (isEmpty(ids))
-            return emptyList();
-        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
-            throw new BlueException(PAYLOAD_TOO_LARGE);
-
-        return allotByMax(ids, (int) DB_SELECT.value, false)
-                .stream().map(eventRecordMapper::selectByIds)
-                .flatMap(List::stream)
-                .collect(toList());
-    }
-
-    /**
-     * select event records mono by ids
-     *
-     * @param ids
-     * @return
-     */
-    @Override
-    public Mono<List<EventRecord>> selectEventRecordMonoByIds(List<Long> ids) {
-        return just(this.selectEventRecordByIds(ids));
-    }
-
-    /**
-     * select event records by page and creator id
-     *
-     * @param limit
-     * @param rows
-     * @param creator
-     * @return
-     */
-    @Override
-    public Mono<List<EventRecord>> selectEventRecordMonoByLimitAndCreator(Long limit, Long rows, Long creator) {
-        LOGGER.info("Mono<List<EventRecord>> selectEventRecordMonoByLimitAndCreator(Long limit, Long rows, Long creator), " +
-                "limit = {}, rows = {}, creator = {}", limit, rows, creator);
-        return just(eventRecordMapper.selectByLimitAndCreator(limit, rows, creator));
-    }
-
-    /**
-     * count event records mono by creator id
-     *
-     * @param creator
-     * @return
-     */
-    @Override
-    public Mono<Long> countEventRecordMonoByCreator(Long creator) {
-        LOGGER.info("Mono<Long> countEventRecordMonoByCreator(Long creator), creator = {}", creator);
-        return just(ofNullable(eventRecordMapper.countByCreator(creator)).orElse(0L));
-    }
-
-    /**
-     * select event record info by page and creator id
-     *
-     * @param pageModelRequest
-     * @param creator
-     * @return
-     */
-    @Override
-    public Mono<PageModelResponse<EventRecordInfo>> selectEventRecordInfoByPageAndCreator(PageModelRequest<Void> pageModelRequest, Long creator) {
-        LOGGER.info("Mono<PageModelResponse<EventRecordInfo>> selectEventRecordInfoByPageAndCreator(PageModelRequest<Void> pageModelRequest, Long creator), pageModelRequest = {}, creator = {}",
-                pageModelRequest, creator);
-        if (isNull(pageModelRequest))
-            throw new BlueException(EMPTY_PARAM);
-        if (isInvalidIdentity(creator))
+        LOGGER.info(" Mono<EventRecord> getEventRecordMono(Long id), id = {}", id);
+        if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return zip(
-                selectEventRecordMonoByLimitAndCreator(pageModelRequest.getLimit(), pageModelRequest.getRows(), creator),
-                countEventRecordMonoByCreator(creator),
-                rpcMemberBasicServiceConsumer.getMemberBasicInfo(creator)
-        ).flatMap(tuple3 -> {
-            List<EventRecord> eventRecords = tuple3.getT1();
-            String creatorName = tuple3.getT3().getName();
+        return eventRecordRepository.findById(id);
+    }
 
-            return isNotEmpty(eventRecords) ?
-                    just(eventRecords.stream().map(e -> EVENT_RECORD_2_EVENT_RECORD_INFO_CONVERTER.apply(e, creatorName)).collect(toList()))
-                            .flatMap(eventRecordInfos ->
-                                    just(new PageModelResponse<>(eventRecordInfos, tuple3.getT2())))
-                    :
-                    just(new PageModelResponse<>(emptyList(), tuple3.getT2()));
-        });
+    /**
+     * get event record info mono by id
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Mono<EventRecordInfo> getEventRecordInfoMono(Long id) {
+        return getEventRecordMono(id).map(EVENT_RECORD_2_EVENT_RECORD_INFO_CONVERTER);
+    }
+
+    /**
+     * select event record info by scroll and member id
+     *
+     * @param scrollModelRequest
+     * @param memberId
+     * @return
+     */
+    @Override
+    public Mono<ScrollModelResponse<EventRecordInfo, String>> selectEventRecordInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<Void, Long> scrollModelRequest, Long memberId) {
+        LOGGER.info("Mono<ScrollModelResponse<EventRecordInfo, String>> selectEventRecordInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<Void, Long> scrollModelRequest, Long memberId), " +
+                "scrollModelRequest = {}, memberId = {}", scrollModelRequest, memberId);
+        if (isNull(scrollModelRequest))
+            throw new BlueException(EMPTY_PARAM);
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(INVALID_IDENTITY);
+
+        Query query = new Query();
+
+        EventRecord probe = new EventRecord();
+        probe.setMemberId(memberId);
+
+        query.addCriteria(byExample(probe));
+        packageSearchAfter(query, DESC.sortType.identity, EventRecordSortAttribute.ID.column, scrollModelRequest.getCursor());
+        query.with(process(List.of(new SortElement(EventRecordSortAttribute.CREATE_TIME.column, DESC.sortType.identity),
+                new SortElement(EventRecordSortAttribute.ID.column, DESC.sortType.identity))));
+
+        query.skip(scrollModelRequest.getFrom()).limit(scrollModelRequest.getRows().intValue());
+
+        return reactiveMongoTemplate.find(query, EventRecord.class).collectList()
+                .map(eventRecords ->
+                        isNotEmpty(eventRecords) ?
+                                new ScrollModelResponse<>(eventRecords.stream().map(EVENT_RECORD_2_EVENT_RECORD_INFO_CONVERTER).collect(toList()),
+                                        parseSearchAfter(eventRecords, attachment -> String.valueOf(attachment.getId())))
+                                :
+                                new ScrollModelResponse<>(emptyList(), ""));
     }
 
     /**
@@ -232,56 +222,65 @@ public class EventRecordServiceImpl implements EventRecordService {
      *
      * @param limit
      * @param rows
-     * @param eventRecordCondition
+     * @param query
      * @return
      */
     @Override
-    public Mono<List<EventRecord>> selectEventRecordMonoByLimitAndCondition(Long limit, Long rows, EventRecordCondition eventRecordCondition) {
-        LOGGER.info("Mono<List<EventRecord>> selectEventRecordMonoByLimitAndCondition(Long limit, Long rows, EventRecordCondition eventRecordCondition), " +
-                "limit = {}, rows = {}, eventRecordCondition = {}", limit, rows, eventRecordCondition);
-        return just(eventRecordMapper.selectByLimitAndCondition(limit, rows, eventRecordCondition));
+    public Mono<List<EventRecord>> selectEventRecordMonoByLimitAndQuery(Long limit, Long rows, Query query) {
+        LOGGER.info("Mono<List<Attachment>> selectEventRecordMonoByLimitAndQuery(Long limit, Long rows, Query query)," +
+                " limit = {}, rows = {}, query = {}", limit, rows, query);
+
+        if (isInvalidLimit(limit) || isInvalidRows(rows))
+            throw new BlueException(INVALID_PARAM);
+
+        Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
+        listQuery.skip(limit).limit(rows.intValue());
+
+        return reactiveMongoTemplate.find(listQuery, EventRecord.class).collectList();
     }
 
     /**
      * count event record by condition
      *
-     * @param eventRecordCondition
+     * @param query
      * @return
      */
     @Override
-    public Mono<Long> countEventRecordMonoByCondition(EventRecordCondition eventRecordCondition) {
-        LOGGER.info("Mono<Long> countEventRecordMonoByCondition(EventRecordCondition eventRecordCondition), eventRecordCondition = {}", eventRecordCondition);
-        return just(ofNullable(eventRecordMapper.countByCondition(eventRecordCondition)).orElse(0L));
+    public Mono<Long> countEventRecordMonoByQuery(Query query) {
+        LOGGER.info("Mono<Long> countEventRecordMonoByQuery(Query query), query = {}", query);
+        return reactiveMongoTemplate.count(query, EventRecord.class);
     }
 
     /**
-     * select event record info page by condition
+     * select event record manager info page by condition
      *
      * @param pageModelRequest
      * @return
      */
     @Override
-    public Mono<PageModelResponse<EventRecordInfo>> selectEventRecordInfoPageMonoByPageAndCondition(PageModelRequest<EventRecordCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<EventRecordInfo>> selectEventRecordInfoPageMonoByPageAndCondition(PageModelRequest<EventRecordCondition> pageModelRequest), " +
+    public Mono<PageModelResponse<EventRecordManagerInfo>> selectEventRecordInfoPageMonoByPageAndCondition(PageModelRequest<EventRecordCondition> pageModelRequest) {
+        LOGGER.info("Mono<PageModelResponse<EventRecordManagerInfo>> selectEventRecordInfoPageMonoByPageAndCondition(PageModelRequest<EventRecordCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        EventRecordCondition eventRecordCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
+        Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
-        return zip(selectEventRecordMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), eventRecordCondition), countEventRecordMonoByCondition(eventRecordCondition))
+        return zip(selectEventRecordMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),
+                countEventRecordMonoByQuery(query))
                 .flatMap(tuple2 -> {
                     List<EventRecord> eventRecords = tuple2.getT1();
                     Long count = tuple2.getT2();
                     return isNotEmpty(eventRecords) ?
-                            rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(eventRecords.parallelStream().map(EventRecord::getCreator).collect(toList()))
+                            rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(eventRecords.stream().map(EventRecord::getMemberId).collect(toList()))
                                     .flatMap(memberBasicInfos -> {
-                                        Map<Long, String> idAndNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
-                                        return just(eventRecords.stream().map(e ->
-                                                        EVENT_RECORD_2_EVENT_RECORD_INFO_CONVERTER.apply(e, ofNullable(idAndNameMapping.get(e.getCreator())).orElse(EMPTY_VALUE.value)))
+                                        Map<Long, String> idAndNameMapping = memberBasicInfos.stream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
+                                        return just(eventRecords.stream().map(er ->
+                                                        EVENT_RECORD_2_EVENT_RECORD_MANAGER_INFO_CONVERTER.apply(er, ofNullable(idAndNameMapping.get(er.getMemberId()))
+                                                                .orElse(EMPTY_VALUE.value)))
                                                 .collect(toList()));
-                                    }).flatMap(eventRecordInfos ->
-                                            just(new PageModelResponse<>(eventRecordInfos, count)))
+                                    }).flatMap(attachmentDetailInfos ->
+                                            just(new PageModelResponse<>(attachmentDetailInfos, count)))
                             :
                             just(new PageModelResponse<>(emptyList(), count));
                 });

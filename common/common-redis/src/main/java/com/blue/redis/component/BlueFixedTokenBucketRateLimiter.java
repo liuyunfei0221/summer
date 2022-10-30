@@ -64,7 +64,6 @@ public final class BlueFixedTokenBucketRateLimiter {
     private final Function<String, Mono<Boolean>> ALLOWED_GETTER = limitKey ->
             reactiveStringRedisTemplate.execute(SCRIPT, SCRIPT_KEYS_WRAPPER.apply(limitKey),
                             SCRIPT_ARGS_SUP.get())
-
                     .onErrorResume(FALL_BACKER)
                     .elementAt(0);
 

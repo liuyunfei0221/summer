@@ -186,8 +186,6 @@ public class CountryServiceImpl implements CountryService {
         country.setCurrency(p.getCurrency());
         country.setCurrencySymbol(p.getCurrencySymbol());
         country.setTopLevelDomain(p.getTopLevelDomain());
-
-        //TODO
         country.setRegion(p.getRegion());
         country.setEmoji(p.getEmoji());
         country.setEmojiu(p.getEmojiu());

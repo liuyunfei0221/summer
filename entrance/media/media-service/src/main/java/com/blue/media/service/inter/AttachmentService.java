@@ -76,7 +76,7 @@ public interface AttachmentService {
      * @param memberId
      * @return
      */
-    Mono<ScrollModelResponse<AttachmentDetailInfo, String>> selectShineInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<Void, Long> scrollModelRequest, Long memberId);
+    Mono<ScrollModelResponse<AttachmentDetailInfo, String>> selectAttachmentDetailInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<Void, Long> scrollModelRequest, Long memberId);
 
     /**
      * select attachment by page and condition
