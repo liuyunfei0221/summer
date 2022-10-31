@@ -6,6 +6,7 @@ import com.blue.basic.model.common.ScrollModelRequest;
 import com.blue.basic.model.common.ScrollModelResponse;
 import com.blue.marketing.api.model.EventRecordInfo;
 import com.blue.marketing.model.EventRecordCondition;
+import com.blue.marketing.model.EventRecordManagerCondition;
 import com.blue.marketing.model.EventRecordManagerInfo;
 import com.blue.marketing.repository.entity.EventRecord;
 import org.springframework.data.mongodb.core.query.Query;
@@ -60,7 +61,7 @@ public interface EventRecordService {
      * @param memberId
      * @return
      */
-    Mono<ScrollModelResponse<EventRecordInfo, String>> selectEventRecordInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<Void, Long> scrollModelRequest, Long memberId);
+    Mono<ScrollModelResponse<EventRecordInfo, String>> selectEventRecordInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<EventRecordCondition, Long> scrollModelRequest, Long memberId);
 
     /**
      * select event record by page and condition
@@ -86,6 +87,6 @@ public interface EventRecordService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<EventRecordManagerInfo>> selectEventRecordInfoPageMonoByPageAndCondition(PageModelRequest<EventRecordCondition> pageModelRequest);
+    Mono<PageModelResponse<EventRecordManagerInfo>> selectEventRecordInfoPageMonoByPageAndCondition(PageModelRequest<EventRecordManagerCondition> pageModelRequest);
 
 }

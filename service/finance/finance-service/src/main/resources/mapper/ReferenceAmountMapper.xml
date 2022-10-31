@@ -12,32 +12,31 @@
         <result column="extra" jdbcType="VARCHAR" property="extra"/>
         <result column="detail" jdbcType="VARCHAR" property="detail"/>
         <result column="status" jdbcType="TINYINT" property="status"/>
-        <result column="order_version" jdbcType="BIGINT" property="orderVersion"/>
         <result column="create_time" jdbcType="BIGINT" property="createTime"/>
         <result column="update_time" jdbcType="BIGINT" property="updateTime"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id
-        , order_id, member_id, type, reference_id, amount, extra, detail, status, order_version, create_time,
+        , order_id, member_id, type, reference_id, amount, extra, detail, status, create_time,
     update_time
     </sql>
 
     <insert id="insert" parameterType="com.blue.finance.repository.entity.ReferenceAmount">
         insert into reference_amount (id, order_id, member_id,
                                       type, reference_id, amount,
-                                      extra, detail, status, order_version,
+                                      extra, detail, status,
                                       create_time, update_time)
         values (#{id,jdbcType=BIGINT}, #{orderId,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT},
                 #{type,jdbcType=TINYINT}, #{referenceId,jdbcType=BIGINT}, #{amount,jdbcType=BIGINT},
                 #{extra,jdbcType=VARCHAR}, #{detail,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
-                #{orderVersion,jdbcType=BIGINT}, #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT})
+                #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT})
     </insert>
 
     <insert id="insertBatch" parameterType="java.util.List">
         <if test="list != null and list.size > 0">
             INSERT INTO reference_amount (id, order_id, member_id,type, reference_id, amount,
-            extra, detail, status, order_version, create_time, update_time)
+            extra, detail, status, create_time, update_time)
             values
             <foreach collection="list" index="index" item="item" separator=",">
                 (
@@ -50,7 +49,6 @@
                 #{item.extra,jdbcType=VARCHAR},
                 #{item.detail,jdbcType=VARCHAR},
                 #{item.status,jdbcType=TINYINT},
-                #{item.orderVersion,jdbcType=BIGINT},
                 #{item.createTime,jdbcType=BIGINT},
                 #{item.updateTime,jdbcType=BIGINT}
                 )
@@ -88,9 +86,6 @@
             <if test="status != null">
                 status,
             </if>
-            <if test="orderVersion != null">
-                order_version,
-            </if>
             <if test="createTime != null">
                 create_time,
             </if>
@@ -126,9 +121,6 @@
             <if test="status != null">
                 #{status,jdbcType=TINYINT},
             </if>
-            <if test="orderVersion != null">
-                #{orderVersion,jdbcType=BIGINT},
-            </if>
             <if test="createTime != null">
                 #{createTime,jdbcType=BIGINT},
             </if>
@@ -140,17 +132,16 @@
 
     <update id="updateByPrimaryKey" parameterType="com.blue.finance.repository.entity.ReferenceAmount">
         update reference_amount
-        set order_id      = #{orderId,jdbcType=BIGINT},
-            member_id     = #{memberId,jdbcType=BIGINT},
-            type          = #{type,jdbcType=TINYINT},
-            reference_id  = #{referenceId,jdbcType=BIGINT},
-            amount        = #{amount,jdbcType=BIGINT},
-            extra         = #{extra,jdbcType=VARCHAR},
-            detail        = #{detail,jdbcType=VARCHAR},
-            status        = #{status,jdbcType=TINYINT},
-            order_version = #{orderVersion,jdbcType=BIGINT},
-            create_time   = #{createTime,jdbcType=BIGINT},
-            update_time   = #{updateTime,jdbcType=BIGINT}
+        set order_id     = #{orderId,jdbcType=BIGINT},
+            member_id    = #{memberId,jdbcType=BIGINT},
+            type         = #{type,jdbcType=TINYINT},
+            reference_id = #{referenceId,jdbcType=BIGINT},
+            amount       = #{amount,jdbcType=BIGINT},
+            extra        = #{extra,jdbcType=VARCHAR},
+            detail       = #{detail,jdbcType=VARCHAR},
+            status       = #{status,jdbcType=TINYINT},
+            create_time  = #{createTime,jdbcType=BIGINT},
+            update_time  = #{updateTime,jdbcType=BIGINT}
         where id = #{id,jdbcType=BIGINT}
     </update>
 
@@ -180,9 +171,6 @@
             </if>
             <if test="status != null">
                 status = #{status,jdbcType=TINYINT},
-            </if>
-            <if test="orderVersion != null">
-                order_version = #{orderVersion,jdbcType=BIGINT},
             </if>
             <if test="createTime != null">
                 create_time = #{createTime,jdbcType=BIGINT},

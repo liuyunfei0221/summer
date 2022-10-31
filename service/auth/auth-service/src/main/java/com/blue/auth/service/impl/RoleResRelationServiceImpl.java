@@ -38,6 +38,7 @@ import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.SyncKey.ROLE_RESOURCE_RELATIONS_REFRESH_SYNC;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collector.Characteristics.CONCURRENT;
 import static java.util.stream.Collectors.*;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
@@ -337,13 +338,13 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         if (isEmpty(roleIds))
             throw new BlueException(INVALID_IDENTITY);
 
-        return zip(roleService.selectRoleMonoByIds(roleIds).flatMap(roles -> just(roles.stream().map(ROLE_2_ROLE_INFO_CONVERTER).collect(toMap(RoleInfo::getId, r -> r, (a, b) -> a)))),
+        return zip(roleService.selectRoleMonoByIds(roleIds).flatMap(roles -> just(roles.stream().map(ROLE_2_ROLE_INFO_CONVERTER).collect(toMap(RoleInfo::getId, identity(), (a, b) -> a)))),
                 this.selectRelationByRoleIds(roleIds))
                 .flatMap(tuple2 -> {
                     List<RoleResRelation> resRelations = tuple2.getT2();
                     return zip(just(tuple2.getT1()),
                             just(resourceService.selectResourceByIds(resRelations.stream().map(RoleResRelation::getResId).collect(toList())))
-                                    .flatMap(resources -> just(resources.stream().map(RESOURCE_2_RESOURCE_INFO_CONVERTER).collect(toMap(ResourceInfo::getId, r -> r, (a, b) -> a)))),
+                                    .flatMap(resources -> just(resources.stream().map(RESOURCE_2_RESOURCE_INFO_CONVERTER).collect(toMap(ResourceInfo::getId, identity(), (a, b) -> a)))),
                             just(resRelations.stream().collect(groupingBy(RoleResRelation::getRoleId))));
                 }).flatMap(tuple3 -> {
                     Map<Long, RoleInfo> roleInfoMapping = tuple3.getT1();

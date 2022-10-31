@@ -28,9 +28,12 @@ public class OrderArticle implements Serializable {
 
     private String detail;
 
+    /**
+     * order article status
+     *
+     * @see com.blue.basic.constant.finance.OrderArticleStatus
+     */
     private Integer status;
-
-    private Long orderVersion;
 
     private Long createTime;
 
@@ -89,7 +92,7 @@ public class OrderArticle implements Serializable {
     }
 
     public void setExtra(String extra) {
-        this.extra = extra == null ? null : extra.trim();
+        this.extra = extra;
     }
 
     public String getDetail() {
@@ -97,7 +100,7 @@ public class OrderArticle implements Serializable {
     }
 
     public void setDetail(String detail) {
-        this.detail = detail == null ? null : detail.trim();
+        this.detail = detail;
     }
 
     public Integer getStatus() {
@@ -106,14 +109,6 @@ public class OrderArticle implements Serializable {
 
     public void setStatus(Integer status) {
         this.status = status;
-    }
-
-    public Long getOrderVersion() {
-        return orderVersion;
-    }
-
-    public void setOrderVersion(Long orderVersion) {
-        this.orderVersion = orderVersion;
     }
 
     public Long getCreateTime() {
@@ -144,7 +139,6 @@ public class OrderArticle implements Serializable {
                 ", extra='" + extra + '\'' +
                 ", detail='" + detail + '\'' +
                 ", status=" + status +
-                ", orderVersion=" + orderVersion +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 '}';

@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import static com.blue.auth.converter.AuthModelConverters.ROLE_2_ROLE_INFO_CONVERTER;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.*;
 import static reactor.core.publisher.Mono.just;
 import static reactor.core.publisher.Mono.zip;
@@ -83,7 +84,7 @@ public class RpcRoleServiceProvider implements RpcRoleService {
                 .flatMap(memberRoleRelationService::selectRelationMonoByMemberIds)
                 .flatMap(relations ->
                         zip(roleService.selectRoleMonoByIds(relations.stream().map(MemberRoleRelation::getRoleId).collect(toList()))
-                                        .flatMap(roles -> just(roles.stream().map(ROLE_2_ROLE_INFO_CONVERTER).collect(toMap(RoleInfo::getId, r -> r, (a, b) -> a)))),
+                                        .flatMap(roles -> just(roles.stream().map(ROLE_2_ROLE_INFO_CONVERTER).collect(toMap(RoleInfo::getId, identity(), (a, b) -> a)))),
                                 just(relations.stream().collect(groupingBy(MemberRoleRelation::getMemberId))))
                                 .flatMap(tuple2 -> {
                                     Map<Long, RoleInfo> roleInfoMapping = tuple2.getT1();

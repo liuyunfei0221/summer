@@ -1,7 +1,6 @@
 package com.blue.marketing.event.consumer;
 
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
-import com.blue.basic.model.exps.BlueException;
 import com.blue.marketing.api.model.MarketingEvent;
 import com.blue.marketing.config.blue.BlueConsumerConfig;
 import com.blue.marketing.service.inter.MarketingEventHandleService;
@@ -14,11 +13,9 @@ import javax.annotation.PostConstruct;
 import java.util.function.Consumer;
 
 import static com.blue.basic.constant.common.BlueTopic.MARKETING;
-import static com.blue.basic.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
 import static java.util.Optional.ofNullable;
-import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -50,10 +47,7 @@ public final class MarketingEventConsumer implements BlueLifecycle {
     private void init() {
         Consumer<MarketingEvent> dataConsumer = marketingEvent ->
                 ofNullable(marketingEvent)
-                        .ifPresent(me -> just(me).map(marketingEventHandleService::handleEvent)
-                                .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
-                                .doOnError(throwable -> LOGGER.info("marketingEventHandleService.handleEvent(me) failed, me = {}, throwable = {}", me, throwable))
-                                .subscribe(er -> LOGGER.info("marketingEventHandleService.handleEvent(me), er = {}, me = {}", er, me)));
+                        .ifPresent(marketingEventHandleService::handleEvent);
 
         this.pulsarListener = BluePulsarListenerGenerator.generateListener(pulsarClient, blueConsumerConfig.getByKey(MARKETING.name), dataConsumer);
     }

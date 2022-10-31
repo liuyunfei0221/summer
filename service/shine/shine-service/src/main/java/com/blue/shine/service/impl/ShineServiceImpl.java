@@ -272,9 +272,6 @@ public class ShineServiceImpl implements ShineService {
         BoolQuery.Builder builder = new BoolQuery.Builder();
         List<String> highlightColumns = new LinkedList<>();
 
-        ofNullable(c.getId()).filter(BlueChecker::isValidIdentity).ifPresent(id ->
-                builder.must(TermQuery.of(b -> b.field(ID.name).value(id))._toQuery()));
-
         ofNullable(c.getTitleLike()).filter(BlueChecker::isNotBlank).ifPresent(titleLike -> {
             builder.must(FuzzyQuery.of(b -> b.field(TITLE.name).value(titleLike).fuzziness(fuzziness))._toQuery());
             highlightColumns.add(TITLE.name);
@@ -662,7 +659,6 @@ public class ShineServiceImpl implements ShineService {
                 .filter(BlueChecker::isNotEmpty)
                 .switchIfEmpty(defer(() -> fromIterable(allotByMax(ids, (int) DB_SELECT.value, false))
                         .map(shardIds -> shineRepository.findAllById(shardIds)
-
                                 .map(SHINE_2_SHINE_INFO))
                         .reduce(Flux::concat)
                         .flatMap(Flux::collectList)));

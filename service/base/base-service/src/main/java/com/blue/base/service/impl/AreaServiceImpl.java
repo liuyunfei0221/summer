@@ -53,6 +53,7 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
+import static java.util.function.Function.identity;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toList;
@@ -144,7 +145,7 @@ public class AreaServiceImpl implements AreaService {
                                         .flatMap(a -> just(AREA_2_AREA_INFO_CONVERTER.apply(a)))
                                         .collectList().toFuture().join()
                                         .parallelStream()
-                                        .collect(toMap(AreaInfo::getId, i -> i, (a, b) -> a)))
+                                        .collect(toMap(AreaInfo::getId, identity(), (a, b) -> a)))
                                 .entrySet()
                 )
                 .flatMap(Collection::stream)

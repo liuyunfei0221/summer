@@ -16,8 +16,6 @@ public final class ShineCondition extends SortCondition implements Serializable 
 
     private static final long serialVersionUID = -7416282265362829773L;
 
-    private Long id;
-
     private String titleLike;
 
     private String contentLike;
@@ -60,10 +58,9 @@ public final class ShineCondition extends SortCondition implements Serializable 
         super(sortAttribute, sortType);
     }
 
-    public ShineCondition(Long id, String titleLike, String contentLike, String detailLike, String contactLike, String contactDetailLike, Long countryId, Long stateId, Long cityId, String addressDetailLike,
+    public ShineCondition( String titleLike, String contentLike, String detailLike, String contactLike, String contactDetailLike, Long countryId, Long stateId, Long cityId, String addressDetailLike,
                           String extra, Integer priority, Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, Long creator, Long updater, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
-        this.id = id;
         this.titleLike = titleLike;
         this.contentLike = contentLike;
         this.detailLike = detailLike;
@@ -81,14 +78,6 @@ public final class ShineCondition extends SortCondition implements Serializable 
         this.updateTimeEnd = updateTimeEnd;
         this.creator = creator;
         this.updater = updater;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getTitleLike() {
@@ -230,8 +219,7 @@ public final class ShineCondition extends SortCondition implements Serializable 
     @Override
     public String toString() {
         return "ShineCondition{" +
-                "id=" + id +
-                ", titleLike='" + titleLike + '\'' +
+                "titleLike='" + titleLike + '\'' +
                 ", contentLike='" + contentLike + '\'' +
                 ", detailLike='" + detailLike + '\'' +
                 ", contactLike='" + contactLike + '\'' +

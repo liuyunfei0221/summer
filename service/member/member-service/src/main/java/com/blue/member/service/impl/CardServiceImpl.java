@@ -55,6 +55,7 @@ import static com.blue.mongo.constant.LikeElement.SUFFIX;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
+import static java.util.function.Function.identity;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toList;
@@ -112,7 +113,7 @@ public class CardServiceImpl implements CardService {
 
         return rpcAttachmentServiceConsumer.selectAttachmentInfoByIds(Stream.of(coverId, contentId)
                         .filter(BlueChecker::isValidIdentity).collect(toList()))
-                .map(attachmentInfos -> attachmentInfos.stream().collect(toMap(AttachmentInfo::getId, a -> a, (a, b) -> a)))
+                .map(attachmentInfos -> attachmentInfos.stream().collect(toMap(AttachmentInfo::getId, identity(), (a, b) -> a)))
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .flatMap(attachmentMapping -> {
                     if (isValidIdentity(coverId)) {

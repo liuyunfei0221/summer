@@ -83,11 +83,8 @@ public class MarketingEventHandleServiceImpl implements MarketingEventHandleServ
         }
 
         eventRecordService.insertEventRecord(eventRecord)
-                .subscribe(er ->
-                                LOGGER.info("er = {}", er),
-                        throwable ->
-                                LOGGER.error("eventRecord = {}, throwable = {}", eventRecord, throwable)
-                );
+                .subscribe(er -> LOGGER.info("er = {}", er),
+                        throwable -> LOGGER.error("eventRecord = {}, throwable = {}", eventRecord, throwable));
 
         return eventRecord;
     }

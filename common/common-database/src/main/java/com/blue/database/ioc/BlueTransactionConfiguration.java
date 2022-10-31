@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.constant.common.Symbol.ASTERISK;
 import static java.util.List.of;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -62,7 +63,7 @@ public class BlueTransactionConfiguration {
                 .stream()
                 .filter(StringUtils::isNotBlank)
                 .distinct()
-                .map(m -> m + "*")
+                .map(m -> m + ASTERISK.identity)
                 .forEach(m -> source.addTransactionalMethod(m, attributeWithTrans));
 
         return new TransactionInterceptor(txManager, source);

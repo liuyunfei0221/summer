@@ -189,7 +189,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
         query.with(process(List.of(new SortElement(DownloadHistorySortAttribute.CREATE_TIME.column, DESC.sortType.identity),
                 new SortElement(DownloadHistorySortAttribute.ID.column, DESC.sortType.identity))));
 
-        query.skip(scrollModelRequest.getFrom()).limit(scrollModelRequest.getRows().intValue());
+        query.limit(scrollModelRequest.getRows().intValue());
 
         return zip(reactiveMongoTemplate.find(query, DownloadHistory.class).collectList(),
                 rpcMemberBasicServiceConsumer.getMemberBasicInfo(memberId)

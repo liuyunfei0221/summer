@@ -120,6 +120,19 @@ db.agreementRecord.createIndex({"memberId":1,"agreementId":1},{unique:true});
 
 
 
+-- marketing
+use marketing;
+
+db.eventRecord.createIndex({"memberId":1});
+db.eventRecord.createIndex({"type":1});
+
+
+
+
+
+
+
+
 
 
 
@@ -192,3 +205,8 @@ db.verifyTemplate.createIndex({"type":1,"businessType":1,"language":1},{unique:t
 
 use agreement;
 db.agreementRecord.createIndex({"memberId":1,"agreementId":1},{unique:true});
+
+
+use marketing;
+db.eventRecord.createIndex({"memberId":1});
+db.eventRecord.createIndex({"type":1});

@@ -31,20 +31,14 @@ public interface OrderArticleService {
     List<OrderArticle> insertOrderArticles(List<OrderArticle> orderArticles);
 
     /**
-     * update a exist order article
-     *
-     * @param orderArticle
-     * @return
-     */
-    Boolean updateOrderArticle(OrderArticle orderArticle);
-
-    /**
-     * delete order article
+     * update status
      *
      * @param id
+     * @param originalStatus
+     * @param destStatus
      * @return
      */
-    Boolean deleteOrderArticle(Long id);
+    Boolean updateOrderArticleStatus(Long id, Integer originalStatus, Integer destStatus);
 
     /**
      * get order article by id

@@ -7,6 +7,7 @@ import java.util.Objects;
 
 import static com.blue.basic.common.base.BlueChecker.isNotNull;
 import static com.blue.basic.common.base.BlueChecker.isNull;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
 /**
@@ -36,7 +37,7 @@ public interface TreeConstructor<T> {
     default List<TreeNode<T>> defaultConstruct(final List<TreeNode<T>> nodes) {
         Map<Long, TreeNode<T>> mapping = nodes.parallelStream()
                 .filter(Objects::nonNull)
-                .collect(toMap(TreeNode::getIdentity, n -> n, (a, b) -> a));
+                .collect(toMap(TreeNode::getIdentity, identity(), (a, b) -> a));
 
         List<TreeNode<T>> roots = new LinkedList<>();
 

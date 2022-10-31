@@ -39,7 +39,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"WeakerAccess", "JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
 
     private static final Logger LOGGER = getLogger(BlueJwtProcessor.class);

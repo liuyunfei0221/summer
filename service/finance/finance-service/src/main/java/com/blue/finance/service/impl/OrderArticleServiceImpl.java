@@ -14,8 +14,11 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
+import static com.blue.basic.constant.common.SpecialIntegerElement.ZERO;
+import static com.blue.finance.api.common.OrderArticleStatusChangeAsserter.assertStatusChange;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
@@ -89,44 +92,24 @@ public class OrderArticleServiceImpl implements OrderArticleService {
     }
 
     /**
-     * update a exist order article
-     *
-     * @param orderArticle
-     * @return
-     */
-    @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public Boolean updateOrderArticle(OrderArticle orderArticle) {
-        LOGGER.info("Boolean updateOrderArticle(OrderArticle orderArticle), orderArticle = {}", orderArticle);
-        if (isNull(orderArticle))
-            throw new BlueException(EMPTY_PARAM);
-
-        if (isInvalidIdentity(orderArticle.getId()))
-            throw new BlueException(INVALID_IDENTITY);
-
-        int updated = orderArticleMapper.updateByPrimaryKeySelective(orderArticle);
-        LOGGER.info("orderArticle = {}, updated = {}", orderArticle, updated);
-
-        return updated > 0;
-    }
-
-    /**
-     * delete order article
+     * update status
      *
      * @param id
+     * @param originalStatus
+     * @param destStatus
      * @return
      */
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public Boolean deleteOrderArticle(Long id) {
-        LOGGER.info("Boolean deleteOrderArticle(Long id), id = {}", id);
+    public Boolean updateOrderArticleStatus(Long id, Integer originalStatus, Integer destStatus) {
+        LOGGER.info("Boolean updateOrderArticleStatus(Long id, Integer originalStatus, Integer destStatus), id = {}, originalStatus = {}, destStatus = {}",
+                id, originalStatus, destStatus);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        int deleted = orderArticleMapper.deleteByPrimaryKey(id);
-        LOGGER.info("deleted = {}", deleted);
+        assertStatusChange(originalStatus, destStatus);
 
-        return deleted > 0;
+        return orderArticleMapper.updateStatusByPrimaryKeyWithStatusStamp(id, originalStatus, destStatus, TIME_STAMP_GETTER.get()) > ZERO.value;
     }
 
     /**

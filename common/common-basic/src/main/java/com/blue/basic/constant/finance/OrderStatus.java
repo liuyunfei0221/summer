@@ -2,16 +2,36 @@ package com.blue.basic.constant.finance;
 
 
 /**
- * order type
+ * order status
  *
  * @author liuyunfei
  */
 public enum OrderStatus {
 
     /**
-     * withdraw
+     * paying
      */
-    WITHDRAW(1, "withdraw");
+    PAYING(1, "paying"),
+
+    /**
+     * paid
+     */
+    PAID(2, "paid"),
+
+    /**
+     * unpaid
+     */
+    UNPAID(3, "unpaid"),
+
+    /**
+     * complete
+     */
+    COMPLETE(4, "complete"),
+
+    /**
+     * cancel
+     */
+    CANCEL(5, "cancel");
 
     public final int identity;
 

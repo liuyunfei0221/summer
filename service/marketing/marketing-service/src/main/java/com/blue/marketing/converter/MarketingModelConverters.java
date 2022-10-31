@@ -143,5 +143,4 @@ public final class MarketingModelConverters {
                 eventRecord.getType(), eventRecord.getData(), eventRecord.getStatus(), eventRecord.getCreateTime());
     };
 
-
 }

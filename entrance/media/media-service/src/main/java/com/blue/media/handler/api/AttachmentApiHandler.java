@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 import static com.blue.basic.common.base.AccessGetter.getAccessReact;
 import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.media.constant.MediaTypeReference.SCROLL_MODEL_FOR_ATTACHMENT_TYPE;
+import static com.blue.media.constant.MediaTypeReference.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.*;
@@ -32,13 +32,13 @@ public final class AttachmentApiHandler {
     }
 
     /**
-     * select attachment by scroll and current member
+     * select attachment by scroll condition and current member
      *
      * @param serverRequest
      * @return
      */
     public Mono<ServerResponse> scroll(ServerRequest serverRequest) {
-        return zip(serverRequest.bodyToMono(SCROLL_MODEL_FOR_ATTACHMENT_TYPE)
+        return zip(serverRequest.bodyToMono(SCROLL_MODEL_FOR_ATTACHMENT_CONDITION_TYPE)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 -> attachmentService.selectAttachmentDetailInfoScrollMonoByScrollAndCursorBaseOnMemberId(tuple2.getT1(), tuple2.getT2().getId()))

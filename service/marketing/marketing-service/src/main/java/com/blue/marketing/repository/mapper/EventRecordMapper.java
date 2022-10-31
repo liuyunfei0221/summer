@@ -1,6 +1,6 @@
 package com.blue.marketing.repository.mapper;
 
-import com.blue.marketing.model.EventRecordCondition;
+import com.blue.marketing.model.EventRecordManagerCondition;
 import com.blue.marketing.repository.entity.EventRecord;
 import org.apache.ibatis.annotations.Param;
 
@@ -30,9 +30,9 @@ public interface EventRecordMapper {
 
     List<EventRecord> selectByIds(@Param("ids") List<Long> ids);
 
-    List<EventRecord> selectByLimitAndCondition(@Param("limit") Long limit, @Param("rows") Long rows, @Param("eventRecordCondition") EventRecordCondition eventRecordCondition);
+    List<EventRecord> selectByLimitAndCondition(@Param("limit") Long limit, @Param("rows") Long rows, @Param("eventRecordCondition") EventRecordManagerCondition eventRecordCondition);
 
-    Long countByCondition(@Param("eventRecordCondition") EventRecordCondition eventRecordCondition);
+    Long countByCondition(@Param("eventRecordCondition") EventRecordManagerCondition eventRecordCondition);
 
     List<EventRecord> selectByLimitAndCreator(@Param("limit") Long limit, @Param("rows") Long rows, @Param("creator") Long creator);
 

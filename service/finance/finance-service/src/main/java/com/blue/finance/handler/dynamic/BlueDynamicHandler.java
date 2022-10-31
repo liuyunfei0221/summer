@@ -30,6 +30,7 @@ import static com.blue.basic.constant.common.ResponseElement.*;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
 import static java.util.Optional.ofNullable;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.*;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
@@ -85,7 +86,7 @@ public final class BlueDynamicHandler implements ApplicationListener<ContextRefr
         maxWaitingForRefresh = dynamicApiDeploy.getBlockingMillis();
 
         this.clzWithHandlerMapping = applicationContext.getBeansOfType(DynamicEndPointHandler.class)
-                .values().stream().collect(toMap(h -> h.getClass().getName(), h -> h, (a, b) -> a));
+                .values().stream().collect(toMap(h -> h.getClass().getName(), identity(), (a, b) -> a));
 
         refreshHandlers();
 

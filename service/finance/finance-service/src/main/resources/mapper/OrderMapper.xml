@@ -15,7 +15,7 @@
         <result column="payment_extra" jdbcType="VARCHAR" property="paymentExtra"/>
         <result column="detail" jdbcType="VARCHAR" property="detail"/>
         <result column="status" jdbcType="TINYINT" property="status"/>
-        <result column="version" jdbcType="BIGINT" property="version"/>
+        <result column="version" jdbcType="INTEGER" property="version"/>
         <result column="create_time" jdbcType="BIGINT" property="createTime"/>
         <result column="update_time" jdbcType="BIGINT" property="updateTime"/>
         <result column="payment_time" jdbcType="BIGINT" property="paymentTime"/>
@@ -38,7 +38,7 @@
                 #{flowNo,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, #{paymentType,jdbcType=TINYINT},
                 #{amount,jdbcType=BIGINT}, #{payAmount,jdbcType=BIGINT}, #{extra,jdbcType=VARCHAR},
                 #{paymentExtra,jdbcType=VARCHAR}, #{detail,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
-                #{version,jdbcType=BIGINT}, #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT},
+                #{version,jdbcType=INTEGER}, #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT},
                 #{paymentTime,jdbcType=BIGINT})
     </insert>
 
@@ -132,7 +132,7 @@
                 #{status,jdbcType=TINYINT},
             </if>
             <if test="version != null">
-                #{version,jdbcType=BIGINT},
+                #{version,jdbcType=INTEGER},
             </if>
             <if test="createTime != null">
                 #{createTime,jdbcType=BIGINT},
@@ -159,7 +159,7 @@
             payment_extra = #{paymentExtra,jdbcType=VARCHAR},
             detail        = #{detail,jdbcType=VARCHAR},
             status        = #{status,jdbcType=TINYINT},
-            version       = #{version,jdbcType=BIGINT},
+            version       = #{version,jdbcType=INTEGER},
             create_time   = #{createTime,jdbcType=BIGINT},
             update_time   = #{updateTime,jdbcType=BIGINT},
             payment_time  = #{paymentTime,jdbcType=BIGINT}
@@ -203,7 +203,7 @@
                 status = #{status,jdbcType=TINYINT},
             </if>
             <if test="version != null">
-                version = #{version,jdbcType=BIGINT},
+                version = #{version,jdbcType=INTEGER},
             </if>
             <if test="createTime != null">
                 create_time = #{createTime,jdbcType=BIGINT},

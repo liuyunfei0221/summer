@@ -30,7 +30,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AlibabaAvoidManuallyCreateThread", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AlibabaAvoidManuallyCreateThread", "AliControlFlowStatementWithoutBraces", "SpellCheckingInspection"})
 public final class AccessBatchExpireProcessor {
 
     private static final Logger LOGGER = getLogger(AccessBatchExpireProcessor.class);
@@ -44,7 +44,7 @@ public final class AccessBatchExpireProcessor {
     private ExecutorService executorService;
 
     @SuppressWarnings({"FieldCanBeLocal"})
-    private final ScheduledExecutorService batchExpireSchedule;
+    private final ScheduledExecutorService scheduledExecutorService;
 
     private final int BATCH_EXPIRE_MAX_PER_HANDLE;
 
@@ -79,13 +79,13 @@ public final class AccessBatchExpireProcessor {
             r.run();
         };
 
-        this.batchExpireSchedule = new ScheduledThreadPoolExecutor(batchExpireScheduledCorePoolSize,
+        this.scheduledExecutorService = new ScheduledThreadPoolExecutor(batchExpireScheduledCorePoolSize,
                 new AffinityThreadFactory(SCHEDULED_THREAD_NAME_PRE + randomAlphabetic(RANDOM_LEN), SAME_CORE),
                 rejectedExecutionHandler);
 
         this.BATCH_EXPIRE_MAX_PER_HANDLE = batchExpireMaxPerHandle;
 
-        this.batchExpireSchedule.scheduleWithFixedDelay(this::scheduledExpireTask, batchExpireScheduledInitialDelayMillis, batchExpireScheduledDelayMillis, TIME_UNIT);
+        this.scheduledExecutorService.scheduleWithFixedDelay(this::scheduledExpireTask, batchExpireScheduledInitialDelayMillis, batchExpireScheduledDelayMillis, TIME_UNIT);
 
         this.executorService = new ThreadPoolExecutor(batchExpireScheduledCorePoolSize, batchExpireScheduledCorePoolSize,
                 THREAD_KEEP_ALIVE_SECONDS, SECONDS, new ArrayBlockingQueue<>(batchExpireQueueCapacity),

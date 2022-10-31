@@ -31,4 +31,6 @@ public interface OrderArticleMapper {
 
     List<OrderArticle> selectByIds(@Param("ids") List<Long> ids);
 
+    int updateStatusByPrimaryKeyWithStatusStamp(@Param("id") Long id, @Param("originalStatus") Integer originalStatus, @Param("destStatus") Integer destStatus, @Param("updateTime") Long updateTime);
+
 }

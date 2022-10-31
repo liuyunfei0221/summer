@@ -24,12 +24,12 @@ public class OrderSummary implements Serializable {
 
     List<ReferenceAmount> referenceAmounts;
 
-    private Long version;
+    private Integer version;
 
     public OrderSummary() {
     }
 
-    public OrderSummary(Long id, Order order, List<OrderArticle> orderArticles, List<ReferenceAmount> referenceAmounts, Long version) {
+    public OrderSummary(Long id, Order order, List<OrderArticle> orderArticles, List<ReferenceAmount> referenceAmounts, Integer version) {
         this.id = id;
         this.order = order;
         this.orderArticles = orderArticles;
@@ -69,11 +69,11 @@ public class OrderSummary implements Serializable {
         this.referenceAmounts = referenceAmounts;
     }
 
-    public Long getVersion() {
+    public Integer getVersion() {
         return version;
     }
 
-    public void setVersion(Long version) {
+    public void setVersion(Integer version) {
         this.version = version;
     }
 

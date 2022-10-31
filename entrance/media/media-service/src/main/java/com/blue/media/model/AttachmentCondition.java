@@ -17,8 +17,6 @@ public final class AttachmentCondition extends SortCondition implements Serializ
 
     private static final long serialVersionUID = 1899006299426322890L;
 
-    private Long id;
-
     private String linkLike;
 
     private String nameLike;
@@ -37,22 +35,13 @@ public final class AttachmentCondition extends SortCondition implements Serializ
         super(sortAttribute, sortType);
     }
 
-    public AttachmentCondition(Long id, String linkLike, String nameLike, String fileType, Long createTimeBegin, Long createTimeEnd, String sortAttribute, String sortType) {
+    public AttachmentCondition(String linkLike, String nameLike, String fileType, Long createTimeBegin, Long createTimeEnd, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
-        this.id = id;
         this.linkLike = linkLike;
         this.nameLike = nameLike;
         this.fileType = fileType;
         this.createTimeBegin = createTimeBegin;
         this.createTimeEnd = createTimeEnd;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getLinkLike() {
@@ -98,8 +87,7 @@ public final class AttachmentCondition extends SortCondition implements Serializ
     @Override
     public String toString() {
         return "AttachmentCondition{" +
-                "id=" + id +
-                ", linkLike='" + linkLike + '\'' +
+                "linkLike='" + linkLike + '\'' +
                 ", nameLike='" + nameLike + '\'' +
                 ", fileType='" + fileType + '\'' +
                 ", createTimeBegin=" + createTimeBegin +
@@ -108,5 +96,5 @@ public final class AttachmentCondition extends SortCondition implements Serializ
                 ", sortType='" + sortType + '\'' +
                 '}';
     }
-
+    
 }

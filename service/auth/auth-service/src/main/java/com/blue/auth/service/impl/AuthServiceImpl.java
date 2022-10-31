@@ -57,6 +57,7 @@ import static java.lang.String.valueOf;
 import static java.util.Collections.*;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.*;
 import static java.util.stream.Stream.of;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
@@ -541,7 +542,7 @@ public class AuthServiceImpl implements AuthService {
         List<Resource> resources = resourceListCf.join();
         Map<Long, Resource> idAndResourceMapping = resources
                 .parallelStream()
-                .collect(toMap(Resource::getId, e -> e, (a, b) -> a));
+                .collect(toMap(Resource::getId, identity(), (a, b) -> a));
 
         List<RoleResRelation> roleResRelations = roleResRelationListCf.join();
         Map<Long, Set<String>> tempRoleAndResourcesKeyMapping = roleResRelations
@@ -575,13 +576,13 @@ public class AuthServiceImpl implements AuthService {
         Map<String, Resource> tempKeyAndResourceMapping = resources
                 .parallelStream()
                 .collect(toMap(r -> INIT_RES_KEY_GENERATOR.apply(r.getRequestMethod().toUpperCase().intern(),
-                        REAL_URI_GETTER.apply(r).intern()), r -> r, (a, b) -> a));
+                        REAL_URI_GETTER.apply(r).intern()), identity(), (a, b) -> a));
 
         List<Role> roles = roleListCf.join();
         Map<Long, RoleInfo> tempIdAndRoleInfoMapping = roles
                 .parallelStream()
                 .map(ROLE_2_ROLE_INFO_CONVERTER)
-                .collect(toMap(RoleInfo::getId, r -> r, (a, b) -> a));
+                .collect(toMap(RoleInfo::getId, identity(), (a, b) -> a));
 
         keyAndResourceMapping = tempKeyAndResourceMapping;
         roleAndResourcesKeyMapping = tempRoleAndResourcesKeyMapping;

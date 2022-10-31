@@ -30,8 +30,6 @@ public class ReferenceAmount implements Serializable {
 
     private Integer status;
 
-    private Long orderVersion;
-
     private Long createTime;
 
     private Long updateTime;
@@ -89,7 +87,7 @@ public class ReferenceAmount implements Serializable {
     }
 
     public void setExtra(String extra) {
-        this.extra = extra == null ? null : extra.trim();
+        this.extra = extra;
     }
 
     public String getDetail() {
@@ -97,7 +95,7 @@ public class ReferenceAmount implements Serializable {
     }
 
     public void setDetail(String detail) {
-        this.detail = detail == null ? null : detail.trim();
+        this.detail = detail;
     }
 
     public Integer getStatus() {
@@ -106,14 +104,6 @@ public class ReferenceAmount implements Serializable {
 
     public void setStatus(Integer status) {
         this.status = status;
-    }
-
-    public Long getOrderVersion() {
-        return orderVersion;
-    }
-
-    public void setOrderVersion(Long orderVersion) {
-        this.orderVersion = orderVersion;
     }
 
     public Long getCreateTime() {
@@ -144,7 +134,6 @@ public class ReferenceAmount implements Serializable {
                 ", extra='" + extra + '\'' +
                 ", detail='" + detail + '\'' +
                 ", status=" + status +
-                ", orderVersion=" + orderVersion +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 '}';

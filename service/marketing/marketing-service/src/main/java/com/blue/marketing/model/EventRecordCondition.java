@@ -8,7 +8,7 @@ import java.io.Serializable;
 import static com.blue.basic.constant.common.SortType.DESC;
 
 /**
- * event record condition for select
+ * event record manager condition for select
  *
  * @author liuyunfei
  */
@@ -16,13 +16,6 @@ import static com.blue.basic.constant.common.SortType.DESC;
 public final class EventRecordCondition extends SortCondition implements Serializable {
 
     private static final long serialVersionUID = -8708899408485179098L;
-
-    private Long id;
-
-    /**
-     * member id
-     */
-    private Long memberId;
 
     /**
      * event type
@@ -55,31 +48,13 @@ public final class EventRecordCondition extends SortCondition implements Seriali
         super(sortAttribute, sortType);
     }
 
-    public EventRecordCondition(Long id, Long memberId, Integer type, String data, Integer status, Long createTimeBegin, Long createTimeEnd, String sortAttribute, String sortType) {
+    public EventRecordCondition(Integer type, String data, Integer status, Long createTimeBegin, Long createTimeEnd, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
-        this.id = id;
-        this.memberId = memberId;
         this.type = type;
         this.data = data;
         this.status = status;
         this.createTimeBegin = createTimeBegin;
         this.createTimeEnd = createTimeEnd;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getMemberId() {
-        return memberId;
-    }
-
-    public void setMemberId(Long memberId) {
-        this.memberId = memberId;
     }
 
     public Integer getType() {
@@ -125,9 +100,7 @@ public final class EventRecordCondition extends SortCondition implements Seriali
     @Override
     public String toString() {
         return "EventRecordCondition{" +
-                "id=" + id +
-                ", memberId=" + memberId +
-                ", type=" + type +
+                "type=" + type +
                 ", data='" + data + '\'' +
                 ", status=" + status +
                 ", createTimeBegin=" + createTimeBegin +

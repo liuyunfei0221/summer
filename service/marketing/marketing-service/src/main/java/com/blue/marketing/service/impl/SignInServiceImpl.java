@@ -35,6 +35,7 @@ import static com.blue.basic.constant.marketing.MarketingEventType.SIGN_IN_REWAR
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
 import static java.util.Optional.ofNullable;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static reactor.core.publisher.Mono.*;
@@ -118,7 +119,7 @@ public class SignInServiceImpl implements SignInService {
 
         List<Reward> rewards = rewardService.selectRewardByIds(relations.stream()
                 .map(RewardDateRelation::getRewardId).collect(toList()));
-        Map<Long, Reward> rewardMap = rewards.stream().collect(toMap(Reward::getId, r -> r, (a, b) -> a));
+        Map<Long, Reward> rewardMap = rewards.stream().collect(toMap(Reward::getId, identity(), (a, b) -> a));
 
         LocalDate currentDate = LocalDate.of(year, month, 1);
         int dayOfMonth = currentDate.lengthOfMonth();

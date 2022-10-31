@@ -10,6 +10,9 @@ import com.blue.basic.constant.auth.DeviceType;
 import com.blue.basic.constant.auth.ResourceType;
 import com.blue.basic.constant.auth.RoleType;
 import com.blue.basic.constant.common.*;
+import com.blue.basic.constant.finance.OrderArticleStatus;
+import com.blue.basic.constant.finance.OrderStatus;
+import com.blue.basic.constant.finance.ReferenceAmountStatus;
 import com.blue.basic.constant.marketing.RewardType;
 import com.blue.basic.constant.media.AttachmentType;
 import com.blue.basic.constant.media.MessageBusinessType;
@@ -129,6 +132,24 @@ public final class ConstantProcessor {
      */
     private static final Map<String, DeviceType> DEVICE_TYPE_MAPPING =
             of(DeviceType.values()).collect(toMap(e -> e.identity.toUpperCase(), identity(), (a, b) -> a));
+
+    /**
+     * valid order status identity and order status mapping
+     */
+    private static final Map<Integer, OrderStatus> ORDER_STATUS_MAPPING =
+            of(OrderStatus.values()).collect(toMap(o -> o.identity, identity(), (a, b) -> a));
+
+    /**
+     * valid order article status identity and order article status mapping
+     */
+    private static final Map<Integer, OrderArticleStatus> ORDER_ARTICLE_STATUS_MAPPING =
+            of(OrderArticleStatus.values()).collect(toMap(oa -> oa.identity, identity(), (a, b) -> a));
+
+    /**
+     * valid reference amount status identity and reference amount status mapping
+     */
+    private static final Map<Integer, ReferenceAmountStatus> REFERENCE_AMOUNT_STATUS_MAPPING =
+            of(ReferenceAmountStatus.values()).collect(toMap(oa -> oa.identity, identity(), (a, b) -> a));
 
     /**
      * valid gender type identity and type mapping
@@ -402,6 +423,45 @@ public final class ConstantProcessor {
             return;
 
         if (isBlank(identity) || !DEVICE_TYPE_MAPPING.containsKey(identity.toUpperCase()))
+            throw new BlueException(INVALID_IDENTITY);
+    }
+
+    /**
+     * assert order status
+     *
+     * @param identity
+     */
+    public static void assertOrderStatus(Integer identity, boolean nullable) {
+        if (nullable && isNull(identity))
+            return;
+
+        if (!ORDER_STATUS_MAPPING.containsKey(identity))
+            throw new BlueException(INVALID_IDENTITY);
+    }
+
+    /**
+     * assert order article status
+     *
+     * @param identity
+     */
+    public static void assertOrderArticleStatus(Integer identity, boolean nullable) {
+        if (nullable && isNull(identity))
+            return;
+
+        if (!ORDER_ARTICLE_STATUS_MAPPING.containsKey(identity))
+            throw new BlueException(INVALID_IDENTITY);
+    }
+
+    /**
+     * assert reference amount status
+     *
+     * @param identity
+     */
+    public static void assertReferenceAmountStatus(Integer identity, boolean nullable) {
+        if (nullable && isNull(identity))
+            return;
+
+        if (!REFERENCE_AMOUNT_STATUS_MAPPING.containsKey(identity))
             throw new BlueException(INVALID_IDENTITY);
     }
 
@@ -875,6 +935,57 @@ public final class ConstantProcessor {
             throw new BlueException(INVALID_IDENTITY);
 
         return deviceType;
+    }
+
+    /**
+     * get order status by identity
+     *
+     * @param identity
+     * @return
+     */
+    public static OrderStatus getOrderStatusByIdentity(Integer identity) {
+        if (isNull(identity))
+            throw new BlueException(INVALID_IDENTITY);
+
+        OrderStatus orderStatus = ORDER_STATUS_MAPPING.get(identity);
+        if (isNull(orderStatus))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return orderStatus;
+    }
+
+    /**
+     * get order article status by identity
+     *
+     * @param identity
+     * @return
+     */
+    public static OrderArticleStatus getOrderArticleStatusByIdentity(Integer identity) {
+        if (isNull(identity))
+            throw new BlueException(INVALID_IDENTITY);
+
+        OrderArticleStatus orderArticleStatus = ORDER_ARTICLE_STATUS_MAPPING.get(identity);
+        if (isNull(orderArticleStatus))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return orderArticleStatus;
+    }
+
+    /**
+     * get reference amount status by identity
+     *
+     * @param identity
+     * @return
+     */
+    public static ReferenceAmountStatus getReferenceAmountStatusByIdentity(Integer identity) {
+        if (isNull(identity))
+            throw new BlueException(INVALID_IDENTITY);
+
+        ReferenceAmountStatus referenceAmountStatus = REFERENCE_AMOUNT_STATUS_MAPPING.get(identity);
+        if (isNull(referenceAmountStatus))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return referenceAmountStatus;
     }
 
     /**

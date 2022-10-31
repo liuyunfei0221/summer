@@ -7,6 +7,7 @@ import com.blue.basic.model.exps.BlueException;
 import com.blue.marketing.api.model.EventRecordInfo;
 import com.blue.marketing.constant.EventRecordSortAttribute;
 import com.blue.marketing.model.EventRecordCondition;
+import com.blue.marketing.model.EventRecordManagerCondition;
 import com.blue.marketing.model.EventRecordManagerInfo;
 import com.blue.marketing.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.marketing.repository.entity.EventRecord;
@@ -23,6 +24,7 @@ import reactor.util.Logger;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -74,16 +76,51 @@ public class EventRecordServiceImpl implements EventRecordService {
         this.eventRecordRepository = eventRecordRepository;
     }
 
-    private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(EventRecordSortAttribute.values())
+    private static final BiFunction<ScrollModelRequest<EventRecordCondition, Long>, Long, Query> SCROLL_MODEL_REQUEST_PROCESSOR = (smr, mid) -> {
+        if (isInvalidIdentity(mid))
+            throw new BlueException(UNAUTHORIZED);
+        if (isNull(smr))
+            throw new BlueException(EMPTY_PARAM);
+
+        EventRecordCondition c = smr.getCondition();
+
+        Query query = new Query();
+
+        EventRecord probe = new EventRecord();
+
+        probe.setMemberId(mid);
+
+        if (isNotNull(c)) {
+            ofNullable(c.getType()).ifPresent(probe::setType);
+            ofNullable(c.getStatus()).ifPresent(probe::setStatus);
+
+            ofNullable(c.getCreateTimeBegin()).ifPresent(createTimeBegin ->
+                    query.addCriteria(where(CREATE_TIME.name).gte(createTimeBegin)));
+            ofNullable(c.getCreateTimeEnd()).ifPresent(createTimeEnd ->
+                    query.addCriteria(where(CREATE_TIME.name).lte(createTimeEnd)));
+        }
+
+        query.addCriteria(byExample(probe));
+
+        packageSearchAfter(query, DESC.sortType.identity, EventRecordSortAttribute.ID.column, smr.getCursor());
+        query.with(process(List.of(new SortElement(EventRecordSortAttribute.CREATE_TIME.column, DESC.sortType.identity),
+                new SortElement(EventRecordSortAttribute.ID.column, DESC.sortType.identity))));
+
+        query.limit(smr.getRows().intValue());
+
+        return query;
+    };
+
+    private static final Map<String, String> MANAGER_SORT_ATTRIBUTE_MAPPING = Stream.of(EventRecordSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final Function<EventRecordCondition, Sort> SORTER_CONVERTER = c -> {
-        String sortAttribute = ofNullable(c).map(EventRecordCondition::getSortAttribute)
-                .map(SORT_ATTRIBUTE_MAPPING::get)
+    private static final Function<EventRecordManagerCondition, Sort> MANAGER_SORTER_CONVERTER = c -> {
+        String sortAttribute = ofNullable(c).map(EventRecordManagerCondition::getSortAttribute)
+                .map(MANAGER_SORT_ATTRIBUTE_MAPPING::get)
                 .filter(BlueChecker::isNotBlank)
                 .orElse(EventRecordSortAttribute.CREATE_TIME.column);
 
-        String sortType = ofNullable(c).map(EventRecordCondition::getSortType)
+        String sortType = ofNullable(c).map(EventRecordManagerCondition::getSortType)
                 .filter(BlueChecker::isNotBlank)
                 .orElse(SortType.DESC.identity);
 
@@ -94,11 +131,11 @@ public class EventRecordServiceImpl implements EventRecordService {
                         .map(attr -> new SortElement(attr, sortType)).collect(toList()));
     };
 
-    private static final Function<EventRecordCondition, Query> CONDITION_PROCESSOR = c -> {
+    private static final Function<EventRecordManagerCondition, Query> MANAGER_CONDITION_PROCESSOR = c -> {
         Query query = new Query();
 
         if (c == null) {
-            query.with(SORTER_CONVERTER.apply(new EventRecordCondition()));
+            query.with(MANAGER_SORTER_CONVERTER.apply(new EventRecordManagerCondition()));
             return query;
         }
 
@@ -115,7 +152,7 @@ public class EventRecordServiceImpl implements EventRecordService {
                 query.addCriteria(where(CREATE_TIME.name).lte(createTimeEnd)));
         query.addCriteria(byExample(probe));
 
-        query.with(SORTER_CONVERTER.apply(c));
+        query.with(MANAGER_SORTER_CONVERTER.apply(c));
 
         return query;
     };
@@ -188,27 +225,16 @@ public class EventRecordServiceImpl implements EventRecordService {
      * @return
      */
     @Override
-    public Mono<ScrollModelResponse<EventRecordInfo, String>> selectEventRecordInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<Void, Long> scrollModelRequest, Long memberId) {
-        LOGGER.info("Mono<ScrollModelResponse<EventRecordInfo, String>> selectEventRecordInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<Void, Long> scrollModelRequest, Long memberId), " +
+    public Mono<ScrollModelResponse<EventRecordInfo, String>> selectEventRecordInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<EventRecordCondition, Long> scrollModelRequest, Long memberId) {
+        LOGGER.info("Mono<ScrollModelResponse<EventRecordInfo, String>> selectEventRecordInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<EventRecordCondition, Long> scrollModelRequest, Long memberId), " +
                 "scrollModelRequest = {}, memberId = {}", scrollModelRequest, memberId);
         if (isNull(scrollModelRequest))
             throw new BlueException(EMPTY_PARAM);
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
 
-        Query query = new Query();
-
-        EventRecord probe = new EventRecord();
-        probe.setMemberId(memberId);
-
-        query.addCriteria(byExample(probe));
-        packageSearchAfter(query, DESC.sortType.identity, EventRecordSortAttribute.ID.column, scrollModelRequest.getCursor());
-        query.with(process(List.of(new SortElement(EventRecordSortAttribute.CREATE_TIME.column, DESC.sortType.identity),
-                new SortElement(EventRecordSortAttribute.ID.column, DESC.sortType.identity))));
-
-        query.skip(scrollModelRequest.getFrom()).limit(scrollModelRequest.getRows().intValue());
-
-        return reactiveMongoTemplate.find(query, EventRecord.class).collectList()
+        return reactiveMongoTemplate.find(SCROLL_MODEL_REQUEST_PROCESSOR.apply(scrollModelRequest, memberId), EventRecord.class)
+                .collectList()
                 .map(eventRecords ->
                         isNotEmpty(eventRecords) ?
                                 new ScrollModelResponse<>(eventRecords.stream().map(EVENT_RECORD_2_EVENT_RECORD_INFO_CONVERTER).collect(toList()),
@@ -258,13 +284,13 @@ public class EventRecordServiceImpl implements EventRecordService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<EventRecordManagerInfo>> selectEventRecordInfoPageMonoByPageAndCondition(PageModelRequest<EventRecordCondition> pageModelRequest) {
+    public Mono<PageModelResponse<EventRecordManagerInfo>> selectEventRecordInfoPageMonoByPageAndCondition(PageModelRequest<EventRecordManagerCondition> pageModelRequest) {
         LOGGER.info("Mono<PageModelResponse<EventRecordManagerInfo>> selectEventRecordInfoPageMonoByPageAndCondition(PageModelRequest<EventRecordCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
+        Query query = MANAGER_CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
         return zip(selectEventRecordMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),
                 countEventRecordMonoByQuery(query))

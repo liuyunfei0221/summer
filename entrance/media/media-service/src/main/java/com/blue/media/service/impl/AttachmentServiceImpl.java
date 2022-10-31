@@ -8,6 +8,7 @@ import com.blue.media.api.model.AttachmentDetailInfo;
 import com.blue.media.api.model.AttachmentInfo;
 import com.blue.media.constant.AttachmentSortAttribute;
 import com.blue.media.model.AttachmentCondition;
+import com.blue.media.model.AttachmentManagerCondition;
 import com.blue.media.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.media.repository.entity.Attachment;
 import com.blue.media.repository.template.AttachmentRepository;
@@ -23,6 +24,7 @@ import reactor.util.Logger;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -59,7 +61,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "unused", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Service
 public class AttachmentServiceImpl implements AttachmentService {
 
@@ -78,16 +80,53 @@ public class AttachmentServiceImpl implements AttachmentService {
         this.attachmentRepository = attachmentRepository;
     }
 
+    private static final BiFunction<ScrollModelRequest<AttachmentCondition, Long>, Long, Query> SCROLL_MODEL_REQUEST_PROCESSOR = (smr, mid) -> {
+        if (isInvalidIdentity(mid))
+            throw new BlueException(UNAUTHORIZED);
+        if (isNull(smr))
+            throw new BlueException(EMPTY_PARAM);
+
+        AttachmentCondition c = smr.getCondition();
+
+        Query query = new Query();
+
+        Attachment probe = new Attachment();
+
+        probe.setCreator(mid);
+
+        if (isNotNull(c)) {
+            ofNullable(c.getLinkLike()).filter(BlueChecker::isNotBlank).ifPresent(linkLike ->
+                    query.addCriteria(where(LINK.name).regex(compile(PREFIX.element + linkLike + SUFFIX.element, CASE_INSENSITIVE))));
+            ofNullable(c.getNameLike()).filter(BlueChecker::isNotBlank).ifPresent(nameLike ->
+                    query.addCriteria(where(NAME.name).regex(compile(PREFIX.element + nameLike + SUFFIX.element, CASE_INSENSITIVE))));
+            ofNullable(c.getFileType()).filter(BlueChecker::isNotBlank).ifPresent(probe::setFileType);
+            ofNullable(c.getCreateTimeBegin()).ifPresent(createTimeBegin ->
+                    query.addCriteria(where(CREATE_TIME.name).gte(createTimeBegin)));
+            ofNullable(c.getCreateTimeEnd()).ifPresent(createTimeEnd ->
+                    query.addCriteria(where(CREATE_TIME.name).lte(createTimeEnd)));
+        }
+
+        query.addCriteria(byExample(probe));
+
+        packageSearchAfter(query, DESC.sortType.identity, AttachmentSortAttribute.ID.column, smr.getCursor());
+        query.with(process(List.of(new SortElement(AttachmentSortAttribute.CREATE_TIME.column, DESC.sortType.identity),
+                new SortElement(AttachmentSortAttribute.ID.column, DESC.sortType.identity))));
+
+        query.limit(smr.getRows().intValue());
+
+        return query;
+    };
+
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(AttachmentSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 
-    private static final Function<AttachmentCondition, Sort> SORTER_CONVERTER = c -> {
-        String sortAttribute = ofNullable(c).map(AttachmentCondition::getSortAttribute)
+    private static final Function<AttachmentManagerCondition, Sort> SORTER_CONVERTER = c -> {
+        String sortAttribute = ofNullable(c).map(AttachmentManagerCondition::getSortAttribute)
                 .map(SORT_ATTRIBUTE_MAPPING::get)
                 .filter(BlueChecker::isNotBlank)
                 .orElse(AttachmentSortAttribute.CREATE_TIME.column);
 
-        String sortType = ofNullable(c).map(AttachmentCondition::getSortType)
+        String sortType = ofNullable(c).map(AttachmentManagerCondition::getSortType)
                 .filter(BlueChecker::isNotBlank)
                 .orElse(SortType.DESC.identity);
 
@@ -98,11 +137,11 @@ public class AttachmentServiceImpl implements AttachmentService {
                         .map(attr -> new SortElement(attr, sortType)).collect(toList()));
     };
 
-    private static final Function<AttachmentCondition, Query> CONDITION_PROCESSOR = c -> {
+    private static final Function<AttachmentManagerCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();
 
         if (c == null) {
-            query.with(SORTER_CONVERTER.apply(new AttachmentCondition()));
+            query.with(SORTER_CONVERTER.apply(new AttachmentManagerCondition()));
             return query;
         }
 
@@ -118,6 +157,8 @@ public class AttachmentServiceImpl implements AttachmentService {
                 query.addCriteria(where(CREATE_TIME.name).gte(createTimeBegin)));
         ofNullable(c.getCreateTimeEnd()).ifPresent(createTimeEnd ->
                 query.addCriteria(where(CREATE_TIME.name).lte(createTimeEnd)));
+        ofNullable(c.getCreator()).ifPresent(probe::setCreator);
+
         query.addCriteria(byExample(probe));
 
         query.with(SORTER_CONVERTER.apply(c));
@@ -243,27 +284,15 @@ public class AttachmentServiceImpl implements AttachmentService {
      * @return
      */
     @Override
-    public Mono<ScrollModelResponse<AttachmentDetailInfo, String>> selectAttachmentDetailInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<Void, Long> scrollModelRequest, Long memberId) {
-        LOGGER.info("Mono<ScrollModelResponse<AttachmentDetailInfo, String>> selectAttachmentDetailInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<Void, Long> scrollModelRequest, Long memberId), " +
+    public Mono<ScrollModelResponse<AttachmentDetailInfo, String>> selectAttachmentDetailInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<AttachmentCondition, Long> scrollModelRequest, Long memberId) {
+        LOGGER.info("Mono<ScrollModelResponse<AttachmentDetailInfo, String>> selectAttachmentDetailInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<AttachmentCondition, Long> scrollModelRequest, Long memberId), " +
                 "scrollModelRequest = {}, memberId = {}", scrollModelRequest, memberId);
         if (isNull(scrollModelRequest))
             throw new BlueException(EMPTY_PARAM);
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
 
-        Query query = new Query();
-
-        Attachment probe = new Attachment();
-        probe.setCreator(memberId);
-
-        query.addCriteria(byExample(probe));
-        packageSearchAfter(query, DESC.sortType.identity, AttachmentSortAttribute.ID.column, scrollModelRequest.getCursor());
-        query.with(process(List.of(new SortElement(AttachmentSortAttribute.CREATE_TIME.column, DESC.sortType.identity),
-                new SortElement(AttachmentSortAttribute.ID.column, DESC.sortType.identity))));
-
-        query.skip(scrollModelRequest.getFrom()).limit(scrollModelRequest.getRows().intValue());
-
-        return zip(reactiveMongoTemplate.find(query, Attachment.class).collectList(),
+        return zip(reactiveMongoTemplate.find(SCROLL_MODEL_REQUEST_PROCESSOR.apply(scrollModelRequest, memberId), Attachment.class).collectList(),
                 rpcMemberBasicServiceConsumer.getMemberBasicInfo(memberId)
         ).map(tuple2 -> {
             List<Attachment> attachments = tuple2.getT1();
@@ -318,7 +347,7 @@ public class AttachmentServiceImpl implements AttachmentService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<AttachmentDetailInfo>> selectAttachmentDetailInfoPageMonoByPageAndCondition(PageModelRequest<AttachmentCondition> pageModelRequest) {
+    public Mono<PageModelResponse<AttachmentDetailInfo>> selectAttachmentDetailInfoPageMonoByPageAndCondition(PageModelRequest<AttachmentManagerCondition> pageModelRequest) {
         LOGGER.info("Mono<PageModelResponse<RoleInfo>> selectAttachmentDetailInfoPageMonoByPageAndCondition(PageModelRequest<AttachmentCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))

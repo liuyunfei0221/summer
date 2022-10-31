@@ -7,6 +7,7 @@ import com.blue.basic.model.common.ScrollModelResponse;
 import com.blue.media.api.model.AttachmentDetailInfo;
 import com.blue.media.api.model.AttachmentInfo;
 import com.blue.media.model.AttachmentCondition;
+import com.blue.media.model.AttachmentManagerCondition;
 import com.blue.media.repository.entity.Attachment;
 import org.springframework.data.mongodb.core.query.Query;
 import reactor.core.publisher.Mono;
@@ -76,7 +77,7 @@ public interface AttachmentService {
      * @param memberId
      * @return
      */
-    Mono<ScrollModelResponse<AttachmentDetailInfo, String>> selectAttachmentDetailInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<Void, Long> scrollModelRequest, Long memberId);
+    Mono<ScrollModelResponse<AttachmentDetailInfo, String>> selectAttachmentDetailInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<AttachmentCondition, Long> scrollModelRequest, Long memberId);
 
     /**
      * select attachment by page and condition
@@ -102,6 +103,6 @@ public interface AttachmentService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<AttachmentDetailInfo>> selectAttachmentDetailInfoPageMonoByPageAndCondition(PageModelRequest<AttachmentCondition> pageModelRequest);
+    Mono<PageModelResponse<AttachmentDetailInfo>> selectAttachmentDetailInfoPageMonoByPageAndCondition(PageModelRequest<AttachmentManagerCondition> pageModelRequest);
 
 }

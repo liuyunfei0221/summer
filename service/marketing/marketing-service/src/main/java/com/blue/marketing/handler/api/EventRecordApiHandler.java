@@ -32,12 +32,12 @@ public final class EventRecordApiHandler {
     }
 
     /**
-     * select event record by page and current member
+     * select event record by scroll and current member
      *
      * @param serverRequest
      * @return
      */
-    public Mono<ServerResponse> page(ServerRequest serverRequest) {
+    public Mono<ServerResponse> scroll(ServerRequest serverRequest) {
         return zip(serverRequest.bodyToMono(SCROLL_MODEL_FOR_EVENT_RECORD_TYPE)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))

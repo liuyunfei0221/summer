@@ -45,7 +45,7 @@ public final class DataEventConsumer implements BlueLifecycle {
     private void init() {
         Consumer<DataEvent> dataConsumer = dataEvent ->
                 ofNullable(dataEvent)
-                        .ifPresent(de -> just(de).map(a -> a)
+                        .ifPresent(de -> just(de)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
                                 .doOnError(throwable -> LOGGER.info("test(de) failed, ff = {}, throwable = {}", de, throwable))
                                 .subscribe(b -> LOGGER.info("test(de), b = {}, de = {}", b, de)));

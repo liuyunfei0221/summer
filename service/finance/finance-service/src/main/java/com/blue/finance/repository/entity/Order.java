@@ -34,9 +34,14 @@ public class Order implements Serializable {
 
     private String detail;
 
+    /**
+     * order status
+     *
+     * @see com.blue.basic.constant.finance.OrderStatus
+     */
     private Integer status;
 
-    private Long version;
+    private Integer version;
 
     private Long createTime;
 
@@ -140,11 +145,11 @@ public class Order implements Serializable {
         this.status = status;
     }
 
-    public Long getVersion() {
+    public Integer getVersion() {
         return version;
     }
 
-    public void setVersion(Long version) {
+    public void setVersion(Integer version) {
         this.version = version;
     }
 
