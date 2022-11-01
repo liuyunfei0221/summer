@@ -215,13 +215,24 @@
         </foreach>
     </select>
 
-    <update id="updateStatusByPrimaryKeyWithStatusStamp"
-            parameterType="com.blue.finance.repository.entity.OrderArticle">
-        UPDATE order_article
-        SET status      = #{destStatus,jdbcType=TINYINT},
-            update_time = #{updateTime,jdbcType=BIGINT}
-        WHERE id = #{id,jdbcType=BIGINT}
-          AND status = #{originalStatus,jdbcType=TINYINT},
+    <update id="updateTargetColumnByPrimaryKeySelectiveWithStatusStamp"
+            parameterType="com.blue.finance.model.db.OrderArticleUpdateModel">
+        <if test="orderArticleUpdateModel != null">
+            UPDATE order_article
+            <set>
+                <if test="orderArticleUpdateModel.extra != null">
+                    extra = #{orderArticleUpdateModel.extra,jdbcType=VARCHAR},
+                </if>
+                <if test="orderArticleUpdateModel.destStatus != null">
+                    status = #{orderArticleUpdateModel.destStatus,jdbcType=TINYINT},
+                </if>
+                <if test="orderArticleUpdateModel.updateTime != null">
+                    update_time = #{orderArticleUpdateModel.updateTime,jdbcType=BIGINT},
+                </if>
+            </set>
+            WHERE id = #{orderArticleUpdateModel.id,jdbcType=BIGINT}
+            AND status = #{orderArticleUpdateModel.originalStatus,jdbcType=TINYINT}
+        </if>
     </update>
 
 </mapper>

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 import static reactor.util.Loggers.getLogger;
 
@@ -92,8 +93,12 @@ public class OrderSummaryServiceImpl implements OrderSummaryService {
      */
     @Override
     public OrderSummary insertOrderSummaryAsync(OrderSummary orderSummary) {
+        LOGGER.info("OrderSummary insertOrderSummaryAsync(OrderSummary orderSummary), orderSummary = {}", orderSummary);
+        if (isNull(orderSummary))
+            throw new BlueException(EMPTY_PARAM);
 
-        return null;
+        orderSummaryInsertProducer.send(orderSummary);
+        return orderSummary;
     }
 
     /**
@@ -119,11 +124,10 @@ public class OrderSummaryServiceImpl implements OrderSummaryService {
     @Override
     public OrderSummary updateOrderSummaryAsync(OrderSummary orderSummary) {
         LOGGER.info("OrderSummary updateOrderSummaryAsync(OrderSummary orderSummary), orderSummary = {}", orderSummary);
+        if (isNull(orderSummary))
+            throw new BlueException(EMPTY_PARAM);
 
-
-//        orderSummaryProducer.send(orderSummary);
-
-
+        orderSummaryUpdateProducer.send(orderSummary);
         return orderSummary;
     }
 

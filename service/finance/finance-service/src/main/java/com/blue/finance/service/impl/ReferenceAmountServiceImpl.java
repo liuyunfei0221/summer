@@ -1,6 +1,7 @@
 package com.blue.finance.service.impl;
 
 import com.blue.basic.model.exps.BlueException;
+import com.blue.finance.model.db.ReferenceAmountUpdateModel;
 import com.blue.finance.repository.entity.ReferenceAmount;
 import com.blue.finance.repository.mapper.ReferenceAmountMapper;
 import com.blue.finance.service.inter.ReferenceAmountService;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
+import static com.blue.basic.constant.common.SpecialIntegerElement.ONE;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
@@ -89,44 +91,20 @@ public class ReferenceAmountServiceImpl implements ReferenceAmountService {
     }
 
     /**
-     * update a exist reference amount
+     * update target columns selective by id and status
      *
-     * @param referenceAmount
+     * @param referenceAmountUpdateModel
      * @return
      */
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public Boolean updateReferenceAmount(ReferenceAmount referenceAmount) {
-        LOGGER.info("Boolean updateReferenceAmount(ReferenceAmount referenceAmount), referenceAmount = {}", referenceAmount);
-        if (isNull(referenceAmount))
+    public Boolean updateTargetColumnByPrimaryKeySelectiveWithStatusStamp(ReferenceAmountUpdateModel referenceAmountUpdateModel) {
+        LOGGER.info("Boolean updateTargetColumnByPrimaryKeySelectiveWithStatusStamp(ReferenceAmountUpdateModel referenceAmountUpdateModel), referenceAmountUpdateModel = {}", referenceAmountUpdateModel);
+        if (isNull(referenceAmountUpdateModel))
             throw new BlueException(EMPTY_PARAM);
+        referenceAmountUpdateModel.asserts();
 
-        if (isInvalidIdentity(referenceAmount.getId()))
-            throw new BlueException(INVALID_IDENTITY);
-
-        int updated = referenceAmountMapper.updateByPrimaryKeySelective(referenceAmount);
-        LOGGER.info("referenceAmount = {}, updated = {}", referenceAmount, updated);
-
-        return updated > 0;
-    }
-
-    /**
-     * delete reference amount
-     *
-     * @param id
-     * @return
-     */
-    @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public Boolean deleteReferenceAmount(Long id) {
-        LOGGER.info("Boolean deleteReferenceAmount(Long id), id = {}", id);
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
-
-        int deleted = referenceAmountMapper.deleteByPrimaryKey(id);
-        LOGGER.info("deleted = {}", deleted);
-
-        return deleted > 0;
+        return referenceAmountMapper.updateTargetColumnByPrimaryKeySelectiveWithStatusStamp(referenceAmountUpdateModel) >= ONE.value;
     }
 
     /**

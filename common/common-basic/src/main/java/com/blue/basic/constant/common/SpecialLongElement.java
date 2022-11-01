@@ -13,6 +13,11 @@ public enum SpecialLongElement {
     ZERO(0L),
 
     /**
+     * one value
+     */
+    ONE(1L),
+
+    /**
      * duration before millis to second
      */
     MILLIS_SEC_DURATION(1000L);

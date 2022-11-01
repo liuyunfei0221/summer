@@ -1,6 +1,5 @@
 package com.blue.finance.service.inter;
 
-import com.blue.finance.api.model.OrderInfo;
 import com.blue.finance.repository.entity.Order;
 import com.blue.finance.repository.entity.OrderArticle;
 import com.blue.finance.repository.entity.ReferenceAmount;
@@ -23,7 +22,7 @@ public interface OrderProcessService {
      * @param referenceAmounts
      * @return
      */
-    OrderInfo insertOrder(Order order, List<OrderArticle> orderArticles, List<ReferenceAmount> referenceAmounts);
+    void insertOrder(Order order, List<OrderArticle> orderArticles, List<ReferenceAmount> referenceAmounts);
 
     /**
      * update order
@@ -33,14 +32,30 @@ public interface OrderProcessService {
      * @param referenceAmounts
      * @return
      */
-    OrderInfo updateOrder(Order order, List<OrderArticle> orderArticles, List<ReferenceAmount> referenceAmounts);
+    void updateOrder(Order order, List<OrderArticle> orderArticles, List<ReferenceAmount> referenceAmounts);
 
     /**
-     * delete order
+     * update order
      *
-     * @param id
+     * @param order
      * @return
      */
-    Boolean deleteOrder(Long id);
+    void updateOrder(Order order);
+
+    /**
+     * update order articles
+     *
+     * @param orderArticles
+     * @return
+     */
+    void updateOrderArticles(List<OrderArticle> orderArticles);
+
+    /**
+     * update reference amounts
+     *
+     * @param referenceAmounts
+     * @return
+     */
+    void updateReferenceAmounts(List<ReferenceAmount> referenceAmounts);
 
 }

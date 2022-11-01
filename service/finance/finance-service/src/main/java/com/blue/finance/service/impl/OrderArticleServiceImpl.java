@@ -1,6 +1,7 @@
 package com.blue.finance.service.impl;
 
 import com.blue.basic.model.exps.BlueException;
+import com.blue.finance.model.db.OrderArticleUpdateModel;
 import com.blue.finance.repository.entity.OrderArticle;
 import com.blue.finance.repository.mapper.OrderArticleMapper;
 import com.blue.finance.service.inter.OrderArticleService;
@@ -14,11 +15,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.blue.basic.common.base.BlueChecker.*;
-import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
-import static com.blue.basic.constant.common.SpecialIntegerElement.ZERO;
-import static com.blue.finance.api.common.OrderArticleStatusChangeAsserter.assertStatusChange;
+import static com.blue.basic.constant.common.SpecialIntegerElement.ONE;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
@@ -92,24 +91,20 @@ public class OrderArticleServiceImpl implements OrderArticleService {
     }
 
     /**
-     * update status
+     * update target columns selective by id and status
      *
-     * @param id
-     * @param originalStatus
-     * @param destStatus
+     * @param orderArticleUpdateModel
      * @return
      */
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public Boolean updateOrderArticleStatus(Long id, Integer originalStatus, Integer destStatus) {
-        LOGGER.info("Boolean updateOrderArticleStatus(Long id, Integer originalStatus, Integer destStatus), id = {}, originalStatus = {}, destStatus = {}",
-                id, originalStatus, destStatus);
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
+    public Boolean updateTargetColumnByPrimaryKeySelectiveWithStatusStamp(OrderArticleUpdateModel orderArticleUpdateModel) {
+        LOGGER.info("Boolean updateTargetColumnByPrimaryKeySelectiveWithStatusStamp(OrderArticleUpdateModel orderArticleUpdateModel), orderArticleUpdateModel = {}", orderArticleUpdateModel);
+        if (isNull(orderArticleUpdateModel))
+            throw new BlueException(EMPTY_PARAM);
+        orderArticleUpdateModel.asserts();
 
-        assertStatusChange(originalStatus, destStatus);
-
-        return orderArticleMapper.updateStatusByPrimaryKeyWithStatusStamp(id, originalStatus, destStatus, TIME_STAMP_GETTER.get()) > ZERO.value;
+        return orderArticleMapper.updateTargetColumnByPrimaryKeySelectiveWithStatusStamp(orderArticleUpdateModel) >= ONE.value;
     }
 
     /**

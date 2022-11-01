@@ -1,5 +1,7 @@
 package com.blue.finance.service.inter;
 
+import com.blue.finance.model.db.OrderUpdateModel;
+import com.blue.finance.model.db.OrderVersionUpdateModel;
 import com.blue.finance.repository.entity.Order;
 import reactor.core.publisher.Mono;
 
@@ -23,20 +25,20 @@ public interface OrderService {
     Order insertOrder(Order order);
 
     /**
-     * update a exist order
+     * update target columns selective by id and status and version
      *
-     * @param order
+     * @param orderUpdateModel
      * @return
      */
-    Boolean updateOrder(Order order);
+    Boolean updateTargetColumnByPrimaryKeySelectiveWithStamps(OrderUpdateModel orderUpdateModel);
 
     /**
-     * delete order
+     * update order version by id and version
      *
-     * @param id
+     * @param orderVersionUpdateModel
      * @return
      */
-    Boolean deleteOrder(Long id);
+    Boolean updateTargetColumnByPrimaryKeySelectiveWithStamps(OrderVersionUpdateModel orderVersionUpdateModel);
 
     /**
      * get order by id

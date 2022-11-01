@@ -1,5 +1,6 @@
 package com.blue.finance.repository.mapper;
 
+import com.blue.finance.model.db.OrderArticleUpdateModel;
 import com.blue.finance.repository.entity.OrderArticle;
 import org.apache.ibatis.annotations.Param;
 
@@ -31,6 +32,6 @@ public interface OrderArticleMapper {
 
     List<OrderArticle> selectByIds(@Param("ids") List<Long> ids);
 
-    int updateStatusByPrimaryKeyWithStatusStamp(@Param("id") Long id, @Param("originalStatus") Integer originalStatus, @Param("destStatus") Integer destStatus, @Param("updateTime") Long updateTime);
+    int updateTargetColumnByPrimaryKeySelectiveWithStatusStamp(@Param("orderArticleUpdateModel") OrderArticleUpdateModel orderArticleUpdateModel);
 
 }

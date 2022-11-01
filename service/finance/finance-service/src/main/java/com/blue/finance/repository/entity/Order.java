@@ -28,6 +28,8 @@ public class Order implements Serializable {
 
     private Long payAmount;
 
+    private Long paymentTime;
+
     private String extra;
 
     private String paymentExtra;
@@ -46,8 +48,6 @@ public class Order implements Serializable {
     private Long createTime;
 
     private Long updateTime;
-
-    private Long paymentTime;
 
     public Long getId() {
         return id;
@@ -70,7 +70,7 @@ public class Order implements Serializable {
     }
 
     public void setOrderNo(String orderNo) {
-        this.orderNo = orderNo == null ? null : orderNo.trim();
+        this.orderNo = orderNo;
     }
 
     public String getFlowNo() {
@@ -78,7 +78,7 @@ public class Order implements Serializable {
     }
 
     public void setFlowNo(String flowNo) {
-        this.flowNo = flowNo == null ? null : flowNo.trim();
+        this.flowNo = flowNo;
     }
 
     public Integer getType() {
@@ -113,12 +113,20 @@ public class Order implements Serializable {
         this.payAmount = payAmount;
     }
 
+    public Long getPaymentTime() {
+        return paymentTime;
+    }
+
+    public void setPaymentTime(Long paymentTime) {
+        this.paymentTime = paymentTime;
+    }
+
     public String getExtra() {
         return extra;
     }
 
     public void setExtra(String extra) {
-        this.extra = extra == null ? null : extra.trim();
+        this.extra = extra;
     }
 
     public String getPaymentExtra() {
@@ -126,7 +134,7 @@ public class Order implements Serializable {
     }
 
     public void setPaymentExtra(String paymentExtra) {
-        this.paymentExtra = paymentExtra == null ? null : paymentExtra.trim();
+        this.paymentExtra = paymentExtra;
     }
 
     public String getDetail() {
@@ -134,7 +142,7 @@ public class Order implements Serializable {
     }
 
     public void setDetail(String detail) {
-        this.detail = detail == null ? null : detail.trim();
+        this.detail = detail;
     }
 
     public Integer getStatus() {
@@ -169,14 +177,6 @@ public class Order implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public Long getPaymentTime() {
-        return paymentTime;
-    }
-
-    public void setPaymentTime(Long paymentTime) {
-        this.paymentTime = paymentTime;
-    }
-
     @Override
     public String toString() {
         return "Order{" +
@@ -188,6 +188,7 @@ public class Order implements Serializable {
                 ", paymentType=" + paymentType +
                 ", amount=" + amount +
                 ", payAmount=" + payAmount +
+                ", paymentTime=" + paymentTime +
                 ", extra='" + extra + '\'' +
                 ", paymentExtra='" + paymentExtra + '\'' +
                 ", detail='" + detail + '\'' +
@@ -195,7 +196,6 @@ public class Order implements Serializable {
                 ", version=" + version +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
-                ", paymentTime=" + paymentTime +
                 '}';
     }
 

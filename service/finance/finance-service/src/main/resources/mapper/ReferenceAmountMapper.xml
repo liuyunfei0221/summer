@@ -216,4 +216,24 @@
         </foreach>
     </select>
 
+    <update id="updateTargetColumnByPrimaryKeySelectiveWithStatusStamp"
+            parameterType="com.blue.finance.model.db.ReferenceAmountUpdateModel">
+        <if test="referenceAmountUpdateModel != null">
+            UPDATE reference_amount
+            <set>
+                <if test="referenceAmountUpdateModel.extra != null">
+                    extra = #{referenceAmountUpdateModel.extra,jdbcType=VARCHAR},
+                </if>
+                <if test="referenceAmountUpdateModel.destStatus != null">
+                    status = #{referenceAmountUpdateModel.destStatus,jdbcType=TINYINT},
+                </if>
+                <if test="referenceAmountUpdateModel.updateTime != null">
+                    update_time = #{referenceAmountUpdateModel.updateTime,jdbcType=BIGINT},
+                </if>
+            </set>
+            WHERE id = #{referenceAmountUpdateModel.id,jdbcType=BIGINT}
+            AND status = #{referenceAmountUpdateModel.originalStatus,jdbcType=TINYINT}
+        </if>
+    </update>
+
 </mapper>

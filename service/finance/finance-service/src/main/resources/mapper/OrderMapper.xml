@@ -11,6 +11,7 @@
         <result column="payment_type" jdbcType="TINYINT" property="paymentType"/>
         <result column="amount" jdbcType="BIGINT" property="amount"/>
         <result column="pay_amount" jdbcType="BIGINT" property="payAmount"/>
+        <result column="payment_time" jdbcType="BIGINT" property="paymentTime"/>
         <result column="extra" jdbcType="VARCHAR" property="extra"/>
         <result column="payment_extra" jdbcType="VARCHAR" property="paymentExtra"/>
         <result column="detail" jdbcType="VARCHAR" property="detail"/>
@@ -18,28 +19,26 @@
         <result column="version" jdbcType="INTEGER" property="version"/>
         <result column="create_time" jdbcType="BIGINT" property="createTime"/>
         <result column="update_time" jdbcType="BIGINT" property="updateTime"/>
-        <result column="payment_time" jdbcType="BIGINT" property="paymentTime"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id
-        , member_id, order_no, flow_no, type, payment_type, amount, pay_amount, extra,
-        payment_extra, detail, status, version, create_time, update_time, payment_time
+        , member_id, order_no, flow_no, type, payment_type, amount, pay_amount, payment_time,
+        extra, payment_extra, detail, status, version, create_time, update_time
     </sql>
 
     <insert id="insert" parameterType="com.blue.finance.repository.entity.Order">
         insert into order (id, member_id, order_no,
                            flow_no, type, payment_type,
-                           amount, pay_amount, extra,
+                           amount, pay_amount, payment_time, extra,
                            payment_extra, detail, status,
-                           version, create_time, update_time,
-                           payment_time)
+                           version, create_time, update_time)
         values (#{id,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{orderNo,jdbcType=VARCHAR},
                 #{flowNo,jdbcType=VARCHAR}, #{type,jdbcType=TINYINT}, #{paymentType,jdbcType=TINYINT},
-                #{amount,jdbcType=BIGINT}, #{payAmount,jdbcType=BIGINT}, #{extra,jdbcType=VARCHAR},
+                #{amount,jdbcType=BIGINT}, #{payAmount,jdbcType=BIGINT}, #{paymentTime,jdbcType=BIGINT},
+                #{extra,jdbcType=VARCHAR},
                 #{paymentExtra,jdbcType=VARCHAR}, #{detail,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
-                #{version,jdbcType=INTEGER}, #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT},
-                #{paymentTime,jdbcType=BIGINT})
+                #{version,jdbcType=INTEGER}, #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT})
     </insert>
 
     <insert id="insertSelective" parameterType="com.blue.finance.repository.entity.Order">
@@ -69,6 +68,9 @@
             <if test="payAmount != null">
                 pay_amount,
             </if>
+            <if test="paymentTime != null">
+                payment_time,
+            </if>
             <if test="extra != null">
                 extra,
             </if>
@@ -89,9 +91,6 @@
             </if>
             <if test="updateTime != null">
                 update_time,
-            </if>
-            <if test="paymentTime != null">
-                payment_time,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -119,6 +118,9 @@
             <if test="payAmount != null">
                 #{payAmount,jdbcType=BIGINT},
             </if>
+            <if test="paymentTime != null">
+                #{paymentTime,jdbcType=BIGINT},
+            </if>
             <if test="extra != null">
                 #{extra,jdbcType=VARCHAR},
             </if>
@@ -140,29 +142,19 @@
             <if test="updateTime != null">
                 #{updateTime,jdbcType=BIGINT},
             </if>
-            <if test="paymentTime != null">
-                #{paymentTime,jdbcType=BIGINT},
-            </if>
         </trim>
     </insert>
 
     <update id="updateByPrimaryKey" parameterType="com.blue.finance.repository.entity.Order">
         update order
-        set member_id     = #{memberId,jdbcType=BIGINT},
-            order_no      = #{orderNo,jdbcType=VARCHAR},
-            flow_no       = #{flowNo,jdbcType=VARCHAR},
-            type          = #{type,jdbcType=TINYINT},
-            payment_type  = #{paymentType,jdbcType=TINYINT},
-            amount        = #{amount,jdbcType=BIGINT},
-            pay_amount    = #{payAmount,jdbcType=BIGINT},
-            extra         = #{extra,jdbcType=VARCHAR},
-            payment_extra = #{paymentExtra,jdbcType=VARCHAR},
-            detail        = #{detail,jdbcType=VARCHAR},
-            status        = #{status,jdbcType=TINYINT},
-            version       = #{version,jdbcType=INTEGER},
-            create_time   = #{createTime,jdbcType=BIGINT},
-            update_time   = #{updateTime,jdbcType=BIGINT},
-            payment_time  = #{paymentTime,jdbcType=BIGINT}
+        set member_id    = #{memberId,jdbcType=BIGINT},
+            order_no     = #{orderNo,jdbcType=VARCHAR},
+            flow_no      = #{flowNo,jdbcType=VARCHAR},
+            type         = #{type,jdbcType=TINYINT},
+            payment_type = #{paymentType,jdbcType=TINYINT},
+            amount       = #{amount,jdbcType=BIGINT},
+            pay_amount   = #{payAmount,jdbcType=BIGINT},
+            payment_time = #{paymentTime,jdbcType=BIGINT} extra         = #{extra,jdbcType=VARCHAR}, payment_extra = #{paymentExtra,jdbcType=VARCHAR}, detail = #{detail,jdbcType=VARCHAR}, status = #{status,jdbcType=TINYINT}, version = #{version,jdbcType=INTEGER}, create_time = #{createTime,jdbcType=BIGINT}, update_time = #{updateTime,jdbcType=BIGINT}
         where id = #{id,jdbcType=BIGINT}
     </update>
 
@@ -190,6 +182,9 @@
             <if test="payAmount != null">
                 pay_amount = #{payAmount,jdbcType=BIGINT},
             </if>
+            <if test="paymentTime != null">
+                payment_time = #{paymentTime,jdbcType=BIGINT},
+            </if>
             <if test="extra != null">
                 extra = #{extra,jdbcType=VARCHAR},
             </if>
@@ -210,9 +205,6 @@
             </if>
             <if test="updateTime != null">
                 update_time = #{updateTime,jdbcType=BIGINT},
-            </if>
-            <if test="paymentTime != null">
-                payment_time = #{paymentTime,jdbcType=BIGINT},
             </if>
         </set>
         where id = #{id,jdbcType=BIGINT}
@@ -242,5 +234,45 @@
             #{id,jdbcType=BIGINT}
         </foreach>
     </select>
+
+    <update id="updateTargetColumnByPrimaryKeySelectiveWithStamps"
+            parameterType="com.blue.finance.model.db.OrderUpdateModel">
+        <if test="orderUpdateModel != null">
+            UPDATE order
+            <set>
+                <if test="orderUpdateModel.paymentTime != null">
+                    payment_time = #{orderUpdateModel.paymentTime,jdbcType=BIGINT},
+                </if>
+                <if test="orderUpdateModel.extra != null">
+                    extra = #{orderUpdateModel.extra,jdbcType=VARCHAR},
+                </if>
+                <if test="orderUpdateModel.paymentExtra != null">
+                    payment_extra = #{orderUpdateModel.paymentExtra,jdbcType=VARCHAR},
+                </if>
+                <if test="orderUpdateModel.destStatus != null">
+                    status = #{orderUpdateModel.destStatus,jdbcType=TINYINT},
+                </if>
+                <if test="orderUpdateModel.destVersion != null">
+                    version = #{orderUpdateModel.destVersion,jdbcType=INTEGER},
+                </if>
+                <if test="orderUpdateModel.updateTime != null">
+                    update_time = #{orderUpdateModel.updateTime,jdbcType=BIGINT},
+                </if>
+            </set>
+            WHERE id = #{orderUpdateModel.id,jdbcType=BIGINT}
+            AND status = #{orderUpdateModel.originalStatus,jdbcType=TINYINT}
+            AND version = #{orderUpdateModel.originalVersion,jdbcType=INTEGER}
+        </if>
+    </update>
+
+    <update id="updateVersionByPrimaryKeyWithVersionStamp"
+            parameterType="com.blue.finance.model.db.OrderVersionUpdateModel">
+        <if test="orderVersionUpdateModel != null">
+            UPDATE order
+            SET version = #{orderVersionUpdateModel.destVersion,jdbcType=INTEGER}
+            WHERE id = #{orderVersionUpdateModel.id,jdbcType=BIGINT}
+            AND version = #{orderVersionUpdateModel.originalVersion,jdbcType=INTEGER}
+        </if>
+    </update>
 
 </mapper>

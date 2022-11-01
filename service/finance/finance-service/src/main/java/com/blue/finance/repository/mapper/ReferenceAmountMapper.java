@@ -1,5 +1,6 @@
 package com.blue.finance.repository.mapper;
 
+import com.blue.finance.model.db.ReferenceAmountUpdateModel;
 import com.blue.finance.repository.entity.ReferenceAmount;
 import org.apache.ibatis.annotations.Param;
 
@@ -30,5 +31,7 @@ public interface ReferenceAmountMapper {
     List<ReferenceAmount> getByOrderId(@Param("orderId") Long orderId);
 
     List<ReferenceAmount> selectByIds(@Param("ids") List<Long> ids);
+
+    int updateTargetColumnByPrimaryKeySelectiveWithStatusStamp(@Param("referenceAmountUpdateModel") ReferenceAmountUpdateModel referenceAmountUpdateModel);
 
 }

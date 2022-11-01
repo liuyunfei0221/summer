@@ -1,6 +1,8 @@
 package com.blue.finance.service.impl;
 
 import com.blue.basic.model.exps.BlueException;
+import com.blue.finance.model.db.OrderUpdateModel;
+import com.blue.finance.model.db.OrderVersionUpdateModel;
 import com.blue.finance.repository.entity.Order;
 import com.blue.finance.repository.mapper.OrderMapper;
 import com.blue.finance.service.inter.OrderService;
@@ -16,6 +18,7 @@ import java.util.Optional;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
+import static com.blue.basic.constant.common.SpecialIntegerElement.ONE;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
@@ -66,44 +69,37 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     * update a exist order
+     * update target columns selective by id and status and version
      *
-     * @param order
+     * @param orderUpdateModel
      * @return
      */
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public Boolean updateOrder(Order order) {
-        LOGGER.info("Order updateOrder(Order order), order = {}", order);
-        if (isNull(order))
+    public Boolean updateTargetColumnByPrimaryKeySelectiveWithStamps(OrderUpdateModel orderUpdateModel) {
+        LOGGER.info("Boolean updateTargetColumnByPrimaryKeySelectiveWithStamps(OrderUpdateModel orderUpdateModel), orderUpdateModel = {}", orderUpdateModel);
+        if (isNull(orderUpdateModel))
             throw new BlueException(EMPTY_PARAM);
+        orderUpdateModel.asserts();
 
-        if (isInvalidIdentity(order.getId()))
-            throw new BlueException(INVALID_IDENTITY);
-
-        int updated = orderMapper.updateByPrimaryKeySelective(order);
-        LOGGER.info("order = {}, updated = {}", order, updated);
-
-        return updated > 0;
+        return orderMapper.updateTargetColumnByPrimaryKeySelectiveWithStamps(orderUpdateModel) >= ONE.value;
     }
 
     /**
-     * delete order
+     * update order version by id and version
      *
-     * @param id
+     * @param orderVersionUpdateModel
      * @return
      */
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public Boolean deleteOrder(Long id) {
-        LOGGER.info("Boolean deleteOrder(Long id), id = {}", id);
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
+    public Boolean updateTargetColumnByPrimaryKeySelectiveWithStamps(OrderVersionUpdateModel orderVersionUpdateModel) {
+        LOGGER.info("Boolean updateTargetColumnByPrimaryKeySelectiveWithStamps(OrderVersionUpdateModel orderVersionUpdateModel), orderVersionUpdateModel = {}", orderVersionUpdateModel);
+        if (isNull(orderVersionUpdateModel))
+            throw new BlueException(EMPTY_PARAM);
+        orderVersionUpdateModel.asserts();
 
-        int deleted = orderMapper.deleteByPrimaryKey(id);
-        LOGGER.info("deleted = {}", deleted);
-
-        return deleted > 0;
+        return orderMapper.updateVersionByPrimaryKeyWithVersionStamp(orderVersionUpdateModel) >= ONE.value;
     }
 
     /**

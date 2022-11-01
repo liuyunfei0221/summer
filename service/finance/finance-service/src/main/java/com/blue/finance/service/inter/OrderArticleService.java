@@ -1,5 +1,6 @@
 package com.blue.finance.service.inter;
 
+import com.blue.finance.model.db.OrderArticleUpdateModel;
 import com.blue.finance.repository.entity.OrderArticle;
 import reactor.core.publisher.Mono;
 
@@ -31,14 +32,12 @@ public interface OrderArticleService {
     List<OrderArticle> insertOrderArticles(List<OrderArticle> orderArticles);
 
     /**
-     * update status
+     * update target columns selective by id and status
      *
-     * @param id
-     * @param originalStatus
-     * @param destStatus
+     * @param orderArticleUpdateModel
      * @return
      */
-    Boolean updateOrderArticleStatus(Long id, Integer originalStatus, Integer destStatus);
+    Boolean updateTargetColumnByPrimaryKeySelectiveWithStatusStamp(OrderArticleUpdateModel orderArticleUpdateModel);
 
     /**
      * get order article by id

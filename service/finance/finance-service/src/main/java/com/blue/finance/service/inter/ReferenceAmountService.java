@@ -1,5 +1,6 @@
 package com.blue.finance.service.inter;
 
+import com.blue.finance.model.db.ReferenceAmountUpdateModel;
 import com.blue.finance.repository.entity.ReferenceAmount;
 import reactor.core.publisher.Mono;
 
@@ -31,20 +32,12 @@ public interface ReferenceAmountService {
     List<ReferenceAmount> insertReferenceAmounts(List<ReferenceAmount> referenceAmounts);
 
     /**
-     * update a exist reference amount
+     * update target columns selective by id and status
      *
-     * @param referenceAmount
+     * @param referenceAmountUpdateModel
      * @return
      */
-    Boolean updateReferenceAmount(ReferenceAmount referenceAmount);
-
-    /**
-     * delete reference amount
-     *
-     * @param id
-     * @return
-     */
-    Boolean deleteReferenceAmount(Long id);
+    Boolean updateTargetColumnByPrimaryKeySelectiveWithStatusStamp(ReferenceAmountUpdateModel referenceAmountUpdateModel);
 
     /**
      * get reference amount by id

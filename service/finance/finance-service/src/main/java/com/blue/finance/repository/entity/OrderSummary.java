@@ -1,7 +1,15 @@
 package com.blue.finance.repository.entity;
 
+import com.blue.basic.inter.Asserter;
+import com.blue.basic.model.exps.BlueException;
+
 import java.io.Serializable;
 import java.util.List;
+
+import static com.blue.basic.common.base.BlueChecker.isInvalidIdentity;
+import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
+import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 
 /**
  * order summary in hbase
@@ -9,7 +17,7 @@ import java.util.List;
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public class OrderSummary implements Serializable {
+public class OrderSummary implements Serializable, Asserter {
 
     private static final long serialVersionUID = 3234801680742676200L;
 
@@ -35,6 +43,16 @@ public class OrderSummary implements Serializable {
         this.orderArticles = orderArticles;
         this.referenceAmounts = referenceAmounts;
         this.version = version;
+    }
+
+    @Override
+    public void asserts() {
+        if (isInvalidIdentity(this.id))
+            throw new BlueException(INVALID_IDENTITY);
+        if (isNull(this.order))
+            throw new BlueException(INVALID_PARAM);
+        if (isNull(this.version) || this.version < 0)
+            throw new BlueException(INVALID_PARAM);
     }
 
     public Long getId() {

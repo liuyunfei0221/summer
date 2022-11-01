@@ -14,6 +14,11 @@ public enum SpecialIntegerElement {
     ZERO(0),
 
     /**
+     * one value
+     */
+    ONE(1),
+
+    /**
      * Minus one
      */
     MINUS_ONE(-1);
