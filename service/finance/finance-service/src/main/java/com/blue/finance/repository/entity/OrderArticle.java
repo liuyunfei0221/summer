@@ -35,6 +35,8 @@ public class OrderArticle implements Serializable {
      */
     private Integer status;
 
+    private Integer version;
+
     private Long createTime;
 
     private Long updateTime;
@@ -111,6 +113,14 @@ public class OrderArticle implements Serializable {
         this.status = status;
     }
 
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
     public Long getCreateTime() {
         return createTime;
     }
@@ -139,6 +149,7 @@ public class OrderArticle implements Serializable {
                 ", extra='" + extra + '\'' +
                 ", detail='" + detail + '\'' +
                 ", status=" + status +
+                ", version=" + version +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 '}';

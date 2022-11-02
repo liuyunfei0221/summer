@@ -12,24 +12,25 @@
         <result column="extra" jdbcType="VARCHAR" property="extra"/>
         <result column="detail" jdbcType="VARCHAR" property="detail"/>
         <result column="status" jdbcType="TINYINT" property="status"/>
+        <result column="version" jdbcType="INTEGER" property="version"/>
         <result column="create_time" jdbcType="BIGINT" property="createTime"/>
         <result column="update_time" jdbcType="BIGINT" property="updateTime"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id
-        , order_id, article_id, member_id, amount, quantity, extra, detail, status, create_time, update_time
+        , order_id, article_id, member_id, amount, quantity, extra, detail, status, version, create_time, update_time
     </sql>
 
     <insert id="insert" parameterType="com.blue.finance.repository.entity.OrderArticle">
         insert into order_article (id, order_id, article_id,
                                    member_id, amount, quantity,
-                                   extra, detail, status,
+                                   extra, detail, status, version,
                                    create_time, update_time)
         values (#{id,jdbcType=BIGINT}, #{orderId,jdbcType=BIGINT}, #{articleId,jdbcType=BIGINT},
                 #{memberId,jdbcType=BIGINT}, #{amount,jdbcType=BIGINT}, #{quantity,jdbcType=BIGINT},
                 #{extra,jdbcType=VARCHAR}, #{detail,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
-                #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT})
+                #{version,jdbcType=INTEGER}, #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT})
     </insert>
 
     <insert id="insertBatch" parameterType="java.util.List">
@@ -48,6 +49,7 @@
                 #{item.extra,jdbcType=VARCHAR},
                 #{item.detail,jdbcType=VARCHAR},
                 #{item.status,jdbcType=TINYINT},
+                #{item.version,jdbcType=INTEGER},
                 #{item.createTime,jdbcType=BIGINT},
                 #{item.updateTime,jdbcType=BIGINT}
                 )
@@ -85,6 +87,9 @@
             <if test="status != null">
                 status,
             </if>
+            <if test="version != null">
+                version,
+            </if>
             <if test="createTime != null">
                 create_time,
             </if>
@@ -120,6 +125,9 @@
             <if test="status != null">
                 #{status,jdbcType=TINYINT},
             </if>
+            <if test="version != null">
+                #{version,jdbcType=INTEGER},
+            </if>
             <if test="createTime != null">
                 #{createTime,jdbcType=BIGINT},
             </if>
@@ -139,6 +147,7 @@
             extra       = #{extra,jdbcType=VARCHAR},
             detail      = #{detail,jdbcType=VARCHAR},
             status      = #{status,jdbcType=TINYINT},
+            version     = #{version,jdbcType=INTEGER},
             create_time = #{createTime,jdbcType=BIGINT},
             update_time = #{updateTime,jdbcType=BIGINT}
         where id = #{id,jdbcType=BIGINT}
@@ -170,6 +179,9 @@
             </if>
             <if test="status != null">
                 status = #{status,jdbcType=TINYINT},
+            </if>
+            <if test="version != null">
+                version = #{version,jdbcType=INTEGER},
             </if>
             <if test="createTime != null">
                 create_time = #{createTime,jdbcType=BIGINT},

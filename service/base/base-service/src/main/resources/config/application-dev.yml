@@ -267,11 +267,11 @@ dubbo:
 
 
 caffeine:
-  country-maximum-size: 1
-  state-maximum-size: 1024
-  city-maximum-size: 32768
-  area-maximum-size: 65536
-  expires-second: 30
+  country-maximum-size: 256
+  state-maximum-size: 8192
+  city-maximum-size: 16384
+  area-maximum-size: 16384
+  expires-second: 60
 
 
 dict:
@@ -391,4 +391,4 @@ consumers:
       enable-negative-acknowledge: true
 
 
-debug: true
+debug: false

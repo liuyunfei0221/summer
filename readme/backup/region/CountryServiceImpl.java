@@ -43,7 +43,6 @@ import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_WRITE;
 import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
 import static com.blue.basic.constant.common.ResponseElement.*;
-import static com.blue.basic.constant.common.SpecialIntegerElement.ONE;
 import static com.blue.basic.constant.common.Status.VALID;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCacheAsyncCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
@@ -52,7 +51,6 @@ import static com.blue.mongo.constant.LikeElement.SUFFIX;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
-import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.function.Function.identity;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
@@ -75,26 +73,23 @@ public class CountryServiceImpl implements CountryService {
 
     private BlueIdentityProcessor blueIdentityProcessor;
 
-    private ExecutorService executorService;
-
     private CountryRepository countryRepository;
 
     private final ReactiveMongoTemplate reactiveMongoTemplate;
 
-    public CountryServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ExecutorService executorService, CountryRepository countryRepository,
-                              ReactiveMongoTemplate reactiveMongoTemplate, CaffeineDeploy caffeineDeploy) {
+    public CountryServiceImpl(BlueIdentityProcessor blueIdentityProcessor, CountryRepository countryRepository, ReactiveMongoTemplate reactiveMongoTemplate,
+                              ExecutorService executorService, CaffeineDeploy caffeineDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
-        this.executorService = executorService;
         this.reactiveMongoTemplate = reactiveMongoTemplate;
         this.countryRepository = countryRepository;
 
         idCountryCache = generateCacheAsyncCache(new CaffeineConfParams(
                 caffeineDeploy.getCountryMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
-                AFTER_ACCESS, this.executorService));
+                AFTER_ACCESS, executorService));
 
         allCountriesCache = generateCacheAsyncCache(new CaffeineConfParams(
-                ONE.value, Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
-                AFTER_ACCESS, this.executorService));
+                caffeineDeploy.getCountryMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
+                AFTER_ACCESS, executorService));
     }
 
     private static final Long ALL_COUNTRIES_CACHE_ID = 0L;
@@ -103,31 +98,23 @@ public class CountryServiceImpl implements CountryService {
 
     private AsyncCache<Long, List<CountryInfo>> allCountriesCache;
 
-    private final BiFunction<Long, Executor, CompletableFuture<CountryInfo>> DB_COUNTRY_WITH_ASSERT_GETTER = (id, executor) -> {
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
-
-        return this.getCountryById(id).map(COUNTRY_2_COUNTRY_INFO_CONVERTER)
-                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
-                .toFuture();
-    };
+    private final BiFunction<Long, Executor, CompletableFuture<CountryInfo>> DB_COUNTRY_WITH_ASSERT_GETTER = (id, executor) ->
+            this.getCountryById(id).map(COUNTRY_2_COUNTRY_INFO_CONVERTER)
+                    .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
+                    .toFuture();
 
     private final BiFunction<Long, Executor, CompletableFuture<List<CountryInfo>>> DB_COUNTRIES_GETTER = (ignore, executor) ->
             this.selectCountry().map(COUNTRIES_2_COUNTRY_INFOS_CONVERTER).toFuture();
 
-    private final Function<Long, CompletableFuture<CountryInfo>> COUNTRY_BY_ID_WITH_ASSERT_GETTER = id -> {
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
-
-        return idCountryCache.get(id, DB_COUNTRY_WITH_ASSERT_GETTER);
-    };
+    private final Function<Long, CompletableFuture<CountryInfo>> COUNTRY_BY_ID_WITH_ASSERT_GETTER = id ->
+            idCountryCache.get(id, DB_COUNTRY_WITH_ASSERT_GETTER);
 
     private final Supplier<CompletableFuture<List<CountryInfo>>> COUNTRIES_GETTER = () ->
             allCountriesCache.get(ALL_COUNTRIES_CACHE_ID, DB_COUNTRIES_GETTER);
 
     private final Function<List<Long>, CompletableFuture<Map<Long, CountryInfo>>> CACHE_COUNTRIES_BY_IDS_GETTER = ids -> {
         if (isEmpty(ids))
-            return supplyAsync(Collections::emptyMap, this.executorService);
+            throw new BlueException(EMPTY_PARAM);
         if (ids.size() > (int) MAX_SERVICE_SELECT.value)
             throw new BlueException(PAYLOAD_TOO_LARGE);
 
@@ -422,9 +409,6 @@ public class CountryServiceImpl implements CountryService {
      */
     @Override
     public Mono<Country> getCountryById(Long id) {
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
-
         return countryRepository.findById(id);
     }
 

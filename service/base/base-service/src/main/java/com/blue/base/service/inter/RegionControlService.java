@@ -112,7 +112,7 @@ public interface RegionControlService {
     Mono<AreaInfo> deleteArea(Long id);
 
     /**
-     * invalid all chche
+     * invalid all cache
      *
      * @return
      */

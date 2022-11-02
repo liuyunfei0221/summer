@@ -45,7 +45,7 @@ public class RpcStateServiceProvider implements RpcStateService {
     @Override
     public CompletableFuture<StateInfo> getStateInfoById(Long id) {
         return just(id)
-                .flatMap(stateService::getStateInfoMonoById)
+                .flatMap(stateService::getStateInfoById)
                 .toFuture();
     }
 
@@ -58,7 +58,7 @@ public class RpcStateServiceProvider implements RpcStateService {
     @Override
     public CompletableFuture<List<StateInfo>> selectStateInfoByCountryId(Long countryId) {
         return just(countryId)
-                .flatMap(stateService::selectStateInfoMonoByCountryId)
+                .flatMap(stateService::selectStateInfoByCountryId)
                 .toFuture();
     }
 
@@ -71,7 +71,7 @@ public class RpcStateServiceProvider implements RpcStateService {
     @Override
     public CompletableFuture<Map<Long, StateInfo>> selectStateInfoByIds(List<Long> ids) {
         return just(ids)
-                .flatMap(stateService::selectStateInfoMonoByIds)
+                .flatMap(stateService::selectStateInfoByIds)
                 .toFuture();
     }
 
@@ -84,7 +84,7 @@ public class RpcStateServiceProvider implements RpcStateService {
     @Override
     public CompletableFuture<StateRegion> getStateRegionById(Long id) {
         return just(id)
-                .flatMap(stateService::getStateRegionMonoById)
+                .flatMap(stateService::getStateRegionById)
                 .toFuture();
     }
 
@@ -97,7 +97,7 @@ public class RpcStateServiceProvider implements RpcStateService {
     @Override
     public CompletableFuture<Map<Long, StateRegion>> selectStateRegionByIds(List<Long> ids) {
         return just(ids)
-                .flatMap(stateService::selectStateRegionMonoByIds)
+                .flatMap(stateService::selectStateRegionByIds)
                 .toFuture();
     }
 

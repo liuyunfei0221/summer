@@ -5,15 +5,14 @@ import com.blue.base.api.model.AreaRegion;
 import com.blue.base.model.AreaCondition;
 import com.blue.base.model.AreaInsertParam;
 import com.blue.base.model.AreaUpdateParam;
+import com.blue.base.repository.entity.Area;
 import com.blue.basic.model.common.PageModelRequest;
 import com.blue.basic.model.common.PageModelResponse;
-import com.blue.base.repository.entity.Area;
 import org.springframework.data.mongodb.core.query.Query;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * area service
@@ -58,7 +57,7 @@ public interface AreaService {
      * @param id
      * @return
      */
-    Optional<Area> getAreaById(Long id);
+    Mono<Area> getAreaById(Long id);
 
     /**
      * select area by city id
@@ -66,7 +65,7 @@ public interface AreaService {
      * @param cityId
      * @return
      */
-    List<Area> selectAreaByCityId(Long cityId);
+    Mono<List<Area>> selectAreaByCityId(Long cityId);
 
     /**
      * select area by ids
@@ -74,15 +73,7 @@ public interface AreaService {
      * @param ids
      * @return
      */
-    List<Area> selectAreaByIds(List<Long> ids);
-
-    /**
-     * get area info opt by id
-     *
-     * @param id
-     * @return
-     */
-    Optional<AreaInfo> getAreaInfoOptById(Long id);
+    Mono<List<Area>> selectAreaByIds(List<Long> ids);
 
     /**
      * get area info by id with assert
@@ -90,15 +81,7 @@ public interface AreaService {
      * @param id
      * @return
      */
-    AreaInfo getAreaInfoById(Long id);
-
-    /**
-     * get area info mono by id
-     *
-     * @param id
-     * @return
-     */
-    Mono<AreaInfo> getAreaInfoMonoById(Long id);
+    Mono<AreaInfo> getAreaInfoById(Long id);
 
     /**
      * select area info by city id
@@ -106,15 +89,7 @@ public interface AreaService {
      * @param cityId
      * @return
      */
-    List<AreaInfo> selectAreaInfoByCityId(Long cityId);
-
-    /**
-     * select area info mono by city id
-     *
-     * @param cityId
-     * @return
-     */
-    Mono<List<AreaInfo>> selectAreaInfoMonoByCityId(Long cityId);
+    Mono<List<AreaInfo>> selectAreaInfoByCityId(Long cityId);
 
     /**
      * select area info by ids
@@ -122,15 +97,7 @@ public interface AreaService {
      * @param ids
      * @return
      */
-    Map<Long, AreaInfo> selectAreaInfoByIds(List<Long> ids);
-
-    /**
-     * select area info mono by ids
-     *
-     * @param ids
-     * @return
-     */
-    Mono<Map<Long, AreaInfo>> selectAreaInfoMonoByIds(List<Long> ids);
+    Mono<Map<Long, AreaInfo>> selectAreaInfoByIds(List<Long> ids);
 
     /**
      * get region by id
@@ -138,15 +105,7 @@ public interface AreaService {
      * @param id
      * @return
      */
-    AreaRegion getAreaRegionById(Long id);
-
-    /**
-     * get region mono by id
-     *
-     * @param id
-     * @return
-     */
-    Mono<AreaRegion> getAreaRegionMonoById(Long id);
+    Mono<AreaRegion> getAreaRegionById(Long id);
 
     /**
      * get regions by ids
@@ -154,15 +113,7 @@ public interface AreaService {
      * @param ids
      * @return
      */
-    Map<Long, AreaRegion> selectAreaRegionByIds(List<Long> ids);
-
-    /**
-     * get regions mono by ids
-     *
-     * @param ids
-     * @return
-     */
-    Mono<Map<Long, AreaRegion>> selectAreaRegionMonoByIds(List<Long> ids);
+    Mono<Map<Long, AreaRegion>> selectAreaRegionByIds(List<Long> ids);
 
     /**
      * select area by limit and query
@@ -172,7 +123,7 @@ public interface AreaService {
      * @param query
      * @return
      */
-    Mono<List<Area>> selectAreaMonoByLimitAndQuery(Long limit, Long rows, Query query);
+    Mono<List<Area>> selectAreaByLimitAndQuery(Long limit, Long rows, Query query);
 
     /**
      * count area by query
@@ -180,7 +131,7 @@ public interface AreaService {
      * @param query
      * @return
      */
-    Mono<Long> countAreaMonoByQuery(Query query);
+    Mono<Long> countAreaByQuery(Query query);
 
     /**
      * select area info page by condition
@@ -188,6 +139,6 @@ public interface AreaService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<AreaInfo>> selectAreaPageMonoByPageAndCondition(PageModelRequest<AreaCondition> pageModelRequest);
+    Mono<PageModelResponse<AreaInfo>> selectAreaPageByPageAndCondition(PageModelRequest<AreaCondition> pageModelRequest);
 
 }

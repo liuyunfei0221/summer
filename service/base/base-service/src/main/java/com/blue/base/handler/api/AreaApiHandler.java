@@ -36,7 +36,7 @@ public class AreaApiHandler {
      */
     public Mono<ServerResponse> selectByCityId(ServerRequest serverRequest) {
         return getLongVariableReact(serverRequest, PID.key)
-                .flatMap(areaService::selectAreaInfoMonoByCityId)
+                .flatMap(areaService::selectAreaInfoByCityId)
                 .flatMap(l ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(l, serverRequest), BlueResponse.class));

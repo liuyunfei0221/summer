@@ -28,7 +28,8 @@ public class RegionTestRoute {
 
         RouterFunction<ServerResponse> routerFunction = route()
                 .GET("/move", accept(APPLICATION_JSON), regionTestHandler::move)
-                .GET("/region", accept(APPLICATION_JSON), regionTestHandler::region)
+                .GET("/region1", accept(APPLICATION_JSON), regionTestHandler::region1)
+                .GET("/region2", accept(APPLICATION_JSON), regionTestHandler::region2)
                 .build();
 
         return nest(pathPredicate, routerFunction);

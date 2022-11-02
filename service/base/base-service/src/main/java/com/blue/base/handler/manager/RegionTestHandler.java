@@ -13,6 +13,7 @@ import com.blue.base.service.inter.CityService;
 import com.blue.base.service.inter.CountryService;
 import com.blue.base.service.inter.StateService;
 import com.blue.basic.model.common.BlueResponse;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -21,8 +22,11 @@ import reactor.core.publisher.Mono;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.blue.base.constant.BaseColumnName.NAME;
 import static com.blue.basic.common.base.CommonFunctions.success;
+import static org.springframework.data.domain.Sort.by;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.TEXT_EVENT_STREAM;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.just;
 import static reactor.core.publisher.Mono.zip;
@@ -84,16 +88,16 @@ public class RegionTestHandler {
                 .body(success("OK", serverRequest), BlueResponse.class);
     }
 
-    public Mono<ServerResponse> region(ServerRequest serverRequest) {
+    public Mono<ServerResponse> region1(ServerRequest serverRequest) {
         return zip(
                 //管庄
-                areaService.getAreaRegionMonoById(1L),
+                areaService.getAreaRegionById(1L),
                 //北京/朝阳
-                cityService.getCityRegionMonoById(19794L),
+                cityService.getCityRegionById(19794L),
                 //北京/直辖市/省
-                stateService.getStateRegionMonoById(2280L),
+                stateService.getStateRegionById(2280L),
                 //中国
-                countryService.getCountryInfoMonoById(45L)
+                countryService.getCountryInfoById(45L)
         )
                 .flatMap(tuple4 -> {
                     Map<Long, Object> res = new HashMap<>(8, 2.0f);
@@ -113,6 +117,12 @@ public class RegionTestHandler {
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(res, serverRequest), BlueResponse.class)
                 );
+    }
+
+    public Mono<ServerResponse> region2(ServerRequest serverRequest) {
+        return ok().contentType(TEXT_EVENT_STREAM)
+                .body(cityRepository.findAll(by(Sort.Order.asc(NAME.name)))
+                        .flatMap(city -> cityService.getCityRegionById(city.getId())), CityRegion.class);
     }
 
 }

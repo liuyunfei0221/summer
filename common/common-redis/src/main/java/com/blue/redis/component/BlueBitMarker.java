@@ -91,7 +91,6 @@ public final class BlueBitMarker {
                                         BitFieldSubCommands.create()
                                                 .get(BitFieldSubCommands.BitFieldType.signed(limit))
                                                 .valueAt(MARK_BIT)))
-
                 .elementAt(FLUX_ELEMENT_INDEX);
     }
 

@@ -67,7 +67,6 @@ public final class BlueLeakyBucketRateLimiter {
 
         return reactiveStringRedisTemplate.execute(SCRIPT, SCRIPT_KEYS_WRAPPER.apply(limitKey),
                         SCRIPT_ARGS_WRAPPER.apply(allow, expiresMillis))
-
                 .onErrorResume(FALL_BACKER)
                 .elementAt(0);
     }

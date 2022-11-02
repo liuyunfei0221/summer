@@ -59,7 +59,6 @@ import static com.blue.mongo.constant.LikeElement.SUFFIX;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
-import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.function.Function.identity;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
@@ -85,101 +84,98 @@ public class StateServiceImpl implements StateService {
 
     private BlueIdentityProcessor blueIdentityProcessor;
 
-    private ExecutorService executorService;
-
     private CountryService countryService;
 
     private StateRepository stateRepository;
 
     private final ReactiveMongoTemplate reactiveMongoTemplate;
 
-    public StateServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ExecutorService executorService, CountryService countryService, StateRepository stateRepository,
-                            ReactiveMongoTemplate reactiveMongoTemplate, CaffeineDeploy caffeineDeploy) {
+    public StateServiceImpl(BlueIdentityProcessor blueIdentityProcessor, CountryService countryService, StateRepository stateRepository,
+                            ExecutorService executorService, ReactiveMongoTemplate reactiveMongoTemplate, CaffeineDeploy caffeineDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
-        this.executorService = executorService;
         this.countryService = countryService;
         this.stateRepository = stateRepository;
         this.reactiveMongoTemplate = reactiveMongoTemplate;
 
         idStateCache = generateCacheAsyncCache(new CaffeineConfParams(
                 caffeineDeploy.getStateMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
-                AFTER_ACCESS, this.executorService));
+                AFTER_ACCESS, executorService));
 
         countryIdStatesCache = generateCacheAsyncCache(new CaffeineConfParams(
-                caffeineDeploy.getCountryMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
-                AFTER_ACCESS, this.executorService));
+                caffeineDeploy.getStateMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
+                AFTER_ACCESS, executorService));
 
         idRegionCache = generateCacheAsyncCache(new CaffeineConfParams(
                 caffeineDeploy.getStateMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
-                AFTER_ACCESS, this.executorService));
+                AFTER_ACCESS, executorService));
+
+
+//        idStateAsyncCache = generateCacheAsyncCache(new CaffeineConfParams(
+//                caffeineDeploy.getStateMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
+//                AFTER_ACCESS, executorService));
     }
 
     private AsyncCache<Long, StateInfo> idStateCache;
+
+//    private AsyncCache<Long, StateInfo> idStateAsyncCache;
+//
+//    private final BiFunction<Long, Executor, CompletableFuture<StateInfo>> DB_STATE_ASYNC_GETTER_WITH_ASSERT = (id, executor) ->
+//            stateRepository.findById(id).map(STATE_2_STATE_INFO_CONVERTER).toFuture();
+//
+//    private final Function<Long, CompletableFuture<StateInfo>> STATE_BY_ID_WITH_ASSERT_ASYNC_GETTER = id ->
+//            idStateAsyncCache.get(id, DB_STATE_ASYNC_GETTER_WITH_ASSERT);
+
 
     private AsyncCache<Long, List<StateInfo>> countryIdStatesCache;
 
     private AsyncCache<Long, StateRegion> idRegionCache;
 
-    private final BiFunction<Long, Executor, CompletableFuture<StateInfo>> DB_STATE_WITH_ASSERT_GETTER = (id, executor) -> {
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
+    private final BiFunction<Long, Executor, CompletableFuture<StateInfo>> DB_STATE_WITH_ASSERT_GETTER = (id, executor) ->
+            this.getStateById(id).map(STATE_2_STATE_INFO_CONVERTER)
+                    .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
+                    .toFuture();
 
-        return this.getStateById(id).map(STATE_2_STATE_INFO_CONVERTER)
-                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
-                .toFuture();
-    };
+    private final BiFunction<Long, Executor, CompletableFuture<List<StateInfo>>> DB_STATES_BY_COUNTRY_ID_GETTER = (cid, executor) ->
+            this.selectStateByCountryId(cid).map(STATES_2_STATE_INFOS_CONVERTER).toFuture();
 
-    private final BiFunction<Long, Executor, CompletableFuture<List<StateInfo>>> DB_STATES_BY_COUNTRY_ID_GETTER = (cid, executor) -> {
-        if (isInvalidIdentity(cid))
-            throw new BlueException(INVALID_IDENTITY);
+    private final BiFunction<Long, Executor, CompletableFuture<StateInfo>> STATE_BY_ID_WITH_ASSERT_GETTER = (id, executor) ->
+            idStateCache.get(id, DB_STATE_WITH_ASSERT_GETTER);
 
-        return this.selectStateByCountryId(cid).map(STATES_2_STATE_INFOS_CONVERTER)
-                .switchIfEmpty(defer(() -> just(emptyList())))
-                .toFuture();
-    };
-
-    private final Function<Long, CompletableFuture<StateInfo>> STATE_BY_ID_WITH_ASSERT_GETTER = id -> {
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
-
-        return idStateCache.get(id, DB_STATE_WITH_ASSERT_GETTER);
-    };
-
-    private final Function<Long, CompletableFuture<List<StateInfo>>> STATES_BY_COUNTRY_ID_GETTER = cid -> {
-        if (isInvalidIdentity(cid))
-            throw new BlueException(INVALID_IDENTITY);
-
-        return countryIdStatesCache.get(cid, DB_STATES_BY_COUNTRY_ID_GETTER);
-    };
+    private final Function<Long, CompletableFuture<List<StateInfo>>> STATES_BY_COUNTRY_ID_GETTER = cid ->
+            countryIdStatesCache.get(cid, DB_STATES_BY_COUNTRY_ID_GETTER);
 
     private final Function<List<Long>, CompletableFuture<Map<Long, StateInfo>>> CACHE_STATES_BY_IDS_GETTER = ids -> {
         if (isEmpty(ids))
-            return supplyAsync(Collections::emptyMap, this.executorService);
+            throw new BlueException(EMPTY_PARAM);
         if (ids.size() > (int) MAX_SERVICE_SELECT.value)
             throw new BlueException(PAYLOAD_TOO_LARGE);
 
-        return idStateCache.getAll(ids, (is, executor) -> fromIterable(allotByMax(ids, (int) DB_WRITE.value, false))
+        return fromIterable(allotByMax(ids, (int) DB_WRITE.value, false))
                 .map(l -> stateRepository.findAllById(ids)
                         .map(STATE_2_STATE_INFO_CONVERTER))
                 .reduce(Flux::concat)
                 .flatMap(Flux::collectList)
                 .map(l -> l.stream().collect(toMap(StateInfo::getId, identity(), (a, b) -> a)))
-                .toFuture());
+                .toFuture();
     };
 
-    private final Function<Long, Mono<StateRegion>> STATE_REGION_GETTER = id ->
-            isValidIdentity(id) ?
-                    fromFuture(STATE_BY_ID_WITH_ASSERT_GETTER.apply(id))
+    private final Function<Long, CompletableFuture<StateRegion>> STATE_REGION_GETTER = id -> {
+        if (isValidIdentity(id))
+            return idRegionCache.get(id, i ->
+                    fromFuture(idStateCache.get(i, STATE_BY_ID_WITH_ASSERT_GETTER))
                             .flatMap(stateInfo ->
                                     countryService.getCountryInfoById(stateInfo.getCountryId())
-                                            .map(countryInfo -> new StateRegion(id, countryInfo, stateInfo))
+                                            .flatMap(countryInfo -> just(new StateRegion(id, countryInfo, stateInfo)))
                             )
-                    :
-                    error(() -> new BlueException(INVALID_IDENTITY));
+                            .toFuture().join()
+            );
+
+        throw new BlueException(INVALID_IDENTITY);
+    };
 
     private final Function<List<Long>, CompletableFuture<Map<Long, StateRegion>>> STATE_REGIONS_GETTER = ids -> {
         if (isEmpty(ids))
-            return supplyAsync(Collections::emptyMap, this.executorService);
+            throw new BlueException(EMPTY_PARAM);
         if (ids.size() > (int) MAX_SERVICE_SELECT.value)
             throw new BlueException(PAYLOAD_TOO_LARGE);
 
@@ -187,16 +183,15 @@ public class StateServiceImpl implements StateService {
                 fromIterable(allotByMax(ids, (int) DB_WRITE.value, false))
                         .flatMap(l ->
                                 fromFuture(CACHE_STATES_BY_IDS_GETTER.apply(l))
-                                        .flatMap(stateMap ->
+                                        .flatMap(sm ->
                                                 countryService.selectCountryInfoByIds(
-                                                                stateMap.values().stream().map(StateInfo::getCountryId).distinct().collect(toList()))
-                                                        .map(countryMap ->
-                                                                stateMap.values().stream()
-                                                                        .map(si ->
-                                                                                new StateRegion(si.getId(), countryMap.get(si.getCountryId()), si)
-                                                                        )
-                                                                        .collect(toMap(StateRegion::getStateId, ar -> ar, (a, b) -> a))
-                                                        ))
+                                                        sm.values().stream().map(StateInfo::getCountryId).distinct().collect(toList())).map(cm ->
+                                                        sm.values().stream()
+                                                                .map(si ->
+                                                                        new StateRegion(si.getId(), cm.get(si.getCountryId()), si)
+                                                                )
+                                                                .collect(toMap(StateRegion::getStateId, ar -> ar, (a, b) -> a))
+                                                ))
                         )
                         .map(m -> Flux.fromIterable(m.values()))
                         .reduce(Flux::concat)
@@ -495,10 +490,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public Mono<State> getStateById(Long id) {
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
-
-        return stateRepository.findById(id);
+        return null;
     }
 
     /**
@@ -509,14 +501,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public Mono<List<State>> selectStateByCountryId(Long countryId) {
-        if (isInvalidIdentity(countryId))
-            return error(() -> new BlueException(INVALID_IDENTITY));
-
-        State probe = new State();
-        probe.setCountryId(countryId);
-
-        return stateRepository.findAll(Example.of(probe), by(Sort.Order.asc(NAME.name)))
-                .collectList();
+        return null;
     }
 
     /**
@@ -527,15 +512,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public Mono<List<State>> selectStateByIds(List<Long> ids) {
-        if (isEmpty(ids))
-            return just(emptyList());
-        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
-            throw new BlueException(PAYLOAD_TOO_LARGE);
-
-        return fromIterable(allotByMax(ids, (int) DB_WRITE.value, false))
-                .map(stateRepository::findAllById)
-                .reduce(Flux::concat)
-                .flatMap(Flux::collectList);
+        return null;
     }
 
     /**
@@ -546,7 +523,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public Mono<StateInfo> getStateInfoById(Long id) {
-        return fromFuture(STATE_BY_ID_WITH_ASSERT_GETTER.apply(id));
+        return null;
     }
 
     /**
@@ -557,7 +534,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public Mono<List<StateInfo>> selectStateInfoByCountryId(Long countryId) {
-        return fromFuture(STATES_BY_COUNTRY_ID_GETTER.apply(countryId));
+        return fromFuture(STATES_BY_COUNTRY_ID_GETTER.apply(countryId)).switchIfEmpty(defer(() -> just(emptyList())));
     }
 
     /**
@@ -579,7 +556,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public Mono<StateRegion> getStateRegionById(Long id) {
-        return STATE_REGION_GETTER.apply(id);
+        return fromFuture(STATE_REGION_GETTER.apply(id));
     }
 
     /**

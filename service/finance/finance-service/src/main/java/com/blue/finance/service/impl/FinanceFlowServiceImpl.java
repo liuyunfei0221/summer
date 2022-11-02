@@ -209,7 +209,6 @@ public class FinanceFlowServiceImpl implements FinanceFlowService {
         probe.setMemberId(memberId);
 
         return financeFlowRepository.findAll(Example.of(probe), Sort.by(Sort.Order.desc(ID.name)))
-
                 .skip(limit).take(rows)
                 .collectList();
     }

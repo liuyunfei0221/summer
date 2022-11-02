@@ -147,7 +147,6 @@ public final class AccessInfoCache {
         LOGGER.warn("REDIS_ACCESS_WITH_LOCAL_CACHE_GETTER, get accessInfo from redis and set in caff, keyId = {}", keyId);
 
         return reactiveStringRedisTemplate.opsForValue().get(keyId)
-
                 .doOnSuccess(v -> {
                     if (isNotBlank(v))
                         ACCESS_EXPIRE_PROCESSOR.accept(keyId, v);
@@ -176,7 +175,6 @@ public final class AccessInfoCache {
         String access = GSON.toJson(accessInfo);
         return reactiveStringRedisTemplate.opsForValue()
                 .set(keyId, access, globalExpireDuration)
-
                 .onErrorResume(throwable -> {
                     LOGGER.error("setAccessInfo(String keyId, String accessInfo) failed, throwable = {}", throwable);
                     return just(false);

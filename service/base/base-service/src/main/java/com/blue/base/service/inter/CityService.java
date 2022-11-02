@@ -5,15 +5,14 @@ import com.blue.base.api.model.CityRegion;
 import com.blue.base.model.CityCondition;
 import com.blue.base.model.CityInsertParam;
 import com.blue.base.model.CityUpdateParam;
+import com.blue.base.repository.entity.City;
 import com.blue.basic.model.common.PageModelRequest;
 import com.blue.basic.model.common.PageModelResponse;
-import com.blue.base.repository.entity.City;
 import org.springframework.data.mongodb.core.query.Query;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * city service
@@ -68,7 +67,7 @@ public interface CityService {
      * @param id
      * @return
      */
-    Optional<City> getCityById(Long id);
+    Mono<City> getCityById(Long id);
 
     /**
      * select cities by state id
@@ -76,7 +75,7 @@ public interface CityService {
      * @param stateId
      * @return
      */
-    List<City> selectCityByStateId(Long stateId);
+    Mono<List<City>> selectCityByStateId(Long stateId);
 
     /**
      * select cities by ids
@@ -84,7 +83,7 @@ public interface CityService {
      * @param ids
      * @return
      */
-    List<City> selectCityByIds(List<Long> ids);
+    Mono<List<City>> selectCityByIds(List<Long> ids);
 
     /**
      * get city info opt by id
@@ -92,23 +91,7 @@ public interface CityService {
      * @param id
      * @return
      */
-    Optional<CityInfo> getCityInfoOptById(Long id);
-
-    /**
-     * get city info by id with assert
-     *
-     * @param id
-     * @return
-     */
-    CityInfo getCityInfoById(Long id);
-
-    /**
-     * get city info mono by id
-     *
-     * @param id
-     * @return
-     */
-    Mono<CityInfo> getCityInfoMonoById(Long id);
+    Mono<CityInfo> getCityInfoById(Long id);
 
     /**
      * select city info by state id
@@ -116,15 +99,7 @@ public interface CityService {
      * @param stateId
      * @return
      */
-    List<CityInfo> selectCityInfoByStateId(Long stateId);
-
-    /**
-     * select city info mono by state id
-     *
-     * @param stateId
-     * @return
-     */
-    Mono<List<CityInfo>> selectCityInfoMonoByStateId(Long stateId);
+    Mono<List<CityInfo>> selectCityInfoByStateId(Long stateId);
 
     /**
      * select city info by ids
@@ -132,15 +107,7 @@ public interface CityService {
      * @param ids
      * @return
      */
-    Map<Long, CityInfo> selectCityInfoByIds(List<Long> ids);
-
-    /**
-     * select city info mono by ids
-     *
-     * @param ids
-     * @return
-     */
-    Mono<Map<Long, CityInfo>> selectCityInfoMonoByIds(List<Long> ids);
+    Mono<Map<Long, CityInfo>> selectCityInfoByIds(List<Long> ids);
 
     /**
      * get city region by id
@@ -148,15 +115,7 @@ public interface CityService {
      * @param id
      * @return
      */
-    CityRegion getCityRegionById(Long id);
-
-    /**
-     * get city region mono by id
-     *
-     * @param id
-     * @return
-     */
-    Mono<CityRegion> getCityRegionMonoById(Long id);
+    Mono<CityRegion> getCityRegionById(Long id);
 
     /**
      * get city regions by id
@@ -164,15 +123,7 @@ public interface CityService {
      * @param ids
      * @return
      */
-    Map<Long, CityRegion> selectCityRegionByIds(List<Long> ids);
-
-    /**
-     * get city regions mono by ids
-     *
-     * @param ids
-     * @return
-     */
-    Mono<Map<Long, CityRegion>> selectCityRegionMonoByIds(List<Long> ids);
+    Mono<Map<Long, CityRegion>> selectCityRegionByIds(List<Long> ids);
 
     /**
      * select city by limit and query
@@ -182,7 +133,7 @@ public interface CityService {
      * @param query
      * @return
      */
-    Mono<List<City>> selectCityMonoByLimitAndQuery(Long limit, Long rows, Query query);
+    Mono<List<City>> selectCityByLimitAndQuery(Long limit, Long rows, Query query);
 
     /**
      * count city by query
@@ -190,7 +141,7 @@ public interface CityService {
      * @param query
      * @return
      */
-    Mono<Long> countCityMonoByQuery(Query query);
+    Mono<Long> countCityByQuery(Query query);
 
     /**
      * select city info page by condition
@@ -198,6 +149,6 @@ public interface CityService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<CityInfo>> selectCityPageMonoByPageAndCondition(PageModelRequest<CityCondition> pageModelRequest);
+    Mono<PageModelResponse<CityInfo>> selectCityPageByPageAndCondition(PageModelRequest<CityCondition> pageModelRequest);
 
 }

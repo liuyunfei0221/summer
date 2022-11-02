@@ -147,14 +147,21 @@
 
     <update id="updateByPrimaryKey" parameterType="com.blue.finance.repository.entity.Order">
         update order
-        set member_id    = #{memberId,jdbcType=BIGINT},
-            order_no     = #{orderNo,jdbcType=VARCHAR},
-            flow_no      = #{flowNo,jdbcType=VARCHAR},
-            type         = #{type,jdbcType=TINYINT},
-            payment_type = #{paymentType,jdbcType=TINYINT},
-            amount       = #{amount,jdbcType=BIGINT},
-            pay_amount   = #{payAmount,jdbcType=BIGINT},
-            payment_time = #{paymentTime,jdbcType=BIGINT} extra         = #{extra,jdbcType=VARCHAR}, payment_extra = #{paymentExtra,jdbcType=VARCHAR}, detail = #{detail,jdbcType=VARCHAR}, status = #{status,jdbcType=TINYINT}, version = #{version,jdbcType=INTEGER}, create_time = #{createTime,jdbcType=BIGINT}, update_time = #{updateTime,jdbcType=BIGINT}
+        set member_id     = #{memberId,jdbcType=BIGINT},
+            order_no      = #{orderNo,jdbcType=VARCHAR},
+            flow_no       = #{flowNo,jdbcType=VARCHAR},
+            type          = #{type,jdbcType=TINYINT},
+            payment_type  = #{paymentType,jdbcType=TINYINT},
+            amount        = #{amount,jdbcType=BIGINT},
+            pay_amount    = #{payAmount,jdbcType=BIGINT},
+            payment_time  = #{paymentTime,jdbcType=BIGINT},
+            extra         = #{extra,jdbcType=VARCHAR},
+            payment_extra = #{paymentExtra,jdbcType=VARCHAR},
+            detail        = #{detail,jdbcType=VARCHAR},
+            status        = #{status,jdbcType=TINYINT},
+            version       = #{version,jdbcType=INTEGER},
+            create_time   = #{createTime,jdbcType=BIGINT},
+            update_time   = #{updateTime,jdbcType=BIGINT}
         where id = #{id,jdbcType=BIGINT}
     </update>
 
