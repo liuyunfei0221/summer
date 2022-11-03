@@ -92,7 +92,7 @@ public class RpcAuthControlServiceProvider implements RpcAuthControlService {
      */
     @Override
     public CompletableFuture<List<AuthorityBaseOnRole>> selectAuthorityByAccess(Access access) {
-        return just(access).flatMap(authControlService::selectAuthoritiesMonoByAccess).toFuture();
+        return just(access).flatMap(authControlService::selectAuthoritiesByAccess).toFuture();
     }
 
     /**
@@ -103,7 +103,7 @@ public class RpcAuthControlServiceProvider implements RpcAuthControlService {
      */
     @Override
     public CompletableFuture<List<AuthorityBaseOnRole>> selectAuthorityByMemberId(Long memberId) {
-        return just(memberId).flatMap(authControlService::selectAuthoritiesMonoByMemberId).toFuture();
+        return just(memberId).flatMap(authControlService::selectAuthoritiesByMemberId).toFuture();
     }
 
 }

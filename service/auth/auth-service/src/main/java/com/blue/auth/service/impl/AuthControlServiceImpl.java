@@ -211,11 +211,11 @@ public class AuthControlServiceImpl implements AuthControlService {
     };
 
     private Role getRoleByRoleId(Long roleId) {
-        return roleService.getRole(roleId).orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
+        return roleService.getRoleOpt(roleId).orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
     }
 
     private List<Role> selectRoleByRoleIds(List<Long> roleIds) {
-        return roleService.selectRoleByIds(roleIds);
+        return roleService.selectRoleByIds(roleIds).toFuture().join();
     }
 
     private Role getMaxLevelRoleByRoleIds(List<Long> roleIds) {
@@ -223,7 +223,8 @@ public class AuthControlServiceImpl implements AuthControlService {
     }
 
     private List<Role> selectRoleByMemberId(Long memberId) {
-        return roleService.selectRoleByIds(memberRoleRelationService.selectRoleIdsByMemberId(memberId));
+        return roleService.selectRoleByIds(memberRoleRelationService.selectRoleIdsByMemberId(memberId).toFuture().join()).
+                toFuture().join();
     }
 
     private Role getMaxLevelRoleByMemberId(Long memberId) {
@@ -298,7 +299,8 @@ public class AuthControlServiceImpl implements AuthControlService {
     };
 
     private void packageExistAccess(List<Credential> credentials, Long memberId) {
-        credentialService.selectCredentialByMemberIdAndTypes(memberId, ALLOW_ACCESS_CTS).stream().findAny()
+        credentialService.selectCredentialByMemberIdAndTypes(memberId, ALLOW_ACCESS_CTS)
+                .toFuture().join().stream().findAny()
                 .ifPresent(ac ->
                         credentials.stream().filter(c -> ALLOW_ACCESS_CT_SET.contains(c.getType()))
                                 .forEach(c -> {
@@ -564,7 +566,7 @@ public class AuthControlServiceImpl implements AuthControlService {
 
             List<String> types = CTS_BY_VT_GETTER.apply(getVerifyTypeByIdentity(credentialSettingUpParam.getVerifyType()));
 
-            if (isNotEmpty(credentialService.selectCredentialByMemberIdAndTypes(memberId, types)))
+            if (isNotEmpty(credentialService.selectCredentialByMemberIdAndTypes(memberId, types).toFuture().join()))
                 throw new BlueException(DATA_ALREADY_EXIST);
 
             List<Credential> credentials = generateCredentialsByElements(types, credential, memberId);
@@ -605,7 +607,8 @@ public class AuthControlServiceImpl implements AuthControlService {
             throw new BlueException(TOO_MANY_REQUESTS);
 
         VerifyType currentVerifyType = getVerifyTypeByIdentity(credentialModifyParam.getCurrentVerifyType());
-        Optional<Credential> currentCredentialOpt = credentialService.selectCredentialByMemberIdAndTypes(memberId, CTS_BY_VT_GETTER.apply(currentVerifyType)).stream().findAny();
+        Optional<Credential> currentCredentialOpt = credentialService.selectCredentialByMemberIdAndTypes(memberId, CTS_BY_VT_GETTER.apply(currentVerifyType))
+                .toFuture().join().stream().findAny();
         if (currentCredentialOpt.isEmpty())
             throw new BlueException(BAD_REQUEST);
 
@@ -622,7 +625,8 @@ public class AuthControlServiceImpl implements AuthControlService {
                 throw new BlueException(VERIFY_IS_INVALID);
 
             List<String> destinationCredentialTypes = CTS_BY_VT_GETTER.apply(destinationVerifyType);
-            List<Credential> destinationCredentials = credentialService.selectCredentialByMemberIdAndTypes(memberId, destinationCredentialTypes);
+            List<Credential> destinationCredentials = credentialService.selectCredentialByMemberIdAndTypes(memberId, destinationCredentialTypes)
+                    .toFuture().join();
             if (isEmpty(destinationCredentials))
                 throw new BlueException(DATA_NOT_EXIST);
 
@@ -692,7 +696,7 @@ public class AuthControlServiceImpl implements AuthControlService {
         return blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(String.valueOf(memberId)), ALLOW, SEND_INTERVAL_MILLIS)
                 .flatMap(allowed ->
                         allowed ?
-                                credentialService.selectCredentialMonoByMemberIdAndTypes(memberId, CTS_BY_VT_GETTER.apply(verifyType))
+                                credentialService.selectCredentialByMemberIdAndTypes(memberId, CTS_BY_VT_GETTER.apply(verifyType))
                                         .flatMap(credentials ->
                                                 just(credentials.stream().findAny().orElseThrow(() -> new BlueException(BAD_REQUEST))))
                                         .flatMap(credential ->
@@ -725,7 +729,7 @@ public class AuthControlServiceImpl implements AuthControlService {
         return blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(credential), ALLOW, SEND_INTERVAL_MILLIS)
                 .flatMap(allowed ->
                         allowed ?
-                                credentialService.selectCredentialMonoByCredentialAndTypes(credential, CTS_BY_VT_GETTER.apply(verifyType))
+                                credentialService.selectCredentialByCredentialAndTypes(credential, CTS_BY_VT_GETTER.apply(verifyType))
                                         .flatMap(credentials ->
                                                 just(credentials.stream().findAny().orElseThrow(() -> new BlueException(BAD_REQUEST))))
                                         .flatMap(cre ->
@@ -793,8 +797,8 @@ public class AuthControlServiceImpl implements AuthControlService {
      * @return
      */
     @Override
-    public Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByAccess(Access access) {
-        return authService.selectAuthoritiesMonoByAccess(access);
+    public Mono<List<AuthorityBaseOnRole>> selectAuthoritiesByAccess(Access access) {
+        return authService.selectAuthoritiesByAccess(access);
     }
 
     /**
@@ -804,8 +808,8 @@ public class AuthControlServiceImpl implements AuthControlService {
      * @return
      */
     @Override
-    public Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByMemberId(Long memberId) {
-        return authService.selectAuthoritiesMonoByMemberId(memberId);
+    public Mono<List<AuthorityBaseOnRole>> selectAuthoritiesByMemberId(Long memberId) {
+        return authService.selectAuthoritiesByMemberId(memberId);
     }
 
     /**
@@ -815,8 +819,8 @@ public class AuthControlServiceImpl implements AuthControlService {
      * @return
      */
     @Override
-    public Mono<MemberAuthority> getAuthorityMonoByAccess(Access access) {
-        return authService.getAuthorityMonoByAccess(access);
+    public Mono<MemberAuthority> getAuthorityByAccess(Access access) {
+        return authService.getAuthorityByAccess(access);
     }
 
     /**
@@ -826,8 +830,8 @@ public class AuthControlServiceImpl implements AuthControlService {
      * @return
      */
     @Override
-    public Mono<MemberAuthority> getAuthorityMonoByMemberId(Long memberId) {
-        return authService.getAuthorityMonoByMemberId(memberId);
+    public Mono<MemberAuthority> getAuthorityByMemberId(Long memberId) {
+        return authService.getAuthorityByMemberId(memberId);
     }
 
     /**
@@ -936,11 +940,11 @@ public class AuthControlServiceImpl implements AuthControlService {
             throw new BlueException(INVALID_IDENTITY);
 
         return just(synchronizedProcessor.handleSupWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
-            ofNullable(roleResRelationService.selectRelationByResId(resId))
+            ofNullable(roleResRelationService.selectRelationByResId(resId).toFuture().join())
                     .filter(BlueChecker::isNotEmpty)
                     .map(rs -> rs.stream().map(RoleResRelation::getRoleId).collect(toList()))
                     .filter(BlueChecker::isNotEmpty)
-                    .map(roleService::selectRoleByIds)
+                    .map(this::selectRoleByRoleIds)
                     .filter(BlueChecker::isNotEmpty)
                     .map(relRoles -> {
                         Role operatorRole = getMaxLevelRoleByMemberId(operatorId);
@@ -980,10 +984,10 @@ public class AuthControlServiceImpl implements AuthControlService {
             throw new BlueException(INVALID_IDENTITY);
 
         return just(synchronizedProcessor.handleSupWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
-            List<RoleResRelation> relations = roleResRelationService.selectRelationByResId(id);
+            List<RoleResRelation> relations = roleResRelationService.selectRelationByResId(id).toFuture().join();
             if (isNotEmpty(relations))
                 throw new BlueException(RESOURCE_STILL_USED, new String[]{
-                        roleService.selectRoleByIds(relations.stream().map(RoleResRelation::getRoleId).collect(toList()))
+                        this.selectRoleByRoleIds(relations.stream().map(RoleResRelation::getRoleId).collect(toList()))
                                 .stream().map(Role::getName).reduce((a, b) -> a + "," + b).orElse(EMPTY_VALUE.value)});
 
             return resourceService.deleteResource(id);
@@ -1043,7 +1047,8 @@ public class AuthControlServiceImpl implements AuthControlService {
 
                     return memberRoleRelationService.insertMemberRoleRelation(memberId, roleId, operatorId);
                 }), executorService))
-                .flatMap(ig -> authService.refreshMemberRoleById(memberId, memberRoleRelationService.selectRoleIdsByMemberId(memberId)))
+                .flatMap(ig -> authService.refreshMemberRoleById(memberId,
+                        memberRoleRelationService.selectRoleIdsByMemberId(memberId).toFuture().join()))
                 .flatMap(ig -> roleResRelationService.getAuthorityMonoByRoleId(roleId));
     }
 
@@ -1075,7 +1080,7 @@ public class AuthControlServiceImpl implements AuthControlService {
                     return memberRoleRelationService.updateMemberRoleRelations(memberId, roleIds, operatorId);
                 }), executorService))
                 .flatMap(ig -> authService.refreshMemberRoleById(memberId, roleIds))
-                .flatMap(ig -> roleResRelationService.selectAuthoritiesMonoByRoleIds(roleIds));
+                .flatMap(ig -> roleResRelationService.selectAuthoritiesByRoleIds(roleIds));
     }
 
     /**
@@ -1105,7 +1110,8 @@ public class AuthControlServiceImpl implements AuthControlService {
 
                     return memberRoleRelationService.deleteMemberRoleRelation(memberId, roleId, operatorId);
                 }), executorService))
-                .flatMap(ig -> authService.refreshMemberRoleById(memberId, memberRoleRelationService.selectRoleIdsByMemberId(memberId)))
+                .flatMap(ig -> authService.refreshMemberRoleById(memberId,
+                        memberRoleRelationService.selectRoleIdsByMemberId(memberId).toFuture().join()))
                 .flatMap(ig -> roleResRelationService.getAuthorityMonoByRoleId(roleId));
     }
 
@@ -1153,7 +1159,8 @@ public class AuthControlServiceImpl implements AuthControlService {
                 memberRoleRelationService.insertMemberRoleRelation(memberId, roleId, BLUE_ID.value)) < 1)
             throw new BlueException(DATA_NOT_EXIST);
 
-        authService.refreshMemberRoleById(memberId, memberRoleRelationService.selectRoleIdsByMemberId(memberId)).toFuture().join();
+        authService.refreshMemberRoleById(memberId,
+                memberRoleRelationService.selectRoleIdsByMemberId(memberId).toFuture().join()).toFuture().join();
 
         return roleResRelationService.getAuthorityMonoByRoleId(roleId).toFuture().join();
     }
@@ -1181,7 +1188,7 @@ public class AuthControlServiceImpl implements AuthControlService {
 
         authService.refreshMemberRoleById(memberId, roleIds).toFuture().join();
 
-        return roleResRelationService.selectAuthoritiesMonoByRoleIds(roleIds).toFuture().join();
+        return roleResRelationService.selectAuthoritiesByRoleIds(roleIds).toFuture().join();
     }
 
     /**
@@ -1205,7 +1212,8 @@ public class AuthControlServiceImpl implements AuthControlService {
                 memberRoleRelationService.deleteMemberRoleRelation(memberId, roleId, BLUE_ID.value)) < 1)
             throw new BlueException(DATA_NOT_EXIST);
 
-        authService.refreshMemberRoleById(memberId, memberRoleRelationService.selectRoleIdsByMemberId(memberId)).toFuture().join();
+        authService.refreshMemberRoleById(memberId,
+                memberRoleRelationService.selectRoleIdsByMemberId(memberId).toFuture().join()).toFuture().join();
 
         return roleResRelationService.getAuthorityMonoByRoleId(roleId).toFuture().join();
     }
@@ -1218,7 +1226,7 @@ public class AuthControlServiceImpl implements AuthControlService {
      * @return
      */
     @Override
-    public Mono<MemberSecurityInfo> selectSecurityInfoMonoByMemberId(Long memberId, Long operatorId) {
+    public Mono<MemberSecurityInfo> selectSecurityInfoByMemberId(Long memberId, Long operatorId) {
         LOGGER.info("Mono<List<SecurityQuestionInfo>> selectSecurityQuestionInfoMonoByMemberId(Long memberId, Long operatorId), memberId = {}, operatorId = {}", memberId, operatorId);
         if (isInvalidIdentity(memberId) || isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
@@ -1226,8 +1234,8 @@ public class AuthControlServiceImpl implements AuthControlService {
         MEMBER_ROLE_LEVEL_ASSERTER.accept(memberId, operatorId);
 
         return zip(rpcMemberBasicServiceConsumer.getMemberBasicInfo(memberId),
-                credentialHistoryService.selectCredentialHistoryInfoMonoByMemberIdWithLimit(memberId),
-                securityQuestionService.selectSecurityQuestionInfoMonoByMemberId(memberId)
+                credentialHistoryService.selectCredentialHistoryInfoByMemberIdWithLimit(memberId),
+                securityQuestionService.selectSecurityQuestionInfoByMemberId(memberId)
         ).flatMap(tuple3 -> just(new MemberSecurityInfo(memberId, tuple3.getT1(), tuple3.getT2(), tuple3.getT3())));
     }
 

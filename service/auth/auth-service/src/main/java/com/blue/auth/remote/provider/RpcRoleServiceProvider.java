@@ -65,8 +65,8 @@ public class RpcRoleServiceProvider implements RpcRoleService {
     @Override
     public CompletableFuture<MemberRoleInfo> selectRoleInfoByMemberId(Long memberId) {
         return just(memberId)
-                .flatMap(memberRoleRelationService::selectRoleIdsMonoByMemberId)
-                .flatMap(roleService::selectRoleMonoByIds)
+                .flatMap(memberRoleRelationService::selectRoleIdsByMemberId)
+                .flatMap(roleService::selectRoleByIds)
                 .flatMap(roles -> just(roles.stream().map(ROLE_2_ROLE_INFO_CONVERTER).collect(toList())))
                 .flatMap(roleInfos -> just(new MemberRoleInfo(memberId, roleInfos)))
                 .toFuture();
@@ -81,9 +81,9 @@ public class RpcRoleServiceProvider implements RpcRoleService {
     @Override
     public CompletableFuture<List<MemberRoleInfo>> selectRoleInfoByMemberIds(List<Long> memberIds) {
         return just(memberIds)
-                .flatMap(memberRoleRelationService::selectRelationMonoByMemberIds)
+                .flatMap(memberRoleRelationService::selectRelationByMemberIds)
                 .flatMap(relations ->
-                        zip(roleService.selectRoleMonoByIds(relations.stream().map(MemberRoleRelation::getRoleId).collect(toList()))
+                        zip(roleService.selectRoleByIds(relations.stream().map(MemberRoleRelation::getRoleId).collect(toList()))
                                         .flatMap(roles -> just(roles.stream().map(ROLE_2_ROLE_INFO_CONVERTER).collect(toMap(RoleInfo::getId, identity(), (a, b) -> a)))),
                                 just(relations.stream().collect(groupingBy(MemberRoleRelation::getMemberId))))
                                 .flatMap(tuple2 -> {

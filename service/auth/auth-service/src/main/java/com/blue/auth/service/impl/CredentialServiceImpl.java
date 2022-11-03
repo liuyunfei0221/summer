@@ -158,7 +158,7 @@ public class CredentialServiceImpl implements CredentialService {
      * @return
      */
     @Override
-    public Optional<Credential> getCredentialByCredentialAndType(String credential, String credentialType) {
+    public Optional<Credential> getCredentialOptByCredentialAndType(String credential, String credentialType) {
         LOGGER.info("Optional<Credential> getCredentialByCredentialAndType(String credential, String credentialType), credential = {}, credentialType = {}", credential, credentialType);
         if (isBlank(credential))
             throw new BlueException(EMPTY_PARAM);
@@ -175,7 +175,7 @@ public class CredentialServiceImpl implements CredentialService {
      * @return
      */
     @Override
-    public Mono<Credential> getCredentialMonoByCredentialAndType(String credential, String credentialType) {
+    public Mono<Credential> getCredentialByCredentialAndType(String credential, String credentialType) {
         return justOrEmpty(credentialMapper.getByCredentialAndType(credential, credentialType));
     }
 
@@ -187,23 +187,11 @@ public class CredentialServiceImpl implements CredentialService {
      * @return
      */
     @Override
-    public List<Credential> selectCredentialByCredentialAndTypes(String credential, List<String> credentialTypes) {
-        return isNotBlank(credential) && isNotEmpty(credentialTypes) ?
+    public Mono<List<Credential>> selectCredentialByCredentialAndTypes(String credential, List<String> credentialTypes) {
+        return just(isNotBlank(credential) && isNotEmpty(credentialTypes) ?
                 credentialMapper.selectByCredentialAndTypes(credential, credentialTypes)
                 :
-                emptyList();
-    }
-
-    /**
-     * select by credential and types
-     *
-     * @param credential
-     * @param credentialTypes
-     * @return
-     */
-    @Override
-    public Mono<List<Credential>> selectCredentialMonoByCredentialAndTypes(String credential, List<String> credentialTypes) {
-        return just(this.selectCredentialByCredentialAndTypes(credential, credentialTypes));
+                emptyList());
     }
 
     /**
@@ -214,8 +202,8 @@ public class CredentialServiceImpl implements CredentialService {
      * @return
      */
     @Override
-    public Mono<List<CredentialInfo>> selectCredentialInfoMonoByCredentialAndTypes(String credential, List<String> credentialTypes) {
-        return this.selectCredentialMonoByCredentialAndTypes(credential, credentialTypes)
+    public Mono<List<CredentialInfo>> selectCredentialInfoByCredentialAndTypes(String credential, List<String> credentialTypes) {
+        return this.selectCredentialByCredentialAndTypes(credential, credentialTypes)
                 .map(cis -> cis.stream().map(CREDENTIAL_2_CREDENTIAL_INFO_CONVERTER).collect(toList()));
     }
 
@@ -227,7 +215,7 @@ public class CredentialServiceImpl implements CredentialService {
      * @return
      */
     @Override
-    public Optional<Credential> getCredentialByMemberIdAndType(Long memberId, String credentialType) {
+    public Optional<Credential> getCredentialOptByMemberIdAndType(Long memberId, String credentialType) {
         LOGGER.info("Optional<Credential> getCredentialByMemberIdAndType(Long memberId, String credentialType), memberId = {}, credentialType = {}", memberId, credentialType);
         if (isInvalidIdentity(memberId))
             throw new BlueException(EMPTY_PARAM);
@@ -246,23 +234,8 @@ public class CredentialServiceImpl implements CredentialService {
      * @return
      */
     @Override
-    public Mono<Credential> getCredentialMonoByMemberIdAndType(Long memberId, String credentialType) {
+    public Mono<Credential> getCredentialByMemberIdAndType(Long memberId, String credentialType) {
         return justOrEmpty(credentialMapper.getByMemberIdAndType(memberId, credentialType));
-    }
-
-    /**
-     * select by member id and types
-     *
-     * @param memberId
-     * @param credentialTypes
-     * @return
-     */
-    @Override
-    public List<Credential> selectCredentialByMemberIdAndTypes(Long memberId, List<String> credentialTypes) {
-        return isValidIdentity(memberId) && isNotEmpty(credentialTypes) ?
-                credentialMapper.selectByMemberIdAndTypes(memberId, credentialTypes)
-                :
-                emptyList();
     }
 
     /**
@@ -273,8 +246,11 @@ public class CredentialServiceImpl implements CredentialService {
      * @return
      */
     @Override
-    public Mono<List<Credential>> selectCredentialMonoByMemberIdAndTypes(Long memberId, List<String> credentialTypes) {
-        return just(this.selectCredentialByMemberIdAndTypes(memberId, credentialTypes));
+    public Mono<List<Credential>> selectCredentialByMemberIdAndTypes(Long memberId, List<String> credentialTypes) {
+        return just(isValidIdentity(memberId) && isNotEmpty(credentialTypes) ?
+                credentialMapper.selectByMemberIdAndTypes(memberId, credentialTypes)
+                :
+                emptyList());
     }
 
     /**
@@ -285,8 +261,8 @@ public class CredentialServiceImpl implements CredentialService {
      * @return
      */
     @Override
-    public Mono<List<CredentialInfo>> selectCredentialInfoMonoByMemberIdAndTypes(Long memberId, List<String> credentialTypes) {
-        return this.selectCredentialMonoByMemberIdAndTypes(memberId, credentialTypes)
+    public Mono<List<CredentialInfo>> selectCredentialInfoByMemberIdAndTypes(Long memberId, List<String> credentialTypes) {
+        return this.selectCredentialByMemberIdAndTypes(memberId, credentialTypes)
                 .map(cs -> cs.stream().map(CREDENTIAL_2_CREDENTIAL_INFO_CONVERTER).collect(toList()));
     }
 

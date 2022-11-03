@@ -94,7 +94,7 @@ public final class RewardManagerHandler {
     public Mono<ServerResponse> page(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(PAGE_MODEL_FOR_REWARD_CONDITION_TYPE)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
-                .flatMap(rewardService::selectRewardManagerInfoPageMonoByPageAndCondition)
+                .flatMap(rewardService::selectRewardManagerInfoPageByPageAndCondition)
                 .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(pmr, serverRequest), BlueResponse.class));

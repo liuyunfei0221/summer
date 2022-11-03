@@ -153,7 +153,7 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
      * @return
      */
     @Override
-    public Mono<List<CredentialHistory>> selectCredentialHistoryMonoByMemberIdAndLimit(Long memberId, Integer limit) {
+    public Mono<List<CredentialHistory>> selectCredentialHistoryByMemberIdAndLimit(Long memberId, Integer limit) {
         LOGGER.info("Mono<List<CredentialHistory>> selectCredentialHistoryMonoByMemberId(Long memberId), memberId = {}, limit = {}", memberId, limit);
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
@@ -178,7 +178,7 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
      * @return
      */
     @Override
-    public Mono<List<CredentialHistoryInfo>> selectCredentialHistoryInfoMonoByMemberIdWithLimit(Long memberId) {
+    public Mono<List<CredentialHistoryInfo>> selectCredentialHistoryInfoByMemberIdWithLimit(Long memberId) {
         LOGGER.info("Mono<List<CredentialHistoryInfo>> selectCredentialHistoryInfoMonoByMemberIdWithLimit(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);

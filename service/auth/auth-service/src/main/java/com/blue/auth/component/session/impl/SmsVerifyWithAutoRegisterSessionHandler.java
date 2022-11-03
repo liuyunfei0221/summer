@@ -135,14 +135,14 @@ public class SmsVerifyWithAutoRegisterSessionHandler implements SessionHandler {
         return rpcVerifyHandleServiceConsumer.validate(SMS, PHONE_VERIFY_LOGIN_WITH_AUTO_REGISTER, phone, access, true)
                 .flatMap(validate ->
                         validate ?
-                                credentialService.getCredentialMonoByCredentialAndType(phone, PHONE_VERIFY_AUTO_REGISTER.identity)
+                                credentialService.getCredentialByCredentialAndType(phone, PHONE_VERIFY_AUTO_REGISTER.identity)
                                         .flatMap(credential -> {
                                             extra.put(NEW_MEMBER.key, false);
 
                                             return rpcMemberBasicServiceConsumer.getMemberBasicInfo(credential.getMemberId())
                                                     .flatMap(mbi -> {
                                                         MEMBER_STATUS_ASSERTER.accept(mbi);
-                                                        return zip(authService.generateAuthMono(mbi.getId(), PHONE_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern()), just(mbi));
+                                                        return zip(authService.generateAuth(mbi.getId(), PHONE_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern()), just(mbi));
                                                     });
                                         })
                                         .switchIfEmpty(defer(() -> {
@@ -151,7 +151,7 @@ public class SmsVerifyWithAutoRegisterSessionHandler implements SessionHandler {
                                             return synchronizedProcessor.handleSupWithSync(CREDENTIAL_UPDATE_SYNC_KEY_GEN.apply(phone), () ->
                                                     just(roleService.getDefaultRole().getId())
                                                             .flatMap(roleId -> just(registerService.registerMemberBasic(CREDENTIALS_GENERATOR.apply(phone), roleId, source))
-                                                                    .flatMap(mbi -> zip(authService.generateAuthMono(mbi.getId(), singletonList(roleId), PHONE_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern()), just(mbi))))
+                                                                    .flatMap(mbi -> zip(authService.generateAuth(mbi.getId(), singletonList(roleId), PHONE_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern()), just(mbi))))
                                             );
                                         }))
                                         .flatMap(tuple2 -> {

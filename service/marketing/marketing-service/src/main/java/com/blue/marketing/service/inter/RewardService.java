@@ -54,7 +54,7 @@ public interface RewardService {
      * @param id
      * @return
      */
-    Optional<Reward> getReward(Long id);
+    Optional<Reward> getRewardOpt(Long id);
 
     /**
      * get reward mono by role id
@@ -62,15 +62,7 @@ public interface RewardService {
      * @param id
      * @return
      */
-    Mono<Reward> getRewardMono(Long id);
-
-    /**
-     * select rewards by ids
-     *
-     * @param ids
-     * @return
-     */
-    List<Reward> selectRewardByIds(List<Long> ids);
+    Mono<Reward> getReward(Long id);
 
     /**
      * select rewards mono by ids
@@ -78,15 +70,7 @@ public interface RewardService {
      * @param ids
      * @return
      */
-    Mono<List<Reward>> selectRewardMonoByIds(List<Long> ids);
-
-    /**
-     * select reward info by ids
-     *
-     * @param ids
-     * @return
-     */
-    List<RewardInfo> selectRewardInfoByIds(List<Long> ids);
+    Mono<List<Reward>> selectRewardByIds(List<Long> ids);
 
     /**
      * select reward info mono by ids
@@ -94,7 +78,7 @@ public interface RewardService {
      * @param ids
      * @return
      */
-    Mono<List<RewardInfo>> selectRewardInfoMonoByIds(List<Long> ids);
+    Mono<List<RewardInfo>> selectRewardInfoByIds(List<Long> ids);
 
     /**
      * select reward by page and condition
@@ -104,7 +88,7 @@ public interface RewardService {
      * @param rewardCondition
      * @return
      */
-    Mono<List<Reward>> selectRewardMonoByLimitAndCondition(Long limit, Long rows, RewardCondition rewardCondition);
+    Mono<List<Reward>> selectRewardByLimitAndCondition(Long limit, Long rows, RewardCondition rewardCondition);
 
     /**
      * count reward by condition
@@ -112,7 +96,7 @@ public interface RewardService {
      * @param rewardCondition
      * @return
      */
-    Mono<Long> countRewardMonoByCondition(RewardCondition rewardCondition);
+    Mono<Long> countRewardByCondition(RewardCondition rewardCondition);
 
     /**
      * select reward info page by condition
@@ -120,6 +104,6 @@ public interface RewardService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<RewardManagerInfo>> selectRewardManagerInfoPageMonoByPageAndCondition(PageModelRequest<RewardCondition> pageModelRequest);
+    Mono<PageModelResponse<RewardManagerInfo>> selectRewardManagerInfoPageByPageAndCondition(PageModelRequest<RewardCondition> pageModelRequest);
 
 }

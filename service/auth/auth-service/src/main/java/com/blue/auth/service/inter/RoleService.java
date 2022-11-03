@@ -69,7 +69,7 @@ public interface RoleService {
      * @param id
      * @return
      */
-    Optional<Role> getRole(Long id);
+    Optional<Role> getRoleOpt(Long id);
 
     /**
      * get role mono by role id
@@ -77,7 +77,7 @@ public interface RoleService {
      * @param id
      * @return
      */
-    Mono<Role> getRoleMono(Long id);
+    Mono<Role> getRole(Long id);
 
     /**
      * select roles by ids
@@ -85,15 +85,7 @@ public interface RoleService {
      * @param ids
      * @return
      */
-    List<Role> selectRoleByIds(List<Long> ids);
-
-    /**
-     * select roles mono by ids
-     *
-     * @param ids
-     * @return
-     */
-    Mono<List<Role>> selectRoleMonoByIds(List<Long> ids);
+    Mono<List<Role>> selectRoleByIds(List<Long> ids);
 
     /**
      * select all roles
@@ -110,7 +102,7 @@ public interface RoleService {
      * @param roleCondition
      * @return
      */
-    Mono<List<Role>> selectRoleMonoByLimitAndCondition(Long limit, Long rows, RoleCondition roleCondition);
+    Mono<List<Role>> selectRoleByLimitAndCondition(Long limit, Long rows, RoleCondition roleCondition);
 
     /**
      * count role by condition
@@ -118,7 +110,7 @@ public interface RoleService {
      * @param roleCondition
      * @return
      */
-    Mono<Long> countRoleMonoByCondition(RoleCondition roleCondition);
+    Mono<Long> countRoleByCondition(RoleCondition roleCondition);
 
     /**
      * select role info page by condition
@@ -126,6 +118,6 @@ public interface RoleService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<RoleManagerInfo>> selectRoleManagerInfoPageMonoByPageAndCondition(PageModelRequest<RoleCondition> pageModelRequest);
+    Mono<PageModelResponse<RoleManagerInfo>> selectRoleManagerInfoPageByPageAndCondition(PageModelRequest<RoleCondition> pageModelRequest);
 
 }

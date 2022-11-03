@@ -116,7 +116,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return ofNullable(memberBasicMapper.selectByPrimaryKey(id)).orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
+        return this.getMemberBasicOpt(id).orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
     };
 
     private final BiConsumer<Long, MemberBasic> MEMBER_BASIC_REDIS_SETTER = (id, memberBasic) -> {
@@ -443,9 +443,9 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public MemberBasic getMemberBasicSync(Long id) {
+    public Optional<MemberBasic> getMemberBasicOpt(Long id) {
         LOGGER.info("MemberBasic getMemberBasicByPrimaryKey(Long id), id = {}", id);
-        return MEMBER_BASIC_DB_GETTER.apply(id);
+        return ofNullable(memberBasicMapper.selectByPrimaryKey(id));
     }
 
     /**

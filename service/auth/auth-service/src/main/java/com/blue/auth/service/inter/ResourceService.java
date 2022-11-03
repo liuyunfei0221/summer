@@ -53,7 +53,7 @@ public interface ResourceService {
      * @param id
      * @return
      */
-    Optional<Resource> getResource(Long id);
+    Optional<Resource> getResourceOpt(Long id);
 
     /**
      * get resource mono by role id
@@ -61,7 +61,7 @@ public interface ResourceService {
      * @param id
      * @return
      */
-    Mono<Resource> getResourceMono(Long id);
+    Mono<Resource> getResource(Long id);
 
     /**
      * select all resources
@@ -71,20 +71,12 @@ public interface ResourceService {
     Mono<List<Resource>> selectResource();
 
     /**
-     * select resources by ids
-     *
-     * @param ids
-     * @return
-     */
-    List<Resource> selectResourceByIds(List<Long> ids);
-
-    /**
      * select resources mono by ids
      *
      * @param ids
      * @return
      */
-    Mono<List<Resource>> selectResourceMonoByIds(List<Long> ids);
+    Mono<List<Resource>> selectResourceByIds(List<Long> ids);
 
     /**
      * select resource by page and condition
@@ -94,7 +86,7 @@ public interface ResourceService {
      * @param resourceCondition
      * @return
      */
-    Mono<List<Resource>> selectResourceMonoByLimitAndCondition(Long limit, Long rows, ResourceCondition resourceCondition);
+    Mono<List<Resource>> selectResourceByLimitAndCondition(Long limit, Long rows, ResourceCondition resourceCondition);
 
     /**
      * count resource by condition
@@ -102,7 +94,7 @@ public interface ResourceService {
      * @param resourceCondition
      * @return
      */
-    Mono<Long> countResourceMonoByCondition(ResourceCondition resourceCondition);
+    Mono<Long> countResourceByCondition(ResourceCondition resourceCondition);
 
     /**
      * select resource info page by condition
@@ -110,6 +102,6 @@ public interface ResourceService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<ResourceManagerInfo>> selectResourceManagerInfoPageMonoByPageAndCondition(PageModelRequest<ResourceCondition> pageModelRequest);
+    Mono<PageModelResponse<ResourceManagerInfo>> selectResourceManagerInfoPageByPageAndCondition(PageModelRequest<ResourceCondition> pageModelRequest);
 
 }

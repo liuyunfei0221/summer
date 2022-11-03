@@ -35,5 +35,4 @@ public interface SignInService {
      */
     Mono<MonthSignInRewardRecord> getSignInRecord(Long memberId);
 
-
 }

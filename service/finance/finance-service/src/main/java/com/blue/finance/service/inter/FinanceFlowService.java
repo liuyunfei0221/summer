@@ -42,7 +42,7 @@ public interface FinanceFlowService {
      * @param id
      * @return
      */
-    Mono<FinanceFlow> getFinanceFlowMono(Long id);
+    Mono<FinanceFlow> getFinanceFlow(Long id);
 
     /**
      * get finance flow by id
@@ -50,7 +50,7 @@ public interface FinanceFlowService {
      * @param id
      * @return
      */
-    Optional<FinanceFlow> getFinanceFlow(Long id);
+    Optional<FinanceFlow> getFinanceFlowOpt(Long id);
 
     /**
      * select finance flow by page and memberId
@@ -60,7 +60,7 @@ public interface FinanceFlowService {
      * @param memberId
      * @return
      */
-    Mono<List<FinanceFlow>> selectFinanceFlowMonoByLimitAndMemberId(Long limit, Long rows, Long memberId);
+    Mono<List<FinanceFlow>> selectFinanceFlowByLimitAndMemberId(Long limit, Long rows, Long memberId);
 
     /**
      * count finance flow by memberId
@@ -68,7 +68,7 @@ public interface FinanceFlowService {
      * @param memberId
      * @return
      */
-    Mono<Long> countFinanceFlowMonoByMemberId(Long memberId);
+    Mono<Long> countFinanceFlowByMemberId(Long memberId);
 
     /**
      * select finance flow info by page and member id
@@ -87,7 +87,7 @@ public interface FinanceFlowService {
      * @param query
      * @return
      */
-    Mono<List<FinanceFlow>> selectFinanceFlowMonoByLimitAndQuery(Long limit, Long rows, Query query);
+    Mono<List<FinanceFlow>> selectFinanceFlowByLimitAndQuery(Long limit, Long rows, Query query);
 
     /**
      * count finance flow by query
@@ -95,7 +95,7 @@ public interface FinanceFlowService {
      * @param query
      * @return
      */
-    Mono<Long> countFinanceFlowMonoByQuery(Query query);
+    Mono<Long> countFinanceFlowByQuery(Query query);
 
     /**
      * select finance flow info page by condition
@@ -103,6 +103,6 @@ public interface FinanceFlowService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<FinanceFlowManagerInfo>> selectFinanceFlowManagerInfoPageMonoByPageAndCondition(PageModelRequest<FinanceFlowCondition> pageModelRequest);
+    Mono<PageModelResponse<FinanceFlowManagerInfo>> selectFinanceFlowManagerInfoPageByPageAndCondition(PageModelRequest<FinanceFlowCondition> pageModelRequest);
 
 }

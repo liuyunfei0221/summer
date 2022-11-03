@@ -96,7 +96,8 @@ public class RealNameServiceImpl implements RealNameService {
         if (isInvalidIdentity(mid))
             throw new BlueException(INVALID_IDENTITY);
 
-        MemberBasic memberBasic = memberBasicService.getMemberBasicSync(mid);
+        MemberBasic memberBasic = memberBasicService.getMemberBasicOpt(mid)
+                .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
         if (isNull(memberBasic))
             throw new BlueException(INVALID_PARAM);
 

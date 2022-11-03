@@ -133,14 +133,14 @@ public class EmailVerifyWithAutoRegisterSessionHandler implements SessionHandler
         return rpcVerifyHandleServiceConsumer.validate(MAIL, EMAIL_VERIFY_LOGIN_WITH_AUTO_REGISTER, email, access, true)
                 .flatMap(validate ->
                         validate ?
-                                credentialService.getCredentialMonoByCredentialAndType(email, EMAIL_VERIFY_AUTO_REGISTER.identity)
+                                credentialService.getCredentialByCredentialAndType(email, EMAIL_VERIFY_AUTO_REGISTER.identity)
                                         .flatMap(credential -> {
                                             extra.put(NEW_MEMBER.key, false);
 
                                             return rpcMemberBasicServiceConsumer.getMemberBasicInfo(credential.getMemberId())
                                                     .flatMap(mbi -> {
                                                         MEMBER_STATUS_ASSERTER.accept(mbi);
-                                                        return zip(authService.generateAuthMono(mbi.getId(), EMAIL_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern()), just(mbi));
+                                                        return zip(authService.generateAuth(mbi.getId(), EMAIL_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern()), just(mbi));
                                                     });
                                         })
                                         .switchIfEmpty(defer(() -> {
@@ -150,7 +150,7 @@ public class EmailVerifyWithAutoRegisterSessionHandler implements SessionHandler
                                                     just(roleService.getDefaultRole().getId())
                                                             .flatMap(roleId -> just(registerService.registerMemberBasic(CREDENTIALS_GENERATOR.apply(email), roleId, source))
                                                                     .flatMap(mbi ->
-                                                                            zip(authService.generateAuthMono(mbi.getId(), singletonList(roleId), EMAIL_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern()), just(mbi))))
+                                                                            zip(authService.generateAuth(mbi.getId(), singletonList(roleId), EMAIL_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern()), just(mbi))))
                                             );
                                         }))
                                         .flatMap(tuple2 -> {

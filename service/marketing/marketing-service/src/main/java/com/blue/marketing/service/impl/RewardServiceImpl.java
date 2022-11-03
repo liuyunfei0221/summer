@@ -34,7 +34,6 @@ import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.common.base.ConstantProcessor.assertResourceType;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
-import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.Symbol.PERCENT;
 import static com.blue.database.common.ConditionSortProcessor.process;
@@ -256,7 +255,7 @@ public class RewardServiceImpl implements RewardService {
      * @return
      */
     @Override
-    public Optional<Reward> getReward(Long id) {
+    public Optional<Reward> getRewardOpt(Long id) {
         LOGGER.info("Optional<Reward> getRewardByPrimaryKey(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -271,32 +270,12 @@ public class RewardServiceImpl implements RewardService {
      * @return
      */
     @Override
-    public Mono<Reward> getRewardMono(Long id) {
+    public Mono<Reward> getReward(Long id) {
         LOGGER.info("Mono<Reward> getRewardMono(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
         return justOrEmpty(rewardMapper.selectByPrimaryKey(id));
-    }
-
-    /**
-     * select rewards by ids
-     *
-     * @param ids
-     * @return
-     */
-    @Override
-    public List<Reward> selectRewardByIds(List<Long> ids) {
-        LOGGER.info("List<Reward> selectRewardByIds(List<Long> ids), ids = {}", ids);
-        if (isEmpty(ids))
-            return emptyList();
-        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
-            throw new BlueException(PAYLOAD_TOO_LARGE);
-
-        return allotByMax(ids, (int) DB_SELECT.value, false)
-                .stream().map(rewardMapper::selectByIds)
-                .flatMap(List::stream)
-                .collect(toList());
     }
 
     /**
@@ -306,21 +285,12 @@ public class RewardServiceImpl implements RewardService {
      * @return
      */
     @Override
-    public Mono<List<Reward>> selectRewardMonoByIds(List<Long> ids) {
+    public Mono<List<Reward>> selectRewardByIds(List<Long> ids) {
         LOGGER.info("Mono<List<Reward>> selectRewardMonoByIds(List<Long> ids), ids = {}", ids);
-        return just(this.selectRewardByIds(ids));
-    }
-
-    /**
-     * select reward info by ids
-     *
-     * @param ids
-     * @return
-     */
-    @Override
-    public List<RewardInfo> selectRewardInfoByIds(List<Long> ids) {
-        LOGGER.info("List<RewardInfo> selectRewardInfoByIds(List<Long> ids), ids = {}", ids);
-        return this.selectRewardByIds(ids).stream().map(REWARD_2_REWARD_INFO_CONVERTER).collect(toList());
+        return just(allotByMax(ids, (int) DB_SELECT.value, false)
+                .stream().map(rewardMapper::selectByIds)
+                .flatMap(List::stream)
+                .collect(toList()));
     }
 
     /**
@@ -330,8 +300,12 @@ public class RewardServiceImpl implements RewardService {
      * @return
      */
     @Override
-    public Mono<List<RewardInfo>> selectRewardInfoMonoByIds(List<Long> ids) {
-        return just(this.selectRewardInfoByIds(ids));
+    public Mono<List<RewardInfo>> selectRewardInfoByIds(List<Long> ids) {
+        return just(allotByMax(ids, (int) DB_SELECT.value, false)
+                .stream().map(rewardMapper::selectByIds)
+                .flatMap(List::stream)
+                .map(REWARD_2_REWARD_INFO_CONVERTER)
+                .collect(toList()));
     }
 
     /**
@@ -343,7 +317,7 @@ public class RewardServiceImpl implements RewardService {
      * @return
      */
     @Override
-    public Mono<List<Reward>> selectRewardMonoByLimitAndCondition(Long limit, Long rows, RewardCondition rewardCondition) {
+    public Mono<List<Reward>> selectRewardByLimitAndCondition(Long limit, Long rows, RewardCondition rewardCondition) {
         LOGGER.info("Mono<List<Reward>> selectRewardMonoByLimitAndCondition(Long limit, Long rows, RewardCondition rewardCondition), " +
                 "limit = {}, rows = {}, rewardCondition = {}", limit, rows, rewardCondition);
         return just(rewardMapper.selectByLimitAndCondition(limit, rows, rewardCondition));
@@ -356,7 +330,7 @@ public class RewardServiceImpl implements RewardService {
      * @return
      */
     @Override
-    public Mono<Long> countRewardMonoByCondition(RewardCondition rewardCondition) {
+    public Mono<Long> countRewardByCondition(RewardCondition rewardCondition) {
         LOGGER.info("Mono<Long> countRewardMonoByCondition(RewardCondition rewardCondition), rewardCondition = {}", rewardCondition);
         return just(ofNullable(rewardMapper.countByCondition(rewardCondition)).orElse(0L));
     }
@@ -368,7 +342,7 @@ public class RewardServiceImpl implements RewardService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<RewardManagerInfo>> selectRewardManagerInfoPageMonoByPageAndCondition(PageModelRequest<RewardCondition> pageModelRequest) {
+    public Mono<PageModelResponse<RewardManagerInfo>> selectRewardManagerInfoPageByPageAndCondition(PageModelRequest<RewardCondition> pageModelRequest) {
         LOGGER.info("Mono<PageModelResponse<RewardManagerInfo>> selectRewardManagerInfoPageMonoByPageAndCondition(PageModelRequest<RewardCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
@@ -376,7 +350,7 @@ public class RewardServiceImpl implements RewardService {
 
         RewardCondition rewardCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
-        return zip(selectRewardMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), rewardCondition), countRewardMonoByCondition(rewardCondition))
+        return zip(selectRewardByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), rewardCondition), countRewardByCondition(rewardCondition))
                 .flatMap(tuple2 -> {
                     List<Reward> rewards = tuple2.getT1();
                     Long count = tuple2.getT2();

@@ -54,7 +54,7 @@ public final class AuthManagerHandler {
     public Mono<ServerResponse> selectSecurityInfos(ServerRequest serverRequest) {
         return zip(getLongVariableReact(serverRequest, MID.key),
                 getAccessReact(serverRequest))
-                .flatMap(tuple2 -> authControlService.selectSecurityInfoMonoByMemberId(tuple2.getT1(), tuple2.getT2().getId()))
+                .flatMap(tuple2 -> authControlService.selectSecurityInfoByMemberId(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(res ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(res, serverRequest), BlueResponse.class));

@@ -99,7 +99,7 @@ public final class ResourceManagerHandler {
     public Mono<ServerResponse> page(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(PAGE_MODEL_FOR_RESOURCE_CONDITION_TYPE)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
-                .flatMap(resourceService::selectResourceManagerInfoPageMonoByPageAndCondition)
+                .flatMap(resourceService::selectResourceManagerInfoPageByPageAndCondition)
                 .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(pmr, serverRequest), BlueResponse.class));
@@ -115,7 +115,7 @@ public final class ResourceManagerHandler {
         return serverRequest.bodyToMono(IdentityParam.class)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                 .flatMap(ip ->
-                        roleResRelationService.selectAuthorityMonoByResId(ip.getId()))
+                        roleResRelationService.selectAuthorityByResId(ip.getId()))
                 .flatMap(auth ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(auth, serverRequest), BlueResponse.class));

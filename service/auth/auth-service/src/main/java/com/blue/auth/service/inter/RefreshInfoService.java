@@ -43,7 +43,7 @@ public interface RefreshInfoService {
      * @param id
      * @return
      */
-    Mono<RefreshInfo> getRefreshInfoMono(String id);
+    Mono<RefreshInfo> getRefreshInfo(String id);
 
     /**
      * select refresh info mono by probe
@@ -51,6 +51,6 @@ public interface RefreshInfoService {
      * @param probe
      * @return
      */
-    Mono<List<RefreshInfo>> selectRefreshInfoMonoByProbe(RefreshInfo probe);
+    Mono<List<RefreshInfo>> selectRefreshInfoByProbe(RefreshInfo probe);
 
 }

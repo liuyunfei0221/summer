@@ -176,7 +176,7 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
     private final Function<List<RewardDateRelation>, Mono<List<RewardDateRelationManagerInfo>>> REWARD_DATE_REL_MANAGER_INFO_CONVERTER = relations -> {
         LOGGER.info("Function<List<RewardDateRelation>,Mono<List<RewardDateRelationManagerInfo>>> REWARD_DATE_REL_MANAGER_INFO_CONVERTER, relations = {}", relations);
         return isNotEmpty(relations) ?
-                zip(rewardService.selectRewardInfoMonoByIds(relations.parallelStream().map(RewardDateRelation::getRewardId).collect(toList()))
+                zip(rewardService.selectRewardInfoByIds(relations.parallelStream().map(RewardDateRelation::getRewardId).collect(toList()))
                                 .map(rewardInfos -> rewardInfos.parallelStream().collect(toMap(RewardInfo::getId, ri -> ri, (a, b) -> a)))
                         ,
                         rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(OPERATORS_GETTER.apply(relations))
@@ -211,7 +211,7 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
         INSERT_ITEM_VALIDATOR.accept(rewardDateRelationInsertParam);
         RewardDateRelation rewardDateRelation = REWARD_DATE_REL_INSERT_PARAM_2_REWARD_DATE_REL_CONVERTER.apply(rewardDateRelationInsertParam);
 
-        Reward reward = rewardService.getReward(rewardDateRelation.getRewardId())
+        Reward reward = rewardService.getRewardOpt(rewardDateRelation.getRewardId())
                 .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
 
         rewardDateRelation.setId(blueIdentityProcessor.generate(Reward.class));
@@ -275,10 +275,12 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
 
         Set<Long> rewardIdSet = new HashSet<>(dayRelations.values());
 
-        if (this.selectRewardDateRelationByYearAndMonth(year, month).stream().map(RewardDateRelation::getDay).anyMatch(dayRelations::containsKey))
+        if (this.selectRewardDateRelationByYearAndMonth(year, month).toFuture().join()
+                .stream().map(RewardDateRelation::getDay).anyMatch(dayRelations::containsKey))
             throw new BlueException(DATA_ALREADY_EXIST);
 
-        List<RewardInfo> rewardInfos = rewardService.selectRewardInfoByIds(new ArrayList<>(rewardIdSet));
+        List<RewardInfo> rewardInfos = rewardService.selectRewardInfoByIds(new ArrayList<>(rewardIdSet))
+                .toFuture().join();
         if (rewardIdSet.size() != rewardInfos.size())
             throw new BlueException(DATA_NOT_EXIST);
 
@@ -328,7 +330,7 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
         UPDATE_ITEM_WITH_ASSERT_PACKAGER.accept(rewardDateRelationUpdateParam, rewardDateRelation);
         rewardDateRelation.setUpdater(operatorId);
 
-        RewardInfo rewardInfo = rewardService.getReward(rewardDateRelation.getRewardId())
+        RewardInfo rewardInfo = rewardService.getRewardOpt(rewardDateRelation.getRewardId())
                 .map(REWARD_2_REWARD_INFO_CONVERTER)
                 .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
 
@@ -360,7 +362,7 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
 
         rewardDateRelationMapper.deleteByPrimaryKey(id);
 
-        return REWARD_DATE_REL_2_REWARD_DATE_REL_INFO_CONVERTER.apply(rewardDateRelation, rewardService.getReward(rewardDateRelation.getRewardId())
+        return REWARD_DATE_REL_2_REWARD_DATE_REL_INFO_CONVERTER.apply(rewardDateRelation, rewardService.getRewardOpt(rewardDateRelation.getRewardId())
                 .map(REWARD_2_REWARD_INFO_CONVERTER).orElse(null));
     }
 
@@ -387,7 +389,7 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
      * @return
      */
     @Override
-    public Optional<RewardDateRelation> getRewardDateRelation(Long id) {
+    public Optional<RewardDateRelation> getRewardDateRelationOpt(Long id) {
         LOGGER.info("Optional<RewardDateRelation> getRewardDateRelation(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -402,7 +404,7 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
      * @return
      */
     @Override
-    public Mono<RewardDateRelation> getRewardDateRelationMono(Long id) {
+    public Mono<RewardDateRelation> getRewardDateRelation(Long id) {
         LOGGER.info("Mono<RewardDateRelation> getRewardDateRelationMono(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -418,45 +420,12 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
      * @return
      */
     @Override
-    public List<RewardDateRelation> selectRewardDateRelationByYearAndMonth(Integer year, Integer month) {
+    public Mono<List<RewardDateRelation>> selectRewardDateRelationByYearAndMonth(Integer year, Integer month) {
         LOGGER.info("List<RewardDateRelation> selectRewardDateRelationByYearAndMonth(Integer year, Integer month), year = {}, month = {}", year, month);
         if (isNull(year) || isNull(month) || year < 1 || month < 1)
             throw new BlueException(BAD_REQUEST);
 
-        return rewardDateRelationMapper.selectByYearAndMonth(year, month);
-    }
-
-    /**
-     * select relation mono by date
-     *
-     * @param year
-     * @param month
-     * @return
-     */
-    @Override
-    public Mono<List<RewardDateRelation>> selectRewardDateRelationMonoByYearAndMonth(Integer year, Integer month) {
-        LOGGER.info("Mono<List<RewardDateRelation>> selectRewardDateRelationMonoByYearAndMonth(Integer year, Integer month), year = {}, month = {}", year, month);
-        return just(selectRewardDateRelationByYearAndMonth(year, month));
-    }
-
-    /**
-     * select relation by ids
-     *
-     * @param ids
-     * @return
-     */
-    @Override
-    public List<RewardDateRelation> selectRewardDateRelationByIds(List<Long> ids) {
-        LOGGER.info("List<RewardDateRelation> selectRewardDateRelationByIds(List<Long> ids), ids = {}", ids);
-        if (isEmpty(ids))
-            return emptyList();
-        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
-            throw new BlueException(PAYLOAD_TOO_LARGE);
-
-        return allotByMax(ids, (int) DB_SELECT.value, false)
-                .stream().map(rewardDateRelationMapper::selectByIds)
-                .flatMap(List::stream)
-                .collect(toList());
+        return just(rewardDateRelationMapper.selectByYearAndMonth(year, month));
     }
 
     /**
@@ -466,9 +435,17 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
      * @return
      */
     @Override
-    public Mono<List<RewardDateRelation>> selectRewardDateRelationMonoByIds(List<Long> ids) {
+    public Mono<List<RewardDateRelation>> selectRewardDateRelationByIds(List<Long> ids) {
         LOGGER.info("Mono<List<RewardDateRelation>> selectRewardDateRelationMonoByIds(List<Long> ids), ids = {}", ids);
-        return just(this.selectRewardDateRelationByIds(ids));
+        if (isEmpty(ids))
+            return just(emptyList());
+        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
+            throw new BlueException(PAYLOAD_TOO_LARGE);
+
+        return just(allotByMax(ids, (int) DB_SELECT.value, false)
+                .stream().map(rewardDateRelationMapper::selectByIds)
+                .flatMap(List::stream)
+                .collect(toList()));
     }
 
     /**
@@ -480,7 +457,7 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
      * @return
      */
     @Override
-    public Mono<List<RewardDateRelation>> selectRewardDateRelationMonoByLimitAndCondition(Long limit, Long rows, RewardDateRelationCondition rewardDateRelationCondition) {
+    public Mono<List<RewardDateRelation>> selectRewardDateRelationByLimitAndCondition(Long limit, Long rows, RewardDateRelationCondition rewardDateRelationCondition) {
         LOGGER.info("Mono<List<RewardDateRelation>> selectRewardDateRelationMonoByLimitAndCondition(Long limit, Long rows, RewardDateRelationCondition rewardDateRelationCondition), " +
                 "limit = {}, rows = {}, rewardDateRelationCondition = {}", limit, rows, rewardDateRelationCondition);
         return just(rewardDateRelationMapper.selectByLimitAndCondition(limit, rows, rewardDateRelationCondition));
@@ -493,7 +470,7 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
      * @return
      */
     @Override
-    public Mono<Long> countRewardDateRelationMonoByCondition(RewardDateRelationCondition rewardDateRelationCondition) {
+    public Mono<Long> countRewardDateRelationByCondition(RewardDateRelationCondition rewardDateRelationCondition) {
         LOGGER.info("Mono<Long> countRewardDateRelationMonoByCondition(RewardDateRelationCondition rewardDateRelationCondition), rewardDateRelationCondition = {}", rewardDateRelationCondition);
         return just(ofNullable(rewardDateRelationMapper.countByCondition(rewardDateRelationCondition)).orElse(0L));
     }
@@ -505,7 +482,7 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
      * @return
      */
     @Override
-    public Mono<PageModelResponse<RewardDateRelationManagerInfo>> selectRewardManagerInfoPageMonoByPageAndCondition(PageModelRequest<RewardDateRelationCondition> pageModelRequest) {
+    public Mono<PageModelResponse<RewardDateRelationManagerInfo>> selectRewardManagerInfoPageByPageAndCondition(PageModelRequest<RewardDateRelationCondition> pageModelRequest) {
         LOGGER.info("Mono<PageModelResponse<RewardDateRelationManagerInfo>> selectRewardManagerInfoPageMonoByPageAndCondition(PageModelRequest<RewardDateRelationCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
@@ -513,7 +490,7 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
 
         RewardDateRelationCondition rewardDateRelationCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
-        return zip(selectRewardDateRelationMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), rewardDateRelationCondition), countRewardDateRelationMonoByCondition(rewardDateRelationCondition))
+        return zip(selectRewardDateRelationByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), rewardDateRelationCondition), countRewardDateRelationByCondition(rewardDateRelationCondition))
                 .flatMap(tuple2 ->
                         REWARD_DATE_REL_MANAGER_INFO_CONVERTER.apply(tuple2.getT1())
                                 .flatMap(rewardDateRelationManagerInfos ->
@@ -527,13 +504,13 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
      * @return
      */
     @Override
-    public Mono<List<RewardDateRelationManagerInfo>> selectRewardDateRelationMonoByYearAndMonth(MonthParam monthParam) {
+    public Mono<List<RewardDateRelationManagerInfo>> selectRewardDateRelationByYearAndMonth(MonthParam monthParam) {
         LOGGER.info("Mono<List<RewardDateRelationManagerInfo>> selectRewardDateRelationMonoByYearAndMonth(MonthParam monthParam), monthParam = {}", monthParam);
         if (isNull(monthParam))
             throw new BlueException(EMPTY_PARAM);
         monthParam.asserts();
 
-        return this.selectRewardDateRelationMonoByYearAndMonth(monthParam.getYear(), monthParam.getMonth())
+        return this.selectRewardDateRelationByYearAndMonth(monthParam.getYear(), monthParam.getMonth())
                 .flatMap(REWARD_DATE_REL_MANAGER_INFO_CONVERTER);
     }
 

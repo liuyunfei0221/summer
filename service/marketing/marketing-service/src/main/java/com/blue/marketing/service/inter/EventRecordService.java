@@ -44,7 +44,7 @@ public interface EventRecordService {
      * @param id
      * @return
      */
-    Mono<EventRecord> getEventRecordMono(Long id);
+    Mono<EventRecord> getEventRecord(Long id);
 
     /**
      * get event record info mono by id
@@ -52,7 +52,7 @@ public interface EventRecordService {
      * @param id
      * @return
      */
-    Mono<EventRecordInfo> getEventRecordInfoMono(Long id);
+    Mono<EventRecordInfo> getEventRecordInfo(Long id);
 
     /**
      * select event record info by scroll and member id
@@ -61,7 +61,7 @@ public interface EventRecordService {
      * @param memberId
      * @return
      */
-    Mono<ScrollModelResponse<EventRecordInfo, String>> selectEventRecordInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<EventRecordCondition, Long> scrollModelRequest, Long memberId);
+    Mono<ScrollModelResponse<EventRecordInfo, String>> selectEventRecordInfoScrollByScrollAndCursorBaseOnMemberId(ScrollModelRequest<EventRecordCondition, Long> scrollModelRequest, Long memberId);
 
     /**
      * select event record by page and condition
@@ -71,7 +71,7 @@ public interface EventRecordService {
      * @param query
      * @return
      */
-    Mono<List<EventRecord>> selectEventRecordMonoByLimitAndQuery(Long limit, Long rows, Query query);
+    Mono<List<EventRecord>> selectEventRecordByLimitAndQuery(Long limit, Long rows, Query query);
 
     /**
      * count event record by condition
@@ -79,7 +79,7 @@ public interface EventRecordService {
      * @param query
      * @return
      */
-    Mono<Long> countEventRecordMonoByQuery(Query query);
+    Mono<Long> countEventRecordByQuery(Query query);
 
     /**
      * select event record manager info page by condition
@@ -87,6 +87,6 @@ public interface EventRecordService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<EventRecordManagerInfo>> selectEventRecordInfoPageMonoByPageAndCondition(PageModelRequest<EventRecordManagerCondition> pageModelRequest);
+    Mono<PageModelResponse<EventRecordManagerInfo>> selectEventRecordInfoPageByPageAndCondition(PageModelRequest<EventRecordManagerCondition> pageModelRequest);
 
 }

@@ -251,7 +251,7 @@ public class AuthServiceImpl implements AuthService {
         probe.setMemberId(ofNullable(memberId).filter(BlueChecker::isValidIdentity)
                 .map(String::valueOf).orElseThrow(() -> new BlueException(BAD_REQUEST)));
 
-        return refreshInfoService.selectRefreshInfoMonoByProbe(probe)
+        return refreshInfoService.selectRefreshInfoByProbe(probe)
                 .flatMap(refreshInfoService::deleteRefreshInfos)
                 .onErrorResume(throwable -> {
                     LOGGER.warn("Function<Long, Mono<Boolean>> REFRESH_INFOS_BY_MEMBER_ID_DELETER failed, memberId = {}, throwable = {}", memberId, throwable);
@@ -597,7 +597,7 @@ public class AuthServiceImpl implements AuthService {
      * @return
      */
     @Override
-    public Mono<AccessAsserted> assertAccessMono(AccessAssert accessAssert) {
+    public Mono<AccessAsserted> assertAccess(AccessAssert accessAssert) {
         LOGGER.info("Mono<AuthAsserted> assertAuth(AssertAuth assertAuth), assertAuth = {}", accessAssert);
         return just(accessAssert)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(UNAUTHORIZED))))
@@ -642,11 +642,11 @@ public class AuthServiceImpl implements AuthService {
      * @return
      */
     @Override
-    public Mono<MemberAuth> generateAuthMono(Long memberId, String credentialType, String deviceType) {
+    public Mono<MemberAuth> generateAuth(Long memberId, String credentialType, String deviceType) {
         LOGGER.info("Mono<MemberAuth> generateAuthMono(Long memberId, String credentialType, String deviceType), memberId = {}, credentialType = {}, deviceType", memberId, credentialType, deviceType);
         return isValidIdentity(memberId) && isNotBlank(credentialType) && isNotBlank(deviceType) ?
                 zip(genMemberPayloadMono(memberId, credentialType, deviceType),
-                        memberRoleRelationService.selectRoleIdsMonoByMemberId(memberId)
+                        memberRoleRelationService.selectRoleIdsByMemberId(memberId)
                 ).flatMap(tuple2 ->
                         AUTH_GENERATOR.apply(tuple2.getT1(), tuple2.getT2()))
                 :
@@ -663,7 +663,7 @@ public class AuthServiceImpl implements AuthService {
      * @return
      */
     @Override
-    public Mono<MemberAuth> generateAuthMono(Long memberId, List<Long> roleIds, String credentialType, String deviceType) {
+    public Mono<MemberAuth> generateAuth(Long memberId, List<Long> roleIds, String credentialType, String deviceType) {
         LOGGER.info("Mono<MemberAuth> generateAuthMono(Long memberId, List<Long> roleIds, String credentialType, String deviceType) , memberId = {}, roleIds = {}, credentialType = {}, deviceType", memberId, roleIds, credentialType, deviceType);
         return isValidIdentity(memberId) && isValidIdentities(roleIds) && isNotBlank(credentialType) && isNotBlank(deviceType) ?
                 genMemberPayloadMono(memberId, credentialType, deviceType)
@@ -682,11 +682,11 @@ public class AuthServiceImpl implements AuthService {
      * @return
      */
     @Override
-    public Mono<MemberAccess> generateAccessMono(Long memberId, String credentialType, String deviceType) {
+    public Mono<MemberAccess> generateAccess(Long memberId, String credentialType, String deviceType) {
         LOGGER.info("Mono<MemberAccess> generateAccessMono(Long memberId, String credentialType, String deviceType), memberId = {}, credentialType = {}, deviceType", memberId, credentialType, deviceType);
         return isValidIdentity(memberId) && isNotBlank(credentialType) && isNotBlank(deviceType) ?
                 zip(genMemberPayloadMono(memberId, credentialType, deviceType),
-                        memberRoleRelationService.selectRoleIdsMonoByMemberId(memberId)
+                        memberRoleRelationService.selectRoleIdsByMemberId(memberId)
                 ).flatMap(tuple2 ->
                         ACCESS_GENERATOR.apply(tuple2.getT1(), tuple2.getT2()))
                 :
@@ -705,7 +705,7 @@ public class AuthServiceImpl implements AuthService {
         if (isNull(memberPayload))
             return error(() -> new BlueException(UNAUTHORIZED));
 
-        return refreshInfoService.getRefreshInfoMono(memberPayload.getKeyId())
+        return refreshInfoService.getRefreshInfo(memberPayload.getKeyId())
                 .onErrorResume(t -> {
                     LOGGER.warn("Mono<MemberAccess> refreshAccess(String refresh), refreshInfoService.getRefreshInfoById(memberPayload.getKeyId()) failed, memberPayload = {}, t = {}", memberPayload, t);
                     return error(() -> new BlueException(UNAUTHORIZED));
@@ -713,7 +713,7 @@ public class AuthServiceImpl implements AuthService {
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(UNAUTHORIZED))))
                 .flatMap(refreshInfo -> {
                     AUTH_ASSERTER.accept(memberPayload, refreshInfo);
-                    return this.generateAccessMono(parseLong(refreshInfo.getMemberId()), refreshInfo.getCredentialType(), refreshInfo.getDeviceType());
+                    return this.generateAccess(parseLong(refreshInfo.getMemberId()), refreshInfo.getCredentialType(), refreshInfo.getDeviceType());
                 });
     }
 
@@ -831,9 +831,11 @@ public class AuthServiceImpl implements AuthService {
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
 
-        return fromRunnable(() -> executorService.execute(() ->
-                ALL_ACCESS_ROLES_REFRESHER.accept(memberId, memberRoleRelationService.selectRoleIdsByMemberId(memberId))))
-                .then(just(true));
+        return memberRoleRelationService.selectRoleIdsByMemberId(memberId)
+                .map(ids -> {
+                    ALL_ACCESS_ROLES_REFRESHER.accept(memberId, ids);
+                    return true;
+                });
     }
 
     /**
@@ -973,7 +975,7 @@ public class AuthServiceImpl implements AuthService {
      * @return
      */
     @Override
-    public Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByAccess(Access access) {
+    public Mono<List<AuthorityBaseOnRole>> selectAuthoritiesByAccess(Access access) {
         LOGGER.info("Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByAccess(Access access), access = {}", access);
         return isNotNull(access) ?
                 AUTHORITIES_MONO_BY_ROLE_ID_GETTER.apply(access.getRoleIds())
@@ -988,10 +990,10 @@ public class AuthServiceImpl implements AuthService {
      * @return
      */
     @Override
-    public Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByMemberId(Long memberId) {
+    public Mono<List<AuthorityBaseOnRole>> selectAuthoritiesByMemberId(Long memberId) {
         LOGGER.info("Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByMemberId(Long memberId), memberId = {}", memberId);
         return isValidIdentity(memberId) ?
-                memberRoleRelationService.selectRoleIdsMonoByMemberId(memberId)
+                memberRoleRelationService.selectRoleIdsByMemberId(memberId)
                         .flatMap(AUTHORITIES_MONO_BY_ROLE_ID_GETTER)
                 :
                 error(() -> new BlueException(INVALID_IDENTITY));
@@ -1004,9 +1006,9 @@ public class AuthServiceImpl implements AuthService {
      * @return
      */
     @Override
-    public Mono<MemberAuthority> getAuthorityMonoByAccess(Access access) {
+    public Mono<MemberAuthority> getAuthorityByAccess(Access access) {
         LOGGER.info("Mono<MemberAuthority> getAuthorityMonoByAccess(Access access), access = {}", access);
-        return this.selectAuthoritiesMonoByAccess(access).flatMap(AUTHS_2_AUTH_CONVERTER);
+        return this.selectAuthoritiesByAccess(access).flatMap(AUTHS_2_AUTH_CONVERTER);
     }
 
     /**
@@ -1016,9 +1018,9 @@ public class AuthServiceImpl implements AuthService {
      * @return
      */
     @Override
-    public Mono<MemberAuthority> getAuthorityMonoByMemberId(Long memberId) {
+    public Mono<MemberAuthority> getAuthorityByMemberId(Long memberId) {
         LOGGER.info("Mono<MemberAuthority> getAuthorityMonoByMemberId(Long memberId), memberId = {}", memberId);
-        return this.selectAuthoritiesMonoByMemberId(memberId).flatMap(AUTHS_2_AUTH_CONVERTER);
+        return this.selectAuthoritiesByMemberId(memberId).flatMap(AUTHS_2_AUTH_CONVERTER);
     }
 
 }

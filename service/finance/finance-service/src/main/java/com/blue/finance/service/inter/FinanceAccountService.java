@@ -26,7 +26,7 @@ public interface FinanceAccountService {
      * @param id
      * @return
      */
-    Mono<FinanceAccountInfo> getFinanceAccountInfoMono(Long id);
+    Mono<FinanceAccountInfo> getFinanceAccountInfo(Long id);
 
     /**
      * get finance account mono by member id
@@ -34,6 +34,6 @@ public interface FinanceAccountService {
      * @param memberId
      * @return
      */
-    Mono<FinanceAccountInfo> getFinanceAccountInfoMonoByMemberId(Long memberId);
+    Mono<FinanceAccountInfo> getFinanceAccountInfoByMemberId(Long memberId);
 
 }

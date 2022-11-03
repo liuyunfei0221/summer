@@ -207,7 +207,7 @@ public interface AuthControlService {
      * @param access
      * @return
      */
-    Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByAccess(Access access);
+    Mono<List<AuthorityBaseOnRole>> selectAuthoritiesByAccess(Access access);
 
     /**
      * select member's authority by member id
@@ -215,7 +215,7 @@ public interface AuthControlService {
      * @param memberId
      * @return
      */
-    Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByMemberId(Long memberId);
+    Mono<List<AuthorityBaseOnRole>> selectAuthoritiesByMemberId(Long memberId);
 
     /**
      * get member's authority by access
@@ -223,7 +223,7 @@ public interface AuthControlService {
      * @param access
      * @return
      */
-    Mono<MemberAuthority> getAuthorityMonoByAccess(Access access);
+    Mono<MemberAuthority> getAuthorityByAccess(Access access);
 
     /**
      * get member's authority by member id
@@ -231,7 +231,7 @@ public interface AuthControlService {
      * @param memberId
      * @return
      */
-    Mono<MemberAuthority> getAuthorityMonoByMemberId(Long memberId);
+    Mono<MemberAuthority> getAuthorityByMemberId(Long memberId);
 
     /**
      * insert a new role
@@ -362,6 +362,6 @@ public interface AuthControlService {
      * @param operatorId
      * @return
      */
-    Mono<MemberSecurityInfo> selectSecurityInfoMonoByMemberId(Long memberId, Long operatorId);
+    Mono<MemberSecurityInfo> selectSecurityInfoByMemberId(Long memberId, Long operatorId);
 
 }

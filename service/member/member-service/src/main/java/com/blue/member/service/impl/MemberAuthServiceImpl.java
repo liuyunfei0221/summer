@@ -27,8 +27,7 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import static com.blue.basic.common.base.BlueChecker.*;
-import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
-import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
+import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.database.common.ConditionSortProcessor.process;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_BASIC_INFO;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_REGISTRY_INFO_2_MEMBER_BASIC;
@@ -120,7 +119,8 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         LOGGER.info("MemberBasicInfo updateMemberCredentialAttr(List<String> credentialTypes, String credential, Long memberId), credentialTypes = {}, credential = {}, memberId = {}",
                 credentialTypes, credential, memberId);
 
-        MemberBasic memberBasic = memberBasicService.getMemberBasicSync(memberId);
+        MemberBasic memberBasic = memberBasicService.getMemberBasicOpt(memberId)
+                .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
         credentialCollectProcessor.packageCredentialAttr(credentialTypes, credential, memberBasic);
 
         return memberBasicService.updateMemberBasic(memberBasic);

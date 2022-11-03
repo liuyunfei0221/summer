@@ -65,7 +65,7 @@ public interface RoleResRelationService {
      * @param roleIds
      * @return
      */
-    Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByRoleIds(List<Long> roleIds);
+    Mono<List<AuthorityBaseOnRole>> selectAuthoritiesByRoleIds(List<Long> roleIds);
 
     /**
      * get authority base on resource by res id
@@ -73,7 +73,7 @@ public interface RoleResRelationService {
      * @param resId
      * @return
      */
-    Mono<AuthorityBaseOnResource> selectAuthorityMonoByResId(Long resId);
+    Mono<AuthorityBaseOnResource> selectAuthorityByResId(Long resId);
 
     /**
      * select all role resource relation
@@ -88,7 +88,7 @@ public interface RoleResRelationService {
      * @param roleId
      * @return
      */
-    Mono<List<Long>> selectResIdsMonoByRoleId(Long roleId);
+    Mono<List<Long>> selectResIdsByRoleId(Long roleId);
 
     /**
      * select resources by role id
@@ -96,7 +96,7 @@ public interface RoleResRelationService {
      * @param roleId
      * @return
      */
-    Mono<List<Resource>> selectResMonoByRoleId(Long roleId);
+    Mono<List<Resource>> selectResByRoleId(Long roleId);
 
     /**
      * select role ids by resource id
@@ -104,7 +104,7 @@ public interface RoleResRelationService {
      * @param resId
      * @return
      */
-    Mono<List<Long>> selectRoleIdsMonoByResId(Long resId);
+    Mono<List<Long>> selectRoleIdsByResId(Long resId);
 
     /**
      * select role by resource id
@@ -112,7 +112,7 @@ public interface RoleResRelationService {
      * @param resId
      * @return
      */
-    Mono<List<Role>> selectRoleMonoByResId(Long resId);
+    Mono<List<Role>> selectRoleByResId(Long resId);
 
     /**
      * select relation by role id
@@ -123,48 +123,12 @@ public interface RoleResRelationService {
     Mono<List<RoleResRelation>> selectRelationByRoleId(Long roleId);
 
     /**
-     * select relation by limit and role id
-     *
-     * @param roleId
-     * @param limit
-     * @param rows
-     * @return
-     */
-    List<RoleResRelation> selectRelationByRowsAndRoleId(Long roleId, Long limit, Long rows);
-
-    /**
-     * count relation by role id
-     *
-     * @param roleId
-     * @return
-     */
-    long countRelationByRoleId(Long roleId);
-
-    /**
-     * select relation by limit and resource id
-     *
-     * @param resId
-     * @param limit
-     * @param rows
-     * @return
-     */
-    List<RoleResRelation> selectRelationByRowsAndResId(Long resId, Long limit, Long rows);
-
-    /**
-     * count relation by resource id
-     *
-     * @param resId
-     * @return
-     */
-    long countRelationByResId(Long resId);
-
-    /**
      * select relation by resource id
      *
      * @param resId
      * @return
      */
-    List<RoleResRelation> selectRelationByResId(Long resId);
+    Mono<List<RoleResRelation>> selectRelationByResId(Long resId);
 
     /**
      * select relation by role ids

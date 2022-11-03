@@ -54,7 +54,7 @@ public interface CredentialHistoryService {
      * @param limit
      * @return
      */
-    Mono<List<CredentialHistory>> selectCredentialHistoryMonoByMemberIdAndLimit(Long memberId, Integer limit);
+    Mono<List<CredentialHistory>> selectCredentialHistoryByMemberIdAndLimit(Long memberId, Integer limit);
 
     /**
      * select credential history info mono by member id with limit
@@ -62,6 +62,6 @@ public interface CredentialHistoryService {
      * @param memberId
      * @return
      */
-    Mono<List<CredentialHistoryInfo>> selectCredentialHistoryInfoMonoByMemberIdWithLimit(Long memberId);
+    Mono<List<CredentialHistoryInfo>> selectCredentialHistoryInfoByMemberIdWithLimit(Long memberId);
 
 }

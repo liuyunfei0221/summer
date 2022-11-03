@@ -129,14 +129,14 @@ public class LocalPhoneWithAutoRegisterSessionHandler implements SessionHandler 
         //TODO
         // like Mono<String> phoneMono = rpcLocalPhoneServiceConsumer.getInfo(encryptedData, iv, jsCode);
         Map<String, Object> extra = new HashMap<>(2, 2.0f);
-        return credentialService.getCredentialMonoByCredentialAndType(phone, LOCAL_PHONE_AUTO_REGISTER.identity)
+        return credentialService.getCredentialByCredentialAndType(phone, LOCAL_PHONE_AUTO_REGISTER.identity)
                 .flatMap(credential -> {
                     extra.put(NEW_MEMBER.key, false);
 
                     return rpcMemberBasicServiceConsumer.getMemberBasicInfo(credential.getMemberId())
                             .flatMap(mbi -> {
                                 MEMBER_STATUS_ASSERTER.accept(mbi);
-                                return zip(authService.generateAuthMono(mbi.getId(), LOCAL_PHONE_AUTO_REGISTER.identity, loginParam.getDeviceType().intern()), just(mbi));
+                                return zip(authService.generateAuth(mbi.getId(), LOCAL_PHONE_AUTO_REGISTER.identity, loginParam.getDeviceType().intern()), just(mbi));
                             });
                 })
                 .switchIfEmpty(defer(() -> {
@@ -146,7 +146,7 @@ public class LocalPhoneWithAutoRegisterSessionHandler implements SessionHandler 
                             just(roleService.getDefaultRole().getId())
                                     .flatMap(roleId -> just(registerService.registerMemberBasic(CREDENTIALS_GENERATOR.apply(phone), roleId, source))
                                             .flatMap(mbi ->
-                                                    zip(authService.generateAuthMono(mbi.getId(), singletonList(roleId), LOCAL_PHONE_AUTO_REGISTER.identity, loginParam.getDeviceType().intern()), just(mbi))))
+                                                    zip(authService.generateAuth(mbi.getId(), singletonList(roleId), LOCAL_PHONE_AUTO_REGISTER.identity, loginParam.getDeviceType().intern()), just(mbi))))
                     );
                 }))
                 .flatMap(tuple2 -> {

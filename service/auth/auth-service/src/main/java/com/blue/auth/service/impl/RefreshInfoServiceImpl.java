@@ -85,7 +85,7 @@ public class RefreshInfoServiceImpl implements RefreshInfoService {
      * @return
      */
     @Override
-    public Mono<RefreshInfo> getRefreshInfoMono(String id) {
+    public Mono<RefreshInfo> getRefreshInfo(String id) {
         LOGGER.info("Mono<RefreshInfo> getRefreshInfoById(String id), id = {}", id);
         if (isBlank(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -100,7 +100,7 @@ public class RefreshInfoServiceImpl implements RefreshInfoService {
      * @return
      */
     @Override
-    public Mono<List<RefreshInfo>> selectRefreshInfoMonoByProbe(RefreshInfo probe) {
+    public Mono<List<RefreshInfo>> selectRefreshInfoByProbe(RefreshInfo probe) {
         LOGGER.info("Mono<List<RefreshInfo>> selectRefreshInfoMonoByCondition(RefreshInfo condition), probe = {}", probe);
         if (isNull(probe))
             throw new BlueException(EMPTY_PARAM);

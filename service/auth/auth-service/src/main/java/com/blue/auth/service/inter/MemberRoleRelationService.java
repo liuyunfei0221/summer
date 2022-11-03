@@ -53,20 +53,12 @@ public interface MemberRoleRelationService {
     int deleteMemberRoleRelation(Long memberId, Long roleId, Long operatorId);
 
     /**
-     * get role id by member id
-     *
-     * @param memberId
-     * @return
-     */
-    List<Long> selectRoleIdsByMemberId(Long memberId);
-
-    /**
      * get role id mono by member id
      *
      * @param memberId
      * @return
      */
-    Mono<List<Long>> selectRoleIdsMonoByMemberId(Long memberId);
+    Mono<List<Long>> selectRoleIdsByMemberId(Long memberId);
 
     /**
      * select member-role-relation by member ids
@@ -74,42 +66,6 @@ public interface MemberRoleRelationService {
      * @param memberIds
      * @return
      */
-    Mono<List<MemberRoleRelation>> selectRelationMonoByMemberIds(List<Long> memberIds);
-
-    /**
-     * select relation by limit and member id
-     *
-     * @param memberId
-     * @param limit
-     * @param rows
-     * @return
-     */
-    List<MemberRoleRelation> selectRelationByRowsAndMemberId(Long memberId, Long limit, Long rows);
-
-    /**
-     * count relation by member id
-     *
-     * @param memberId
-     * @return
-     */
-    long countRelationByMemberId(Long memberId);
-
-    /**
-     * select relation by limit and role id
-     *
-     * @param roleId
-     * @param limit
-     * @param rows
-     * @return
-     */
-    List<MemberRoleRelation> selectRelationByRowsAndRoleId(Long roleId, Long limit, Long rows);
-
-    /**
-     * count relation by role id
-     *
-     * @param roleId
-     * @return
-     */
-    long countRelationByRoleId(Long roleId);
+    Mono<List<MemberRoleRelation>> selectRelationByMemberIds(List<Long> memberIds);
 
 }

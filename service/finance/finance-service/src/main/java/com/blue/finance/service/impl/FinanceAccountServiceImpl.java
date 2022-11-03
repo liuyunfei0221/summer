@@ -140,7 +140,7 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
      * @return
      */
     @Override
-    public Mono<FinanceAccountInfo> getFinanceAccountInfoMono(Long id) {
+    public Mono<FinanceAccountInfo> getFinanceAccountInfo(Long id) {
         LOGGER.info("Mono<FinanceAccountInfo> getFinanceAccountInfoMono(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -157,7 +157,7 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
      * @return
      */
     @Override
-    public Mono<FinanceAccountInfo> getFinanceAccountInfoMonoByMemberId(Long memberId) {
+    public Mono<FinanceAccountInfo> getFinanceAccountInfoByMemberId(Long memberId) {
         LOGGER.info("Mono<FinanceAccountInfo> getFinanceAccountInfoMonoByMemberId(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);

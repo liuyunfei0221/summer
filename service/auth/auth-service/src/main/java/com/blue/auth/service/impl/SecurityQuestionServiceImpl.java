@@ -126,38 +126,14 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
     }
 
     /**
-     * count security question by member id
-     *
-     * @param memberId
-     * @return
-     */
-    @Override
-    public Long countSecurityQuestionByMemberId(Long memberId) {
-        LOGGER.info("Long countSecurityQuestionByMemberId(Long memberId), memberId = {}", memberId);
-        return ofNullable(securityQuestionMapper.countByMemberId(memberId)).orElse(0L);
-    }
-
-    /**
      * count security question mono by member id
      *
      * @param memberId
      * @return
      */
     @Override
-    public Mono<Long> countSecurityQuestionMonoByMemberId(Long memberId) {
-        return just(countSecurityQuestionByMemberId(memberId));
-    }
-
-    /**
-     * select security question by member id
-     *
-     * @param memberId
-     * @return
-     */
-    @Override
-    public List<SecurityQuestion> selectSecurityQuestionByMemberId(Long memberId) {
-        LOGGER.info("List<SecurityQuestion> selectSecurityQuestionByMemberId(Long memberId), memberId = {}", memberId);
-        return securityQuestionMapper.selectByMemberId(memberId);
+    public Mono<Long> countSecurityQuestionByMemberId(Long memberId) {
+        return just(ofNullable(securityQuestionMapper.countByMemberId(memberId)).orElse(0L));
     }
 
     /**
@@ -167,19 +143,11 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
      * @return
      */
     @Override
-    public Mono<List<SecurityQuestion>> selectSecurityQuestionMonoByMemberId(Long memberId) {
-        return just(selectSecurityQuestionByMemberId(memberId));
-    }
+    public Mono<List<SecurityQuestion>> selectSecurityQuestionByMemberId(Long memberId) {
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(INVALID_IDENTITY);
 
-    /**
-     * select security question info by member id
-     *
-     * @param memberId
-     * @return
-     */
-    @Override
-    public List<SecurityQuestionInfo> selectSecurityQuestionInfoByMemberId(Long memberId) {
-        return selectSecurityQuestionByMemberId(memberId).stream().map(SECURITY_QUESTION_2_SECURITY_QUESTION_INFO_CONVERTER).collect(toList());
+        return just(securityQuestionMapper.selectByMemberId(memberId));
     }
 
     /**
@@ -189,8 +157,8 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
      * @return
      */
     @Override
-    public Mono<List<SecurityQuestionInfo>> selectSecurityQuestionInfoMonoByMemberId(Long memberId) {
-        return selectSecurityQuestionMonoByMemberId(memberId)
+    public Mono<List<SecurityQuestionInfo>> selectSecurityQuestionInfoByMemberId(Long memberId) {
+        return selectSecurityQuestionByMemberId(memberId)
                 .flatMap(l -> just(l.stream().map(SECURITY_QUESTION_2_SECURITY_QUESTION_INFO_CONVERTER).collect(toList())));
     }
 

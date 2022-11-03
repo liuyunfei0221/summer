@@ -34,28 +34,12 @@ public interface SecurityQuestionService {
     int insertSecurityQuestions(List<SecurityQuestionInsertParam> securityQuestionInsertParams, Long memberId);
 
     /**
-     * count security question by member id
-     *
-     * @param memberId
-     * @return
-     */
-    Long countSecurityQuestionByMemberId(Long memberId);
-
-    /**
      * count security question mono by member id
      *
      * @param memberId
      * @return
      */
-    Mono<Long> countSecurityQuestionMonoByMemberId(Long memberId);
-
-    /**
-     * select security question by member id
-     *
-     * @param memberId
-     * @return
-     */
-    List<SecurityQuestion> selectSecurityQuestionByMemberId(Long memberId);
+    Mono<Long> countSecurityQuestionByMemberId(Long memberId);
 
     /**
      * select security question mono by member id
@@ -63,15 +47,7 @@ public interface SecurityQuestionService {
      * @param memberId
      * @return
      */
-    Mono<List<SecurityQuestion>> selectSecurityQuestionMonoByMemberId(Long memberId);
-
-    /**
-     * select security question info by member id
-     *
-     * @param memberId
-     * @return
-     */
-    List<SecurityQuestionInfo> selectSecurityQuestionInfoByMemberId(Long memberId);
+    Mono<List<SecurityQuestion>> selectSecurityQuestionByMemberId(Long memberId);
 
     /**
      * select security question info mono by member id
@@ -79,6 +55,6 @@ public interface SecurityQuestionService {
      * @param memberId
      * @return
      */
-    Mono<List<SecurityQuestionInfo>> selectSecurityQuestionInfoMonoByMemberId(Long memberId);
+    Mono<List<SecurityQuestionInfo>> selectSecurityQuestionInfoByMemberId(Long memberId);
 
 }

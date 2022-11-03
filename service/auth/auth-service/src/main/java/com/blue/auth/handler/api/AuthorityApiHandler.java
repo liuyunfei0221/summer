@@ -36,7 +36,7 @@ public final class AuthorityApiHandler {
     public Mono<ServerResponse> selectAuthorities(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
-                        authControlService.selectAuthoritiesMonoByAccess(acc)
+                        authControlService.selectAuthoritiesByAccess(acc)
                                 .flatMap(authorities ->
                                         ok().contentType(APPLICATION_JSON)
                                                 .body(success(authorities, serverRequest)
@@ -52,7 +52,7 @@ public final class AuthorityApiHandler {
     public Mono<ServerResponse> getAuthority(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
-                        authControlService.getAuthorityMonoByAccess(acc)
+                        authControlService.getAuthorityByAccess(acc)
                                 .flatMap(authority ->
                                         ok().contentType(APPLICATION_JSON)
                                                 .body(success(authority, serverRequest)

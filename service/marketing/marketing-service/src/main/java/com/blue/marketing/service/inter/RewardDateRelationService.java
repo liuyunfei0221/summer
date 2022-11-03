@@ -73,7 +73,7 @@ public interface RewardDateRelationService {
      * @param id
      * @return
      */
-    Optional<RewardDateRelation> getRewardDateRelation(Long id);
+    Optional<RewardDateRelation> getRewardDateRelationOpt(Long id);
 
     /**
      * get relation mono by role id
@@ -81,7 +81,7 @@ public interface RewardDateRelationService {
      * @param id
      * @return
      */
-    Mono<RewardDateRelation> getRewardDateRelationMono(Long id);
+    Mono<RewardDateRelation> getRewardDateRelation(Long id);
 
     /**
      * select relation by date
@@ -90,24 +90,7 @@ public interface RewardDateRelationService {
      * @param month
      * @return
      */
-    List<RewardDateRelation> selectRewardDateRelationByYearAndMonth(Integer year, Integer month);
-
-    /**
-     * select relation mono by date
-     *
-     * @param year
-     * @param month
-     * @return
-     */
-    Mono<List<RewardDateRelation>> selectRewardDateRelationMonoByYearAndMonth(Integer year, Integer month);
-
-    /**
-     * select relation by ids
-     *
-     * @param ids
-     * @return
-     */
-    List<RewardDateRelation> selectRewardDateRelationByIds(List<Long> ids);
+    Mono<List<RewardDateRelation>> selectRewardDateRelationByYearAndMonth(Integer year, Integer month);
 
     /**
      * select relation mono by ids
@@ -115,7 +98,7 @@ public interface RewardDateRelationService {
      * @param ids
      * @return
      */
-    Mono<List<RewardDateRelation>> selectRewardDateRelationMonoByIds(List<Long> ids);
+    Mono<List<RewardDateRelation>> selectRewardDateRelationByIds(List<Long> ids);
 
     /**
      * select relation by page and condition
@@ -125,7 +108,7 @@ public interface RewardDateRelationService {
      * @param rewardDateRelationCondition
      * @return
      */
-    Mono<List<RewardDateRelation>> selectRewardDateRelationMonoByLimitAndCondition(Long limit, Long rows, RewardDateRelationCondition rewardDateRelationCondition);
+    Mono<List<RewardDateRelation>> selectRewardDateRelationByLimitAndCondition(Long limit, Long rows, RewardDateRelationCondition rewardDateRelationCondition);
 
     /**
      * count relation by condition
@@ -133,7 +116,7 @@ public interface RewardDateRelationService {
      * @param rewardDateRelationCondition
      * @return
      */
-    Mono<Long> countRewardDateRelationMonoByCondition(RewardDateRelationCondition rewardDateRelationCondition);
+    Mono<Long> countRewardDateRelationByCondition(RewardDateRelationCondition rewardDateRelationCondition);
 
     /**
      * select relation manager info page by condition
@@ -141,7 +124,7 @@ public interface RewardDateRelationService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<RewardDateRelationManagerInfo>> selectRewardManagerInfoPageMonoByPageAndCondition(PageModelRequest<RewardDateRelationCondition> pageModelRequest);
+    Mono<PageModelResponse<RewardDateRelationManagerInfo>> selectRewardManagerInfoPageByPageAndCondition(PageModelRequest<RewardDateRelationCondition> pageModelRequest);
 
     /**
      * select relation manager info by year and month
@@ -149,6 +132,6 @@ public interface RewardDateRelationService {
      * @param monthParam
      * @return
      */
-    Mono<List<RewardDateRelationManagerInfo>> selectRewardDateRelationMonoByYearAndMonth(MonthParam monthParam);
+    Mono<List<RewardDateRelationManagerInfo>> selectRewardDateRelationByYearAndMonth(MonthParam monthParam);
 
 }

@@ -48,7 +48,7 @@ public class RpcAuthServiceProvider implements RpcAuthService {
      */
     @Override
     public CompletableFuture<AccessAsserted> assertAccess(AccessAssert accessAssert) {
-        return just(accessAssert).flatMap(authService::assertAccessMono).toFuture();
+        return just(accessAssert).flatMap(authService::assertAccess).toFuture();
     }
 
     /**

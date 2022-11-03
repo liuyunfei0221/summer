@@ -31,7 +31,7 @@ public interface AuthService {
      * @param accessAssert
      * @return
      */
-    Mono<AccessAsserted> assertAccessMono(AccessAssert accessAssert);
+    Mono<AccessAsserted> assertAccess(AccessAssert accessAssert);
 
     /**
      * generate member auth
@@ -41,7 +41,7 @@ public interface AuthService {
      * @param deviceType
      * @return
      */
-    Mono<MemberAuth> generateAuthMono(Long memberId, String credentialType, String deviceType);
+    Mono<MemberAuth> generateAuth(Long memberId, String credentialType, String deviceType);
 
     /**
      * generate member auth with auto register
@@ -52,7 +52,7 @@ public interface AuthService {
      * @param deviceType
      * @return
      */
-    Mono<MemberAuth> generateAuthMono(Long memberId, List<Long> roleIds, String credentialType, String deviceType);
+    Mono<MemberAuth> generateAuth(Long memberId, List<Long> roleIds, String credentialType, String deviceType);
 
     /**
      * generate member access
@@ -62,7 +62,7 @@ public interface AuthService {
      * @param deviceType
      * @return
      */
-    Mono<MemberAccess> generateAccessMono(Long memberId, String credentialType, String deviceType);
+    Mono<MemberAccess> generateAccess(Long memberId, String credentialType, String deviceType);
 
     /**
      * refresh jwt by member payload
@@ -175,7 +175,7 @@ public interface AuthService {
      * @param access
      * @return
      */
-    Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByAccess(Access access);
+    Mono<List<AuthorityBaseOnRole>> selectAuthoritiesByAccess(Access access);
 
     /**
      * get member's authorities by member id
@@ -183,7 +183,7 @@ public interface AuthService {
      * @param memberId
      * @return
      */
-    Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByMemberId(Long memberId);
+    Mono<List<AuthorityBaseOnRole>> selectAuthoritiesByMemberId(Long memberId);
 
     /**
      * get member's authority by access
@@ -191,7 +191,7 @@ public interface AuthService {
      * @param access
      * @return
      */
-    Mono<MemberAuthority> getAuthorityMonoByAccess(Access access);
+    Mono<MemberAuthority> getAuthorityByAccess(Access access);
 
     /**
      * get member's authority by member id
@@ -199,6 +199,6 @@ public interface AuthService {
      * @param memberId
      * @return
      */
-    Mono<MemberAuthority> getAuthorityMonoByMemberId(Long memberId);
+    Mono<MemberAuthority> getAuthorityByMemberId(Long memberId);
 
 }

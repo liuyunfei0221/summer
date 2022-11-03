@@ -198,7 +198,7 @@ public class EventRecordServiceImpl implements EventRecordService {
      * @return
      */
     @Override
-    public Mono<EventRecord> getEventRecordMono(Long id) {
+    public Mono<EventRecord> getEventRecord(Long id) {
         LOGGER.info(" Mono<EventRecord> getEventRecordMono(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -213,8 +213,8 @@ public class EventRecordServiceImpl implements EventRecordService {
      * @return
      */
     @Override
-    public Mono<EventRecordInfo> getEventRecordInfoMono(Long id) {
-        return getEventRecordMono(id).map(EVENT_RECORD_2_EVENT_RECORD_INFO_CONVERTER);
+    public Mono<EventRecordInfo> getEventRecordInfo(Long id) {
+        return getEventRecord(id).map(EVENT_RECORD_2_EVENT_RECORD_INFO_CONVERTER);
     }
 
     /**
@@ -225,7 +225,7 @@ public class EventRecordServiceImpl implements EventRecordService {
      * @return
      */
     @Override
-    public Mono<ScrollModelResponse<EventRecordInfo, String>> selectEventRecordInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<EventRecordCondition, Long> scrollModelRequest, Long memberId) {
+    public Mono<ScrollModelResponse<EventRecordInfo, String>> selectEventRecordInfoScrollByScrollAndCursorBaseOnMemberId(ScrollModelRequest<EventRecordCondition, Long> scrollModelRequest, Long memberId) {
         LOGGER.info("Mono<ScrollModelResponse<EventRecordInfo, String>> selectEventRecordInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<EventRecordCondition, Long> scrollModelRequest, Long memberId), " +
                 "scrollModelRequest = {}, memberId = {}", scrollModelRequest, memberId);
         if (isNull(scrollModelRequest))
@@ -252,7 +252,7 @@ public class EventRecordServiceImpl implements EventRecordService {
      * @return
      */
     @Override
-    public Mono<List<EventRecord>> selectEventRecordMonoByLimitAndQuery(Long limit, Long rows, Query query) {
+    public Mono<List<EventRecord>> selectEventRecordByLimitAndQuery(Long limit, Long rows, Query query) {
         LOGGER.info("Mono<List<Attachment>> selectEventRecordMonoByLimitAndQuery(Long limit, Long rows, Query query)," +
                 " limit = {}, rows = {}, query = {}", limit, rows, query);
 
@@ -272,7 +272,7 @@ public class EventRecordServiceImpl implements EventRecordService {
      * @return
      */
     @Override
-    public Mono<Long> countEventRecordMonoByQuery(Query query) {
+    public Mono<Long> countEventRecordByQuery(Query query) {
         LOGGER.info("Mono<Long> countEventRecordMonoByQuery(Query query), query = {}", query);
         return reactiveMongoTemplate.count(query, EventRecord.class);
     }
@@ -284,7 +284,7 @@ public class EventRecordServiceImpl implements EventRecordService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<EventRecordManagerInfo>> selectEventRecordInfoPageMonoByPageAndCondition(PageModelRequest<EventRecordManagerCondition> pageModelRequest) {
+    public Mono<PageModelResponse<EventRecordManagerInfo>> selectEventRecordInfoPageByPageAndCondition(PageModelRequest<EventRecordManagerCondition> pageModelRequest) {
         LOGGER.info("Mono<PageModelResponse<EventRecordManagerInfo>> selectEventRecordInfoPageMonoByPageAndCondition(PageModelRequest<EventRecordCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
@@ -292,8 +292,8 @@ public class EventRecordServiceImpl implements EventRecordService {
 
         Query query = MANAGER_CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
-        return zip(selectEventRecordMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),
-                countEventRecordMonoByQuery(query))
+        return zip(selectEventRecordByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),
+                countEventRecordByQuery(query))
                 .flatMap(tuple2 -> {
                     List<EventRecord> eventRecords = tuple2.getT1();
                     Long count = tuple2.getT2();

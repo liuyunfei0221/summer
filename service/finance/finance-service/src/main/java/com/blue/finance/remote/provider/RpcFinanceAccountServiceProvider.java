@@ -49,7 +49,7 @@ public class RpcFinanceAccountServiceProvider implements RpcFinanceAccountServic
     @Override
     public CompletableFuture<FinanceAccountInfo> getFinanceAccountInfo(Long id) {
         return just(id)
-                .flatMap(financeAccountService::getFinanceAccountInfoMono)
+                .flatMap(financeAccountService::getFinanceAccountInfo)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .toFuture();
     }
@@ -63,7 +63,7 @@ public class RpcFinanceAccountServiceProvider implements RpcFinanceAccountServic
     @Override
     public CompletableFuture<FinanceAccountInfo> getFinanceAccountInfoByMemberId(Long memberId) {
         return just(memberId)
-                .flatMap(financeAccountService::getFinanceAccountInfoMonoByMemberId)
+                .flatMap(financeAccountService::getFinanceAccountInfoByMemberId)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .toFuture();
     }

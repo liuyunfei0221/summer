@@ -170,31 +170,18 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     }
 
     /**
-     * get role id by member id
-     *
-     * @param memberId
-     * @return
-     */
-    @Override
-    public List<Long> selectRoleIdsByMemberId(Long memberId) {
-        LOGGER.info("List<Long> selectRoleIdsByMemberId(Long memberId), memberId = {}", memberId);
-        if (isInvalidIdentity(memberId))
-            throw new BlueException(INVALID_IDENTITY);
-
-        return memberRoleRelationMapper.selectRoleIdsByMemberId(memberId);
-    }
-
-    /**
      * get role id mono by member id
      *
      * @param memberId
      * @return
      */
     @Override
-    public Mono<List<Long>> selectRoleIdsMonoByMemberId(Long memberId) {
+    public Mono<List<Long>> selectRoleIdsByMemberId(Long memberId) {
         LOGGER.info("Mono<List<Long>> selectRoleIdsMonoByMemberId(Long memberId), memberId = {}", memberId);
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(INVALID_IDENTITY);
 
-        return just(selectRoleIdsByMemberId(memberId));
+        return just(memberRoleRelationMapper.selectRoleIdsByMemberId(memberId));
     }
 
     /**
@@ -204,7 +191,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
      * @return
      */
     @Override
-    public Mono<List<MemberRoleRelation>> selectRelationMonoByMemberIds(List<Long> memberIds) {
+    public Mono<List<MemberRoleRelation>> selectRelationByMemberIds(List<Long> memberIds) {
         LOGGER.info("Mono<List<MemberRoleRelation>> selectRelationMonoByMemberIds(List<Long> memberIds), memberIds = {}", memberIds);
         if (isEmpty(memberIds))
             return just(emptyList());
@@ -217,78 +204,6 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
                     a.addAll(b);
                     return a;
                 });
-    }
-
-    /**
-     * select relation by limit and member id
-     *
-     * @param memberId
-     * @param limit
-     * @param rows
-     * @return
-     */
-    @Override
-    public List<MemberRoleRelation> selectRelationByRowsAndMemberId(Long memberId, Long limit, Long rows) {
-        LOGGER.info("List<MemberRoleRelation> selectRelationByRowsAndMemberId(Long memberId, Long limit, Long rows), memberId = {}, limit = {}, rows = {}", memberId, limit, rows);
-        if (isInvalidIdentity(memberId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid roleId");
-        if (isInvalidLimit(limit))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid limit");
-        if (isInvalidRows(rows))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid rows");
-
-        return memberRoleRelationMapper.selectByRowsAndMemberId(memberId, limit, rows);
-    }
-
-    /**
-     * count relation by member id
-     *
-     * @param memberId
-     * @return
-     */
-    @Override
-    public long countRelationByMemberId(Long memberId) {
-        LOGGER.info("long countRelationByMemberId(Long memberId), memberId = {}", memberId);
-        if (isInvalidIdentity(memberId))
-            throw new BlueException(INVALID_IDENTITY);
-
-        return memberRoleRelationMapper.countByMemberId(memberId);
-    }
-
-    /**
-     * select relation by limit and role id
-     *
-     * @param roleId
-     * @param limit
-     * @param rows
-     * @return
-     */
-    @Override
-    public List<MemberRoleRelation> selectRelationByRowsAndRoleId(Long roleId, Long limit, Long rows) {
-        LOGGER.info("List<MemberRoleRelation> selectRelationByRowsAndRoleId(Long roleId, Long limit, Long rows), roleId = {}, limit = {}, rows = {}", roleId, limit, rows);
-        if (isInvalidIdentity(roleId))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid resId");
-        if (isInvalidLimit(limit))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid limit");
-        if (isInvalidRows(rows))
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid rows");
-
-        return memberRoleRelationMapper.selectByRowsAndRoleId(roleId, limit, rows);
-    }
-
-    /**
-     * count relation by role id
-     *
-     * @param roleId
-     * @return
-     */
-    @Override
-    public long countRelationByRoleId(Long roleId) {
-        LOGGER.info("long countRelationByRoleId(Long roleId), roleId = {}", roleId);
-        if (isInvalidIdentity(roleId))
-            throw new BlueException(INVALID_IDENTITY);
-
-        return memberRoleRelationMapper.countByRoleId(roleId);
     }
 
 }

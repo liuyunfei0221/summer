@@ -112,7 +112,7 @@ public final class RewardDateRelationManagerHandler {
     public Mono<ServerResponse> page(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(PAGE_MODEL_FOR_REWARD_DATE_RELATION_CONDITION_TYPE)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
-                .flatMap(rewardDateRelationService::selectRewardManagerInfoPageMonoByPageAndCondition)
+                .flatMap(rewardDateRelationService::selectRewardManagerInfoPageByPageAndCondition)
                 .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(pmr, serverRequest), BlueResponse.class));
@@ -127,7 +127,7 @@ public final class RewardDateRelationManagerHandler {
     public Mono<ServerResponse> selectByDate(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(MonthParam.class)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
-                .flatMap(rewardDateRelationService::selectRewardDateRelationMonoByYearAndMonth)
+                .flatMap(rewardDateRelationService::selectRewardDateRelationByYearAndMonth)
                 .flatMap(l ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(l, serverRequest), BlueResponse.class));

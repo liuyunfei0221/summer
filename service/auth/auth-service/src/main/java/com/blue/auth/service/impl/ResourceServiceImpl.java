@@ -32,14 +32,13 @@ import static com.blue.auth.converter.AuthModelConverters.*;
 import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.*;
-import static com.blue.basic.constant.common.SyncKey.RESOURCES_REFRESH_SYNC;
-import static com.blue.database.common.ConditionSortProcessor.process;
 import static com.blue.basic.common.base.ConstantProcessor.assertResourceType;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
-import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
 import static com.blue.basic.constant.common.CacheKey.RESOURCES;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.Symbol.PERCENT;
+import static com.blue.basic.constant.common.SyncKey.RESOURCES_REFRESH_SYNC;
+import static com.blue.database.common.ConditionSortProcessor.process;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -354,7 +353,7 @@ public class ResourceServiceImpl implements ResourceService {
      * @return
      */
     @Override
-    public Optional<Resource> getResource(Long id) {
+    public Optional<Resource> getResourceOpt(Long id) {
         LOGGER.info("Optional<Resource> getResourceById(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -369,7 +368,7 @@ public class ResourceServiceImpl implements ResourceService {
      * @return
      */
     @Override
-    public Mono<Resource> getResourceMono(Long id) {
+    public Mono<Resource> getResource(Long id) {
         LOGGER.info("Mono<Resource> getResourceMonoById(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -389,36 +388,19 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     /**
-     * select resources by ids
-     *
-     * @param ids
-     * @return
-     */
-    @Override
-    public List<Resource> selectResourceByIds(List<Long> ids) {
-        LOGGER.info("List<Resource> selectResourceByIds(List<Long> ids), ids = {}", ids);
-        if (isEmpty(ids))
-            return emptyList();
-        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
-            throw new BlueException(PAYLOAD_TOO_LARGE);
-
-        return allotByMax(ids, (int) DB_SELECT.value, false)
-                .stream().map(resourceMapper::selectByIds)
-                .flatMap(List::stream)
-                .collect(toList());
-    }
-
-    /**
      * select resources mono by ids
      *
      * @param ids
      * @return
      */
     @Override
-    public Mono<List<Resource>> selectResourceMonoByIds(List<Long> ids) {
+    public Mono<List<Resource>> selectResourceByIds(List<Long> ids) {
         LOGGER.info("Mono<List<Resource>> selectResourceMonoByIds(List<Long> ids), ids = {}", ids);
 
-        return just(this.selectResourceByIds(ids));
+        return just(allotByMax(ids, (int) DB_SELECT.value, false)
+                .stream().map(resourceMapper::selectByIds)
+                .flatMap(List::stream)
+                .collect(toList()));
     }
 
     /**
@@ -430,7 +412,7 @@ public class ResourceServiceImpl implements ResourceService {
      * @return
      */
     @Override
-    public Mono<List<Resource>> selectResourceMonoByLimitAndCondition(Long limit, Long rows, ResourceCondition resourceCondition) {
+    public Mono<List<Resource>> selectResourceByLimitAndCondition(Long limit, Long rows, ResourceCondition resourceCondition) {
         LOGGER.info("Mono<List<Resource>> selectResourceMonoByLimitAndCondition(Long limit, Long rows, ResourceCondition resourceCondition), " +
                 "limit = {}, rows = {}, resourceCondition = {}", limit, rows, resourceCondition);
         return just(resourceMapper.selectByLimitAndCondition(limit, rows, resourceCondition));
@@ -443,7 +425,7 @@ public class ResourceServiceImpl implements ResourceService {
      * @return
      */
     @Override
-    public Mono<Long> countResourceMonoByCondition(ResourceCondition resourceCondition) {
+    public Mono<Long> countResourceByCondition(ResourceCondition resourceCondition) {
         LOGGER.info("Mono<Long> countResourceMonoByCondition(ResourceCondition resourceCondition), resourceCondition = {}", resourceCondition);
         return just(ofNullable(resourceMapper.countByCondition(resourceCondition)).orElse(0L));
     }
@@ -455,7 +437,7 @@ public class ResourceServiceImpl implements ResourceService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<ResourceManagerInfo>> selectResourceManagerInfoPageMonoByPageAndCondition(PageModelRequest<ResourceCondition> pageModelRequest) {
+    public Mono<PageModelResponse<ResourceManagerInfo>> selectResourceManagerInfoPageByPageAndCondition(PageModelRequest<ResourceCondition> pageModelRequest) {
         LOGGER.info("Mono<PageModelResponse<ResourceInfo>> selectResourceInfoPageMonoByPageAndCondition(PageModelRequest<ResourceCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
@@ -463,7 +445,7 @@ public class ResourceServiceImpl implements ResourceService {
 
         ResourceCondition resourceCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
-        return zip(selectResourceMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), resourceCondition), countResourceMonoByCondition(resourceCondition))
+        return zip(selectResourceByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), resourceCondition), countResourceByCondition(resourceCondition))
                 .flatMap(tuple2 -> {
                     List<Resource> resources = tuple2.getT1();
                     Long count = tuple2.getT2();

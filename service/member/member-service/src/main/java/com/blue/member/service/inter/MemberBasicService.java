@@ -78,7 +78,7 @@ public interface MemberBasicService {
      * @param id
      * @return
      */
-    MemberBasic getMemberBasicSync(Long id);
+    Optional<MemberBasic> getMemberBasicOpt(Long id);
 
     /**
      * get member mono by id

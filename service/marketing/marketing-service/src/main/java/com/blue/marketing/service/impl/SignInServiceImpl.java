@@ -108,7 +108,8 @@ public class SignInServiceImpl implements SignInService {
         int backUp = 0;
 
         List<RewardDateRelation> relations;
-        while (isEmpty(relations = rewardDateRelationService.selectRewardDateRelationByYearAndMonth(tarYear, tarMonth)) && ++backUp < MAX_BACKUP)
+        while (isEmpty(relations = rewardDateRelationService.selectRewardDateRelationByYearAndMonth(tarYear, tarMonth)
+                .toFuture().join()) && ++backUp < MAX_BACKUP)
             if (--tarMonth < MIN_MONTH) {
                 tarMonth = MAX_MONTH;
                 --tarYear;
@@ -118,7 +119,7 @@ public class SignInServiceImpl implements SignInService {
             throw new RuntimeException("The reward information of the current or backup month is not configured");
 
         List<Reward> rewards = rewardService.selectRewardByIds(relations.stream()
-                .map(RewardDateRelation::getRewardId).collect(toList()));
+                .map(RewardDateRelation::getRewardId).collect(toList())).toFuture().join();
         Map<Long, Reward> rewardMap = rewards.stream().collect(toMap(Reward::getId, identity(), (a, b) -> a));
 
         LocalDate currentDate = LocalDate.of(year, month, 1);

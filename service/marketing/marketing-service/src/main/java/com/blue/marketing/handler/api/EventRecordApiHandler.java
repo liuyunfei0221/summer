@@ -41,7 +41,7 @@ public final class EventRecordApiHandler {
         return zip(serverRequest.bodyToMono(SCROLL_MODEL_FOR_EVENT_RECORD_TYPE)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
-                .flatMap(tuple2 -> eventRecordService.selectEventRecordInfoScrollMonoByScrollAndCursorBaseOnMemberId(tuple2.getT1(), tuple2.getT2().getId())
+                .flatMap(tuple2 -> eventRecordService.selectEventRecordInfoScrollByScrollAndCursorBaseOnMemberId(tuple2.getT1(), tuple2.getT2().getId())
                 )
                 .flatMap(smr ->
                         ok().contentType(APPLICATION_JSON)

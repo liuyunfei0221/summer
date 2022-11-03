@@ -388,7 +388,7 @@ public class RoleServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public Optional<Role> getRole(Long id) {
+    public Optional<Role> getRoleOpt(Long id) {
         LOGGER.info("Optional<Role> getRoleById(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -403,7 +403,7 @@ public class RoleServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public Mono<Role> getRoleMono(Long id) {
+    public Mono<Role> getRole(Long id) {
         LOGGER.info("Mono<Role> getRoleMonoById(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -418,30 +418,17 @@ public class RoleServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public List<Role> selectRoleByIds(List<Long> ids) {
+    public Mono<List<Role>> selectRoleByIds(List<Long> ids) {
         LOGGER.info("Mono<List<Role>> selectRoleMonoByIds(List<Long> ids), ids = {}", ids);
         if (isEmpty(ids))
-            return emptyList();
+            return just(emptyList());
         if (ids.size() > (int) MAX_SERVICE_SELECT.value)
             throw new BlueException(PAYLOAD_TOO_LARGE);
 
-        return allotByMax(ids, (int) DB_SELECT.value, false)
+        return just(allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(roleMapper::selectByIds)
                 .flatMap(List::stream)
-                .collect(toList());
-    }
-
-    /**
-     * select roles mono by ids
-     *
-     * @param ids
-     * @return
-     */
-    @Override
-    public Mono<List<Role>> selectRoleMonoByIds(List<Long> ids) {
-        LOGGER.info("Mono<List<Role>> selectRoleMonoByIds(List<Long> ids), ids = {}", ids);
-
-        return just(this.selectRoleByIds(ids));
+                .collect(toList()));
     }
 
     /**
@@ -464,7 +451,7 @@ public class RoleServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public Mono<List<Role>> selectRoleMonoByLimitAndCondition(Long limit, Long rows, RoleCondition roleCondition) {
+    public Mono<List<Role>> selectRoleByLimitAndCondition(Long limit, Long rows, RoleCondition roleCondition) {
         LOGGER.info("Mono<List<Role>> selectRoleMonoByLimitAndCondition(Long limit, Long rows, RoleCondition roleCondition), " +
                 "limit = {}, rows = {}, roleCondition = {}", limit, rows, roleCondition);
         return just(roleMapper.selectByLimitAndCondition(limit, rows, roleCondition));
@@ -477,7 +464,7 @@ public class RoleServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public Mono<Long> countRoleMonoByCondition(RoleCondition roleCondition) {
+    public Mono<Long> countRoleByCondition(RoleCondition roleCondition) {
         LOGGER.info("Mono<Long> countRoleMonoByCondition(RoleCondition roleCondition), roleCondition = {}", roleCondition);
         return just(ofNullable(roleMapper.countByCondition(roleCondition)).orElse(0L));
     }
@@ -489,7 +476,7 @@ public class RoleServiceImpl implements RoleService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<RoleManagerInfo>> selectRoleManagerInfoPageMonoByPageAndCondition(PageModelRequest<RoleCondition> pageModelRequest) {
+    public Mono<PageModelResponse<RoleManagerInfo>> selectRoleManagerInfoPageByPageAndCondition(PageModelRequest<RoleCondition> pageModelRequest) {
         LOGGER.info("Mono<PageModelResponse<RoleInfo>> selectRoleInfoPageMonoByPageAndCondition(PageModelRequest<RoleCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
 
@@ -498,7 +485,7 @@ public class RoleServiceImpl implements RoleService {
 
         RoleCondition roleCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
-        return zip(selectRoleMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), roleCondition), countRoleMonoByCondition(roleCondition))
+        return zip(selectRoleByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), roleCondition), countRoleByCondition(roleCondition))
                 .flatMap(tuple2 -> {
                     List<Role> roles = tuple2.getT1();
                     Long count = tuple2.getT2();

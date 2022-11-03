@@ -81,7 +81,7 @@ public class PhoneAndPwdSessionHandler implements SessionHandler {
         if (isBlank(phone) || isBlank(access))
             throw new BlueException(INVALID_ACCT_OR_PWD);
 
-        return credentialService.getCredentialMonoByCredentialAndType(phone, PHONE_PWD.identity)
+        return credentialService.getCredentialByCredentialAndType(phone, PHONE_PWD.identity)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INVALID_ACCT_OR_PWD))))
                 .flatMap(credential ->
                         just(ofNullable(credential)
@@ -93,7 +93,7 @@ public class PhoneAndPwdSessionHandler implements SessionHandler {
                 ).flatMap(rpcMemberBasicServiceConsumer::getMemberBasicInfo)
                 .flatMap(mbi -> {
                     MEMBER_STATUS_ASSERTER.accept(mbi);
-                    return authService.generateAuthMono(mbi.getId(), PHONE_PWD.identity, loginParam.getDeviceType().intern())
+                    return authService.generateAuth(mbi.getId(), PHONE_PWD.identity, loginParam.getDeviceType().intern())
                             .flatMap(ma -> ok().contentType(APPLICATION_JSON)
                                     .header(AUTHORIZATION.name, ma.getAuth())
                                     .header(SECRET.name, ma.getSecKey())
