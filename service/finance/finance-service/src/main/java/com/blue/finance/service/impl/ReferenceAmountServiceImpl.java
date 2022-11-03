@@ -31,7 +31,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavadocDeclaration", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"JavadocDeclaration", "AliControlFlowStatementWithoutBraces"})
 @Service
 public class ReferenceAmountServiceImpl implements ReferenceAmountService {
 

@@ -80,7 +80,7 @@ public interface ShineService {
      * @param id
      * @return
      */
-    Mono<Shine> getShineMono(Long id);
+    Mono<Shine> getShine(Long id);
 
     /**
      * query shine info mono by id with assert
@@ -88,7 +88,7 @@ public interface ShineService {
      * @param id
      * @return
      */
-    Mono<ShineInfo> getShineInfoMonoWithAssert(Long id);
+    Mono<ShineInfo> getShineInfoWithAssert(Long id);
 
     /**
      * select shine info by ids
@@ -96,7 +96,7 @@ public interface ShineService {
      * @param ids
      * @return
      */
-    Mono<List<ShineInfo>> selectShineInfoMonoByIds(List<Long> ids);
+    Mono<List<ShineInfo>> selectShineInfoByIds(List<Long> ids);
 
     /**
      * select shine info scroll by cursor
@@ -104,7 +104,7 @@ public interface ShineService {
      * @param scrollModelRequest
      * @return
      */
-    Mono<ScrollModelResponse<ShineInfo, SearchAfterCursor>> selectShineInfoScrollMonoByScrollAndCursor(ScrollModelRequest<ShineCondition, SearchAfterCursor> scrollModelRequest);
+    Mono<ScrollModelResponse<ShineInfo, SearchAfterCursor>> selectShineInfoScrollByScrollAndCursor(ScrollModelRequest<ShineCondition, SearchAfterCursor> scrollModelRequest);
 
     /**
      * select shine info scroll by cursor with pit
@@ -112,7 +112,7 @@ public interface ShineService {
      * @param scrollModelRequest
      * @return
      */
-    Mono<ScrollModelResponse<ShineInfo, PitCursor>> selectShineInfoScrollMonoByScrollAndCursorBaseOnSnapShot(ScrollModelRequest<ShineCondition, PitCursor> scrollModelRequest);
+    Mono<ScrollModelResponse<ShineInfo, PitCursor>> selectShineInfoScrollByScrollAndCursorBaseOnSnapShot(ScrollModelRequest<ShineCondition, PitCursor> scrollModelRequest);
 
     /**
      * select shine info page by condition
@@ -120,6 +120,6 @@ public interface ShineService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<ShineInfo>> selectShineInfoPageMonoByPageAndCondition(PageModelRequest<ShineCondition> pageModelRequest);
+    Mono<PageModelResponse<ShineInfo>> selectShineInfoPageByPageAndCondition(PageModelRequest<ShineCondition> pageModelRequest);
 
 }

@@ -88,7 +88,7 @@ public final class CardApiHandler {
      */
     public Mono<ServerResponse> select(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
-                .flatMap(acc -> cardService.selectCardInfoMonoByMemberId(acc.getId()))
+                .flatMap(acc -> cardService.selectCardInfoByMemberId(acc.getId()))
                 .flatMap(mai ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(mai, serverRequest), BlueResponse.class));

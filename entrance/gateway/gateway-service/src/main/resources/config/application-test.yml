@@ -58,8 +58,7 @@ web:
 cache:
   server-mode: SINGLE
   nodes: [ 172.18.7.1:6379, 172.18.7.1:6380, 172.18.7.2:6379, 172.18.7.2:6380, 172.18.7.3:6379, 172.18.7.3:6380 ]
-  host: 43.138.111.53
-  port: 6379
+  address: 43.138.111.53:6379
   password: LiuZhiyi20200805
   max-redirects: 4
   min-idle: 4

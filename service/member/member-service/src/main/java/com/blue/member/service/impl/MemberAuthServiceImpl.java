@@ -120,7 +120,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
         LOGGER.info("MemberBasicInfo updateMemberCredentialAttr(List<String> credentialTypes, String credential, Long memberId), credentialTypes = {}, credential = {}, memberId = {}",
                 credentialTypes, credential, memberId);
 
-        MemberBasic memberBasic = memberBasicService.getMemberBasic(memberId);
+        MemberBasic memberBasic = memberBasicService.getMemberBasicSync(memberId);
         credentialCollectProcessor.packageCredentialAttr(credentialTypes, credential, memberBasic);
 
         return memberBasicService.updateMemberBasic(memberBasic);
@@ -141,7 +141,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
 
         MemberBasicCondition memberBasicCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
-        return zip(memberBasicService.selectMemberBasicMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberBasicCondition), memberBasicService.countMemberBasicMonoByCondition(memberBasicCondition))
+        return zip(memberBasicService.selectMemberBasicByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberBasicCondition), memberBasicService.countMemberBasicByCondition(memberBasicCondition))
                 .flatMap(tuple2 -> {
                     List<MemberBasic> members = tuple2.getT1();
                     Long count = tuple2.getT2();

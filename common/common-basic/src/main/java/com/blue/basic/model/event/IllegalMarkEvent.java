@@ -13,9 +13,9 @@ public final class IllegalMarkEvent implements Serializable {
     private static final long serialVersionUID = -1983751954933572385L;
 
     /**
-     * jwt str
+     * member id str
      */
-    private String jwt;
+    private String memberId;
 
     /**
      * target ip
@@ -40,20 +40,20 @@ public final class IllegalMarkEvent implements Serializable {
     public IllegalMarkEvent() {
     }
 
-    public IllegalMarkEvent(String jwt, String ip, String resourceKey, Boolean mark, Long illegalExpiresSecond) {
-        this.jwt = jwt;
+    public IllegalMarkEvent(String memberId, String ip, String resourceKey, Boolean mark, Long illegalExpiresSecond) {
+        this.memberId = memberId;
         this.ip = ip;
         this.resourceKey = resourceKey;
         this.mark = mark;
         this.illegalExpiresSecond = illegalExpiresSecond;
     }
 
-    public String getJwt() {
-        return jwt;
+    public String getMemberId() {
+        return memberId;
     }
 
-    public void setJwt(String jwt) {
-        this.jwt = jwt;
+    public void setMemberId(String memberId) {
+        this.memberId = memberId;
     }
 
     public String getIp() {
@@ -91,7 +91,7 @@ public final class IllegalMarkEvent implements Serializable {
     @Override
     public String toString() {
         return "IllegalMarkEvent{" +
-                "jwt='" + jwt + '\'' +
+                "memberId='" + memberId + '\'' +
                 ", ip='" + ip + '\'' +
                 ", resourceKey='" + resourceKey + '\'' +
                 ", mark=" + mark +

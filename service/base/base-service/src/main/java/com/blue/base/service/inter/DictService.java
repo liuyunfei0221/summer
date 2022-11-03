@@ -21,14 +21,7 @@ public interface DictService {
      *
      * @return
      */
-    List<DictType> selectDictType();
-
-    /**
-     * select all dict
-     *
-     * @return
-     */
-    List<Dict> selectDict();
+    Mono<List<DictType>> selectDictType();
 
     /**
      * select dict by dict type code
@@ -36,7 +29,7 @@ public interface DictService {
      * @param code
      * @return
      */
-    List<Dict> selectDictByTypeCode(String code);
+    Mono<List<Dict>> selectDictByTypeCode(String code);
 
     /**
      * select all dict types

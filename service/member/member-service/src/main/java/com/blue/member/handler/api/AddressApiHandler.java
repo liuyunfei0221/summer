@@ -88,7 +88,7 @@ public final class AddressApiHandler {
      */
     public Mono<ServerResponse> select(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
-                .flatMap(acc -> addressService.selectAddressInfoMonoByMemberId(acc.getId()))
+                .flatMap(acc -> addressService.selectAddressInfoByMemberId(acc.getId()))
                 .flatMap(mai ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(mai, serverRequest), BlueResponse.class));

@@ -173,7 +173,7 @@ public class AgreementRecordServiceImpl implements AgreementRecordService {
         if (isInvalidIdentity(memberId))
             throw new BlueException(UNAUTHORIZED);
 
-        return agreementService.selectNewestAgreementInfosMonoByAllTypeWithCache()
+        return agreementService.selectNewestAgreementInfosByAllTypeWithCache()
                 .map(ais -> ais.stream().collect(toMap(AgreementInfo::getId, identity(), (a, b) -> a)))
                 .flatMap(idAndAgreementInfoMapping ->
                         reactiveMongoTemplate.find(query(where(MEMBER_ID.name).is(memberId)
@@ -266,7 +266,7 @@ public class AgreementRecordServiceImpl implements AgreementRecordService {
                     zip(rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(agreementRecords.stream().map(AgreementRecord::getMemberId).collect(toList()))
                                     .map(memberBasicInfos -> memberBasicInfos.stream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a)))
                             ,
-                            agreementService.selectAgreementInfoMonoByIds(agreementRecords.stream().map(AgreementRecord::getAgreementId).collect(toList()))
+                            agreementService.selectAgreementInfoByIds(agreementRecords.stream().map(AgreementRecord::getAgreementId).collect(toList()))
                                     .map(agreementInfos -> agreementInfos.stream().collect(toMap(AgreementInfo::getId, identity(), (a, b) -> a)))
                     ).flatMap(t2 -> {
                         Map<Long, String> memberIdAndNameMapping = t2.getT1();

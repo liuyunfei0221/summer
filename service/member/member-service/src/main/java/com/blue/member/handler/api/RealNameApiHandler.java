@@ -40,7 +40,7 @@ public final class RealNameApiHandler {
     public Mono<ServerResponse> get(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
-                        realNameService.getRealNameInfoMonoByMemberIdWithAssert(acc.getId())
+                        realNameService.getRealNameInfoByMemberIdWithAssert(acc.getId())
                                 .flatMap(mri ->
                                         ok().contentType(APPLICATION_JSON)
                                                 .body(success(mri, serverRequest), BlueResponse.class))

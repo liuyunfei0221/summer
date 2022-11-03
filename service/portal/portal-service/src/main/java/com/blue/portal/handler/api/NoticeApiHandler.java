@@ -39,7 +39,7 @@ public final class NoticeApiHandler {
      * @return
      */
     public Mono<ServerResponse> get(ServerRequest serverRequest) {
-        return noticeService.getNoticeInfoMonoByTypeWithCache(getIntegerVariable(serverRequest, TYPE.key))
+        return noticeService.getNoticeInfoByTypeWithCache(getIntegerVariable(serverRequest, TYPE.key))
                 .flatMap(ni -> ok()
                         .contentType(APPLICATION_JSON)
                         .body(success(ni, serverRequest), BlueResponse.class)

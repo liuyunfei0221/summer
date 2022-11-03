@@ -1,6 +1,7 @@
 package com.blue.shine.service.impl;
 
 import co.elastic.clients.elasticsearch.ElasticsearchAsyncClient;
+import co.elastic.clients.elasticsearch._types.FieldValue;
 import co.elastic.clients.elasticsearch._types.SortOptions;
 import co.elastic.clients.elasticsearch._types.Time;
 import co.elastic.clients.elasticsearch._types.query_dsl.*;
@@ -132,7 +133,7 @@ public class ShineServiceImpl implements ShineService {
         if (isNull(shine) || isInvalidIdentity(cid))
             return;
 
-        CityRegion cityRegion = cityService.getCityRegionById(cid);
+        CityRegion cityRegion = cityService.getCityRegionById(cid).toFuture().join();
 
         ofNullable(cityRegion.getCountry())
                 .ifPresent(countryInfo -> {
@@ -352,9 +353,15 @@ public class ShineServiceImpl implements ShineService {
                     .size(scrollModelRequest.getRows().intValue());
 
             packageHighlight(builder, queryAndHighlightColumns.getColumns(), preTags, postTags);
-            packageSearchAfter(builder, ofNullable(scrollModelRequest.getCursor())
+
+            ofNullable(scrollModelRequest.getCursor())
                     .map(SearchAfterCursor::getSearchAfter)
-                    .filter(BlueChecker::isNotEmpty).orElseGet(Collections::emptyList));
+                    .filter(BlueChecker::isNotEmpty)
+                    .ifPresent(cursors ->
+                            packageSearchAfter(builder, cursors.stream()
+                                    .map(Long::valueOf)
+                                    .map(FieldValue::of)
+                                    .collect(toList())));
 
             return builder;
         }));
@@ -384,7 +391,14 @@ public class ShineServiceImpl implements ShineService {
                                     .size(scrollModelRequest.getRows().intValue());
 
                             packageHighlight(builder, queryAndHighlightColumns.getColumns(), preTags, postTags);
-                            packageSearchAfter(builder, ofNullable(cursor).map(PitCursor::getSearchAfter).filter(BlueChecker::isNotEmpty).orElseGet(Collections::emptyList));
+
+                            ofNullable(cursor).map(PitCursor::getSearchAfter).filter(BlueChecker::isNotEmpty)
+                                    .ifPresent(cursors ->
+                                            packageSearchAfter(builder, cursors.stream()
+
+                                                    .map(FieldValue::of)
+                                                    .collect(toList())));
+
                             packagePit(builder, id, pitTime);
 
                             return builder;
@@ -422,7 +436,7 @@ public class ShineServiceImpl implements ShineService {
      * @return
      */
     public Mono<ShineInfo> insertShine(ShineInsertParam shineInsertParam, Long memberId) {
-        LOGGER.info("Mono<ShineInfo> insertShine(ShineInsertParam shineInsertParam, Long memberId), shineInsertParam = {}, memberId = {}",
+        LOGGER.info("shineInsertParam = {}, memberId = {}",
                 shineInsertParam, memberId);
         if (shineInsertParam == null)
             throw new BlueException(EMPTY_PARAM);
@@ -436,7 +450,7 @@ public class ShineServiceImpl implements ShineService {
                     try {
                         shineInsertProducer.send(shine);
                     } catch (Exception e) {
-                        LOGGER.error("shineInsertProducer.send(shine) failed, shine = {}, e = {}", shine, e);
+                        LOGGER.error("shineInsertProducer send failed, shine = {}, e = {}", shine, e);
                     }
                     return just(shine);
                 })
@@ -451,7 +465,7 @@ public class ShineServiceImpl implements ShineService {
      */
     @Override
     public Mono<Boolean> insertShineEvent(Shine shine) {
-        LOGGER.info("Mono<Boolean> insertShineEvent(Shine shine), shine = {}", shine);
+        LOGGER.info("shine = {}", shine);
         if (shine == null)
             throw new BlueException(EMPTY_PARAM);
 
@@ -464,7 +478,7 @@ public class ShineServiceImpl implements ShineService {
                     return just(true);
                 })
                 .onErrorResume(throwable -> {
-                    LOGGER.info("Mono<Boolean> insertShineEvent(Shine shine) failed, shine = {}, throwable = {}", shine, throwable);
+                    LOGGER.info("insertShineEvent failed, shine = {}, throwable = {}", shine, throwable);
                     shineInsertProducer.send(shine);
 
                     return just(false);
@@ -479,7 +493,7 @@ public class ShineServiceImpl implements ShineService {
      * @return
      */
     public Mono<ShineInfo> updateShine(ShineUpdateParam shineUpdateParam, Long memberId) {
-        LOGGER.info("Mono<ShineInfo> updateShine(ShineUpdateParam shineUpdateParam, Long memberId), shineUpdateParam = {}, memberId = {}", shineUpdateParam, memberId);
+        LOGGER.info("shineUpdateParam = {}, memberId = {}", shineUpdateParam, memberId);
         if (isNull(shineUpdateParam))
             throw new BlueException(EMPTY_PARAM);
         shineUpdateParam.asserts();
@@ -496,7 +510,7 @@ public class ShineServiceImpl implements ShineService {
                     try {
                         shineUpdateProducer.send(shine);
                     } catch (Exception e) {
-                        LOGGER.error("shineUpdateProducer.send(shine) failed, shine = {}, e = {}", shine, e);
+                        LOGGER.error("shineUpdateProducer send failed, shine = {}, e = {}", shine, e);
                     }
                     return just(shine);
                 })
@@ -511,7 +525,7 @@ public class ShineServiceImpl implements ShineService {
      */
     @Override
     public Mono<Boolean> updateShineEvent(Shine shine) {
-        LOGGER.info("Mono<Boolean> updateShineEvent(Shine shine), shine = {}", shine);
+        LOGGER.info("shine = {}", shine);
         if (shine == null)
             throw new BlueException(EMPTY_PARAM);
 
@@ -524,7 +538,7 @@ public class ShineServiceImpl implements ShineService {
                     return just(true);
                 })
                 .onErrorResume(throwable -> {
-                    LOGGER.info("Mono<Boolean> updateShineEvent(Shine shine) failed, shine = {}, throwable = {}", shine, throwable);
+                    LOGGER.info("updateShineEvent failed, shine = {}, throwable = {}", shine, throwable);
                     shineUpdateProducer.send(shine);
 
                     return just(false);
@@ -539,7 +553,7 @@ public class ShineServiceImpl implements ShineService {
      */
     @Override
     public Mono<ShineInfo> deleteShine(Long id) {
-        LOGGER.info("Mono<ShineInfo> deleteShine(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -552,7 +566,7 @@ public class ShineServiceImpl implements ShineService {
                     try {
                         shineDeleteProducer.send(new IdentityEvent(id));
                     } catch (Exception e) {
-                        LOGGER.error("shineDeleteProducer.send(identityEvent) failed, id = {}, e = {}", id, e);
+                        LOGGER.error("shineDeleteProducer send failed, id = {}, e = {}", id, e);
                     }
                     return just(shine);
                 })
@@ -567,7 +581,7 @@ public class ShineServiceImpl implements ShineService {
      */
     @Override
     public Mono<Boolean> deleteShineEvent(IdentityEvent identityEvent) {
-        LOGGER.info("Mono<Boolean> deleteShineEvent(IdentityEvent identityEvent), identityEvent = {}", identityEvent);
+        LOGGER.info("identityEvent = {}", identityEvent);
         if (isNull(identityEvent))
             throw new BlueException(EMPTY_PARAM);
 
@@ -583,7 +597,7 @@ public class ShineServiceImpl implements ShineService {
                     return just(true);
                 })
                 .onErrorResume(throwable -> {
-                    LOGGER.info("Mono<Boolean> deleteShineEvent(IdentityEvent identityEvent) failed, identityEvent = {}, throwable = {}", identityEvent, throwable);
+                    LOGGER.info("deleteShineEvent failed, identityEvent = {}, throwable = {}", identityEvent, throwable);
                     shineDeleteProducer.send(identityEvent);
 
                     return just(false);
@@ -597,8 +611,8 @@ public class ShineServiceImpl implements ShineService {
      * @return
      */
     @Override
-    public Mono<Shine> getShineMono(Long id) {
-        LOGGER.info("Mono<Shine> getShineMono(Long id), id = {}", id);
+    public Mono<Shine> getShine(Long id) {
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -619,13 +633,13 @@ public class ShineServiceImpl implements ShineService {
      * @return
      */
     @Override
-    public Mono<ShineInfo> getShineInfoMonoWithAssert(Long id) {
-        LOGGER.info("Mono<ShineInfo> getShineInfoMonoWithAssert(Long id), id = {}", id);
+    public Mono<ShineInfo> getShineInfoWithAssert(Long id) {
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
         return just(id)
-                .flatMap(this::getShineMono)
+                .flatMap(this::getShine)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .flatMap(s ->
                         just(SHINE_2_SHINE_INFO.apply(s))
@@ -639,8 +653,8 @@ public class ShineServiceImpl implements ShineService {
      * @return
      */
     @Override
-    public Mono<List<ShineInfo>> selectShineInfoMonoByIds(List<Long> ids) {
-        LOGGER.info("Mono<List<AddressInfo>> selectAddressInfoMonoByIds(List<Long> ids), ids = {}", ids);
+    public Mono<List<ShineInfo>> selectShineInfoByIds(List<Long> ids) {
+        LOGGER.info("ids = {}", ids);
         if (isEmpty(ids))
             return just(emptyList());
         if (ids.size() > (int) MAX_SERVICE_SELECT.value)
@@ -671,9 +685,8 @@ public class ShineServiceImpl implements ShineService {
      * @return
      */
     @Override
-    public Mono<ScrollModelResponse<ShineInfo, SearchAfterCursor>> selectShineInfoScrollMonoByScrollAndCursor(ScrollModelRequest<ShineCondition, SearchAfterCursor> scrollModelRequest) {
-        LOGGER.info("Mono<ScrollModelResponse<ShineInfo, SearchAfterCursor>> selectShineInfoScrollMonoByScrollAndCursor(ScrollModelRequest<ShineCondition, SearchAfterCursor> scrollModelRequest), " +
-                "scrollModelRequest = {}", scrollModelRequest);
+    public Mono<ScrollModelResponse<ShineInfo, SearchAfterCursor>> selectShineInfoScrollByScrollAndCursor(ScrollModelRequest<ShineCondition, SearchAfterCursor> scrollModelRequest) {
+        LOGGER.info("scrollModelRequest = {}", scrollModelRequest);
         if (isNull(scrollModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
@@ -685,7 +698,7 @@ public class ShineServiceImpl implements ShineService {
                                 .filter(BlueChecker::isNotEmpty)
                                 .map(hits ->
                                         just(new ScrollModelResponse<>(parseHighlight(hits, HIGH_LIGHT_PROCESSORS).stream().map(SHINE_2_SHINE_INFO).collect(toList()),
-                                                new SearchAfterCursor(parseSearchAfter(hits))))
+                                                new SearchAfterCursor(parseSearchAfter(hits).stream().map(FieldValue::longValue).map(String::valueOf).collect(toList()))))
                                 ).orElseGet(() -> just(new ScrollModelResponse<>(emptyList())))
                 )
                 .switchIfEmpty(defer(() -> just(new ScrollModelResponse<>(emptyList()))));
@@ -698,9 +711,8 @@ public class ShineServiceImpl implements ShineService {
      * @return
      */
     @Override
-    public Mono<ScrollModelResponse<ShineInfo, PitCursor>> selectShineInfoScrollMonoByScrollAndCursorBaseOnSnapShot(ScrollModelRequest<ShineCondition, PitCursor> scrollModelRequest) {
-        LOGGER.info("Mono<ScrollModelResponse<ShineInfo, PitCursor>> selectShineInfoScrollMonoByScrollAndCursorBaseOnSnapShot(ScrollModelRequest<ShineCondition, PitCursor> scrollModelRequest), " +
-                "scrollModelRequest = {}", scrollModelRequest);
+    public Mono<ScrollModelResponse<ShineInfo, PitCursor>> selectShineInfoScrollByScrollAndCursorBaseOnSnapShot(ScrollModelRequest<ShineCondition, PitCursor> scrollModelRequest) {
+        LOGGER.info("scrollModelRequest = {}", scrollModelRequest);
         if (isNull(scrollModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
@@ -712,7 +724,7 @@ public class ShineServiceImpl implements ShineService {
                                 .filter(BlueChecker::isNotEmpty)
                                 .map(hits ->
                                         just(new ScrollModelResponse<>(parseHighlight(hits, HIGH_LIGHT_PROCESSORS).stream().map(SHINE_2_SHINE_INFO).collect(toList()),
-                                                new PitCursor(parsePit(searchResponse), parseSearchAfter(hits))))
+                                                new PitCursor(parsePit(searchResponse), parseSearchAfter(hits).stream().map(FieldValue::longValue).map(String::valueOf).collect(toList()))))
                                 ).orElseGet(() -> just(new ScrollModelResponse<>(emptyList(), new PitCursor())))
                 )
                 .switchIfEmpty(defer(() -> just(new ScrollModelResponse<>(emptyList()))));
@@ -725,9 +737,8 @@ public class ShineServiceImpl implements ShineService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<ShineInfo>> selectShineInfoPageMonoByPageAndCondition(PageModelRequest<ShineCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<AddressInfo>> selectAddressInfoPageMonoByPageAndCondition(PageModelRequest<AddressCondition> pageModelRequest), " +
-                "pageModelRequest = {}", pageModelRequest);
+    public Mono<PageModelResponse<ShineInfo>> selectShineInfoPageByPageAndCondition(PageModelRequest<ShineCondition> pageModelRequest) {
+        LOGGER.info("pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 

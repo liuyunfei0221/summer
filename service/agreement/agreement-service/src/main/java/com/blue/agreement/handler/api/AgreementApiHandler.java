@@ -35,7 +35,7 @@ public class AgreementApiHandler {
      * @return
      */
     public Mono<ServerResponse> get(ServerRequest serverRequest) {
-        return agreementService.getNewestAgreementInfoMonoByTypeWithCache(getIntegerVariable(serverRequest, TYPE.key))
+        return agreementService.getNewestAgreementInfoByTypeWithCache(getIntegerVariable(serverRequest, TYPE.key))
                 .flatMap(ai -> ok()
                         .contentType(APPLICATION_JSON)
                         .body(success(ai, serverRequest), BlueResponse.class)

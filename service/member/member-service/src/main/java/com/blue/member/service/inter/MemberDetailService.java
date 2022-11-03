@@ -46,20 +46,12 @@ public interface MemberDetailService {
     MemberDetailInfo updateMemberDetailStatus(Long memberId, StatusParam statusParam);
 
     /**
-     * get by id
-     *
-     * @param id
-     * @return
-     */
-    MemberDetail getMemberDetail(Long id);
-
-    /**
      * get member detail by id
      *
      * @param id
      * @return
      */
-    Mono<MemberDetail> getMemberDetailMono(Long id);
+    Mono<MemberDetail> getMemberDetail(Long id);
 
     /**
      * query member by id with assert
@@ -67,7 +59,7 @@ public interface MemberDetailService {
      * @param id
      * @return
      */
-    Mono<MemberDetailInfo> getMemberDetailInfoMonoWithAssert(Long id);
+    Mono<MemberDetailInfo> getMemberDetailInfoWithAssert(Long id);
 
     /**
      * get member detail info mono by member id
@@ -75,7 +67,7 @@ public interface MemberDetailService {
      * @param memberId
      * @return
      */
-    Mono<MemberDetailInfo> getMemberDetailInfoMonoByMemberId(Long memberId);
+    Mono<MemberDetailInfo> getMemberDetailInfoByMemberId(Long memberId);
 
     /**
      * query member detail by member id with assert
@@ -83,15 +75,7 @@ public interface MemberDetailService {
      * @param memberId
      * @return
      */
-    Mono<MemberDetailInfo> getMemberDetailInfoMonoByMemberIdWithAssert(Long memberId);
-
-    /**
-     * select members by ids
-     *
-     * @param ids
-     * @return
-     */
-    List<MemberDetail> selectMemberDetailByIds(List<Long> ids);
+    Mono<MemberDetailInfo> getMemberDetailInfoByMemberIdWithAssert(Long memberId);
 
     /**
      * select members mono by ids
@@ -99,7 +83,7 @@ public interface MemberDetailService {
      * @param ids
      * @return
      */
-    Mono<List<MemberDetail>> selectMemberDetailMonoByIds(List<Long> ids);
+    Mono<List<MemberDetail>> selectMemberDetailByIds(List<Long> ids);
 
     /**
      * select members by ids
@@ -107,15 +91,7 @@ public interface MemberDetailService {
      * @param ids
      * @return
      */
-    Mono<List<MemberDetailInfo>> selectMemberDetailInfoMonoByIds(List<Long> ids);
-
-    /**
-     * select details by member ids
-     *
-     * @param memberIds
-     * @return
-     */
-    List<MemberDetail> selectMemberDetailByMemberIds(List<Long> memberIds);
+    Mono<List<MemberDetailInfo>> selectMemberDetailInfoByIds(List<Long> ids);
 
     /**
      * select details mono by member ids
@@ -123,7 +99,7 @@ public interface MemberDetailService {
      * @param memberIds
      * @return
      */
-    Mono<List<MemberDetail>> selectMemberDetailMonoByMemberIds(List<Long> memberIds);
+    Mono<List<MemberDetail>> selectMemberDetailByMemberIds(List<Long> memberIds);
 
     /**
      * select details by member ids
@@ -131,7 +107,7 @@ public interface MemberDetailService {
      * @param memberIds
      * @return
      */
-    Mono<List<MemberDetailInfo>> selectMemberDetailInfoMonoByMemberIds(List<Long> memberIds);
+    Mono<List<MemberDetailInfo>> selectMemberDetailInfoByMemberIds(List<Long> memberIds);
 
     /**
      * select member detail by page and condition
@@ -141,7 +117,7 @@ public interface MemberDetailService {
      * @param memberDetailCondition
      * @return
      */
-    Mono<List<MemberDetail>> selectMemberDetailMonoByLimitAndCondition(Long limit, Long rows, MemberDetailCondition memberDetailCondition);
+    Mono<List<MemberDetail>> selectMemberDetailByLimitAndCondition(Long limit, Long rows, MemberDetailCondition memberDetailCondition);
 
     /**
      * count member detail by condition
@@ -149,7 +125,7 @@ public interface MemberDetailService {
      * @param memberDetailCondition
      * @return
      */
-    Mono<Long> countMemberDetailMonoByCondition(MemberDetailCondition memberDetailCondition);
+    Mono<Long> countMemberDetailByCondition(MemberDetailCondition memberDetailCondition);
 
     /**
      * select member detail info page by condition
@@ -157,6 +133,6 @@ public interface MemberDetailService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<MemberDetailInfo>> selectMemberDetailInfoPageMonoByPageAndCondition(PageModelRequest<MemberDetailCondition> pageModelRequest);
+    Mono<PageModelResponse<MemberDetailInfo>> selectMemberDetailInfoPageByPageAndCondition(PageModelRequest<MemberDetailCondition> pageModelRequest);
 
 }

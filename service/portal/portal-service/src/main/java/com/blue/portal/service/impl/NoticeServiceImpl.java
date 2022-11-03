@@ -22,7 +22,7 @@ import com.blue.portal.repository.entity.Notice;
 import com.blue.portal.repository.mapper.NoticeMapper;
 import com.blue.portal.service.inter.NoticeService;
 import com.blue.redisson.component.SynchronizedProcessor;
-import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.AsyncCache;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,11 +32,10 @@ import reactor.util.Logger;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
 import java.util.stream.Stream;
 
 import static com.blue.basic.common.base.BlueChecker.*;
@@ -48,13 +47,14 @@ import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_JSON;
 import static com.blue.basic.constant.common.Symbol.PERCENT;
 import static com.blue.basic.constant.common.SyncKeyPrefix.NOTICE_CACHE_PRE;
 import static com.blue.basic.constant.common.SyncKeyPrefix.NOTICE_UPDATE_SYNC_PRE;
-import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
+import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCacheAsyncCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
 import static com.blue.database.common.ConditionSortProcessor.process;
 import static com.blue.portal.converter.PortalModelConverters.*;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Stream.of;
@@ -99,18 +99,18 @@ public class NoticeServiceImpl implements NoticeService {
                 NoticeType.values().length, Duration.of(noticeDeploy.getExpiresSecond(), SECONDS),
                 AFTER_WRITE, executorService);
 
-        LOCAL_CACHE = generateCache(caffeineConf);
+        typeNoticeInfoCache = generateCacheAsyncCache(caffeineConf);
         DEFAULT_NOTICE_INFO = new NoticeInfo(noticeDeploy.getId(), noticeDeploy.getTitle(), noticeDeploy.getContent(), noticeDeploy.getLink(), noticeDeploy.getType());
 
         of(NoticeType.values()).map(e -> e.identity)
-                .forEach(NOTICE_INFO_WITH_ALL_CACHE_GETTER::apply);
+                .forEach(t -> NOTICE_INFO_WITH_ALL_CACHE_GETTER.apply(t).join());
     }
 
     private NoticeInfo DEFAULT_NOTICE_INFO;
 
     private Duration expireDuration;
 
-    private static Cache<Integer, NoticeInfo> LOCAL_CACHE;
+    private AsyncCache<Integer, NoticeInfo> typeNoticeInfoCache;
 
     private static final Function<Integer, String> NOTICE_CACHE_KEY_GENERATOR = t -> NOTICE_CACHE_PRE.prefix + t;
     private static final Function<Integer, String> NOTICE_UPDATE_SYNC_KEY_GEN = t -> NOTICE_UPDATE_SYNC_PRE.prefix + t;
@@ -120,7 +120,7 @@ public class NoticeServiceImpl implements NoticeService {
 
     private final Consumer<Integer> CACHE_DELETER = t -> {
         REDIS_CACHE_DELETER.accept(t);
-        LOCAL_CACHE.invalidate(t);
+        typeNoticeInfoCache.synchronous().invalidate(t);
     };
 
     private final Function<Integer, NoticeInfo> NOTICE_INFO_DB_GETTER = t ->
@@ -141,15 +141,15 @@ public class NoticeServiceImpl implements NoticeService {
         stringRedisTemplate.expire(cacheKey, expireDuration);
     };
 
-    private final Function<Integer, NoticeInfo> NOTICE_INFO_WITH_REDIS_CACHE_GETTER = t ->
-            synchronizedProcessor.handleSupByOrderedWithSetter(NOTICE_UPDATE_SYNC_KEY_GEN.apply(t),
+    private final BiFunction<Integer, Executor, CompletableFuture<NoticeInfo>> NOTICE_INFO_WITH_REDIS_CACHE_GETTER = (t, executor) ->
+            supplyAsync(() -> synchronizedProcessor.handleSupByOrderedWithSetter(NOTICE_UPDATE_SYNC_KEY_GEN.apply(t),
                     () -> NOTICE_INFO_REDIS_GETTER.apply(t), () -> NOTICE_INFO_DB_GETTER.apply(t),
-                    noticeInfo -> NOTICE_INFO_REDIS_SETTER.accept(t, noticeInfo), BlueChecker::isNotNull);
+                    noticeInfo -> NOTICE_INFO_REDIS_SETTER.accept(t, noticeInfo), BlueChecker::isNotNull), executor);
 
-    private final Function<Integer, NoticeInfo> NOTICE_INFO_WITH_ALL_CACHE_GETTER = t -> {
+    private final Function<Integer, CompletableFuture<NoticeInfo>> NOTICE_INFO_WITH_ALL_CACHE_GETTER = t -> {
         assertNoticeType(t, false);
 
-        return LOCAL_CACHE.get(t, NOTICE_INFO_WITH_REDIS_CACHE_GETTER);
+        return typeNoticeInfoCache.get(t, NOTICE_INFO_WITH_REDIS_CACHE_GETTER);
     };
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(NoticeSortAttribute.values())
@@ -264,7 +264,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public NoticeInfo insertNotice(NoticeInsertParam noticeInsertParam, Long operatorId) {
-        LOGGER.info("NoticeInfo insertNotice(NoticeInsertParam noticeInsertParam, Long operatorId), noticeInsertParam = {}, operatorId = {}",
+        LOGGER.info("noticeInsertParam = {}, operatorId = {}",
                 noticeInsertParam, operatorId);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
@@ -295,7 +295,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public NoticeInfo updateNotice(NoticeUpdateParam noticeUpdateParam, Long operatorId) {
-        LOGGER.info("NoticeInfo updateNotice(NoticeUpdateParam noticeUpdateParam, Long operatorId), noticeUpdateParam = {}, operatorId = {}",
+        LOGGER.info("noticeUpdateParam = {}, operatorId = {}",
                 noticeUpdateParam, operatorId);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
@@ -326,7 +326,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public NoticeInfo deleteNotice(Long id) {
-        LOGGER.info("NoticeInfo deleteNotice(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -356,29 +356,14 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     /**
-     * get notice by id
-     *
-     * @param id
-     * @return
-     */
-    @Override
-    public Optional<Notice> getNotice(Long id) {
-        LOGGER.info("Optional<Notice> getNotice(Long id), id = {}", id);
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
-
-        return ofNullable(noticeMapper.selectByPrimaryKey(id));
-    }
-
-    /**
      * get notice mono by id
      *
      * @param id
      * @return
      */
     @Override
-    public Mono<Notice> getNoticeMono(Long id) {
-        LOGGER.info("Mono<Notice> getNoticeMono(Long id), id = {}", id);
+    public Mono<Notice> getNotice(Long id) {
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -393,11 +378,11 @@ public class NoticeServiceImpl implements NoticeService {
      */
     @Override
     public Notice getNoticeByType(Integer noticeType) {
-        LOGGER.info("Notice getNoticeByType(Integer noticeType), noticeType = {}", noticeType);
+        LOGGER.info("noticeType = {}", noticeType);
         assertNoticeType(noticeType, false);
 
         Notice notice = noticeMapper.selectByType(noticeType);
-        LOGGER.info("Notice getNoticeByType(Integer noticeType), notice = {}", notice);
+        LOGGER.info("notice = {}", notice);
 
         return notice;
     }
@@ -409,9 +394,9 @@ public class NoticeServiceImpl implements NoticeService {
      * @return
      */
     @Override
-    public Mono<NoticeInfo> getNoticeInfoMonoByTypeWithCache(Integer noticeType) {
-        LOGGER.info("Mono<NoticeInfo> getNoticeInfoMonoByTypeWithCache(Integer noticeType), noticeType = {}", noticeType);
-        return just(NOTICE_INFO_WITH_ALL_CACHE_GETTER.apply(noticeType));
+    public Mono<NoticeInfo> getNoticeInfoByTypeWithCache(Integer noticeType) {
+        LOGGER.info("noticeType = {}", noticeType);
+        return fromFuture(NOTICE_INFO_WITH_ALL_CACHE_GETTER.apply(noticeType));
     }
 
     /**
@@ -423,9 +408,8 @@ public class NoticeServiceImpl implements NoticeService {
      * @return
      */
     @Override
-    public Mono<List<Notice>> selectNoticeMonoByLimitAndCondition(Long limit, Long rows, NoticeCondition noticeCondition) {
-        LOGGER.info("Mono<List<Notice>> selectNoticeMonoByLimitAndCondition(Long limit, Long rows, NoticeCondition noticeCondition), " +
-                "limit = {}, rows = {}, noticeCondition = {}", limit, rows, noticeCondition);
+    public Mono<List<Notice>> selectNoticeByLimitAndCondition(Long limit, Long rows, NoticeCondition noticeCondition) {
+        LOGGER.info("limit = {}, rows = {}, noticeCondition = {}", limit, rows, noticeCondition);
         return just(noticeMapper.selectByLimitAndCondition(limit, rows, noticeCondition));
     }
 
@@ -436,8 +420,8 @@ public class NoticeServiceImpl implements NoticeService {
      * @return
      */
     @Override
-    public Mono<Long> countNoticeMonoByCondition(NoticeCondition noticeCondition) {
-        LOGGER.info("Mono<Long> countNoticeMonoByCondition(NoticeCondition noticeCondition), noticeCondition = {}", noticeCondition);
+    public Mono<Long> countNoticeByCondition(NoticeCondition noticeCondition) {
+        LOGGER.info("noticeCondition = {}", noticeCondition);
         return just(ofNullable(noticeMapper.countByCondition(noticeCondition)).orElse(0L));
     }
 
@@ -448,16 +432,15 @@ public class NoticeServiceImpl implements NoticeService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<NoticeManagerInfo>> selectNoticeManagerInfoPageMonoByPageAndCondition(PageModelRequest<NoticeCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<NoticeManagerInfo>> selectNoticeManagerInfoPageMonoByPageAndCondition(PageModelRequest<NoticeCondition> pageModelRequest), " +
-                "pageModelRequest = {}", pageModelRequest);
+    public Mono<PageModelResponse<NoticeManagerInfo>> selectNoticeManagerInfoPageByPageAndCondition(PageModelRequest<NoticeCondition> pageModelRequest) {
+        LOGGER.info("pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
         NoticeCondition noticeCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
-        return zip(selectNoticeMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), noticeCondition),
-                countNoticeMonoByCondition(noticeCondition))
+        return zip(selectNoticeByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), noticeCondition),
+                countNoticeByCondition(noticeCondition))
                 .flatMap(tuple2 -> {
                     List<Notice> notices = tuple2.getT1();
                     Long count = tuple2.getT2();

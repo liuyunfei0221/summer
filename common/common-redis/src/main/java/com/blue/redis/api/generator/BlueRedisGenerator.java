@@ -25,7 +25,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import java.io.Serializable;
 import java.time.Duration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -68,8 +67,7 @@ public final class BlueRedisGenerator {
             if (isNull(conf))
                 throw new RuntimeException("conf can't be null");
 
-            List<String> nodes = conf.getNodes();
-            if (isEmpty(nodes))
+            if (isEmpty(conf.getNodes()))
                 throw new RuntimeException("nodes can't be null or empty");
         });
 
@@ -77,9 +75,8 @@ public final class BlueRedisGenerator {
             if (isNull(conf))
                 throw new RuntimeException("conf can't be null");
 
-            Integer port = conf.getPort();
-            if (isBlank(conf.getHost()) || isNull(port) || port < 1)
-                throw new RuntimeException("host can't be null or '', port can't be null or less than 1");
+            if (isBlank(conf.getAddress()))
+                throw new RuntimeException("address can't be blank");
         });
 
         CONF_GENERATORS.put(CLUSTER, BlueRedisGenerator::generateClusterConfiguration);
@@ -408,14 +405,14 @@ public final class BlueRedisGenerator {
                 String[] hostAndPort = node.split(KEY_VALUE_SEPARATOR);
                 return new RedisNode(hostAndPort[0], parseInt(hostAndPort[1]));
             }).forEach(redisClusterConfiguration::addClusterNode);
+
+            ofNullable(redisConf.getMaxRedirects())
+                    .ifPresent(redisClusterConfiguration::setMaxRedirects);
+            ofNullable(redisConf.getPassword())
+                    .ifPresent(redisClusterConfiguration::setPassword);
         } catch (Exception e) {
             throw new RuntimeException("redis init error, check args, e = " + e);
         }
-
-        ofNullable(redisConf.getMaxRedirects())
-                .ifPresent(redisClusterConfiguration::setMaxRedirects);
-        ofNullable(redisConf.getPassword())
-                .ifPresent(redisClusterConfiguration::setPassword);
 
         return redisClusterConfiguration;
     }
@@ -430,13 +427,19 @@ public final class BlueRedisGenerator {
         assertConf(redisConf);
 
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+        try {
+            String address = redisConf.getAddress();
+            String[] hostAndPort = address.split(KEY_VALUE_SEPARATOR);
 
-        ofNullable(redisConf.getHost())
-                .ifPresent(redisStandaloneConfiguration::setHostName);
-        ofNullable(redisConf.getPort())
-                .ifPresent(redisStandaloneConfiguration::setPort);
-        ofNullable(redisConf.getPassword())
-                .ifPresent(redisStandaloneConfiguration::setPassword);
+            redisStandaloneConfiguration.setHostName(hostAndPort[0]);
+            redisStandaloneConfiguration.setPort(parseInt(hostAndPort[1]));
+
+            ofNullable(redisConf.getPassword())
+                    .ifPresent(redisStandaloneConfiguration::setPassword);
+        } catch (Exception e) {
+            throw new RuntimeException("redis init error, check args, e = " + e);
+        }
+
 
         return redisStandaloneConfiguration;
     }

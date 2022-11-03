@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
+import static com.blue.basic.common.base.BlueChecker.isEmpty;
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.ConstantProcessor.getMediaTypeByIdentity;
 import static com.blue.basic.constant.common.Symbol.SLASH;
@@ -28,7 +29,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "NullableProblems"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Configuration
 public class BlueDynamicRoute {
 
@@ -55,6 +56,7 @@ public class BlueDynamicRoute {
      * @param dynamicResource
      * @param handlerFunction
      */
+    //TODO
     private static void generateEndPointAttr(RouterFunctions.Builder routeBuilder, DynamicResource dynamicResource, HandlerFunction<ServerResponse> handlerFunction) {
 
         String requestMethod = dynamicResource.getRequestMethod().intern().toUpperCase().intern();
@@ -102,6 +104,10 @@ public class BlueDynamicRoute {
     @Bean
     RouterFunction<ServerResponse> dynamicRouter(BlueDynamicHandler blueDynamicHandler, DynamicResourceService dynamicResourceService) {
         List<DynamicResource> dynamicResources = dynamicResourceService.selectDynamicResource();
+
+        //TODO
+        if (isEmpty(dynamicResources))
+            throw new RuntimeException("dynamicResources is empty");
 
         RouterFunctions.Builder routeBuilder = route();
         dynamicResources.forEach(resource -> generateEndPointAttr(routeBuilder, resource, blueDynamicHandler::handle));

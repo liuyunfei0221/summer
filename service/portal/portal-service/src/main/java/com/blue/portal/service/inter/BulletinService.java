@@ -11,7 +11,6 @@ import com.blue.portal.repository.entity.Bulletin;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * bulletin service
@@ -55,20 +54,12 @@ public interface BulletinService {
     void invalidBulletinInfosCache();
 
     /**
-     * get bulletin by id
-     *
-     * @param id
-     * @return
-     */
-    Optional<Bulletin> getBulletin(Long id);
-
-    /**
      * get bulletin mono by id
      *
      * @param id
      * @return
      */
-    Mono<Bulletin> getBulletinMono(Long id);
+    Mono<Bulletin> getBulletin(Long id);
 
     /**
      * select all bulletin
@@ -91,7 +82,7 @@ public interface BulletinService {
      * @param bulletinType
      * @return
      */
-    Mono<List<BulletinInfo>> selectActiveBulletinInfoMonoByTypeWithCache(Integer bulletinType);
+    Mono<List<BulletinInfo>> selectActiveBulletinInfoByTypeWithCache(Integer bulletinType);
 
     /**
      * select bulletin by page and condition
@@ -101,7 +92,7 @@ public interface BulletinService {
      * @param bulletinCondition
      * @return
      */
-    Mono<List<Bulletin>> selectBulletinMonoByLimitAndCondition(Long limit, Long rows, BulletinCondition bulletinCondition);
+    Mono<List<Bulletin>> selectBulletinByLimitAndCondition(Long limit, Long rows, BulletinCondition bulletinCondition);
 
     /**
      * count bulletin by condition
@@ -109,7 +100,7 @@ public interface BulletinService {
      * @param bulletinCondition
      * @return
      */
-    Mono<Long> countBulletinMonoByCondition(BulletinCondition bulletinCondition);
+    Mono<Long> countBulletinByCondition(BulletinCondition bulletinCondition);
 
     /**
      * select bulletin info page by condition
@@ -117,6 +108,6 @@ public interface BulletinService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<BulletinManagerInfo>> selectBulletinManagerInfoPageMonoByPageAndCondition(PageModelRequest<BulletinCondition> pageModelRequest);
+    Mono<PageModelResponse<BulletinManagerInfo>> selectBulletinManagerInfoPageByPageAndCondition(PageModelRequest<BulletinCondition> pageModelRequest);
 
 }

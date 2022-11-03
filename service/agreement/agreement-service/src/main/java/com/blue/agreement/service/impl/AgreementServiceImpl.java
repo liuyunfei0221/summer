@@ -16,12 +16,11 @@ import com.blue.basic.constant.agreement.AgreementType;
 import com.blue.basic.model.common.PageModelRequest;
 import com.blue.basic.model.common.PageModelResponse;
 import com.blue.basic.model.exps.BlueException;
-import com.blue.caffeine.api.conf.CaffeineConf;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.redisson.component.SynchronizedProcessor;
-import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.AsyncCache;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +31,9 @@ import reactor.util.Logger;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.function.*;
 import java.util.stream.Stream;
@@ -49,12 +50,14 @@ import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_JSON;
 import static com.blue.basic.constant.common.Symbol.PERCENT;
 import static com.blue.basic.constant.common.SyncKeyPrefix.AGREEMENT_CACHE_PRE;
 import static com.blue.basic.constant.common.SyncKeyPrefix.AGREEMENT_UPDATE_SYNC_PRE;
-import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
+import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCacheAsyncCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
 import static com.blue.database.common.ConditionSortProcessor.process;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
@@ -67,7 +70,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "DuplicatedCode", "SpringJavaInjectionPointsAutowiringInspection"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "DuplicatedCode", "SpringJavaInjectionPointsAutowiringInspection", "GrazieInspection"})
 @Service
 public class AgreementServiceImpl implements AgreementService {
 
@@ -81,7 +84,7 @@ public class AgreementServiceImpl implements AgreementService {
 
     private SynchronizedProcessor synchronizedProcessor;
 
-    private final AgreementMapper agreementMapper;
+    private AgreementMapper agreementMapper;
 
     public AgreementServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BlueIdentityProcessor blueIdentityProcessor, StringRedisTemplate stringRedisTemplate,
                                 SynchronizedProcessor synchronizedProcessor, ExecutorService executorService, BlueRedisConfig blueRedisConfig, AgreementMapper agreementMapper, AgreementDeploy agreementDeploy) {
@@ -93,18 +96,16 @@ public class AgreementServiceImpl implements AgreementService {
 
         this.expireDuration = Duration.of(blueRedisConfig.getEntryTtl(), SECONDS);
 
-        CaffeineConf caffeineConf = new CaffeineConfParams(
+        typeAgreementInfoCache = generateCacheAsyncCache(new CaffeineConfParams(
                 AgreementType.values().length, Duration.of(agreementDeploy.getExpiresSecond(), SECONDS),
-                AFTER_WRITE, executorService);
-
-        LOCAL_CACHE = generateCache(caffeineConf);
+                AFTER_WRITE, executorService));
     }
 
     private static final List<Integer> ALL_TYPE_IDENTITIES = Stream.of(AgreementType.values()).map(at -> at.identity).collect(toList());
 
     private Duration expireDuration;
 
-    private static Cache<Integer, AgreementInfo> LOCAL_CACHE;
+    private AsyncCache<Integer, AgreementInfo> typeAgreementInfoCache;
 
     private static final Function<Integer, String> AGREEMENT_CACHE_KEY_GENERATOR = t -> AGREEMENT_CACHE_PRE.prefix + t;
     private static final Function<Integer, String> AGREEMENT_UPDATE_SYNC_KEY_GEN = t -> AGREEMENT_UPDATE_SYNC_PRE.prefix + t;
@@ -114,11 +115,16 @@ public class AgreementServiceImpl implements AgreementService {
 
     private final Consumer<Integer> CACHE_DELETER = t -> {
         REDIS_CACHE_DELETER.accept(t);
-        LOCAL_CACHE.invalidate(t);
+        typeAgreementInfoCache.synchronous().invalidate(t);
     };
 
-    private final Function<Integer, AgreementInfo> AGREEMENT_INFO_DB_GETTER = t ->
-            this.getNewestAgreementByType(t).map(AGREEMENT_2_AGREEMENT_INFO).orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
+    private final Function<Integer, AgreementInfo> AGREEMENT_INFO_DB_GETTER = t -> {
+        assertAgreementType(t, false);
+
+        return ofNullable(agreementMapper.selectNewestByType(t))
+                .map(AGREEMENT_2_AGREEMENT_INFO)
+                .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
+    };
 
     private final Function<Integer, AgreementInfo> AGREEMENT_INFO_REDIS_GETTER = t -> {
         assertAgreementType(t, false);
@@ -135,20 +141,31 @@ public class AgreementServiceImpl implements AgreementService {
         stringRedisTemplate.expire(cacheKey, expireDuration);
     };
 
-    private final Function<Integer, AgreementInfo> AGREEMENT_INFO_WITH_REDIS_CACHE_GETTER = t ->
-            synchronizedProcessor.handleSupByOrderedWithSetter(AGREEMENT_UPDATE_SYNC_KEY_GEN.apply(t),
+    private final BiFunction<Integer, Executor, CompletableFuture<AgreementInfo>> AGREEMENT_INFO_WITH_REDIS_CACHE_GETTER = (t, executor) ->
+            supplyAsync(() -> synchronizedProcessor.handleSupByOrderedWithSetter(AGREEMENT_UPDATE_SYNC_KEY_GEN.apply(t),
                     () -> AGREEMENT_INFO_REDIS_GETTER.apply(t), () -> AGREEMENT_INFO_DB_GETTER.apply(t),
-                    agreementInfo -> AGREEMENT_INFO_REDIS_SETTER.accept(t, agreementInfo), BlueChecker::isNotNull);
+                    agreementInfo -> AGREEMENT_INFO_REDIS_SETTER.accept(t, agreementInfo), BlueChecker::isNotNull), executor);
 
-    private final Function<Integer, AgreementInfo> AGREEMENT_INFO_WITH_ALL_CACHE_GETTER = t -> {
+    private final Function<Integer, CompletableFuture<AgreementInfo>> AGREEMENT_INFO_WITH_ALL_CACHE_GETTER = t -> {
         assertAgreementType(t, false);
 
-        return LOCAL_CACHE.get(t, AGREEMENT_INFO_WITH_REDIS_CACHE_GETTER);
+        return typeAgreementInfoCache.get(t, AGREEMENT_INFO_WITH_REDIS_CACHE_GETTER);
     };
 
-    private final Supplier<List<AgreementInfo>> NEWEST_AGREEMENTS_SUP = () ->
-            ALL_TYPE_IDENTITIES.stream().map(AGREEMENT_INFO_WITH_ALL_CACHE_GETTER)
-                    .collect(toList());
+    private final Supplier<Mono<List<AgreementInfo>>> NEWEST_AGREEMENTS_SUP = () ->
+            zip(ALL_TYPE_IDENTITIES.stream()
+                    .map(AGREEMENT_INFO_WITH_ALL_CACHE_GETTER)
+                    .map(Mono::fromFuture)
+                    .collect(toList()), identity())
+                    .map(arr -> Stream.of(arr)
+                            .map(obj -> {
+                                try {
+                                    return (AgreementInfo) obj;
+                                } catch (Exception e) {
+                                    LOGGER.error("cast failed, obj = {}", obj);
+                                    return null;
+                                }
+                            }).filter(Objects::nonNull).collect(toList()));
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(AgreementSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
@@ -213,28 +230,13 @@ public class AgreementServiceImpl implements AgreementService {
     }
 
     /**
-     * get agreement by id
-     *
-     * @param id
-     * @return
-     */
-    @Override
-    public Optional<Agreement> getAgreement(Long id) {
-        LOGGER.info("Optional<Agreement> getAgreement(Long id), id = {}", id);
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
-
-        return ofNullable(agreementMapper.selectByPrimaryKey(id));
-    }
-
-    /**
      * get agreement mono by id
      *
      * @param id
      * @return
      */
     @Override
-    public Mono<Agreement> getAgreementMono(Long id) {
+    public Mono<Agreement> getAgreement(Long id) {
         LOGGER.info("Mono<Agreement> getAgreementMono(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -249,11 +251,11 @@ public class AgreementServiceImpl implements AgreementService {
      * @return
      */
     @Override
-    public Optional<Agreement> getNewestAgreementByType(Integer agreementType) {
+    public Mono<Agreement> getNewestAgreementByType(Integer agreementType) {
         LOGGER.info("Optional<Agreement> getAgreementByType(Integer agreementType), agreementType = {}", agreementType);
         assertAgreementType(agreementType, false);
 
-        return ofNullable(agreementMapper.selectNewestByType(agreementType));
+        return justOrEmpty(agreementMapper.selectNewestByType(agreementType));
     }
 
     /**
@@ -263,9 +265,9 @@ public class AgreementServiceImpl implements AgreementService {
      * @return
      */
     @Override
-    public Mono<AgreementInfo> getNewestAgreementInfoMonoByTypeWithCache(Integer agreementType) {
+    public Mono<AgreementInfo> getNewestAgreementInfoByTypeWithCache(Integer agreementType) {
         LOGGER.info("Mono<AgreementInfo> getNewestAgreementInfoMonoByTypeWithCache(Integer agreementType), agreementType = {}", agreementType);
-        return justOrEmpty(AGREEMENT_INFO_WITH_ALL_CACHE_GETTER.apply(agreementType));
+        return fromFuture(AGREEMENT_INFO_WITH_ALL_CACHE_GETTER.apply(agreementType));
     }
 
     /**
@@ -274,8 +276,8 @@ public class AgreementServiceImpl implements AgreementService {
      * @return
      */
     @Override
-    public Mono<List<AgreementInfo>> selectNewestAgreementInfosMonoByAllTypeWithCache() {
-        return justOrEmpty(NEWEST_AGREEMENTS_SUP.get());
+    public Mono<List<AgreementInfo>> selectNewestAgreementInfosByAllTypeWithCache() {
+        return NEWEST_AGREEMENTS_SUP.get();
     }
 
     /**
@@ -285,7 +287,7 @@ public class AgreementServiceImpl implements AgreementService {
      * @return
      */
     @Override
-    public Mono<List<AgreementInfo>> selectAgreementInfoMonoByIds(List<Long> ids) {
+    public Mono<List<AgreementInfo>> selectAgreementInfoByIds(List<Long> ids) {
         LOGGER.info("List<Resource> selectResourceByIds(List<Long> ids), ids = {}", ids);
         if (isEmpty(ids))
             return just(emptyList());
@@ -308,7 +310,7 @@ public class AgreementServiceImpl implements AgreementService {
      * @return
      */
     @Override
-    public Mono<List<Agreement>> selectAgreementMonoByLimitAndCondition(Long limit, Long rows, AgreementCondition agreementCondition) {
+    public Mono<List<Agreement>> selectAgreementByLimitAndCondition(Long limit, Long rows, AgreementCondition agreementCondition) {
         LOGGER.info("Mono<List<Agreement>> selectAgreementMonoByLimitAndCondition(Long limit, Long rows, AgreementCondition agreementCondition), " +
                 "limit = {}, rows = {}, agreementCondition = {}", limit, rows, agreementCondition);
         return justOrEmpty(agreementMapper.selectByLimitAndCondition(limit, rows, agreementCondition));
@@ -321,7 +323,7 @@ public class AgreementServiceImpl implements AgreementService {
      * @return
      */
     @Override
-    public Mono<Long> countAgreementMonoByCondition(AgreementCondition agreementCondition) {
+    public Mono<Long> countAgreementByCondition(AgreementCondition agreementCondition) {
         LOGGER.info("Mono<Long> countAgreementMonoByCondition(AgreementCondition agreementCondition), agreementCondition = {}", agreementCondition);
         return justOrEmpty(ofNullable(agreementMapper.countByCondition(agreementCondition)).orElse(0L));
     }
@@ -333,7 +335,7 @@ public class AgreementServiceImpl implements AgreementService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<AgreementManagerInfo>> selectAgreementManagerInfoPageMonoByPageAndCondition(PageModelRequest<AgreementCondition> pageModelRequest) {
+    public Mono<PageModelResponse<AgreementManagerInfo>> selectAgreementManagerInfoPageByPageAndCondition(PageModelRequest<AgreementCondition> pageModelRequest) {
         LOGGER.info("Mono<PageModelResponse<AgreementManagerInfo>> selectAgreementManagerInfoPageMonoByPageAndCondition(PageModelRequest<AgreementCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
@@ -341,8 +343,8 @@ public class AgreementServiceImpl implements AgreementService {
 
         AgreementCondition agreementCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
-        return zip(selectAgreementMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), agreementCondition),
-                countAgreementMonoByCondition(agreementCondition))
+        return zip(selectAgreementByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), agreementCondition),
+                countAgreementByCondition(agreementCondition))
                 .flatMap(tuple2 -> {
                     List<Agreement> agreements = tuple2.getT1();
                     Long count = tuple2.getT2();

@@ -87,19 +87,19 @@ public class StateServiceImpl implements StateService {
 
     private ExecutorService executorService;
 
+    private final ReactiveMongoTemplate reactiveMongoTemplate;
+
     private CountryService countryService;
 
     private StateRepository stateRepository;
 
-    private final ReactiveMongoTemplate reactiveMongoTemplate;
-
-    public StateServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ExecutorService executorService, CountryService countryService, StateRepository stateRepository,
-                            ReactiveMongoTemplate reactiveMongoTemplate, CaffeineDeploy caffeineDeploy) {
+    public StateServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ExecutorService executorService, ReactiveMongoTemplate reactiveMongoTemplate,
+                            CountryService countryService, StateRepository stateRepository, CaffeineDeploy caffeineDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.executorService = executorService;
+        this.reactiveMongoTemplate = reactiveMongoTemplate;
         this.countryService = countryService;
         this.stateRepository = stateRepository;
-        this.reactiveMongoTemplate = reactiveMongoTemplate;
 
         idStateCache = generateCacheAsyncCache(new CaffeineConfParams(
                 caffeineDeploy.getStateMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
@@ -337,7 +337,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public Mono<StateInfo> insertState(StateInsertParam stateInsertParam) {
-        LOGGER.info("Mono<StateInfo> insertState(StateInsertParam stateInsertParam), stateInsertParam = {}", stateInsertParam);
+        LOGGER.info("stateInsertParam = {}", stateInsertParam);
 
         INSERT_ITEM_VALIDATOR.accept(stateInsertParam);
         State state = STATE_INSERT_PARAM_2_STATE_CONVERTER.apply(stateInsertParam);
@@ -358,7 +358,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public Mono<StateInfo> updateState(StateUpdateParam stateUpdateParam) {
-        LOGGER.info("Mono<StateInfo> updateState(StateUpdateParam stateUpdateParam), stateUpdateParam = {}", stateUpdateParam);
+        LOGGER.info("stateUpdateParam = {}", stateUpdateParam);
 
         State state = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(stateUpdateParam);
 
@@ -393,7 +393,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public Mono<StateInfo> deleteState(Long id) {
-        LOGGER.info("Mono<StateInfo> deleteCity(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -440,7 +440,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public Mono<Long> updateCountryIdOfCityByStateId(Long countryId, Long stateId) {
-        LOGGER.info("Mono<Long> updateCountryIdOfCityByStateId(Long countryId, Long stateId), countryId = {}, stateId = {}", countryId, stateId);
+        LOGGER.info("countryId = {}, stateId = {}", countryId, stateId);
         if (isInvalidIdentity(countryId) || isInvalidIdentity(stateId))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -452,7 +452,7 @@ public class StateServiceImpl implements StateService {
                 .flatMap(updateResult -> {
                     long modifiedCount = updateResult.getModifiedCount();
 
-                    LOGGER.info("Mono<Long> updateCountryIdOfCityByStateId(Long countryId, Long stateId), matchedCount = {}, modifiedCount = {}, wasAcknowledged = {}",
+                    LOGGER.info("matchedCount = {}, modifiedCount = {}, wasAcknowledged = {}",
                             countryId, stateId, updateResult.getMatchedCount(), modifiedCount, updateResult.wasAcknowledged());
 
                     return just(modifiedCount);
@@ -468,7 +468,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public Mono<Long> updateCountryIdOfAreaByStateId(Long countryId, Long stateId) {
-        LOGGER.info("Mono<Long> updateCountryIdOfAreaByStateId(Long countryId, Long stateId), countryId = {}, stateId = {}", countryId, stateId);
+        LOGGER.info("countryId = {}, stateId = {}", countryId, stateId);
         if (isInvalidIdentity(countryId) || isInvalidIdentity(stateId))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -480,7 +480,7 @@ public class StateServiceImpl implements StateService {
                 .flatMap(updateResult -> {
                     long modifiedCount = updateResult.getModifiedCount();
 
-                    LOGGER.info("Mono<Long> updateCountryIdOfAreaByStateId(Long countryId, Long stateId), matchedCount = {}, modifiedCount = {}, wasAcknowledged = {}",
+                    LOGGER.info("matchedCount = {}, modifiedCount = {}, wasAcknowledged = {}",
                             countryId, stateId, updateResult.getMatchedCount(), modifiedCount, updateResult.wasAcknowledged());
 
                     return just(modifiedCount);
@@ -603,8 +603,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public Mono<List<State>> selectStateByLimitAndQuery(Long limit, Long rows, Query query) {
-        LOGGER.info("Mono<List<State>> selectStateMonoByLimitAndQuery(Long limit, Long rows, Query query), " +
-                "limit = {}, rows = {}, query = {}", limit, rows, query);
+        LOGGER.info("limit = {}, rows = {}, query = {}", limit, rows, query);
         if (limit == null || limit < 0 || rows == null || rows == 0)
             throw new BlueException(INVALID_PARAM);
 
@@ -622,7 +621,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public Mono<Long> countStateByQuery(Query query) {
-        LOGGER.info("Mono<Long> countStateMonoByQuery(Query query), query = {}", query);
+        LOGGER.info("query = {}", query);
         return reactiveMongoTemplate.count(query, State.class);
     }
 
@@ -634,8 +633,7 @@ public class StateServiceImpl implements StateService {
      */
     @Override
     public Mono<PageModelResponse<StateInfo>> selectStatePageByPageAndCondition(PageModelRequest<StateCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<StateInfo>> selectStatePageMonoByPageAndCondition(PageModelRequest<StateCondition> pageModelRequest), " +
-                "pageModelRequest = {}", pageModelRequest);
+        LOGGER.info("pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 

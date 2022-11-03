@@ -77,12 +77,12 @@ public class CountryServiceImpl implements CountryService {
 
     private ExecutorService executorService;
 
-    private CountryRepository countryRepository;
-
     private final ReactiveMongoTemplate reactiveMongoTemplate;
 
-    public CountryServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ExecutorService executorService, CountryRepository countryRepository,
-                              ReactiveMongoTemplate reactiveMongoTemplate, CaffeineDeploy caffeineDeploy) {
+    private CountryRepository countryRepository;
+
+    public CountryServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ExecutorService executorService, ReactiveMongoTemplate reactiveMongoTemplate,
+                              CountryRepository countryRepository, CaffeineDeploy caffeineDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.executorService = executorService;
         this.reactiveMongoTemplate = reactiveMongoTemplate;
@@ -132,8 +132,7 @@ public class CountryServiceImpl implements CountryService {
             throw new BlueException(PAYLOAD_TOO_LARGE);
 
         return idCountryCache.getAll(ids, (is, executor) -> fromIterable(allotByMax(ids, (int) DB_WRITE.value, false))
-                .map(l -> countryRepository.findAllById(l)
-                        .map(COUNTRY_2_COUNTRY_INFO_CONVERTER))
+                .map(l -> countryRepository.findAllById(l).map(COUNTRY_2_COUNTRY_INFO_CONVERTER))
                 .reduce(Flux::concat)
                 .flatMap(f -> f.collectMap(CountryInfo::getId, identity()))
                 .toFuture());
@@ -334,7 +333,7 @@ public class CountryServiceImpl implements CountryService {
      */
     @Override
     public Mono<CountryInfo> insertCountry(CountryInsertParam countryInsertParam) {
-        LOGGER.info("Mono<CountryInfo> insertCountry(CountryInsertParam countryInsertParam), countryInsertParam = {}", countryInsertParam);
+        LOGGER.info("countryInsertParam = {}", countryInsertParam);
 
         INSERT_ITEM_VALIDATOR.accept(countryInsertParam);
         Country country = COUNTRY_INSERT_PARAM_2_COUNTRY_CONVERTER.apply(countryInsertParam);
@@ -355,7 +354,7 @@ public class CountryServiceImpl implements CountryService {
      */
     @Override
     public Mono<CountryInfo> updateCountry(CountryUpdateParam countryUpdateParam) {
-        LOGGER.info("Mono<CountryInfo> updateCountry(CountryUpdateParam countryUpdateParam), countryUpdateParam = {}", countryUpdateParam);
+        LOGGER.info("countryUpdateParam = {}", countryUpdateParam);
 
         Country country = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(countryUpdateParam);
 
@@ -377,7 +376,7 @@ public class CountryServiceImpl implements CountryService {
      */
     @Override
     public Mono<CountryInfo> deleteCountry(Long id) {
-        LOGGER.info("Mono<CountryInfo> deleteCountry(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -498,8 +497,7 @@ public class CountryServiceImpl implements CountryService {
      */
     @Override
     public Mono<List<Country>> selectCountryByLimitAndQuery(Long limit, Long rows, Query query) {
-        LOGGER.info("Mono<List<Country>> selectCountryMonoByLimitAndQuery(Long limit, Long rows, Query query), " +
-                "limit = {}, rows = {}, query = {}", limit, rows, query);
+        LOGGER.info("limit = {}, rows = {}, query = {}", limit, rows, query);
         if (limit == null || limit < 0 || rows == null || rows == 0)
             throw new BlueException(INVALID_PARAM);
 
@@ -517,7 +515,7 @@ public class CountryServiceImpl implements CountryService {
      */
     @Override
     public Mono<Long> countCountryByQuery(Query query) {
-        LOGGER.info("Mono<Long> countCountryMonoByQuery(Query query), query = {}", query);
+        LOGGER.info("query = {}", query);
         return reactiveMongoTemplate.count(query, Country.class);
     }
 
@@ -529,8 +527,7 @@ public class CountryServiceImpl implements CountryService {
      */
     @Override
     public Mono<PageModelResponse<CountryInfo>> selectCountryPageByPageAndCondition(PageModelRequest<CountryCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<CountryInfo>> selectCountryPageMonoByPageAndCondition(PageModelRequest<CountryCondition> pageModelRequest), " +
-                "pageModelRequest = {}", pageModelRequest);
+        LOGGER.info("pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 

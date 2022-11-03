@@ -19,9 +19,7 @@ public class RedisConfParams implements RedisConf {
     //</editor-fold>
 
     //<editor-fold desc="standalone conf">
-    protected transient String host;
-
-    protected transient Integer port;
+    protected transient String address;
     //</editor-fold>
 
     protected transient String password;
@@ -82,13 +80,8 @@ public class RedisConfParams implements RedisConf {
     }
 
     @Override
-    public String getHost() {
-        return host;
-    }
-
-    @Override
-    public Integer getPort() {
-        return port;
+    public String getAddress() {
+        return address;
     }
 
     @Override
@@ -209,12 +202,8 @@ public class RedisConfParams implements RedisConf {
         this.nodes = nodes;
     }
 
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public void setPort(Integer port) {
-        this.port = port;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public void setPassword(String password) {
@@ -310,8 +299,7 @@ public class RedisConfParams implements RedisConf {
         return "RedisConfParams{" +
                 "serverMode=" + serverMode +
                 ", nodes=" + nodes +
-                ", host='" + host + '\'' +
-                ", port=" + port +
+                ", address='" + address + '\'' +
                 ", password='" + password + '\'' +
                 ", maxRedirects=" + maxRedirects +
                 ", minIdle=" + minIdle +

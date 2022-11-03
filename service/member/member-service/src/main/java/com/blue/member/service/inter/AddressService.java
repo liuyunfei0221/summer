@@ -53,7 +53,7 @@ public interface AddressService {
      * @param id
      * @return
      */
-    Mono<Address> getAddressMono(Long id);
+    Mono<Address> getAddress(Long id);
 
     /**
      * query address mono by member id
@@ -61,7 +61,7 @@ public interface AddressService {
      * @param memberId
      * @return
      */
-    Mono<List<Address>> selectAddressMonoByMemberId(Long memberId);
+    Mono<List<Address>> selectAddressByMemberId(Long memberId);
 
     /**
      * query address info mono by member id
@@ -69,7 +69,7 @@ public interface AddressService {
      * @param memberId
      * @return
      */
-    Mono<List<AddressInfo>> selectAddressInfoMonoByMemberId(Long memberId);
+    Mono<List<AddressInfo>> selectAddressInfoByMemberId(Long memberId);
 
     /**
      * query address info mono by id with assert
@@ -77,7 +77,7 @@ public interface AddressService {
      * @param id
      * @return
      */
-    Mono<AddressInfo> getAddressInfoMonoWithAssert(Long id);
+    Mono<AddressInfo> getAddressInfoWithAssert(Long id);
 
     /**
      * select address info by ids
@@ -85,7 +85,7 @@ public interface AddressService {
      * @param ids
      * @return
      */
-    Mono<List<AddressInfo>> selectAddressInfoMonoByIds(List<Long> ids);
+    Mono<List<AddressInfo>> selectAddressInfoByIds(List<Long> ids);
 
     /**
      * select address by page and query
@@ -95,7 +95,7 @@ public interface AddressService {
      * @param query
      * @return
      */
-    Mono<List<Address>> selectAddressMonoByLimitAndQuery(Long limit, Long rows, Query query);
+    Mono<List<Address>> selectAddressByLimitAndQuery(Long limit, Long rows, Query query);
 
     /**
      * count address by query
@@ -103,7 +103,7 @@ public interface AddressService {
      * @param query
      * @return
      */
-    Mono<Long> countAddressMonoByQuery(Query query);
+    Mono<Long> countAddressByQuery(Query query);
 
     /**
      * select address info page by condition
@@ -111,6 +111,6 @@ public interface AddressService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<AddressInfo>> selectAddressInfoPageMonoByPageAndCondition(PageModelRequest<AddressCondition> pageModelRequest);
+    Mono<PageModelResponse<AddressInfo>> selectAddressInfoPageByPageAndCondition(PageModelRequest<AddressCondition> pageModelRequest);
 
 }

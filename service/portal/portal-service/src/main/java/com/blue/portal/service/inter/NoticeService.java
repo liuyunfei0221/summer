@@ -11,7 +11,6 @@ import com.blue.portal.repository.entity.Notice;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * notice service
@@ -55,20 +54,12 @@ public interface NoticeService {
     void invalidNoticeInfosCache();
 
     /**
-     * get notice by id
-     *
-     * @param id
-     * @return
-     */
-    Optional<Notice> getNotice(Long id);
-
-    /**
      * get notice mono by id
      *
      * @param id
      * @return
      */
-    Mono<Notice> getNoticeMono(Long id);
+    Mono<Notice> getNotice(Long id);
 
     /**
      * get notice by type
@@ -84,7 +75,7 @@ public interface NoticeService {
      * @param noticeType
      * @return
      */
-    Mono<NoticeInfo> getNoticeInfoMonoByTypeWithCache(Integer noticeType);
+    Mono<NoticeInfo> getNoticeInfoByTypeWithCache(Integer noticeType);
 
     /**
      * select notice by page and condition
@@ -94,7 +85,7 @@ public interface NoticeService {
      * @param noticeCondition
      * @return
      */
-    Mono<List<Notice>> selectNoticeMonoByLimitAndCondition(Long limit, Long rows, NoticeCondition noticeCondition);
+    Mono<List<Notice>> selectNoticeByLimitAndCondition(Long limit, Long rows, NoticeCondition noticeCondition);
 
     /**
      * count notice by condition
@@ -102,7 +93,7 @@ public interface NoticeService {
      * @param noticeCondition
      * @return
      */
-    Mono<Long> countNoticeMonoByCondition(NoticeCondition noticeCondition);
+    Mono<Long> countNoticeByCondition(NoticeCondition noticeCondition);
 
     /**
      * select notice info page by condition
@@ -110,6 +101,6 @@ public interface NoticeService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<NoticeManagerInfo>> selectNoticeManagerInfoPageMonoByPageAndCondition(PageModelRequest<NoticeCondition> pageModelRequest);
+    Mono<PageModelResponse<NoticeManagerInfo>> selectNoticeManagerInfoPageByPageAndCondition(PageModelRequest<NoticeCondition> pageModelRequest);
 
 }

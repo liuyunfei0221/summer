@@ -35,7 +35,7 @@ public final class StyleApiHandler {
      * @return
      */
     public Mono<ServerResponse> get(ServerRequest serverRequest) {
-        return styleService.getActiveStyleInfoMonoByTypeWithCache(getIntegerVariable(serverRequest, TYPE.key))
+        return styleService.getActiveStyleInfoByTypeWithCache(getIntegerVariable(serverRequest, TYPE.key))
                 .flatMap(sti -> ok()
                         .contentType(APPLICATION_JSON)
                         .body(success(sti, serverRequest), BlueResponse.class)

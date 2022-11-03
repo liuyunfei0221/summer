@@ -46,20 +46,12 @@ public interface RealNameService {
     RealNameInfo updateRealNameStatus(Long memberId, StatusParam statusParam);
 
     /**
-     * get by id
-     *
-     * @param id
-     * @return
-     */
-    RealName getRealName(Long id);
-
-    /**
      * get mono by id
      *
      * @param id
      * @return
      */
-    Mono<RealName> getRealNameMono(Long id);
+    Mono<RealName> getRealName(Long id);
 
     /**
      * query real name by id with assert
@@ -67,7 +59,7 @@ public interface RealNameService {
      * @param id
      * @return
      */
-    Mono<RealNameInfo> getRealNameInfoMonoWithAssert(Long id);
+    Mono<RealNameInfo> getRealNameInfoWithAssert(Long id);
 
     /**
      * get real name info mono by member id
@@ -75,7 +67,7 @@ public interface RealNameService {
      * @param memberId
      * @return
      */
-    Mono<RealNameInfo> getRealNameInfoMonoByMemberId(Long memberId);
+    Mono<RealNameInfo> getRealNameInfoByMemberId(Long memberId);
 
     /**
      * query real name info by member id with assert
@@ -83,15 +75,7 @@ public interface RealNameService {
      * @param memberId
      * @return
      */
-    Mono<RealNameInfo> getRealNameInfoMonoByMemberIdWithAssert(Long memberId);
-
-    /**
-     * select real name by ids
-     *
-     * @param ids
-     * @return
-     */
-    List<RealName> selectRealNameByIds(List<Long> ids);
+    Mono<RealNameInfo> getRealNameInfoByMemberIdWithAssert(Long memberId);
 
     /**
      * select real name mono by ids
@@ -99,7 +83,7 @@ public interface RealNameService {
      * @param ids
      * @return
      */
-    Mono<List<RealName>> selectRealNameMonoByIds(List<Long> ids);
+    Mono<List<RealName>> selectRealNameByIds(List<Long> ids);
 
     /**
      * select real name info by ids
@@ -107,15 +91,7 @@ public interface RealNameService {
      * @param ids
      * @return
      */
-    Mono<List<RealNameInfo>> selectRealNameInfoMonoByIds(List<Long> ids);
-
-    /**
-     * select real name by member ids
-     *
-     * @param memberIds
-     * @return
-     */
-    List<RealName> selectRealNameByMemberIds(List<Long> memberIds);
+    Mono<List<RealNameInfo>> selectRealNameInfoByIds(List<Long> ids);
 
     /**
      * select real name mono by member ids
@@ -131,7 +107,7 @@ public interface RealNameService {
      * @param memberIds
      * @return
      */
-    Mono<List<RealNameInfo>> selectRealNameInfoMonoByMemberIds(List<Long> memberIds);
+    Mono<List<RealNameInfo>> selectRealNameInfoByMemberIds(List<Long> memberIds);
 
     /**
      * select real name by page and condition
@@ -141,7 +117,7 @@ public interface RealNameService {
      * @param realNameCondition
      * @return
      */
-    Mono<List<RealName>> selectRealNameMonoByLimitAndCondition(Long limit, Long rows, RealNameCondition realNameCondition);
+    Mono<List<RealName>> selectRealNameByLimitAndCondition(Long limit, Long rows, RealNameCondition realNameCondition);
 
     /**
      * count real name by condition
@@ -149,7 +125,7 @@ public interface RealNameService {
      * @param realNameCondition
      * @return
      */
-    Mono<Long> countRealNameMonoByCondition(RealNameCondition realNameCondition);
+    Mono<Long> countRealNameByCondition(RealNameCondition realNameCondition);
 
     /**
      * select real name info page by condition
@@ -157,6 +133,6 @@ public interface RealNameService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<RealNameInfo>> selectRealNameInfoPageMonoByPageAndCondition(PageModelRequest<RealNameCondition> pageModelRequest);
+    Mono<PageModelResponse<RealNameInfo>> selectRealNameInfoPageByPageAndCondition(PageModelRequest<RealNameCondition> pageModelRequest);
 
 }

@@ -40,7 +40,7 @@ public class MemberDetailManagerHandler {
     public Mono<ServerResponse> page(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(PAGE_MODEL_FOR_MEMBER_DETAIL_CONDITION_TYPE)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
-                .flatMap(memberDetailService::selectMemberDetailInfoPageMonoByPageAndCondition)
+                .flatMap(memberDetailService::selectMemberDetailInfoPageByPageAndCondition)
                 .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(pmr, serverRequest), BlueResponse.class));

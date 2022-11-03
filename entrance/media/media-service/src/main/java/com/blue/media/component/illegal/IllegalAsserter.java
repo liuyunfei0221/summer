@@ -92,7 +92,7 @@ public final class IllegalAsserter {
     private final Function<IllegalMarkEvent, Mono<Boolean>>
             MARKER = event -> {
         String resKey = ofNullable(event.getResourceKey()).orElse(ALL_RESOURCE);
-        return zip(ofNullable(event.getJwt())
+        return zip(ofNullable(event.getMemberId())
                         .filter(BlueChecker::isNotBlank)
                         .map(JWT_KEY_WRAPPER)
                         .map(key -> markWithExpire(key, resKey, event.getIllegalExpiresSecond()))
@@ -106,7 +106,7 @@ public final class IllegalAsserter {
     },
             CLEARER = event -> {
                 String resKey = ofNullable(event.getResourceKey()).orElse(ALL_RESOURCE);
-                return zip(ofNullable(event.getJwt())
+                return zip(ofNullable(event.getMemberId())
                                 .filter(BlueChecker::isNotBlank)
                                 .map(JWT_KEY_WRAPPER)
                                 .map(key -> clearMark(key, resKey))

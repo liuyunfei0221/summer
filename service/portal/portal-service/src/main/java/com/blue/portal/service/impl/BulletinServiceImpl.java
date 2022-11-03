@@ -22,7 +22,7 @@ import com.blue.portal.repository.entity.Bulletin;
 import com.blue.portal.repository.mapper.BulletinMapper;
 import com.blue.portal.service.inter.BulletinService;
 import com.blue.redisson.component.SynchronizedProcessor;
-import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.AsyncCache;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +33,8 @@ import reactor.util.Loggers;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.function.*;
 import java.util.stream.Stream;
@@ -47,13 +49,14 @@ import static com.blue.basic.constant.common.Symbol.PERCENT;
 import static com.blue.basic.constant.common.SyncKeyPrefix.BULLETINS_CACHE_PRE;
 import static com.blue.basic.constant.common.SyncKeyPrefix.BULLETINS_UPDATE_SYNC_PRE;
 import static com.blue.basic.constant.portal.BulletinType.POPULAR;
-import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCache;
+import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCacheAsyncCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
 import static com.blue.database.common.ConditionSortProcessor.process;
 import static com.blue.portal.converter.PortalModelConverters.*;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Stream.of;
@@ -97,14 +100,14 @@ public class BulletinServiceImpl implements BulletinService {
                 BulletinType.values().length, Duration.of(bulletinDeploy.getExpiresSecond(), SECONDS),
                 AFTER_WRITE, executorService);
 
-        LOCAL_CACHE = generateCache(caffeineConf);
+        typeBulletinInfoCache = generateCacheAsyncCache(caffeineConf);
         of(BulletinType.values()).map(e -> e.identity)
-                .forEach(BULLETIN_INFOS_WITH_ALL_CACHE_GETTER::apply);
+                .forEach(t -> BULLETIN_INFOS_WITH_ALL_CACHE_GETTER.apply(t).join());
     }
 
     private Duration expireDuration;
 
-    private static Cache<Integer, List<BulletinInfo>> LOCAL_CACHE;
+    private AsyncCache<Integer, List<BulletinInfo>> typeBulletinInfoCache;
 
     private static final Function<Integer, String> BULLETIN_CACHE_KEY_GENERATOR = t -> BULLETINS_CACHE_PRE.prefix + t;
     private static final Function<Integer, String> BULLETIN_UPDATE_SYNC_KEY_GEN = t -> BULLETINS_UPDATE_SYNC_PRE.prefix + t;
@@ -114,7 +117,7 @@ public class BulletinServiceImpl implements BulletinService {
 
     private final Consumer<Integer> CACHE_DELETER = t -> {
         REDIS_CACHE_DELETER.accept(t);
-        LOCAL_CACHE.invalidate(t);
+        typeBulletinInfoCache.synchronous().invalidate(t);
     };
 
     private final Function<Integer, List<BulletinInfo>> BULLETIN_INFOS_DB_GETTER = t ->
@@ -135,15 +138,15 @@ public class BulletinServiceImpl implements BulletinService {
         stringRedisTemplate.expire(cacheKey, expireDuration);
     };
 
-    private final Function<Integer, List<BulletinInfo>> BULLETIN_INFOS_WITH_REDIS_CACHE_GETTER = t ->
-            synchronizedProcessor.handleSupByOrderedWithSetter(BULLETIN_UPDATE_SYNC_KEY_GEN.apply(t),
+    private final BiFunction<Integer, Executor, CompletableFuture<List<BulletinInfo>>> BULLETIN_INFOS_WITH_REDIS_CACHE_GETTER = (t, executor) ->
+            supplyAsync(() -> synchronizedProcessor.handleSupByOrderedWithSetter(BULLETIN_UPDATE_SYNC_KEY_GEN.apply(t),
                     () -> BULLETIN_INFOS_REDIS_GETTER.apply(t), () -> BULLETIN_INFOS_DB_GETTER.apply(t),
-                    bulletinInfos -> BULLETIN_INFOS_REDIS_SETTER.accept(t, bulletinInfos), BlueChecker::isNotEmpty);
+                    bulletinInfos -> BULLETIN_INFOS_REDIS_SETTER.accept(t, bulletinInfos), BlueChecker::isNotEmpty), executor);
 
-    private final Function<Integer, List<BulletinInfo>> BULLETIN_INFOS_WITH_ALL_CACHE_GETTER = t -> {
+    private final Function<Integer, CompletableFuture<List<BulletinInfo>>> BULLETIN_INFOS_WITH_ALL_CACHE_GETTER = t -> {
         assertBulletinType(t, false);
 
-        return LOCAL_CACHE.get(t, BULLETIN_INFOS_WITH_REDIS_CACHE_GETTER);
+        return typeBulletinInfoCache.get(t, BULLETIN_INFOS_WITH_REDIS_CACHE_GETTER);
     };
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(BulletinSortAttribute.values())
@@ -273,7 +276,7 @@ public class BulletinServiceImpl implements BulletinService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public BulletinInfo insertBulletin(BulletinInsertParam bulletinInsertParam, Long operatorId) {
-        LOGGER.info("BulletinInfo insertBulletin(BulletinInsertParam bulletinInsertParam, Long operatorId), bulletinInsertParam = {}, operatorId = {}",
+        LOGGER.info("bulletinInsertParam = {}, operatorId = {}",
                 bulletinInsertParam, operatorId);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
@@ -304,7 +307,7 @@ public class BulletinServiceImpl implements BulletinService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public BulletinInfo updateBulletin(BulletinUpdateParam bulletinUpdateParam, Long operatorId) {
-        LOGGER.info("BulletinInfo updateBulletin(BulletinUpdateParam bulletinUpdateParam, Long operatorId), bulletinUpdateParam = {}, operatorId = {}",
+        LOGGER.info("bulletinUpdateParam = {}, operatorId = {}",
                 bulletinUpdateParam, operatorId);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
@@ -335,7 +338,7 @@ public class BulletinServiceImpl implements BulletinService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public BulletinInfo deleteBulletin(Long id) {
-        LOGGER.info("BulletinInfo deleteBulletinById(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -365,29 +368,14 @@ public class BulletinServiceImpl implements BulletinService {
     }
 
     /**
-     * get bulletin by id
-     *
-     * @param id
-     * @return
-     */
-    @Override
-    public Optional<Bulletin> getBulletin(Long id) {
-        LOGGER.info("Optional<Bulletin> getBulletin(Long id), id = {}", id);
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
-
-        return ofNullable(bulletinMapper.selectByPrimaryKey(id));
-    }
-
-    /**
      * get bulletin mono by id
      *
      * @param id
      * @return
      */
     @Override
-    public Mono<Bulletin> getBulletinMono(Long id) {
-        LOGGER.info("Mono<Bulletin> getBulletinMono(Long id), id = {}", id);
+    public Mono<Bulletin> getBulletin(Long id) {
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
         return justOrEmpty(bulletinMapper.selectByPrimaryKey(id));
@@ -400,7 +388,6 @@ public class BulletinServiceImpl implements BulletinService {
      */
     @Override
     public Mono<List<Bulletin>> selectBulletin() {
-        LOGGER.info("Mono<List<Bulletin>> selectBulletin()");
         return just(bulletinMapper.select());
     }
 
@@ -412,11 +399,11 @@ public class BulletinServiceImpl implements BulletinService {
      */
     @Override
     public List<Bulletin> selectActiveBulletinByType(Integer bulletinType) {
-        LOGGER.info("List<Bulletin> selectTargetActiveBulletinByType(Integer bulletinType), bulletinType = {}", bulletinType);
+        LOGGER.info("bulletinType = {}", bulletinType);
         assertBulletinType(bulletinType, false);
 
         List<Bulletin> bulletins = bulletinMapper.selectAllByCondition(TIME_STAMP_GETTER.get(), bulletinType, VALID.status);
-        LOGGER.info("List<Bulletin> selectActiveBulletinByType(BulletinType bulletinType), bulletins = {}", bulletins);
+        LOGGER.info("bulletins = {}", bulletins);
 
         return bulletins;
     }
@@ -428,9 +415,9 @@ public class BulletinServiceImpl implements BulletinService {
      * @return
      */
     @Override
-    public Mono<List<BulletinInfo>> selectActiveBulletinInfoMonoByTypeWithCache(Integer bulletinType) {
-        LOGGER.info("Mono<List<BulletinInfo>> selectBulletin(Integer bulletinType), bulletinType = {}", bulletinType);
-        return just(BULLETIN_INFOS_WITH_ALL_CACHE_GETTER.apply(bulletinType));
+    public Mono<List<BulletinInfo>> selectActiveBulletinInfoByTypeWithCache(Integer bulletinType) {
+        LOGGER.info("bulletinType = {}", bulletinType);
+        return fromFuture(BULLETIN_INFOS_WITH_ALL_CACHE_GETTER.apply(bulletinType));
     }
 
     /**
@@ -442,9 +429,8 @@ public class BulletinServiceImpl implements BulletinService {
      * @return
      */
     @Override
-    public Mono<List<Bulletin>> selectBulletinMonoByLimitAndCondition(Long limit, Long rows, BulletinCondition bulletinCondition) {
-        LOGGER.info("Mono<List<Bulletin>> selectBulletinMonoByLimitAndCondition(Long limit, Long rows, BulletinCondition bulletinCondition), " +
-                "limit = {}, rows = {}, bulletinCondition = {}", limit, rows, bulletinCondition);
+    public Mono<List<Bulletin>> selectBulletinByLimitAndCondition(Long limit, Long rows, BulletinCondition bulletinCondition) {
+        LOGGER.info("limit = {}, rows = {}, bulletinCondition = {}", limit, rows, bulletinCondition);
         return just(bulletinMapper.selectByLimitAndCondition(limit, rows, bulletinCondition));
     }
 
@@ -455,8 +441,8 @@ public class BulletinServiceImpl implements BulletinService {
      * @return
      */
     @Override
-    public Mono<Long> countBulletinMonoByCondition(BulletinCondition bulletinCondition) {
-        LOGGER.info("Mono<Long> countBulletinMonoByCondition(BulletinCondition bulletinCondition), bulletinCondition = {}", bulletinCondition);
+    public Mono<Long> countBulletinByCondition(BulletinCondition bulletinCondition) {
+        LOGGER.info("bulletinCondition = {}", bulletinCondition);
         return just(ofNullable(bulletinMapper.countByCondition(bulletinCondition)).orElse(0L));
     }
 
@@ -467,16 +453,15 @@ public class BulletinServiceImpl implements BulletinService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<BulletinManagerInfo>> selectBulletinManagerInfoPageMonoByPageAndCondition(PageModelRequest<BulletinCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<BulletinManagerInfo>> selectBulletinInfoPageMonoByPageAndCondition(PageModelRequest<BulletinCondition> pageModelRequest), " +
-                "pageModelRequest = {}", pageModelRequest);
+    public Mono<PageModelResponse<BulletinManagerInfo>> selectBulletinManagerInfoPageByPageAndCondition(PageModelRequest<BulletinCondition> pageModelRequest) {
+        LOGGER.info("pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
         BulletinCondition bulletinCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
-        return zip(selectBulletinMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), bulletinCondition),
-                countBulletinMonoByCondition(bulletinCondition))
+        return zip(selectBulletinByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), bulletinCondition),
+                countBulletinByCondition(bulletinCondition))
                 .flatMap(tuple2 -> {
                     List<Bulletin> bulletins = tuple2.getT1();
                     Long count = tuple2.getT2();

@@ -45,7 +45,7 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
     @Override
     public CompletableFuture<MemberBasicInfo> getMemberBasicInfo(Long id) {
         return just(id)
-                .flatMap(memberBasicService::getMemberBasicMono)
+                .flatMap(memberBasicService::getMemberBasic)
                 .map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                 .toFuture();
     }
@@ -59,7 +59,7 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
     @Override
     public CompletableFuture<List<MemberBasicInfo>> selectMemberBasicInfoByIds(List<Long> ids) {
         return just(ids)
-                .flatMap(memberBasicService::selectMemberBasicInfoMonoByIds)
+                .flatMap(memberBasicService::selectMemberBasicInfoByIds)
                 .toFuture();
     }
 
@@ -72,7 +72,7 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
     @Override
     public CompletableFuture<MemberBasicInfo> getMemberBasicInfoByPhone(String phone) {
         return just(phone)
-                .flatMap(memberBasicService::getMemberBasicMonoByPhone)
+                .flatMap(memberBasicService::getMemberBasicByPhone)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                 .toFuture();
@@ -87,7 +87,7 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
     @Override
     public CompletableFuture<MemberBasicInfo> getMemberBasicInfoByEmail(String email) {
         return just(email)
-                .flatMap(memberBasicService::getMemberBasicMonoByEmail)
+                .flatMap(memberBasicService::getMemberBasicByEmail)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                 .toFuture();

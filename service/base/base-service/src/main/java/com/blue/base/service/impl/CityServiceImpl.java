@@ -89,23 +89,22 @@ public class CityServiceImpl implements CityService {
 
     private ExecutorService executorService;
 
+    private final ReactiveMongoTemplate reactiveMongoTemplate;
+
     private StateService stateService;
 
     private CountryService countryService;
 
     private CityRepository cityRepository;
 
-    private final ReactiveMongoTemplate reactiveMongoTemplate;
-
-    public CityServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ExecutorService executorService, StateService stateService, CountryService countryService,
-                           CityRepository cityRepository, ReactiveMongoTemplate reactiveMongoTemplate,
-                           CaffeineDeploy caffeineDeploy) {
+    public CityServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ExecutorService executorService, ReactiveMongoTemplate reactiveMongoTemplate,
+                           StateService stateService, CountryService countryService, CityRepository cityRepository, CaffeineDeploy caffeineDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.executorService = executorService;
+        this.reactiveMongoTemplate = reactiveMongoTemplate;
         this.stateService = stateService;
         this.countryService = countryService;
         this.cityRepository = cityRepository;
-        this.reactiveMongoTemplate = reactiveMongoTemplate;
 
         idCityCache = generateCacheAsyncCache(new CaffeineConfParams(
                 caffeineDeploy.getCityMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
@@ -140,8 +139,7 @@ public class CityServiceImpl implements CityService {
             throw new BlueException(INVALID_IDENTITY);
 
         return this.selectCityByStateId(sid).map(CITIES_2_CITY_INFOS_CONVERTER)
-                .switchIfEmpty(defer(() -> just(emptyList())))
-                .toFuture();
+                .switchIfEmpty(defer(() -> just(emptyList()))).toFuture();
     };
 
     private final Function<Long, CompletableFuture<CityInfo>> CITY_BY_ID_WITH_ASSERT_GETTER = id -> {
@@ -339,7 +337,7 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public Mono<CityInfo> insertCity(CityInsertParam cityInsertParam) {
-        LOGGER.info("Mono<CityInfo> insertCity(CityInsertParam cityInsertParam), cityInsertParam = {}", cityInsertParam);
+        LOGGER.info("cityInsertParam = {}", cityInsertParam);
 
         INSERT_ITEM_VALIDATOR.accept(cityInsertParam);
         City city = CITY_INSERT_PARAM_2_CITY_CONVERTER.apply(cityInsertParam);
@@ -360,7 +358,7 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public Mono<CityInfo> updateCity(CityUpdateParam cityUpdateParam) {
-        LOGGER.info("Mono<CityInfo> updateCity(CityUpdateParam cityUpdateParam), cityUpdateParam = {}", cityUpdateParam);
+        LOGGER.info("cityUpdateParam = {}", cityUpdateParam);
 
         City city = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(cityUpdateParam);
 
@@ -394,7 +392,7 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public Mono<CityInfo> deleteCity(Long id) {
-        LOGGER.info("Mono<CityInfo> deleteCity(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -442,7 +440,7 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public Mono<Long> updateCountryIdAndStateIdOfAreaByCityId(Long countryId, Long stateId, Long cityId) {
-        LOGGER.info("Mono<Long> updateCountryIdAndStateIdOfAreaByCityId(Long countryId, Long stateId, Long cityId), countryId = {}, stateId = {}, cityId = {}",
+        LOGGER.info("countryId = {}, stateId = {}, cityId = {}",
                 countryId, stateId, cityId);
         if (isInvalidIdentity(countryId) || isInvalidIdentity(stateId) || isInvalidIdentity(cityId))
             throw new BlueException(INVALID_IDENTITY);
@@ -455,7 +453,7 @@ public class CityServiceImpl implements CityService {
                 .flatMap(updateResult -> {
                     long modifiedCount = updateResult.getModifiedCount();
 
-                    LOGGER.info("Mono<Long> updateCountryIdAndStateIdOfAreaByCityId(Long countryId, Long stateId, Long cityId), matchedCount = {}, modifiedCount = {}, wasAcknowledged = {}",
+                    LOGGER.info("matchedCount = {}, modifiedCount = {}, wasAcknowledged = {}",
                             countryId, stateId, updateResult.getMatchedCount(), modifiedCount, updateResult.wasAcknowledged());
 
                     return just(modifiedCount);
@@ -578,8 +576,7 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public Mono<List<City>> selectCityByLimitAndQuery(Long limit, Long rows, Query query) {
-        LOGGER.info("Mono<List<City>> selectCityMonoByLimitAndQuery(Long limit, Long rows, Query query), " +
-                "limit = {}, rows = {}, query = {}", limit, rows, query);
+        LOGGER.info("limit = {}, rows = {}, query = {}", limit, rows, query);
         if (limit == null || limit < 0 || rows == null || rows == 0)
             throw new BlueException(INVALID_PARAM);
 
@@ -597,7 +594,7 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public Mono<Long> countCityByQuery(Query query) {
-        LOGGER.info("Mono<Long> countCityMonoByQuery(Query query), query = {}", query);
+        LOGGER.info("query = {}", query);
         return reactiveMongoTemplate.count(query, City.class);
     }
 
@@ -609,8 +606,7 @@ public class CityServiceImpl implements CityService {
      */
     @Override
     public Mono<PageModelResponse<CityInfo>> selectCityPageByPageAndCondition(PageModelRequest<CityCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<CityInfo>> selectCityPageMonoByPageAndCondition(PageModelRequest<CityCondition> pageModelRequest), " +
-                "pageModelRequest = {}", pageModelRequest);
+        LOGGER.info("pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 

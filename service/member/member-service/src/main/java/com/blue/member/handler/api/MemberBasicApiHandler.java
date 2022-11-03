@@ -41,7 +41,7 @@ public final class MemberBasicApiHandler {
     public Mono<ServerResponse> get(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
-                        memberBasicService.getMemberBasicInfoMonoWithAssert(acc.getId())
+                        memberBasicService.getMemberBasicInfoWithAssert(acc.getId())
                                 .flatMap(mbi ->
                                         ok().contentType(APPLICATION_JSON)
                                                 .body(success(mbi, serverRequest), BlueResponse.class))

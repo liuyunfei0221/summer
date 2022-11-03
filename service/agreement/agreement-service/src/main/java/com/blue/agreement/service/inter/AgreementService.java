@@ -10,7 +10,6 @@ import com.blue.basic.model.common.PageModelResponse;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * agreement service
@@ -37,20 +36,12 @@ public interface AgreementService {
     void invalidAgreementInfosCache();
 
     /**
-     * get agreement by id
-     *
-     * @param id
-     * @return
-     */
-    Optional<Agreement> getAgreement(Long id);
-
-    /**
      * get agreement mono by id
      *
      * @param id
      * @return
      */
-    Mono<Agreement> getAgreementMono(Long id);
+    Mono<Agreement> getAgreement(Long id);
 
     /**
      * get newest agreement by type
@@ -58,7 +49,7 @@ public interface AgreementService {
      * @param agreementType
      * @return
      */
-    Optional<Agreement> getNewestAgreementByType(Integer agreementType);
+    Mono<Agreement> getNewestAgreementByType(Integer agreementType);
 
     /**
      * get newest agreement info
@@ -66,14 +57,14 @@ public interface AgreementService {
      * @param agreementType
      * @return
      */
-    Mono<AgreementInfo> getNewestAgreementInfoMonoByTypeWithCache(Integer agreementType);
+    Mono<AgreementInfo> getNewestAgreementInfoByTypeWithCache(Integer agreementType);
 
     /**
      * select all newest agreement info
      *
      * @return
      */
-    Mono<List<AgreementInfo>> selectNewestAgreementInfosMonoByAllTypeWithCache();
+    Mono<List<AgreementInfo>> selectNewestAgreementInfosByAllTypeWithCache();
 
     /**
      * select agreements by ids
@@ -81,7 +72,7 @@ public interface AgreementService {
      * @param ids
      * @return
      */
-    Mono<List<AgreementInfo>> selectAgreementInfoMonoByIds(List<Long> ids);
+    Mono<List<AgreementInfo>> selectAgreementInfoByIds(List<Long> ids);
 
     /**
      * select agreement by page and condition
@@ -91,7 +82,7 @@ public interface AgreementService {
      * @param agreementCondition
      * @return
      */
-    Mono<List<Agreement>> selectAgreementMonoByLimitAndCondition(Long limit, Long rows, AgreementCondition agreementCondition);
+    Mono<List<Agreement>> selectAgreementByLimitAndCondition(Long limit, Long rows, AgreementCondition agreementCondition);
 
     /**
      * count agreement by condition
@@ -99,7 +90,7 @@ public interface AgreementService {
      * @param agreementCondition
      * @return
      */
-    Mono<Long> countAgreementMonoByCondition(AgreementCondition agreementCondition);
+    Mono<Long> countAgreementByCondition(AgreementCondition agreementCondition);
 
     /**
      * select agreement info page by condition
@@ -107,6 +98,6 @@ public interface AgreementService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<AgreementManagerInfo>> selectAgreementManagerInfoPageMonoByPageAndCondition(PageModelRequest<AgreementCondition> pageModelRequest);
+    Mono<PageModelResponse<AgreementManagerInfo>> selectAgreementManagerInfoPageByPageAndCondition(PageModelRequest<AgreementCondition> pageModelRequest);
 
 }

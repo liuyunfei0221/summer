@@ -351,7 +351,7 @@ public class CardServiceImpl implements CardService {
      * @return
      */
     @Override
-    public Mono<Card> getCardMono(Long id) {
+    public Mono<Card> getCard(Long id) {
         LOGGER.info("Mono<Card> getCardMono(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -366,7 +366,7 @@ public class CardServiceImpl implements CardService {
      * @return
      */
     @Override
-    public Mono<List<Card>> selectCardMonoByMemberId(Long memberId) {
+    public Mono<List<Card>> selectCardByMemberId(Long memberId) {
         LOGGER.info("Mono<List<Card>> selectCardMonoByMemberId(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(BAD_REQUEST);
@@ -386,12 +386,12 @@ public class CardServiceImpl implements CardService {
      * @return
      */
     @Override
-    public Mono<List<CardInfo>> selectCardInfoMonoByMemberId(Long memberId) {
+    public Mono<List<CardInfo>> selectCardInfoByMemberId(Long memberId) {
         LOGGER.info("Mono<List<AddressInfo>> selectAddressInfoMonoByMemberId(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(BAD_REQUEST);
 
-        return selectCardMonoByMemberId(memberId)
+        return selectCardByMemberId(memberId)
                 .flatMap(cis -> just(CARDS_2_CARDS_INFO.apply(cis)));
     }
 
@@ -402,13 +402,13 @@ public class CardServiceImpl implements CardService {
      * @return
      */
     @Override
-    public Mono<CardInfo> getCardInfoMonoWithAssert(Long id) {
+    public Mono<CardInfo> getCardInfoWithAssert(Long id) {
         LOGGER.info("Mono<CardInfo> getCardInfoMonoWithAssert(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
         return just(id)
-                .flatMap(this::getCardMono)
+                .flatMap(this::getCard)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .flatMap(c ->
                         isValidStatus(c.getStatus()) ?
@@ -427,7 +427,7 @@ public class CardServiceImpl implements CardService {
      * @return
      */
     @Override
-    public Mono<List<CardInfo>> selectCardInfoMonoByIds(List<Long> ids) {
+    public Mono<List<CardInfo>> selectCardInfoByIds(List<Long> ids) {
         LOGGER.info("Mono<List<CardInfo>> selectCardInfoMonoByIds(List<Long> ids), ids = {}", ids);
         if (isEmpty(ids))
             return just(emptyList());
@@ -450,7 +450,7 @@ public class CardServiceImpl implements CardService {
      * @return
      */
     @Override
-    public Mono<List<Card>> selectCardMonoByLimitAndQuery(Long limit, Long rows, Query query) {
+    public Mono<List<Card>> selectCardByLimitAndQuery(Long limit, Long rows, Query query) {
         LOGGER.info("Mono<List<Card>> selectCardMonoByLimitAndQuery(Long limit, Long rows, Query query), " +
                 "limit = {}, rows = {}, query = {}", limit, rows, query);
         if (isInvalidLimit(limit) || isInvalidRows(rows))
@@ -469,7 +469,7 @@ public class CardServiceImpl implements CardService {
      * @return
      */
     @Override
-    public Mono<Long> countCardMonoByQuery(Query query) {
+    public Mono<Long> countCardByQuery(Query query) {
         LOGGER.info("Mono<Long> countCardMonoByQuery(Query query), query = {}", query);
         return reactiveMongoTemplate.count(query, Card.class);
     }
@@ -481,7 +481,7 @@ public class CardServiceImpl implements CardService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<CardDetailInfo>> selectCardDetailInfoPageMonoByPageAndCondition(PageModelRequest<CardCondition> pageModelRequest) {
+    public Mono<PageModelResponse<CardDetailInfo>> selectCardDetailInfoPageByPageAndCondition(PageModelRequest<CardCondition> pageModelRequest) {
         LOGGER.info("Mono<PageModelResponse<RoleInfo>> selectAttachmentDetailInfoPageMonoByPageAndCondition(PageModelRequest<AttachmentCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
@@ -489,12 +489,12 @@ public class CardServiceImpl implements CardService {
 
         Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
-        return zip(selectCardMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query), countCardMonoByQuery(query))
+        return zip(selectCardByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query), countCardByQuery(query))
                 .flatMap(tuple2 -> {
                     List<Card> cards = tuple2.getT1();
                     Long count = tuple2.getT2();
                     return isNotEmpty(cards) ?
-                            memberBasicService.selectMemberBasicInfoMonoByIds(cards.parallelStream().map(Card::getMemberId).collect(toList()))
+                            memberBasicService.selectMemberBasicInfoByIds(cards.parallelStream().map(Card::getMemberId).collect(toList()))
                                     .flatMap(memberBasicInfos -> {
                                         Map<Long, String> idAndNameMapping = memberBasicInfos.parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
                                         return just(cards.stream().map(c ->

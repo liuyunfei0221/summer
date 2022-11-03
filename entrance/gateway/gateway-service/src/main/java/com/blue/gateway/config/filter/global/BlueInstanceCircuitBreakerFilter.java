@@ -21,7 +21,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.blue.basic.common.base.BlueChecker.isNotNull;
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_INSTANCE_CIRCUIT_BREAKER;
 import static io.github.resilience4j.reactor.circuitbreaker.operator.CircuitBreakerOperator.of;
@@ -104,24 +103,19 @@ public final class BlueInstanceCircuitBreakerFilter implements GlobalFilter, Ord
     /**
      * get circuitBreaker by server instance name, init circuitBreaker on first call
      */
-    private final Function<String, CircuitBreaker> CIRCUIT_BREAKER_GETTER = name -> {
-        CircuitBreaker circuitBreaker = CIRCUIT_BREAKER_HOLDER.get(name);
-
-        if (isNotNull(circuitBreaker)) {
-            return circuitBreaker;
-        }
-
-        synchronized (this) {
-            circuitBreaker = CIRCUIT_BREAKER_HOLDER.get(name);
-            if (isNull(circuitBreaker)) {
-                circuitBreaker = circuitBreakerRegistry.circuitBreaker(name);
-                CIRCUIT_BREAKER_HOLDER.put(name, circuitBreaker);
-            }
-        }
-
-        return circuitBreaker;
-    };
-
+    private final Function<String, CircuitBreaker> CIRCUIT_BREAKER_GETTER = name ->
+            ofNullable(CIRCUIT_BREAKER_HOLDER.get(name))
+                    .orElseGet(() -> {
+                        CircuitBreaker circuitBreaker;
+                        synchronized (this) {
+                            circuitBreaker = CIRCUIT_BREAKER_HOLDER.get(name);
+                            if (isNull(circuitBreaker)) {
+                                circuitBreaker = circuitBreakerRegistry.circuitBreaker(name);
+                                CIRCUIT_BREAKER_HOLDER.put(name, circuitBreaker);
+                            }
+                        }
+                        return circuitBreaker;
+                    });
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {

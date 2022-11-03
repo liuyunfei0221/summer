@@ -54,7 +54,7 @@ public interface CardService {
      * @param id
      * @return
      */
-    Mono<Card> getCardMono(Long id);
+    Mono<Card> getCard(Long id);
 
     /**
      * query card mono by member id
@@ -62,7 +62,7 @@ public interface CardService {
      * @param memberId
      * @return
      */
-    Mono<List<Card>> selectCardMonoByMemberId(Long memberId);
+    Mono<List<Card>> selectCardByMemberId(Long memberId);
 
     /**
      * query card info mono by member id
@@ -70,7 +70,7 @@ public interface CardService {
      * @param memberId
      * @return
      */
-    Mono<List<CardInfo>> selectCardInfoMonoByMemberId(Long memberId);
+    Mono<List<CardInfo>> selectCardInfoByMemberId(Long memberId);
 
     /**
      * query card info by id with assert
@@ -78,7 +78,7 @@ public interface CardService {
      * @param id
      * @return
      */
-    Mono<CardInfo> getCardInfoMonoWithAssert(Long id);
+    Mono<CardInfo> getCardInfoWithAssert(Long id);
 
     /**
      * select card info by ids
@@ -86,7 +86,7 @@ public interface CardService {
      * @param ids
      * @return
      */
-    Mono<List<CardInfo>> selectCardInfoMonoByIds(List<Long> ids);
+    Mono<List<CardInfo>> selectCardInfoByIds(List<Long> ids);
 
     /**
      * select card by page and query
@@ -96,7 +96,7 @@ public interface CardService {
      * @param query
      * @return
      */
-    Mono<List<Card>> selectCardMonoByLimitAndQuery(Long limit, Long rows, Query query);
+    Mono<List<Card>> selectCardByLimitAndQuery(Long limit, Long rows, Query query);
 
     /**
      * count card by query
@@ -104,7 +104,7 @@ public interface CardService {
      * @param query
      * @return
      */
-    Mono<Long> countCardMonoByQuery(Query query);
+    Mono<Long> countCardByQuery(Query query);
 
     /**
      * select card detail info page by condition
@@ -112,6 +112,6 @@ public interface CardService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<CardDetailInfo>> selectCardDetailInfoPageMonoByPageAndCondition(PageModelRequest<CardCondition> pageModelRequest);
+    Mono<PageModelResponse<CardDetailInfo>> selectCardDetailInfoPageByPageAndCondition(PageModelRequest<CardCondition> pageModelRequest);
 
 }

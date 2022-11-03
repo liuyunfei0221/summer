@@ -5,13 +5,12 @@ import com.blue.base.api.model.StyleManagerInfo;
 import com.blue.base.model.StyleCondition;
 import com.blue.base.model.StyleInsertParam;
 import com.blue.base.model.StyleUpdateParam;
+import com.blue.base.repository.entity.Style;
 import com.blue.basic.model.common.PageModelRequest;
 import com.blue.basic.model.common.PageModelResponse;
-import com.blue.base.repository.entity.Style;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * style service
@@ -64,20 +63,12 @@ public interface StyleService {
     void invalidStyleInfosCache();
 
     /**
-     * get style by id
-     *
-     * @param id
-     * @return
-     */
-    Optional<Style> getStyle(Long id);
-
-    /**
      * get style mono by id
      *
      * @param id
      * @return
      */
-    Mono<Style> getStyleMono(Long id);
+    Mono<Style> getStyle(Long id);
 
     /**
      * select all style
@@ -101,7 +92,7 @@ public interface StyleService {
      * @param styleType
      * @return
      */
-    Mono<StyleInfo> getActiveStyleInfoMonoByTypeWithCache(Integer styleType);
+    Mono<StyleInfo> getActiveStyleInfoByTypeWithCache(Integer styleType);
 
     /**
      * select style by page and condition
@@ -111,7 +102,7 @@ public interface StyleService {
      * @param styleCondition
      * @return
      */
-    Mono<List<Style>> selectStyleMonoByLimitAndCondition(Long limit, Long rows, StyleCondition styleCondition);
+    Mono<List<Style>> selectStyleByLimitAndCondition(Long limit, Long rows, StyleCondition styleCondition);
 
     /**
      * count style by condition
@@ -119,7 +110,7 @@ public interface StyleService {
      * @param styleCondition
      * @return
      */
-    Mono<Long> countStyleMonoByCondition(StyleCondition styleCondition);
+    Mono<Long> countStyleByCondition(StyleCondition styleCondition);
 
     /**
      * select style manager info page by condition
@@ -127,6 +118,6 @@ public interface StyleService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<StyleManagerInfo>> selectStyleManagerInfoPageMonoByPageAndCondition(PageModelRequest<StyleCondition> pageModelRequest);
+    Mono<PageModelResponse<StyleManagerInfo>> selectStyleManagerInfoPageByPageAndCondition(PageModelRequest<StyleCondition> pageModelRequest);
 
 }

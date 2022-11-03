@@ -1,6 +1,7 @@
 package com.blue.shine.service.inter;
 
 import com.blue.base.api.model.CityRegion;
+import reactor.core.publisher.Mono;
 
 /**
  * city service
@@ -16,6 +17,6 @@ public interface CityService {
      * @param id
      * @return
      */
-    CityRegion getCityRegionById(Long id);
+    Mono<CityRegion> getCityRegionById(Long id);
 
 }

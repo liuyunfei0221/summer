@@ -1,11 +1,14 @@
 package com.blue.es.common;
 
 
+import co.elastic.clients.elasticsearch._types.FieldValue;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.search.Hit;
+import co.elastic.clients.util.ObjectBuilder;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.function.Function;
 
 import static com.blue.basic.common.base.BlueChecker.*;
 import static java.util.Collections.emptyList;
@@ -24,9 +27,31 @@ public final class EsSearchAfterProcessor {
      * @param builder
      * @param searchAfter
      */
-    public static void packageSearchAfter(SearchRequest.Builder builder, List<String> searchAfter) {
+    public static void packageSearchAfter(SearchRequest.Builder builder, List<FieldValue> searchAfter) {
         if (isNotNull(builder) && isNotEmpty(searchAfter))
             builder.searchAfter(searchAfter);
+    }
+
+    /**
+     * package search after to query
+     *
+     * @param builder
+     * @param searchAfter
+     */
+    public static void packageSearchAfter(SearchRequest.Builder builder, FieldValue searchAfter) {
+        if (isNotNull(builder) && isNotNull(searchAfter))
+            builder.searchAfter(searchAfter);
+    }
+
+    /**
+     * package search after to query
+     *
+     * @param builder
+     * @param fn
+     */
+    public static void packageSearchAfter(SearchRequest.Builder builder, Function<FieldValue.Builder, ObjectBuilder<FieldValue>> fn) {
+        if (isNotNull(builder) && isNotNull(fn))
+            builder.searchAfter(fn);
     }
 
     /**
@@ -36,14 +61,14 @@ public final class EsSearchAfterProcessor {
      * @param <T>
      * @return
      */
-    public static <T extends Serializable> List<String> parseSearchAfter(List<Hit<T>> hits) {
+    public static <T extends Serializable> List<FieldValue> parseSearchAfter(List<Hit<T>> hits) {
         if (isEmpty(hits))
             return emptyList();
 
         int index = hits.size() - 1;
 
         Hit<T> hit;
-        List<String> searchAfter;
+        List<FieldValue> searchAfter;
         for (int i = 0; index >= i; index--)
             if (isNotNull(hit = hits.get(index)) && isNotEmpty(searchAfter = hit.sort()))
                 return searchAfter;

@@ -78,7 +78,7 @@ public interface MemberBasicService {
      * @param id
      * @return
      */
-    MemberBasic getMemberBasic(Long id);
+    MemberBasic getMemberBasicSync(Long id);
 
     /**
      * get member mono by id
@@ -86,7 +86,7 @@ public interface MemberBasicService {
      * @param id
      * @return
      */
-    Mono<MemberBasic> getMemberBasicMono(Long id);
+    Mono<MemberBasic> getMemberBasic(Long id);
 
     /**
      * query member by phone
@@ -94,7 +94,7 @@ public interface MemberBasicService {
      * @param phone
      * @return
      */
-    Optional<MemberBasic> getMemberBasicByPhone(String phone);
+    Optional<MemberBasic> getMemberBasicOptByPhone(String phone);
 
     /**
      * query member by email
@@ -102,7 +102,7 @@ public interface MemberBasicService {
      * @param email
      * @return
      */
-    Optional<MemberBasic> getMemberBasicByEmail(String email);
+    Optional<MemberBasic> getMemberBasicOptByEmail(String email);
 
     /**
      * query member mono by phone
@@ -110,7 +110,7 @@ public interface MemberBasicService {
      * @param phone
      * @return
      */
-    Mono<MemberBasic> getMemberBasicMonoByPhone(String phone);
+    Mono<MemberBasic> getMemberBasicByPhone(String phone);
 
     /**
      * query member mono by email
@@ -118,7 +118,7 @@ public interface MemberBasicService {
      * @param email
      * @return
      */
-    Mono<MemberBasic> getMemberBasicMonoByEmail(String email);
+    Mono<MemberBasic> getMemberBasicByEmail(String email);
 
     /**
      * query member by id with assert
@@ -126,15 +126,7 @@ public interface MemberBasicService {
      * @param id
      * @return
      */
-    Mono<MemberBasicInfo> getMemberBasicInfoMonoWithAssert(Long id);
-
-    /**
-     * select members by ids
-     *
-     * @param ids
-     * @return
-     */
-    List<MemberBasic> selectMemberBasicByIds(List<Long> ids);
+    Mono<MemberBasicInfo> getMemberBasicInfoWithAssert(Long id);
 
     /**
      * select members mono by ids
@@ -150,7 +142,7 @@ public interface MemberBasicService {
      * @param ids
      * @return
      */
-    Mono<List<MemberBasicInfo>> selectMemberBasicInfoMonoByIds(List<Long> ids);
+    Mono<List<MemberBasicInfo>> selectMemberBasicInfoByIds(List<Long> ids);
 
     /**
      * select member by page and condition
@@ -160,7 +152,7 @@ public interface MemberBasicService {
      * @param memberBasicCondition
      * @return
      */
-    Mono<List<MemberBasic>> selectMemberBasicMonoByLimitAndCondition(Long limit, Long rows, MemberBasicCondition memberBasicCondition);
+    Mono<List<MemberBasic>> selectMemberBasicByLimitAndCondition(Long limit, Long rows, MemberBasicCondition memberBasicCondition);
 
     /**
      * count member by condition
@@ -168,7 +160,7 @@ public interface MemberBasicService {
      * @param memberBasicCondition
      * @return
      */
-    Mono<Long> countMemberBasicMonoByCondition(MemberBasicCondition memberBasicCondition);
+    Mono<Long> countMemberBasicByCondition(MemberBasicCondition memberBasicCondition);
 
     /**
      * select member basic info page by condition
@@ -176,6 +168,6 @@ public interface MemberBasicService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<MemberBasicInfo>> selectMemberBasicInfoPageMonoByPageAndCondition(PageModelRequest<MemberBasicCondition> pageModelRequest);
+    Mono<PageModelResponse<MemberBasicInfo>> selectMemberBasicInfoPageByPageAndCondition(PageModelRequest<MemberBasicCondition> pageModelRequest);
 
 }

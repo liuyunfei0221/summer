@@ -84,6 +84,8 @@ public class AreaServiceImpl implements AreaService {
 
     private ExecutorService executorService;
 
+    private final ReactiveMongoTemplate reactiveMongoTemplate;
+
     private CityService cityService;
 
     private StateService stateService;
@@ -92,17 +94,15 @@ public class AreaServiceImpl implements AreaService {
 
     private AreaRepository areaRepository;
 
-    private final ReactiveMongoTemplate reactiveMongoTemplate;
-
-    public AreaServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ExecutorService executorService, CityService cityService, StateService stateService, CountryService countryService,
-                           AreaRepository areaRepository, ReactiveMongoTemplate reactiveMongoTemplate, CaffeineDeploy caffeineDeploy) {
+    public AreaServiceImpl(BlueIdentityProcessor blueIdentityProcessor, ExecutorService executorService, ReactiveMongoTemplate reactiveMongoTemplate,
+                           CityService cityService, StateService stateService, CountryService countryService, AreaRepository areaRepository, CaffeineDeploy caffeineDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.executorService = executorService;
+        this.reactiveMongoTemplate = reactiveMongoTemplate;
         this.cityService = cityService;
         this.stateService = stateService;
         this.countryService = countryService;
         this.areaRepository = areaRepository;
-        this.reactiveMongoTemplate = reactiveMongoTemplate;
 
         idAreaCache = generateCacheAsyncCache(new CaffeineConfParams(
                 caffeineDeploy.getAreaMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
@@ -342,7 +342,7 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public Mono<AreaInfo> insertArea(AreaInsertParam areaInsertParam) {
-        LOGGER.info("Mono<AreaInfo> insertArea(AreaInsertParam areaInsertParam), areaInsertParam = {}", areaInsertParam);
+        LOGGER.info("areaInsertParam = {}", areaInsertParam);
 
         INSERT_ITEM_VALIDATOR.accept(areaInsertParam);
         Area area = AREA_INSERT_PARAM_2_AREA_CONVERTER.apply(areaInsertParam);
@@ -363,7 +363,7 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public Mono<AreaInfo> updateArea(AreaUpdateParam areaUpdateParam) {
-        LOGGER.info("Mono<AreaInfo> updateArea(AreaUpdateParam areaUpdateParam), areaUpdateParam = {}", areaUpdateParam);
+        LOGGER.info("areaUpdateParam = {}", areaUpdateParam);
 
         Area area = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(areaUpdateParam);
 
@@ -385,7 +385,7 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public Mono<AreaInfo> deleteArea(Long id) {
-        LOGGER.info("Mono<AreaInfo> deleteArea(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -525,8 +525,7 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public Mono<List<Area>> selectAreaByLimitAndQuery(Long limit, Long rows, Query query) {
-        LOGGER.info("Mono<List<Area>> selectAreaMonoByLimitAndQuery(Long limit, Long rows, Query query), " +
-                "limit = {}, rows = {}, query = {}", limit, rows, query);
+        LOGGER.info("limit = {}, rows = {}, query = {}", limit, rows, query);
         if (limit == null || limit < 0 || rows == null || rows == 0)
             throw new BlueException(INVALID_PARAM);
 
@@ -544,7 +543,7 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public Mono<Long> countAreaByQuery(Query query) {
-        LOGGER.info("Mono<Long> countAreaMonoByQuery(Query query), query = {}", query);
+        LOGGER.info("query = {}", query);
         return reactiveMongoTemplate.count(query, Area.class);
     }
 
@@ -556,8 +555,7 @@ public class AreaServiceImpl implements AreaService {
      */
     @Override
     public Mono<PageModelResponse<AreaInfo>> selectAreaPageByPageAndCondition(PageModelRequest<AreaCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<AreaInfo>> selectAreaPageMonoByPageAndCondition(PageModelRequest<AreaCondition> pageModelRequest), " +
-                "pageModelRequest = {}", pageModelRequest);
+        LOGGER.info("pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 

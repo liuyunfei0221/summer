@@ -1,10 +1,7 @@
 package test;
 
 import co.elastic.clients.elasticsearch.ElasticsearchAsyncClient;
-import co.elastic.clients.elasticsearch._types.FieldSort;
-import co.elastic.clients.elasticsearch._types.SortOptions;
-import co.elastic.clients.elasticsearch._types.SortOrder;
-import co.elastic.clients.elasticsearch._types.Time;
+import co.elastic.clients.elasticsearch._types.*;
 import co.elastic.clients.elasticsearch._types.aggregations.Aggregate;
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.FuzzyQuery;
@@ -37,6 +34,7 @@ import static com.blue.es.api.generator.BlueEsGenerator.generateRestClientTransp
 import static com.blue.es.common.EsSearchAfterProcessor.packageSearchAfter;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 
 @SuppressWarnings({"DuplicatedCode", "unused"})
 public class Search {
@@ -177,7 +175,7 @@ public class Search {
                         .from(0)
                         .size(3);
 
-                packageSearchAfter(builder, after);
+                packageSearchAfter(builder, after.stream().map(FieldValue::of).collect(toList()));
 
                 return builder;
             });
@@ -194,7 +192,9 @@ public class Search {
                 System.err.println("shine id = " + hit.source().getId());
                 System.err.println(hit.source().getTitle());
                 System.err.println(hit.sort());
-                searchAfter = ofNullable(hit.sort()).filter(BlueChecker::isNotEmpty).orElse(null);
+                searchAfter = ofNullable(hit.sort()).filter(BlueChecker::isNotEmpty).map(
+                        l -> l.stream().map(FieldValue::stringValue).collect(toList())
+                ).orElseGet(Collections::emptyList);
                 System.err.println(searchAfter);
 
                 System.err.println();
@@ -219,7 +219,7 @@ public class Search {
                         .from(0)
                         .size(3);
 
-                packageSearchAfter(builder, after);
+                packageSearchAfter(builder, after.stream().map(FieldValue::of).collect(toList()));
 
                 return builder;
             });
@@ -235,7 +235,9 @@ public class Search {
                 System.err.println(hit.source().getId());
                 System.err.println(hit.source().getTitle());
                 System.err.println(hit.sort());
-                searchAfter = ofNullable(hit.sort()).filter(BlueChecker::isNotEmpty).orElseGet(Collections::emptyList);
+                ofNullable(hit.sort()).filter(BlueChecker::isNotEmpty).map(
+                        l -> l.stream().map(FieldValue::stringValue).collect(toList())
+                ).orElseGet(Collections::emptyList);
                 System.err.println(searchAfter);
 
                 System.err.println();

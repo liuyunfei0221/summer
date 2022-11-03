@@ -406,7 +406,7 @@ public class AddressServiceImpl implements AddressService {
      * @return
      */
     @Override
-    public Mono<Address> getAddressMono(Long id) {
+    public Mono<Address> getAddress(Long id) {
         LOGGER.info("Mono<Address> getAddressMono(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
@@ -421,7 +421,7 @@ public class AddressServiceImpl implements AddressService {
      * @return
      */
     @Override
-    public Mono<List<Address>> selectAddressMonoByMemberId(Long memberId) {
+    public Mono<List<Address>> selectAddressByMemberId(Long memberId) {
         LOGGER.info("Mono<List<Address>> selectAddressMonoByMemberId(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(BAD_REQUEST);
@@ -441,12 +441,12 @@ public class AddressServiceImpl implements AddressService {
      * @return
      */
     @Override
-    public Mono<List<AddressInfo>> selectAddressInfoMonoByMemberId(Long memberId) {
+    public Mono<List<AddressInfo>> selectAddressInfoByMemberId(Long memberId) {
         LOGGER.info("Mono<List<AddressInfo>> selectAddressInfoMonoByMemberId(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(BAD_REQUEST);
 
-        return selectAddressMonoByMemberId(memberId)
+        return selectAddressByMemberId(memberId)
                 .flatMap(as -> just(ADDRESSES_2_ADDRESSES_INFO.apply(as)));
     }
 
@@ -457,13 +457,13 @@ public class AddressServiceImpl implements AddressService {
      * @return
      */
     @Override
-    public Mono<AddressInfo> getAddressInfoMonoWithAssert(Long id) {
+    public Mono<AddressInfo> getAddressInfoWithAssert(Long id) {
         LOGGER.info("Mono<AddressInfo> getAddressInfoMonoWithAssert(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
         return just(id)
-                .flatMap(this::getAddressMono)
+                .flatMap(this::getAddress)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .flatMap(a ->
                         isInvalidStatus(a.getStatus()) ?
@@ -482,7 +482,7 @@ public class AddressServiceImpl implements AddressService {
      * @return
      */
     @Override
-    public Mono<List<AddressInfo>> selectAddressInfoMonoByIds(List<Long> ids) {
+    public Mono<List<AddressInfo>> selectAddressInfoByIds(List<Long> ids) {
         LOGGER.info("Mono<List<AddressInfo>> selectAddressInfoMonoByIds(List<Long> ids), ids = {}", ids);
         if (isEmpty(ids))
             return just(emptyList());
@@ -505,7 +505,7 @@ public class AddressServiceImpl implements AddressService {
      * @return
      */
     @Override
-    public Mono<List<Address>> selectAddressMonoByLimitAndQuery(Long limit, Long rows, Query query) {
+    public Mono<List<Address>> selectAddressByLimitAndQuery(Long limit, Long rows, Query query) {
         LOGGER.info("Mono<List<Address>> selectAddressMonoByLimitAndQuery(Long limit, Long rows, Query query), " +
                 "limit = {}, rows = {}, query = {}", limit, rows, query);
         if (isInvalidLimit(limit) || isInvalidRows(rows))
@@ -524,7 +524,7 @@ public class AddressServiceImpl implements AddressService {
      * @return
      */
     @Override
-    public Mono<Long> countAddressMonoByQuery(Query query) {
+    public Mono<Long> countAddressByQuery(Query query) {
         LOGGER.info("Mono<Long> countAddressMonoByQuery(Query query), query = {}", query);
         return reactiveMongoTemplate.count(query, Address.class);
     }
@@ -536,7 +536,7 @@ public class AddressServiceImpl implements AddressService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<AddressInfo>> selectAddressInfoPageMonoByPageAndCondition(PageModelRequest<AddressCondition> pageModelRequest) {
+    public Mono<PageModelResponse<AddressInfo>> selectAddressInfoPageByPageAndCondition(PageModelRequest<AddressCondition> pageModelRequest) {
         LOGGER.info("Mono<PageModelResponse<AddressInfo>> selectAddressInfoPageMonoByPageAndCondition(PageModelRequest<AddressCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
@@ -544,8 +544,8 @@ public class AddressServiceImpl implements AddressService {
 
         Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
-        return zip(selectAddressMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),
-                countAddressMonoByQuery(query)
+        return zip(selectAddressByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),
+                countAddressByQuery(query)
         ).flatMap(tuple2 ->
                 just(new PageModelResponse<>(ADDRESSES_2_ADDRESSES_INFO.apply(tuple2.getT1()), tuple2.getT2()))
         );

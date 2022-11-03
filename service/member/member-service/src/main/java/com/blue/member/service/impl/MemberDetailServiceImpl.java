@@ -104,7 +104,7 @@ public class MemberDetailServiceImpl implements MemberDetailService {
         if (isInvalidIdentity(mid))
             throw new BlueException(INVALID_IDENTITY);
 
-        MemberBasic memberBasic = memberBasicService.getMemberBasic(mid);
+        MemberBasic memberBasic = memberBasicService.getMemberBasicSync(mid);
         if (isNull(memberBasic))
             throw new BlueException(INVALID_PARAM);
 
@@ -386,30 +386,15 @@ public class MemberDetailServiceImpl implements MemberDetailService {
     }
 
     /**
-     * get by id
-     *
-     * @param id
-     * @return
-     */
-    @Override
-    public MemberDetail getMemberDetail(Long id) {
-        LOGGER.info("MemberDetail getMemberDetail(Long id), id = {}", id);
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
-
-        return ofNullable(memberDetailMapper.selectByPrimaryKey(id)).orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
-    }
-
-    /**
      * get member detail by id
      *
      * @param id
      * @return
      */
     @Override
-    public Mono<MemberDetail> getMemberDetailMono(Long id) {
+    public Mono<MemberDetail> getMemberDetail(Long id) {
         LOGGER.info("Mono<MemberDetail> getMemberDetailMono(Long id), id = {}", id);
-        return just(getMemberDetail(id));
+        return justOrEmpty(memberDetailMapper.selectByPrimaryKey(id));
     }
 
     /**
@@ -419,12 +404,12 @@ public class MemberDetailServiceImpl implements MemberDetailService {
      * @return
      */
     @Override
-    public Mono<MemberDetailInfo> getMemberDetailInfoMonoWithAssert(Long id) {
+    public Mono<MemberDetailInfo> getMemberDetailInfoWithAssert(Long id) {
         LOGGER.info("Mono<MemberDetailInfo> getMemberDetailInfoMonoWithAssert(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return getMemberDetailMono(id)
+        return getMemberDetail(id)
                 .flatMap(md ->
                         isValidStatus(md.getStatus()) ?
                                 just(md)
@@ -442,7 +427,7 @@ public class MemberDetailServiceImpl implements MemberDetailService {
      * @return
      */
     @Override
-    public Mono<MemberDetailInfo> getMemberDetailInfoMonoByMemberId(Long memberId) {
+    public Mono<MemberDetailInfo> getMemberDetailInfoByMemberId(Long memberId) {
         LOGGER.info("Mono<MemberDetailInfo> getMemberDetailInfoMonoByMemberId(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
@@ -460,12 +445,12 @@ public class MemberDetailServiceImpl implements MemberDetailService {
      * @return
      */
     @Override
-    public Mono<MemberDetailInfo> getMemberDetailInfoMonoByMemberIdWithAssert(Long memberId) {
+    public Mono<MemberDetailInfo> getMemberDetailInfoByMemberIdWithAssert(Long memberId) {
         LOGGER.info("Mono<MemberDetailInfo> getMemberDetailInfoMonoByMemberIdWithAssert(Long memberId), memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
 
-        return getMemberDetailInfoMonoByMemberId(memberId)
+        return getMemberDetailInfoByMemberId(memberId)
                 .flatMap(mdi ->
                         isValidStatus(mdi.getStatus()) ?
                                 just(mdi)
@@ -475,33 +460,13 @@ public class MemberDetailServiceImpl implements MemberDetailService {
     }
 
     /**
-     * select details by ids
-     *
-     * @param ids
-     * @return
-     */
-    @Override
-    public List<MemberDetail> selectMemberDetailByIds(List<Long> ids) {
-        LOGGER.info("List<MemberDetail> selectMemberDetailByIds(List<Long> ids), ids = {}", ids);
-        if (isEmpty(ids))
-            return emptyList();
-        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
-            throw new BlueException(PAYLOAD_TOO_LARGE);
-
-        return allotByMax(ids, (int) DB_SELECT.value, false)
-                .stream().map(memberDetailMapper::selectByIds)
-                .flatMap(List::stream)
-                .collect(toList());
-    }
-
-    /**
      * select details mono by ids
      *
      * @param ids
      * @return
      */
     @Override
-    public Mono<List<MemberDetail>> selectMemberDetailMonoByIds(List<Long> ids) {
+    public Mono<List<MemberDetail>> selectMemberDetailByIds(List<Long> ids) {
         LOGGER.info("Mono<List<MemberDetail>> selectMemberDetailMonoByIds(List<Long> ids), ids = {}", ids);
         if (isEmpty(ids))
             return just(emptyList());
@@ -523,7 +488,7 @@ public class MemberDetailServiceImpl implements MemberDetailService {
      * @return
      */
     @Override
-    public Mono<List<MemberDetailInfo>> selectMemberDetailInfoMonoByIds(List<Long> ids) {
+    public Mono<List<MemberDetailInfo>> selectMemberDetailInfoByIds(List<Long> ids) {
         LOGGER.info("Mono<List<MemberDetailInfo>> selectMemberDetailInfoMonoByIds(List<Long> ids), ids = {}", ids);
         if (isEmpty(ids))
             return just(emptyList());
@@ -540,33 +505,13 @@ public class MemberDetailServiceImpl implements MemberDetailService {
     }
 
     /**
-     * select details by member ids
-     *
-     * @param memberIds
-     * @return
-     */
-    @Override
-    public List<MemberDetail> selectMemberDetailByMemberIds(List<Long> memberIds) {
-        LOGGER.info("List<MemberDetail> selectMemberDetailByMemberIds(List<Long> memberIds), memberIds = {}", memberIds);
-        if (isEmpty(memberIds))
-            return emptyList();
-        if (memberIds.size() > (int) MAX_SERVICE_SELECT.value)
-            throw new BlueException(PAYLOAD_TOO_LARGE);
-
-        return allotByMax(memberIds, (int) DB_SELECT.value, false)
-                .stream().map(memberDetailMapper::selectByMemberIds)
-                .flatMap(List::stream)
-                .collect(toList());
-    }
-
-    /**
      * select details mono by member ids
      *
      * @param memberIds
      * @return
      */
     @Override
-    public Mono<List<MemberDetail>> selectMemberDetailMonoByMemberIds(List<Long> memberIds) {
+    public Mono<List<MemberDetail>> selectMemberDetailByMemberIds(List<Long> memberIds) {
         LOGGER.info("Mono<List<MemberDetail>> selectMemberDetailMonoByMemberIds(List<Long> memberIds), memberIds = {}", memberIds);
         if (isEmpty(memberIds))
             return just(emptyList());
@@ -588,7 +533,7 @@ public class MemberDetailServiceImpl implements MemberDetailService {
      * @return
      */
     @Override
-    public Mono<List<MemberDetailInfo>> selectMemberDetailInfoMonoByMemberIds(List<Long> memberIds) {
+    public Mono<List<MemberDetailInfo>> selectMemberDetailInfoByMemberIds(List<Long> memberIds) {
         LOGGER.info("Mono<List<MemberDetailInfo>> selectMemberDetailInfoMonoByMemberIds(List<Long> memberIds), memberIds = {}", memberIds);
         if (isEmpty(memberIds))
             return just(emptyList());
@@ -613,7 +558,7 @@ public class MemberDetailServiceImpl implements MemberDetailService {
      * @return
      */
     @Override
-    public Mono<List<MemberDetail>> selectMemberDetailMonoByLimitAndCondition(Long limit, Long rows, MemberDetailCondition memberDetailCondition) {
+    public Mono<List<MemberDetail>> selectMemberDetailByLimitAndCondition(Long limit, Long rows, MemberDetailCondition memberDetailCondition) {
         LOGGER.info("Mono<List<MemberDetail>> selectMemberDetailMonoByLimitAndCondition(Long limit, Long rows, MemberDetailCondition memberDetailCondition), " +
                 "limit = {}, rows = {}, memberDetailCondition = {}", limit, rows, memberDetailCondition);
         if (isNull(limit) || limit < 0 || isNull(rows) || rows < 1)
@@ -629,7 +574,7 @@ public class MemberDetailServiceImpl implements MemberDetailService {
      * @return
      */
     @Override
-    public Mono<Long> countMemberDetailMonoByCondition(MemberDetailCondition memberDetailCondition) {
+    public Mono<Long> countMemberDetailByCondition(MemberDetailCondition memberDetailCondition) {
         LOGGER.info("Mono<Long> countMemberDetailMonoByCondition(MemberDetailCondition memberDetailCondition), memberDetailCondition = {}", memberDetailCondition);
         return just(ofNullable(memberDetailMapper.countByCondition(memberDetailCondition)).orElse(0L));
     }
@@ -641,7 +586,7 @@ public class MemberDetailServiceImpl implements MemberDetailService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<MemberDetailInfo>> selectMemberDetailInfoPageMonoByPageAndCondition(PageModelRequest<MemberDetailCondition> pageModelRequest) {
+    public Mono<PageModelResponse<MemberDetailInfo>> selectMemberDetailInfoPageByPageAndCondition(PageModelRequest<MemberDetailCondition> pageModelRequest) {
         LOGGER.info("Mono<PageModelResponse<MemberDetailInfo>> selectMemberDetailInfoPageMonoByPageAndCondition(PageModelRequest<MemberDetailCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
@@ -649,7 +594,7 @@ public class MemberDetailServiceImpl implements MemberDetailService {
 
         MemberDetailCondition memberDetailCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
-        return zip(selectMemberDetailMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberDetailCondition), countMemberDetailMonoByCondition(memberDetailCondition))
+        return zip(selectMemberDetailByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberDetailCondition), countMemberDetailByCondition(memberDetailCondition))
                 .flatMap(tuple2 ->
                         just(new PageModelResponse<>(MEMBER_DETAILS_2_MEMBER_DETAILS_INFO.apply(tuple2.getT1()), tuple2.getT2()))
                 );

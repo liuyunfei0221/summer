@@ -443,9 +443,9 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public MemberBasic getMemberBasic(Long id) {
+    public MemberBasic getMemberBasicSync(Long id) {
         LOGGER.info("MemberBasic getMemberBasicByPrimaryKey(Long id), id = {}", id);
-        return MEMBER_BASIC_WITH_REDIS_CACHE_GETTER.apply(id);
+        return MEMBER_BASIC_DB_GETTER.apply(id);
     }
 
     /**
@@ -455,9 +455,9 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<MemberBasic> getMemberBasicMono(Long id) {
+    public Mono<MemberBasic> getMemberBasic(Long id) {
         LOGGER.info("Mono<MemberBasic> getMemberBasicMonoByPrimaryKey(Long id), id = {}", id);
-        return justOrEmpty(getMemberBasic(id));
+        return justOrEmpty(MEMBER_BASIC_WITH_REDIS_CACHE_GETTER.apply(id));
     }
 
     /**
@@ -467,7 +467,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Optional<MemberBasic> getMemberBasicByPhone(String phone) {
+    public Optional<MemberBasic> getMemberBasicOptByPhone(String phone) {
         LOGGER.info("Optional<MemberBasic> getMemberBasicByPhone(String phone), phone = {}", phone);
         if (isBlank(phone))
             throw new BlueException(BAD_REQUEST);
@@ -482,7 +482,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Optional<MemberBasic> getMemberBasicByEmail(String email) {
+    public Optional<MemberBasic> getMemberBasicOptByEmail(String email) {
         LOGGER.info("Optional<MemberBasic> getMemberBasicByEmail(String email), email = {}", email);
         if (isBlank(email))
             throw new BlueException(BAD_REQUEST);
@@ -497,7 +497,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<MemberBasic> getMemberBasicMonoByPhone(String phone) {
+    public Mono<MemberBasic> getMemberBasicByPhone(String phone) {
         LOGGER.info("Mono<MemberBasic> getMemberBasicMonoByPhone(String phone), phone = {}", phone);
         if (isBlank(phone))
             throw new BlueException(BAD_REQUEST);
@@ -512,7 +512,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<MemberBasic> getMemberBasicMonoByEmail(String email) {
+    public Mono<MemberBasic> getMemberBasicByEmail(String email) {
         LOGGER.info("Mono<MemberBasic> getMemberBasicMonoByEmail(String email), email = {}", email);
         if (isBlank(email))
             throw new BlueException(BAD_REQUEST);
@@ -527,12 +527,12 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<MemberBasicInfo> getMemberBasicInfoMonoWithAssert(Long id) {
+    public Mono<MemberBasicInfo> getMemberBasicInfoWithAssert(Long id) {
         LOGGER.info("Mono<MemberInfo> getMemberInfoMonoByPrimaryKeyWithAssert(Long id), id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return getMemberBasicMono(id)
+        return getMemberBasic(id)
                 .flatMap(mb -> {
                     if (isInvalidStatus(mb.getStatus()))
                         return error(() -> new BlueException(DATA_HAS_BEEN_FROZEN));
@@ -541,26 +541,6 @@ public class MemberBasicServiceImpl implements MemberBasicService {
                 }).flatMap(mb ->
                         just(MEMBER_BASIC_2_MEMBER_BASIC_INFO.apply(mb))
                 );
-    }
-
-    /**
-     * select members by ids
-     *
-     * @param ids
-     * @return
-     */
-    @Override
-    public List<MemberBasic> selectMemberBasicByIds(List<Long> ids) {
-        LOGGER.info("List<MemberBasic> selectMemberBasicByIds(List<Long> ids), ids = {}", ids);
-        if (isEmpty(ids))
-            return emptyList();
-        if (ids.size() > (int) MAX_SERVICE_SELECT.value)
-            throw new BlueException(PAYLOAD_TOO_LARGE);
-
-        return allotByMax(ids, (int) DB_SELECT.value, false)
-                .stream().map(MEMBER_BASICS_WITH_REDIS_CACHE_GETTER)
-                .flatMap(List::stream)
-                .collect(toList());
     }
 
     /**
@@ -592,7 +572,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<List<MemberBasicInfo>> selectMemberBasicInfoMonoByIds(List<Long> ids) {
+    public Mono<List<MemberBasicInfo>> selectMemberBasicInfoByIds(List<Long> ids) {
         LOGGER.info("Mono<List<MemberBasic>> selectMemberBasicMonoByIds(List<Long> ids), ids = {}", ids);
         if (isEmpty(ids))
             return just(emptyList());
@@ -617,7 +597,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<List<MemberBasic>> selectMemberBasicMonoByLimitAndCondition(Long limit, Long rows, MemberBasicCondition memberBasicCondition) {
+    public Mono<List<MemberBasic>> selectMemberBasicByLimitAndCondition(Long limit, Long rows, MemberBasicCondition memberBasicCondition) {
         LOGGER.info("Mono<List<MemberBasic>> selectMemberBasicMonoByLimitAndCondition(Long limit, Long rows, MemberBasicCondition memberBasicCondition), " +
                 "limit = {}, rows = {}, memberBasicCondition = {}", limit, rows, memberBasicCondition);
         if (isNull(limit) || limit < 0 || isNull(rows) || rows < 1)
@@ -633,7 +613,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<Long> countMemberBasicMonoByCondition(MemberBasicCondition memberBasicCondition) {
+    public Mono<Long> countMemberBasicByCondition(MemberBasicCondition memberBasicCondition) {
         LOGGER.info("Mono<Long> countMemberBasicMonoByCondition(MemberBasicCondition memberBasicCondition), memberBasicCondition = {}", memberBasicCondition);
         return just(ofNullable(memberBasicMapper.countByCondition(memberBasicCondition)).orElse(0L));
     }
@@ -645,7 +625,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<MemberBasicInfo>> selectMemberBasicInfoPageMonoByPageAndCondition(PageModelRequest<MemberBasicCondition> pageModelRequest) {
+    public Mono<PageModelResponse<MemberBasicInfo>> selectMemberBasicInfoPageByPageAndCondition(PageModelRequest<MemberBasicCondition> pageModelRequest) {
         LOGGER.info("Mono<PageModelResponse<MemberBasicInfo>> selectMemberBasicInfoPageMonoByPageAndCondition(PageModelRequest<MemberBasicCondition> pageModelRequest), " +
                 "pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
@@ -653,7 +633,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
 
         MemberBasicCondition memberBasicCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
-        return zip(selectMemberBasicMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberBasicCondition), countMemberBasicMonoByCondition(memberBasicCondition))
+        return zip(selectMemberBasicByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), memberBasicCondition), countMemberBasicByCondition(memberBasicCondition))
                 .flatMap(tuple2 ->
                         just(new PageModelResponse<>(MEMBER_BASICS_2_MEMBER_BASICS_INFO.apply(tuple2.getT1()), tuple2.getT2()))
                 );

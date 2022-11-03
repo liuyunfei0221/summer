@@ -133,15 +133,19 @@ public final class BlueRedissonGenerator {
     private static final Map<ServerMode, BiConsumer<RedissonConf, Config>> CONF_PACKAGERS = new HashMap<>(4, 2.0f);
 
     static {
-        SERVER_MODE_ASSERTERS.put(CLUSTER, redissonConf -> {
-            List<String> nodes = redissonConf.getNodes();
-            if (isEmpty(nodes))
+        SERVER_MODE_ASSERTERS.put(CLUSTER, conf -> {
+            if (isNull(conf))
+                throw new RuntimeException("conf can't be null");
+
+            if (isEmpty(conf.getNodes()))
                 throw new RuntimeException("nodes can't be null or empty");
         });
 
-        SERVER_MODE_ASSERTERS.put(SINGLE, redissonConf -> {
-            String address = redissonConf.getAddress();
-            if (isBlank(address))
+        SERVER_MODE_ASSERTERS.put(SINGLE, conf -> {
+            if (isNull(conf))
+                throw new RuntimeException("conf can't be null");
+
+            if (isBlank(conf.getAddress()))
                 throw new RuntimeException("address can't be blank");
         });
 
