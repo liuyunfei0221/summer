@@ -7,6 +7,227 @@
 	},
 	"item": [
 		{
+			"name": "agreement",
+			"item": [
+				{
+					"name": "用户协议查询",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZ1VFUkJNS1BiSW9FYVZ2biIsInR5cCI6IkpXVCIsImFsZyI6IkhTMjU2In0.eyJzdWIiOiJhdSIsImQiOiJNT0JJTEUiLCJnIjoiUm9ZelZFRHB0S1EiLCJpc3MiOiJfYmx1ZV8xNjI2NzUxODg0NjI3IiwiaSI6IjgyMDE5ODg0NTgxNTE5MzYiLCJrIjoiQl9TTjo4MjAxOTg4NDU4MTUxOTM2X0FQX01PQklMRSIsImwiOiJBUCIsInAiOiJNRnd3RFFZSktvWklodmNOQVFFQkJRQURTd0F3U0FKQkFQQ2M1Z2p0cHFYNmlPUlhZb3ljYnJBV2plWGpOd1lGZ08rUlhxL2l6N2IzYlI3YUxTcUcrZXpmckoyWGEwLzRyR1pyWlVvbE9HWjc4R1BONXB6VlJBTUNBd0VBQVE9PSIsImF1ZCI6ImNuIiwiciI6IjEzOTU5NDg1ODUxNSIsIm5iZiI6MTYyNjc1MTg4NCwiZXhwIjoxNjI5NDMwMjg0LCJpYXQiOjE2MjY3NTE4ODQsImp0aSI6InVrckZwSEpza0JOUllaaFoifQ.A-oE_g7U5hDop0PvgCoDBjqrexWeLTuONypC-4IvCv4",
+								"type": "text"
+							},
+							{
+								"key": "Metadata",
+								"value": "{\"meta\":\"123456789\"}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:11000/blue-agreement/agreement/3",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-agreement",
+								"agreement",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台用户协议列表查询",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiI1NjcyZGVmOGI5YzBiYzIzMWQ2MGVkNGQ5ZWVlZDg5OTIzYzhhMTJiNjVhMDRlMWI5ODYxZGVjMWM4MGUxYTdhN2M4ZmYxOTRmNTg5NmE5NDU0YTBkMDY1ZmJlMTc1YWM5M2FlOWE0MzE3MTJiYjgxNWMzNGVmZWI5NmViMWU1ZSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE3MTc3NDIzOTQzNDM0MjVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNzE3NzQyMzk0MzQzNDI1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY3MTg2MTA2IiwibmJmIjoxNjY3MTg2MTA2LCJ0IjoiS3hjTnlEMHh4cm4iLCJlYXMiOjE2NzQ5NjIxMDY1MjIsImV4cCI6MTY3NDk2MjEwNiwiaWF0IjoxNjY3MTg2MTA2LCJqdGkiOiJTNWlVbXEyMzFPM0llZUZZd29Gc1FFeWpUNnhteEprRyJ9.Gp4uvhneYqItmRAydNk8kwkKLQDjqZ1jvbDU1d5QZLQQCqvd1fs7R56lIoBhie4cQw8n93hkrbnLj4Qf4wF9Dw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"titleLike\":null,\r\n        \"linkLike\":null,\r\n        \"type\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"ASC\"\r\n    }\r\n}"
+						},
+						"url": {
+							"raw": "localhost:11000/blue-agreement/manager/agreements",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-agreement",
+								"manager",
+								"agreements"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台添加用户协议",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiJmZmM5Njk5MzllMjI1NWMwZWRhNzU0YzViZmRmYWFmYzUzMzM4MGRlMjQwYmE2ZWQ5MDkyYTM4MmJjNTdiZTllZWYyMWE1YmEwMmI2YTVkMWZkODEyYmRiNWJlOWMxNTg4YTE1YzQxNDZkNDlhNjdmZjViMjBlZmEyNTZhM2Y0YiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE2MDE4ODc3OTkwMjUxMDRfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNjAxODg3Nzk5MDI1MTA0IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY2ODU4MTc4IiwibmJmIjoxNjY2ODU4MTc4LCJ0IjoiRkdsUDRwY1FIUlciLCJlYXMiOjE2NzQ2MzQxNzgwNTIsImV4cCI6MTY3NDYzNDE3OCwiaWF0IjoxNjY2ODU4MTc4LCJqdGkiOiJSOVIxS3lCdVlLMklhZ1BPOVBSbncxaWkydE5Hc21MMSJ9.eKNEXFd2Kyp0Gt_FKposb4pMOBtcEbSDZ6qVCUjbR2WDzpk4KuzE4lVpHdT8y0N6O186elxD_PD9zT5ET1Eecw",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\":\"agreement k\",\r\n    \"content\":\"agreement 22222\",\r\n    \"link\":\"www.bing.con\",\r\n    \"type\":3\r\n}"
+						},
+						"url": {
+							"raw": "localhost:11000/blue-agreement/manager/agreement",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-agreement",
+								"manager",
+								"agreement"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "查询最新的未签署协议",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiJhYjk3ZDliY2Y5ZWI2MzhmNzE4OWE5Mzk2MjkyZmYzODZjYmE4OTIzZGViNWQyODE1YmI4YzhlY2UyZDU1MWNjMjUwMjcyN2Q1YjYyZjE1NzA5NTdmZTJiNGIxNGVjYzU3NGZiODMxMzFmNTUyZjUwMjcyMzI0ODBmZmJiYTY4YSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE3MTc3NDIzOTQzNDM0MjVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNzE3NzQyMzk0MzQzNDI1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY3NDY3NTc0IiwibmJmIjoxNjY3NDY3NTc0LCJ0IjoiZ1h0cm9oT0ViSGUiLCJlYXMiOjE2NzUyNDM1NzQxNTUsImV4cCI6MTY3NTI0MzU3NCwiaWF0IjoxNjY3NDY3NTc0LCJqdGkiOiJuM0NGWGVaY0hGUWxFeTBGbEdBbXlLaWZRdXBycVh1byJ9.FwaUS4pzUMpMEgY0iKXjMAC8nGyCDcIouvEMYvc7hh6baidte-ec7oKnPsXMJ0CYTbAb5ophz8NGX_8Wq45ooA",
+								"type": "text"
+							},
+							{
+								"key": "Metadata",
+								"value": "{\"meta\":\"123456789\"}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:11000/blue-agreement/agreementRecord/unsigned",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-agreement",
+								"agreementRecord",
+								"unsigned"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "签署协议",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiJhYjk3ZDliY2Y5ZWI2MzhmNzE4OWE5Mzk2MjkyZmYzODZjYmE4OTIzZGViNWQyODE1YmI4YzhlY2UyZDU1MWNjMjUwMjcyN2Q1YjYyZjE1NzA5NTdmZTJiNGIxNGVjYzU3NGZiODMxMzFmNTUyZjUwMjcyMzI0ODBmZmJiYTY4YSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE3MTc3NDIzOTQzNDM0MjVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNzE3NzQyMzk0MzQzNDI1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY3NDY3NTc0IiwibmJmIjoxNjY3NDY3NTc0LCJ0IjoiZ1h0cm9oT0ViSGUiLCJlYXMiOjE2NzUyNDM1NzQxNTUsImV4cCI6MTY3NTI0MzU3NCwiaWF0IjoxNjY3NDY3NTc0LCJqdGkiOiJuM0NGWGVaY0hGUWxFeTBGbEdBbXlLaWZRdXBycVh1byJ9.FwaUS4pzUMpMEgY0iKXjMAC8nGyCDcIouvEMYvc7hh6baidte-ec7oKnPsXMJ0CYTbAb5ophz8NGX_8Wq45ooA",
+								"type": "text"
+							},
+							{
+								"key": "Metadata",
+								"value": "{\"meta\":\"123456789\"}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"agreementId\":51717811113820162\r\n}"
+						},
+						"url": {
+							"raw": "localhost:11000/blue-agreement/agreementRecord",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-agreement",
+								"agreementRecord"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "后台用户协议签署列表查询",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiJjOTA3MDM4YmRlMzU0ZWViODc2MjNkZjk3YjY3OGY2ZDc5NjcxZDAyODcyODJlZGU3ZDU4Yjc0NzJjOTRlYmM5MGMwZGRmMjI3MjRlZTg4ZTJmZDg1MDkyZDY5YzJiM2I0ZjAwOGRmMmZjMDZlMmE3OGY4M2MxMWVhYzViMjI1YyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE3MTc3NDIzOTQzNDM0MjVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNzE3NzQyMzk0MzQzNDI1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY2OTU2NDUyIiwibmJmIjoxNjY2OTU2NDUyLCJ0Ijoidjc3eU9WVDRsOWoiLCJlYXMiOjE2NzQ3MzI0NTI3NzksImV4cCI6MTY3NDczMjQ1MiwiaWF0IjoxNjY2OTU2NDUyLCJqdGkiOiJ5dXlVeWJ4ZjRuSTlucURlemY4bEJzOGpZaTZmVFZyeCJ9.3Lcfh8H3IbytYFtKLItGFgKMsMuKGwJWvUdcCse31s_AFFibHCXcWe3_QPFybd1AbGwuwGZ_3s2pgMyLNtjVpg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"titleLike\":null,\r\n        \"linkLike\":null,\r\n        \"type\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"ASC\"\r\n    }\r\n}"
+						},
+						"url": {
+							"raw": "localhost:11000/blue-agreement/manager/agreementRecords",
+							"host": [
+								"localhost"
+							],
+							"port": "11000",
+							"path": [
+								"blue-agreement",
+								"manager",
+								"agreementRecords"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "base",
 			"item": [
 				{
@@ -269,7 +490,7 @@
 							}
 						],
 						"url": {
-							"raw": "localhost:21000/blue-base/test/region",
+							"raw": "localhost:21000/blue-base/test/region1",
 							"host": [
 								"localhost"
 							],
@@ -277,7 +498,7 @@
 							"path": [
 								"blue-base",
 								"test",
-								"region"
+								"region1"
 							]
 						}
 					},
@@ -3866,7 +4087,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiJkMjM1MmEwZDhjMGMxZWE4YmU5OGY4OTQ0M2JlOWY4YjY0MGE4ZmU4ZWZlN2I3YTFmMzJjZDc0M2RhZWM4MGMwZmIxMTEzZDdiYTVjYjhmODZmOGQwNzUwNzRjZjNmMGYyMWEwYmZhYjAyNTAzNWFkYzYxYmY5MThiMDQyZWE5MSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDI0MzQyMjEwNDk5MDUxNTVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQyNDM0MjIxMDQ5OTA1MTU1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjU4MzE4NzIwIiwibmJmIjoxNjU4MzE4NzIwLCJ0IjoiVFBoVGJkaExnam4iLCJlYXMiOjE2NjYwOTQ3MjA3NDEsImV4cCI6MTY2NjA5NDcyMCwiaWF0IjoxNjU4MzE4NzIwLCJqdGkiOiJyM0hvSUIzUkJHTGhKOFl3OVhOSUdETTBvUjhqZFlwViJ9.tkJytj9cLmRVEs-IeToQkngv0YKHKDSvqYhx9kXaMTrV7HUJ4oCCqkJuJXU9gvtu5WElYvKIAvu6hTNgW36Lhg",
+								"value": "eyJraWQiOiI1NjcyZGVmOGI5YzBiYzIzMWQ2MGVkNGQ5ZWVlZDg5OTIzYzhhMTJiNjVhMDRlMWI5ODYxZGVjMWM4MGUxYTdhN2M4ZmYxOTRmNTg5NmE5NDU0YTBkMDY1ZmJlMTc1YWM5M2FlOWE0MzE3MTJiYjgxNWMzNGVmZWI5NmViMWU1ZSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE3MTc3NDIzOTQzNDM0MjVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNzE3NzQyMzk0MzQzNDI1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY3MTg2MTA2IiwibmJmIjoxNjY3MTg2MTA2LCJ0IjoiS3hjTnlEMHh4cm4iLCJlYXMiOjE2NzQ5NjIxMDY1MjIsImV4cCI6MTY3NDk2MjEwNiwiaWF0IjoxNjY3MTg2MTA2LCJqdGkiOiJTNWlVbXEyMzFPM0llZUZZd29Gc1FFeWpUNnhteEprRyJ9.Gp4uvhneYqItmRAydNk8kwkKLQDjqZ1jvbDU1d5QZLQQCqvd1fs7R56lIoBhie4cQw8n93hkrbnLj4Qf4wF9Dw",
 								"type": "text"
 							}
 						],
@@ -3900,7 +4121,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiJkMjM1MmEwZDhjMGMxZWE4YmU5OGY4OTQ0M2JlOWY4YjY0MGE4ZmU4ZWZlN2I3YTFmMzJjZDc0M2RhZWM4MGMwZmIxMTEzZDdiYTVjYjhmODZmOGQwNzUwNzRjZjNmMGYyMWEwYmZhYjAyNTAzNWFkYzYxYmY5MThiMDQyZWE5MSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDI0MzQyMjEwNDk5MDUxNTVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQyNDM0MjIxMDQ5OTA1MTU1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjU4MzE4NzIwIiwibmJmIjoxNjU4MzE4NzIwLCJ0IjoiVFBoVGJkaExnam4iLCJlYXMiOjE2NjYwOTQ3MjA3NDEsImV4cCI6MTY2NjA5NDcyMCwiaWF0IjoxNjU4MzE4NzIwLCJqdGkiOiJyM0hvSUIzUkJHTGhKOFl3OVhOSUdETTBvUjhqZFlwViJ9.tkJytj9cLmRVEs-IeToQkngv0YKHKDSvqYhx9kXaMTrV7HUJ4oCCqkJuJXU9gvtu5WElYvKIAvu6hTNgW36Lhg",
+								"value": "eyJraWQiOiI1NjcyZGVmOGI5YzBiYzIzMWQ2MGVkNGQ5ZWVlZDg5OTIzYzhhMTJiNjVhMDRlMWI5ODYxZGVjMWM4MGUxYTdhN2M4ZmYxOTRmNTg5NmE5NDU0YTBkMDY1ZmJlMTc1YWM5M2FlOWE0MzE3MTJiYjgxNWMzNGVmZWI5NmViMWU1ZSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE3MTc3NDIzOTQzNDM0MjVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNzE3NzQyMzk0MzQzNDI1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY3MTg2MTA2IiwibmJmIjoxNjY3MTg2MTA2LCJ0IjoiS3hjTnlEMHh4cm4iLCJlYXMiOjE2NzQ5NjIxMDY1MjIsImV4cCI6MTY3NDk2MjEwNiwiaWF0IjoxNjY3MTg2MTA2LCJqdGkiOiJTNWlVbXEyMzFPM0llZUZZd29Gc1FFeWpUNnhteEprRyJ9.Gp4uvhneYqItmRAydNk8kwkKLQDjqZ1jvbDU1d5QZLQQCqvd1fs7R56lIoBhie4cQw8n93hkrbnLj4Qf4wF9Dw",
 								"type": "text"
 							}
 						],
@@ -3930,13 +4151,13 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiI1NjcyZGVmOGI5YzBiYzIzMWQ2MGVkNGQ5ZWVlZDg5OTIzYzhhMTJiNjVhMDRlMWI5ODYxZGVjMWM4MGUxYTdhN2M4ZmYxOTRmNTg5NmE5NDU0YTBkMDY1ZmJlMTc1YWM5M2FlOWE0MzE3MTJiYjgxNWMzNGVmZWI5NmViMWU1ZSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE3MTc3NDIzOTQzNDM0MjVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNzE3NzQyMzk0MzQzNDI1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY3MTg2MTA2IiwibmJmIjoxNjY3MTg2MTA2LCJ0IjoiS3hjTnlEMHh4cm4iLCJlYXMiOjE2NzQ5NjIxMDY1MjIsImV4cCI6MTY3NDk2MjEwNiwiaWF0IjoxNjY3MTg2MTA2LCJqdGkiOiJTNWlVbXEyMzFPM0llZUZZd29Gc1FFeWpUNnhteEprRyJ9.Gp4uvhneYqItmRAydNk8kwkKLQDjqZ1jvbDU1d5QZLQQCqvd1fs7R56lIoBhie4cQw8n93hkrbnLj4Qf4wF9Dw",
+								"value": "eyJraWQiOiJhYjk3ZDliY2Y5ZWI2MzhmNzE4OWE5Mzk2MjkyZmYzODZjYmE4OTIzZGViNWQyODE1YmI4YzhlY2UyZDU1MWNjMjUwMjcyN2Q1YjYyZjE1NzA5NTdmZTJiNGIxNGVjYzU3NGZiODMxMzFmNTUyZjUwMjcyMzI0ODBmZmJiYTY4YSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE3MTc3NDIzOTQzNDM0MjVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNzE3NzQyMzk0MzQzNDI1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY3NDY3NTc0IiwibmJmIjoxNjY3NDY3NTc0LCJ0IjoiZ1h0cm9oT0ViSGUiLCJlYXMiOjE2NzUyNDM1NzQxNTUsImV4cCI6MTY3NTI0MzU3NCwiaWF0IjoxNjY3NDY3NTc0LCJqdGkiOiJuM0NGWGVaY0hGUWxFeTBGbEdBbXlLaWZRdXBycVh1byJ9.FwaUS4pzUMpMEgY0iKXjMAC8nGyCDcIouvEMYvc7hh6baidte-ec7oKnPsXMJ0CYTbAb5ophz8NGX_8Wq45ooA",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"rows\":2,\r\n    \"cursor\":51963924551041030,\r\n    \"condition\":{\r\n        \"type\": 1,\r\n        \"status\":1,\r\n        \"createTimeBegin\":1667186410\r\n    }\r\n}"
+							"raw": "{\r\n    \"rows\":2,\r\n    \"cursor\":\"51963924551041032\",\r\n    \"condition\":{\r\n        \"type\": 1,\r\n        \"status\":1,\r\n        \"createTimeBegin\":1667186410\r\n    }\r\n}"
 						},
 						"url": {
 							"raw": "localhost:11000/blue-marketing/eventRecords",
@@ -5088,7 +5309,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"rows\":5,\r\n    \"condition\":{\r\n        \"id\":null,\r\n        \"titleLike\":\"标\",\r\n        \"contentLike\":\"容\",\r\n        \"detailLike\":\"详\",\r\n        \"contactLike\":\"联\",\r\n        \"contactDetailLike\":\"详\",\r\n        \"countryId\":null,\r\n        \"stateId\":null,\r\n        \"cityId\":null,\r\n        \"addressDetailLike\":null,\r\n        \"extra\":null,\r\n        \"priority\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"creator\":null,\r\n        \"updater\":null,\r\n        \"sortAttribute\":\"createTime\",\r\n        \"sortType\":\"DESC\"\r\n    },\r\n    \"cursor\":\"1660796637\"\r\n}"
+							"raw": "{\r\n    \"rows\":5,\r\n    \"condition\":{\r\n        \"id\":null,\r\n        \"titleLike\":\"标\",\r\n        \"contentLike\":\"容\",\r\n        \"detailLike\":\"详\",\r\n        \"contactLike\":\"联\",\r\n        \"contactDetailLike\":\"详\",\r\n        \"countryId\":null,\r\n        \"stateId\":null,\r\n        \"cityId\":null,\r\n        \"addressDetailLike\":null,\r\n        \"extra\":null,\r\n        \"priority\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"creator\":null,\r\n        \"updater\":null,\r\n        \"sortAttribute\":\"createTime\",\r\n        \"sortType\":\"DESC\"\r\n    },\r\n    \"cursor\":{\r\n        \"searchAfter\":[\"51702055026294785\"]\r\n    }\r\n}"
 						},
 						"url": {
 							"raw": "localhost:11000/blue-shine/shines/scroll",
@@ -5117,13 +5338,13 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiIwNmE3YWNkODI2NzUzY2U5MzA2ODhjMzM2NTJjOGY0M2M3NzA1NTRiZDgyNTZjYWQ5ODAyZWY3Y2VmZGRiODlkZDYzOWNiMThlM2QwNDAwYTk1MjkzMzViNTQwMjhiMzU3YjNkYWFjZjcwZTI0YWJlZDE5YjNkOTJiMDA3MDZiOSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDU2Nzk0MjQyNTA1NzY4OTdfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ1Njc5NDI0MjUwNTc2ODk3IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYxMzQxODExIiwibmJmIjoxNjYxMzQxODExLCJ0IjoiNVpxOFVESTM1WmoiLCJlYXMiOjE2NjkxMTc4MTE0MDYsImV4cCI6MTY2OTExNzgxMSwiaWF0IjoxNjYxMzQxODExLCJqdGkiOiJORkl0UEQ3ZjEyaTBGTjZseVZaT2J4a1Z0aHBrZG9lRiJ9.FedMZoJG-WA5WCdTbaSH7WuwgRmkVC8-q880uY1ybJyVoVXE_5oH9j-14Y_4D76jDwAGHtNgktKEQg9uPiRu7A",
+								"value": "eyJraWQiOiJhYjk3ZDliY2Y5ZWI2MzhmNzE4OWE5Mzk2MjkyZmYzODZjYmE4OTIzZGViNWQyODE1YmI4YzhlY2UyZDU1MWNjMjUwMjcyN2Q1YjYyZjE1NzA5NTdmZTJiNGIxNGVjYzU3NGZiODMxMzFmNTUyZjUwMjcyMzI0ODBmZmJiYTY4YSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE3MTc3NDIzOTQzNDM0MjVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNzE3NzQyMzk0MzQzNDI1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY3NDY3NTc0IiwibmJmIjoxNjY3NDY3NTc0LCJ0IjoiZ1h0cm9oT0ViSGUiLCJlYXMiOjE2NzUyNDM1NzQxNTUsImV4cCI6MTY3NTI0MzU3NCwiaWF0IjoxNjY3NDY3NTc0LCJqdGkiOiJuM0NGWGVaY0hGUWxFeTBGbEdBbXlLaWZRdXBycVh1byJ9.FwaUS4pzUMpMEgY0iKXjMAC8nGyCDcIouvEMYvc7hh6baidte-ec7oKnPsXMJ0CYTbAb5ophz8NGX_8Wq45ooA",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"rows\":2,\r\n    \"condition\":{\r\n        \"id\":null,\r\n        \"titleLike\":\"标\",\r\n        \"contentLike\":\"容\",\r\n        \"detailLike\":\"详\",\r\n        \"contactLike\":\"联\",\r\n        \"contactDetailLike\":\"详\",\r\n        \"countryId\":null,\r\n        \"stateId\":null,\r\n        \"cityId\":null,\r\n        \"addressDetailLike\":null,\r\n        \"extra\":null,\r\n        \"priority\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"creator\":null,\r\n        \"updater\":null,\r\n        \"sortAttribute\":\"createTime\",\r\n        \"sortType\":\"DESC\"\r\n    },\r\n    \"cursor\":{\r\n\t\t\"id\": \"v5HqAwEFc2hpbmUWVmdWV01QTTdRTkdEQ3NPRzFIVDJndwAWTndzUlBsdGNUbEs2cWF5WklOWXZ4dwAAAAAAAAAAMhZPNkxCOUtsRlFQZWpXMUxpRUxlN19nAAEWVmdWV01QTTdRTkdEQ3NPRzFIVDJndwAA\",\r\n        \"searchAfter\": [\r\n            \"1660796638\",\r\n                \"1495\"\r\n        ]\r\n\t}\r\n}"
+							"raw": "{\r\n    \"rows\":2,\r\n    \"condition\":{\r\n        \"id\":null,\r\n        \"titleLike\":\"标\",\r\n        \"contentLike\":\"容\",\r\n        \"detailLike\":\"详\",\r\n        \"contactLike\":\"联\",\r\n        \"contactDetailLike\":\"详\",\r\n        \"countryId\":null,\r\n        \"stateId\":null,\r\n        \"cityId\":null,\r\n        \"addressDetailLike\":null,\r\n        \"extra\":null,\r\n        \"priority\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"creator\":null,\r\n        \"updater\":null,\r\n        \"sortAttribute\":\"createTime\",\r\n        \"sortType\":\"DESC\"\r\n    },\r\n    \"cursor\":{\r\n\t\t\"id\": \"o93qAwEFc2hpbmUWcndQNmQyREtTaHl3WU5wUzFqOUhfdwAWcWd6X0Zzb1dRcTJlZG96ekNaUXY2dwAAAAAAAAAADxZoZE9ZOGg2a1FaUzBnZV9uUGFEUEZRAAEWcndQNmQyREtTaHl3WU5wUzFqOUhfdwAA\",\r\n        \"searchAfter\": [\r\n            \"51702292323237892\",\"19\"\r\n        ]\r\n\t}\r\n}"
 						},
 						"url": {
 							"raw": "localhost:11000/blue-shine/manager/shines/scroll/snapshot",
@@ -5468,227 +5689,6 @@
 							"path": [
 								"blue-event",
 								"event"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "agreement",
-			"item": [
-				{
-					"name": "用户协议查询",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZ1VFUkJNS1BiSW9FYVZ2biIsInR5cCI6IkpXVCIsImFsZyI6IkhTMjU2In0.eyJzdWIiOiJhdSIsImQiOiJNT0JJTEUiLCJnIjoiUm9ZelZFRHB0S1EiLCJpc3MiOiJfYmx1ZV8xNjI2NzUxODg0NjI3IiwiaSI6IjgyMDE5ODg0NTgxNTE5MzYiLCJrIjoiQl9TTjo4MjAxOTg4NDU4MTUxOTM2X0FQX01PQklMRSIsImwiOiJBUCIsInAiOiJNRnd3RFFZSktvWklodmNOQVFFQkJRQURTd0F3U0FKQkFQQ2M1Z2p0cHFYNmlPUlhZb3ljYnJBV2plWGpOd1lGZ08rUlhxL2l6N2IzYlI3YUxTcUcrZXpmckoyWGEwLzRyR1pyWlVvbE9HWjc4R1BONXB6VlJBTUNBd0VBQVE9PSIsImF1ZCI6ImNuIiwiciI6IjEzOTU5NDg1ODUxNSIsIm5iZiI6MTYyNjc1MTg4NCwiZXhwIjoxNjI5NDMwMjg0LCJpYXQiOjE2MjY3NTE4ODQsImp0aSI6InVrckZwSEpza0JOUllaaFoifQ.A-oE_g7U5hDop0PvgCoDBjqrexWeLTuONypC-4IvCv4",
-								"type": "text"
-							},
-							{
-								"key": "Metadata",
-								"value": "{\"meta\":\"123456789\"}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "localhost:11000/blue-agreement/agreement/3",
-							"host": [
-								"localhost"
-							],
-							"port": "11000",
-							"path": [
-								"blue-agreement",
-								"agreement",
-								"3"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "后台用户协议列表查询",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Authorization",
-								"value": "eyJraWQiOiI1NjcyZGVmOGI5YzBiYzIzMWQ2MGVkNGQ5ZWVlZDg5OTIzYzhhMTJiNjVhMDRlMWI5ODYxZGVjMWM4MGUxYTdhN2M4ZmYxOTRmNTg5NmE5NDU0YTBkMDY1ZmJlMTc1YWM5M2FlOWE0MzE3MTJiYjgxNWMzNGVmZWI5NmViMWU1ZSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE3MTc3NDIzOTQzNDM0MjVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNzE3NzQyMzk0MzQzNDI1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY3MTg2MTA2IiwibmJmIjoxNjY3MTg2MTA2LCJ0IjoiS3hjTnlEMHh4cm4iLCJlYXMiOjE2NzQ5NjIxMDY1MjIsImV4cCI6MTY3NDk2MjEwNiwiaWF0IjoxNjY3MTg2MTA2LCJqdGkiOiJTNWlVbXEyMzFPM0llZUZZd29Gc1FFeWpUNnhteEprRyJ9.Gp4uvhneYqItmRAydNk8kwkKLQDjqZ1jvbDU1d5QZLQQCqvd1fs7R56lIoBhie4cQw8n93hkrbnLj4Qf4wF9Dw",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"titleLike\":null,\r\n        \"linkLike\":null,\r\n        \"type\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"ASC\"\r\n    }\r\n}"
-						},
-						"url": {
-							"raw": "localhost:11000/blue-agreement/manager/agreements",
-							"host": [
-								"localhost"
-							],
-							"port": "11000",
-							"path": [
-								"blue-agreement",
-								"manager",
-								"agreements"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "后台添加用户协议",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Authorization",
-								"value": "eyJraWQiOiJmZmM5Njk5MzllMjI1NWMwZWRhNzU0YzViZmRmYWFmYzUzMzM4MGRlMjQwYmE2ZWQ5MDkyYTM4MmJjNTdiZTllZWYyMWE1YmEwMmI2YTVkMWZkODEyYmRiNWJlOWMxNTg4YTE1YzQxNDZkNDlhNjdmZjViMjBlZmEyNTZhM2Y0YiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE2MDE4ODc3OTkwMjUxMDRfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNjAxODg3Nzk5MDI1MTA0IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY2ODU4MTc4IiwibmJmIjoxNjY2ODU4MTc4LCJ0IjoiRkdsUDRwY1FIUlciLCJlYXMiOjE2NzQ2MzQxNzgwNTIsImV4cCI6MTY3NDYzNDE3OCwiaWF0IjoxNjY2ODU4MTc4LCJqdGkiOiJSOVIxS3lCdVlLMklhZ1BPOVBSbncxaWkydE5Hc21MMSJ9.eKNEXFd2Kyp0Gt_FKposb4pMOBtcEbSDZ6qVCUjbR2WDzpk4KuzE4lVpHdT8y0N6O186elxD_PD9zT5ET1Eecw",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"title\":\"agreement k\",\r\n    \"content\":\"agreement 22222\",\r\n    \"link\":\"www.bing.con\",\r\n    \"type\":3\r\n}"
-						},
-						"url": {
-							"raw": "localhost:11000/blue-agreement/manager/agreement",
-							"host": [
-								"localhost"
-							],
-							"port": "11000",
-							"path": [
-								"blue-agreement",
-								"manager",
-								"agreement"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "查询最新的未签署协议",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Authorization",
-								"value": "eyJraWQiOiI1NjcyZGVmOGI5YzBiYzIzMWQ2MGVkNGQ5ZWVlZDg5OTIzYzhhMTJiNjVhMDRlMWI5ODYxZGVjMWM4MGUxYTdhN2M4ZmYxOTRmNTg5NmE5NDU0YTBkMDY1ZmJlMTc1YWM5M2FlOWE0MzE3MTJiYjgxNWMzNGVmZWI5NmViMWU1ZSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE3MTc3NDIzOTQzNDM0MjVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNzE3NzQyMzk0MzQzNDI1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY3MTg2MTA2IiwibmJmIjoxNjY3MTg2MTA2LCJ0IjoiS3hjTnlEMHh4cm4iLCJlYXMiOjE2NzQ5NjIxMDY1MjIsImV4cCI6MTY3NDk2MjEwNiwiaWF0IjoxNjY3MTg2MTA2LCJqdGkiOiJTNWlVbXEyMzFPM0llZUZZd29Gc1FFeWpUNnhteEprRyJ9.Gp4uvhneYqItmRAydNk8kwkKLQDjqZ1jvbDU1d5QZLQQCqvd1fs7R56lIoBhie4cQw8n93hkrbnLj4Qf4wF9Dw",
-								"type": "text"
-							},
-							{
-								"key": "Metadata",
-								"value": "{\"meta\":\"123456789\"}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "localhost:11000/blue-agreement/agreementRecord/unsigned",
-							"host": [
-								"localhost"
-							],
-							"port": "11000",
-							"path": [
-								"blue-agreement",
-								"agreementRecord",
-								"unsigned"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "签署协议",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Authorization",
-								"value": "eyJraWQiOiI1NjcyZGVmOGI5YzBiYzIzMWQ2MGVkNGQ5ZWVlZDg5OTIzYzhhMTJiNjVhMDRlMWI5ODYxZGVjMWM4MGUxYTdhN2M4ZmYxOTRmNTg5NmE5NDU0YTBkMDY1ZmJlMTc1YWM5M2FlOWE0MzE3MTJiYjgxNWMzNGVmZWI5NmViMWU1ZSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE3MTc3NDIzOTQzNDM0MjVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNzE3NzQyMzk0MzQzNDI1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY3MTg2MTA2IiwibmJmIjoxNjY3MTg2MTA2LCJ0IjoiS3hjTnlEMHh4cm4iLCJlYXMiOjE2NzQ5NjIxMDY1MjIsImV4cCI6MTY3NDk2MjEwNiwiaWF0IjoxNjY3MTg2MTA2LCJqdGkiOiJTNWlVbXEyMzFPM0llZUZZd29Gc1FFeWpUNnhteEprRyJ9.Gp4uvhneYqItmRAydNk8kwkKLQDjqZ1jvbDU1d5QZLQQCqvd1fs7R56lIoBhie4cQw8n93hkrbnLj4Qf4wF9Dw",
-								"type": "text"
-							},
-							{
-								"key": "Metadata",
-								"value": "{\"meta\":\"123456789\"}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"agreementId\":51717811113820164\r\n}"
-						},
-						"url": {
-							"raw": "localhost:11000/blue-agreement/agreementRecord",
-							"host": [
-								"localhost"
-							],
-							"port": "11000",
-							"path": [
-								"blue-agreement",
-								"agreementRecord"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "后台用户协议签署列表查询",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Authorization",
-								"value": "eyJraWQiOiJjOTA3MDM4YmRlMzU0ZWViODc2MjNkZjk3YjY3OGY2ZDc5NjcxZDAyODcyODJlZGU3ZDU4Yjc0NzJjOTRlYmM5MGMwZGRmMjI3MjRlZTg4ZTJmZDg1MDkyZDY5YzJiM2I0ZjAwOGRmMmZjMDZlMmE3OGY4M2MxMWVhYzViMjI1YyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE3MTc3NDIzOTQzNDM0MjVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNzE3NzQyMzk0MzQzNDI1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY2OTU2NDUyIiwibmJmIjoxNjY2OTU2NDUyLCJ0Ijoidjc3eU9WVDRsOWoiLCJlYXMiOjE2NzQ3MzI0NTI3NzksImV4cCI6MTY3NDczMjQ1MiwiaWF0IjoxNjY2OTU2NDUyLCJqdGkiOiJ5dXlVeWJ4ZjRuSTlucURlemY4bEJzOGpZaTZmVFZyeCJ9.3Lcfh8H3IbytYFtKLItGFgKMsMuKGwJWvUdcCse31s_AFFibHCXcWe3_QPFybd1AbGwuwGZ_3s2pgMyLNtjVpg",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"titleLike\":null,\r\n        \"linkLike\":null,\r\n        \"type\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"ASC\"\r\n    }\r\n}"
-						},
-						"url": {
-							"raw": "localhost:11000/blue-agreement/manager/agreementRecords",
-							"host": [
-								"localhost"
-							],
-							"port": "11000",
-							"path": [
-								"blue-agreement",
-								"manager",
-								"agreementRecords"
 							]
 						}
 					},

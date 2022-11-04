@@ -36,6 +36,6 @@ public interface LakeService {
      * @param scrollModelRequest
      * @return
      */
-    Mono<ScrollModelResponse<OptEvent, Long>> selectEventScrollMonoByScrollAndCursor(ScrollModelRequest<Void, Long> scrollModelRequest);
+    Mono<ScrollModelResponse<OptEvent, Long>> selectEventScrollByScrollAndCursor(ScrollModelRequest<Void, Long> scrollModelRequest);
 
 }

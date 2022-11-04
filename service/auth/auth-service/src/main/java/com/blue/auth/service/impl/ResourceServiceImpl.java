@@ -276,7 +276,7 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public ResourceInfo insertResource(ResourceInsertParam resourceInsertParam, Long operatorId) {
-        LOGGER.info("ResourceInfo insertResource(ResourceInsertParam resourceInsertParam, Long operatorId), resourceInsertParam = {}, operatorId = {}",
+        LOGGER.info("resourceInsertParam = {}, operatorId = {}",
                 resourceInsertParam, operatorId);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
@@ -305,7 +305,7 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public ResourceInfo updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId) {
-        LOGGER.info("ResourceInfo updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId), resourceUpdateParam = {}, operatorId = {}",
+        LOGGER.info("resourceUpdateParam = {}, operatorId = {}",
                 resourceUpdateParam, operatorId);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
@@ -331,7 +331,7 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public ResourceInfo deleteResource(Long id) {
-        LOGGER.info("ResourceInfo deleteResource(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -354,7 +354,7 @@ public class ResourceServiceImpl implements ResourceService {
      */
     @Override
     public Optional<Resource> getResourceOpt(Long id) {
-        LOGGER.info("Optional<Resource> getResourceById(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -369,7 +369,7 @@ public class ResourceServiceImpl implements ResourceService {
      */
     @Override
     public Mono<Resource> getResource(Long id) {
-        LOGGER.info("Mono<Resource> getResourceMonoById(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -383,7 +383,6 @@ public class ResourceServiceImpl implements ResourceService {
      */
     @Override
     public Mono<List<Resource>> selectResource() {
-        LOGGER.info("Mono<List<Resource>> selectResource()");
         return just(RESOURCES_WITH_CACHE_SUP.get());
     }
 
@@ -395,7 +394,7 @@ public class ResourceServiceImpl implements ResourceService {
      */
     @Override
     public Mono<List<Resource>> selectResourceByIds(List<Long> ids) {
-        LOGGER.info("Mono<List<Resource>> selectResourceMonoByIds(List<Long> ids), ids = {}", ids);
+        LOGGER.info("ids = {}", ids);
 
         return just(allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(resourceMapper::selectByIds)
@@ -413,8 +412,7 @@ public class ResourceServiceImpl implements ResourceService {
      */
     @Override
     public Mono<List<Resource>> selectResourceByLimitAndCondition(Long limit, Long rows, ResourceCondition resourceCondition) {
-        LOGGER.info("Mono<List<Resource>> selectResourceMonoByLimitAndCondition(Long limit, Long rows, ResourceCondition resourceCondition), " +
-                "limit = {}, rows = {}, resourceCondition = {}", limit, rows, resourceCondition);
+        LOGGER.info("limit = {}, rows = {}, resourceCondition = {}", limit, rows, resourceCondition);
         return just(resourceMapper.selectByLimitAndCondition(limit, rows, resourceCondition));
     }
 
@@ -426,7 +424,7 @@ public class ResourceServiceImpl implements ResourceService {
      */
     @Override
     public Mono<Long> countResourceByCondition(ResourceCondition resourceCondition) {
-        LOGGER.info("Mono<Long> countResourceMonoByCondition(ResourceCondition resourceCondition), resourceCondition = {}", resourceCondition);
+        LOGGER.info("resourceCondition = {}", resourceCondition);
         return just(ofNullable(resourceMapper.countByCondition(resourceCondition)).orElse(0L));
     }
 
@@ -438,8 +436,7 @@ public class ResourceServiceImpl implements ResourceService {
      */
     @Override
     public Mono<PageModelResponse<ResourceManagerInfo>> selectResourceManagerInfoPageByPageAndCondition(PageModelRequest<ResourceCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<ResourceInfo>> selectResourceInfoPageMonoByPageAndCondition(PageModelRequest<ResourceCondition> pageModelRequest), " +
-                "pageModelRequest = {}", pageModelRequest);
+        LOGGER.info("pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 

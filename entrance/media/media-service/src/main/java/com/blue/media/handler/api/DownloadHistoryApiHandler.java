@@ -42,7 +42,7 @@ public final class DownloadHistoryApiHandler {
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 ->
-                        downloadHistoryService.selectShineInfoScrollMonoByScrollAndCursorBaseOnMemberId(tuple2.getT1(), tuple2.getT2().getId())
+                        downloadHistoryService.selectShineInfoScrollByScrollAndCursorBaseOnMemberId(tuple2.getT1(), tuple2.getT2().getId())
                 )
                 .flatMap(smr ->
                         ok().contentType(APPLICATION_JSON)

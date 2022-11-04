@@ -4,6 +4,7 @@ import com.blue.basic.common.base.BlueChecker;
 import com.blue.basic.model.common.ScrollModelRequest;
 import com.blue.basic.model.common.ScrollModelResponse;
 import com.blue.basic.model.event.DataEvent;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.lake.repository.entity.OptEvent;
 import com.blue.lake.service.inter.LakeService;
 import com.blue.lake.service.inter.OptEventService;
@@ -15,10 +16,12 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 
+import static com.blue.basic.common.base.BlueChecker.isEmpty;
+import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
-import static reactor.core.publisher.Mono.fromFuture;
-import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -61,7 +64,9 @@ public class LakeServiceImpl implements LakeService {
      */
     @Override
     public Mono<Boolean> insertEvent(DataEvent dataEvent) {
-        LOGGER.info("Mono<Boolean> insertEvent(DataEvent dataEvent), dataEvent = {}", dataEvent);
+        LOGGER.info("dataEvent = {}", dataEvent);
+        if (isNull(dataEvent))
+            return error(() -> new BlueException(EMPTY_PARAM));
 
         return EVENT_INSERTER.apply(dataEvent);
     }
@@ -73,7 +78,9 @@ public class LakeServiceImpl implements LakeService {
      */
     @Override
     public Mono<Boolean> insertEvents(List<DataEvent> dataEvents) {
-        LOGGER.info("Mono<Boolean> insertEvents(List<DataEvent> dataEvents), dataEvents = {}", dataEvents);
+        LOGGER.info("dataEvents = {}", dataEvents);
+        if (isEmpty(dataEvents))
+            return error(() -> new BlueException(EMPTY_PARAM));
 
         return EVENTS_INSERTER.apply(dataEvents);
     }
@@ -85,10 +92,12 @@ public class LakeServiceImpl implements LakeService {
      * @return
      */
     @Override
-    public Mono<ScrollModelResponse<OptEvent, Long>> selectEventScrollMonoByScrollAndCursor(ScrollModelRequest<Void, Long> scrollModelRequest) {
-        LOGGER.info("Mono<ScrollModelResponse<OptEvent, Long>> selectEventScrollMonoByScrollAndCursor(ScrollModelRequest<Void, Long> scrollModelRequest), scrollModelRequest = {}", scrollModelRequest);
+    public Mono<ScrollModelResponse<OptEvent, Long>> selectEventScrollByScrollAndCursor(ScrollModelRequest<Void, Long> scrollModelRequest) {
+        LOGGER.info("scrollModelRequest = {}", scrollModelRequest);
+        if (isNull(scrollModelRequest))
+            return error(() -> new BlueException(EMPTY_PARAM));
 
-        return optEventService.selectEventScrollMonoByScrollAndCursor(scrollModelRequest);
+        return optEventService.selectEventScrollByScrollAndCursor(scrollModelRequest);
     }
 
 }

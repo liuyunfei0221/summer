@@ -23,7 +23,6 @@ import reactor.util.Logger;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -126,7 +125,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
      */
     @Override
     public Mono<DownloadHistory> insertDownloadHistory(DownloadHistory downloadHistory) {
-        LOGGER.info("Mono<DownloadHistory> insert(DownloadHistory downloadHistory), downloadHistory = {}", downloadHistory);
+        LOGGER.info("downloadHistory = {}", downloadHistory);
         if (isNull(downloadHistory))
             return error(() -> new BlueException(EMPTY_PARAM));
 
@@ -140,27 +139,12 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
      * @return
      */
     @Override
-    public Mono<DownloadHistory> getDownloadHistoryMono(Long id) {
-        LOGGER.info("Mono<DownloadHistory> getDownloadHistoryMono(Long id), id = {}", id);
+    public Mono<DownloadHistory> getDownloadHistory(Long id) {
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
         return downloadHistoryRepository.findById(id);
-    }
-
-    /**
-     * get download history by id
-     *
-     * @param id
-     * @return
-     */
-    @Override
-    public Optional<DownloadHistory> getDownloadHistory(Long id) {
-        LOGGER.info("Optional<DownloadHistory> getDownloadHistory(Long id), id = {}", id);
-        if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
-
-        return ofNullable(this.getDownloadHistoryMono(id).toFuture().join());
     }
 
     /**
@@ -171,9 +155,8 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
      * @return
      */
     @Override
-    public Mono<ScrollModelResponse<DownloadHistoryInfo, String>> selectShineInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<Void, Long> scrollModelRequest, Long memberId) {
-        LOGGER.info("Mono<ScrollModelResponse<DownloadHistoryInfo, String>> selectShineInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<Void, Long> scrollModelRequest, Long memberId), " +
-                "scrollModelRequest = {}, memberId = {}", scrollModelRequest, memberId);
+    public Mono<ScrollModelResponse<DownloadHistoryInfo, String>> selectShineInfoScrollByScrollAndCursorBaseOnMemberId(ScrollModelRequest<Void, Long> scrollModelRequest, Long memberId) {
+        LOGGER.info("scrollModelRequest = {}, memberId = {}", scrollModelRequest, memberId);
         if (isNull(scrollModelRequest))
             throw new BlueException(EMPTY_PARAM);
         if (isInvalidIdentity(memberId))
@@ -198,7 +181,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
             String memberName = ofNullable(tuple2.getT2().getName()).filter(BlueChecker::isNotBlank).orElse(EMPTY_VALUE.value);
 
             return isNotEmpty(downloadHistories) ?
-                    attachmentService.selectAttachmentDetailInfoMonoByIds(downloadHistories.parallelStream().map(DownloadHistory::getAttachmentId).collect(toList()))
+                    attachmentService.selectAttachmentDetailInfoByIds(downloadHistories.parallelStream().map(DownloadHistory::getAttachmentId).collect(toList()))
                             .flatMap(attachments -> {
                                 Map<Long, String> attachmentIdAndAttachmentNameMapping = attachments.parallelStream().collect(toMap(AttachmentDetailInfo::getId, AttachmentDetailInfo::getName, (a, b) -> a));
                                 return just(downloadHistories.stream().map(dh ->
@@ -221,9 +204,8 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
      * @return
      */
     @Override
-    public Mono<List<DownloadHistory>> selectDownloadHistoryMonoByLimitAndQuery(Long limit, Long rows, Query query) {
-        LOGGER.info("Mono<List<DownloadHistory>> selectDownloadHistoryMonoByLimitAndQuery(Long limit, Long rows, Query query), " +
-                "limit = {}, rows = {}, query = {}", limit, rows, query);
+    public Mono<List<DownloadHistory>> selectDownloadHistoryByLimitAndQuery(Long limit, Long rows, Query query) {
+        LOGGER.info("limit = {}, rows = {}, query = {}", limit, rows, query);
         if (limit == null || limit < 0 || rows == null || rows == 0)
             return error(() -> new BlueException(INVALID_PARAM));
 
@@ -240,8 +222,8 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
      * @return
      */
     @Override
-    public Mono<Long> countDownloadHistoryMonoByQuery(Query query) {
-        LOGGER.info("Mono<Long> countDownloadHistoryMonoByQuery(Query query), query = {}", query);
+    public Mono<Long> countDownloadHistoryByQuery(Query query) {
+        LOGGER.info("query = {}", query);
         return reactiveMongoTemplate.count(query, DownloadHistory.class);
     }
 
@@ -252,21 +234,20 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<DownloadHistoryInfo>> selectDownloadHistoryInfoPageMonoByPageAndCondition(PageModelRequest<DownloadHistoryCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<DownloadHistoryInfo>> selectDownloadHistoryInfoPageMonoByPageAndCondition(PageModelRequest<DownloadHistoryCondition> pageModelRequest), " +
-                "pageModelRequest = {}", pageModelRequest);
+    public Mono<PageModelResponse<DownloadHistoryInfo>> selectDownloadHistoryInfoPageByPageAndCondition(PageModelRequest<DownloadHistoryCondition> pageModelRequest) {
+        LOGGER.info("pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             return error(() -> new BlueException(EMPTY_PARAM));
 
         Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
-        return zip(selectDownloadHistoryMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),
-                countDownloadHistoryMonoByQuery(query)
+        return zip(selectDownloadHistoryByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),
+                countDownloadHistoryByQuery(query)
         ).flatMap(tuple2 -> {
             List<DownloadHistory> downloadHistories = tuple2.getT1();
             Long count = tuple2.getT2();
             return isNotEmpty(downloadHistories) ?
-                    zip(attachmentService.selectAttachmentDetailInfoMonoByIds(downloadHistories.stream().map(DownloadHistory::getAttachmentId).collect(toList()))
+                    zip(attachmentService.selectAttachmentDetailInfoByIds(downloadHistories.stream().map(DownloadHistory::getAttachmentId).collect(toList()))
                                     .map(attachments -> attachments.stream().collect(toMap(AttachmentDetailInfo::getId, AttachmentDetailInfo::getName, (a, b) -> a)))
                             ,
                             rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(downloadHistories.stream().map(DownloadHistory::getCreator).collect(toList()))

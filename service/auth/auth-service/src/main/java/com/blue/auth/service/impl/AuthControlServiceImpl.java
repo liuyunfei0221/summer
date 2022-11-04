@@ -247,7 +247,7 @@ public class AuthControlServiceImpl implements AuthControlService {
     };
 
     private final BiFunction<Long, Long, Boolean> MEMBER_ROLE_LEVEL_VALIDATOR = (targetMemberId, operatorMemberId) -> {
-        LOGGER.info("BiFunction<Long, Long, Boolean> MEMBER_ROLE_LEVEL_VALIDATOR, targetMemberId = {}, operatorMemberId = {}",
+        LOGGER.info("targetMemberId = {}, operatorMemberId = {}",
                 targetMemberId, operatorMemberId);
 
         return ROLE_LEVEL_VALIDATOR.apply(getMaxLevelRoleByMemberId(targetMemberId).getLevel(),
@@ -255,7 +255,7 @@ public class AuthControlServiceImpl implements AuthControlService {
     };
 
     private final BiFunction<Long, Long, Boolean> TAR_ROLE_LEVEL_VALIDATOR = (targetRoleId, operatorMemberId) -> {
-        LOGGER.info("BiFunction<Long, Long, Boolean> TAR_ROLE_LEVEL_VALIDATOR, targetRoleId = {}, operatorMemberId = {}",
+        LOGGER.info("targetRoleId = {}, operatorMemberId = {}",
                 targetRoleId, operatorMemberId);
 
         return ROLE_LEVEL_VALIDATOR.apply(getRoleByRoleId(targetRoleId).getLevel(),
@@ -342,7 +342,7 @@ public class AuthControlServiceImpl implements AuthControlService {
     public Mono<ServerResponse> insertSession(ServerRequest serverRequest) {
         return getIpReact(serverRequest)
                 .flatMap(ip -> {
-                    LOGGER.info("Mono<ServerResponse> session(ServerRequest serverRequest), ip = {}", ip);
+                    LOGGER.info("ip = {}", ip);
                     return blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(ip), ALLOW, SEND_INTERVAL_MILLIS);
                 })
                 .flatMap(allowed ->
@@ -382,7 +382,7 @@ public class AuthControlServiceImpl implements AuthControlService {
      */
     @Override
     public Mono<MemberAccess> refreshAccessByRefresh(String refresh) {
-        LOGGER.info("Mono<MemberAccess> refreshAccessByRefresh(String refresh), refresh = {}", refresh);
+        LOGGER.info("refresh = {}", refresh);
         return just(jwtProcessor.parse(refresh))
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(UNAUTHORIZED))))
                 .flatMap(memberPayload ->
@@ -448,7 +448,7 @@ public class AuthControlServiceImpl implements AuthControlService {
      */
     @Override
     public Mono<Boolean> invalidateAuthByMemberId(Long memberId, Long operatorId) {
-        LOGGER.info("Mono<Boolean> invalidateAuthByMember(Long memberId, Long operatorId), memberId = {}, operatorId = {}", memberId, operatorId);
+        LOGGER.info("memberId = {}, operatorId = {}", memberId, operatorId);
         if (isInvalidIdentity(memberId) || isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -486,7 +486,7 @@ public class AuthControlServiceImpl implements AuthControlService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo) {
-        LOGGER.info("void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo), memberCredentialInfo = {}", memberCredentialInfo);
+        LOGGER.info("memberCredentialInfo = {}", memberCredentialInfo);
         if (isNull(memberCredentialInfo))
             throw new BlueException(EMPTY_PARAM);
         memberCredentialInfo.asserts();
@@ -512,7 +512,7 @@ public class AuthControlServiceImpl implements AuthControlService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo, Long roleId) {
-        LOGGER.info("void initMemberAuthInfo(MemberCredentialInfo memberCredentialInfo, Long roleId), memberCredentialInfo = {}, roleId = {}", memberCredentialInfo, roleId);
+        LOGGER.info("memberCredentialInfo = {}, roleId = {}", memberCredentialInfo, roleId);
         if (isNull(memberCredentialInfo) || isInvalidIdentity(roleId))
             throw new BlueException(EMPTY_PARAM);
         memberCredentialInfo.asserts();
@@ -545,7 +545,7 @@ public class AuthControlServiceImpl implements AuthControlService {
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 30)
     public MemberBasicInfo insertCredential(CredentialSettingUpParam credentialSettingUpParam, Access access) {
-        LOGGER.info("MemberBasicInfo insertCredential(CredentialSettingUpParam credentialSettingUpParam, Access access), credentialSettingUpParam = {}, access = {}",
+        LOGGER.info("credentialSettingUpParam = {}, access = {}",
                 credentialSettingUpParam, access);
         if (isNull(credentialSettingUpParam))
             throw new BlueException(EMPTY_PARAM);
@@ -594,8 +594,7 @@ public class AuthControlServiceImpl implements AuthControlService {
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 30)
     public MemberBasicInfo updateCredential(CredentialModifyParam credentialModifyParam, Access access) {
-        LOGGER.info("MemberBasicInfo updateCredential(CredentialModifyParam credentialModifyParam, Access access), credentialModifyParam = {}, access = {}",
-                credentialModifyParam, access);
+        LOGGER.info("credentialModifyParam = {}, access = {}", credentialModifyParam, access);
         if (isNull(credentialModifyParam))
             throw new BlueException(EMPTY_PARAM);
         if (isNull(access))
@@ -661,8 +660,10 @@ public class AuthControlServiceImpl implements AuthControlService {
      */
     @Override
     public Mono<RoleManagerInfo> updateDefaultRole(Long id, Long operatorId) {
-        LOGGER.info("Mono<RoleManagerInfo> updateDefaultRole(Long id, Long operatorId), id = {}, operatorId = {}", id, operatorId);
-        if (isInvalidIdentity(id) || isInvalidIdentity(operatorId))
+        LOGGER.info("id = {}, operatorId = {}", id, operatorId);
+        if (isInvalidIdentity(id))
+            throw new BlueException(EMPTY_PARAM);
+        if (isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
 
         Role targetRole = this.getRoleByRoleId(id);
@@ -684,7 +685,7 @@ public class AuthControlServiceImpl implements AuthControlService {
      */
     @Override
     public Mono<Boolean> updateAccessByAccess(AccessUpdateParam accessUpdateParam, Access access) {
-        LOGGER.info("Mono<Boolean> updateAccessByAccess(AccessUpdateParam accessUpdateParam, Access access), accessUpdateParam = {}, access = {}", accessUpdateParam, access);
+        LOGGER.info("accessUpdateParam = {}, access = {}", accessUpdateParam, access);
         long memberId = access.getId();
         if (isInvalidIdentity(memberId))
             return error(() -> new BlueException(UNAUTHORIZED));
@@ -719,7 +720,7 @@ public class AuthControlServiceImpl implements AuthControlService {
      */
     @Override
     public Mono<Boolean> resetAccessByAccess(AccessResetParam accessResetParam) {
-        LOGGER.info("Mono<Boolean> resetAccessByAccess(AccessResetParam accessResetParam), accessResetParam = {}", accessResetParam);
+        LOGGER.info("accessResetParam = {}", accessResetParam);
         if (isNull(accessResetParam))
             return error(() -> new BlueException(EMPTY_PARAM));
         accessResetParam.asserts();
@@ -752,7 +753,7 @@ public class AuthControlServiceImpl implements AuthControlService {
      */
     @Override
     public Mono<String> refreshSecKeyByAccess(Access access) {
-        LOGGER.info("Mono<String> refreshSecKeyByAccess(Access access), access = {}", access);
+        LOGGER.info("access = {}", access);
         return isNotNull(access) ?
                 blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(String.valueOf(access)), ALLOW, SEND_INTERVAL_MILLIS)
                         .flatMap(allowed ->
@@ -843,7 +844,12 @@ public class AuthControlServiceImpl implements AuthControlService {
      */
     @Override
     public Mono<RoleInfo> insertRole(RoleInsertParam roleInsertParam, Long operatorId) {
-        LOGGER.info("Mono<RoleInfo> insertRole(RoleInsertParam roleInsertParam, Long operatorId), roleInsertParam = {}, operatorId = {}", roleInsertParam, operatorId);
+        LOGGER.info("roleInsertParam = {}, operatorId = {}", roleInsertParam, operatorId);
+        if (isNull(roleInsertParam))
+            throw new BlueException(EMPTY_PARAM);
+        if (isInvalidIdentity(operatorId))
+            throw new BlueException(INVALID_IDENTITY);
+
         roleInsertParam.asserts();
 
         return just(synchronizedProcessor.handleSupWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
@@ -865,7 +871,12 @@ public class AuthControlServiceImpl implements AuthControlService {
      */
     @Override
     public Mono<RoleInfo> updateRole(RoleUpdateParam roleUpdateParam, Long operatorId) {
-        LOGGER.info("Mono<RoleInfo> updateRole(RoleUpdateParam roleUpdateParam, Long operatorId), roleUpdateParam = {}, operatorId = {}", roleUpdateParam, operatorId);
+        LOGGER.info("roleUpdateParam = {}, operatorId = {}", roleUpdateParam, operatorId);
+        if (isNull(roleUpdateParam))
+            throw new BlueException(EMPTY_PARAM);
+        if (isInvalidIdentity(operatorId))
+            throw new BlueException(INVALID_IDENTITY);
+
         roleUpdateParam.asserts();
 
         return just(synchronizedProcessor.handleSupWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
@@ -887,11 +898,11 @@ public class AuthControlServiceImpl implements AuthControlService {
      */
     @Override
     public Mono<RoleInfo> deleteRole(Long id, Long operatorId) {
-        LOGGER.info("Mono<RoleInfo> deleteRole(Long id, Long operatorId), id = {}, operatorId = {}", id, operatorId);
+        LOGGER.info("id = {}, operatorId = {}", id, operatorId);
         if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
+            throw new BlueException(EMPTY_PARAM);
         if (isInvalidIdentity(operatorId))
-            throw new BlueException(INVALID_IDENTITY);
+            throw new BlueException(UNAUTHORIZED);
 
         return just(synchronizedProcessor.handleSupWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
             TAR_ROLE_LEVEL_ASSERTER.accept(id, operatorId);
@@ -912,7 +923,11 @@ public class AuthControlServiceImpl implements AuthControlService {
      */
     @Override
     public Mono<ResourceInfo> insertResource(ResourceInsertParam resourceInsertParam, Long operatorId) {
-        LOGGER.info("Mono<ResourceInfo> insertResource(ResourceInsertParam resourceInsertParam, Long operatorId), resourceInsertParam = {}, operatorId = {}", resourceInsertParam, operatorId);
+        LOGGER.info("resourceInsertParam = {}, operatorId = {}", resourceInsertParam, operatorId);
+        if (isNull(resourceInsertParam))
+            throw new BlueException(EMPTY_PARAM);
+        if (isInvalidIdentity(operatorId))
+            throw new BlueException(INVALID_IDENTITY);
 
         return just(synchronizedProcessor.handleSupWithSync(AUTHORITY_UPDATE_SYNC.key,
                 () -> resourceService.insertResource(resourceInsertParam, operatorId)))
@@ -931,9 +946,11 @@ public class AuthControlServiceImpl implements AuthControlService {
      */
     @Override
     public Mono<ResourceInfo> updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId) {
-        LOGGER.info("Mono<ResourceInfo> updateResource(ResourceUpdateParam resourceUpdateParam, Long operatorId), resourceUpdateParam = {}, operatorId = {}", resourceUpdateParam, operatorId);
+        LOGGER.info("resourceUpdateParam = {}, operatorId = {}", resourceUpdateParam, operatorId);
         if (isNull(resourceUpdateParam))
             throw new BlueException(EMPTY_PARAM);
+        if (isInvalidIdentity(operatorId))
+            throw new BlueException(INVALID_IDENTITY);
 
         Long resId = resourceUpdateParam.getId();
         if (isInvalidIdentity(resId))
@@ -977,9 +994,9 @@ public class AuthControlServiceImpl implements AuthControlService {
      */
     @Override
     public Mono<ResourceInfo> deleteResource(Long id, Long operatorId) {
-        LOGGER.info("Mono<ResourceInfo> deleteResource(Long id, Long operatorId), id = {}, operatorId = {}", id, operatorId);
+        LOGGER.info("id = {}, operatorId = {}", id, operatorId);
         if (isInvalidIdentity(id))
-            throw new BlueException(INVALID_IDENTITY);
+            throw new BlueException(EMPTY_PARAM);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -1006,9 +1023,11 @@ public class AuthControlServiceImpl implements AuthControlService {
      */
     @Override
     public Mono<AuthorityBaseOnRole> updateAuthorityByRole(RoleResRelationParam roleResRelationParam, Long operatorId) {
-        LOGGER.info("Mono<AuthorityBaseOnRole> updateAuthorityBaseOnRole(RoleResRelationParam roleResRelationParam, Long operatorId), roleResRelationParam = {}, operatorId = {}", roleResRelationParam, operatorId);
+        LOGGER.info("roleResRelationParam = {}, operatorId = {}", roleResRelationParam, operatorId);
         if (isNull(roleResRelationParam))
             throw new BlueException(EMPTY_PARAM);
+        if (isInvalidIdentity(operatorId))
+            throw new BlueException(INVALID_IDENTITY);
         roleResRelationParam.asserts();
 
         return just(synchronizedProcessor.handleSupWithSync(AUTHORITY_UPDATE_SYNC.key, () -> {
@@ -1029,10 +1048,11 @@ public class AuthControlServiceImpl implements AuthControlService {
      */
     @Override
     public Mono<AuthorityBaseOnRole> insertAuthorityByMember(MemberRoleRelationInsertOrDeleteParam memberRoleRelationInsertOrDeleteParam, Long operatorId) {
-        LOGGER.info("Mono<AuthorityBaseOnRole> insertAuthoritiesByMember(MemberRoleRelationInsertOrDeleteParam memberRoleRelationInsertOrDeleteParam, Long operatorId), memberRoleRelationInsertOrDeleteParam = {}, operatorId = {}",
-                memberRoleRelationInsertOrDeleteParam, operatorId);
-        if (isNull(memberRoleRelationInsertOrDeleteParam) || isInvalidIdentity(operatorId))
+        LOGGER.info("memberRoleRelationInsertOrDeleteParam = {}, operatorId = {}", memberRoleRelationInsertOrDeleteParam, operatorId);
+        if (isNull(memberRoleRelationInsertOrDeleteParam))
             throw new BlueException(EMPTY_PARAM);
+        if (isInvalidIdentity(operatorId))
+            throw new BlueException(INVALID_IDENTITY);
         memberRoleRelationInsertOrDeleteParam.asserts();
 
         Long memberId = memberRoleRelationInsertOrDeleteParam.getMemberId();
@@ -1061,8 +1081,7 @@ public class AuthControlServiceImpl implements AuthControlService {
      */
     @Override
     public Mono<List<AuthorityBaseOnRole>> updateAuthoritiesByMember(MemberRoleRelationUpdateParam memberRoleRelationUpdateParam, Long operatorId) {
-        LOGGER.info("Mono<List<AuthorityBaseOnRole>> updateAuthoritiesByMember(MemberRoleRelationUpdateParam memberRoleRelationUpdateParam, Long operatorId), memberRoleRelationUpdateParam = {}, operatorId = {}",
-                memberRoleRelationUpdateParam, operatorId);
+        LOGGER.info("memberRoleRelationUpdateParam = {}, operatorId = {}", memberRoleRelationUpdateParam, operatorId);
         if (isNull(memberRoleRelationUpdateParam))
             throw new BlueException(EMPTY_PARAM);
         memberRoleRelationUpdateParam.asserts();
@@ -1092,10 +1111,11 @@ public class AuthControlServiceImpl implements AuthControlService {
      */
     @Override
     public Mono<AuthorityBaseOnRole> deleteAuthorityByMember(MemberRoleRelationInsertOrDeleteParam memberRoleRelationInsertOrDeleteParam, Long operatorId) {
-        LOGGER.info("Mono<AuthorityBaseOnRole> deleteAuthoritiesByMember(MemberRoleRelationInsertOrDeleteParam memberRoleRelationInsertOrDeleteParam, Long operatorId), memberRoleRelationInsertOrDeleteParam = {}, operatorId = {}",
-                memberRoleRelationInsertOrDeleteParam, operatorId);
-        if (isNull(memberRoleRelationInsertOrDeleteParam) || isInvalidIdentity(operatorId))
+        LOGGER.info("memberRoleRelationInsertOrDeleteParam = {}, operatorId = {}", memberRoleRelationInsertOrDeleteParam, operatorId);
+        if (isNull(operatorId))
             throw new BlueException(EMPTY_PARAM);
+        if (isInvalidIdentity(operatorId))
+            throw new BlueException(INVALID_IDENTITY);
         memberRoleRelationInsertOrDeleteParam.asserts();
 
         Long memberId = memberRoleRelationInsertOrDeleteParam.getMemberId();
@@ -1124,7 +1144,7 @@ public class AuthControlServiceImpl implements AuthControlService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public AuthorityBaseOnRole updateAuthorityByRoleSync(RoleResRelationParam roleResRelationParam) {
-        LOGGER.info("AuthorityBaseOnRole updateAuthorityByRoleSync(RoleResRelationParam roleResRelationParam), roleResRelationParam = {}", roleResRelationParam);
+        LOGGER.info("roleResRelationParam = {}", roleResRelationParam);
         if (isNull(roleResRelationParam))
             throw new BlueException(EMPTY_PARAM);
         roleResRelationParam.asserts();
@@ -1146,8 +1166,7 @@ public class AuthControlServiceImpl implements AuthControlService {
      */
     @Override
     public AuthorityBaseOnRole insertAuthorityByMemberSync(MemberRoleRelationInsertOrDeleteParam memberRoleRelationInsertOrDeleteParam) {
-        LOGGER.info("AuthorityBaseOnRole insertAuthorityByMemberSync(MemberRoleRelationInsertOrDeleteParam memberRoleRelationInsertOrDeleteParam), memberRoleRelationInsertOrDeleteParam = {}",
-                memberRoleRelationInsertOrDeleteParam);
+        LOGGER.info("memberRoleRelationInsertOrDeleteParam = {}", memberRoleRelationInsertOrDeleteParam);
         if (isNull(memberRoleRelationInsertOrDeleteParam))
             throw new BlueException(EMPTY_PARAM);
         memberRoleRelationInsertOrDeleteParam.asserts();
@@ -1174,7 +1193,7 @@ public class AuthControlServiceImpl implements AuthControlService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public List<AuthorityBaseOnRole> updateAuthoritiesByMemberSync(MemberRoleRelationUpdateParam memberRoleRelationUpdateParam) {
-        LOGGER.info("AuthorityBaseOnRole updateAuthorityByMemberSync(MemberRoleRelationParam memberRoleRelationParam), memberRoleRelationParam = {}", memberRoleRelationUpdateParam);
+        LOGGER.info("memberRoleRelationParam = {}", memberRoleRelationUpdateParam);
         if (isNull(memberRoleRelationUpdateParam))
             throw new BlueException(EMPTY_PARAM);
         memberRoleRelationUpdateParam.asserts();
@@ -1199,8 +1218,7 @@ public class AuthControlServiceImpl implements AuthControlService {
      */
     @Override
     public AuthorityBaseOnRole deleteAuthorityByMemberSync(MemberRoleRelationInsertOrDeleteParam memberRoleRelationInsertOrDeleteParam) {
-        LOGGER.info("AuthorityBaseOnRole deleteAuthorityByMemberSync(MemberRoleRelationInsertOrDeleteParam memberRoleRelationInsertOrDeleteParam), memberRoleRelationInsertOrDeleteParam = {}",
-                memberRoleRelationInsertOrDeleteParam);
+        LOGGER.info("memberRoleRelationInsertOrDeleteParam = {}", memberRoleRelationInsertOrDeleteParam);
         if (isNull(memberRoleRelationInsertOrDeleteParam))
             throw new BlueException(EMPTY_PARAM);
         memberRoleRelationInsertOrDeleteParam.asserts();
@@ -1227,8 +1245,10 @@ public class AuthControlServiceImpl implements AuthControlService {
      */
     @Override
     public Mono<MemberSecurityInfo> selectSecurityInfoByMemberId(Long memberId, Long operatorId) {
-        LOGGER.info("Mono<List<SecurityQuestionInfo>> selectSecurityQuestionInfoMonoByMemberId(Long memberId, Long operatorId), memberId = {}, operatorId = {}", memberId, operatorId);
-        if (isInvalidIdentity(memberId) || isInvalidIdentity(operatorId))
+        LOGGER.info("memberId = {}, operatorId = {}", memberId, operatorId);
+        if (isInvalidIdentity(memberId))
+            throw new BlueException(EMPTY_PARAM);
+        if (isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
 
         MEMBER_ROLE_LEVEL_ASSERTER.accept(memberId, operatorId);

@@ -61,7 +61,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "DuplicatedCode"})
 @Service
 public class AttachmentServiceImpl implements AttachmentService {
 
@@ -174,8 +174,8 @@ public class AttachmentServiceImpl implements AttachmentService {
      */
     @Override
     public Mono<Attachment> insertAttachment(Attachment attachment) {
-        LOGGER.info("Mono<Attachment> insert(Attachment attachment), attachment = {}", attachment);
-        if (attachment == null)
+        LOGGER.info("attachment = {}", attachment);
+        if (isNull(attachment))
             throw new BlueException(EMPTY_PARAM);
 
         return attachmentRepository.insert(attachment);
@@ -189,7 +189,7 @@ public class AttachmentServiceImpl implements AttachmentService {
      */
     @Override
     public Mono<List<Attachment>> insertAttachments(List<Attachment> attachments) {
-        LOGGER.info("Mono<List<Attachment>> insertBatch(List<Attachment> attachments), attachments = {}", attachments);
+        LOGGER.info("attachments = {}", attachments);
 
         return isNotEmpty(attachments) ?
                 fromIterable(allotByMax(attachments, (int) DB_WRITE.value, false))
@@ -207,8 +207,8 @@ public class AttachmentServiceImpl implements AttachmentService {
      * @return
      */
     @Override
-    public Mono<Attachment> getAttachmentMono(Long id) {
-        LOGGER.info("Mono<Attachment> getAttachmentMono(Long id), id = {}", id);
+    public Mono<Attachment> getAttachment(Long id) {
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -222,8 +222,8 @@ public class AttachmentServiceImpl implements AttachmentService {
      * @return
      */
     @Override
-    public Mono<AttachmentInfo> getAttachmentInfoMono(Long id) {
-        return getAttachmentMono(id).map(ATTACHMENT_2_ATTACHMENT_INFO_CONVERTER);
+    public Mono<AttachmentInfo> getAttachmentInfo(Long id) {
+        return getAttachment(id).map(ATTACHMENT_2_ATTACHMENT_INFO_CONVERTER);
     }
 
     /**
@@ -233,8 +233,8 @@ public class AttachmentServiceImpl implements AttachmentService {
      * @return
      */
     @Override
-    public Mono<List<AttachmentInfo>> selectAttachmentInfoMonoByIds(List<Long> ids) {
-        LOGGER.info("Mono<List<AttachmentInfo>> selectAttachmentInfoMonoByIds(List<Long> ids), ids = {}", ids);
+    public Mono<List<AttachmentInfo>> selectAttachmentInfoByIds(List<Long> ids) {
+        LOGGER.info("ids = {}", ids);
         if (isEmpty(ids))
             return just(emptyList());
         if (ids.size() > (int) MAX_SERVICE_SELECT.value)
@@ -254,8 +254,8 @@ public class AttachmentServiceImpl implements AttachmentService {
      * @return
      */
     @Override
-    public Mono<List<AttachmentDetailInfo>> selectAttachmentDetailInfoMonoByIds(List<Long> ids) {
-        LOGGER.info("Mono<List<Attachment>> selectAttachmentDetailInfoMonoByIds(List<Long> ids), ids = {}", ids);
+    public Mono<List<AttachmentDetailInfo>> selectAttachmentDetailInfoByIds(List<Long> ids) {
+        LOGGER.info("ids = {}", ids);
         if (isEmpty(ids))
             return just(emptyList());
         if (ids.size() > (int) MAX_SERVICE_SELECT.value)
@@ -284,9 +284,8 @@ public class AttachmentServiceImpl implements AttachmentService {
      * @return
      */
     @Override
-    public Mono<ScrollModelResponse<AttachmentDetailInfo, String>> selectAttachmentDetailInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<AttachmentCondition, Long> scrollModelRequest, Long memberId) {
-        LOGGER.info("Mono<ScrollModelResponse<AttachmentDetailInfo, String>> selectAttachmentDetailInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<AttachmentCondition, Long> scrollModelRequest, Long memberId), " +
-                "scrollModelRequest = {}, memberId = {}", scrollModelRequest, memberId);
+    public Mono<ScrollModelResponse<AttachmentDetailInfo, String>> selectAttachmentDetailInfoScrollByScrollAndCursorBaseOnMemberId(ScrollModelRequest<AttachmentCondition, Long> scrollModelRequest, Long memberId) {
+        LOGGER.info("scrollModelRequest = {}, memberId = {}", scrollModelRequest, memberId);
         if (isNull(scrollModelRequest))
             throw new BlueException(EMPTY_PARAM);
         if (isInvalidIdentity(memberId))
@@ -315,10 +314,8 @@ public class AttachmentServiceImpl implements AttachmentService {
      * @return
      */
     @Override
-    public Mono<List<Attachment>> selectAttachmentMonoByLimitAndQuery(Long limit, Long rows, Query query) {
-        LOGGER.info("Mono<List<Attachment>> selectAttachmentMonoByLimitAndCondition(Long limit, Long rows, Query query)," +
-                " limit = {}, rows = {}, query = {}", limit, rows, query);
-
+    public Mono<List<Attachment>> selectAttachmentByLimitAndQuery(Long limit, Long rows, Query query) {
+        LOGGER.info("limit = {}, rows = {}, query = {}", limit, rows, query);
         if (isInvalidLimit(limit) || isInvalidRows(rows))
             throw new BlueException(INVALID_PARAM);
 
@@ -335,8 +332,11 @@ public class AttachmentServiceImpl implements AttachmentService {
      * @return
      */
     @Override
-    public Mono<Long> countAttachmentMonoByQuery(Query query) {
-        LOGGER.info("Mono<Long> countAttachmentMonoByCondition(Query query), query = {}", query);
+    public Mono<Long> countAttachmentByQuery(Query query) {
+        LOGGER.info("query = {}", query);
+        if (isNull(query))
+            return error(()->new BlueException(EMPTY_PARAM));
+
         return reactiveMongoTemplate.count(query, Attachment.class);
     }
 
@@ -347,15 +347,14 @@ public class AttachmentServiceImpl implements AttachmentService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<AttachmentDetailInfo>> selectAttachmentDetailInfoPageMonoByPageAndCondition(PageModelRequest<AttachmentManagerCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<RoleInfo>> selectAttachmentDetailInfoPageMonoByPageAndCondition(PageModelRequest<AttachmentCondition> pageModelRequest), " +
-                "pageModelRequest = {}", pageModelRequest);
+    public Mono<PageModelResponse<AttachmentDetailInfo>> selectAttachmentDetailInfoPageByPageAndCondition(PageModelRequest<AttachmentManagerCondition> pageModelRequest) {
+        LOGGER.info("pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
         Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
-        return zip(selectAttachmentMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query), countAttachmentMonoByQuery(query))
+        return zip(selectAttachmentByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query), countAttachmentByQuery(query))
                 .flatMap(tuple2 -> {
                     List<Attachment> attachments = tuple2.getT1();
                     Long count = tuple2.getT2();

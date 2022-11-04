@@ -165,7 +165,7 @@ public class EventRecordServiceImpl implements EventRecordService {
      */
     @Override
     public Mono<EventRecord> insertEventRecord(EventRecord eventRecord) {
-        LOGGER.info("Mono<EventRecord> insertEventRecord(EventRecord eventRecord), eventRecord = {}", eventRecord);
+        LOGGER.info("eventRecord = {}", eventRecord);
         if (eventRecord == null)
             throw new BlueException(EMPTY_PARAM);
 
@@ -180,7 +180,7 @@ public class EventRecordServiceImpl implements EventRecordService {
      */
     @Override
     public Mono<List<EventRecord>> insertEventRecords(List<EventRecord> eventRecords) {
-        LOGGER.info("Mono<List<EventRecord>> insertEventRecords(List<EventRecord> eventRecords), eventRecords = {}", eventRecords);
+        LOGGER.info("eventRecords = {}", eventRecords);
 
         return isNotEmpty(eventRecords) ?
                 fromIterable(allotByMax(eventRecords, (int) DB_WRITE.value, false))
@@ -199,7 +199,7 @@ public class EventRecordServiceImpl implements EventRecordService {
      */
     @Override
     public Mono<EventRecord> getEventRecord(Long id) {
-        LOGGER.info(" Mono<EventRecord> getEventRecordMono(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -226,8 +226,7 @@ public class EventRecordServiceImpl implements EventRecordService {
      */
     @Override
     public Mono<ScrollModelResponse<EventRecordInfo, String>> selectEventRecordInfoScrollByScrollAndCursorBaseOnMemberId(ScrollModelRequest<EventRecordCondition, Long> scrollModelRequest, Long memberId) {
-        LOGGER.info("Mono<ScrollModelResponse<EventRecordInfo, String>> selectEventRecordInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<EventRecordCondition, Long> scrollModelRequest, Long memberId), " +
-                "scrollModelRequest = {}, memberId = {}", scrollModelRequest, memberId);
+        LOGGER.info("scrollModelRequest = {}, memberId = {}", scrollModelRequest, memberId);
         if (isNull(scrollModelRequest))
             throw new BlueException(EMPTY_PARAM);
         if (isInvalidIdentity(memberId))
@@ -253,8 +252,7 @@ public class EventRecordServiceImpl implements EventRecordService {
      */
     @Override
     public Mono<List<EventRecord>> selectEventRecordByLimitAndQuery(Long limit, Long rows, Query query) {
-        LOGGER.info("Mono<List<Attachment>> selectEventRecordMonoByLimitAndQuery(Long limit, Long rows, Query query)," +
-                " limit = {}, rows = {}, query = {}", limit, rows, query);
+        LOGGER.info("limit = {}, rows = {}, query = {}", limit, rows, query);
 
         if (isInvalidLimit(limit) || isInvalidRows(rows))
             throw new BlueException(INVALID_PARAM);
@@ -273,7 +271,7 @@ public class EventRecordServiceImpl implements EventRecordService {
      */
     @Override
     public Mono<Long> countEventRecordByQuery(Query query) {
-        LOGGER.info("Mono<Long> countEventRecordMonoByQuery(Query query), query = {}", query);
+        LOGGER.info("query = {}", query);
         return reactiveMongoTemplate.count(query, EventRecord.class);
     }
 
@@ -285,8 +283,7 @@ public class EventRecordServiceImpl implements EventRecordService {
      */
     @Override
     public Mono<PageModelResponse<EventRecordManagerInfo>> selectEventRecordInfoPageByPageAndCondition(PageModelRequest<EventRecordManagerCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<EventRecordManagerInfo>> selectEventRecordInfoPageMonoByPageAndCondition(PageModelRequest<EventRecordCondition> pageModelRequest), " +
-                "pageModelRequest = {}", pageModelRequest);
+        LOGGER.info("pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 

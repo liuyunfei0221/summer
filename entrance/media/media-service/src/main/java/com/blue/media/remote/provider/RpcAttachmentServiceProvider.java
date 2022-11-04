@@ -41,7 +41,7 @@ public class RpcAttachmentServiceProvider implements RpcAttachmentService {
      */
     @Override
     public CompletableFuture<AttachmentInfo> getAttachmentInfoByPrimaryKey(Long id) {
-        return just(id).flatMap(attachmentService::getAttachmentInfoMono)
+        return just(id).flatMap(attachmentService::getAttachmentInfo)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .toFuture();
     }
@@ -54,7 +54,7 @@ public class RpcAttachmentServiceProvider implements RpcAttachmentService {
      */
     @Override
     public CompletableFuture<List<AttachmentInfo>> selectAttachmentInfoByIds(List<Long> ids) {
-        return just(ids).flatMap(attachmentService::selectAttachmentInfoMonoByIds)
+        return just(ids).flatMap(attachmentService::selectAttachmentInfoByIds)
                 .toFuture();
     }
 

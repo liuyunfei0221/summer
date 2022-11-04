@@ -114,7 +114,7 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
 
     private final BiConsumer<Integer, Integer> REDIS_CACHE_DELETER = (type, businessType) ->
             reactiveStringRedisTemplate.delete(INFO_CACHE_KEY_GENERATOR.apply(type, businessType))
-                    .subscribe(size -> LOGGER.info("REDIS_CACHE_DELETER, type = {}, businessType = {}, size = {}", type, businessType, size));
+                    .subscribe(size -> LOGGER.info("type = {}, businessType = {}, size = {}", type, businessType, size));
 
     private final BiFunction<Integer, Integer, Mono<MessageTemplateInfo>> INFO_DB_GETTER = (type, businessType) -> {
         assertMessageType(type, false);
@@ -142,7 +142,7 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
                                 .flatMap(messageTemplateInfo ->
                                         reactiveStringRedisTemplate.opsForValue().set(key, GSON.toJson(messageTemplateInfo), expireDuration)
                                                 .flatMap(success -> {
-                                                    LOGGER.info("reactiveStringRedisTemplate.opsForValue().set(key, GSON.toJson(messageTemplateInfo), expireDuration), success = {}", success);
+                                                    LOGGER.info("success = {}", success);
                                                     return just(messageTemplateInfo);
                                                 }))
                 ));
@@ -315,8 +315,7 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
      */
     @Override
     public Mono<MessageTemplateInfo> insertMessageTemplate(MessageTemplateInsertParam messageTemplateInsertParam, Long operatorId) {
-        LOGGER.info("Mono<MessageTemplateInfo> insertMessageTemplate(MessageTemplateInsertParam messageTemplateInsertParam, Long operatorId), messageTemplateInsertParam = {}, operatorId = {}",
-                messageTemplateInsertParam, operatorId);
+        LOGGER.info("messageTemplateInsertParam = {}, operatorId = {}", messageTemplateInsertParam, operatorId);
         if (isNull(messageTemplateInsertParam))
             throw new BlueException(EMPTY_PARAM);
         if (isInvalidIdentity(operatorId))
@@ -344,8 +343,7 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
      */
     @Override
     public Mono<MessageTemplateInfo> updateMessageTemplate(MessageTemplateUpdateParam messageTemplateUpdateParam, Long operatorId) {
-        LOGGER.info("Mono<MessageTemplateInfo> updateMessageTemplate(MessageTemplateUpdateParam messageTemplateUpdateParam, Long operatorId), messageTemplateUpdateParam = {}, operatorId = {]",
-                messageTemplateUpdateParam, operatorId);
+        LOGGER.info("messageTemplateUpdateParam = {}, operatorId = {}", messageTemplateUpdateParam, operatorId);
         if (isNull(messageTemplateUpdateParam))
             throw new BlueException(EMPTY_PARAM);
         if (isInvalidIdentity(operatorId))
@@ -380,7 +378,7 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
      */
     @Override
     public Mono<MessageTemplateInfo> deleteMessageTemplate(Long id) {
-        LOGGER.info("Mono<MessageTemplateInfo> deleteMessageTemplate(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -400,8 +398,8 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
      * @return
      */
     @Override
-    public Mono<MessageTemplate> getMessageTemplateMono(Long id) {
-        LOGGER.info("Mono<MessageTemplate> getMessageTemplateMono(Long id), id = {}", id);
+    public Mono<MessageTemplate> getMessageTemplate(Long id) {
+        LOGGER.info("id = {}", id);
 
         return messageTemplateRepository.findById(id);
     }
@@ -414,8 +412,8 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
      * @return
      */
     @Override
-    public Mono<MessageTemplateInfo> getMessageTemplateInfoMonoByTypes(Integer type, Integer businessType) {
-        LOGGER.info("Mono<QrCodeConfig> getQrCodeConfigMonoByType(Integer type), type = {}", type);
+    public Mono<MessageTemplateInfo> getMessageTemplateInfoByTypes(Integer type, Integer businessType) {
+        LOGGER.info("type = {}", type);
 
         return INFO_WITH_REDIS_CACHE_GETTER.apply(type, businessType);
     }
@@ -429,10 +427,8 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
      * @return
      */
     @Override
-    public Mono<List<MessageTemplate>> selectMessageTemplateMonoByLimitAndCondition(Long limit, Long rows, Query query) {
-        LOGGER.info("Mono<List<MessageTemplate>> selectMessageTemplateMonoByLimitAndCondition(Long limit, Long rows, Query query)," +
-                " limit = {}, rows = {}, query = {}", limit, rows, query);
-
+    public Mono<List<MessageTemplate>> selectMessageTemplateByLimitAndCondition(Long limit, Long rows, Query query) {
+        LOGGER.info("limit = {}, rows = {}, query = {}", limit, rows, query);
         if (isInvalidLimit(limit) || isInvalidRows(rows))
             throw new BlueException(INVALID_PARAM);
 
@@ -449,8 +445,8 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
      * @return
      */
     @Override
-    public Mono<Long> countMessageTemplateMonoByCondition(Query query) {
-        LOGGER.info("Mono<Long> countMessageTemplateMonoByCondition(Query query), query = {}", query);
+    public Mono<Long> countMessageTemplateByCondition(Query query) {
+        LOGGER.info("query = {}", query);
 
         return reactiveMongoTemplate.count(query, MessageTemplate.class);
     }
@@ -462,15 +458,14 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<MessageTemplateManagerInfo>> selectMessageTemplateManagerInfoPageMonoByPageAndCondition(PageModelRequest<MessageTemplateCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<MessageTemplateManagerInfo>> selectMessageTemplateManagerInfoPageMonoByPageAndCondition(PageModelRequest<MessageTemplateCondition> pageModelRequest), " +
-                "pageModelRequest = {}", pageModelRequest);
+    public Mono<PageModelResponse<MessageTemplateManagerInfo>> selectMessageTemplateManagerInfoPageByPageAndCondition(PageModelRequest<MessageTemplateCondition> pageModelRequest) {
+        LOGGER.info("pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
         Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
-        return zip(selectMessageTemplateMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), query), countMessageTemplateMonoByCondition(query))
+        return zip(selectMessageTemplateByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), query), countMessageTemplateByCondition(query))
                 .flatMap(tuple2 -> {
                     List<MessageTemplate> templates = tuple2.getT1();
                     Long count = tuple2.getT2();

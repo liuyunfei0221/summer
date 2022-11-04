@@ -20,7 +20,7 @@ public class ShardingDatabaseAttr {
     protected transient String url;
 
     /**
-     * db conf, for example -> useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+     * db conf, for example -> useAffectedRows=true&useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
      */
     protected transient String databaseConf;
 

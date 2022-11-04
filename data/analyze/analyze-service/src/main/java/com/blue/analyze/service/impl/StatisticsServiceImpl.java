@@ -22,13 +22,16 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.ConstantProcessor.getStatisticsRangeByIdentity;
 import static com.blue.basic.common.base.ConstantProcessor.getStatisticsTypeByIdentity;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
@@ -80,7 +83,9 @@ public class StatisticsServiceImpl implements StatisticsService {
      */
     @Override
     public Mono<Long> selectActiveSimple(SummaryParam summaryParam) {
-        LOGGER.info("Long selectActive(SummaryParam summaryParam), summaryParam = {}", summaryParam);
+        LOGGER.info("summaryParam = {}", summaryParam);
+        if (isNull(summaryParam))
+            return error(() -> new BlueException(EMPTY_PARAM));
 
         return activeStatisticsService.selectActiveSimple(
                 getStatisticsTypeByIdentity(summaryParam.getStatisticsType()),
@@ -95,7 +100,9 @@ public class StatisticsServiceImpl implements StatisticsService {
      */
     @Override
     public Mono<Long> selectActiveMerge(MergeSummaryParam mergeSummaryParam) {
-        LOGGER.info("Long selectMergeActive(MergeSummaryParam mergeSummaryParam), mergeSummaryParam = {}", mergeSummaryParam);
+        LOGGER.info("mergeSummaryParam = {}", mergeSummaryParam);
+        if (isNull(mergeSummaryParam))
+            return error(() -> new BlueException(EMPTY_PARAM));
 
         return activeStatisticsService.selectActiveMerge(
                 ofNullable(mergeSummaryParam.getStatisticsTypes())
@@ -115,7 +122,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     public Mono<ActiveSummary<Long>> selectActiveSummary() {
         return ACTIVE_SUMMARY_SUP.get()
                 .flatMap(summary -> {
-                    LOGGER.info("ActiveSummary<Long> selectSummaryActive(), summary = {}", summary);
+                    LOGGER.info("summary = {}", summary);
                     return just(new ActiveSummary<>(summary, "active summary"));
                 });
     }

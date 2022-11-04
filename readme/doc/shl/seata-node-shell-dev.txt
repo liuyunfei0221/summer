@@ -39,7 +39,7 @@ create /seata/store.publicKey
 create /seata/store.db.datasource druid
 create /seata/store.db.dbType mysql
 create /seata/store.db.driverClassName com.mysql.cj.jdbc.Driver
-create /seata/store.db.url jdbc:mysql://127.0.0.1:3306/seata?useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+create /seata/store.db.url jdbc:mysql://127.0.0.1:3306/seata?useAffectedRows=true&useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
 create /seata/store.db.user root
 create /seata/store.db.password 1024
 create /seata/store.db.minConn 5

@@ -153,7 +153,7 @@ public class ByteOperateServiceImpl implements ByteOperateService {
     };
 
     private final BiFunction<MultiValueMap<String, Part>, Long, Mono<List<FileUploadResult>>> ATTACHMENTS_UPLOADER = (valueMap, memberId) -> {
-        LOGGER.info("ATTACHMENT_UPLOADER, valueMap = {}", valueMap);
+        LOGGER.info("valueMap = {}", valueMap);
 
         Integer type = TYPE_PARSER.apply(valueMap.get(TYPE_NAME));
         assertAttachmentType(type, false);
@@ -173,13 +173,13 @@ public class ByteOperateServiceImpl implements ByteOperateService {
     };
 
     private final BiFunction<String, Long, Flux<DataBuffer>> ATTACHMENTS_DOWNLOADER = (link, memberId) -> {
-        LOGGER.info("ATTACHMENTS_DOWNLOADER, link = {}", link);
+        LOGGER.info("link = {}", link);
 
         return byteProcessor.read(link, memberId);
     };
 
     private final BiFunction<List<FileUploadResult>, Long, Mono<UploadResultSummary>> ATTACHMENTS_RECORDER = (fileUploadResults, memberId) -> {
-        LOGGER.info("ATTACHMENTS_RECORDER, fileUploadResults = {}, memberId = {}", fileUploadResults, memberId);
+        LOGGER.info("fileUploadResults = {}, memberId = {}", fileUploadResults, memberId);
 
         UploadResultSummary uploadResultSummary = new UploadResultSummary();
 
@@ -206,7 +206,7 @@ public class ByteOperateServiceImpl implements ByteOperateService {
     };
 
     private final BiFunction<FileUploadResult, Long, Mono<AttachmentUploadInfo>> ATTACHMENT_RECORDER = (fileUploadResult, memberId) -> {
-        LOGGER.info("ATTACHMENT_RECORDER, fileUploadResult = {}, memberId = {}", fileUploadResult, memberId);
+        LOGGER.info("fileUploadResult = {}, memberId = {}", fileUploadResult, memberId);
 
         if (isNull(fileUploadResult) || isInvalidIdentity(memberId))
             throw new BlueException(BAD_REQUEST);
@@ -238,7 +238,7 @@ public class ByteOperateServiceImpl implements ByteOperateService {
         downloadHistory.setCreateTime(TIME_STAMP_GETTER.get());
 
         downloadHistoryService.insertDownloadHistory(downloadHistory)
-                .doOnError(throwable -> LOGGER.info("downloadHistoryService.insertDownloadHistory(downloadHistory) failed, downloadHistory = {}, throwable = {}", downloadHistory, throwable))
+                .doOnError(throwable -> LOGGER.info("downloadHistory = {}, throwable = {}", downloadHistory, throwable))
                 .subscribe(dh -> LOGGER.info("DOWNLOAD_RECORDER -> insert(downloadHistory), dh = {}", dh));
     };
 
@@ -304,7 +304,7 @@ public class ByteOperateServiceImpl implements ByteOperateService {
                 .flatMap(tuple2 -> {
                     Long attachmentId = tuple2.getT1().getId();
                     long memberId = tuple2.getT2().getId();
-                    return attachmentService.getAttachmentMono(attachmentId)
+                    return attachmentService.getAttachment(attachmentId)
                             .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                             .flatMap(attachment -> {
                                 String link = attachment.getLink();

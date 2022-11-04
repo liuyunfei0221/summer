@@ -52,7 +52,7 @@ public class QrCodeGenerateServiceImpl implements QrCodeGenerateService {
                         QrCodeGenerateParam qrCodeGenerateParam = tuple2.getT2();
                         qrCodeGenerateParam.asserts();
 
-                        return qrCodeConfigService.getQrCodeConfigInfoMonoByType(qrCodeGenerateParam.getType())
+                        return qrCodeConfigService.getQrCodeConfigInfoByType(qrCodeGenerateParam.getType())
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                                 .flatMap(qrCodeConfigInfo -> {
                                     Set<Long> allowedRoleSet = new HashSet<>(qrCodeConfigInfo.getAllowedRoles());

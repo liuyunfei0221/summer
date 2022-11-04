@@ -83,8 +83,8 @@ public final class MailReader {
         return FOLDER_SUP.get();
     };
 
-    private final Predicate<Throwable> REFRESH_PREDICATE = throwable ->
-            isNotNull(throwable) && throwableForRetry.contains(getOriginalThrowable(throwable).getClass().getName());
+    private final Predicate<Throwable> REFRESH_PREDICATE = t ->
+            isNotNull(t) && throwableForRetry.contains(getOriginalThrowable(t).getClass().getName());
 
 
     public void parseMessage(Message message) {

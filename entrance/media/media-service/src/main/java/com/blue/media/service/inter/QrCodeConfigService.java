@@ -53,7 +53,7 @@ public interface QrCodeConfigService {
      * @param id
      * @return
      */
-    Mono<QrCodeConfig> getQrCodeConfigMono(Long id);
+    Mono<QrCodeConfig> getQrCodeConfig(Long id);
 
     /**
      * get config mono by type
@@ -61,7 +61,7 @@ public interface QrCodeConfigService {
      * @param type
      * @return
      */
-    Mono<QrCodeConfigInfo> getQrCodeConfigInfoMonoByType(Integer type);
+    Mono<QrCodeConfigInfo> getQrCodeConfigInfoByType(Integer type);
 
     /**
      * select config by limit and query
@@ -71,7 +71,7 @@ public interface QrCodeConfigService {
      * @param query
      * @return
      */
-    Mono<List<QrCodeConfig>> selectQrCodeConfigMonoByLimitAndCondition(Long limit, Long rows, Query query);
+    Mono<List<QrCodeConfig>> selectQrCodeConfigByLimitAndCondition(Long limit, Long rows, Query query);
 
     /**
      * count config by query
@@ -79,7 +79,7 @@ public interface QrCodeConfigService {
      * @param query
      * @return
      */
-    Mono<Long> countQrCodeConfigMonoByCondition(Query query);
+    Mono<Long> countQrCodeConfigByCondition(Query query);
 
     /**
      * select config manager info page by condition
@@ -87,6 +87,6 @@ public interface QrCodeConfigService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<QrCodeConfigManagerInfo>> selectQrCodeConfigManagerInfoPageMonoByPageAndCondition(PageModelRequest<QrCodeCondition> pageModelRequest);
+    Mono<PageModelResponse<QrCodeConfigManagerInfo>> selectQrCodeConfigManagerInfoPageByPageAndCondition(PageModelRequest<QrCodeCondition> pageModelRequest);
 
 }

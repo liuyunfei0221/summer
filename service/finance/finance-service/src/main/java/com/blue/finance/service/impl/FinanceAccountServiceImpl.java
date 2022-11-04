@@ -119,7 +119,7 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public FinanceAccount initMemberFinance(Long memberId) {
-        LOGGER.info("FinanceAccount initMemberFinance(Long memberId), memberId = {}", memberId);
+        LOGGER.info("memberId = {}", memberId);
 
         FinanceAccount financeAccount = INIT_FINANCE_ACCT_GEN.apply(memberId);
 
@@ -141,7 +141,7 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
      */
     @Override
     public Mono<FinanceAccountInfo> getFinanceAccountInfo(Long id) {
-        LOGGER.info("Mono<FinanceAccountInfo> getFinanceAccountInfoMono(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -158,7 +158,7 @@ public class FinanceAccountServiceImpl implements FinanceAccountService {
      */
     @Override
     public Mono<FinanceAccountInfo> getFinanceAccountInfoByMemberId(Long memberId) {
-        LOGGER.info("Mono<FinanceAccountInfo> getFinanceAccountInfoMonoByMemberId(Long memberId), memberId = {}", memberId);
+        LOGGER.info("memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
 

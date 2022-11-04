@@ -194,7 +194,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public int insertRelation(RoleResRelation roleResRelation) {
-        LOGGER.info("int insertRelation(RoleResRelation roleResRelation), roleResRelation = {}", roleResRelation);
+        LOGGER.info("roleResRelation = {}", roleResRelation);
         if (isNull(roleResRelation))
             throw new BlueException(EMPTY_PARAM);
 
@@ -218,7 +218,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public int insertRelationBatch(List<RoleResRelation> roleResRelations) {
-        LOGGER.info("int insertRelationBatch(List<RoleResRelation> roleResRelations), roleResRelations = {}", roleResRelations);
+        LOGGER.info("roleResRelations = {}", roleResRelations);
 
         INSERT_ITEMS_VALIDATOR.accept(roleResRelations);
         for (RoleResRelation roleResRelation : roleResRelations)
@@ -241,7 +241,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public int deleteRelationByRoleId(Long roleId) {
-        LOGGER.info("int deleteRelationByRoleId(Long roleId), roleId = {}", roleId);
+        LOGGER.info("roleId = {}", roleId);
         if (isInvalidIdentity(roleId))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -249,7 +249,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
         int count = roleResRelationMapper.deleteByRoleId(roleId);
         CACHE_DELETER.accept(ROLE_RES_RELS.key);
 
-        LOGGER.info("int deleteRelationByRoleId(Long roleId), count = {}", count);
+        LOGGER.info("count = {}", count);
         return count;
     }
 
@@ -264,7 +264,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public AuthorityBaseOnRole updateAuthorityByRole(Long roleId, List<Long> resIds, Long operatorId) {
-        LOGGER.info("Mono<AuthorityBaseOnRole> updateAuthorityBaseOnRole(Long roleId, List<Long> resIds, Long operatorId), roleId = {}, resIds = {}, operatorId = {}", roleId, resIds, operatorId);
+        LOGGER.info("roleId = {}, resIds = {}, operatorId = {}", roleId, resIds, operatorId);
         if (isInvalidIdentity(roleId))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid roleId");
         if (isEmpty(resIds))
@@ -311,7 +311,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      */
     @Override
     public Mono<AuthorityBaseOnRole> getAuthorityMonoByRoleId(Long roleId) {
-        LOGGER.info("Mono<AuthorityBaseOnRole> getAuthorityMonoByRoleId(Long roleId), roleId = {}", roleId);
+        LOGGER.info("roleId = {}", roleId);
         if (isInvalidIdentity(roleId))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -334,7 +334,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      */
     @Override
     public Mono<List<AuthorityBaseOnRole>> selectAuthoritiesByRoleIds(List<Long> roleIds) {
-        LOGGER.info("Mono<List<AuthorityBaseOnRole>> selectAuthorityMonoByRoleId(List<Long> roleIds), roleIds = {}", roleIds);
+        LOGGER.info("roleIds = {}", roleIds);
         if (isEmpty(roleIds))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -364,7 +364,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      */
     @Override
     public Mono<AuthorityBaseOnResource> selectAuthorityByResId(Long resId) {
-        LOGGER.info("Mono<AuthorityBaseOnResource> getAuthorityMonoByResId(Long resId), resId = {}", resId);
+        LOGGER.info("resId = {}", resId);
         if (isInvalidIdentity(resId))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -386,8 +386,6 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      */
     @Override
     public Mono<List<RoleResRelation>> selectRelation() {
-        LOGGER.info("Mono<List<RoleResRelation>> selectRelation()");
-
         return just(RELATIONS_WITH_CACHE_SUP.get());
     }
 

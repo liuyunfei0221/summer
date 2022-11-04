@@ -44,7 +44,7 @@ eureka:
 data:
   single-databases-with-tables:
     - url: jdbc:mysql://43.138.111.53:3306/base
-      database-conf: useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+      database-conf: useAffectedRows=true&useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: LiuZhiyi20200805
       driver-class-name: com.mysql.cj.jdbc.Driver
@@ -75,7 +75,7 @@ data:
   default-statement-timeout: 30000
   default-fetch-size: 100
   default-result-set-type: DEFAULT
-  default-executor-type: BATCH
+  default-executor-type: SIMPLE
   auto-mapping-behavior: FULL
   auto-mapping-unknown-column-behavior: FAILING
   lazy-loading-enabled: false

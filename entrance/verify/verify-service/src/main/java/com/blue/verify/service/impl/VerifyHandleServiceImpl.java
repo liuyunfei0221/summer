@@ -46,7 +46,7 @@ public class VerifyHandleServiceImpl implements VerifyHandleService {
      */
     @Override
     public Mono<String> generate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination, List<String> languages) {
-        LOGGER.info("Mono<String> generate(), verifyType = {}, verifyBusinessType = {}, destination = {}, languages = {}",
+        LOGGER.info("verifyType = {}, verifyBusinessType = {}, destination = {}, languages = {}",
                 verifyType, verifyBusinessType, destination, languages);
 
         return verifyProcessor.handle(verifyType, verifyBusinessType, destination, languages);
@@ -75,8 +75,7 @@ public class VerifyHandleServiceImpl implements VerifyHandleService {
      */
     @Override
     public Mono<Boolean> validate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String key, String verify, Boolean repeatable) {
-        LOGGER.info("Mono<Boolean> validate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String key, String verify, Boolean repeatable), verifyType = {}, verifyBusinessType = {}, key = {}, verify = {}, repeatable = {}",
-                verifyType, verifyBusinessType, key, verify, repeatable);
+        LOGGER.info("verifyType = {}, verifyBusinessType = {}, key = {}, verify = {}, repeatable = {}", verifyType, verifyBusinessType, key, verify, repeatable);
 
         return verifyProcessor.validate(verifyType, verifyBusinessType, key, verify, repeatable);
     }
@@ -93,8 +92,7 @@ public class VerifyHandleServiceImpl implements VerifyHandleService {
      */
     @Override
     public Mono<Boolean> turingValidate(String identity, Integer allow, Long expiresMillis, String key, String verify) {
-        LOGGER.info("Mono<Boolean> turingValidate(Integer allow, Long expiresMillis, String key, String verify), allow = {}, expiresMillis = {}, key = {}, verify = {}",
-                allow, expiresMillis, key, verify);
+        LOGGER.info("allow = {}, expiresMillis = {}, key = {}, verify = {}", allow, expiresMillis, key, verify);
 
         if (isBlank(identity) || !isGreaterThanZero(allow) || !isGreaterThanZero(expiresMillis))
             throw new BlueException(INVALID_PARAM);

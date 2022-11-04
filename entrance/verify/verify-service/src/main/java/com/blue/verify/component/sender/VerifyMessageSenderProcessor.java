@@ -71,7 +71,7 @@ public class VerifyMessageSenderProcessor implements ApplicationListener<Context
         String verifyBusinessType = verifyMessage.getBusinessType();
         assertVerifyBusinessType(verifyBusinessType, false);
 
-        return verifyTemplateService.getVerifyTemplateInfoMonoByTypesAndLanguages(verifyType, verifyBusinessType, verifyMessage.getLanguages())
+        return verifyTemplateService.getVerifyTemplateInfoByTypesAndLanguages(verifyType, verifyBusinessType, verifyMessage.getLanguages())
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .flatMap(templateInfo ->
                         ofNullable(verifyMessageSenders.get(verifyType))

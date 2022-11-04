@@ -51,7 +51,7 @@ public final class DataEventConsumer implements BlueLifecycle {
                 ofNullable(dataEvent)
                         .ifPresent(de -> just(de).flatMap(statisticsProcessor::process)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
-                                .doOnError(throwable -> LOGGER.info("statisticsProcessor.process(de) failed, de = {}, throwable = {}", de, throwable))
+                                .doOnError(t -> LOGGER.info("statisticsProcessor.process(de) failed, de = {}, t = {}", de, t))
                                 .subscribe(b -> LOGGER.info("statisticsProcessor.process(de), b = {}, de = {}", b, de)));
 
         this.pulsarListener = generateListener(pulsarClient, blueConsumerConfig.getByKey(REQUEST_EVENT.name), dataConsumer);

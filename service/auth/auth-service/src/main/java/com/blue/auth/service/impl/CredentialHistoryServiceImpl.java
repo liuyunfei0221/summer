@@ -66,7 +66,7 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
      */
     @Override
     public Mono<CredentialHistory> insertCredentialHistory(CredentialHistory credentialHistory) {
-        LOGGER.info("Mono<CredentialHistory> insertCredentialHistory(CredentialHistory credentialHistory), credentialHistory = {}", credentialHistory);
+        LOGGER.info("credentialHistory = {}", credentialHistory);
         if (isNull(credentialHistory))
             throw new BlueException(EMPTY_PARAM);
 
@@ -85,7 +85,7 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
      */
     @Override
     public Mono<List<CredentialHistory>> insertCredentialHistories(List<CredentialHistory> credentialHistories) {
-        LOGGER.info("Mono<List<CredentialHistory>> insertCredentialHistories(List<CredentialHistory> credentialHistories), credentialHistories = {}", credentialHistories);
+        LOGGER.info("credentialHistories = {}", credentialHistories);
         if (isEmpty(credentialHistories))
             throw new BlueException(EMPTY_PARAM);
 
@@ -105,7 +105,7 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
      */
     @Override
     public void insertCredentialHistoryByCredentialAndMemberIdAsync(String credential, Long memberId) {
-        LOGGER.info("void insertCredentialHistoryByCredentialAndMemberIdAsync(String credential, Long memberId), credential = {}, memberId = {}", credential, memberId);
+        LOGGER.info("credential = {}, memberId = {}", credential, memberId);
         if (isBlank(credential) || isInvalidIdentity(memberId))
             throw new BlueException(EMPTY_PARAM);
 
@@ -114,9 +114,9 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
                 CredentialHistory credentialHistory = this.insertCredentialHistory(
                                 new CredentialHistory(blueIdentityProcessor.generate(CredentialHistory.class), memberId, credential, TIME_STAMP_GETTER.get()))
                         .toFuture().join();
-                LOGGER.info("executorService.submit(), insertCredentialHistory success, credentialHistory = {}", credentialHistory);
+                LOGGER.info("credentialHistory = {}", credentialHistory);
             } catch (Exception e) {
-                LOGGER.error("executorService.submit(), insertCredentialHistory failed, credential = {}, memberId = {}", credential, memberId);
+                LOGGER.error("credential = {}, memberId = {}, e = {}", credential, memberId, e);
             }
         });
     }
@@ -129,7 +129,7 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
      */
     @Override
     public void insertCredentialHistoriesByCredentialsAndMemberIdAsync(List<Credential> credentials, Long memberId) {
-        LOGGER.info("void insertCredentialHistoriesByCredentialsAndMemberIdAsync(List<String> credentials, Long memberId), credentials = {}, memberId = {}", credentials, memberId);
+        LOGGER.info("credentials = {}, memberId = {}", credentials, memberId);
         if (isEmpty(credentials) || isInvalidIdentity(memberId))
             throw new BlueException(EMPTY_PARAM);
 
@@ -138,9 +138,9 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
                 List<CredentialHistory> credentialHistories = this.insertCredentialHistories(credentials.stream().map(Credential::getCredential).distinct().filter(BlueChecker::isNotBlank)
                                 .map(cre -> new CredentialHistory(blueIdentityProcessor.generate(CredentialHistory.class), memberId, cre, TIME_STAMP_GETTER.get())).collect(toList()))
                         .toFuture().join();
-                LOGGER.info("executorService.submit(), insertCredentialHistories success, credentialHistories = {}", credentialHistories);
+                LOGGER.info("credentialHistories = {}", credentialHistories);
             } catch (Exception e) {
-                LOGGER.error("executorService.submit(), insertCredentialHistories failed, credentials = {}, memberId = {}", credentials, memberId);
+                LOGGER.error("credentials = {}, memberId = {}, e = {}", credentials, memberId, e);
             }
         });
     }
@@ -154,7 +154,7 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
      */
     @Override
     public Mono<List<CredentialHistory>> selectCredentialHistoryByMemberIdAndLimit(Long memberId, Integer limit) {
-        LOGGER.info("Mono<List<CredentialHistory>> selectCredentialHistoryMonoByMemberId(Long memberId), memberId = {}, limit = {}", memberId, limit);
+        LOGGER.info("memberId = {}, limit = {}", memberId, limit);
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -179,7 +179,7 @@ public class CredentialHistoryServiceImpl implements CredentialHistoryService {
      */
     @Override
     public Mono<List<CredentialHistoryInfo>> selectCredentialHistoryInfoByMemberIdWithLimit(Long memberId) {
-        LOGGER.info("Mono<List<CredentialHistoryInfo>> selectCredentialHistoryInfoMonoByMemberIdWithLimit(Long memberId), memberId = {}", memberId);
+        LOGGER.info("memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
 

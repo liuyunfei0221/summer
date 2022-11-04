@@ -53,7 +53,7 @@ public interface VerifyTemplateService {
      * @param id
      * @return
      */
-    Mono<VerifyTemplate> getVerifyTemplateMono(Long id);
+    Mono<VerifyTemplate> getVerifyTemplate(Long id);
 
     /**
      * get verify template mono by type and business type and languages
@@ -63,7 +63,7 @@ public interface VerifyTemplateService {
      * @param languages
      * @return
      */
-    Mono<VerifyTemplateInfo> getVerifyTemplateInfoMonoByTypesAndLanguages(String type, String businessType, List<String> languages);
+    Mono<VerifyTemplateInfo> getVerifyTemplateInfoByTypesAndLanguages(String type, String businessType, List<String> languages);
 
     /**
      * select verify template by limit and query
@@ -73,7 +73,7 @@ public interface VerifyTemplateService {
      * @param query
      * @return
      */
-    Mono<List<VerifyTemplate>> selectVerifyTemplateMonoByLimitAndCondition(Long limit, Long rows, Query query);
+    Mono<List<VerifyTemplate>> selectVerifyTemplateByLimitAndCondition(Long limit, Long rows, Query query);
 
     /**
      * count verify template by query
@@ -81,7 +81,7 @@ public interface VerifyTemplateService {
      * @param query
      * @return
      */
-    Mono<Long> countVerifyTemplateMonoByCondition(Query query);
+    Mono<Long> countVerifyTemplateByCondition(Query query);
 
     /**
      * select verify template manager info page by condition
@@ -89,6 +89,6 @@ public interface VerifyTemplateService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<VerifyTemplateManagerInfo>> selectVerifyTemplateManagerInfoPageMonoByPageAndCondition(PageModelRequest<VerifyTemplateCondition> pageModelRequest);
+    Mono<PageModelResponse<VerifyTemplateManagerInfo>> selectVerifyTemplateManagerInfoPageByPageAndCondition(PageModelRequest<VerifyTemplateCondition> pageModelRequest);
 
 }

@@ -50,13 +50,13 @@ public class ActiveMemberStatisticsCommand implements StatisticsCommand {
                     .filter(id -> id >= 1L)
                     .ifPresent(mid -> {
                         activeStatisticsService.markActive(mid, MA, D)
-                                .onErrorResume(throwable -> {
-                                    LOGGER.error("activeStatisticsService.markActive(mid, MA, D) failed, throwable = {}", throwable);
+                                .onErrorResume(t -> {
+                                    LOGGER.error("activeStatisticsService.markActive(mid, MA, D) failed, t = {}", t);
                                     return just(false);
                                 }).toFuture().join();
                         activeStatisticsService.markActive(mid, MA, M)
-                                .onErrorResume(throwable -> {
-                                    LOGGER.error("activeStatisticsService.markActive(mid, MA, M) failed, throwable = {}", throwable);
+                                .onErrorResume(t -> {
+                                    LOGGER.error("activeStatisticsService.markActive(mid, MA, M) failed, t = {}", t);
                                     return just(false);
                                 }).toFuture().join();
                         data.put(MEMBER_ID_KEY, String.valueOf(mid));
@@ -72,13 +72,13 @@ public class ActiveMemberStatisticsCommand implements StatisticsCommand {
                 .map(d -> d.get(MEMBER_ID_KEY))
                 .ifPresent(memberId -> {
                             LOGGER.info("dayActiveCount = " + activeStatisticsService.selectActiveSimple(MA, D)
-                                    .onErrorResume(throwable -> {
-                                        LOGGER.error("activeStatisticsService.selectActiveSimple(MA, D) failed, throwable = {}", throwable);
+                                    .onErrorResume(t -> {
+                                        LOGGER.error("activeStatisticsService.selectActiveSimple(MA, D) failed, t = {}", t);
                                         return empty();
                                     }).toFuture().join());
                             LOGGER.info("monthActiveCount = " + activeStatisticsService.selectActiveSimple(MA, M)
-                                    .onErrorResume(throwable -> {
-                                        LOGGER.error("activeStatisticsService.selectActiveSimple(MA, M) failed, throwable = {}", throwable);
+                                    .onErrorResume(t -> {
+                                        LOGGER.error("activeStatisticsService.selectActiveSimple(MA, M) failed, t = {}", t);
                                         return empty();
                                     }).toFuture().join());
                         }

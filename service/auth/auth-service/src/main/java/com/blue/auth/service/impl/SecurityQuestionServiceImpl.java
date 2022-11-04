@@ -81,7 +81,7 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
      */
     @Override
     public int insertSecurityQuestion(SecurityQuestionInsertParam securityQuestionInsertParam, Long memberId) {
-        LOGGER.info("void insertSecurityQuestion(SecurityQuestionInsertParam securityQuestionInsertParam, Long memberId), securityQuestionInsertParam = {}, memberId = {}", securityQuestionInsertParam, memberId);
+        LOGGER.info("securityQuestionInsertParam = {}, memberId = {}", securityQuestionInsertParam, memberId);
         if (isNull(securityQuestionInsertParam))
             throw new BlueException(EMPTY_PARAM);
         if (isInvalidIdentity(memberId))
@@ -105,7 +105,7 @@ public class SecurityQuestionServiceImpl implements SecurityQuestionService {
      */
     @Override
     public int insertSecurityQuestions(List<SecurityQuestionInsertParam> securityQuestionInsertParams, Long memberId) {
-        LOGGER.info("void insertSecurityQuestions(List<SecurityQuestionInsertParam> securityQuestionInsertParams, Long memberId), securityQuestionInsertParams = {}, memberId = {}", securityQuestionInsertParams, memberId);
+        LOGGER.info("securityQuestionInsertParams = {}, memberId = {}", securityQuestionInsertParams, memberId);
         if (isEmpty(securityQuestionInsertParams))
             throw new BlueException(EMPTY_PARAM);
         if (securityQuestionInsertParams.size() > maxQuestion)

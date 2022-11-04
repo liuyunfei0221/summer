@@ -69,7 +69,7 @@ public class MarketingEventHandleServiceImpl implements MarketingEventHandleServ
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public EventRecord handleEvent(MarketingEvent marketingEvent) {
-        LOGGER.info("Mono<EventHandleResult> handleEvent(MarketingEvent marketingEvent), marketingEvent = {}", marketingEvent);
+        LOGGER.info("marketingEvent = {}", marketingEvent);
 
         EventRecord eventRecord = EVENT_ENTITY_GEN.apply(marketingEvent);
 

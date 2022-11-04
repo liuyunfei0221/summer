@@ -60,7 +60,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     @GlobalLock
     public int insertMemberRoleRelation(MemberRoleRelation memberRoleRelation) {
-        LOGGER.info("insertMemberRoleRelation(MemberRoleRelation memberRoleRelation), memberRoleRelation = {}", memberRoleRelation);
+        LOGGER.info("memberRoleRelation = {}", memberRoleRelation);
         if (isNull(memberRoleRelation))
             throw new BlueException(DATA_NOT_EXIST);
 
@@ -90,7 +90,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     @GlobalLock
     public int insertMemberRoleRelation(Long memberId, Long roleId, Long operatorId) {
-        LOGGER.info("int insertMemberRoleRelation(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
+        LOGGER.info("memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
         if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -120,7 +120,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public int updateMemberRoleRelations(Long memberId, List<Long> roleIds, Long operatorId) {
-        LOGGER.info("int updateMemberRoleRelations(Long memberId, List<Long> roleIds, Long operatorId), memberId = {}, roleIds = {}, operatorId = {}", memberId, roleIds, operatorId);
+        LOGGER.info("memberId = {}, roleIds = {}, operatorId = {}", memberId, roleIds, operatorId);
         if (isInvalidIdentity(memberId) || isInvalidIdentities(roleIds) || isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -158,7 +158,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public int deleteMemberRoleRelation(Long memberId, Long roleId, Long operatorId) {
-        LOGGER.info("int updateMemberRoleRelation(Long memberId, Long roleId, Long operatorId), memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
+        LOGGER.info("memberId = {}, roleId = {}, operatorId = {}", memberId, roleId, operatorId);
         if (isInvalidIdentity(memberId) || isInvalidIdentity(roleId) || isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -177,7 +177,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
      */
     @Override
     public Mono<List<Long>> selectRoleIdsByMemberId(Long memberId) {
-        LOGGER.info("Mono<List<Long>> selectRoleIdsMonoByMemberId(Long memberId), memberId = {}", memberId);
+        LOGGER.info("memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -192,7 +192,7 @@ public class MemberRoleRelationServiceImpl implements MemberRoleRelationService 
      */
     @Override
     public Mono<List<MemberRoleRelation>> selectRelationByMemberIds(List<Long> memberIds) {
-        LOGGER.info("Mono<List<MemberRoleRelation>> selectRelationMonoByMemberIds(List<Long> memberIds), memberIds = {}", memberIds);
+        LOGGER.info("memberIds = {}", memberIds);
         if (isEmpty(memberIds))
             return just(emptyList());
         if (memberIds.size() > (int) MAX_SERVICE_SELECT.value)

@@ -137,7 +137,7 @@ public class FinanceFlowServiceImpl implements FinanceFlowService {
      */
     @Override
     public Mono<FinanceFlow> insertFinanceFlowAsync(FinanceFlow financeFlow) {
-        LOGGER.info("Mono<FinanceFlow> insertFinanceFlowAsync(FinanceFlow financeFlow), financeFlow = {}", financeFlow);
+        LOGGER.info("financeFlow = {}", financeFlow);
         if (isNull(financeFlow))
             return error(() -> new BlueException(EMPTY_PARAM));
 
@@ -154,7 +154,7 @@ public class FinanceFlowServiceImpl implements FinanceFlowService {
      */
     @Override
     public Mono<FinanceFlow> insertFinanceFlow(FinanceFlow financeFlow) {
-        LOGGER.info("Mono<FinanceFlow> insertFinanceFlow(FinanceFlow financeFlow), financeFlow = {}", financeFlow);
+        LOGGER.info("financeFlow = {}", financeFlow);
         if (isNull(financeFlow))
             return error(() -> new BlueException(EMPTY_PARAM));
 
@@ -169,7 +169,7 @@ public class FinanceFlowServiceImpl implements FinanceFlowService {
      */
     @Override
     public Mono<FinanceFlow> getFinanceFlow(Long id) {
-        LOGGER.info("Mono<FinanceFlow> getFinanceFlowMono(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -184,7 +184,7 @@ public class FinanceFlowServiceImpl implements FinanceFlowService {
      */
     @Override
     public Optional<FinanceFlow> getFinanceFlowOpt(Long id) {
-        LOGGER.info("Optional<FinanceFlow> getFinanceFlow(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -201,7 +201,7 @@ public class FinanceFlowServiceImpl implements FinanceFlowService {
      */
     @Override
     public Mono<List<FinanceFlow>> selectFinanceFlowByLimitAndMemberId(Long limit, Long rows, Long memberId) {
-        LOGGER.info("Mono<List<FinanceFlow>> selectFinanceFlowMonoByLimitAndMemberId(Long limit, Long rows, Long memberId), limit = {}, rows = {}, memberId = {}", limit, rows, memberId);
+        LOGGER.info("limit = {}, rows = {}, memberId = {}", limit, rows, memberId);
         if (isInvalidLimit(limit) || isInvalidRows(rows) || isInvalidIdentity(memberId))
             return error(() -> new BlueException(INVALID_PARAM));
 
@@ -221,7 +221,7 @@ public class FinanceFlowServiceImpl implements FinanceFlowService {
      */
     @Override
     public Mono<Long> countFinanceFlowByMemberId(Long memberId) {
-        LOGGER.info("Mono<Long> countFinanceFlowMonoByMemberId(Long memberId), memberId = {}", memberId);
+        LOGGER.info("memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             return error(() -> new BlueException(INVALID_PARAM));
 
@@ -240,7 +240,7 @@ public class FinanceFlowServiceImpl implements FinanceFlowService {
      */
     @Override
     public Mono<PageModelResponse<FinanceFlowInfo>> selectFinanceFlowInfoByPageAndMemberId(PageModelRequest<Void> pageModelRequest, Long memberId) {
-        LOGGER.info("Mono<PageModelResponse<FinanceFlowInfo>> selectFinanceFlowInfoByPageAndMemberId(PageModelRequest<Void> pageModelRequest, Long memberId), pageModelDTO = {}, memberId = {}",
+        LOGGER.info("pageModelRequest = {}, memberId = {}",
                 pageModelRequest, memberId);
         if (isNull(pageModelRequest))
             return error(() -> new BlueException(EMPTY_PARAM));
@@ -273,8 +273,7 @@ public class FinanceFlowServiceImpl implements FinanceFlowService {
      */
     @Override
     public Mono<List<FinanceFlow>> selectFinanceFlowByLimitAndQuery(Long limit, Long rows, Query query) {
-        LOGGER.info("Mono<List<FinanceFlow>> selectFinanceFlowMonoByLimitAndQuery(Long limit, Long rows, Query query), " +
-                "limit = {}, rows = {}, query = {}", limit, rows, query);
+        LOGGER.info("limit = {}, rows = {}, query = {}", limit, rows, query);
         if (limit == null || limit < 0 || rows == null || rows == 0)
             return error(() -> new BlueException(INVALID_PARAM));
 
@@ -292,7 +291,7 @@ public class FinanceFlowServiceImpl implements FinanceFlowService {
      */
     @Override
     public Mono<Long> countFinanceFlowByQuery(Query query) {
-        LOGGER.info("Mono<Long> countFinanceFlowMonoByQuery(Query query), query = {}", query);
+        LOGGER.info("query = {}", query);
         return reactiveMongoTemplate.count(query, FinanceFlow.class);
     }
 
@@ -304,8 +303,7 @@ public class FinanceFlowServiceImpl implements FinanceFlowService {
      */
     @Override
     public Mono<PageModelResponse<FinanceFlowManagerInfo>> selectFinanceFlowManagerInfoPageByPageAndCondition(PageModelRequest<FinanceFlowCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<FinanceFlowManagerInfo>> selectFinanceFlowManagerInfoPageMonoByPageAndCondition(PageModelRequest<FinanceFlowCondition> pageModelRequest), " +
-                "pageModelRequest = {}", pageModelRequest);
+        LOGGER.info("pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             return error(() -> new BlueException(EMPTY_PARAM));
 

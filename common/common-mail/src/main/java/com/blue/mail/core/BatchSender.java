@@ -109,8 +109,8 @@ public final class BatchSender {
         }
     }
 
-    private final Predicate<Throwable> RETRY_PREDICATE = throwable ->
-            isNotNull(throwable) && throwableForRetry.contains(getOriginalThrowable(throwable).getClass().getName());
+    private final Predicate<Throwable> RETRY_PREDICATE = t ->
+            isNotNull(t) && throwableForRetry.contains(getOriginalThrowable(t).getClass().getName());
 
     private final BiConsumer<Transporter, Message> MESSAGE_SENDER = (transport, message) -> {
         try {

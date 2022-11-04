@@ -111,7 +111,7 @@ public class ActiveStatisticsServiceImpl implements ActiveStatisticsService {
      */
     @Override
     public Mono<Boolean> markActive(Long id, StatisticsType statisticsType, StatisticsRange statisticsRange) {
-        LOGGER.info("Mono<Boolean> markActive(Long id, StatisticsType statisticsType, StatisticsRange statisticsRange), id = {}, statisticsType = {}, statisticsRange = {}", id, statisticsType, statisticsRange);
+        LOGGER.info("id = {}, statisticsType = {}, statisticsRange = {}", id, statisticsType, statisticsRange);
 
         return isValidIdentity(id) && statisticsType != null && statisticsRange != null ?
                 blueValueMarker.mark(STATISTICS_KEY_GENERATOR.apply(statisticsType, statisticsRange), id.toString())
@@ -128,7 +128,7 @@ public class ActiveStatisticsServiceImpl implements ActiveStatisticsService {
      */
     @Override
     public Mono<Long> selectActiveSimple(StatisticsType statisticsType, StatisticsRange statisticsRange) {
-        LOGGER.info("Mono<Long> selectActiveSimple(StatisticsType statisticsType, StatisticsRange statisticsRange), statisticsType = {}, statisticsRange = {}", statisticsType, statisticsRange);
+        LOGGER.info("statisticsType = {}, statisticsRange = {}", statisticsType, statisticsRange);
 
         return blueValueMarker.count(STATISTICS_KEY_GENERATOR.apply(statisticsType, statisticsRange));
     }
@@ -142,7 +142,7 @@ public class ActiveStatisticsServiceImpl implements ActiveStatisticsService {
      */
     @Override
     public Mono<Long> selectActiveMerge(List<StatisticsType> statisticsTypes, List<StatisticsRange> statisticsRanges) {
-        LOGGER.info("Mono<Long> selectActiveMerge(List<StatisticsType> statisticsTypes, List<StatisticsRange> statisticsRanges), statisticsTypes = {}, statisticsRanges = {}", statisticsTypes, statisticsRanges);
+        LOGGER.info("statisticsTypes = {}, statisticsRanges = {}", statisticsTypes, statisticsRanges);
 
         return just(KEYS_GENERATOR.apply(statisticsTypes, statisticsRanges))
                 .flatMap(blueValueMarker::mergeCount);

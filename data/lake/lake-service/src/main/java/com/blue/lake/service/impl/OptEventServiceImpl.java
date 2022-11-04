@@ -206,7 +206,7 @@ public class OptEventServiceImpl implements OptEventService {
      */
     @Override
     public boolean insertEvent(DataEvent dataEvent) {
-        LOGGER.info("boolean insertEvent(DataEvent dataEvent), dataEvent = {}", dataEvent);
+        LOGGER.info("dataEvent = {}", dataEvent);
         if (isNull(dataEvent))
             throw new BlueException(EMPTY_PARAM);
 
@@ -221,7 +221,7 @@ public class OptEventServiceImpl implements OptEventService {
      */
     @Override
     public boolean insertEvents(List<DataEvent> dataEvents) {
-        LOGGER.info("boolean insertEvents(List<DataEvent> dataEvents), dataEvents = {}", dataEvents);
+        LOGGER.info("dataEvents = {}", dataEvents);
         if (isEmpty(dataEvents))
             throw new BlueException(EMPTY_PARAM);
 
@@ -235,8 +235,8 @@ public class OptEventServiceImpl implements OptEventService {
      * @return
      */
     @Override
-    public Mono<ScrollModelResponse<OptEvent, Long>> selectEventScrollMonoByScrollAndCursor(ScrollModelRequest<Void, Long> scrollModelRequest) {
-        LOGGER.info("Mono<ScrollModelResponse<OptEvent, Long>> selectEventScrollMonoByScrollAndCursor(ScrollModelRequest<Void, Long> scrollModelRequest), scrollModelRequest = {}", scrollModelRequest);
+    public Mono<ScrollModelResponse<OptEvent, Long>> selectEventScrollByScrollAndCursor(ScrollModelRequest<Void, Long> scrollModelRequest) {
+        LOGGER.info("scrollModelRequest = {}", scrollModelRequest);
         if (isNull(scrollModelRequest))
             throw new BlueException(EMPTY_PARAM);
 

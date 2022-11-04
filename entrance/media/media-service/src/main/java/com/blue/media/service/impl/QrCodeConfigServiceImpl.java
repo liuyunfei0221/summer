@@ -114,7 +114,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
 
     private final Consumer<Integer> REDIS_CACHE_DELETER = type ->
             reactiveStringRedisTemplate.delete(INFO_CACHE_KEY_GENERATOR.apply(type))
-                    .subscribe(size -> LOGGER.info("REDIS_CACHE_DELETER, type = {}, size = {}", type, size));
+                    .subscribe(size -> LOGGER.info("type = {}, size = {}", type, size));
 
     private final Function<Integer, Mono<QrCodeConfigInfo>> INFO_DB_GETTER = type -> {
         assertQrCodeType(type, false);
@@ -139,7 +139,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
                                 .flatMap(qrCodeConfigInfo ->
                                         reactiveStringRedisTemplate.opsForValue().set(key, GSON.toJson(qrCodeConfigInfo), expireDuration)
                                                 .flatMap(success -> {
-                                                    LOGGER.info("reactiveStringRedisTemplate.opsForValue().set(key, GSON.toJson(qrCodeConfigInfo), expireDuration), success = {}", success);
+                                                    LOGGER.info("success = {}", success);
                                                     return just(qrCodeConfigInfo);
                                                 }))
                 ));
@@ -313,8 +313,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
      */
     @Override
     public Mono<QrCodeConfigInfo> insertQrCodeConfig(QrCodeConfigInsertParam qrCodeConfigInsertParam, Long operatorId) {
-        LOGGER.info("Mono<QrCodeConfigInfo> insertQrCodeConfig(QrCodeConfigInsertParam qrCodeConfigInsertParam, Long operatorId), qrCodeConfigInsertParam = {}, operatorId = {}",
-                qrCodeConfigInsertParam, operatorId);
+        LOGGER.info("qrCodeConfigInsertParam = {}, operatorId = {}", qrCodeConfigInsertParam, operatorId);
         if (isNull(qrCodeConfigInsertParam))
             throw new BlueException(EMPTY_PARAM);
         if (isInvalidIdentity(operatorId))
@@ -342,8 +341,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
      */
     @Override
     public Mono<QrCodeConfigInfo> updateQrCodeConfig(QrCodeConfigUpdateParam qrCodeConfigUpdateParam, Long operatorId) {
-        LOGGER.info("Mono<QrCodeConfigInfo> updateQrCodeConfig(QrCodeConfigUpdateParam qrCodeConfigUpdateParam, Long operatorId), qrCodeConfigUpdateParam = {}, operatorId = {]",
-                qrCodeConfigUpdateParam, operatorId);
+        LOGGER.info("qrCodeConfigUpdateParam = {}, operatorId = {}", qrCodeConfigUpdateParam, operatorId);
         if (isNull(qrCodeConfigUpdateParam))
             throw new BlueException(EMPTY_PARAM);
         if (isInvalidIdentity(operatorId))
@@ -376,7 +374,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
      */
     @Override
     public Mono<QrCodeConfigInfo> deleteQrCodeConfig(Long id) {
-        LOGGER.info("Mono<QrCodeConfigInfo> deleteQrCodeConfig(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -396,8 +394,8 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
      * @return
      */
     @Override
-    public Mono<QrCodeConfig> getQrCodeConfigMono(Long id) {
-        LOGGER.info("Mono<QrCodeConfig> getQrCodeConfigMono(Long id), id = {}", id);
+    public Mono<QrCodeConfig> getQrCodeConfig(Long id) {
+        LOGGER.info("id = {}", id);
 
         return qrCodeConfigRepository.findById(id);
     }
@@ -409,8 +407,8 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
      * @return
      */
     @Override
-    public Mono<QrCodeConfigInfo> getQrCodeConfigInfoMonoByType(Integer type) {
-        LOGGER.info("Mono<QrCodeConfig> getQrCodeConfigMonoByType(Integer type), type = {}", type);
+    public Mono<QrCodeConfigInfo> getQrCodeConfigInfoByType(Integer type) {
+        LOGGER.info("type = {}", type);
 
         return INFO_WITH_REDIS_CACHE_GETTER.apply(type);
     }
@@ -424,10 +422,8 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
      * @return
      */
     @Override
-    public Mono<List<QrCodeConfig>> selectQrCodeConfigMonoByLimitAndCondition(Long limit, Long rows, Query query) {
-        LOGGER.info("Mono<List<QrCodeConfig>> selectQrCodeConfigMonoByLimitAndCondition(Long limit, Long rows, Query query)," +
-                " limit = {}, rows = {}, query = {}", limit, rows, query);
-
+    public Mono<List<QrCodeConfig>> selectQrCodeConfigByLimitAndCondition(Long limit, Long rows, Query query) {
+        LOGGER.info("limit = {}, rows = {}, query = {}", limit, rows, query);
         if (isInvalidLimit(limit) || isInvalidRows(rows))
             throw new BlueException(INVALID_PARAM);
 
@@ -444,8 +440,8 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
      * @return
      */
     @Override
-    public Mono<Long> countQrCodeConfigMonoByCondition(Query query) {
-        LOGGER.info("Mono<Long> countQrCodeConfigMonoByCondition(Query query), query = {}", query);
+    public Mono<Long> countQrCodeConfigByCondition(Query query) {
+        LOGGER.info("query = {}", query);
 
         return reactiveMongoTemplate.count(query, QrCodeConfig.class);
     }
@@ -457,16 +453,14 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<QrCodeConfigManagerInfo>> selectQrCodeConfigManagerInfoPageMonoByPageAndCondition(PageModelRequest<QrCodeCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<QrCodeConfigManagerInfo>> selectQrCodeConfigManagerInfoPageMonoByPageAndCondition(PageModelRequest<QrCodeCondition> pageModelRequest), " +
-                "pageModelRequest = {}", pageModelRequest);
-
+    public Mono<PageModelResponse<QrCodeConfigManagerInfo>> selectQrCodeConfigManagerInfoPageByPageAndCondition(PageModelRequest<QrCodeCondition> pageModelRequest) {
+        LOGGER.info("pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
         Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
-        return zip(selectQrCodeConfigMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), query), countQrCodeConfigMonoByCondition(query))
+        return zip(selectQrCodeConfigByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), query), countQrCodeConfigByCondition(query))
                 .flatMap(tuple2 -> {
                     List<QrCodeConfig> configs = tuple2.getT1();
                     Long count = tuple2.getT2();

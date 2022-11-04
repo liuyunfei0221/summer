@@ -116,7 +116,7 @@ public class RoleServiceImpl implements RoleService {
 
         Role defaultRole = defaultRoles.get(0);
 
-        LOGGER.info("Role getDefaultRoleFromDb(), defaultRole = {]", defaultRole);
+        LOGGER.info("defaultRole = {]", defaultRole);
         return defaultRole;
     };
 
@@ -247,7 +247,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public RoleInfo insertRole(RoleInsertParam roleInsertParam, Long operatorId) {
-        LOGGER.info("RoleInfo insertRole(RoleInsertParam roleInsertParam), roleInsertParam = {}, operatorId = {}", roleInsertParam, operatorId);
+        LOGGER.info("roleInsertParam = {}, operatorId = {}", roleInsertParam, operatorId);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
@@ -275,7 +275,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public RoleInfo updateRole(RoleUpdateParam roleUpdateParam, Long operatorId) {
-        LOGGER.info("RoleInfo updateRole(RoleInsertParam roleInsertParam), roleUpdateParam = {}, operatorId = {}", roleUpdateParam, operatorId);
+        LOGGER.info("roleUpdateParam = {}, operatorId = {}", roleUpdateParam, operatorId);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
@@ -300,7 +300,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public RoleInfo deleteRole(Long id) {
-        LOGGER.info("RoleInfo deleteRoleById(Long id, Long operatorId), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -327,7 +327,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public RoleManagerInfo updateDefaultRole(Long id, Long operatorId) {
-        LOGGER.info("RoleManagerInfo updateDefaultRole(Long id, Long operatorId), id = {}， operatorId = {}", id, operatorId);
+        LOGGER.info("id = {}， operatorId = {}", id, operatorId);
         if (isInvalidIdentity(id) || isInvalidIdentity(operatorId))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -359,7 +359,7 @@ public class RoleServiceImpl implements RoleService {
             idAndMemberNameMapping = rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(OPERATORS_GETTER.apply(singletonList(newDefaultRole))).toFuture().join()
                     .parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
         } catch (Exception e) {
-            LOGGER.error("RoleManagerInfo updateDefaultRole(Long id, Long operatorId), generate idAndMemberNameMapping failed, e = {}", e);
+            LOGGER.error("generate idAndMemberNameMapping failed, id = {}， operatorId = {}, e = {}", id, operatorId, e);
             idAndMemberNameMapping = emptyMap();
         }
 
@@ -373,12 +373,10 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public Role getDefaultRole() {
-        LOGGER.info("Role getDefaultRole()");
-
         Role defaultRole = DEFAULT_ROLE_WITH_CACHE_SUP.get();
         LOGGER.info("defaultRole = {}", defaultRole);
 
-        return ofNullable(defaultRole).orElseThrow(() -> new RuntimeException("default role not exist"));
+        return ofNullable(defaultRole).orElseThrow(() -> new BlueException(DATA_NOT_EXIST));
     }
 
     /**
@@ -389,7 +387,7 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public Optional<Role> getRoleOpt(Long id) {
-        LOGGER.info("Optional<Role> getRoleById(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -404,7 +402,7 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public Mono<Role> getRole(Long id) {
-        LOGGER.info("Mono<Role> getRoleMonoById(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -419,7 +417,7 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public Mono<List<Role>> selectRoleByIds(List<Long> ids) {
-        LOGGER.info("Mono<List<Role>> selectRoleMonoByIds(List<Long> ids), ids = {}", ids);
+        LOGGER.info("ids = {}", ids);
         if (isEmpty(ids))
             return just(emptyList());
         if (ids.size() > (int) MAX_SERVICE_SELECT.value)
@@ -438,7 +436,6 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public Mono<List<Role>> selectRole() {
-        LOGGER.info("Mono<List<Role>> selectRole()");
         return just(ROLES_WITH_CACHE_SUP.get());
     }
 
@@ -452,8 +449,7 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public Mono<List<Role>> selectRoleByLimitAndCondition(Long limit, Long rows, RoleCondition roleCondition) {
-        LOGGER.info("Mono<List<Role>> selectRoleMonoByLimitAndCondition(Long limit, Long rows, RoleCondition roleCondition), " +
-                "limit = {}, rows = {}, roleCondition = {}", limit, rows, roleCondition);
+        LOGGER.info("limit = {}, rows = {}, roleCondition = {}", limit, rows, roleCondition);
         return just(roleMapper.selectByLimitAndCondition(limit, rows, roleCondition));
     }
 
@@ -465,7 +461,7 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public Mono<Long> countRoleByCondition(RoleCondition roleCondition) {
-        LOGGER.info("Mono<Long> countRoleMonoByCondition(RoleCondition roleCondition), roleCondition = {}", roleCondition);
+        LOGGER.info("roleCondition = {}", roleCondition);
         return just(ofNullable(roleMapper.countByCondition(roleCondition)).orElse(0L));
     }
 
@@ -477,8 +473,7 @@ public class RoleServiceImpl implements RoleService {
      */
     @Override
     public Mono<PageModelResponse<RoleManagerInfo>> selectRoleManagerInfoPageByPageAndCondition(PageModelRequest<RoleCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<RoleInfo>> selectRoleInfoPageMonoByPageAndCondition(PageModelRequest<RoleCondition> pageModelRequest), " +
-                "pageModelRequest = {}", pageModelRequest);
+        LOGGER.info("pageModelRequest = {}", pageModelRequest);
 
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);

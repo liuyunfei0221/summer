@@ -239,7 +239,7 @@ public class RealNameServiceImpl implements RealNameService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
     public RealName initRealName(Long memberId) {
-        LOGGER.info("RealName initMemberDetail(Long memberId), memberId = {}", memberId);
+        LOGGER.info("memberId = {}", memberId);
 
         RealName realName = INIT_REAL_NAME_GEN.apply(memberId);
 
@@ -263,7 +263,7 @@ public class RealNameServiceImpl implements RealNameService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
     public RealNameInfo updateRealName(Long memberId, RealNameUpdateParam realNameUpdateParam) {
-        LOGGER.info("RealNameInfo updateRealName(Long memberId, RealNameUpdateParam realNameUpdateParam),  memberId = {}, realNameUpdateParam = {}",
+        LOGGER.info("memberId = {}, realNameUpdateParam = {}",
                 memberId, realNameUpdateParam);
         if (isInvalidIdentity(memberId))
             throw new BlueException(UNAUTHORIZED);
@@ -297,7 +297,7 @@ public class RealNameServiceImpl implements RealNameService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
     public RealNameInfo updateRealNameStatus(Long memberId, StatusParam statusParam) {
-        LOGGER.info("RealNameInfo updateRealNameStatus(Long memberId, StatusParam statusParam), memberId = {}, statusParam = {}", memberId, statusParam);
+        LOGGER.info("memberId = {}, statusParam = {}", memberId, statusParam);
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
         statusParam.asserts();
@@ -328,7 +328,7 @@ public class RealNameServiceImpl implements RealNameService {
      */
     @Override
     public Mono<RealName> getRealName(Long id) {
-        LOGGER.info("Mono<RealName> getRealNameMono(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         return justOrEmpty(realNameMapper.selectByPrimaryKey(id));
     }
 
@@ -340,7 +340,7 @@ public class RealNameServiceImpl implements RealNameService {
      */
     @Override
     public Mono<RealNameInfo> getRealNameInfoWithAssert(Long id) {
-        LOGGER.info("Mono<RealNameInfo> getRealNameInfoMonoWithAssert(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -363,7 +363,7 @@ public class RealNameServiceImpl implements RealNameService {
      */
     @Override
     public Mono<RealNameInfo> getRealNameInfoByMemberId(Long memberId) {
-        LOGGER.info("Mono<RealNameInfo> getRealNameInfoMonoByMemberId(Long memberId), memberId = {}", memberId);
+        LOGGER.info("memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -381,7 +381,7 @@ public class RealNameServiceImpl implements RealNameService {
      */
     @Override
     public Mono<RealNameInfo> getRealNameInfoByMemberIdWithAssert(Long memberId) {
-        LOGGER.info("Mono<RealNameInfo> getRealNameInfoMonoByMemberIdWithAssert(Long memberId), memberId = {}", memberId);
+        LOGGER.info("memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -402,7 +402,7 @@ public class RealNameServiceImpl implements RealNameService {
      */
     @Override
     public Mono<List<RealName>> selectRealNameByIds(List<Long> ids) {
-        LOGGER.info("Mono<List<RealName>> selectRealNameMonoByIds(List<Long> ids), ids = {}", ids);
+        LOGGER.info("ids = {}", ids);
         if (isEmpty(ids))
             return just(emptyList());
         if (ids.size() > (int) MAX_SERVICE_SELECT.value)
@@ -424,7 +424,7 @@ public class RealNameServiceImpl implements RealNameService {
      */
     @Override
     public Mono<List<RealNameInfo>> selectRealNameInfoByIds(List<Long> ids) {
-        LOGGER.info("Mono<List<RealNameInfo>> selectRealNameInfoMonoByIds(List<Long> ids), ids = {}", ids);
+        LOGGER.info("ids = {}", ids);
         if (isEmpty(ids))
             return just(emptyList());
         if (ids.size() > (int) MAX_SERVICE_SELECT.value)
@@ -447,7 +447,7 @@ public class RealNameServiceImpl implements RealNameService {
      */
     @Override
     public Mono<List<RealName>> selectRealNameMonoByMemberIds(List<Long> memberIds) {
-        LOGGER.info("Mono<List<RealName>> selectRealNameMonoByMemberIds(List<Long> memberIds), memberIds = {}", memberIds);
+        LOGGER.info("memberIds = {}", memberIds);
         if (isEmpty(memberIds))
             return just(emptyList());
         if (memberIds.size() > (int) MAX_SERVICE_SELECT.value)
@@ -469,7 +469,7 @@ public class RealNameServiceImpl implements RealNameService {
      */
     @Override
     public Mono<List<RealNameInfo>> selectRealNameInfoByMemberIds(List<Long> memberIds) {
-        LOGGER.info("Mono<List<RealNameInfo>> selectRealNameInfoMonoByMemberIds(List<Long> memberIds), memberIds = {}", memberIds);
+        LOGGER.info("memberIds = {}", memberIds);
         if (isEmpty(memberIds))
             return just(emptyList());
         if (memberIds.size() > (int) MAX_SERVICE_SELECT.value)
@@ -494,8 +494,7 @@ public class RealNameServiceImpl implements RealNameService {
      */
     @Override
     public Mono<List<RealName>> selectRealNameByLimitAndCondition(Long limit, Long rows, RealNameCondition realNameCondition) {
-        LOGGER.info("Mono<List<RealName>> selectRealNameMonoByLimitAndCondition(Long limit, Long rows, RealNameCondition realNameCondition), " +
-                "limit = {}, rows = {}, realNameCondition = {}", limit, rows, realNameCondition);
+        LOGGER.info("limit = {}, rows = {}, realNameCondition = {}", limit, rows, realNameCondition);
         if (isNull(limit) || limit < 0 || isNull(rows) || rows < 1)
             throw new BlueException(INVALID_PARAM);
 
@@ -510,7 +509,7 @@ public class RealNameServiceImpl implements RealNameService {
      */
     @Override
     public Mono<Long> countRealNameByCondition(RealNameCondition realNameCondition) {
-        LOGGER.info("Mono<Long> countRealNameMonoByCondition(RealNameCondition realNameCondition), realNameCondition = {}", realNameCondition);
+        LOGGER.info("realNameCondition = {}", realNameCondition);
         return just(ofNullable(realNameMapper.countByCondition(realNameCondition)).orElse(0L));
     }
 
@@ -522,8 +521,7 @@ public class RealNameServiceImpl implements RealNameService {
      */
     @Override
     public Mono<PageModelResponse<RealNameInfo>> selectRealNameInfoPageByPageAndCondition(PageModelRequest<RealNameCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<RealNameInfo>> selectRealNameInfoPageMonoByPageAndCondition(PageModelRequest<RealNameCondition> pageModelRequest), " +
-                "pageModelRequest = {}", pageModelRequest);
+        LOGGER.info("pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 

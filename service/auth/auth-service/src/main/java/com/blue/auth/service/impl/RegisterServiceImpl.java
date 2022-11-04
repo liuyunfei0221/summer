@@ -64,7 +64,7 @@ public class RegisterServiceImpl implements RegisterService {
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 30)
     public MemberBasicInfo registerMemberBasic(List<CredentialInfo> credentials, Long roleId, String source) {
-        LOGGER.info("MemberBasicInfo registerMemberBasic(List<CredentialInfo> credentials), credentials = {}, source = {}", credentials, source);
+        LOGGER.info("credentials = {}, source = {}", credentials, source);
 
         MemberBasicInfo memberBasicInfo = rpcMemberAuthServiceConsumer.registerMemberBasic(REGISTRY_PARAM_CONVERTER.apply(credentials, source));
 

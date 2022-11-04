@@ -50,7 +50,7 @@ public final class BlueInstanceCircuitBreakerFilter implements GlobalFilter, Ord
      * generate CircuitBreakerRegistry by deploy
      */
     private static final Function<CircuitBreakerDeploy, CircuitBreakerRegistry> REGISTRY_GENERATOR = deploy -> {
-        LOGGER.info("REGISTRY_GENERATOR, deploy = {}", deploy);
+        LOGGER.info("deploy = {}", deploy);
 
         if (isNull(deploy))
             throw new RuntimeException("deploy can't be null");

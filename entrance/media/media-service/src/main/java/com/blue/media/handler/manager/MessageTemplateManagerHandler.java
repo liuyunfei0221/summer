@@ -90,7 +90,7 @@ public final class MessageTemplateManagerHandler {
     public Mono<ServerResponse> page(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(PAGE_MODEL_FOR_MESSAGE_TEMPLATE_CONDITION_TYPE)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
-                .flatMap(messageTemplateService::selectMessageTemplateManagerInfoPageMonoByPageAndCondition)
+                .flatMap(messageTemplateService::selectMessageTemplateManagerInfoPageByPageAndCondition)
                 .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(pmr), BlueResponse.class));

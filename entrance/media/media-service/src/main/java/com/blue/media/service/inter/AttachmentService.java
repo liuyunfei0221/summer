@@ -44,7 +44,7 @@ public interface AttachmentService {
      * @param id
      * @return
      */
-    Mono<Attachment> getAttachmentMono(Long id);
+    Mono<Attachment> getAttachment(Long id);
 
     /**
      * get attachment info mono by id
@@ -52,7 +52,7 @@ public interface AttachmentService {
      * @param id
      * @return
      */
-    Mono<AttachmentInfo> getAttachmentInfoMono(Long id);
+    Mono<AttachmentInfo> getAttachmentInfo(Long id);
 
     /**
      * select attachment info mono by ids
@@ -60,7 +60,7 @@ public interface AttachmentService {
      * @param ids
      * @return
      */
-    Mono<List<AttachmentInfo>> selectAttachmentInfoMonoByIds(List<Long> ids);
+    Mono<List<AttachmentInfo>> selectAttachmentInfoByIds(List<Long> ids);
 
     /**
      * select attachments detail info mono by ids
@@ -68,7 +68,7 @@ public interface AttachmentService {
      * @param ids
      * @return
      */
-    Mono<List<AttachmentDetailInfo>> selectAttachmentDetailInfoMonoByIds(List<Long> ids);
+    Mono<List<AttachmentDetailInfo>> selectAttachmentDetailInfoByIds(List<Long> ids);
 
     /**
      * select attachment detail info by scroll and member id
@@ -77,7 +77,7 @@ public interface AttachmentService {
      * @param memberId
      * @return
      */
-    Mono<ScrollModelResponse<AttachmentDetailInfo, String>> selectAttachmentDetailInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<AttachmentCondition, Long> scrollModelRequest, Long memberId);
+    Mono<ScrollModelResponse<AttachmentDetailInfo, String>> selectAttachmentDetailInfoScrollByScrollAndCursorBaseOnMemberId(ScrollModelRequest<AttachmentCondition, Long> scrollModelRequest, Long memberId);
 
     /**
      * select attachment by page and condition
@@ -87,7 +87,7 @@ public interface AttachmentService {
      * @param query
      * @return
      */
-    Mono<List<Attachment>> selectAttachmentMonoByLimitAndQuery(Long limit, Long rows, Query query);
+    Mono<List<Attachment>> selectAttachmentByLimitAndQuery(Long limit, Long rows, Query query);
 
     /**
      * count attachment by condition
@@ -95,7 +95,7 @@ public interface AttachmentService {
      * @param query
      * @return
      */
-    Mono<Long> countAttachmentMonoByQuery(Query query);
+    Mono<Long> countAttachmentByQuery(Query query);
 
     /**
      * select attachment detail info page by condition
@@ -103,6 +103,6 @@ public interface AttachmentService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<AttachmentDetailInfo>> selectAttachmentDetailInfoPageMonoByPageAndCondition(PageModelRequest<AttachmentManagerCondition> pageModelRequest);
+    Mono<PageModelResponse<AttachmentDetailInfo>> selectAttachmentDetailInfoPageByPageAndCondition(PageModelRequest<AttachmentManagerCondition> pageModelRequest);
 
 }

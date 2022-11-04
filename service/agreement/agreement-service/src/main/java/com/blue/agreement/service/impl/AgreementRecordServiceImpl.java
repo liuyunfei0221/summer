@@ -169,7 +169,7 @@ public class AgreementRecordServiceImpl implements AgreementRecordService {
      */
     @Override
     public Mono<List<AgreementInfo>> selectNewestAgreementInfosUnsigned(Long memberId) {
-        LOGGER.info("Mono<List<AgreementInfo>> selectNewestAgreementInfosUnsigned(Long memberId), memberId = {}", memberId);
+        LOGGER.info("memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(UNAUTHORIZED);
 
@@ -197,7 +197,7 @@ public class AgreementRecordServiceImpl implements AgreementRecordService {
      */
     @Override
     public Mono<AgreementRecordInfo> insertAgreementRecord(AgreementRecordInsertParam agreementRecordInsertParam, Long memberId) {
-        LOGGER.info("Mono<AgreementRecordInfo> insertAgreementRecord(AgreementRecordInsertParam agreementRecordInsertParam, Long memberId), agreementRecordInsertParam = {}, memberId = {}",
+        LOGGER.info("agreementRecordInsertParam = {}, memberId = {}",
                 agreementRecordInsertParam, memberId);
         if (isNull(agreementRecordInsertParam))
             throw new BlueException(EMPTY_PARAM);
@@ -220,7 +220,7 @@ public class AgreementRecordServiceImpl implements AgreementRecordService {
      */
     @Override
     public Mono<List<AgreementRecord>> selectAgreementRecordMonoByLimitAndCondition(Long limit, Long rows, Query query) {
-        LOGGER.info("Mono<List<AgreementRecord>> selectAgreementRecordMonoByLimitAndCondition(Long limit, Long rows, Query query), limit = {}, rows = {}, query = {}", limit, rows, query);
+        LOGGER.info("limit = {}, rows = {}, query = {}", limit, rows, query);
         if (isInvalidLimit(limit) || isInvalidRows(rows))
             throw new BlueException(INVALID_PARAM);
 
@@ -238,7 +238,7 @@ public class AgreementRecordServiceImpl implements AgreementRecordService {
      */
     @Override
     public Mono<Long> countAgreementRecordMonoByCondition(Query query) {
-        LOGGER.info("Mono<Long> countAgreementRecordMonoByCondition(), query = {}", query);
+        LOGGER.info("query = {}", query);
 
         return reactiveMongoTemplate.count(query, AgreementRecord.class);
     }
@@ -251,7 +251,7 @@ public class AgreementRecordServiceImpl implements AgreementRecordService {
      */
     @Override
     public Mono<PageModelResponse<AgreementRecordManagerInfo>> selectAgreementRecordManagerInfoPageMonoByPageAndCondition(PageModelRequest<AgreementRecordCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<VerifyTemplateManagerInfo>> selectVerifyTemplateManagerInfoPageMonoByPageAndCondition(), pageModelRequest = {}", pageModelRequest);
+        LOGGER.info("pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 

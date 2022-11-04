@@ -18,6 +18,7 @@ import java.util.function.BiFunction;
 
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.constant.common.ResponseElement.ILLEGAL_REQUEST;
+import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static reactor.core.publisher.Mono.error;
@@ -159,12 +160,12 @@ public class VerifyServiceImpl implements VerifyService {
      */
     @Override
     public Mono<String> generate(VerifyType type, String key, Integer length, Duration expire) {
-        LOGGER.info("Mono<VerifyPair> generate(VerifyType type, String key, Integer length,  Duration expire) , type = {}, key = {}, length = {}, expire = {}", type, key, length, expire);
+        LOGGER.info("type = {}, key = {}, length = {}, expire = {}", type, key, length, expire);
         if (isNull(type))
             return error(() -> new BlueException(ILLEGAL_REQUEST.status, ILLEGAL_REQUEST.code, "type can't be null"));
 
         String v = BlueRandomGenerator.generate(type.randomType, isNotNull(length) && length >= MIN_LEN && length <= MAX_LEN ? length : VERIFY_LEN);
-        LOGGER.info("Mono<VerifyPair> generate(RandomType type, int length, Duration expire), key = {}, v = {}", key, v);
+        LOGGER.info("key = {}, v = {}", key, v);
 
         return blueValidator.setKeyValueWithExpire(KEY_WRAPPER.apply(type, isNotBlank(key) ? key : BlueRandomGenerator.generate(RANDOM_TYPE, KEY_LEN)), v, isNotNull(expire) ? expire : DEFAULT_DURATION)
                 .flatMap(ignore -> just(v));
@@ -194,14 +195,13 @@ public class VerifyServiceImpl implements VerifyService {
      */
     @Override
     public Mono<Boolean> validate(VerifyType type, String key, String verify, Boolean repeatable) {
-        LOGGER.info("Mono<Boolean> validate(VerifyType type, String key, String verify, Boolean repeatable), type = {}, key = {}, verify = {}, repeatable = {}",
-                type, key, verify, repeatable);
+        LOGGER.info("type = {}, key = {}, verify = {}, repeatable = {}", type, key, verify, repeatable);
 
         return isNotNull(type) && isNotBlank(key) && isNotBlank(verify) ?
                 VALIDATORS.get(isNotNull(repeatable) ? repeatable : DEFAULT_REPEATABLE)
                         .apply(KEY_WRAPPER.apply(type, key), verify)
                 :
-                error(() -> new BlueException(ILLEGAL_REQUEST.status, ILLEGAL_REQUEST.code, "type or verifyPair can't be null"));
+                error(() -> new BlueException(INVALID_PARAM));
     }
 
 }

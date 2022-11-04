@@ -231,7 +231,7 @@ public class SignInServiceImpl implements SignInService {
      */
     @Override
     public Mono<SignInReward> signIn(Long memberId) {
-        LOGGER.info("Mono<SignInReward> signIn(Long memberId), memberId = {}", memberId);
+        LOGGER.info("memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -279,7 +279,7 @@ public class SignInServiceImpl implements SignInService {
      */
     @Override
     public Mono<MonthSignInRewardRecord> getSignInRecord(Long memberId) {
-        LOGGER.info("Mono<MonthSignInRewardRecord> getSignInRecord(Long memberId), memberId = {}", memberId);
+        LOGGER.info("memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
 

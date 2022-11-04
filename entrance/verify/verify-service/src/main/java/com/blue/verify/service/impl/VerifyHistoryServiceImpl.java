@@ -39,8 +39,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.data.mongodb.core.query.Criteria.byExample;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static reactor.core.publisher.Mono.just;
-import static reactor.core.publisher.Mono.zip;
+import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -48,7 +47,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "DuplicatedCode"})
 @Service
 public class VerifyHistoryServiceImpl implements VerifyHistoryService {
 
@@ -126,7 +125,10 @@ public class VerifyHistoryServiceImpl implements VerifyHistoryService {
      */
     @Override
     public Mono<VerifyHistory> insertVerifyHistory(VerifyHistory verifyHistory) {
-        LOGGER.info("Mono<VerifyHistory> insertVerifyHistory(VerifyHistory verifyHistory), verifyHistory = {}", verifyHistory);
+        LOGGER.info("verifyHistory = {}", verifyHistory);
+        if (isNull(verifyHistory))
+            return error(() -> new BlueException(EMPTY_PARAM));
+
         return verifyHistoryRepository.insert(verifyHistory);
     }
 
@@ -137,8 +139,12 @@ public class VerifyHistoryServiceImpl implements VerifyHistoryService {
      * @return
      */
     @Override
-    public Optional<VerifyHistory> getVerifyHistory(Long id) {
-        return ofNullable(this.getVerifyHistoryMono(id).toFuture().join());
+    public Optional<VerifyHistory> getVerifyHistoryOpt(Long id) {
+        LOGGER.info("id = {}", id);
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return ofNullable(this.getVerifyHistory(id).toFuture().join());
     }
 
     /**
@@ -148,8 +154,8 @@ public class VerifyHistoryServiceImpl implements VerifyHistoryService {
      * @return
      */
     @Override
-    public Mono<VerifyHistory> getVerifyHistoryMono(Long id) {
-        LOGGER.info("Mono<VerifyHistory> getVerifyHistoryMono(Long id), id = {}", id);
+    public Mono<VerifyHistory> getVerifyHistory(Long id) {
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -165,10 +171,9 @@ public class VerifyHistoryServiceImpl implements VerifyHistoryService {
      * @return
      */
     @Override
-    public Mono<List<VerifyHistory>> selectVerifyHistoryMonoByLimitAndQuery(Long limit, Long rows, Query query) {
-        LOGGER.info("Mono<List<VerifyHistory>> selectVerifyHistoryMonoByLimitAndQuery(Long limit, Long rows, Query query), " +
-                "limit = {}, rows = {}, query = {}", limit, rows, query);
-        if (limit == null || limit < 0 || rows == null || rows == 0)
+    public Mono<List<VerifyHistory>> selectVerifyHistoryByLimitAndQuery(Long limit, Long rows, Query query) {
+        LOGGER.info("limit = {}, rows = {}, query = {}", limit, rows, query);
+        if (isInvalidLimit(limit) || isInvalidRows(rows))
             throw new BlueException(INVALID_PARAM);
 
         Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
@@ -184,8 +189,11 @@ public class VerifyHistoryServiceImpl implements VerifyHistoryService {
      * @return
      */
     @Override
-    public Mono<Long> countVerifyHistoryMonoByQuery(Query query) {
-        LOGGER.info("Mono<Long> countVerifyHistoryMonoByQuery(Query query), query = {}", query);
+    public Mono<Long> countVerifyHistoryByQuery(Query query) {
+        LOGGER.info("query = {}", query);
+        if (isNull(query))
+            return error(() -> new BlueException(EMPTY_PARAM));
+
         return reactiveMongoTemplate.count(query, VerifyHistory.class);
     }
 
@@ -196,16 +204,15 @@ public class VerifyHistoryServiceImpl implements VerifyHistoryService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<VerifyHistoryInfo>> selectVerifyHistoryInfoPageMonoByPageAndCondition(PageModelRequest<VerifyHistoryCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<VerifyHistoryInfo>> selectVerifyHistoryInfoPageMonoByPageAndCondition(PageModelRequest<VerifyHistoryCondition> pageModelRequest), " +
-                "pageModelRequest = {}", pageModelRequest);
+    public Mono<PageModelResponse<VerifyHistoryInfo>> selectVerifyHistoryInfoPageByPageAndCondition(PageModelRequest<VerifyHistoryCondition> pageModelRequest) {
+        LOGGER.info("pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
         Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
-        return zip(selectVerifyHistoryMonoByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),
-                countVerifyHistoryMonoByQuery(query)
+        return zip(selectVerifyHistoryByLimitAndQuery(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),
+                countVerifyHistoryByQuery(query)
         ).flatMap(tuple2 -> {
             List<VerifyHistory> verifyHistories = tuple2.getT1();
             Long count = tuple2.getT2();

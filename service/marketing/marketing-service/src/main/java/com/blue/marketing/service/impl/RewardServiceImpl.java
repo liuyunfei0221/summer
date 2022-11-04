@@ -184,7 +184,7 @@ public class RewardServiceImpl implements RewardService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public RewardInfo insertReward(RewardInsertParam rewardInsertParam, Long operatorId) {
-        LOGGER.info("RewardInfo insertReward(RewardInsertParam rewardInsertParam, Long operatorId), rewardInsertParam = {}, operatorId = {}",
+        LOGGER.info("rewardInsertParam = {}, operatorId = {}",
                 rewardInsertParam, operatorId);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
@@ -211,7 +211,7 @@ public class RewardServiceImpl implements RewardService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public RewardInfo updateReward(RewardUpdateParam rewardUpdateParam, Long operatorId) {
-        LOGGER.info("RewardInfo updateReward(RewardUpdateParam rewardUpdateParam, Long operatorId), rewardUpdateParam = {}, operatorId = {}",
+        LOGGER.info("rewardUpdateParam = {}, operatorId = {}",
                 rewardUpdateParam, operatorId);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
@@ -235,7 +235,7 @@ public class RewardServiceImpl implements RewardService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public RewardInfo deleteReward(Long id) {
-        LOGGER.info("RewardInfo deleteReward(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -256,7 +256,7 @@ public class RewardServiceImpl implements RewardService {
      */
     @Override
     public Optional<Reward> getRewardOpt(Long id) {
-        LOGGER.info("Optional<Reward> getRewardByPrimaryKey(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -271,7 +271,7 @@ public class RewardServiceImpl implements RewardService {
      */
     @Override
     public Mono<Reward> getReward(Long id) {
-        LOGGER.info("Mono<Reward> getRewardMono(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -286,7 +286,7 @@ public class RewardServiceImpl implements RewardService {
      */
     @Override
     public Mono<List<Reward>> selectRewardByIds(List<Long> ids) {
-        LOGGER.info("Mono<List<Reward>> selectRewardMonoByIds(List<Long> ids), ids = {}", ids);
+        LOGGER.info("ids = {}", ids);
         return just(allotByMax(ids, (int) DB_SELECT.value, false)
                 .stream().map(rewardMapper::selectByIds)
                 .flatMap(List::stream)
@@ -318,8 +318,7 @@ public class RewardServiceImpl implements RewardService {
      */
     @Override
     public Mono<List<Reward>> selectRewardByLimitAndCondition(Long limit, Long rows, RewardCondition rewardCondition) {
-        LOGGER.info("Mono<List<Reward>> selectRewardMonoByLimitAndCondition(Long limit, Long rows, RewardCondition rewardCondition), " +
-                "limit = {}, rows = {}, rewardCondition = {}", limit, rows, rewardCondition);
+        LOGGER.info("limit = {}, rows = {}, rewardCondition = {}", limit, rows, rewardCondition);
         return just(rewardMapper.selectByLimitAndCondition(limit, rows, rewardCondition));
     }
 
@@ -331,7 +330,7 @@ public class RewardServiceImpl implements RewardService {
      */
     @Override
     public Mono<Long> countRewardByCondition(RewardCondition rewardCondition) {
-        LOGGER.info("Mono<Long> countRewardMonoByCondition(RewardCondition rewardCondition), rewardCondition = {}", rewardCondition);
+        LOGGER.info("rewardCondition = {}", rewardCondition);
         return just(ofNullable(rewardMapper.countByCondition(rewardCondition)).orElse(0L));
     }
 
@@ -343,8 +342,7 @@ public class RewardServiceImpl implements RewardService {
      */
     @Override
     public Mono<PageModelResponse<RewardManagerInfo>> selectRewardManagerInfoPageByPageAndCondition(PageModelRequest<RewardCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<RewardManagerInfo>> selectRewardManagerInfoPageMonoByPageAndCondition(PageModelRequest<RewardCondition> pageModelRequest), " +
-                "pageModelRequest = {}", pageModelRequest);
+        LOGGER.info("pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 

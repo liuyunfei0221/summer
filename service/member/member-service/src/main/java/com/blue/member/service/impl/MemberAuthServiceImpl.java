@@ -87,7 +87,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 30)
     public MemberBasicInfo registerMemberBasic(MemberRegistryParam memberRegistryParam) {
-        LOGGER.info("MemberInfo registerMemberBasic(MemberRegistryParam memberRegistryParam), memberRegistryDTO = {}", memberRegistryParam);
+        LOGGER.info("memberRegistryDTO = {}", memberRegistryParam);
         if (isNull(memberRegistryParam))
             throw new BlueException(EMPTY_PARAM);
 
@@ -116,7 +116,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 30)
     public MemberBasicInfo updateMemberCredentialAttr(List<String> credentialTypes, String credential, Long memberId) {
-        LOGGER.info("MemberBasicInfo updateMemberCredentialAttr(List<String> credentialTypes, String credential, Long memberId), credentialTypes = {}, credential = {}, memberId = {}",
+        LOGGER.info("credentialTypes = {}, credential = {}, memberId = {}",
                 credentialTypes, credential, memberId);
 
         MemberBasic memberBasic = memberBasicService.getMemberBasicOpt(memberId)
@@ -134,8 +134,7 @@ public class MemberAuthServiceImpl implements MemberAuthService {
      */
     @Override
     public Mono<PageModelResponse<MemberAuthorityInfo>> selectMemberAuthorityPageMonoByPageAndCondition(PageModelRequest<MemberBasicCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<MemberAuthorityInfo>> selectMemberAuthorityPageMonoByPageAndCondition(PageModelRequest<MemberCondition> pageModelRequest), " +
-                "pageModelRequest = {}", pageModelRequest);
+        LOGGER.info("pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 

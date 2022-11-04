@@ -73,7 +73,7 @@ public class CredentialServiceImpl implements CredentialService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public void insertCredentials(List<Credential> credentials) {
-        LOGGER.info("void insertCredentials(List<Credential> credentials), credential = {}", credentials);
+        LOGGER.info("credential = {}", credentials);
         if (isEmpty(credentials))
             return;
 
@@ -95,7 +95,7 @@ public class CredentialServiceImpl implements CredentialService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public void updateCredentialByIds(String credential, List<Long> ids) {
-        LOGGER.info("void updateCredentialByIds(String credential, List<Long> ids), credential = {}, ids = {}", credential, ids);
+        LOGGER.info("credential = {}, ids = {}", credential, ids);
         if (isBlank(credential) || isEmpty(ids))
             throw new BlueException(EMPTY_PARAM);
         if (isNotEmpty(credentialMapper.selectByCredentials(singletonList(credential))))
@@ -114,7 +114,7 @@ public class CredentialServiceImpl implements CredentialService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public void deleteCredential(Long id) {
-        LOGGER.info("void deleteCredentialById(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -132,7 +132,7 @@ public class CredentialServiceImpl implements CredentialService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public boolean updateAccess(Long memberId, List<String> credentialTypes, String access) {
-        LOGGER.info("Boolean updateAccess(Long memberId, VerifyType verifyType, String access), memberId = {}, credentialTypes = {}, access = {}", memberId, credentialTypes, ":)");
+        LOGGER.info("memberId = {}, credentialTypes = {}, access = {}", memberId, credentialTypes, ":)");
 
         if (isBlank(access))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "access can't be blank");
@@ -159,7 +159,7 @@ public class CredentialServiceImpl implements CredentialService {
      */
     @Override
     public Optional<Credential> getCredentialOptByCredentialAndType(String credential, String credentialType) {
-        LOGGER.info("Optional<Credential> getCredentialByCredentialAndType(String credential, String credentialType), credential = {}, credentialType = {}", credential, credentialType);
+        LOGGER.info("credential = {}, credentialType = {}", credential, credentialType);
         if (isBlank(credential))
             throw new BlueException(EMPTY_PARAM);
         assertCredentialType(credentialType, false);
@@ -216,7 +216,7 @@ public class CredentialServiceImpl implements CredentialService {
      */
     @Override
     public Optional<Credential> getCredentialOptByMemberIdAndType(Long memberId, String credentialType) {
-        LOGGER.info("Optional<Credential> getCredentialByMemberIdAndType(Long memberId, String credentialType), memberId = {}, credentialType = {}", memberId, credentialType);
+        LOGGER.info("memberId = {}, credentialType = {}", memberId, credentialType);
         if (isInvalidIdentity(memberId))
             throw new BlueException(EMPTY_PARAM);
 

@@ -53,7 +53,7 @@ public interface MessageTemplateService {
      * @param id
      * @return
      */
-    Mono<MessageTemplate> getMessageTemplateMono(Long id);
+    Mono<MessageTemplate> getMessageTemplate(Long id);
 
     /**
      * get message template mono by types
@@ -62,7 +62,7 @@ public interface MessageTemplateService {
      * @param businessType
      * @return
      */
-    Mono<MessageTemplateInfo> getMessageTemplateInfoMonoByTypes(Integer type, Integer businessType);
+    Mono<MessageTemplateInfo> getMessageTemplateInfoByTypes(Integer type, Integer businessType);
 
     /**
      * select message template by limit and query
@@ -72,7 +72,7 @@ public interface MessageTemplateService {
      * @param query
      * @return
      */
-    Mono<List<MessageTemplate>> selectMessageTemplateMonoByLimitAndCondition(Long limit, Long rows, Query query);
+    Mono<List<MessageTemplate>> selectMessageTemplateByLimitAndCondition(Long limit, Long rows, Query query);
 
     /**
      * count message template by query
@@ -80,7 +80,7 @@ public interface MessageTemplateService {
      * @param query
      * @return
      */
-    Mono<Long> countMessageTemplateMonoByCondition(Query query);
+    Mono<Long> countMessageTemplateByCondition(Query query);
 
     /**
      * select message template manager info page by condition
@@ -88,6 +88,6 @@ public interface MessageTemplateService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<MessageTemplateManagerInfo>> selectMessageTemplateManagerInfoPageMonoByPageAndCondition(PageModelRequest<MessageTemplateCondition> pageModelRequest);
+    Mono<PageModelResponse<MessageTemplateManagerInfo>> selectMessageTemplateManagerInfoPageByPageAndCondition(PageModelRequest<MessageTemplateCondition> pageModelRequest);
 
 }

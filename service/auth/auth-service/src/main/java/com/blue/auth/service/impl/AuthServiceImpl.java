@@ -218,7 +218,7 @@ public class AuthServiceImpl implements AuthService {
      * @return
      */
     private static String genSessionKeyId(Long id, String credentialTypeIdentity, String deviceTypeIdentity) {
-        LOGGER.info("String genSessionKeyId(Long id, String credentialTypeIdentity, String deviceTypeIdentity), id = {}, credentialTypeIdentity = {}, deviceTypeIdentity = {}", id, credentialTypeIdentity, deviceTypeIdentity);
+        LOGGER.info("id = {}, credentialTypeIdentity = {}, deviceTypeIdentity = {}", id, credentialTypeIdentity, deviceTypeIdentity);
         if (isInvalidIdentity(id) || isBlank(deviceTypeIdentity))
             throw new BlueException(BAD_REQUEST);
 
@@ -238,7 +238,7 @@ public class AuthServiceImpl implements AuthService {
     private final Function<String, Mono<Boolean>> REFRESH_INFOS_BY_ID_DELETER = id ->
             refreshInfoService.deleteRefreshInfo(id)
                     .onErrorResume(throwable -> {
-                        LOGGER.warn("BiFunction<MemberPayload, Long, Mono<MemberAuth>> AUTH_GENERATOR,  refreshInfoService.deleteRefreshInfoById(id) failed, id = {}, throwable = {}", id, throwable);
+                        LOGGER.warn("id = {}, throwable = {}", id, throwable);
                         return empty();
                     })
                     .then(just(true));
@@ -254,7 +254,7 @@ public class AuthServiceImpl implements AuthService {
         return refreshInfoService.selectRefreshInfoByProbe(probe)
                 .flatMap(refreshInfoService::deleteRefreshInfos)
                 .onErrorResume(throwable -> {
-                    LOGGER.warn("Function<Long, Mono<Boolean>> REFRESH_INFOS_BY_MEMBER_ID_DELETER failed, memberId = {}, throwable = {}", memberId, throwable);
+                    LOGGER.warn("memberId = {}, throwable = {}", memberId, throwable);
                     return empty();
                 })
                 .then(just(true));
@@ -269,7 +269,7 @@ public class AuthServiceImpl implements AuthService {
      * @return
      */
     private Mono<MemberPayload> genMemberPayloadMono(Long memberId, String credentialType, String deviceType) {
-        LOGGER.info("Mono<MemberPayload> genMemberPayloadMono(Long memberId, String credentialType, String deviceType), memberId = {}, credentialType = {}, deviceType = {}", memberId, credentialType, deviceType);
+        LOGGER.info("memberId = {}, credentialType = {}, deviceType = {}", memberId, credentialType, deviceType);
         if (isInvalidIdentity(memberId))
             return error(() -> new BlueException(BAD_REQUEST));
 
@@ -304,7 +304,7 @@ public class AuthServiceImpl implements AuthService {
      * generate access
      */
     private final BiFunction<MemberPayload, List<Long>, Mono<MemberAccess>> ACCESS_GENERATOR = (memberPayload, roleIds) -> {
-        LOGGER.info("BiFunction<MemberPayload, List<Long>, Mono<MemberAccess>> ACCESS_GENERATOR, memberPayload = {}, roleIds = {}", memberPayload, roleIds);
+        LOGGER.info("memberPayload = {}, roleIds = {}", memberPayload, roleIds);
         if (isNull(memberPayload) || isInvalidIdentities(roleIds))
             return error(() -> new BlueException(BAD_REQUEST));
 
@@ -315,11 +315,10 @@ public class AuthServiceImpl implements AuthService {
         return accessInfoCache.setAccessInfo(memberPayload.getKeyId(), accessInfo)
                 .flatMap(b -> {
                     LOGGER.info("accessInfo = {}, keyPair = {}", accessInfo, keyPair);
-                    if (b)
-                        return just(new MemberAccess(jwt, keyPair.getPriKey()));
+                    if (!b)
+                        LOGGER.error("memberPayload = {}, roleIds = {}, keyPair = {}, accessInfo = {}", memberPayload, roleIds, keyPair, accessInfo);
 
-                    LOGGER.error("accessInfoCache.setAuthInfo(memberPayload.getKeyId(), authInfoJson), failed, memberPayload = {}, roleIds = {}, keyPair = {}, accessInfo = {}", memberPayload, roleIds, keyPair, accessInfo);
-                    return error(() -> new RuntimeException("accessInfoCache.setAccessInfo(memberPayload.getKeyId(), accessInfo) failed"));
+                    return just(new MemberAccess(jwt, keyPair.getPriKey()));
                 });
     };
 
@@ -327,7 +326,7 @@ public class AuthServiceImpl implements AuthService {
      * generate auth(access and refresh)
      */
     private final BiFunction<MemberPayload, List<Long>, Mono<MemberAuth>> AUTH_GENERATOR = (memberPayload, roleIds) -> {
-        LOGGER.info("BiFunction<MemberPayload, List<Long>, Mono<MemberAuth>> AUTH_GENERATOR, memberPayload = {}, roleIds = {}", memberPayload, roleIds);
+        LOGGER.info("memberPayload = {}, roleIds = {}", memberPayload, roleIds);
 
         return ACCESS_GENERATOR.apply(memberPayload, roleIds)
                 .flatMap(access -> {
@@ -336,7 +335,7 @@ public class AuthServiceImpl implements AuthService {
                     return refreshInfoService.insertRefreshInfo(new RefreshInfo(memberPayload.getKeyId(), memberPayload.getGamma(), memberPayload.getId(),
                                     memberPayload.getCredentialType().intern(), memberPayload.getDeviceType().intern(), memberPayload.getLoginTime(), REFRESH_EXPIRE_AT_GETTER.get()))
                             .onErrorResume(throwable -> {
-                                LOGGER.warn("BiFunction<MemberPayload, Long, Mono<MemberAuth>> AUTH_GENERATOR, refreshInfoService.insertRefreshInfo(refreshInfo) failed, memberPayload = {}, roleIds = {}, throwable = {}",
+                                LOGGER.warn("memberPayload = {}, roleIds = {}, throwable = {}",
                                         memberPayload, roleIds, throwable);
                                 return just(new RefreshInfo());
                             })
@@ -355,7 +354,7 @@ public class AuthServiceImpl implements AuthService {
 
             if (parseLong(refreshInfo.getLoginTime()) + refreshExpiresMillis <= TIME_STAMP_GETTER.get()) {
                 refreshInfoService.deleteRefreshInfo(refreshInfo.getId())
-                        .doOnError(throwable -> LOGGER.error("AUTH_ASSERTER ->  refreshInfoService.deleteRefreshInfoById() failed, refreshInfo = {}, throwable = {}", refreshInfo, throwable))
+                        .doOnError(throwable -> LOGGER.error("refreshInfo = {}, throwable = {}", refreshInfo, throwable))
                         .subscribe();
                 throw new BlueException(UNAUTHORIZED);
             }
@@ -381,7 +380,7 @@ public class AuthServiceImpl implements AuthService {
      * @param pubKey
      */
     private void refreshAccessRoleIdsOrPubKeyByKeyId(String keyId, List<Long> roleIds, String pubKey) {
-        LOGGER.info("void refreshAccessRoleIdsOrPubKeyByKeyId(String keyId, List<Long> roleIds, String pubKey), keyId = {}, roleIds = {}, pubKey = {}", keyId, roleIds, pubKey);
+        LOGGER.info("keyId = {}, roleIds = {}, pubKey = {}", keyId, roleIds, pubKey);
         if (isBlank(keyId) || (isInvalidIdentities(roleIds) && isBlank(pubKey)))
             return;
 
@@ -412,9 +411,9 @@ public class AuthServiceImpl implements AuthService {
                             b ? this.invalidateLocalAccessByKeyId(keyId) : just(false)
                     ).toFuture().join();
 
-            LOGGER.info("this.invalidateLocalAccessByKeyId(keyId).toFuture().join(), refreshed = {}", refreshed);
+            LOGGER.info("refreshed = {}", refreshed);
         } catch (Exception e) {
-            LOGGER.error("invalidLocalAuthProducer send failed, keyId = {}, e = {}", keyId, e);
+            LOGGER.error("keyId = {}, e = {}", keyId, e);
         }
     }
 
@@ -432,7 +431,7 @@ public class AuthServiceImpl implements AuthService {
      * update all access roles with sync by member
      */
     private final BiConsumer<Long, List<Long>> ALL_ACCESS_ROLES_REFRESHER = (memberId, roleIds) -> {
-        LOGGER.info("BiConsumer<Long,List<Long>> ALL_ACCESS_ROLES_REFRESHER, memberId = {}, roleIds = {}", memberId, roleIds);
+        LOGGER.info("memberId = {}, roleIds = {}", memberId, roleIds);
         if (isInvalidIdentity(memberId) || isEmpty(roleIds))
             return;
 
@@ -448,7 +447,7 @@ public class AuthServiceImpl implements AuthService {
      * update target access pub key with sync by member
      */
     private final BiConsumer<Access, String> ACCESS_PUB_KEY_REFRESHER = (access, pubKey) -> {
-        LOGGER.info("BiConsumer<Access,String> ACCESS_PUB_KEY_REFRESHER, access = {}, pubKey = {}", access, pubKey);
+        LOGGER.info("access = {}, pubKey = {}", access, pubKey);
         if (isNull(access) || isBlank(pubKey))
             throw new BlueException(BAD_REQUEST);
 
@@ -469,7 +468,7 @@ public class AuthServiceImpl implements AuthService {
                 REFRESH_INFOS_BY_MEMBER_ID_DELETER.apply(memberId)
                         .flatMap(b -> {
                             if (!b)
-                                LOGGER.error("REFRESH_INFOS_BY_MEMBER_ID_DELETER.apply(memberId), result is false");
+                                LOGGER.error("result is false");
 
                             String keyId;
                             for (CredentialType credentialType : VALID_CREDENTIAL_TYPES)
@@ -481,7 +480,7 @@ public class AuthServiceImpl implements AuthService {
 
                             return just(true);
                         }).onErrorResume(throwable -> {
-                            LOGGER.error("REFRESH_INFOS_BY_MEMBER_ID_DELETER failed, throwable = {}", throwable);
+                            LOGGER.error("throwable = {}", throwable);
                             return just(false);
                         }).toFuture().join()
         );
@@ -491,7 +490,7 @@ public class AuthServiceImpl implements AuthService {
      * get authority by role id
      */
     private final Function<List<Long>, Mono<List<AuthorityBaseOnRole>>> AUTHORITIES_MONO_BY_ROLE_ID_GETTER = roleIds -> {
-        LOGGER.info("Function<List<Long>, Mono<List<AuthorityBaseOnRole>>> AUTHORITIES_MONO_BY_ROLE_ID_GETTER, roleIds = {}", roleIds);
+        LOGGER.info("roleIds = {}", roleIds);
         return just(ROLES_INFO_BY_IDS_GETTER.apply(roleIds).stream()
                 .map(roleInfo -> new AuthorityBaseOnRole(roleInfo, RESOURCES_INFO_BY_ROLE_IDS_GETTER.apply(roleInfo.getId())))
                 .collect(toList()));
@@ -598,7 +597,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Mono<AccessAsserted> assertAccess(AccessAssert accessAssert) {
-        LOGGER.info("Mono<AuthAsserted> assertAuth(AssertAuth assertAuth), assertAuth = {}", accessAssert);
+        LOGGER.info("assertAuth = {}", accessAssert);
         return just(accessAssert)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(UNAUTHORIZED))))
                 .flatMap(aa -> {
@@ -643,7 +642,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Mono<MemberAuth> generateAuth(Long memberId, String credentialType, String deviceType) {
-        LOGGER.info("Mono<MemberAuth> generateAuthMono(Long memberId, String credentialType, String deviceType), memberId = {}, credentialType = {}, deviceType", memberId, credentialType, deviceType);
+        LOGGER.info("memberId = {}, credentialType = {}, deviceType", memberId, credentialType, deviceType);
         return isValidIdentity(memberId) && isNotBlank(credentialType) && isNotBlank(deviceType) ?
                 zip(genMemberPayloadMono(memberId, credentialType, deviceType),
                         memberRoleRelationService.selectRoleIdsByMemberId(memberId)
@@ -664,7 +663,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Mono<MemberAuth> generateAuth(Long memberId, List<Long> roleIds, String credentialType, String deviceType) {
-        LOGGER.info("Mono<MemberAuth> generateAuthMono(Long memberId, List<Long> roleIds, String credentialType, String deviceType) , memberId = {}, roleIds = {}, credentialType = {}, deviceType", memberId, roleIds, credentialType, deviceType);
+        LOGGER.info("memberId = {}, roleIds = {}, credentialType = {}, deviceType", memberId, roleIds, credentialType, deviceType);
         return isValidIdentity(memberId) && isValidIdentities(roleIds) && isNotBlank(credentialType) && isNotBlank(deviceType) ?
                 genMemberPayloadMono(memberId, credentialType, deviceType)
                         .flatMap(memberPayload ->
@@ -683,7 +682,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Mono<MemberAccess> generateAccess(Long memberId, String credentialType, String deviceType) {
-        LOGGER.info("Mono<MemberAccess> generateAccessMono(Long memberId, String credentialType, String deviceType), memberId = {}, credentialType = {}, deviceType", memberId, credentialType, deviceType);
+        LOGGER.info("memberId = {}, credentialType = {}, deviceType", memberId, credentialType, deviceType);
         return isValidIdentity(memberId) && isNotBlank(credentialType) && isNotBlank(deviceType) ?
                 zip(genMemberPayloadMono(memberId, credentialType, deviceType),
                         memberRoleRelationService.selectRoleIdsByMemberId(memberId)
@@ -701,13 +700,13 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Mono<MemberAccess> refreshAccessByMemberPayload(MemberPayload memberPayload) {
-        LOGGER.info("Mono<MemberAccess> refreshAccessByMemberPayload(MemberPayload memberPayload), memberPayload = {}", memberPayload);
+        LOGGER.info("memberPayload = {}", memberPayload);
         if (isNull(memberPayload))
             return error(() -> new BlueException(UNAUTHORIZED));
 
         return refreshInfoService.getRefreshInfo(memberPayload.getKeyId())
                 .onErrorResume(t -> {
-                    LOGGER.warn("Mono<MemberAccess> refreshAccess(String refresh), refreshInfoService.getRefreshInfoById(memberPayload.getKeyId()) failed, memberPayload = {}, t = {}", memberPayload, t);
+                    LOGGER.warn("memberPayload = {}, t = {}", memberPayload, t);
                     return error(() -> new BlueException(UNAUTHORIZED));
                 })
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(UNAUTHORIZED))))
@@ -725,7 +724,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Mono<MemberAccess> refreshAccessByRefresh(String refresh) {
-        LOGGER.info("Mono<MemberAccess> refreshAccessByRefresh(String refresh), refresh = {}", refresh);
+        LOGGER.info("refresh = {}", refresh);
         return just(jwtProcessor.parse(refresh)).flatMap(this::refreshAccessByMemberPayload);
     }
 
@@ -737,7 +736,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Mono<Boolean> invalidateAuthByAccess(Access access) {
-        LOGGER.info("Mono<Boolean> invalidateAuthByAccess(Access access), access = {}", access);
+        LOGGER.info("access = {}", access);
         if (isNull(access))
             return error(() -> new BlueException(UNAUTHORIZED));
 
@@ -756,7 +755,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Mono<Boolean> invalidateAuthByJwt(String jwt) {
-        LOGGER.info("Mono<Boolean> invalidateAuthByJwt(String jwt), jwt = {}", jwt);
+        LOGGER.info("jwt = {}", jwt);
         try {
             MemberPayload memberPayload = jwtProcessor.parse(jwt);
             String keyId = memberPayload.getKeyId();
@@ -764,12 +763,12 @@ public class AuthServiceImpl implements AuthService {
                     REFRESH_INFOS_BY_ID_DELETER.apply(memberPayload.getKeyId()),
                     accessInfoCache.invalidAccessInfo(keyId).flatMap(b -> this.invalidateLocalAccessByKeyId(keyId))
             ).flatMap(tuple2 -> just(tuple2.getT1() && tuple2.getT2()))
-                    .onErrorResume(throwable -> {
-                        LOGGER.warn("invalidateAuthByJwt(String jwt) failed, throwable = {}", throwable);
+                    .onErrorResume(t -> {
+                        LOGGER.warn("t = {}", t);
                         return just(false);
                     });
         } catch (Exception e) {
-            LOGGER.error("Mono<Boolean> invalidAuthByJwt(String jwt) failed, jwt = {}, e = {}", jwt, e);
+            LOGGER.error("jwt = {}, e = {}", jwt, e);
             return just(false);
         }
     }
@@ -782,7 +781,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Mono<Boolean> invalidateAuthByMemberId(Long memberId) {
-        LOGGER.info("Mono<Boolean> invalidAuthByMemberId(Long memberId), memberId = {}", memberId);
+        LOGGER.info("memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             return error(() -> new BlueException(INVALID_IDENTITY));
 
@@ -796,7 +795,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Mono<Boolean> invalidateLocalAccessByKeyId(String keyId) {
-        LOGGER.info("Mono<Boolean> invalidateLocalAccessByKeyId(String keyId), keyId = {}", keyId);
+        LOGGER.info("keyId = {}", keyId);
         invalidLocalAccessProducer.send(new InvalidLocalAccessEvent(keyId));
         return just(true);
     }
@@ -810,7 +809,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Mono<Boolean> refreshMemberRoleById(Long memberId, List<Long> roleIds) {
-        LOGGER.info("Mono<Boolean> refreshMemberRoleById(Long memberId, List<Long> roleIds), memberId = {}, roleIds = {}", memberId, roleIds);
+        LOGGER.info("memberId = {}, roleIds = {}", memberId, roleIds);
         if (isInvalidIdentity(memberId) || isInvalidIdentities(roleIds))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -827,7 +826,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Mono<Boolean> refreshMemberRoleById(Long memberId) {
-        LOGGER.info("Mono<Boolean> refreshMemberRoleById(Long memberId), memberId = {}", memberId);
+        LOGGER.info("memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -846,7 +845,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Mono<String> updateSecKeyByAccess(Access access) {
-        LOGGER.info("Mono<String> updateSecKeyByAccess(Access access), access = {}", access);
+        LOGGER.info("access = {}", access);
 
         return isNotNull(access) ?
                 just(initKeyPair())
@@ -866,7 +865,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Mono<MemberPayload> parsePayload(String authentication) {
-        LOGGER.info("Mono<MemberPayload> parsePayload(String authentication), authentication = {}", authentication);
+        LOGGER.info("authentication = {}", authentication);
 
         return justOrEmpty(authentication)
                 .filter(BlueChecker::isNotBlank)
@@ -890,7 +889,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Mono<Access> parseAccess(String authentication) {
-        LOGGER.info("Mono<Access> parseAccess(String authentication), authentication = {}", authentication);
+        LOGGER.info("authentication = {}", authentication);
 
         return justOrEmpty(authentication)
                 .filter(BlueChecker::isNotBlank)
@@ -907,8 +906,8 @@ public class AuthServiceImpl implements AuthService {
                                 return just(new Access(accessInfo.getId(), accessInfo.getRoleIds(), memberPayload.getCredentialType().intern(),
                                         memberPayload.getDeviceType().intern(), parseLong(memberPayload.getLoginTime())));
                             });
-                }).onErrorMap(throwable -> {
-                    LOGGER.info("throwable = {}", throwable);
+                }).onErrorMap(t -> {
+                    LOGGER.info("t = {}", t);
                     return new BlueException(INVALID_PARAM);
                 });
     }
@@ -921,7 +920,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Mono<Session> parseSession(String authentication) {
-        LOGGER.info("Mono<Session> parseSession(String authentication), authentication = {}", authentication);
+        LOGGER.info("authentication = {}", authentication);
 
         return justOrEmpty(authentication)
                 .filter(BlueChecker::isNotBlank)
@@ -938,8 +937,8 @@ public class AuthServiceImpl implements AuthService {
                                 return just(new Session(accessInfo.getId(), accessInfo.getPubKey(), accessInfo.getRoleIds(), memberPayload.getCredentialType().intern(),
                                         memberPayload.getDeviceType().intern(), parseLong(memberPayload.getLoginTime())));
                             });
-                }).onErrorMap(throwable -> {
-                    LOGGER.info("throwable = {}", throwable);
+                }).onErrorMap(t -> {
+                    LOGGER.info("t = {}", t);
                     return new BlueException(INVALID_PARAM);
                 });
     }
@@ -952,7 +951,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Mono<String> parseEncrypted(EncryptedDataParam encryptedDataParam) {
-        LOGGER.info("Mono<String> parseEncrypted(EncryptedDataParam encryptedDataParam), encryptedDataParam = {}", encryptedDataParam);
+        LOGGER.info("encryptedDataParam = {}", encryptedDataParam);
 
         return justOrEmpty(encryptedDataParam)
                 .filter(BlueChecker::isNotNull)
@@ -962,8 +961,8 @@ public class AuthServiceImpl implements AuthService {
 
                     return getRsaDecryptModeByIdentity(ep.getRsaDecryptMode())
                             .decipher.apply(ep.getEncrypted(), ep.getSecKey());
-                }).onErrorMap(throwable -> {
-                    LOGGER.info("throwable = {}", throwable);
+                }).onErrorMap(t -> {
+                    LOGGER.info("t = {}", t);
                     return new BlueException(INVALID_PARAM);
                 });
     }
@@ -976,7 +975,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Mono<List<AuthorityBaseOnRole>> selectAuthoritiesByAccess(Access access) {
-        LOGGER.info("Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByAccess(Access access), access = {}", access);
+        LOGGER.info("access = {}", access);
         return isNotNull(access) ?
                 AUTHORITIES_MONO_BY_ROLE_ID_GETTER.apply(access.getRoleIds())
                 :
@@ -991,7 +990,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Mono<List<AuthorityBaseOnRole>> selectAuthoritiesByMemberId(Long memberId) {
-        LOGGER.info("Mono<List<AuthorityBaseOnRole>> selectAuthoritiesMonoByMemberId(Long memberId), memberId = {}", memberId);
+        LOGGER.info("memberId = {}", memberId);
         return isValidIdentity(memberId) ?
                 memberRoleRelationService.selectRoleIdsByMemberId(memberId)
                         .flatMap(AUTHORITIES_MONO_BY_ROLE_ID_GETTER)
@@ -1007,7 +1006,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Mono<MemberAuthority> getAuthorityByAccess(Access access) {
-        LOGGER.info("Mono<MemberAuthority> getAuthorityMonoByAccess(Access access), access = {}", access);
+        LOGGER.info("access = {}", access);
         return this.selectAuthoritiesByAccess(access).flatMap(AUTHS_2_AUTH_CONVERTER);
     }
 
@@ -1019,7 +1018,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Mono<MemberAuthority> getAuthorityByMemberId(Long memberId) {
-        LOGGER.info("Mono<MemberAuthority> getAuthorityMonoByMemberId(Long memberId), memberId = {}", memberId);
+        LOGGER.info("memberId = {}", memberId);
         return this.selectAuthoritiesByMemberId(memberId).flatMap(AUTHS_2_AUTH_CONVERTER);
     }
 

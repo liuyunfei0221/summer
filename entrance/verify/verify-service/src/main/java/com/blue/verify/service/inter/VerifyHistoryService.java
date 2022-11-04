@@ -33,7 +33,7 @@ public interface VerifyHistoryService {
      * @param id
      * @return
      */
-    Optional<VerifyHistory> getVerifyHistory(Long id);
+    Optional<VerifyHistory> getVerifyHistoryOpt(Long id);
 
     /**
      * get verify history mono by id
@@ -41,7 +41,7 @@ public interface VerifyHistoryService {
      * @param id
      * @return
      */
-    Mono<VerifyHistory> getVerifyHistoryMono(Long id);
+    Mono<VerifyHistory> getVerifyHistory(Long id);
 
     /**
      * select verify history by page and query
@@ -51,7 +51,7 @@ public interface VerifyHistoryService {
      * @param query
      * @return
      */
-    Mono<List<VerifyHistory>> selectVerifyHistoryMonoByLimitAndQuery(Long limit, Long rows, Query query);
+    Mono<List<VerifyHistory>> selectVerifyHistoryByLimitAndQuery(Long limit, Long rows, Query query);
 
     /**
      * count verify history by query
@@ -59,7 +59,7 @@ public interface VerifyHistoryService {
      * @param query
      * @return
      */
-    Mono<Long> countVerifyHistoryMonoByQuery(Query query);
+    Mono<Long> countVerifyHistoryByQuery(Query query);
 
     /**
      * select verify history info page by condition
@@ -67,6 +67,6 @@ public interface VerifyHistoryService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<VerifyHistoryInfo>> selectVerifyHistoryInfoPageMonoByPageAndCondition(PageModelRequest<VerifyHistoryCondition> pageModelRequest);
+    Mono<PageModelResponse<VerifyHistoryInfo>> selectVerifyHistoryInfoPageByPageAndCondition(PageModelRequest<VerifyHistoryCondition> pageModelRequest);
 
 }

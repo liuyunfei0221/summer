@@ -38,7 +38,7 @@ public class EventManagerHandler {
     public Mono<ServerResponse> scroll(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(SCROLL_MODEL_FOR_OPT_EVENT_TYPE)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
-                .flatMap(lakeService::selectEventScrollMonoByScrollAndCursor)
+                .flatMap(lakeService::selectEventScrollByScrollAndCursor)
                 .flatMap(smr ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(smr, serverRequest), BlueResponse.class));

@@ -78,7 +78,7 @@ import static reactor.core.publisher.Mono.*;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "DuplicatedCode"})
 @Service
 public class VerifyTemplateServiceImpl implements VerifyTemplateService {
 
@@ -140,7 +140,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
 
     private final BiConsumer<String, String> REDIS_CACHE_DELETER = (type, businessType) ->
             reactiveStringRedisTemplate.delete(TEMPLATE_CACHE_KEY_GENERATOR.apply(type, businessType))
-                    .subscribe(size -> LOGGER.info("REDIS_CACHE_DELETER, type = {}, businessType = {}, size = {}", type, size));
+                    .subscribe(size -> LOGGER.info("type = {}, businessType = {}, size = {}", type, size));
 
     private final BiFunction<String, String, Mono<Map<String, VerifyTemplateInfo>>> TEMPLATE_DB_GETTER = (type, businessType) -> {
         assertVerifyType(type, false);
@@ -423,10 +423,11 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
      */
     @Override
     public Mono<VerifyTemplateInfo> insertVerifyTemplate(VerifyTemplateInsertParam verifyTemplateInsertParam, Long operatorId) {
-        LOGGER.info("Mono<VerifyTemplateInfo> insertVerifyTemplate(VerifyTemplateInsertParam verifyTemplateInsertParam, Long operatorId), verifyTemplateInsertParam = {}, operatorId = {}",
-                verifyTemplateInsertParam, operatorId);
-        if (isInvalidIdentity(operatorId))
+        LOGGER.info("verifyTemplateInsertParam = {}, operatorId = {}", verifyTemplateInsertParam, operatorId);
+        if (isNull(verifyTemplateInsertParam))
             throw new BlueException(EMPTY_PARAM);
+        if (isInvalidIdentity(operatorId))
+            throw new BlueException(UNAUTHORIZED);
 
         return synchronizedProcessor.handleSupWithSync(VERIFY_TEMPLATE_UPDATE_SYNC.key, () -> {
             INSERT_ITEM_VALIDATOR.accept(verifyTemplateInsertParam);
@@ -451,8 +452,11 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
      */
     @Override
     public Mono<VerifyTemplateInfo> updateVerifyTemplate(VerifyTemplateUpdateParam verifyTemplateUpdateParam, Long operatorId) {
-        LOGGER.info("Mono<VerifyTemplateInfo> updateVerifyTemplate(VerifyTemplateUpdateParam verifyTemplateUpdateParam, Long operatorId), verifyTemplateUpdateParam = {}, operatorId = {]",
-                verifyTemplateUpdateParam, operatorId);
+        LOGGER.info("verifyTemplateUpdateParam = {}, operatorId = {}", verifyTemplateUpdateParam, operatorId);
+        if (isNull(verifyTemplateUpdateParam))
+            throw new BlueException(EMPTY_PARAM);
+        if (isInvalidIdentity(operatorId))
+            throw new BlueException(UNAUTHORIZED);
 
         return synchronizedProcessor.handleSupWithSync(VERIFY_TEMPLATE_UPDATE_SYNC.key, () -> {
             VerifyTemplate verifyTemplate = UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER.apply(verifyTemplateUpdateParam);
@@ -483,7 +487,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
      */
     @Override
     public Mono<VerifyTemplateInfo> deleteVerifyTemplate(Long id) {
-        LOGGER.info("Mono<VerifyTemplateInfo> deleteVerifyTemplate(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -503,8 +507,8 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
      * @return
      */
     @Override
-    public Mono<VerifyTemplate> getVerifyTemplateMono(Long id) {
-        LOGGER.info("Mono<VerifyTemplate> getVerifyTemplateMono(Long id), id = {}", id);
+    public Mono<VerifyTemplate> getVerifyTemplate(Long id) {
+        LOGGER.info("id = {}", id);
 
         return verifyTemplateRepository.findById(id);
     }
@@ -518,8 +522,8 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
      * @return
      */
     @Override
-    public Mono<VerifyTemplateInfo> getVerifyTemplateInfoMonoByTypesAndLanguages(String type, String businessType, List<String> languages) {
-        LOGGER.info("Mono<VerifyTemplateInfo> getVerifyTemplateInfoMonoByTypesAndLanguages(), type = {}, businessType = {}, languages = {}", type, businessType, languages);
+    public Mono<VerifyTemplateInfo> getVerifyTemplateInfoByTypesAndLanguages(String type, String businessType, List<String> languages) {
+        LOGGER.info("type = {}, businessType = {}, languages = {}", type, businessType, languages);
         assertVerifyType(type, false);
         assertVerifyBusinessType(businessType, false);
 
@@ -539,9 +543,8 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
      * @return
      */
     @Override
-    public Mono<List<VerifyTemplate>> selectVerifyTemplateMonoByLimitAndCondition(Long limit, Long rows, Query query) {
-        LOGGER.info("Mono<List<VerifyTemplate>> selectVerifyTemplateMonoByLimitAndCondition(), limit = {}, rows = {}, query = {}", limit, rows, query);
-
+    public Mono<List<VerifyTemplate>> selectVerifyTemplateByLimitAndCondition(Long limit, Long rows, Query query) {
+        LOGGER.info("limit = {}, rows = {}, query = {}", limit, rows, query);
         if (isInvalidLimit(limit) || isInvalidRows(rows))
             throw new BlueException(INVALID_PARAM);
 
@@ -558,8 +561,10 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
      * @return
      */
     @Override
-    public Mono<Long> countVerifyTemplateMonoByCondition(Query query) {
-        LOGGER.info("Mono<Long> countVerifyTemplateMonoByCondition(), query = {}", query);
+    public Mono<Long> countVerifyTemplateByCondition(Query query) {
+        LOGGER.info("query = {}", query);
+        if (isNull(query))
+            return error(() -> new BlueException(EMPTY_PARAM));
 
         return reactiveMongoTemplate.count(query, VerifyTemplate.class);
     }
@@ -571,14 +576,14 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
      * @return
      */
     @Override
-    public Mono<PageModelResponse<VerifyTemplateManagerInfo>> selectVerifyTemplateManagerInfoPageMonoByPageAndCondition(PageModelRequest<VerifyTemplateCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<VerifyTemplateManagerInfo>> selectVerifyTemplateManagerInfoPageMonoByPageAndCondition(), pageModelRequest = {}", pageModelRequest);
+    public Mono<PageModelResponse<VerifyTemplateManagerInfo>> selectVerifyTemplateManagerInfoPageByPageAndCondition(PageModelRequest<VerifyTemplateCondition> pageModelRequest) {
+        LOGGER.info("pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
         Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
-        return zip(selectVerifyTemplateMonoByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), query), countVerifyTemplateMonoByCondition(query))
+        return zip(selectVerifyTemplateByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), query), countVerifyTemplateByCondition(query))
                 .flatMap(tuple2 -> {
                     List<VerifyTemplate> templates = tuple2.getT1();
                     Long count = tuple2.getT2();

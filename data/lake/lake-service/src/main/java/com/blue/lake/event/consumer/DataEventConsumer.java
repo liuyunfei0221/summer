@@ -52,7 +52,7 @@ public final class DataEventConsumer implements BlueLifecycle {
                 ofNullable(dataEvents)
                         .ifPresent(des -> just(des).flatMap(lakeService::insertEvents)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
-                                .doOnError(throwable -> LOGGER.info("insertEvents(List<DataEvent> dataEvents) failed, des = {}, throwable = {}", des, throwable))
+                                .doOnError(t -> LOGGER.info("insertEvents(List<DataEvent> dataEvents) failed, des = {}, t = {}", des, t))
                                 .subscribe(b -> LOGGER.info("insertEvents(List<DataEvent> dataEvents), b = {}, des = {}", b, des)));
 
         this.pulsarBatchListener = generateBatchListener(pulsarClient, blueConsumerConfig.getByKey(REQUEST_EVENT.name), dataConsumer, DataEvent.class);

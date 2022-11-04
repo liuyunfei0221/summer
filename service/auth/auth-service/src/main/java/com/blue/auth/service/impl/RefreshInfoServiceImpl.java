@@ -41,7 +41,7 @@ public class RefreshInfoServiceImpl implements RefreshInfoService {
      */
     @Override
     public Mono<RefreshInfo> insertRefreshInfo(RefreshInfo refreshInfo) {
-        LOGGER.info("Mono<RefreshInfo> insertRefreshInfo(RefreshInfo refreshInfo), refreshInfo = {}", refreshInfo);
+        LOGGER.info("refreshInfo = {}", refreshInfo);
         if (isNull(refreshInfo))
             throw new BlueException(EMPTY_PARAM);
 
@@ -56,7 +56,7 @@ public class RefreshInfoServiceImpl implements RefreshInfoService {
      */
     @Override
     public Mono<Void> deleteRefreshInfo(String id) {
-        LOGGER.info("Mono<Void> deleteRefreshInfoById(String id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isBlank(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -71,7 +71,7 @@ public class RefreshInfoServiceImpl implements RefreshInfoService {
      */
     @Override
     public Mono<Void> deleteRefreshInfos(List<RefreshInfo> refreshInfos) {
-        LOGGER.info("Mono<Void> deleteRefreshInfos(List<RefreshInfo> refreshInfos), refreshInfos = {}", refreshInfos);
+        LOGGER.info("refreshInfos = {}", refreshInfos);
         if (isEmpty(refreshInfos))
             throw new BlueException(EMPTY_PARAM);
 
@@ -86,7 +86,7 @@ public class RefreshInfoServiceImpl implements RefreshInfoService {
      */
     @Override
     public Mono<RefreshInfo> getRefreshInfo(String id) {
-        LOGGER.info("Mono<RefreshInfo> getRefreshInfoById(String id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isBlank(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -101,7 +101,7 @@ public class RefreshInfoServiceImpl implements RefreshInfoService {
      */
     @Override
     public Mono<List<RefreshInfo>> selectRefreshInfoByProbe(RefreshInfo probe) {
-        LOGGER.info("Mono<List<RefreshInfo>> selectRefreshInfoMonoByCondition(RefreshInfo condition), probe = {}", probe);
+        LOGGER.info("probe = {}", probe);
         if (isNull(probe))
             throw new BlueException(EMPTY_PARAM);
 

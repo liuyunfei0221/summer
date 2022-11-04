@@ -11,7 +11,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * download history service
@@ -35,15 +34,7 @@ public interface DownloadHistoryService {
      * @param id
      * @return
      */
-    Mono<DownloadHistory> getDownloadHistoryMono(Long id);
-
-    /**
-     * get download history by id
-     *
-     * @param id
-     * @return
-     */
-    Optional<DownloadHistory> getDownloadHistory(Long id);
+    Mono<DownloadHistory> getDownloadHistory(Long id);
 
     /**
      * select attachment detail info by scroll and member id
@@ -52,7 +43,7 @@ public interface DownloadHistoryService {
      * @param memberId
      * @return
      */
-    Mono<ScrollModelResponse<DownloadHistoryInfo, String>> selectShineInfoScrollMonoByScrollAndCursorBaseOnMemberId(ScrollModelRequest<Void, Long> scrollModelRequest, Long memberId);
+    Mono<ScrollModelResponse<DownloadHistoryInfo, String>> selectShineInfoScrollByScrollAndCursorBaseOnMemberId(ScrollModelRequest<Void, Long> scrollModelRequest, Long memberId);
 
     /**
      * select download history by page and query
@@ -62,7 +53,7 @@ public interface DownloadHistoryService {
      * @param query
      * @return
      */
-    Mono<List<DownloadHistory>> selectDownloadHistoryMonoByLimitAndQuery(Long limit, Long rows, Query query);
+    Mono<List<DownloadHistory>> selectDownloadHistoryByLimitAndQuery(Long limit, Long rows, Query query);
 
     /**
      * count download history by query
@@ -70,7 +61,7 @@ public interface DownloadHistoryService {
      * @param query
      * @return
      */
-    Mono<Long> countDownloadHistoryMonoByQuery(Query query);
+    Mono<Long> countDownloadHistoryByQuery(Query query);
 
     /**
      * select download history info page by condition
@@ -78,6 +69,6 @@ public interface DownloadHistoryService {
      * @param pageModelRequest
      * @return
      */
-    Mono<PageModelResponse<DownloadHistoryInfo>> selectDownloadHistoryInfoPageMonoByPageAndCondition(PageModelRequest<DownloadHistoryCondition> pageModelRequest);
+    Mono<PageModelResponse<DownloadHistoryInfo>> selectDownloadHistoryInfoPageByPageAndCondition(PageModelRequest<DownloadHistoryCondition> pageModelRequest);
 
 }

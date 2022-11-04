@@ -72,7 +72,7 @@ public class RiskServiceImpl implements RiskService, ApplicationListener<Context
      */
     @Override
     public Mono<Boolean> analyzeEvent(DataEvent dataEvent) {
-        LOGGER.info(" void analyzeEvent(DataEvent dataEvent), dataEvent = {}", dataEvent);
+        LOGGER.info("dataEvent = {}", dataEvent);
 
         return fromFuture(supplyAsync(() -> {
             EVENT_HANDLER.accept(dataEvent);

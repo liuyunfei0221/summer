@@ -31,13 +31,13 @@ import reactor.util.Logger;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.function.*;
 import java.util.stream.Stream;
 
+import static com.blue.agreement.constant.AgreementSortAttribute.CREATE_TIME;
 import static com.blue.agreement.converter.AgreementModelConverters.*;
 import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
 import static com.blue.basic.common.base.BlueChecker.*;
@@ -57,11 +57,11 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
-import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
+import static reactor.core.publisher.Flux.concat;
 import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
@@ -153,19 +153,10 @@ public class AgreementServiceImpl implements AgreementService {
     };
 
     private final Supplier<Mono<List<AgreementInfo>>> NEWEST_AGREEMENTS_SUP = () ->
-            zip(ALL_TYPE_IDENTITIES.stream()
+            concat(ALL_TYPE_IDENTITIES.stream()
                     .map(AGREEMENT_INFO_WITH_ALL_CACHE_GETTER)
-                    .map(Mono::fromFuture)
-                    .collect(toList()), identity())
-                    .map(arr -> Stream.of(arr)
-                            .map(obj -> {
-                                try {
-                                    return (AgreementInfo) obj;
-                                } catch (Exception e) {
-                                    LOGGER.error("cast failed, obj = {}", obj);
-                                    return null;
-                                }
-                            }).filter(Objects::nonNull).collect(toList()));
+                    .map(Mono::fromFuture).collect(toList()))
+                    .collectList();
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(AgreementSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
@@ -173,7 +164,7 @@ public class AgreementServiceImpl implements AgreementService {
     private static final UnaryOperator<AgreementCondition> CONDITION_PROCESSOR = c -> {
         AgreementCondition ac = isNotNull(c) ? c : new AgreementCondition();
 
-        process(ac, SORT_ATTRIBUTE_MAPPING, AgreementSortAttribute.CREATE_TIME.column);
+        process(ac, SORT_ATTRIBUTE_MAPPING, CREATE_TIME.column);
 
         ofNullable(ac.getTitleLike())
                 .filter(StringUtils::hasText).ifPresent(titleLike -> ac.setTitleLike(PERCENT.identity + titleLike + PERCENT.identity));
@@ -199,8 +190,7 @@ public class AgreementServiceImpl implements AgreementService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public AgreementInfo insertAgreement(AgreementInsertParam agreementInsertParam, Long operatorId) {
-        LOGGER.info("AgreementInfo insertAgreement(AgreementInsertParam agreementInsertParam, Long operatorId),     public AgreementInfo insertAgreement(AgreementInsertParam agreementInsertParam, Long operatorId) {\n = {}, operatorId = {}",
-                agreementInsertParam, operatorId);
+        LOGGER.info("agreementInsertParam = {}, operatorId = {}", agreementInsertParam, operatorId);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
@@ -237,7 +227,7 @@ public class AgreementServiceImpl implements AgreementService {
      */
     @Override
     public Mono<Agreement> getAgreement(Long id) {
-        LOGGER.info("Mono<Agreement> getAgreementMono(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -252,7 +242,7 @@ public class AgreementServiceImpl implements AgreementService {
      */
     @Override
     public Mono<Agreement> getNewestAgreementByType(Integer agreementType) {
-        LOGGER.info("Optional<Agreement> getAgreementByType(Integer agreementType), agreementType = {}", agreementType);
+        LOGGER.info("agreementType = {}", agreementType);
         assertAgreementType(agreementType, false);
 
         return justOrEmpty(agreementMapper.selectNewestByType(agreementType));
@@ -266,7 +256,7 @@ public class AgreementServiceImpl implements AgreementService {
      */
     @Override
     public Mono<AgreementInfo> getNewestAgreementInfoByTypeWithCache(Integer agreementType) {
-        LOGGER.info("Mono<AgreementInfo> getNewestAgreementInfoMonoByTypeWithCache(Integer agreementType), agreementType = {}", agreementType);
+        LOGGER.info("agreementType = {}", agreementType);
         return fromFuture(AGREEMENT_INFO_WITH_ALL_CACHE_GETTER.apply(agreementType));
     }
 
@@ -288,7 +278,7 @@ public class AgreementServiceImpl implements AgreementService {
      */
     @Override
     public Mono<List<AgreementInfo>> selectAgreementInfoByIds(List<Long> ids) {
-        LOGGER.info("List<Resource> selectResourceByIds(List<Long> ids), ids = {}", ids);
+        LOGGER.info("ids = {}", ids);
         if (isEmpty(ids))
             return just(emptyList());
         if (ids.size() > (int) MAX_SERVICE_SELECT.value)
@@ -311,8 +301,7 @@ public class AgreementServiceImpl implements AgreementService {
      */
     @Override
     public Mono<List<Agreement>> selectAgreementByLimitAndCondition(Long limit, Long rows, AgreementCondition agreementCondition) {
-        LOGGER.info("Mono<List<Agreement>> selectAgreementMonoByLimitAndCondition(Long limit, Long rows, AgreementCondition agreementCondition), " +
-                "limit = {}, rows = {}, agreementCondition = {}", limit, rows, agreementCondition);
+        LOGGER.info("limit = {}, rows = {}, agreementCondition = {}", limit, rows, agreementCondition);
         return justOrEmpty(agreementMapper.selectByLimitAndCondition(limit, rows, agreementCondition));
     }
 
@@ -324,7 +313,7 @@ public class AgreementServiceImpl implements AgreementService {
      */
     @Override
     public Mono<Long> countAgreementByCondition(AgreementCondition agreementCondition) {
-        LOGGER.info("Mono<Long> countAgreementMonoByCondition(AgreementCondition agreementCondition), agreementCondition = {}", agreementCondition);
+        LOGGER.info("agreementCondition = {}", agreementCondition);
         return justOrEmpty(ofNullable(agreementMapper.countByCondition(agreementCondition)).orElse(0L));
     }
 
@@ -336,8 +325,7 @@ public class AgreementServiceImpl implements AgreementService {
      */
     @Override
     public Mono<PageModelResponse<AgreementManagerInfo>> selectAgreementManagerInfoPageByPageAndCondition(PageModelRequest<AgreementCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<AgreementManagerInfo>> selectAgreementManagerInfoPageMonoByPageAndCondition(PageModelRequest<AgreementCondition> pageModelRequest), " +
-                "pageModelRequest = {}", pageModelRequest);
+        LOGGER.info("pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 

@@ -261,7 +261,7 @@ public class CardServiceImpl implements CardService {
      */
     @Override
     public Mono<CardInfo> insertCard(CardInsertParam cardInsertParam, Long memberId) {
-        LOGGER.info("Mono<CardInfo> insertCard(CardInsertParam cardInsertParam, Long memberId), addressInsertParam = {}, memberId = {}",
+        LOGGER.info("addressInsertParam = {}, memberId = {}",
                 cardInsertParam, memberId);
         if (cardInsertParam == null)
             throw new BlueException(EMPTY_PARAM);
@@ -296,7 +296,7 @@ public class CardServiceImpl implements CardService {
      */
     @Override
     public Mono<CardInfo> updateCard(CardUpdateParam cardUpdateParam, Long memberId) {
-        LOGGER.info("Mono<CardInfo> updateCard(CardUpdateParam cardUpdateParam, Long memberId), cardUpdateParam = {}, memberId = {}", cardUpdateParam, memberId);
+        LOGGER.info("cardUpdateParam = {}, memberId = {}", cardUpdateParam, memberId);
         if (isNull(cardUpdateParam))
             throw new BlueException(EMPTY_PARAM);
         cardUpdateParam.asserts();
@@ -325,7 +325,7 @@ public class CardServiceImpl implements CardService {
      */
     @Override
     public Mono<CardInfo> deleteCard(Long id, Long memberId) {
-        LOGGER.info("Mono<CardInfo> deleteCard(Long id, Long memberId), id = {}, memberId = {}", id, memberId);
+        LOGGER.info("id = {}, memberId = {}", id, memberId);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
         if (isInvalidIdentity(memberId))
@@ -352,7 +352,7 @@ public class CardServiceImpl implements CardService {
      */
     @Override
     public Mono<Card> getCard(Long id) {
-        LOGGER.info("Mono<Card> getCardMono(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -367,7 +367,7 @@ public class CardServiceImpl implements CardService {
      */
     @Override
     public Mono<List<Card>> selectCardByMemberId(Long memberId) {
-        LOGGER.info("Mono<List<Card>> selectCardMonoByMemberId(Long memberId), memberId = {}", memberId);
+        LOGGER.info("memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(BAD_REQUEST);
 
@@ -387,7 +387,7 @@ public class CardServiceImpl implements CardService {
      */
     @Override
     public Mono<List<CardInfo>> selectCardInfoByMemberId(Long memberId) {
-        LOGGER.info("Mono<List<AddressInfo>> selectAddressInfoMonoByMemberId(Long memberId), memberId = {}", memberId);
+        LOGGER.info("memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(BAD_REQUEST);
 
@@ -403,7 +403,7 @@ public class CardServiceImpl implements CardService {
      */
     @Override
     public Mono<CardInfo> getCardInfoWithAssert(Long id) {
-        LOGGER.info("Mono<CardInfo> getCardInfoMonoWithAssert(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -428,7 +428,7 @@ public class CardServiceImpl implements CardService {
      */
     @Override
     public Mono<List<CardInfo>> selectCardInfoByIds(List<Long> ids) {
-        LOGGER.info("Mono<List<CardInfo>> selectCardInfoMonoByIds(List<Long> ids), ids = {}", ids);
+        LOGGER.info("ids = {}", ids);
         if (isEmpty(ids))
             return just(emptyList());
         if (ids.size() > (int) MAX_SERVICE_SELECT.value)
@@ -451,8 +451,7 @@ public class CardServiceImpl implements CardService {
      */
     @Override
     public Mono<List<Card>> selectCardByLimitAndQuery(Long limit, Long rows, Query query) {
-        LOGGER.info("Mono<List<Card>> selectCardMonoByLimitAndQuery(Long limit, Long rows, Query query), " +
-                "limit = {}, rows = {}, query = {}", limit, rows, query);
+        LOGGER.info("limit = {}, rows = {}, query = {}", limit, rows, query);
         if (isInvalidLimit(limit) || isInvalidRows(rows))
             throw new BlueException(INVALID_PARAM);
 
@@ -470,7 +469,7 @@ public class CardServiceImpl implements CardService {
      */
     @Override
     public Mono<Long> countCardByQuery(Query query) {
-        LOGGER.info("Mono<Long> countCardMonoByQuery(Query query), query = {}", query);
+        LOGGER.info("query = {}", query);
         return reactiveMongoTemplate.count(query, Card.class);
     }
 
@@ -482,8 +481,7 @@ public class CardServiceImpl implements CardService {
      */
     @Override
     public Mono<PageModelResponse<CardDetailInfo>> selectCardDetailInfoPageByPageAndCondition(PageModelRequest<CardCondition> pageModelRequest) {
-        LOGGER.info("Mono<PageModelResponse<RoleInfo>> selectAttachmentDetailInfoPageMonoByPageAndCondition(PageModelRequest<AttachmentCondition> pageModelRequest), " +
-                "pageModelRequest = {}", pageModelRequest);
+        LOGGER.info("pageModelRequest = {}", pageModelRequest);
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
