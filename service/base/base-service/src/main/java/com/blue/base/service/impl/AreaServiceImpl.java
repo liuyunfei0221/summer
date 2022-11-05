@@ -51,7 +51,7 @@ import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SEL
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.Status.VALID;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCacheAsyncCache;
-import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
+import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
 import static com.blue.mongo.constant.LikeElement.PREFIX;
 import static com.blue.mongo.constant.LikeElement.SUFFIX;
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -106,15 +106,15 @@ public class AreaServiceImpl implements AreaService {
 
         idAreaCache = generateCacheAsyncCache(new CaffeineConfParams(
                 caffeineDeploy.getAreaMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
-                AFTER_ACCESS, this.executorService));
+                AFTER_WRITE, this.executorService));
 
         cityIdAreasCache = generateCacheAsyncCache(new CaffeineConfParams(
                 caffeineDeploy.getCityMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
-                AFTER_ACCESS, this.executorService));
+                AFTER_WRITE, this.executorService));
 
         idRegionCache = generateCacheAsyncCache(new CaffeineConfParams(
                 caffeineDeploy.getAreaMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
-                AFTER_ACCESS, this.executorService));
+                AFTER_WRITE, this.executorService));
     }
 
     private AsyncCache<Long, AreaInfo> idAreaCache;
@@ -348,11 +348,7 @@ public class AreaServiceImpl implements AreaService {
         Area area = AREA_INSERT_PARAM_2_AREA_CONVERTER.apply(areaInsertParam);
 
         return areaRepository.insert(area)
-                .map(AREA_2_AREA_INFO_CONVERTER)
-                .doOnSuccess(ai -> {
-                    LOGGER.info("ai = {}", ai);
-                    invalidCache();
-                });
+                .map(AREA_2_AREA_INFO_CONVERTER);
     }
 
     /**
@@ -370,11 +366,7 @@ public class AreaServiceImpl implements AreaService {
         UPDATE_ITEM_WITH_ASSERT_PACKAGER.accept(areaUpdateParam, area);
 
         return areaRepository.save(area)
-                .map(AREA_2_AREA_INFO_CONVERTER)
-                .doOnSuccess(ai -> {
-                    LOGGER.info("ai = {}", ai);
-                    invalidCache();
-                });
+                .map(AREA_2_AREA_INFO_CONVERTER);
     }
 
     /**
@@ -392,11 +384,7 @@ public class AreaServiceImpl implements AreaService {
         return areaRepository.findById(id)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .flatMap(area -> areaRepository.delete(area)
-                        .then(just(AREA_2_AREA_INFO_CONVERTER.apply(area)))
-                        .doOnSuccess(ai -> {
-                            LOGGER.info("ai = {}", ai);
-                            invalidCache();
-                        }));
+                        .then(just(AREA_2_AREA_INFO_CONVERTER.apply(area))));
     }
 
     /**

@@ -12,6 +12,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
+import static com.blue.basic.constant.common.SpecialIntegerElement.ONE;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
 import static com.github.benmanes.caffeine.cache.Caffeine.newBuilder;
@@ -129,9 +130,15 @@ public final class BlueCaffeineGenerator {
         if (isNull(conf))
             throw new RuntimeException("caffeineConf can't be null");
 
-        Duration expireDuration = conf.getExpireDuration();
-        if (isNull(expireDuration))
+        Integer maximumSize = conf.getMaximumSize();
+        if (isNull(maximumSize) || maximumSize < ONE.value || maximumSize > MAXIMUM_CAPACITY)
+            throw new RuntimeException("maximumSize can't be null or less than 1 or greater than " + MAXIMUM_CAPACITY);
+
+        if (isNull(conf.getExpireDuration()))
             throw new RuntimeException("expireDuration can't be null");
+
+        if (isNull(conf.getExpireStrategy()))
+            throw new RuntimeException("expireStrategy can't be null");
     }
 
 }

@@ -55,7 +55,7 @@ import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SEL
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.Status.VALID;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCacheAsyncCache;
-import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
+import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
 import static com.blue.mongo.constant.LikeElement.PREFIX;
 import static com.blue.mongo.constant.LikeElement.SUFFIX;
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -108,15 +108,15 @@ public class CityServiceImpl implements CityService {
 
         idCityCache = generateCacheAsyncCache(new CaffeineConfParams(
                 caffeineDeploy.getCityMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
-                AFTER_ACCESS, this.executorService));
+                AFTER_WRITE, this.executorService));
 
         stateIdCitiesCache = generateCacheAsyncCache(new CaffeineConfParams(
                 caffeineDeploy.getStateMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
-                AFTER_ACCESS, this.executorService));
+                AFTER_WRITE, this.executorService));
 
         idRegionCache = generateCacheAsyncCache(new CaffeineConfParams(
                 caffeineDeploy.getCityMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
-                AFTER_ACCESS, this.executorService));
+                AFTER_WRITE, this.executorService));
     }
 
     private AsyncCache<Long, CityInfo> idCityCache;
@@ -343,11 +343,7 @@ public class CityServiceImpl implements CityService {
         City city = CITY_INSERT_PARAM_2_CITY_CONVERTER.apply(cityInsertParam);
 
         return cityRepository.insert(city)
-                .map(CITY_2_CITY_INFO_CONVERTER)
-                .doOnSuccess(ci -> {
-                    LOGGER.info("ci = {}", ci);
-                    invalidCache();
-                });
+                .map(CITY_2_CITY_INFO_CONVERTER);
     }
 
     /**
@@ -379,8 +375,6 @@ public class CityServiceImpl implements CityService {
                         Long modifiedCount = updateCountryIdAndStateIdOfAreaByCityId(destCountryId, destStateId, city.getId()).toFuture().join();
                         LOGGER.info("modifiedCount = {}", modifiedCount);
                     }
-
-                    invalidCache();
                 });
     }
 
@@ -412,11 +406,7 @@ public class CityServiceImpl implements CityService {
                                             :
                                             error(new BlueException(REGION_DATA_STILL_USED))
                             )
-                            .then(just(CITY_2_CITY_INFO_CONVERTER.apply(city)))
-                            .doOnSuccess(ci -> {
-                                LOGGER.info("ci = {}", ci);
-                                invalidCache();
-                            });
+                            .then(just(CITY_2_CITY_INFO_CONVERTER.apply(city)));
                 });
     }
 

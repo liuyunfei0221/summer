@@ -46,7 +46,7 @@ import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.SpecialIntegerElement.ONE;
 import static com.blue.basic.constant.common.Status.VALID;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCacheAsyncCache;
-import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
+import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
 import static com.blue.mongo.constant.LikeElement.PREFIX;
 import static com.blue.mongo.constant.LikeElement.SUFFIX;
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -90,11 +90,11 @@ public class CountryServiceImpl implements CountryService {
 
         idCountryCache = generateCacheAsyncCache(new CaffeineConfParams(
                 caffeineDeploy.getCountryMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
-                AFTER_ACCESS, this.executorService));
+                AFTER_WRITE, this.executorService));
 
         allCountriesCache = generateCacheAsyncCache(new CaffeineConfParams(
                 ONE.value, Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
-                AFTER_ACCESS, this.executorService));
+                AFTER_WRITE, this.executorService));
     }
 
     private static final Long ALL_COUNTRIES_CACHE_ID = 0L;
@@ -339,11 +339,7 @@ public class CountryServiceImpl implements CountryService {
         Country country = COUNTRY_INSERT_PARAM_2_COUNTRY_CONVERTER.apply(countryInsertParam);
 
         return countryRepository.insert(country)
-                .map(COUNTRY_2_COUNTRY_INFO_CONVERTER)
-                .doOnSuccess(ci -> {
-                    LOGGER.info("ci = {}", ci);
-                    invalidCache();
-                });
+                .map(COUNTRY_2_COUNTRY_INFO_CONVERTER);
     }
 
     /**
@@ -361,11 +357,7 @@ public class CountryServiceImpl implements CountryService {
         UPDATE_ITEM_WITH_ASSERT_PACKAGER.accept(countryUpdateParam, country);
 
         return countryRepository.save(country)
-                .map(COUNTRY_2_COUNTRY_INFO_CONVERTER)
-                .doOnSuccess(ci -> {
-                    LOGGER.info("ci = {}", ci);
-                    invalidCache();
-                });
+                .map(COUNTRY_2_COUNTRY_INFO_CONVERTER);
     }
 
     /**
@@ -396,11 +388,7 @@ public class CountryServiceImpl implements CountryService {
                                             :
                                             error(new BlueException(REGION_DATA_STILL_USED))
                             )
-                            .then(just(COUNTRY_2_COUNTRY_INFO_CONVERTER.apply(country)))
-                            .doOnSuccess(ci -> {
-                                LOGGER.info("ci = {}", ci);
-                                invalidCache();
-                            });
+                            .then(just(COUNTRY_2_COUNTRY_INFO_CONVERTER.apply(country)));
                 });
     }
 

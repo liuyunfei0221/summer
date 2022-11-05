@@ -53,7 +53,7 @@ import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SEL
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.Status.VALID;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCacheAsyncCache;
-import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
+import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
 import static com.blue.mongo.constant.LikeElement.PREFIX;
 import static com.blue.mongo.constant.LikeElement.SUFFIX;
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -103,15 +103,15 @@ public class StateServiceImpl implements StateService {
 
         idStateCache = generateCacheAsyncCache(new CaffeineConfParams(
                 caffeineDeploy.getStateMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
-                AFTER_ACCESS, this.executorService));
+                AFTER_WRITE, this.executorService));
 
         countryIdStatesCache = generateCacheAsyncCache(new CaffeineConfParams(
                 caffeineDeploy.getCountryMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
-                AFTER_ACCESS, this.executorService));
+                AFTER_WRITE, this.executorService));
 
         idRegionCache = generateCacheAsyncCache(new CaffeineConfParams(
                 caffeineDeploy.getStateMaximumSize(), Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
-                AFTER_ACCESS, this.executorService));
+                AFTER_WRITE, this.executorService));
     }
 
     private AsyncCache<Long, StateInfo> idStateCache;
@@ -196,9 +196,8 @@ public class StateServiceImpl implements StateService {
                                                                                 new StateRegion(si.getId(), countryMap.get(si.getCountryId()), si)
                                                                         )
                                                                         .collect(toMap(StateRegion::getStateId, ar -> ar, (a, b) -> a))
-                                                        ))
-                        )
-                        .map(m -> Flux.fromIterable(m.values()))
+                                                        )))
+                        .map(m -> fromIterable(m.values()))
                         .reduce(Flux::concat)
                         .flatMap(f -> f.collectMap(StateRegion::getStateId, identity()))
                         .toFuture());
@@ -343,11 +342,7 @@ public class StateServiceImpl implements StateService {
         State state = STATE_INSERT_PARAM_2_STATE_CONVERTER.apply(stateInsertParam);
 
         return stateRepository.insert(state)
-                .map(STATE_2_STATE_INFO_CONVERTER)
-                .doOnSuccess(si -> {
-                    LOGGER.info("si = {}", si);
-                    invalidCache();
-                });
+                .map(STATE_2_STATE_INFO_CONVERTER);
     }
 
     /**
@@ -380,8 +375,6 @@ public class StateServiceImpl implements StateService {
 
                         LOGGER.info("cityModifiedCount = {}, areaModifiedCount = {}", cityModifiedCount, areaModifiedCount);
                     }
-
-                    invalidCache();
                 });
     }
 
@@ -413,11 +406,7 @@ public class StateServiceImpl implements StateService {
                                             :
                                             error(new BlueException(REGION_DATA_STILL_USED))
                             )
-                            .then(just(STATE_2_STATE_INFO_CONVERTER.apply(state)))
-                            .doOnSuccess(si -> {
-                                LOGGER.info("si = {}", si);
-                                invalidCache();
-                            });
+                            .then(just(STATE_2_STATE_INFO_CONVERTER.apply(state)));
                 });
     }
 
