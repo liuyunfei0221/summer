@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!--suppress SqlNoDataSourceInspection, SqlDialectInspection -->
-<mapper namespace="com.blue.lake.repository.mapper.OptEventMapper">
-    <resultMap id="BaseResultMap" type="com.blue.lake.repository.entity.OptEvent">
+<mapper namespace="com.blue.risk.repository.mapper.RiskHitRecordMapper">
+    <resultMap id="BaseResultMap" type="com.blue.risk.repository.entity.RiskHitRecord">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="data_event_type" jdbcType="VARCHAR" property="dataEventType"/>
         <result column="data_event_op_type" jdbcType="VARCHAR" property="dataEventOpType"/>
@@ -21,7 +21,7 @@
         <result column="jwt" jdbcType="VARCHAR" property="jwt"/>
         <result column="member_id" jdbcType="BIGINT" property="memberId"/>
         <result column="role_ids" jdbcType="ARRAY" property="roleIds"
-                typeHandler="com.blue.lake.repository.type.ClickHouseLongArrayTypeHandler"/>
+                typeHandler="com.blue.risk.repository.type.ClickHouseLongArrayTypeHandler"/>
         <result column="credential_type" jdbcType="VARCHAR" property="credentialType"/>
         <result column="device_type" jdbcType="VARCHAR" property="deviceType"/>
         <result column="login_time" jdbcType="BIGINT" property="loginTime"/>
@@ -33,29 +33,33 @@
         <result column="existence_request_body" jdbcType="INTEGER" property="existenceRequestBody"/>
         <result column="existence_response_body" jdbcType="INTEGER" property="existenceResponseBody"/>
         <result column="duration_seconds" jdbcType="INTEGER" property="durationSeconds"/>
+        <result column="resource_key" jdbcType="VARCHAR" property="resourceKey"/>
+        <result column="hit_type" jdbcType="INTEGER" property="hitType"/>
+        <result column="illegal_expires_second" jdbcType="BIGINT" property="illegalExpiresSecond"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id
         , data_event_type, data_event_op_type, stamp, create_date, method, uri, real_uri, request_body, request_extra, response_status, response_body, response_extra, request_id, metadata, jwt, member_id,
-        role_ids, credential_type, device_type, login_time, client_ip, user_agent, sec_key, request_un_decryption, response_un_encryption,existence_request_body, existence_response_body, duration_seconds
+        role_ids, credential_type, device_type, login_time, client_ip, user_agent, sec_key, request_un_decryption, response_un_encryption,existence_request_body, existence_response_body, duration_seconds,
+        resource_key, hit_type, illegal_expires_second
     </sql>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from opt_event
+        from risk_hit_record
         where id = #{id,jdbcType=BIGINT}
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete
-        from opt_event
+        from risk_hit_record
         where id = #{id,jdbcType=BIGINT}
     </delete>
 
-    <insert id="insert" parameterType="com.blue.lake.repository.entity.OptEvent">
-        insert into opt_event (
+    <insert id="insert" parameterType="com.blue.risk.repository.entity.RiskHitRecord">
+        insert into risk_hit_record (
         <include refid="Base_Column_List"/>
         )
         values
@@ -72,12 +76,14 @@
         #{loginTime,jdbcType=BIGINT}, #{clientIp,jdbcType=VARCHAR}, #{userAgent,jdbcType=VARCHAR},
         #{secKey,jdbcType=VARCHAR}, #{requestUnDecryption,jdbcType=INTEGER},
         #{responseUnEncryption,jdbcType=INTEGER}, #{existenceRequestBody,jdbcType=INTEGER},
-        #{existenceResponseBody,jdbcType=INTEGER}, #{durationSeconds,jdbcType=INTEGER})
+        #{existenceResponseBody,jdbcType=INTEGER}, #{durationSeconds,jdbcType=INTEGER},
+        #{resourceKey,jdbcType=VARCHAR}, #{hitType,jdbcType=INTEGER},
+        #{illegalExpiresSecond,jdbcType=BIGINT})
     </insert>
 
     <insert id="insertBatch" parameterType="java.util.List">
         <if test="list != null and list.size > 0">
-            INSERT INTO opt_event (
+            INSERT INTO risk_hit_record (
             <include refid="Base_Column_List"/>
             ) values
             <foreach collection="list" index="index" item="item" separator=",">
@@ -96,13 +102,15 @@
                 #{item.userAgent,jdbcType=VARCHAR},
                 #{item.secKey,jdbcType=VARCHAR}, #{item.requestUnDecryption,jdbcType=INTEGER},
                 #{item.responseUnEncryption,jdbcType=INTEGER}, #{item.existenceRequestBody,jdbcType=INTEGER},
-                #{item.existenceResponseBody,jdbcType=INTEGER}, #{item.durationSeconds,jdbcType=INTEGER})
+                #{item.existenceResponseBody,jdbcType=INTEGER}, #{item.durationSeconds,jdbcType=INTEGER},
+                #{item.resourceKey,jdbcType=VARCHAR}, #{item.hitType,jdbcType=INTEGER},
+                #{item.illegalExpiresSecond,jdbcType=BIGINT})
             </foreach>
         </if>
     </insert>
 
-    <insert id="insertSelective" parameterType="com.blue.lake.repository.entity.OptEvent">
-        insert into opt_event
+    <insert id="insertSelective" parameterType="com.blue.risk.repository.entity.RiskHitRecord">
+        insert into risk_hit_record
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
@@ -190,6 +198,16 @@
             </if>
             <if test="durationSeconds != null">
                 duration_seconds,
+            </if>
+
+            <if test="resourceKey != null">
+                resource_key,
+            </if>
+            <if test="hitType != null">
+                hit_type,
+            </if>
+            <if test="illegalExpiresSecond != null">
+                illegal_expires_second,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -280,11 +298,20 @@
             <if test="durationSeconds != null">
                 #{durationSeconds,jdbcType=INTEGER},
             </if>
+            <if test="resourceKey != null">
+                #{resourceKey,jdbcType=VARCHAR},
+            </if>
+            <if test="hitType != null">
+                #{hitType,jdbcType=INTEGER},
+            </if>
+            <if test="illegalExpiresSecond != null">
+                #{illegalExpiresSecond,jdbcType=BIGINT},
+            </if>
         </trim>
     </insert>
 
-    <update id="updateByPrimaryKeySelective" parameterType="com.blue.lake.repository.entity.OptEvent">
-        update opt_event
+    <update id="updateByPrimaryKeySelective" parameterType="com.blue.risk.repository.entity.RiskHitRecord">
+        update risk_hit_record
         <set>
             <if test="dataEventType != null">
                 data_event_type = #{dataEventType,jdbcType=VARCHAR},
@@ -371,12 +398,21 @@
             <if test="durationSeconds != null">
                 duration_seconds = #{durationSeconds,jdbcType=INTEGER},
             </if>
+            <if test="resourceKey != null">
+                resource_key = #{resourceKey,jdbcType=VARCHAR},
+            </if>
+            <if test="hitType != null">
+                hit_type = #{hitType,jdbcType=INTEGER},
+            </if>
+            <if test="illegalExpiresSecond != null">
+                illegal_expires_second = #{illegalExpiresSecond,jdbcType=BIGINT},
+            </if>
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <update id="updateByPrimaryKey" parameterType="com.blue.lake.repository.entity.OptEvent">
-        update opt_event
+    <update id="updateByPrimaryKey" parameterType="com.blue.risk.repository.entity.RiskHitRecord">
+        update risk_hit_record
         set data_event_type         = #{dataEventType,jdbcType=VARCHAR},
             data_event_op_type      = #{dataEventOpType,jdbcType=VARCHAR},
             stamp                   = #{stamp,jdbcType=BIGINT},
@@ -404,7 +440,10 @@
             response_un_encryption  = #{responseUnEncryption,jdbcType=INTEGER},
             existence_request_body  = #{existenceRequestBody,jdbcType=INTEGER},
             existence_response_body = #{existenceResponseBody,jdbcType=INTEGER},
-            duration_seconds        = #{durationSeconds,jdbcType=INTEGER}
+            duration_seconds        = #{durationSeconds,jdbcType=INTEGER},
+            resource_key            = #{resourceKey,jdbcType=VARCHAR},
+            hit_type                = #{hitType,jdbcType=INTEGER},
+            illegal_expires_second  = #{illegalExpiresSecond,jdbcType=BIGINT}
         where id = #{id,jdbcType=BIGINT}
     </update>
 
@@ -412,7 +451,7 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-        opt_event
+        risk_hit_record
         <if test="searchAfter != null and searchAfter > 0">
             <where>
                 id &lt; #{searchAfter.id,jdbcType=BIGINT}

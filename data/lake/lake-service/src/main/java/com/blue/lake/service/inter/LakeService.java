@@ -17,13 +17,6 @@ import java.util.List;
 public interface LakeService {
 
     /**
-     * insert event
-     *
-     * @param dataEvent
-     */
-    Mono<Boolean> insertEvent(DataEvent dataEvent);
-
-    /**
      * insert events
      *
      * @param dataEvents

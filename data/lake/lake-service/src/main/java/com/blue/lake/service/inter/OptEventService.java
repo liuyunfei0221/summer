@@ -17,20 +17,12 @@ import java.util.List;
 public interface OptEventService {
 
     /**
-     * insert event
-     *
-     * @param dataEvent
-     * @return
-     */
-    boolean insertEvent(DataEvent dataEvent);
-
-    /**
      * insert events
      *
      * @param dataEvents
      * @return
      */
-    boolean insertEvents(List<DataEvent> dataEvents);
+    Mono<Boolean> insertOptEvents(List<DataEvent> dataEvents);
 
     /**
      * select by search after
@@ -38,6 +30,6 @@ public interface OptEventService {
      * @param scrollModelRequest
      * @return
      */
-    Mono<ScrollModelResponse<OptEvent, Long>> selectEventScrollByScrollAndCursor(ScrollModelRequest<Void, Long> scrollModelRequest);
+    Mono<ScrollModelResponse<OptEvent, Long>> selectOptEventScrollByScrollAndCursor(ScrollModelRequest<Void, Long> scrollModelRequest);
 
 }

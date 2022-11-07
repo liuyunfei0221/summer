@@ -71,7 +71,7 @@ data:
       is-read-only: false
       is-auto-commit: true
   sharding-tables:
-    - table-name: risk_event
+    - table-name: risk_hit_record
       sharding-column: id
   sharding-table-size-per-database: 2
   data-center-to-database-mappings:
@@ -206,9 +206,6 @@ executor:
 message:
   message-location: classpath:i18n/message
   element-location: classpath:i18n/element
-
-
-
 
 
 redisson:
@@ -393,6 +390,12 @@ dubbo:
     timeout: 5000
     loadbalance: random
     check: false
+
+
+nesting:
+  uris: [ /blue-lake/events ]
+  statuses: [ 200 ]
+  response: nesting dolls are prohibited
 
 
 jwt:

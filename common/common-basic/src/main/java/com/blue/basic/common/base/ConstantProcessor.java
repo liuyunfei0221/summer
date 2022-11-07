@@ -25,6 +25,7 @@ import com.blue.basic.constant.member.ZodiacSign;
 import com.blue.basic.constant.portal.BulletinType;
 import com.blue.basic.constant.portal.NoticeType;
 import com.blue.basic.constant.portal.StyleType;
+import com.blue.basic.constant.risk.RiskType;
 import com.blue.basic.constant.verify.VerifyBusinessType;
 import com.blue.basic.constant.verify.VerifyType;
 import com.blue.basic.model.exps.BlueException;
@@ -259,6 +260,11 @@ public final class ConstantProcessor {
     private static final Map<Integer, RsaDecryptMode> RSA_DECRYPT_MODE_MAPPING =
             of(RsaDecryptMode.values()).collect(toMap(t -> t.identity, identity(), (a, b) -> a));
 
+    /**
+     * risk type identity and type mapping
+     */
+    private static final Map<Integer, RiskType> RISK_TYPE_MAPPING =
+            of(RiskType.values()).collect(toMap(t -> t.identity, identity(), (a, b) -> a));
     //</editor-fold>
 
     //<editor-fold desc="asserter">
@@ -696,6 +702,19 @@ public final class ConstantProcessor {
             return;
 
         if (!RSA_DECRYPT_MODE_MAPPING.containsKey(identity))
+            throw new BlueException(INVALID_IDENTITY);
+    }
+
+    /**
+     * assert rsa decrypt mode
+     *
+     * @param identity
+     */
+    public static void assertRiskType(Integer identity, boolean nullable) {
+        if (nullable && isNull(identity))
+            return;
+
+        if (!RISK_TYPE_MAPPING.containsKey(identity))
             throw new BlueException(INVALID_IDENTITY);
     }
     //</editor-fold>
@@ -1292,6 +1311,23 @@ public final class ConstantProcessor {
             throw new BlueException(INVALID_IDENTITY);
 
         return rsaDecryptMode;
+    }
+
+    /**
+     * get risk type by identity
+     *
+     * @param identity
+     * @return
+     */
+    public static RiskType getRiskTypeByIdentity(Integer identity) {
+        if (isNull(identity))
+            throw new BlueException(INVALID_IDENTITY);
+
+        RiskType riskType = RISK_TYPE_MAPPING.get(identity);
+        if (isNull(riskType))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return riskType;
     }
     //</editor-fold>
 

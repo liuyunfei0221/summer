@@ -5,7 +5,7 @@ package com.blue.basic.constant.common;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"unused", "SpellCheckingInspection"})
+@SuppressWarnings({"unused"})
 public enum CacheKeyPrefix {
 
     /**
@@ -14,9 +14,9 @@ public enum CacheKeyPrefix {
     ILLEGAL_IP_PRE("ILL_IP:"),
 
     /**
-     * illegal jwts
+     * illegal member id
      */
-    ILLEGAL_JWT_PRE("ILL_JWT:"),
+    ILLEGAL_MEMBER_ID_PRE("ILL_M_ID:"),
 
     /**
      * member session key prefix

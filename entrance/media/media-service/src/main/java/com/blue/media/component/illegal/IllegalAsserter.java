@@ -20,7 +20,7 @@ import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.REQ_RES_KEY_GENERATOR;
 import static com.blue.basic.constant.common.BlueDataAttrKey.*;
 import static com.blue.basic.constant.common.CacheKeyPrefix.ILLEGAL_IP_PRE;
-import static com.blue.basic.constant.common.CacheKeyPrefix.ILLEGAL_JWT_PRE;
+import static com.blue.basic.constant.common.CacheKeyPrefix.ILLEGAL_MEMBER_ID_PRE;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.common.Symbol.ASTERISK;
 import static java.time.temporal.ChronoUnit.SECONDS;
@@ -55,14 +55,14 @@ public final class IllegalAsserter {
     private static final String
             ALL_RESOURCE = ASTERISK.identity,
             ILLEGAL_IP_PREFIX = ILLEGAL_IP_PRE.prefix,
-            ILLEGAL_JWT_PREFIX = ILLEGAL_JWT_PRE.prefix;
+            ILLEGAL_MEMBER_ID_PREFIX = ILLEGAL_MEMBER_ID_PRE.prefix;
 
     private final Duration defaultIllegalExpireDuration;
 
     private static final Map<Boolean, Function<IllegalMarkEvent, Mono<Boolean>>> MARKERS = new HashMap<>(4, 2.0f);
 
     private static final UnaryOperator<String>
-            JWT_KEY_WRAPPER = jwt -> ILLEGAL_JWT_PREFIX + jwt,
+            MEMBER_KEY_WRAPPER = jwt -> ILLEGAL_MEMBER_ID_PREFIX + jwt,
             IP_KEY_WRAPPER = ip -> ILLEGAL_IP_PREFIX + ip;
 
     private Mono<Boolean> markWithExpire(String key, String resKey, Long expiresSecond) {
@@ -94,7 +94,7 @@ public final class IllegalAsserter {
         String resKey = ofNullable(event.getResourceKey()).orElse(ALL_RESOURCE);
         return zip(ofNullable(event.getMemberId())
                         .filter(BlueChecker::isNotBlank)
-                        .map(JWT_KEY_WRAPPER)
+                        .map(MEMBER_KEY_WRAPPER)
                         .map(key -> markWithExpire(key, resKey, event.getIllegalExpiresSecond()))
                         .orElseGet(() -> just(false)),
                 ofNullable(event.getIp())
@@ -108,7 +108,7 @@ public final class IllegalAsserter {
                 String resKey = ofNullable(event.getResourceKey()).orElse(ALL_RESOURCE);
                 return zip(ofNullable(event.getMemberId())
                                 .filter(BlueChecker::isNotBlank)
-                                .map(JWT_KEY_WRAPPER)
+                                .map(MEMBER_KEY_WRAPPER)
                                 .map(key -> clearMark(key, resKey))
                                 .orElseGet(() -> just(false)),
                         ofNullable(event.getIp())
@@ -148,7 +148,7 @@ public final class IllegalAsserter {
                 ofNullable(attributes.get(JWT.key))
                         .map(String::valueOf)
                         .filter(BlueChecker::isNotBlank)
-                        .map(JWT_KEY_WRAPPER)
+                        .map(MEMBER_KEY_WRAPPER)
                         .map(key -> KEY_VALIDATOR.apply(key, resKey))
                         .orElseGet(() -> just(true)),
                 ofNullable(attributes.get(CLIENT_IP.key))

@@ -13,15 +13,14 @@ import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 
 import static com.blue.basic.common.base.BlueChecker.isEmpty;
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static java.util.Optional.ofNullable;
-import static java.util.concurrent.CompletableFuture.supplyAsync;
-import static reactor.core.publisher.Mono.*;
+import static reactor.core.publisher.Mono.error;
+import static reactor.core.publisher.Mono.just;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -35,41 +34,17 @@ public class LakeServiceImpl implements LakeService {
 
     private static final Logger LOGGER = getLogger(LakeServiceImpl.class);
 
-    private ExecutorService executorService;
-
     private OptEventService optEventService;
 
-    public LakeServiceImpl(ExecutorService executorService, OptEventService optEventService) {
-        this.executorService = executorService;
+    public LakeServiceImpl(OptEventService optEventService) {
         this.optEventService = optEventService;
     }
-
-    private final Function<DataEvent, Mono<Boolean>> EVENT_INSERTER = dataEvent ->
-            ofNullable(dataEvent)
-                    .map(event ->
-                            fromFuture(supplyAsync(() -> optEventService.insertEvent(event), executorService))
-                    ).orElseGet(() -> just(false));
 
     private final Function<List<DataEvent>, Mono<Boolean>> EVENTS_INSERTER = dataEvents ->
             ofNullable(dataEvents)
                     .filter(BlueChecker::isNotEmpty)
-                    .map(events ->
-                            fromFuture(supplyAsync(() -> optEventService.insertEvents(events), executorService))
+                    .map(events -> optEventService.insertOptEvents(events)
                     ).orElseGet(() -> just(false));
-
-    /**
-     * insert event
-     *
-     * @param dataEvent
-     */
-    @Override
-    public Mono<Boolean> insertEvent(DataEvent dataEvent) {
-        LOGGER.info("dataEvent = {}", dataEvent);
-        if (isNull(dataEvent))
-            return error(() -> new BlueException(EMPTY_PARAM));
-
-        return EVENT_INSERTER.apply(dataEvent);
-    }
 
     /**
      * insert events
@@ -97,7 +72,7 @@ public class LakeServiceImpl implements LakeService {
         if (isNull(scrollModelRequest))
             return error(() -> new BlueException(EMPTY_PARAM));
 
-        return optEventService.selectEventScrollByScrollAndCursor(scrollModelRequest);
+        return optEventService.selectOptEventScrollByScrollAndCursor(scrollModelRequest);
     }
 
 }

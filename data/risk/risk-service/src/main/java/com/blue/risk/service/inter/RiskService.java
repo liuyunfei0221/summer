@@ -2,6 +2,7 @@ package com.blue.risk.service.inter;
 
 
 import com.blue.basic.model.event.DataEvent;
+import com.blue.risk.api.model.RiskAsserted;
 import reactor.core.publisher.Mono;
 
 /**
@@ -18,6 +19,6 @@ public interface RiskService {
      * @param dataEvent
      * @return
      */
-    Mono<Boolean> analyzeEvent(DataEvent dataEvent);
+    Mono<RiskAsserted> analyzeEvent(DataEvent dataEvent);
 
 }

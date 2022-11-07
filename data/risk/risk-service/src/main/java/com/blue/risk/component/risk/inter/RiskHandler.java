@@ -1,6 +1,8 @@
 package com.blue.risk.component.risk.inter;
 
+import com.blue.basic.constant.risk.RiskType;
 import com.blue.basic.model.event.DataEvent;
+import com.blue.risk.api.model.RiskAsserted;
 
 /**
  * risk handler interface
@@ -14,14 +16,16 @@ public interface RiskHandler {
      * handle event
      *
      * @param dataEvent
+     * @param riskAsserted
+     * @return
      */
-    void handleEvent(DataEvent dataEvent);
+    RiskAsserted handleEvent(DataEvent dataEvent, RiskAsserted riskAsserted);
 
     /**
-     * handler precedence
+     * handler type
      *
      * @return
      */
-    int precedence();
+    RiskType targetType();
 
 }

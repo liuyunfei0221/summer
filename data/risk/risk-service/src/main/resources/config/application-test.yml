@@ -208,9 +208,6 @@ message:
   element-location: classpath:i18n/element
 
 
-
-
-
 redisson:
   server-mode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
@@ -417,6 +414,12 @@ dubbo:
     timeout: 5000
     loadbalance: random
     check: false
+
+
+nesting:
+  uris: [ /blue-lake/events ]
+  statuses: [ 200 ]
+  response: nesting dolls are prohibited
 
 
 jwt:

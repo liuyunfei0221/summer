@@ -43,7 +43,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.util.CollectionUtils.isEmpty;
-import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -63,7 +63,8 @@ public class OptEventServiceImpl implements OptEventService {
 
     private OptEventMapper optEventMapper;
 
-    public OptEventServiceImpl(RpcAuthServiceConsumer rpcAuthServiceConsumer, BlueIdentityProcessor blueIdentityProcessor, OptEventMapper optEventMapper, NestingResponseDeploy nestingResponseDeploy) {
+    public OptEventServiceImpl(RpcAuthServiceConsumer rpcAuthServiceConsumer, BlueIdentityProcessor blueIdentityProcessor,
+                               OptEventMapper optEventMapper, NestingResponseDeploy nestingResponseDeploy) {
         this.rpcAuthServiceConsumer = rpcAuthServiceConsumer;
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.optEventMapper = optEventMapper;
@@ -99,22 +100,22 @@ public class OptEventServiceImpl implements OptEventService {
     /**
      * data event -> option event
      */
-    public final Function<DataEvent, OptEvent> DATA_EVENT_2_OPT_EVENT = param -> {
-        if (isNull(param))
+    public final Function<DataEvent, OptEvent> DATA_EVENT_2_OPT_EVENT = event -> {
+        if (isNull(event))
             throw new BlueException(EMPTY_PARAM);
 
         OptEvent optEvent = new OptEvent();
 
-        optEvent.setDataEventType(ofNullable(param.getDataEventType())
+        optEvent.setDataEventType(ofNullable(event.getDataEventType())
                 .filter(BlueChecker::isNotBlank).orElse(EMPTY_VALUE.value));
-        optEvent.setDataEventOpType(ofNullable(param.getDataEventOpType())
+        optEvent.setDataEventOpType(ofNullable(event.getDataEventOpType())
                 .filter(BlueChecker::isNotBlank).orElse(EMPTY_VALUE.value));
 
-        long stamp = ofNullable(param.getStamp()).orElse(TIME_STAMP_GETTER.get());
+        long stamp = ofNullable(event.getStamp()).orElse(TIME_STAMP_GETTER.get());
         optEvent.setStamp(stamp);
         optEvent.setCreateDate(DATE_STR_FUNC.apply(stamp));
 
-        Map<String, String> entries = param.getEntries();
+        Map<String, String> entries = event.getEntries();
 
         optEvent.setMethod(ofNullable(entries.get(METHOD.key)).orElse(EMPTY_VALUE.value));
         optEvent.setUri(ofNullable(entries.get(URI.key)).orElse(EMPTY_VALUE.value));
@@ -154,7 +155,7 @@ public class OptEventServiceImpl implements OptEventService {
             optEvent.setDeviceType(access.getDeviceType());
             optEvent.setLoginTime(access.getLoginTime());
         } catch (Exception e) {
-            LOGGER.error("e = {0}", e);
+            LOGGER.error("event = {}, e = {}", event, e);
         }
 
         optEvent.setClientIp(ofNullable(entries.get(CLIENT_IP.key)).orElse(EMPTY_VALUE.value));
@@ -171,21 +172,8 @@ public class OptEventServiceImpl implements OptEventService {
         return optEvent;
     };
 
-    private final Function<DataEvent, Boolean> EVENT_INSERTER = dataEvent ->
-            ofNullable(dataEvent)
-                    .map(DATA_EVENT_2_OPT_EVENT)
-                    .map(optEvent -> {
-                        try {
-                            optEventMapper.insert(optEvent);
-                            return true;
-                        } catch (Exception e) {
-                            LOGGER.info("optEventMapper.insert() failed, dataEvent = {}, e = {}", dataEvent, e);
-                            return false;
-                        }
-                    }).orElse(false);
-
-    private final Function<List<DataEvent>, Boolean> EVENTS_INSERTER = dataEvents ->
-            ofNullable(dataEvents)
+    private final Function<List<DataEvent>, Mono<Boolean>> EVENTS_INSERTER = dataEvents ->
+            justOrEmpty(dataEvents)
                     .filter(BlueChecker::isNotEmpty)
                     .map(des -> dataEvents.stream().map(DATA_EVENT_2_OPT_EVENT).collect(toList()))
                     .map(oes -> {
@@ -196,22 +184,7 @@ public class OptEventServiceImpl implements OptEventService {
                             LOGGER.info("optEventMapper.insertBatch() failed, dataEvents = {}, e = {}", dataEvents, e);
                             return false;
                         }
-                    }).orElse(false);
-
-    /**
-     * insert event
-     *
-     * @param dataEvent
-     * @return
-     */
-    @Override
-    public boolean insertEvent(DataEvent dataEvent) {
-        LOGGER.info("dataEvent = {}", dataEvent);
-        if (isNull(dataEvent))
-            throw new BlueException(EMPTY_PARAM);
-
-        return EVENT_INSERTER.apply(dataEvent);
-    }
+                    }).switchIfEmpty(defer(() -> just(false)));
 
     /**
      * insert events
@@ -220,7 +193,7 @@ public class OptEventServiceImpl implements OptEventService {
      * @return
      */
     @Override
-    public boolean insertEvents(List<DataEvent> dataEvents) {
+    public Mono<Boolean> insertOptEvents(List<DataEvent> dataEvents) {
         LOGGER.info("dataEvents = {}", dataEvents);
         if (isEmpty(dataEvents))
             throw new BlueException(EMPTY_PARAM);
@@ -235,7 +208,7 @@ public class OptEventServiceImpl implements OptEventService {
      * @return
      */
     @Override
-    public Mono<ScrollModelResponse<OptEvent, Long>> selectEventScrollByScrollAndCursor(ScrollModelRequest<Void, Long> scrollModelRequest) {
+    public Mono<ScrollModelResponse<OptEvent, Long>> selectOptEventScrollByScrollAndCursor(ScrollModelRequest<Void, Long> scrollModelRequest) {
         LOGGER.info("scrollModelRequest = {}", scrollModelRequest);
         if (isNull(scrollModelRequest))
             throw new BlueException(EMPTY_PARAM);
