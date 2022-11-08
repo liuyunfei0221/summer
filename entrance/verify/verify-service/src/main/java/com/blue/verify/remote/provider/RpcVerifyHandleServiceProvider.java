@@ -10,8 +10,6 @@ import org.apache.dubbo.config.annotation.Method;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import static reactor.core.publisher.Mono.just;
-
 /**
  * rpc verify provider
  *
@@ -43,7 +41,7 @@ public class RpcVerifyHandleServiceProvider implements RpcVerifyHandleService {
      */
     @Override
     public CompletableFuture<String> generate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination, List<String> languages) {
-        return just(true).flatMap(v -> verifyHandleService.generate(verifyType, verifyBusinessType, destination, languages)).toFuture();
+        return verifyHandleService.generate(verifyType, verifyBusinessType, destination, languages).toFuture();
     }
 
     /**
@@ -58,7 +56,7 @@ public class RpcVerifyHandleServiceProvider implements RpcVerifyHandleService {
      */
     @Override
     public CompletableFuture<Boolean> validate(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String key, String verify, Boolean repeatable) {
-        return just(true).flatMap(v -> verifyHandleService.validate(verifyType, verifyBusinessType, key, verify, repeatable)).toFuture();
+        return verifyHandleService.validate(verifyType, verifyBusinessType, key, verify, repeatable).toFuture();
     }
 
     /**
@@ -73,8 +71,7 @@ public class RpcVerifyHandleServiceProvider implements RpcVerifyHandleService {
      */
     @Override
     public CompletableFuture<Boolean> turingValidate(String identity, Integer allow, Long expiresMillis, String key, String verify) {
-        return just(true).flatMap(v ->
-                verifyHandleService.turingValidate(identity, allow, expiresMillis, key, verify)).toFuture();
+        return verifyHandleService.turingValidate(identity, allow, expiresMillis, key, verify).toFuture();
     }
 
 }

@@ -1,6 +1,5 @@
 package com.blue.media.remote.provider;
 
-import com.blue.basic.model.exps.BlueException;
 import com.blue.media.api.inter.RpcAttachmentService;
 import com.blue.media.api.model.AttachmentInfo;
 import com.blue.media.service.inter.AttachmentService;
@@ -9,9 +8,6 @@ import org.apache.dubbo.config.annotation.Method;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-
-import static com.blue.basic.constant.common.ResponseElement.DATA_NOT_EXIST;
-import static reactor.core.publisher.Mono.*;
 
 /**
  * rpc attachment provider
@@ -41,9 +37,7 @@ public class RpcAttachmentServiceProvider implements RpcAttachmentService {
      */
     @Override
     public CompletableFuture<AttachmentInfo> getAttachmentInfoByPrimaryKey(Long id) {
-        return just(id).flatMap(attachmentService::getAttachmentInfo)
-                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
-                .toFuture();
+        return attachmentService.getAttachmentInfo(id).toFuture();
     }
 
     /**
@@ -54,8 +48,7 @@ public class RpcAttachmentServiceProvider implements RpcAttachmentService {
      */
     @Override
     public CompletableFuture<List<AttachmentInfo>> selectAttachmentInfoByIds(List<Long> ids) {
-        return just(ids).flatMap(attachmentService::selectAttachmentInfoByIds)
-                .toFuture();
+        return attachmentService.selectAttachmentInfoByIds(ids).toFuture();
     }
 
 }

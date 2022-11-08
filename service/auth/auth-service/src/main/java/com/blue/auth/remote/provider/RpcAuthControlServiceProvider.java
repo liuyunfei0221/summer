@@ -12,8 +12,6 @@ import org.apache.dubbo.config.annotation.Method;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import static reactor.core.publisher.Mono.just;
-
 
 /**
  * rpc auth control provider
@@ -92,7 +90,7 @@ public class RpcAuthControlServiceProvider implements RpcAuthControlService {
      */
     @Override
     public CompletableFuture<List<AuthorityBaseOnRole>> selectAuthorityByAccess(Access access) {
-        return just(access).flatMap(authControlService::selectAuthoritiesByAccess).toFuture();
+        return authControlService.selectAuthoritiesByAccess(access).toFuture();
     }
 
     /**
@@ -103,7 +101,7 @@ public class RpcAuthControlServiceProvider implements RpcAuthControlService {
      */
     @Override
     public CompletableFuture<List<AuthorityBaseOnRole>> selectAuthorityByMemberId(Long memberId) {
-        return just(memberId).flatMap(authControlService::selectAuthoritiesByMemberId).toFuture();
+        return authControlService.selectAuthoritiesByMemberId(memberId).toFuture();
     }
 
 }

@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import static reactor.core.publisher.Mono.just;
-
 /**
  * rpc state provider
  *
@@ -44,9 +42,7 @@ public class RpcStateServiceProvider implements RpcStateService {
      */
     @Override
     public CompletableFuture<StateInfo> getStateInfoById(Long id) {
-        return just(id)
-                .flatMap(stateService::getStateInfoById)
-                .toFuture();
+        return stateService.getStateInfoById(id).toFuture();
     }
 
     /**
@@ -57,9 +53,7 @@ public class RpcStateServiceProvider implements RpcStateService {
      */
     @Override
     public CompletableFuture<List<StateInfo>> selectStateInfoByCountryId(Long countryId) {
-        return just(countryId)
-                .flatMap(stateService::selectStateInfoByCountryId)
-                .toFuture();
+        return stateService.selectStateInfoByCountryId(countryId).toFuture();
     }
 
     /**
@@ -70,9 +64,7 @@ public class RpcStateServiceProvider implements RpcStateService {
      */
     @Override
     public CompletableFuture<Map<Long, StateInfo>> selectStateInfoByIds(List<Long> ids) {
-        return just(ids)
-                .flatMap(stateService::selectStateInfoByIds)
-                .toFuture();
+        return stateService.selectStateInfoByIds(ids).toFuture();
     }
 
     /**
@@ -83,9 +75,7 @@ public class RpcStateServiceProvider implements RpcStateService {
      */
     @Override
     public CompletableFuture<StateRegion> getStateRegionById(Long id) {
-        return just(id)
-                .flatMap(stateService::getStateRegionById)
-                .toFuture();
+        return stateService.getStateRegionById(id).toFuture();
     }
 
     /**
@@ -96,9 +86,7 @@ public class RpcStateServiceProvider implements RpcStateService {
      */
     @Override
     public CompletableFuture<Map<Long, StateRegion>> selectStateRegionByIds(List<Long> ids) {
-        return just(ids)
-                .flatMap(stateService::selectStateRegionByIds)
-                .toFuture();
+        return stateService.selectStateRegionByIds(ids).toFuture();
     }
 
 }

@@ -10,8 +10,6 @@ import org.apache.dubbo.config.annotation.Method;
 
 import java.util.concurrent.CompletableFuture;
 
-import static reactor.core.publisher.Mono.just;
-
 /**
  * rpc risk provider
  *
@@ -42,9 +40,7 @@ public class RpcRiskServiceProvider implements RpcRiskService {
      */
     @Override
     public CompletableFuture<RiskAsserted> handleRiskEvent(RiskEvent riskEvent) {
-        return just(riskEvent)
-                .flatMap(riskService::handleRiskEvent)
-                .toFuture();
+        return riskService.handleRiskEvent(riskEvent).toFuture();
     }
 
     /**
@@ -55,9 +51,7 @@ public class RpcRiskServiceProvider implements RpcRiskService {
      */
     @Override
     public CompletableFuture<RiskAsserted> handleDataEvent(DataEvent dataEvent) {
-        return just(dataEvent)
-                .flatMap(riskService::handleDataEvent)
-                .toFuture();
+        return riskService.handleDataEvent(dataEvent).toFuture();
     }
 
     /**
@@ -68,9 +62,7 @@ public class RpcRiskServiceProvider implements RpcRiskService {
      */
     @Override
     public CompletableFuture<RiskAsserted> validateRiskEvent(RiskEvent riskEvent) {
-        return just(riskEvent)
-                .flatMap(riskService::validateRiskEvent)
-                .toFuture();
+        return riskService.validateRiskEvent(riskEvent).toFuture();
     }
 
     /**
@@ -81,9 +73,7 @@ public class RpcRiskServiceProvider implements RpcRiskService {
      */
     @Override
     public CompletableFuture<RiskAsserted> validateDataEvent(DataEvent dataEvent) {
-        return just(dataEvent)
-                .flatMap(riskService::validateDataEvent)
-                .toFuture();
+        return riskService.validateDataEvent(dataEvent).toFuture();
     }
 
 }

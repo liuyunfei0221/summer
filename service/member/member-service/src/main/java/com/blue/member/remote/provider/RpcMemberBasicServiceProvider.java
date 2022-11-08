@@ -44,8 +44,7 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
      */
     @Override
     public CompletableFuture<MemberBasicInfo> getMemberBasicInfo(Long id) {
-        return just(id)
-                .flatMap(memberBasicService::getMemberBasic)
+        return memberBasicService.getMemberBasic(id)
                 .map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                 .toFuture();
     }
@@ -58,9 +57,7 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
      */
     @Override
     public CompletableFuture<List<MemberBasicInfo>> selectMemberBasicInfoByIds(List<Long> ids) {
-        return just(ids)
-                .flatMap(memberBasicService::selectMemberBasicInfoByIds)
-                .toFuture();
+        return memberBasicService.selectMemberBasicInfoByIds(ids).toFuture();
     }
 
     /**
@@ -71,8 +68,7 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
      */
     @Override
     public CompletableFuture<MemberBasicInfo> getMemberBasicInfoByPhone(String phone) {
-        return just(phone)
-                .flatMap(memberBasicService::getMemberBasicByPhone)
+        return memberBasicService.getMemberBasicByPhone(phone)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .map(MEMBER_BASIC_2_MEMBER_BASIC_INFO)
                 .toFuture();

@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import static reactor.core.publisher.Mono.just;
-
 /**
  * rpc city provider
  *
@@ -44,9 +42,7 @@ public class RpcAreaServiceProvider implements RpcAreaService {
      */
     @Override
     public CompletableFuture<AreaInfo> getAreaInfoById(Long id) {
-        return just(id)
-                .flatMap(areaService::getAreaInfoById)
-                .toFuture();
+        return areaService.getAreaInfoById(id).toFuture();
     }
 
     /**
@@ -57,9 +53,7 @@ public class RpcAreaServiceProvider implements RpcAreaService {
      */
     @Override
     public CompletableFuture<List<AreaInfo>> selectAreaInfoByCityId(Long cityId) {
-        return just(cityId)
-                .flatMap(areaService::selectAreaInfoByCityId)
-                .toFuture();
+        return areaService.selectAreaInfoByCityId(cityId).toFuture();
     }
 
     /**
@@ -70,9 +64,7 @@ public class RpcAreaServiceProvider implements RpcAreaService {
      */
     @Override
     public CompletableFuture<Map<Long, AreaInfo>> selectAreaInfoByIds(List<Long> ids) {
-        return just(ids)
-                .flatMap(areaService::selectAreaInfoByIds)
-                .toFuture();
+        return areaService.selectAreaInfoByIds(ids).toFuture();
     }
 
     /**
@@ -83,9 +75,7 @@ public class RpcAreaServiceProvider implements RpcAreaService {
      */
     @Override
     public CompletableFuture<AreaRegion> getAreaRegionById(Long id) {
-        return just(id)
-                .flatMap(areaService::getAreaRegionById)
-                .toFuture();
+        return areaService.getAreaRegionById(id).toFuture();
     }
 
     /**
@@ -96,9 +86,7 @@ public class RpcAreaServiceProvider implements RpcAreaService {
      */
     @Override
     public CompletableFuture<Map<Long, AreaRegion>> selectAreaRegionByIds(List<Long> ids) {
-        return just(ids)
-                .flatMap(areaService::selectAreaRegionByIds)
-                .toFuture();
+        return areaService.selectAreaRegionByIds(ids).toFuture();
     }
 
 }

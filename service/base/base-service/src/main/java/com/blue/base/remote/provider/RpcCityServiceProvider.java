@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import static reactor.core.publisher.Mono.just;
-
 /**
  * rpc city provider
  *
@@ -44,9 +42,7 @@ public class RpcCityServiceProvider implements RpcCityService {
      */
     @Override
     public CompletableFuture<CityInfo> getCityInfoById(Long id) {
-        return just(id)
-                .flatMap(cityService::getCityInfoById)
-                .toFuture();
+        return cityService.getCityInfoById(id).toFuture();
     }
 
     /**
@@ -57,9 +53,7 @@ public class RpcCityServiceProvider implements RpcCityService {
      */
     @Override
     public CompletableFuture<List<CityInfo>> selectCityInfoByStateId(Long stateId) {
-        return just(stateId)
-                .flatMap(cityService::selectCityInfoByStateId)
-                .toFuture();
+        return cityService.selectCityInfoByStateId(stateId).toFuture();
     }
 
     /**
@@ -70,9 +64,7 @@ public class RpcCityServiceProvider implements RpcCityService {
      */
     @Override
     public CompletableFuture<Map<Long, CityInfo>> selectCityInfoByIds(List<Long> ids) {
-        return just(ids)
-                .flatMap(cityService::selectCityInfoByIds)
-                .toFuture();
+        return cityService.selectCityInfoByIds(ids).toFuture();
     }
 
     /**
@@ -83,9 +75,7 @@ public class RpcCityServiceProvider implements RpcCityService {
      */
     @Override
     public CompletableFuture<CityRegion> getCityRegionById(Long id) {
-        return just(id)
-                .flatMap(cityService::getCityRegionById)
-                .toFuture();
+        return cityService.getCityRegionById(id).toFuture();
     }
 
     /**
@@ -96,9 +86,7 @@ public class RpcCityServiceProvider implements RpcCityService {
      */
     @Override
     public CompletableFuture<Map<Long, CityRegion>> selectCityRegionByIds(List<Long> ids) {
-        return just(ids)
-                .flatMap(cityService::selectCityRegionByIds)
-                .toFuture();
+        return cityService.selectCityRegionByIds(ids).toFuture();
     }
 
 }

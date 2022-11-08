@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import static reactor.core.publisher.Mono.just;
-
 /**
  * rpc role provider
  *
@@ -41,9 +39,7 @@ public class RpcCountryServiceProvider implements RpcCountryService {
      */
     @Override
     public CompletableFuture<CountryInfo> getCountryInfoById(Long id) {
-        return just(id)
-                .flatMap(countryService::getCountryInfoById)
-                .toFuture();
+        return countryService.getCountryInfoById(id).toFuture();
     }
 
     /**
@@ -53,9 +49,7 @@ public class RpcCountryServiceProvider implements RpcCountryService {
      */
     @Override
     public CompletableFuture<List<CountryInfo>> selectCountryInfo() {
-        return just(true)
-                .flatMap(v -> countryService.selectCountryInfo())
-                .toFuture();
+        return countryService.selectCountryInfo().toFuture();
     }
 
     /**
@@ -66,9 +60,7 @@ public class RpcCountryServiceProvider implements RpcCountryService {
      */
     @Override
     public CompletableFuture<Map<Long, CountryInfo>> selectCountryInfoByIds(List<Long> ids) {
-        return just(ids)
-                .flatMap(countryService::selectCountryInfoByIds)
-                .toFuture();
+        return countryService.selectCountryInfoByIds(ids).toFuture();
     }
 
 }

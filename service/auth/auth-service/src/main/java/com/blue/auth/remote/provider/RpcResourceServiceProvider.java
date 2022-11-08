@@ -2,7 +2,6 @@ package com.blue.auth.remote.provider;
 
 import com.blue.auth.api.inter.RpcResourceService;
 import com.blue.auth.api.model.ResourceInfo;
-import com.blue.auth.converter.AuthModelConverters;
 import com.blue.auth.service.inter.ResourceService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
@@ -10,6 +9,7 @@ import org.apache.dubbo.config.annotation.Method;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import static com.blue.auth.converter.AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER;
 import static java.util.stream.Collectors.toList;
 import static reactor.core.publisher.Mono.just;
 
@@ -39,9 +39,8 @@ public class RpcResourceServiceProvider implements RpcResourceService {
      */
     @Override
     public CompletableFuture<List<ResourceInfo>> selectResourceInfo() {
-        return just(true)
-                .flatMap(v -> resourceService.selectResource())
-                .flatMap(resources -> just(resources.stream().map(AuthModelConverters.RESOURCE_2_RESOURCE_INFO_CONVERTER).collect(toList())))
+        return resourceService.selectResource()
+                .flatMap(resources -> just(resources.stream().map(RESOURCE_2_RESOURCE_INFO_CONVERTER).collect(toList())))
                 .toFuture();
     }
 

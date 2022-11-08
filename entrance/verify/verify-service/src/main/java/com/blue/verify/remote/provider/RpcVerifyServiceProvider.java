@@ -10,8 +10,6 @@ import org.apache.dubbo.config.annotation.Method;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 
-import static reactor.core.publisher.Mono.just;
-
 /**
  * rpc verify provider
  *
@@ -43,7 +41,7 @@ public class RpcVerifyServiceProvider implements RpcVerifyService {
      */
     @Override
     public CompletableFuture<String> generate(VerifyType type, String key, Integer length, Duration expire) {
-        return just(true).flatMap(v -> verifyService.generate(type, key, length, expire)).toFuture();
+        return verifyService.generate(type, key, length, expire).toFuture();
     }
 
     /**
@@ -57,7 +55,7 @@ public class RpcVerifyServiceProvider implements RpcVerifyService {
      */
     @Override
     public CompletableFuture<Boolean> validate(VerifyType type, String key, String verify, Boolean repeatable) {
-        return just(true).flatMap(v -> verifyService.validate(type, key, verify, repeatable)).toFuture();
+        return verifyService.validate(type, key, verify, repeatable).toFuture();
     }
 
 }

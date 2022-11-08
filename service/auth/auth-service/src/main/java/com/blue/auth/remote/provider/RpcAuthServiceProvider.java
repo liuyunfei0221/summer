@@ -12,8 +12,6 @@ import org.apache.dubbo.config.annotation.Method;
 
 import java.util.concurrent.CompletableFuture;
 
-import static reactor.core.publisher.Mono.just;
-
 
 /**
  * rpc auth provider
@@ -48,7 +46,7 @@ public class RpcAuthServiceProvider implements RpcAuthService {
      */
     @Override
     public CompletableFuture<AccessAsserted> assertAccess(AccessAssert accessAssert) {
-        return just(accessAssert).flatMap(authService::assertAccess).toFuture();
+        return authService.assertAccess(accessAssert).toFuture();
     }
 
     /**
@@ -59,7 +57,7 @@ public class RpcAuthServiceProvider implements RpcAuthService {
      */
     @Override
     public CompletableFuture<Boolean> invalidateAuthByAccess(Access access) {
-        return just(access).flatMap(authService::invalidateAuthByAccess).toFuture();
+        return authService.invalidateAuthByAccess(access).toFuture();
     }
 
     /**
@@ -70,7 +68,7 @@ public class RpcAuthServiceProvider implements RpcAuthService {
      */
     @Override
     public CompletableFuture<Boolean> invalidateAuthByJwt(String jwt) {
-        return just(jwt).flatMap(authService::invalidateAuthByJwt).toFuture();
+        return authService.invalidateAuthByJwt(jwt).toFuture();
     }
 
     /**
@@ -81,7 +79,7 @@ public class RpcAuthServiceProvider implements RpcAuthService {
      */
     @Override
     public CompletableFuture<Boolean> invalidateAuthByMemberId(Long memberId) {
-        return just(memberId).flatMap(authService::invalidateAuthByMemberId).toFuture();
+        return authService.invalidateAuthByMemberId(memberId).toFuture();
     }
 
     /**
@@ -92,7 +90,7 @@ public class RpcAuthServiceProvider implements RpcAuthService {
      */
     @Override
     public CompletableFuture<MemberPayload> parsePayload(String authentication) {
-        return just(authentication).flatMap(authService::parsePayload).toFuture();
+        return authService.parsePayload(authentication).toFuture();
     }
 
     /**
@@ -103,7 +101,7 @@ public class RpcAuthServiceProvider implements RpcAuthService {
      */
     @Override
     public CompletableFuture<Access> parseAccess(String authentication) {
-        return just(authentication).flatMap(authService::parseAccess).toFuture();
+        return authService.parseAccess(authentication).toFuture();
     }
 
     /**
@@ -114,7 +112,7 @@ public class RpcAuthServiceProvider implements RpcAuthService {
      */
     @Override
     public CompletableFuture<Session> parseSession(String authentication) {
-        return just(authentication).flatMap(authService::parseSession).toFuture();
+        return authService.parseSession(authentication).toFuture();
     }
 
 }
