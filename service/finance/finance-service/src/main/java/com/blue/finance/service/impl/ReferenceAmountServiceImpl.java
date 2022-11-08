@@ -31,7 +31,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavadocDeclaration", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"JavadocDeclaration", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection"})
 @Service
 public class ReferenceAmountServiceImpl implements ReferenceAmountService {
 
@@ -55,7 +55,7 @@ public class ReferenceAmountServiceImpl implements ReferenceAmountService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public ReferenceAmount insertReferenceAmount(ReferenceAmount referenceAmount) {
-        LOGGER.info("ReferenceAmount insertReferenceAmount(ReferenceAmount referenceAmount), referenceAmount = {}", referenceAmount);
+        LOGGER.info("referenceAmount = {}", referenceAmount);
         if (isNull(referenceAmount))
             throw new BlueException(EMPTY_PARAM);
 
@@ -76,7 +76,7 @@ public class ReferenceAmountServiceImpl implements ReferenceAmountService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public List<ReferenceAmount> insertReferenceAmounts(List<ReferenceAmount> referenceAmounts) {
-        LOGGER.info("List<ReferenceAmount> insertReferenceAmounts(List<ReferenceAmount> referenceAmounts), referenceAmounts = {}", referenceAmounts);
+        LOGGER.info("referenceAmounts = {}", referenceAmounts);
         if (isEmpty(referenceAmounts))
             return emptyList();
 
@@ -99,7 +99,7 @@ public class ReferenceAmountServiceImpl implements ReferenceAmountService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public Boolean updateTargetColumnByPrimaryKeySelectiveWithStatusStamp(ReferenceAmountUpdateModel referenceAmountUpdateModel) {
-        LOGGER.info("Boolean updateTargetColumnByPrimaryKeySelectiveWithStatusStamp(ReferenceAmountUpdateModel referenceAmountUpdateModel), referenceAmountUpdateModel = {}", referenceAmountUpdateModel);
+        LOGGER.info("referenceAmountUpdateModel = {}", referenceAmountUpdateModel);
         if (isNull(referenceAmountUpdateModel))
             throw new BlueException(EMPTY_PARAM);
         referenceAmountUpdateModel.asserts();
@@ -114,7 +114,7 @@ public class ReferenceAmountServiceImpl implements ReferenceAmountService {
      * @return
      */
     public Optional<ReferenceAmount> getReferenceAmount(Long id) {
-        LOGGER.info("Optional<ReferenceAmount> getReferenceAmount(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -129,7 +129,7 @@ public class ReferenceAmountServiceImpl implements ReferenceAmountService {
      */
     @Override
     public Mono<ReferenceAmount> getReferenceAmountMono(Long id) {
-        LOGGER.info("Mono<ReferenceAmount> getReferenceAmountMono(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -144,7 +144,7 @@ public class ReferenceAmountServiceImpl implements ReferenceAmountService {
      */
     @Override
     public List<ReferenceAmount> selectReferenceAmountByIds(List<Long> ids) {
-        LOGGER.info("List<ReferenceAmount> selectReferenceAmountByIds(List<Long> ids), ids = {}", ids);
+        LOGGER.info("ids = {}", ids);
         if (isEmpty(ids))
             return emptyList();
 
@@ -159,7 +159,7 @@ public class ReferenceAmountServiceImpl implements ReferenceAmountService {
      */
     @Override
     public Mono<List<ReferenceAmount>> selectReferenceAmountMonoByIds(List<Long> ids) {
-        LOGGER.info("Mono<List<ReferenceAmount>> selectReferenceAmountMonoByIds(List<Long> ids), ids = {}", ids);
+        LOGGER.info("ids = {}", ids);
 
         return just(selectReferenceAmountByIds(ids));
     }

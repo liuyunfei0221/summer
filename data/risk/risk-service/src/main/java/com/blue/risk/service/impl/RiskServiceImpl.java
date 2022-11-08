@@ -269,7 +269,6 @@ public class RiskServiceImpl implements RiskService {
         return riskHitRecords;
     };
 
-
     private final BiFunction<RiskEvent, RiskAsserted, Mono<Boolean>> EVENTS_INSERTER = (riskEvent, riskAsserted) -> {
         if (isNull(riskEvent) || isNull(riskAsserted))
             return just(false);

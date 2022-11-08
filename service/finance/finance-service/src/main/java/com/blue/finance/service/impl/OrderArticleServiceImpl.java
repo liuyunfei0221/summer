@@ -55,7 +55,7 @@ public class OrderArticleServiceImpl implements OrderArticleService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public OrderArticle insertOrderArticle(OrderArticle orderArticle) {
-        LOGGER.info("OrderArticle insertOrderArticle(OrderArticle orderArticle), orderArticle = {}", orderArticle);
+        LOGGER.info("orderArticle = {}", orderArticle);
         if (isNull(orderArticle))
             throw new BlueException(EMPTY_PARAM);
 
@@ -76,7 +76,7 @@ public class OrderArticleServiceImpl implements OrderArticleService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public List<OrderArticle> insertOrderArticles(List<OrderArticle> orderArticles) {
-        LOGGER.info("List<OrderArticle> insertOrderArticles(List<OrderArticle> orderArticles), orderArticles = {}", orderArticles);
+        LOGGER.info("orderArticles = {}", orderArticles);
         if (isEmpty(orderArticles))
             return emptyList();
 

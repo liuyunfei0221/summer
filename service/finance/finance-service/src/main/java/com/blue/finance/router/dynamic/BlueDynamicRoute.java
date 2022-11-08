@@ -98,7 +98,7 @@ public class BlueDynamicRoute {
                 throw new RuntimeException("not support method -> " + requestMethod);
         }
 
-        LOGGER.info("generate endPoint, dynamicResource = {}", dynamicResource);
+        LOGGER.info("dynamicResource = {}", dynamicResource);
     }
 
     @Bean

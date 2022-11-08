@@ -66,7 +66,7 @@ public class MarketingEventProcessor implements ApplicationListener<ContextRefre
      * @param marketingEvent
      */
     public void handleEvent(MarketingEvent marketingEvent) {
-        LOGGER.info("EventHandleResult handleEvent(MarketingEvent marketingEvent), marketingEvent = {}", marketingEvent);
+        LOGGER.info("marketingEvent = {}", marketingEvent);
         EVENT_HANDLER.accept(marketingEvent);
     }
 

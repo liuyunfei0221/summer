@@ -56,7 +56,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public Order insertOrder(Order order) {
-        LOGGER.info("Order insertOrder(Order order), order = {}", order);
+        LOGGER.info("order = {}", order);
         if (isNull(order))
             throw new BlueException(EMPTY_PARAM);
 

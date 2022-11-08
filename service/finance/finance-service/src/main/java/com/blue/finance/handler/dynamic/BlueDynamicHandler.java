@@ -149,7 +149,7 @@ public final class BlueDynamicHandler implements ApplicationListener<ContextRefr
         placeHolderHandlerMapping = tempPlaceHolderHandlerMapping;
         dynamicInfoRefreshing = false;
 
-        LOGGER.info("void refreshHandlers(), placeHolderHandlerMapping = {}", placeHolderHandlerMapping);
+        LOGGER.info("placeHolderHandlerMapping = {}", placeHolderHandlerMapping);
     }
 
     /**

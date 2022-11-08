@@ -77,7 +77,7 @@ public class OrderSummaryServiceImpl implements OrderSummaryService {
      */
     @Override
     public OrderSummary insertOrderSummary(OrderSummary orderSummary) {
-        LOGGER.info("OrderSummary insertOrderSummary(OrderSummary orderSummary), orderSummary = {}", orderSummary);
+        LOGGER.info("orderSummary = {}", orderSummary);
         if (isNull(orderSummary))
             throw new BlueException(INVALID_PARAM);
 
@@ -93,7 +93,7 @@ public class OrderSummaryServiceImpl implements OrderSummaryService {
      */
     @Override
     public OrderSummary insertOrderSummaryAsync(OrderSummary orderSummary) {
-        LOGGER.info("OrderSummary insertOrderSummaryAsync(OrderSummary orderSummary), orderSummary = {}", orderSummary);
+        LOGGER.info("orderSummary = {}", orderSummary);
         if (isNull(orderSummary))
             throw new BlueException(EMPTY_PARAM);
 
@@ -109,7 +109,7 @@ public class OrderSummaryServiceImpl implements OrderSummaryService {
      */
     @Override
     public OrderSummary updateOrderSummary(OrderSummary orderSummary) {
-        LOGGER.info("OrderSummary updateOrderSummary(OrderSummary orderSummary), orderSummary = {}", orderSummary);
+        LOGGER.info("orderSummary = {}", orderSummary);
 
 
         return null;
@@ -123,7 +123,7 @@ public class OrderSummaryServiceImpl implements OrderSummaryService {
      */
     @Override
     public OrderSummary updateOrderSummaryAsync(OrderSummary orderSummary) {
-        LOGGER.info("OrderSummary updateOrderSummaryAsync(OrderSummary orderSummary), orderSummary = {}", orderSummary);
+        LOGGER.info("orderSummary = {}", orderSummary);
         if (isNull(orderSummary))
             throw new BlueException(EMPTY_PARAM);
 

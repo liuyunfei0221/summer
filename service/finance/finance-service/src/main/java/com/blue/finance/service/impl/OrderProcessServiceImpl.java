@@ -67,7 +67,7 @@ public class OrderProcessServiceImpl implements OrderProcessService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public void insertOrder(Order order, List<OrderArticle> orderArticles, List<ReferenceAmount> referenceAmounts) {
-        LOGGER.info("void insertOrder(Order order, List<OrderArticle> orderArticles, List<ReferenceAmount> referenceAmounts), order = {}, orderArticles = {}, referenceAmounts = {}",
+        LOGGER.info("order = {}, orderArticles = {}, referenceAmounts = {}",
                 order, orderArticles, referenceAmounts);
         if (isNull(order) || isEmpty(orderArticles) || isEmpty(referenceAmounts))
             throw new BlueException(INVALID_PARAM);
@@ -215,7 +215,7 @@ public class OrderProcessServiceImpl implements OrderProcessService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public void updateOrder(Order order, List<OrderArticle> orderArticles, List<ReferenceAmount> referenceAmounts) {
-        LOGGER.info("void updateOrder(Order order, List<OrderArticle> orderArticles, List<ReferenceAmount> referenceAmounts), order = {}, orderArticles = {}, referenceAmounts = {}",
+        LOGGER.info("order = {}, orderArticles = {}, referenceAmounts = {}",
                 order, orderArticles, referenceAmounts);
         if (isNull(order) || isEmpty(orderArticles) || isEmpty(referenceAmounts))
             throw new BlueException(INVALID_PARAM);
