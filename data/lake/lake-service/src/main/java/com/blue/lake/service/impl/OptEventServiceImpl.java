@@ -100,7 +100,7 @@ public class OptEventServiceImpl implements OptEventService {
     /**
      * data event -> option event
      */
-    public final Function<DataEvent, OptEvent> DATA_EVENT_2_OPT_EVENT = event -> {
+    public final Function<DataEvent, OptEvent> DATA_EVENT_2_OPT_EVENT_CONVERTOR = event -> {
         if (isNull(event))
             throw new BlueException(EMPTY_PARAM);
 
@@ -175,7 +175,7 @@ public class OptEventServiceImpl implements OptEventService {
     private final Function<List<DataEvent>, Mono<Boolean>> EVENTS_INSERTER = dataEvents ->
             justOrEmpty(dataEvents)
                     .filter(BlueChecker::isNotEmpty)
-                    .map(des -> dataEvents.stream().map(DATA_EVENT_2_OPT_EVENT).collect(toList()))
+                    .map(des -> dataEvents.stream().map(DATA_EVENT_2_OPT_EVENT_CONVERTOR).collect(toList()))
                     .map(oes -> {
                         try {
                             optEventMapper.insertBatch(oes);

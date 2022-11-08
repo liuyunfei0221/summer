@@ -71,7 +71,7 @@
         #{responseStatus,jdbcType=INTEGER}, #{responseBody,jdbcType=VARCHAR},
         #{responseExtra,jdbcType=VARCHAR}, #{requestId,jdbcType=VARCHAR}, #{metadata,jdbcType=VARCHAR},
         #{jwt,jdbcType=VARCHAR}, #{memberId,jdbcType=BIGINT},
-        #{roleIds,jdbcType=ARRAY,typeHandler=com.blue.lake.repository.type.ClickHouseLongArrayTypeHandler},
+        #{roleIds,jdbcType=ARRAY,typeHandler=com.blue.risk.repository.type.ClickHouseLongArrayTypeHandler},
         #{credentialType,jdbcType=VARCHAR}, #{deviceType,jdbcType=VARCHAR},
         #{loginTime,jdbcType=BIGINT}, #{clientIp,jdbcType=VARCHAR}, #{userAgent,jdbcType=VARCHAR},
         #{secKey,jdbcType=VARCHAR}, #{requestUnDecryption,jdbcType=INTEGER},
@@ -96,7 +96,7 @@
                 #{item.responseExtra,jdbcType=VARCHAR}, #{item.requestId,jdbcType=VARCHAR},
                 #{item.metadata,jdbcType=VARCHAR},
                 #{item.jwt,jdbcType=VARCHAR}, #{item.memberId,jdbcType=BIGINT},
-                #{item.roleIds,jdbcType=ARRAY,typeHandler=com.blue.lake.repository.type.ClickHouseLongArrayTypeHandler},
+                #{item.roleIds,jdbcType=ARRAY,typeHandler=com.blue.risk.repository.type.ClickHouseLongArrayTypeHandler},
                 #{item.credentialType,jdbcType=VARCHAR}, #{item.deviceType,jdbcType=VARCHAR},
                 #{item.loginTime,jdbcType=BIGINT}, #{item.clientIp,jdbcType=VARCHAR},
                 #{item.userAgent,jdbcType=VARCHAR},
@@ -263,7 +263,7 @@
                 #{memberId,jdbcType=BIGINT},
             </if>
             <if test="roleIds != null">
-                #{roleIds,jdbcType=ARRAY,typeHandler=com.blue.lake.repository.type.ClickHouseLongArrayTypeHandler},
+                #{roleIds,jdbcType=ARRAY,typeHandler=com.blue.risk.repository.type.ClickHouseLongArrayTypeHandler},
             </if>
             <if test="credentialType != null">
                 #{credentialType,jdbcType=VARCHAR},
@@ -363,7 +363,7 @@
             </if>
             <if test="roleId != null">
                 role_ids =
-                #{roleIds,jdbcType=ARRAY,typeHandler=com.blue.lake.repository.type.ClickHouseLongArrayTypeHandler},
+                #{roleIds,jdbcType=ARRAY,typeHandler=com.blue.risk.repository.type.ClickHouseLongArrayTypeHandler},
             </if>
             <if test="credentialType != null">
                 credential_type = #{credentialType,jdbcType=VARCHAR},
@@ -429,7 +429,7 @@
             metadata                = #{metadata,jdbcType=VARCHAR},
             jwt                     = #{jwt,jdbcType=VARCHAR},
             member_id               = #{memberId,jdbcType=BIGINT},
-            role_ids                = #{roleIds,jdbcType=ARRAY,typeHandler=com.blue.lake.repository.type.ClickHouseLongArrayTypeHandler},
+            role_ids                = #{roleIds,jdbcType=ARRAY,typeHandler=com.blue.risk.repository.type.ClickHouseLongArrayTypeHandler},
             credential_type         = #{credentialType,jdbcType=VARCHAR},
             device_type             = #{deviceType,jdbcType=VARCHAR},
             login_time              = #{loginTime,jdbcType=BIGINT},

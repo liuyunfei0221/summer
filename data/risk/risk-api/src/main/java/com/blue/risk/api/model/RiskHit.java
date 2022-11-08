@@ -54,7 +54,7 @@ public final class RiskHit implements Serializable, Asserter {
     private Long stamp;
 
     public RiskHit(String memberId, String ip, String resourceKey, Integer hitType, Long illegalExpiresSecond, Long stamp) {
-        if (isBlank(memberId) || isBlank(ip))
+        if (isBlank(memberId) && isBlank(ip))
             throw new BlueException(INVALID_PARAM);
 
         assertRiskType(hitType, false);

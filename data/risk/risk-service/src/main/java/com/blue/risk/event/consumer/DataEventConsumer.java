@@ -49,10 +49,10 @@ public final class DataEventConsumer implements BlueLifecycle {
     private void init() {
         Consumer<DataEvent> dataConsumer = dataEvent ->
                 ofNullable(dataEvent)
-                        .ifPresent(de -> just(de).flatMap(riskService::analyzeEvent)
+                        .ifPresent(de -> just(de).flatMap(riskService::handleDataEvent)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
-                                .doOnError(t -> LOGGER.error("riskService.analyzeEvent(de) failed, de = {}, t = {}", de, t))
-                                .subscribe(b -> LOGGER.info("riskService.analyzeEvent(de), b = {}, de = {}", b, de)));
+                                .doOnError(t -> LOGGER.error("riskService.handle(de) failed, de = {}, t = {}", de, t))
+                                .subscribe(b -> LOGGER.info("riskService.handle(de), b = {}, de = {}", b, de)));
 
         this.pulsarListener = BluePulsarListenerGenerator.generateListener(pulsarClient, blueConsumerConfig.getByKey(REQUEST_EVENT.name), dataConsumer);
     }

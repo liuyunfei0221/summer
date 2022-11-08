@@ -2,7 +2,7 @@ package com.blue.lake.handler.manager;
 
 import com.blue.basic.model.common.BlueResponse;
 import com.blue.basic.model.exps.BlueException;
-import com.blue.lake.service.inter.LakeService;
+import com.blue.lake.service.inter.OptEventService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -21,12 +21,12 @@ import static reactor.core.publisher.Mono.error;
  */
 @SuppressWarnings({"JavaDoc"})
 @Component
-public class EventManagerHandler {
+public class OptEventManagerHandler {
 
-    private final LakeService lakeService;
+    private final OptEventService optEventService;
 
-    public EventManagerHandler(LakeService lakeService) {
-        this.lakeService = lakeService;
+    public OptEventManagerHandler(OptEventService optEventService) {
+        this.optEventService = optEventService;
     }
 
     /**
@@ -38,7 +38,7 @@ public class EventManagerHandler {
     public Mono<ServerResponse> scroll(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(SCROLL_MODEL_FOR_OPT_EVENT_TYPE)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
-                .flatMap(lakeService::selectEventScrollByScrollAndCursor)
+                .flatMap(optEventService::selectOptEventScrollByScrollAndCursor)
                 .flatMap(smr ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(smr, serverRequest), BlueResponse.class));

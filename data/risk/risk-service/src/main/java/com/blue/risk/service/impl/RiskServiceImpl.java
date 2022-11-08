@@ -7,6 +7,7 @@ import com.blue.basic.model.event.DataEvent;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.risk.api.model.RiskAsserted;
+import com.blue.risk.api.model.RiskEvent;
 import com.blue.risk.api.model.RiskHit;
 import com.blue.risk.component.risk.RiskProcessor;
 import com.blue.risk.config.deploy.NestingResponseDeploy;
@@ -40,6 +41,7 @@ import static java.time.LocalDate.ofInstant;
 import static java.time.ZoneId.systemDefault;
 import static java.util.Optional.ofNullable;
 import static reactor.core.publisher.Mono.just;
+import static reactor.core.publisher.Mono.justOrEmpty;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -97,9 +99,82 @@ public class RiskServiceImpl implements RiskService {
     private final Long[] EMPTY_ROLES = UNKNOWN_ACCESS.getRoleIds().toArray(Long[]::new);
 
     /**
-     * data event -> records
+     * data event -> risk event
      */
-    private final BiFunction<DataEvent, List<RiskHit>, List<RiskHitRecord>> DATA_EVENT_2_RECORD_EVENTS = (event, hits) -> {
+    private final Function<DataEvent, RiskEvent> DATA_EVENT_2_RISK_EVENT = dataEvent -> {
+        if (isNull(dataEvent))
+            throw new BlueException(INVALID_PARAM);
+
+        RiskEvent riskEvent = new RiskEvent();
+
+        riskEvent.setDataEventType(ofNullable(dataEvent.getDataEventType())
+                .filter(BlueChecker::isNotBlank).orElse(EMPTY_VALUE.value).intern());
+        riskEvent.setDataEventOpType(ofNullable(dataEvent.getDataEventOpType())
+                .filter(BlueChecker::isNotBlank).orElse(EMPTY_VALUE.value).intern());
+
+        long stamp = ofNullable(dataEvent.getStamp()).orElse(TIME_STAMP_GETTER.get());
+
+        riskEvent.setStamp(stamp);
+        riskEvent.setCreateDate(DATE_STR_FUNC.apply(stamp));
+
+        Map<String, String> entries = dataEvent.getEntries();
+
+        riskEvent.setMethod(ofNullable(entries.get(METHOD.key)).orElse(EMPTY_VALUE.value).intern());
+        riskEvent.setUri(ofNullable(entries.get(URI.key)).orElse(EMPTY_VALUE.value));
+
+        String realUri = ofNullable(entries.get(REAL_URI.key)).orElse(EMPTY_VALUE.value);
+
+        riskEvent.setRealUri(realUri);
+        riskEvent.setRequestBody(ofNullable(entries.get(REQUEST_BODY.key)).orElse(EMPTY_VALUE.value));
+        riskEvent.setRequestExtra(ofNullable(entries.get(REQUEST_EXTRA.key)).orElse(EMPTY_VALUE.value));
+
+        int responseStatus = ofNullable(entries.get(RESPONSE_STATUS.key)).map(Integer::parseInt).orElse(OK.status);
+
+        riskEvent.setResponseStatus(responseStatus);
+        riskEvent.setResponseBody(ofNullable(entries.get(RESPONSE_BODY.key)).map(body -> NESTING_PREDICATE.test(realUri, responseStatus) ? nestingRes : body).orElse(EMPTY_VALUE.value));
+        riskEvent.setResponseExtra(ofNullable(entries.get(RESPONSE_EXTRA.key)).orElse(EMPTY_VALUE.value));
+        riskEvent.setRequestId(ofNullable(entries.get(REQUEST_ID.key)).orElse(EMPTY_VALUE.value));
+        riskEvent.setMetadata(ofNullable(entries.get(METADATA.key)).orElse(EMPTY_VALUE.value));
+
+        String jwt = ofNullable(entries.get(JWT.key)).orElse(EMPTY_VALUE.value);
+
+        riskEvent.setJwt(jwt);
+
+        try {
+            Access access = ofNullable(entries.get(ACCESS.key))
+                    .filter(BlueChecker::isNotBlank)
+                    .map(AccessProcessor::jsonToAccess)
+                    .orElseGet(() ->
+                            ofNullable(jwt)
+                                    .filter(BlueChecker::isNotBlank)
+                                    .map(a -> rpcAuthServiceConsumer.parseAccess(a).toFuture().join()).orElse(UNKNOWN_ACCESS));
+
+            riskEvent.setMemberId(access.getId());
+            riskEvent.setRoleIds(ofNullable(access.getRoleIds())
+                    .filter(BlueChecker::isNotEmpty).map(l -> l.toArray(Long[]::new)).orElse(EMPTY_ROLES));
+            riskEvent.setCredentialType(access.getCredentialType());
+            riskEvent.setDeviceType(access.getDeviceType());
+            riskEvent.setLoginTime(access.getLoginTime());
+        } catch (Exception e) {
+            LOGGER.error("entries = {}, e = {}", entries, e);
+        }
+
+        riskEvent.setClientIp(ofNullable(entries.get(CLIENT_IP.key)).orElse(EMPTY_VALUE.value));
+        riskEvent.setUserAgent(ofNullable(entries.get(USER_AGENT.key)).orElse(EMPTY_VALUE.value));
+        riskEvent.setSecKey(ofNullable(entries.get(SEC_KEY.key)).orElse(EMPTY_VALUE.value));
+        riskEvent.setRequestUnDecryption(getBoolByBool(ofNullable(entries.get(REQUEST_UN_DECRYPTION.key)).map(Boolean::parseBoolean).orElse(TRUE.bool)).status);
+        riskEvent.setResponseUnEncryption(getBoolByBool(ofNullable(entries.get(RESPONSE_UN_ENCRYPTION.key)).map(Boolean::parseBoolean).orElse(TRUE.bool)).status);
+        riskEvent.setExistenceRequestBody(getBoolByBool(ofNullable(entries.get(EXISTENCE_REQUEST_BODY.key)).map(Boolean::parseBoolean).orElse(TRUE.bool)).status);
+        riskEvent.setExistenceResponseBody(getBoolByBool(ofNullable(entries.get(EXISTENCE_RESPONSE_BODY.key)).map(Boolean::parseBoolean).orElse(TRUE.bool)).status);
+        riskEvent.setDurationSeconds(ofNullable(entries.get(DURATION_SECONDS.key)).map(Integer::parseInt).orElse(ZERO.value));
+
+        return riskEvent;
+    };
+
+    /**
+     * risk event -> records
+     */
+    private final BiFunction<RiskEvent, List<RiskHit>, List<RiskHitRecord>> DATA_EVENT_2_RECORD_EVENTS = (event, hits) -> {
         if (isNull(event) || isEmpty(hits))
             throw new BlueException(INVALID_PARAM);
 
@@ -111,56 +186,34 @@ public class RiskServiceImpl implements RiskService {
         long stamp = ofNullable(event.getStamp()).orElse(TIME_STAMP_GETTER.get());
         String createDate = DATE_STR_FUNC.apply(stamp);
 
-        Map<String, String> entries = event.getEntries();
+        String method = ofNullable(event.getMethod()).orElse(EMPTY_VALUE.value).intern();
+        String uri = ofNullable(event.getUri()).orElse(EMPTY_VALUE.value);
+        String realUri = ofNullable(event.getRealUri()).orElse(EMPTY_VALUE.value);
+        String requestBody = ofNullable(event.getRequestBody()).orElse(EMPTY_VALUE.value);
+        String requestExtra = ofNullable(event.getRequestExtra()).orElse(EMPTY_VALUE.value);
 
-        String method = ofNullable(entries.get(METHOD.key)).orElse(EMPTY_VALUE.value).intern();
-        String uri = ofNullable(entries.get(URI.key)).orElse(EMPTY_VALUE.value);
-        String realUri = ofNullable(entries.get(REAL_URI.key)).orElse(EMPTY_VALUE.value);
-        String requestBody = ofNullable(entries.get(REQUEST_BODY.key)).orElse(EMPTY_VALUE.value);
-        String requestExtra = ofNullable(entries.get(REQUEST_EXTRA.key)).orElse(EMPTY_VALUE.value);
+        int responseStatus = ofNullable(event.getResponseStatus()).orElse(OK.status);
 
-        int responseStatus = ofNullable(entries.get(RESPONSE_STATUS.key)).map(Integer::parseInt).orElse(OK.status);
+        String responseBody = ofNullable(event.getResponseBody()).map(body -> NESTING_PREDICATE.test(realUri, responseStatus) ? nestingRes : body).orElse(EMPTY_VALUE.value);
+        String responseExtra = ofNullable(event.getResponseExtra()).orElse(EMPTY_VALUE.value);
+        String requestId = ofNullable(event.getRequestId()).orElse(EMPTY_VALUE.value);
+        String metadata = ofNullable(event.getMetadata()).orElse(EMPTY_VALUE.value);
 
-        String responseBody = ofNullable(entries.get(RESPONSE_BODY.key)).map(body -> NESTING_PREDICATE.test(realUri, responseStatus) ? nestingRes : body).orElse(EMPTY_VALUE.value);
-        String responseExtra = ofNullable(entries.get(RESPONSE_EXTRA.key)).orElse(EMPTY_VALUE.value);
-        String requestId = ofNullable(entries.get(REQUEST_ID.key)).orElse(EMPTY_VALUE.value);
-        String metadata = ofNullable(entries.get(METADATA.key)).orElse(EMPTY_VALUE.value);
+        String jwt = ofNullable(event.getJwt()).orElse(EMPTY_VALUE.value);
+        Long memberId = event.getMemberId();
+        Long[] roleIds = event.getRoleIds();
+        String credentialType = event.getCredentialType();
+        String deviceType = event.getDeviceType();
+        Long loginTime = event.getLoginTime();
 
-        String jwt = ofNullable(entries.get(JWT.key)).orElse(EMPTY_VALUE.value);
-
-        Long memberId = null;
-        Long[] roleIds = null;
-        String credentialType = null;
-        String deviceType = null;
-        Long loginTime = null;
-        try {
-            Access access = ofNullable(entries.get(ACCESS.key))
-                    .filter(BlueChecker::isNotBlank)
-                    .map(AccessProcessor::jsonToAccess)
-                    .orElseGet(() ->
-                            ofNullable(jwt)
-                                    .filter(BlueChecker::isNotBlank)
-                                    .map(a -> rpcAuthServiceConsumer.parseAccess(a).toFuture().join()).orElse(UNKNOWN_ACCESS));
-
-            memberId = access.getId();
-            roleIds = ofNullable(access.getRoleIds())
-                    .filter(BlueChecker::isNotEmpty).map(l -> l.toArray(Long[]::new)).orElse(EMPTY_ROLES);
-            credentialType = access.getCredentialType();
-            deviceType = access.getDeviceType();
-            loginTime = access.getLoginTime();
-        } catch (Exception e) {
-            LOGGER.error("entries = {}, e = {}", entries, e);
-        }
-
-        String clientIp = ofNullable(entries.get(CLIENT_IP.key)).orElse(EMPTY_VALUE.value);
-        String userAgent = ofNullable(entries.get(USER_AGENT.key)).orElse(EMPTY_VALUE.value);
-        String secKey = ofNullable(entries.get(SEC_KEY.key)).orElse(EMPTY_VALUE.value);
-        Integer requestUnDecryption = getBoolByBool(ofNullable(entries.get(REQUEST_UN_DECRYPTION.key)).map(Boolean::parseBoolean).orElse(TRUE.bool)).status;
-        Integer responseUnEncryption = getBoolByBool(ofNullable(entries.get(RESPONSE_UN_ENCRYPTION.key)).map(Boolean::parseBoolean).orElse(TRUE.bool)).status;
-        Integer existenceRequestBody = getBoolByBool(ofNullable(entries.get(EXISTENCE_REQUEST_BODY.key)).map(Boolean::parseBoolean).orElse(TRUE.bool)).status;
-        Integer existenceResponseBody = getBoolByBool(ofNullable(entries.get(EXISTENCE_RESPONSE_BODY.key)).map(Boolean::parseBoolean).orElse(TRUE.bool)).status;
-        Integer durationSeconds = ofNullable(entries.get(DURATION_SECONDS.key)).map(Integer::parseInt).orElse(ZERO.value);
-
+        String clientIp = ofNullable(event.getClientIp()).orElse(EMPTY_VALUE.value);
+        String userAgent = ofNullable(event.getUserAgent()).orElse(EMPTY_VALUE.value);
+        String secKey = ofNullable(event.getSecKey()).orElse(EMPTY_VALUE.value);
+        Integer requestUnDecryption = ofNullable(event.getRequestUnDecryption()).orElseGet(() -> getBoolByBool(TRUE.bool).status);
+        Integer responseUnEncryption = ofNullable(event.getResponseUnEncryption()).orElseGet(() -> getBoolByBool(TRUE.bool).status);
+        Integer existenceRequestBody = ofNullable(event.getExistenceRequestBody()).orElseGet(() -> getBoolByBool(TRUE.bool).status);
+        Integer existenceResponseBody = ofNullable(event.getExistenceResponseBody()).orElseGet(() -> getBoolByBool(TRUE.bool).status);
+        Integer durationSeconds = ofNullable(event.getDurationSeconds()).orElse(ZERO.value);
 
         List<RiskHitRecord> riskHitRecords = new ArrayList<>(hits.size());
         RiskHitRecord riskHitRecord;
@@ -195,14 +248,14 @@ public class RiskServiceImpl implements RiskService {
             riskHitRecord.setDeviceType(deviceType);
             riskHitRecord.setLoginTime(loginTime);
 
-            riskHitRecord.setClientIp(ofNullable(entries.get(CLIENT_IP.key)).orElse(EMPTY_VALUE.value));
-            riskHitRecord.setUserAgent(ofNullable(entries.get(USER_AGENT.key)).orElse(EMPTY_VALUE.value));
-            riskHitRecord.setSecKey(ofNullable(entries.get(SEC_KEY.key)).orElse(EMPTY_VALUE.value));
-            riskHitRecord.setRequestUnDecryption(getBoolByBool(ofNullable(entries.get(REQUEST_UN_DECRYPTION.key)).map(Boolean::parseBoolean).orElse(TRUE.bool)).status);
-            riskHitRecord.setResponseUnEncryption(getBoolByBool(ofNullable(entries.get(RESPONSE_UN_ENCRYPTION.key)).map(Boolean::parseBoolean).orElse(TRUE.bool)).status);
-            riskHitRecord.setExistenceRequestBody(getBoolByBool(ofNullable(entries.get(EXISTENCE_REQUEST_BODY.key)).map(Boolean::parseBoolean).orElse(TRUE.bool)).status);
-            riskHitRecord.setExistenceResponseBody(getBoolByBool(ofNullable(entries.get(EXISTENCE_RESPONSE_BODY.key)).map(Boolean::parseBoolean).orElse(TRUE.bool)).status);
-            riskHitRecord.setDurationSeconds(ofNullable(entries.get(DURATION_SECONDS.key)).map(Integer::parseInt).orElse(ZERO.value));
+            riskHitRecord.setClientIp(clientIp);
+            riskHitRecord.setUserAgent(userAgent);
+            riskHitRecord.setSecKey(secKey);
+            riskHitRecord.setRequestUnDecryption(requestUnDecryption);
+            riskHitRecord.setResponseUnEncryption(responseUnEncryption);
+            riskHitRecord.setExistenceRequestBody(existenceRequestBody);
+            riskHitRecord.setExistenceResponseBody(existenceResponseBody);
+            riskHitRecord.setDurationSeconds(durationSeconds);
 
             riskHitRecord.setResourceKey(hit.getResourceKey());
             riskHitRecord.setHitType(hit.getHitType());
@@ -216,35 +269,64 @@ public class RiskServiceImpl implements RiskService {
         return riskHitRecords;
     };
 
-    private final BiFunction<DataEvent, List<RiskHit>, Mono<Boolean>> EVENTS_INSERTER = (dataEvent, hits) -> {
-        if (isNull(dataEvent) || isEmpty(hits))
+
+    private final BiFunction<RiskEvent, RiskAsserted, Mono<Boolean>> EVENTS_INSERTER = (riskEvent, riskAsserted) -> {
+        if (isNull(riskEvent) || isNull(riskAsserted))
+            return just(false);
+
+        List<RiskHit> hits = riskAsserted.getHits();
+
+        if (!riskAsserted.getHit() || isEmpty(hits))
             return just(false);
 
         try {
-            List<RiskHitRecord> riskHitRecords = DATA_EVENT_2_RECORD_EVENTS.apply(dataEvent, hits);
+            List<RiskHitRecord> riskHitRecords = DATA_EVENT_2_RECORD_EVENTS.apply(riskEvent, hits);
             return riskHitRecordService.insertRiskHitRecords(riskHitRecords);
         } catch (Exception e) {
-            LOGGER.error("dataEvent = {}, hits = {}, e = {}", dataEvent, hits, e);
+            LOGGER.error("riskEvent = {}, hits = {}, e = {}", riskEvent, hits, e);
 
             return just(false);
         }
     };
 
-    /**
-     * analyze event
-     *
-     * @param dataEvent
-     * @return
-     */
     @Override
-    public Mono<RiskAsserted> analyzeEvent(DataEvent dataEvent) {
-        LOGGER.info("dataEvent = {}", dataEvent);
+    public Mono<RiskAsserted> handleRiskEvent(RiskEvent riskEvent) {
+        LOGGER.info("riskEvent = {}", riskEvent);
 
-        return riskProcessor.analyzeEvent(dataEvent)
+        return riskProcessor.handle(riskEvent)
                 .flatMap(ra ->
-                        EVENTS_INSERTER.apply(dataEvent, ra.getHits()).doOnEach(b -> LOGGER.info("b = {}", b))
+                        EVENTS_INSERTER.apply(riskEvent, ra)
+                                .doOnSuccess(b -> LOGGER.warn("b = {}", b))
+                                .doOnError(t -> LOGGER.error("t = {}", t))
                                 .then(just(ra))
                 );
+    }
+
+    @Override
+    public Mono<RiskAsserted> handleDataEvent(DataEvent dataEvent) {
+        LOGGER.info("dataEvent = {}", dataEvent);
+
+        return justOrEmpty(dataEvent).map(DATA_EVENT_2_RISK_EVENT).flatMap(this::handleRiskEvent);
+    }
+
+    @Override
+    public Mono<RiskAsserted> validateRiskEvent(RiskEvent riskEvent) {
+        LOGGER.info("riskEvent = {}", riskEvent);
+
+        return riskProcessor.validate(riskEvent)
+                .flatMap(ra ->
+                        EVENTS_INSERTER.apply(riskEvent, ra)
+                                .doOnSuccess(b -> LOGGER.warn("b = {}", b))
+                                .doOnError(t -> LOGGER.error("t = {}", t))
+                                .then(just(ra))
+                );
+    }
+
+    @Override
+    public Mono<RiskAsserted> validateDataEvent(DataEvent dataEvent) {
+        LOGGER.info("dataEvent = {}", dataEvent);
+
+        return justOrEmpty(dataEvent).map(DATA_EVENT_2_RISK_EVENT).flatMap(this::validateRiskEvent);
     }
 
 }

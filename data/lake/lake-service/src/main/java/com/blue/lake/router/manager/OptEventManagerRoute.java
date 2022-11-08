@@ -1,6 +1,6 @@
 package com.blue.lake.router.manager;
 
-import com.blue.lake.handler.manager.EventManagerHandler;
+import com.blue.lake.handler.manager.OptEventManagerHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RequestPredicate;
@@ -14,15 +14,17 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
+ * opt event router
+ *
  * @author liuyunfei
  */
 @Configuration
-public class EventManagerRoute {
+public class OptEventManagerRoute {
 
     @Bean
-    RouterFunction<ServerResponse> eventRouter(EventManagerHandler eventManagerHandler) {
+    RouterFunction<ServerResponse> optEventRouter(OptEventManagerHandler eventManagerHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-lake");
+        RequestPredicate pathPredicate = path("/blue-lake/manager");
 
         RouterFunction<ServerResponse> routerFunction = route()
                 .POST("/events", accept(APPLICATION_JSON), eventManagerHandler::scroll)

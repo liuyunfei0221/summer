@@ -41,7 +41,7 @@
         <gson.version>2.10</gson.version>
         <hbase.version>2.5.1</hbase.version>
         <hikari-cp.version>5.0.1</hikari-cp.version>
-        <jackson.version>2.13.4.2</jackson.version>
+        <jackson.version>2.14.0</jackson.version>
         <jakarta-json.version>2.1.1</jakarta-json.version>
         <jakarta-mail.version>2.0.1</jakarta-mail.version>
         <java-jwt.version>4.2.1</java-jwt.version>

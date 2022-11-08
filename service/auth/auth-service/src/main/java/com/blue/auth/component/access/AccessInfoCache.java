@@ -222,7 +222,7 @@ public final class AccessInfoCache {
         return isNotBlank(keyId) ?
                 reactiveStringRedisTemplate.delete(keyId)
                         .map(l -> l > 0L)
-                        .doOnEach(ig -> cache.synchronous().invalidate(keyId))
+                        .doFinally(ig -> cache.synchronous().invalidate(keyId))
                 :
                 just(false);
     }

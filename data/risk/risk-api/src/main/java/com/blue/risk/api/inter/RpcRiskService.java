@@ -1,18 +1,18 @@
-package com.blue.risk.service.inter;
-
+package com.blue.risk.api.inter;
 
 import com.blue.basic.model.event.DataEvent;
 import com.blue.risk.api.model.RiskAsserted;
 import com.blue.risk.api.model.RiskEvent;
-import reactor.core.publisher.Mono;
+
+import java.util.concurrent.CompletableFuture;
 
 /**
- * risk analyse service
+ * rpc risk interface
  *
  * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
-public interface RiskService {
+public interface RpcRiskService {
 
     /**
      * handle event
@@ -20,7 +20,7 @@ public interface RiskService {
      * @param riskEvent
      * @return
      */
-    Mono<RiskAsserted> handleRiskEvent(RiskEvent riskEvent);
+    CompletableFuture<RiskAsserted> handleRiskEvent(RiskEvent riskEvent);
 
     /**
      * handle event
@@ -28,7 +28,7 @@ public interface RiskService {
      * @param dataEvent
      * @return
      */
-    Mono<RiskAsserted> handleDataEvent(DataEvent dataEvent);
+    CompletableFuture<RiskAsserted> handleDataEvent(DataEvent dataEvent);
 
     /**
      * validate event
@@ -36,7 +36,7 @@ public interface RiskService {
      * @param riskEvent
      * @return
      */
-    Mono<RiskAsserted> validateRiskEvent(RiskEvent riskEvent);
+    CompletableFuture<RiskAsserted> validateRiskEvent(RiskEvent riskEvent);
 
     /**
      * validate event
@@ -44,6 +44,6 @@ public interface RiskService {
      * @param dataEvent
      * @return
      */
-    Mono<RiskAsserted> validateDataEvent(DataEvent dataEvent);
+    CompletableFuture<RiskAsserted> validateDataEvent(DataEvent dataEvent);
 
 }
