@@ -172,8 +172,7 @@ public class StateServiceImpl implements StateService {
                     fromFuture(STATE_BY_ID_WITH_ASSERT_GETTER.apply(id))
                             .flatMap(stateInfo ->
                                     countryService.getCountryInfoById(stateInfo.getCountryId())
-                                            .map(countryInfo -> new StateRegion(id, countryInfo, stateInfo))
-                            )
+                                            .map(countryInfo -> new StateRegion(id, countryInfo, stateInfo)))
                     :
                     error(() -> new BlueException(INVALID_IDENTITY));
 
@@ -193,8 +192,7 @@ public class StateServiceImpl implements StateService {
                                                         .map(countryMap ->
                                                                 stateMap.values().stream()
                                                                         .map(si ->
-                                                                                new StateRegion(si.getId(), countryMap.get(si.getCountryId()), si)
-                                                                        )
+                                                                                new StateRegion(si.getId(), countryMap.get(si.getCountryId()), si))
                                                                         .collect(toMap(StateRegion::getStateId, ar -> ar, (a, b) -> a))
                                                         )))
                         .map(m -> fromIterable(m.values()))

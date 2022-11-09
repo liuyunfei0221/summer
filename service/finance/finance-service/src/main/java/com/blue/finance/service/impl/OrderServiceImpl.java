@@ -18,7 +18,6 @@ import java.util.Optional;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
-import static com.blue.basic.constant.common.SpecialIntegerElement.ONE;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
@@ -82,7 +81,7 @@ public class OrderServiceImpl implements OrderService {
             throw new BlueException(EMPTY_PARAM);
         orderUpdateModel.asserts();
 
-        return orderMapper.updateTargetColumnByPrimaryKeySelectiveWithStamps(orderUpdateModel) >= ONE.value;
+        return orderMapper.updateTargetColumnByPrimaryKeySelectiveWithStamps(orderUpdateModel) >= 1;
     }
 
     /**
@@ -99,7 +98,7 @@ public class OrderServiceImpl implements OrderService {
             throw new BlueException(EMPTY_PARAM);
         orderVersionUpdateModel.asserts();
 
-        return orderMapper.updateVersionByPrimaryKeyWithVersionStamp(orderVersionUpdateModel) >= ONE.value;
+        return orderMapper.updateVersionByPrimaryKeyWithVersionStamp(orderVersionUpdateModel) >= 1;
     }
 
     /**

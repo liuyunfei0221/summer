@@ -18,27 +18,27 @@ public final class MemberAccess implements Serializable {
     private static final long serialVersionUID = -1930250799048962030L;
 
     /**
-     * jwtAuth
+     * access/jwt
      */
-    private final String auth;
+    private final String access;
 
     /**
      * sec key
      */
     private final String secKey;
 
-    public MemberAccess(String auth, String secKey) {
-        if (isBlank(auth))
+    public MemberAccess(String access, String secKey) {
+        if (isBlank(access))
             throw new BlueException(BAD_REQUEST);
         if (isBlank(secKey))
             throw new BlueException(BAD_REQUEST);
 
-        this.auth = auth;
+        this.access = access;
         this.secKey = secKey;
     }
 
-    public String getAuth() {
-        return auth;
+    public String getAccess() {
+        return access;
     }
 
     public String getSecKey() {
@@ -48,7 +48,7 @@ public final class MemberAccess implements Serializable {
     @Override
     public String toString() {
         return "MemberAccess{" +
-                "auth='" + auth + '\'' +
+                "access='" + access + '\'' +
                 ", secKey='" + secKey + '\'' +
                 '}';
     }

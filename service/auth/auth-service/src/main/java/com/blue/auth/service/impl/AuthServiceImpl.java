@@ -340,7 +340,7 @@ public class AuthServiceImpl implements AuthService {
                                 return just(new RefreshInfo());
                             })
                             .flatMap(ig -> just(jwtProcessor.create(memberPayload)))
-                            .flatMap(jwt -> just(new MemberAuth(access.getAuth(), access.getSecKey(), jwt)));
+                            .flatMap(refresh -> just(new MemberAuth(access.getAccess(), access.getSecKey(), refresh)));
                 });
     };
 

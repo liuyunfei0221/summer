@@ -154,7 +154,7 @@ public class MiniProWithAutoRegisterSessionHandler implements SessionHandler {
                 .flatMap(tuple2 -> {
                     MemberAuth ma = tuple2.getT1();
                     return ok().contentType(APPLICATION_JSON)
-                            .header(AUTHORIZATION.name, ma.getAuth())
+                            .header(AUTHORIZATION.name, ma.getAccess())
                             .header(SECRET.name, ma.getSecKey())
                             .header(REFRESH.name, ma.getRefresh())
                             .header(RESPONSE_EXTRA.name, GSON.toJson(extra))

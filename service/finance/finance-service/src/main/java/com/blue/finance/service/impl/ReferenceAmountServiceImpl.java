@@ -17,7 +17,6 @@ import java.util.Optional;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
-import static com.blue.basic.constant.common.SpecialIntegerElement.ONE;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
@@ -104,7 +103,7 @@ public class ReferenceAmountServiceImpl implements ReferenceAmountService {
             throw new BlueException(EMPTY_PARAM);
         referenceAmountUpdateModel.asserts();
 
-        return referenceAmountMapper.updateTargetColumnByPrimaryKeySelectiveWithStatusStamp(referenceAmountUpdateModel) >= ONE.value;
+        return referenceAmountMapper.updateTargetColumnByPrimaryKeySelectiveWithStatusStamp(referenceAmountUpdateModel) >=1;
     }
 
     /**

@@ -71,12 +71,12 @@ public final class SessionApiHandler {
                 .flatMap(authControlService::refreshAccessByRefresh)
                 .flatMap(ma ->
                         ok().contentType(APPLICATION_JSON)
-                                .header(AUTHORIZATION.name, ma.getAuth())
+                                .header(AUTHORIZATION.name, ma.getAccess())
                                 .header(SECRET.name, ma.getSecKey())
                                 .body(success(serverRequest)
                                         , BlueResponse.class));
     }
-    
+
     /**
      * refresh member's private key(client) and member's public key(server->redis)
      *

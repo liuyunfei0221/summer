@@ -33,7 +33,6 @@ import static com.blue.basic.constant.common.BlueDataAttrKey.*;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 import static com.blue.basic.constant.common.ResponseElement.OK;
 import static com.blue.basic.constant.common.SpecialAccess.VISITOR;
-import static com.blue.basic.constant.common.SpecialIntegerElement.ZERO;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.common.SummerAttr.DATE_FORMATTER;
 import static java.time.Instant.ofEpochSecond;
@@ -166,7 +165,7 @@ public class RiskServiceImpl implements RiskService {
         riskEvent.setResponseUnEncryption(getBoolByBool(ofNullable(entries.get(RESPONSE_UN_ENCRYPTION.key)).map(Boolean::parseBoolean).orElse(TRUE.bool)).status);
         riskEvent.setExistenceRequestBody(getBoolByBool(ofNullable(entries.get(EXISTENCE_REQUEST_BODY.key)).map(Boolean::parseBoolean).orElse(TRUE.bool)).status);
         riskEvent.setExistenceResponseBody(getBoolByBool(ofNullable(entries.get(EXISTENCE_RESPONSE_BODY.key)).map(Boolean::parseBoolean).orElse(TRUE.bool)).status);
-        riskEvent.setDurationSeconds(ofNullable(entries.get(DURATION_SECONDS.key)).map(Integer::parseInt).orElse(ZERO.value));
+        riskEvent.setDurationSeconds(ofNullable(entries.get(DURATION_SECONDS.key)).map(Integer::parseInt).orElse(0));
 
         return riskEvent;
     };
@@ -213,7 +212,7 @@ public class RiskServiceImpl implements RiskService {
         Integer responseUnEncryption = ofNullable(event.getResponseUnEncryption()).orElseGet(() -> getBoolByBool(TRUE.bool).status);
         Integer existenceRequestBody = ofNullable(event.getExistenceRequestBody()).orElseGet(() -> getBoolByBool(TRUE.bool).status);
         Integer existenceResponseBody = ofNullable(event.getExistenceResponseBody()).orElseGet(() -> getBoolByBool(TRUE.bool).status);
-        Integer durationSeconds = ofNullable(event.getDurationSeconds()).orElse(ZERO.value);
+        Integer durationSeconds = ofNullable(event.getDurationSeconds()).orElse(0);
 
         List<RiskHitRecord> riskHitRecords = new ArrayList<>(hits.size());
         RiskHitRecord riskHitRecord;

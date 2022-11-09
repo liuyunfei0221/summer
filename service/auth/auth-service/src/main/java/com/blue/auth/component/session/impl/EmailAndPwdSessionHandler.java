@@ -95,7 +95,7 @@ public class EmailAndPwdSessionHandler implements SessionHandler {
                     MEMBER_STATUS_ASSERTER.accept(mbi);
                     return authService.generateAuth(mbi.getId(), EMAIL_PWD.identity, loginParam.getDeviceType().intern())
                             .flatMap(ma -> ok().contentType(APPLICATION_JSON)
-                                    .header(AUTHORIZATION.name, ma.getAuth())
+                                    .header(AUTHORIZATION.name, ma.getAccess())
                                     .header(SECRET.name, ma.getSecKey())
                                     .header(REFRESH.name, ma.getRefresh())
                                     .body(success(new SessionInfo(mbi, EXTRA_INFO), serverRequest)
