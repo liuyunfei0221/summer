@@ -713,14 +713,16 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
 
 -- data manage
 
-       (320001, 'POST', 'blue-lake', '/manager/events', '', b'1', b'1', b'1', b'1', b'1', 3,
-        'test lake eventRecord', 'test lake eventRecord', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (320002, 'POST', 'blue-analyze', '/manager/statistics/active/simple', '', b'1', b'1', b'1', b'1', b'1', 3,
+       (340001, 'POST', 'blue-lake', '/manager/events', '', b'1', b'1', b'1', b'1', b'1', 3,
+        'test lake events', 'test lake events', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (340002, 'POST', 'blue-analyze', '/manager/statistics/active/simple', '', b'1', b'1', b'1', b'1', b'1', 3,
         'statistics active simple', 'statistics active simple', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (320003, 'POST', 'blue-analyze', '/manager/statistics/active/merge', '', b'1', b'1', b'1', b'1', b'1', 3,
+       (340003, 'POST', 'blue-analyze', '/manager/statistics/active/merge', '', b'1', b'1', b'1', b'1', b'1', 3,
         'statistics merge active', 'statistics merge active', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (320004, 'POST', 'blue-analyze', '/manager/statistics/active/summary', '', b'1', b'1', b'1', b'0', b'1', 3,
+       (340004, 'POST', 'blue-analyze', '/manager/statistics/active/summary', '', b'1', b'1', b'1', b'0', b'1', 3,
         'statistics summary', 'statistics summary', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (340005, 'POST', 'blue-risk', '/manager/records', '', b'1', b'1', b'1', b'1', b'1', 3,
+        'test risk records', 'test risk records', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 
 -- agreement api
@@ -733,12 +735,16 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
        (350003, 'POST', 'blue-agreement', '/agreementRecord', '', b'1', b'1', b'1', b'0', b'1', 1,
         'sign agreement', 'sign agreement', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
+
 -- agreement manage
 
        (360001, 'POST', 'blue-agreement', '/manager/agreements', '', b'1', b'1', b'1', b'0', b'1', 3,
         'agreement page of manager', 'agreement page of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (360002, 'POST', 'blue-agreement', '/manager/agreement', '', b'1', b'1', b'1', b'1', b'1', 3,
-        'insert agreement', 'insert agreement', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1);
+        'insert agreement', 'insert agreement', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (360003, 'POST', 'blue-agreement', '/manager/agreementRecords', '', b'1', b'1', b'1', b'0', b'1', 3,
+        'agreement record page of manager', 'agreement record page of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
+        1);
 
 -- role
 

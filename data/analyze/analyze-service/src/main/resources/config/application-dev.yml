@@ -47,7 +47,7 @@ data:
       database-conf:
       username: default
       password: 1024
-      driver-class-name: com.clickhouse.jdbc.ClickHouseDriver
+      driver-class-name: ru.yandex.clickhouse.ClickHouseDriver
       connection-timeout: 120000
       max-lifetime: 1800000
       max-pool-size: 4
@@ -61,7 +61,7 @@ data:
       database-conf:
       username: default
       password: 1024
-      driver-class-name: com.clickhouse.jdbc.ClickHouseDriver
+      driver-class-name: ru.yandex.clickhouse.ClickHouseDriver
       connection-timeout: 120000
       max-lifetime: 1800000
       max-pool-size: 4

@@ -19,7 +19,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @SuppressWarnings({"AlibabaClassNamingShouldBeCamel", "unused", "AlibabaUndefineMagicConstant", "AliControlFlowStatementWithoutBraces"})
 @Activate(group = {PROVIDER_PROTOCOL, CONSUMER_PROTOCOL})
 public final class BlueExceptionFilter implements Filter, Filter.Listener {
-    
+
     private static final Logger LOGGER = getLogger(BlueExceptionFilter.class);
 
     @Override
@@ -31,7 +31,7 @@ public final class BlueExceptionFilter implements Filter, Filter.Listener {
     public void onResponse(Result appResponse, Invoker<?> invoker, Invocation invocation) {
         if (appResponse.hasException() && GenericService.class != invoker.getInterface()) {
             Throwable exception = appResponse.getException();
-            LOGGER.error("dubbo catch exception, exception = {}", exception.getMessage());
+            LOGGER.error("dubbo catch exception, exception = {}, message = {}", exception, exception.getMessage());
             if (exception instanceof BlueException)
                 return;
 

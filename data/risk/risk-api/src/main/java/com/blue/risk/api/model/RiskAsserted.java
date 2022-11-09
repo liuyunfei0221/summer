@@ -68,7 +68,8 @@ public final class RiskAsserted implements Serializable {
         this.hits = hits;
 
         if (isNotEmpty(hits))
-            this.hit = false;
+            if (!this.hit)
+                this.hit = true;
     }
 
     public void addHit(RiskHit riskHit) {
@@ -79,6 +80,9 @@ public final class RiskAsserted implements Serializable {
                 this.hits = new LinkedList<>();
 
             hits.add(riskHit);
+
+            if (!this.hit)
+                this.hit = true;
         }
     }
 

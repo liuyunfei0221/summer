@@ -5,8 +5,7 @@ import com.blue.basic.model.exps.BlueException;
 
 import java.io.Serializable;
 
-import static com.blue.basic.common.base.BlueChecker.isBlank;
-import static com.blue.basic.common.base.BlueChecker.isNotNull;
+import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.common.base.ConstantProcessor.assertRiskType;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
@@ -24,7 +23,7 @@ public final class RiskHit implements Serializable, Asserter {
     /**
      * member id str
      */
-    private String memberId;
+    private Long memberId;
 
     /**
      * target ip
@@ -32,9 +31,14 @@ public final class RiskHit implements Serializable, Asserter {
     private String ip;
 
     /**
-     * resource for intercept
+     * request method
      */
-    private String resourceKey;
+    private String method;
+
+    /**
+     * request uri
+     */
+    private String uri;
 
     /**
      * hit type
@@ -53,15 +57,16 @@ public final class RiskHit implements Serializable, Asserter {
      */
     private Long stamp;
 
-    public RiskHit(String memberId, String ip, String resourceKey, Integer hitType, Long illegalExpiresSecond, Long stamp) {
-        if (isBlank(memberId) && isBlank(ip))
+    public RiskHit(Long memberId, String ip, String method, String uri, Integer hitType, Long illegalExpiresSecond, Long stamp) {
+        if (isInvalidIdentity(memberId) && isBlank(ip))
             throw new BlueException(INVALID_PARAM);
 
         assertRiskType(hitType, false);
 
         this.memberId = memberId;
         this.ip = ip;
-        this.resourceKey = resourceKey;
+        this.method = method;
+        this.uri = uri;
         this.hitType = hitType;
         this.illegalExpiresSecond = illegalExpiresSecond;
         this.stamp = isNotNull(stamp) ? stamp : TIME_STAMP_GETTER.get();
@@ -69,17 +74,17 @@ public final class RiskHit implements Serializable, Asserter {
 
     @Override
     public void asserts() {
-        if (isBlank(this.memberId) || isBlank(this.ip))
+        if (isInvalidIdentity(this.memberId) && isBlank(this.ip))
             throw new BlueException(INVALID_PARAM);
 
         assertRiskType(this.hitType, false);
     }
 
-    public String getMemberId() {
+    public Long getMemberId() {
         return memberId;
     }
 
-    public void setMemberId(String memberId) {
+    public void setMemberId(Long memberId) {
         this.memberId = memberId;
     }
 
@@ -91,12 +96,20 @@ public final class RiskHit implements Serializable, Asserter {
         this.ip = ip;
     }
 
-    public String getResourceKey() {
-        return resourceKey;
+    public String getMethod() {
+        return method;
     }
 
-    public void setResourceKey(String resourceKey) {
-        this.resourceKey = resourceKey;
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
     }
 
     public Integer getHitType() {
@@ -128,7 +141,8 @@ public final class RiskHit implements Serializable, Asserter {
         return "RiskHit{" +
                 "memberId='" + memberId + '\'' +
                 ", ip='" + ip + '\'' +
-                ", resourceKey='" + resourceKey + '\'' +
+                ", method='" + method + '\'' +
+                ", uri='" + uri + '\'' +
                 ", hitType=" + hitType +
                 ", illegalExpiresSecond=" + illegalExpiresSecond +
                 ", stamp=" + stamp +

@@ -255,7 +255,7 @@ public final class BlueDataAccessGenerator {
         ShardingRuleConfiguration shardingRuleConfiguration = new ShardingRuleConfiguration();
 
         //process sharding db
-        processShardingDb(shardingRuleConfiguration, dataSources, existDatabases, dataAccessConf, identityConf);
+        processShardingAndForceDb(shardingRuleConfiguration, dataSources, existDatabases, dataAccessConf, identityConf);
         //process single db
         processSingleDb(shardingRuleConfiguration, dataSources, existDatabases, dataAccessConf, identityConf);
 
@@ -267,7 +267,7 @@ public final class BlueDataAccessGenerator {
     }
 
     /**
-     * process sharding db
+     * process sharding and force db
      *
      * @param shardingRuleConfiguration
      * @param dataSources
@@ -276,7 +276,7 @@ public final class BlueDataAccessGenerator {
      * @param identityConf
      */
     @SuppressWarnings("AlibabaMethodTooLong")
-    private static void processShardingDb(ShardingRuleConfiguration shardingRuleConfiguration, Map<String, DataSource> dataSources, Set<String> existDatabases, DataAccessConf dataAccessConf, IdentityConf identityConf) {
+    private static void processShardingAndForceDb(ShardingRuleConfiguration shardingRuleConfiguration, Map<String, DataSource> dataSources, Set<String> existDatabases, DataAccessConf dataAccessConf, IdentityConf identityConf) {
         if (isNull(shardingRuleConfiguration) || isNull(dataSources) || isNull(existDatabases) || isNull(dataAccessConf) || isNull(identityConf))
             throw new RuntimeException("shardingRuleConfiguration or dataSources or existDatabases or dataAccessConf or identityConf can't be null");
 

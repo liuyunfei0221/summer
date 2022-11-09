@@ -72,11 +72,6 @@ public final class RiskHitRecord implements Serializable {
     private Integer durationSeconds;
 
     /**
-     * resource for intercept
-     */
-    private String resourceKey;
-
-    /**
      * hit type
      *
      * @see com.blue.basic.constant.risk.RiskType
@@ -320,14 +315,6 @@ public final class RiskHitRecord implements Serializable {
         this.durationSeconds = durationSeconds;
     }
 
-    public String getResourceKey() {
-        return resourceKey;
-    }
-
-    public void setResourceKey(String resourceKey) {
-        this.resourceKey = resourceKey;
-    }
-
     public Integer getHitType() {
         return hitType;
     }
@@ -376,7 +363,6 @@ public final class RiskHitRecord implements Serializable {
                 ", existenceRequestBody=" + existenceRequestBody +
                 ", existenceResponseBody=" + existenceResponseBody +
                 ", durationSeconds=" + durationSeconds +
-                ", resourceKey='" + resourceKey + '\'' +
                 ", hitType=" + hitType +
                 ", illegalExpiresSecond=" + illegalExpiresSecond +
                 '}';

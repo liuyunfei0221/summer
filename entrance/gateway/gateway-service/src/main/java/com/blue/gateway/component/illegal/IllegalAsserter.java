@@ -91,7 +91,10 @@ public final class IllegalAsserter {
      */
     private final Function<IllegalMarkEvent, Mono<Boolean>>
             MARKER = event -> {
-        String resKey = ofNullable(event.getResourceKey()).orElse(ALL_RESOURCE);
+        String resKey = REQ_RES_KEY_GENERATOR.apply(
+                ofNullable(event.getMethod()).map(String::valueOf).orElse(EMPTY_VALUE.value),
+                ofNullable(event.getUri()).map(String::valueOf).orElse(EMPTY_VALUE.value));
+
         return zip(ofNullable(event.getMemberId())
                         .filter(BlueChecker::isNotBlank)
                         .map(MEMBER_KEY_WRAPPER)
@@ -105,7 +108,10 @@ public final class IllegalAsserter {
         ).flatMap(tuple2 -> just(tuple2.getT1() || tuple2.getT2()));
     },
             CLEARER = event -> {
-                String resKey = ofNullable(event.getResourceKey()).orElse(ALL_RESOURCE);
+                String resKey = REQ_RES_KEY_GENERATOR.apply(
+                        ofNullable(event.getMethod()).map(String::valueOf).orElse(EMPTY_VALUE.value),
+                        ofNullable(event.getUri()).map(String::valueOf).orElse(EMPTY_VALUE.value));
+
                 return zip(ofNullable(event.getMemberId())
                                 .filter(BlueChecker::isNotBlank)
                                 .map(MEMBER_KEY_WRAPPER)

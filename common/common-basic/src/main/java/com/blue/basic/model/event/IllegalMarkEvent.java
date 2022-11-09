@@ -23,9 +23,14 @@ public final class IllegalMarkEvent implements Serializable {
     private String ip;
 
     /**
-     * resource for intercept
+     * request method
      */
-    private String resourceKey;
+    private String method;
+
+    /**
+     * request uri
+     */
+    private String uri;
 
     /**
      * actions for intercept
@@ -40,10 +45,11 @@ public final class IllegalMarkEvent implements Serializable {
     public IllegalMarkEvent() {
     }
 
-    public IllegalMarkEvent(String memberId, String ip, String resourceKey, Boolean mark, Long illegalExpiresSecond) {
+    public IllegalMarkEvent(String memberId, String ip, String method, String uri, Boolean mark, Long illegalExpiresSecond) {
         this.memberId = memberId;
         this.ip = ip;
-        this.resourceKey = resourceKey;
+        this.method = method;
+        this.uri = uri;
         this.mark = mark;
         this.illegalExpiresSecond = illegalExpiresSecond;
     }
@@ -64,12 +70,20 @@ public final class IllegalMarkEvent implements Serializable {
         this.ip = ip;
     }
 
-    public String getResourceKey() {
-        return resourceKey;
+    public String getMethod() {
+        return method;
     }
 
-    public void setResourceKey(String resourceKey) {
-        this.resourceKey = resourceKey;
+    public void setMethod(String method) {
+        this.method = method;
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
     }
 
     public Boolean getMark() {
@@ -93,10 +107,11 @@ public final class IllegalMarkEvent implements Serializable {
         return "IllegalMarkEvent{" +
                 "memberId='" + memberId + '\'' +
                 ", ip='" + ip + '\'' +
-                ", resourceKey='" + resourceKey + '\'' +
+                ", method='" + method + '\'' +
+                ", uri='" + uri + '\'' +
                 ", mark=" + mark +
                 ", illegalExpiresSecond=" + illegalExpiresSecond +
                 '}';
     }
-
+    
 }

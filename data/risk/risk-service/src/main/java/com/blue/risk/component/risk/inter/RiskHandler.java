@@ -14,7 +14,7 @@ import org.springframework.lang.Nullable;
 public interface RiskHandler {
 
     /**
-     * handle event
+     * handle event / with treatment measures
      *
      * @param riskEvent
      * @param riskAsserted
@@ -23,7 +23,7 @@ public interface RiskHandler {
     RiskAsserted handle(RiskEvent riskEvent, @Nullable RiskAsserted riskAsserted);
 
     /**
-     * valid event
+     * valid event / without treatment measures
      *
      * @param riskEvent
      * @param riskAsserted

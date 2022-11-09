@@ -149,8 +149,7 @@ public final class SnowflakeIdentityGenerator {
         this.notAlarm = isNull(this.maximumTimeAlarm);
 
         ZoneId zoneId = ZoneId.of(TIME_ZONE);
-        LOGGER.info(
-                "Initialized SnowflakeIdentityGenerator successfully, snowIdGenParam = {}, dataCenter = {}, worker = {}, " +
+        LOGGER.info("Initialized SnowflakeIdentityGenerator successfully, snowIdGenParam = {}, dataCenter = {}, worker = {}, " +
                         "maxStepTimestamp = {}, maxSequence = {}, sequence = {}, stepSeconds = {}, bootTime = {}, lastTime = {}, stepTime = {}",
                 snowIdGenParam, dataCenter, worker, maxStepTimestamp, maxSequence, sequence, this.stepSeconds,
                 ofInstant(ofEpochSecond(bootSeconds), zoneId).format(DATE_TIME_FORMATTER),
@@ -168,7 +167,7 @@ public final class SnowflakeIdentityGenerator {
 
         if (stepSeconds + bootSeconds > maxStepTimestamp) {
             long maxTimeStamp = maxStepTimestamp + bootSeconds;
-            LOGGER.error("Maximum time to reach {} , !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", maxTimeStamp);
+            LOGGER.error("Critical error !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!, maximum time to reach {}", maxTimeStamp);
             synchronized (this) {
                 maximumTimeAlarm.accept(maxTimeStamp);
             }

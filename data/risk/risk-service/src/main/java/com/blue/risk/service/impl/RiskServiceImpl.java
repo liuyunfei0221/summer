@@ -257,7 +257,6 @@ public class RiskServiceImpl implements RiskService {
             riskHitRecord.setExistenceResponseBody(existenceResponseBody);
             riskHitRecord.setDurationSeconds(durationSeconds);
 
-            riskHitRecord.setResourceKey(hit.getResourceKey());
             riskHitRecord.setHitType(hit.getHitType());
             riskHitRecord.setIllegalExpiresSecond(hit.getIllegalExpiresSecond());
 

@@ -36,9 +36,10 @@ public final class SnowflakeDatabaseShardingAlgorithm implements PreciseSharding
         Integer index;
         for (IdentityToShardingMappingAttr attr : dataCenterToDatabaseMappings) {
             id = attr.getId();
-            index = attr.getIndex();
             if (isNull(id) || id < 0)
                 throw new IdentityException("id can't be less than 0");
+
+            index = attr.getIndex();
             if (isNull(index) || index < 0)
                 throw new IdentityException("index can't be less than 0");
 

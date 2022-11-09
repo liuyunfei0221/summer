@@ -33,7 +33,6 @@
         <result column="existence_request_body" jdbcType="INTEGER" property="existenceRequestBody"/>
         <result column="existence_response_body" jdbcType="INTEGER" property="existenceResponseBody"/>
         <result column="duration_seconds" jdbcType="INTEGER" property="durationSeconds"/>
-        <result column="resource_key" jdbcType="VARCHAR" property="resourceKey"/>
         <result column="hit_type" jdbcType="INTEGER" property="hitType"/>
         <result column="illegal_expires_second" jdbcType="BIGINT" property="illegalExpiresSecond"/>
     </resultMap>
@@ -42,7 +41,7 @@
         id
         , data_event_type, data_event_op_type, stamp, create_date, method, uri, real_uri, request_body, request_extra, response_status, response_body, response_extra, request_id, metadata, jwt, member_id,
         role_ids, credential_type, device_type, login_time, client_ip, user_agent, sec_key, request_un_decryption, response_un_encryption,existence_request_body, existence_response_body, duration_seconds,
-        resource_key, hit_type, illegal_expires_second
+        hit_type, illegal_expires_second
     </sql>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -77,8 +76,7 @@
         #{secKey,jdbcType=VARCHAR}, #{requestUnDecryption,jdbcType=INTEGER},
         #{responseUnEncryption,jdbcType=INTEGER}, #{existenceRequestBody,jdbcType=INTEGER},
         #{existenceResponseBody,jdbcType=INTEGER}, #{durationSeconds,jdbcType=INTEGER},
-        #{resourceKey,jdbcType=VARCHAR}, #{hitType,jdbcType=INTEGER},
-        #{illegalExpiresSecond,jdbcType=BIGINT})
+        #{hitType,jdbcType=INTEGER}, #{illegalExpiresSecond,jdbcType=BIGINT})
     </insert>
 
     <insert id="insertBatch" parameterType="java.util.List">
@@ -94,8 +92,7 @@
                 #{item.requestBody,jdbcType=VARCHAR}, #{item.requestExtra,jdbcType=VARCHAR},
                 #{item.responseStatus,jdbcType=INTEGER}, #{item.responseBody,jdbcType=VARCHAR},
                 #{item.responseExtra,jdbcType=VARCHAR}, #{item.requestId,jdbcType=VARCHAR},
-                #{item.metadata,jdbcType=VARCHAR},
-                #{item.jwt,jdbcType=VARCHAR}, #{item.memberId,jdbcType=BIGINT},
+                #{item.metadata,jdbcType=VARCHAR}, #{item.jwt,jdbcType=VARCHAR}, #{item.memberId,jdbcType=BIGINT},
                 #{item.roleIds,jdbcType=ARRAY,typeHandler=com.blue.risk.repository.type.ClickHouseLongArrayTypeHandler},
                 #{item.credentialType,jdbcType=VARCHAR}, #{item.deviceType,jdbcType=VARCHAR},
                 #{item.loginTime,jdbcType=BIGINT}, #{item.clientIp,jdbcType=VARCHAR},
@@ -103,8 +100,7 @@
                 #{item.secKey,jdbcType=VARCHAR}, #{item.requestUnDecryption,jdbcType=INTEGER},
                 #{item.responseUnEncryption,jdbcType=INTEGER}, #{item.existenceRequestBody,jdbcType=INTEGER},
                 #{item.existenceResponseBody,jdbcType=INTEGER}, #{item.durationSeconds,jdbcType=INTEGER},
-                #{item.resourceKey,jdbcType=VARCHAR}, #{item.hitType,jdbcType=INTEGER},
-                #{item.illegalExpiresSecond,jdbcType=BIGINT})
+                #{item.hitType,jdbcType=INTEGER}, #{item.illegalExpiresSecond,jdbcType=BIGINT})
             </foreach>
         </if>
     </insert>
@@ -198,10 +194,6 @@
             </if>
             <if test="durationSeconds != null">
                 duration_seconds,
-            </if>
-
-            <if test="resourceKey != null">
-                resource_key,
             </if>
             <if test="hitType != null">
                 hit_type,
@@ -297,9 +289,6 @@
             </if>
             <if test="durationSeconds != null">
                 #{durationSeconds,jdbcType=INTEGER},
-            </if>
-            <if test="resourceKey != null">
-                #{resourceKey,jdbcType=VARCHAR},
             </if>
             <if test="hitType != null">
                 #{hitType,jdbcType=INTEGER},
@@ -398,9 +387,6 @@
             <if test="durationSeconds != null">
                 duration_seconds = #{durationSeconds,jdbcType=INTEGER},
             </if>
-            <if test="resourceKey != null">
-                resource_key = #{resourceKey,jdbcType=VARCHAR},
-            </if>
             <if test="hitType != null">
                 hit_type = #{hitType,jdbcType=INTEGER},
             </if>
@@ -441,7 +427,6 @@
             existence_request_body  = #{existenceRequestBody,jdbcType=INTEGER},
             existence_response_body = #{existenceResponseBody,jdbcType=INTEGER},
             duration_seconds        = #{durationSeconds,jdbcType=INTEGER},
-            resource_key            = #{resourceKey,jdbcType=VARCHAR},
             hit_type                = #{hitType,jdbcType=INTEGER},
             illegal_expires_second  = #{illegalExpiresSecond,jdbcType=BIGINT}
         where id = #{id,jdbcType=BIGINT}

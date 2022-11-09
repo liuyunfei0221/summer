@@ -10,10 +10,10 @@ import com.blue.risk.event.producer.IllegalMarkProducer;
 import reactor.util.Logger;
 
 import static com.blue.basic.common.base.BlueChecker.isNull;
-import static com.blue.basic.common.base.CommonFunctions.REQ_RES_KEY_GENERATOR;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.risk.RiskType.INVALID_ACCESS_TOO_FREQUENT;
+import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -47,12 +47,17 @@ public class IllegalRequestValidateRiskHandler implements RiskHandler {
             i++;
             if (i % 9 == 0) {
                 try {
-                    illegalMarkProducer.send(new IllegalMarkEvent(EMPTY_VALUE.value, ip, REQ_RES_KEY_GENERATOR.apply(
-                            riskEvent.getMethod(), riskEvent.getUri()), true, 20L));
+                    RiskHit riskHit = new RiskHit(riskEvent.getMemberId(), ip, riskEvent.getMethod(), riskEvent.getUri(), RISK_TYPE.identity, 20L, TIME_STAMP_GETTER.get());
 
-                    riskAsserted.getHits().add(new RiskHit(null, ip, REQ_RES_KEY_GENERATOR.apply(
-                            riskEvent.getMethod(), riskEvent.getUri()),
-                            RISK_TYPE.identity, 20L, TIME_STAMP_GETTER.get()));
+                    //treatment measures
+                    illegalMarkProducer.send(new IllegalMarkEvent(
+                            ofNullable(riskHit.getMemberId()).map(String::valueOf).orElse(EMPTY_VALUE.value)
+                            , ip, riskHit.getMethod(), riskHit.getUri(), true, 20L));
+
+                    //result
+                    riskAsserted.setHit(true);
+                    riskAsserted.setInterrupt(false);
+                    riskAsserted.getHits().add(riskHit);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -74,8 +79,10 @@ public class IllegalRequestValidateRiskHandler implements RiskHandler {
             i++;
             if (i % 9 == 0) {
                 try {
-                    riskAsserted.getHits().add(new RiskHit(null, ip, REQ_RES_KEY_GENERATOR.apply(
-                            riskEvent.getMethod(), riskEvent.getUri()),
+                    //result
+                    riskAsserted.setHit(true);
+                    riskAsserted.setInterrupt(false);
+                    riskAsserted.getHits().add(new RiskHit(null, ip, riskEvent.getMethod(), riskEvent.getUri(),
                             RISK_TYPE.identity, 20L, TIME_STAMP_GETTER.get()));
                 } catch (Exception e) {
                     throw new RuntimeException(e);
