@@ -1,6 +1,7 @@
 package com.blue.analyze.component.statistics.inter;
 
-import java.util.Map;
+import com.blue.basic.constant.analyze.StatisticsType;
+import com.blue.basic.model.event.DataEvent;
 
 /**
  * statistics command interface
@@ -11,24 +12,24 @@ import java.util.Map;
 public interface StatisticsCommand {
 
     /**
-     * precedence
+     * analyze
      *
-     * @return
+     * @param dataEvent
      */
-    int getPrecedence();
-
-    /**
-     * analyze and package
-     *
-     * @param data
-     */
-    void analyzeAndPackage(Map<String, String> data);
+    void analyze(DataEvent dataEvent);
 
     /**
      * summary
      *
-     * @param data
+     * @param dataEvent
      */
-    void summary(Map<String, String> data);
+    void summary(DataEvent dataEvent);
+
+    /**
+     * handler type
+     *
+     * @return
+     */
+    StatisticsType targetType();
 
 }

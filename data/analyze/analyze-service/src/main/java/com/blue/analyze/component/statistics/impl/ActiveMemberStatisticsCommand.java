@@ -3,11 +3,13 @@ package com.blue.analyze.component.statistics.impl;
 import com.blue.analyze.component.statistics.inter.StatisticsCommand;
 import com.blue.analyze.service.inter.ActiveStatisticsService;
 import com.blue.basic.common.access.AccessProcessor;
+import com.blue.basic.constant.analyze.StatisticsType;
 import com.blue.basic.constant.common.BlueDataAttrKey;
 import com.blue.basic.model.common.Access;
+import com.blue.basic.model.event.DataEvent;
 import reactor.util.Logger;
 
-import java.util.Map;
+import java.util.Optional;
 
 import static com.blue.basic.constant.analyze.StatisticsRange.D;
 import static com.blue.basic.constant.analyze.StatisticsRange.M;
@@ -37,14 +39,11 @@ public class ActiveMemberStatisticsCommand implements StatisticsCommand {
     private static final String MEMBER_ID_KEY = MEMBER_ID.key;
 
     @Override
-    public int getPrecedence() {
-        return 0;
-    }
-
-    @Override
-    public void analyzeAndPackage(Map<String, String> data) {
+    public void analyze(DataEvent dataEvent) {
         try {
-            ofNullable(data.get(BlueDataAttrKey.ACCESS.key))
+            ofNullable(dataEvent)
+                    .map(DataEvent::getEntries)
+                    .map(es -> es.get(BlueDataAttrKey.ACCESS.key))
                     .map(AccessProcessor::jsonToAccess)
                     .map(Access::getId)
                     .filter(id -> id >= 1L)
@@ -59,17 +58,21 @@ public class ActiveMemberStatisticsCommand implements StatisticsCommand {
                                     LOGGER.error("activeStatisticsService.markActive(mid, MA, M) failed, t = {}", t);
                                     return just(false);
                                 }).toFuture().join();
-                        data.put(MEMBER_ID_KEY, String.valueOf(mid));
+
+                        Optional.of(dataEvent)
+                                .map(DataEvent::getEntries)
+                                .ifPresent(es -> es.put(MEMBER_ID_KEY, String.valueOf(mid)));
                     });
         } catch (Exception e) {
-            LOGGER.error("analyzeAndPackage(Map<String, String> data), data = {}, e = {}", data, e);
+            LOGGER.error("analyze, dataEvent = {}, e = {}", dataEvent, e);
         }
     }
 
     @Override
-    public void summary(Map<String, String> data) {
-        ofNullable(data)
-                .map(d -> d.get(MEMBER_ID_KEY))
+    public void summary(DataEvent dataEvent) {
+        ofNullable(dataEvent)
+                .map(DataEvent::getEntries)
+                .map(es -> es.get(MEMBER_ID_KEY))
                 .ifPresent(memberId -> {
                             LOGGER.info("dayActiveCount = " + activeStatisticsService.selectActiveSimple(MA, D)
                                     .onErrorResume(t -> {
@@ -85,4 +88,8 @@ public class ActiveMemberStatisticsCommand implements StatisticsCommand {
                 );
     }
 
+    @Override
+    public StatisticsType targetType() {
+        return MA;
+    }
 }

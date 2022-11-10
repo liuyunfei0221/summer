@@ -85,9 +85,7 @@ public class PhoneAndPwdSessionHandler implements SessionHandler {
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INVALID_ACCT_OR_PWD))))
                 .flatMap(credential ->
                         just(ofNullable(credential)
-                                .filter(c -> VALID.status == c.getStatus())
-                                .filter(c -> isNotBlank(c.getAccess()))
-                                .filter(c -> matchAccess(access, c.getAccess()))
+                                .filter(c -> VALID.status == c.getStatus() && isNotBlank(c.getAccess()) && matchAccess(access, c.getAccess()))
                                 .map(Credential::getMemberId)
                                 .orElseThrow(() -> new BlueException(INVALID_ACCT_OR_PWD)))
                 ).flatMap(rpcMemberBasicServiceConsumer::getMemberBasicInfo)

@@ -1,7 +1,6 @@
 package com.blue.analyze.component.statistics;
 
 import com.blue.analyze.component.statistics.inter.StatisticsCommand;
-import com.blue.basic.common.base.BlueChecker;
 import com.blue.basic.model.event.DataEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
@@ -16,6 +15,8 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 
+import static com.blue.basic.common.base.BlueChecker.isEmpty;
+import static com.blue.basic.common.base.BlueChecker.isNotNull;
 import static java.util.Comparator.comparingInt;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.toList;
@@ -46,25 +47,28 @@ public class StatisticsProcessor implements ApplicationListener<ContextRefreshed
      */
     private List<StatisticsCommand> commands;
 
-    private final Function<Map<String, String>, Boolean> PROCESSOR = data -> {
-        if (BlueChecker.isNotEmpty(data))
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+        ApplicationContext applicationContext = contextRefreshedEvent.getApplicationContext();
+        Map<String, StatisticsCommand> beansOfType = applicationContext.getBeansOfType(StatisticsCommand.class);
+        if (isEmpty(beansOfType))
+            throw new RuntimeException("commands is empty");
+
+        commands = beansOfType.values().stream()
+                .sorted(comparingInt(c -> c.targetType().precedence)).collect(toList());
+
+        LOGGER.info("commands = {}", commands);
+    }
+
+    private final Function<DataEvent, Boolean> PROCESSOR = dataEvent -> {
+        if (isNotNull(dataEvent))
             for (StatisticsCommand command : commands) {
-                command.analyzeAndPackage(data);
-                command.summary(data);
+                command.analyze(dataEvent);
+                command.summary(dataEvent);
             }
 
         return true;
     };
-
-    @Override
-    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        ApplicationContext applicationContext = contextRefreshedEvent.getApplicationContext();
-        commands = applicationContext.getBeansOfType(StatisticsCommand.class)
-                .values()
-                .stream().sorted(comparingInt(StatisticsCommand::getPrecedence)).collect(toList());
-
-        LOGGER.info("commands = {}", commands);
-    }
 
     /**
      * process and package data
@@ -73,7 +77,7 @@ public class StatisticsProcessor implements ApplicationListener<ContextRefreshed
      */
     public Mono<Boolean> process(DataEvent dataEvent) {
         LOGGER.info("Mono<Boolean> process(DataEvent dataEvent), dataEvent = {}", dataEvent);
-        return fromFuture(supplyAsync(() -> PROCESSOR.apply(dataEvent.getEntries()), executorService));
+        return fromFuture(supplyAsync(() -> PROCESSOR.apply(dataEvent), executorService));
     }
 
 }

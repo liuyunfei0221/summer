@@ -148,9 +148,10 @@ public class EmailVerifyWithAutoRegisterSessionHandler implements SessionHandler
 
                                             return synchronizedProcessor.handleSupWithSync(CREDENTIAL_UPDATE_SYNC_KEY_GEN.apply(email), () ->
                                                     just(roleService.getDefaultRole().getId())
-                                                            .flatMap(roleId -> just(registerService.registerMemberBasic(CREDENTIALS_GENERATOR.apply(email), roleId, source))
-                                                                    .flatMap(mbi ->
-                                                                            zip(authService.generateAuth(mbi.getId(), singletonList(roleId), EMAIL_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern()), just(mbi))))
+                                                            .flatMap(roleId ->
+                                                                    just(registerService.registerMemberBasic(CREDENTIALS_GENERATOR.apply(email), roleId, source))
+                                                                            .flatMap(mbi ->
+                                                                                    zip(authService.generateAuth(mbi.getId(), singletonList(roleId), EMAIL_VERIFY_AUTO_REGISTER.identity, loginParam.getDeviceType().intern()), just(mbi))))
                                             );
                                         }))
                                         .flatMap(tuple2 -> {

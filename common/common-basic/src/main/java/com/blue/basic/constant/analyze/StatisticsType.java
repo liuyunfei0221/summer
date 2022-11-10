@@ -1,5 +1,6 @@
 package com.blue.basic.constant.analyze;
 
+
 /**
  * statistics type
  *
@@ -10,20 +11,17 @@ public enum StatisticsType {
     /**
      * for member active
      */
-    MA("MA", "for member active");
+    MA("MA", 1, "Single interface access is too frequent");
 
-    /**
-     * identity
-     */
-        public final String identity;
+    public final String identity;
 
-    /**
-     * disc
-     */
+    public final int precedence;
+
     public final String disc;
 
-    StatisticsType(String identity, String disc) {
+    StatisticsType(String identity, int precedence, String disc) {
         this.identity = identity;
+        this.precedence = precedence;
         this.disc = disc;
     }
 

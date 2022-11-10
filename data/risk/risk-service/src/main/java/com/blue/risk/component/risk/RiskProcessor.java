@@ -56,8 +56,9 @@ public class RiskProcessor implements ApplicationListener<ContextRefreshedEvent>
             throw new RuntimeException("riskHandlers is empty");
 
         riskHandlers = beansOfType.values().stream()
-                .sorted(comparingInt(rh -> rh.targetType().precedence))
-                .collect(toList());
+                .sorted(comparingInt(rh -> rh.targetType().precedence)).collect(toList());
+
+        LOGGER.info("riskHandlers = {}", riskHandlers);
     }
 
     private final Function<RiskEvent, RiskAsserted>
@@ -91,7 +92,7 @@ public class RiskProcessor implements ApplicationListener<ContextRefreshedEvent>
 
     private final Function<RiskEvent, Mono<RiskAsserted>>
             EVENT_HANDLER = event ->
-            fromFuture(supplyAsync(() -> EVENT_HANDLER_CHAIN.apply(event), executorService)),
+                    fromFuture(supplyAsync(() -> EVENT_HANDLER_CHAIN.apply(event), executorService)),
             EVENT_VALIDATOR = event ->
                     fromFuture(supplyAsync(() -> EVENT_VALIDATOR_CHAIN.apply(event), executorService));
 

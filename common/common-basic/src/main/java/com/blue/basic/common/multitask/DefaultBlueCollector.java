@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.StampedLock;
 
-import static com.blue.basic.constant.common.SpecialLongElement.ZERO;
 import static io.netty.util.internal.ThreadLocalRandom.current;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
@@ -139,7 +138,7 @@ public final class DefaultBlueCollector<R> implements BlueCollector<R> {
          * @param k
          */
         void segmentAdd(K k) {
-            long stamp = ZERO.value;
+            long stamp = 0L;
             try {
                 stamp = SEGMENT_LOCK.tryWriteLock(WRITE_TIME_OUT, TIME_OUT_UNIT);
                 this.SEGMENT_COLLECT.add(k);
@@ -148,7 +147,7 @@ public final class DefaultBlueCollector<R> implements BlueCollector<R> {
                 this.SEGMENT_COLLECT.add(k);
                 LOGGER.error("void segmentAdd(K k) failed, k = {}, e = {}", k, e.toString());
             } finally {
-                if (ZERO.value != stamp) {
+                if (0L != stamp) {
                     SEGMENT_LOCK.unlockWrite(stamp);
                 }
             }
@@ -164,7 +163,7 @@ public final class DefaultBlueCollector<R> implements BlueCollector<R> {
             long optimisticReadStamp = SEGMENT_LOCK.tryOptimisticRead();
             List<K> collect = this.SEGMENT_COLLECT;
             if (!SEGMENT_LOCK.validate(optimisticReadStamp)) {
-                long stamp = ZERO.value;
+                long stamp = 0L;
                 try {
                     SEGMENT_LOCK.tryReadLock(READ_TIME_OUT, TIME_OUT_UNIT);
                     collect = this.SEGMENT_COLLECT;
@@ -174,7 +173,7 @@ public final class DefaultBlueCollector<R> implements BlueCollector<R> {
                 } catch (Exception e) {
                     LOGGER.error("List<K> segmentCollect() failed, e = {}", e.toString());
                 } finally {
-                    if (ZERO.value != stamp) {
+                    if (0L != stamp) {
                         SEGMENT_LOCK.unlockRead(stamp);
                     }
                 }

@@ -39,8 +39,7 @@ import static java.time.Instant.ofEpochSecond;
 import static java.time.LocalDate.ofInstant;
 import static java.time.ZoneId.systemDefault;
 import static java.util.Optional.ofNullable;
-import static reactor.core.publisher.Mono.just;
-import static reactor.core.publisher.Mono.justOrEmpty;
+import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -100,7 +99,7 @@ public class RiskServiceImpl implements RiskService {
     /**
      * data event -> risk event
      */
-    private final Function<DataEvent, RiskEvent> DATA_EVENT_2_RISK_EVENT = dataEvent -> {
+    private final Function<DataEvent, Mono<RiskEvent>> DATA_EVENT_2_RISK_EVENT = dataEvent -> {
         if (isNull(dataEvent))
             throw new BlueException(INVALID_PARAM);
 
@@ -135,29 +134,6 @@ public class RiskServiceImpl implements RiskService {
         riskEvent.setRequestId(ofNullable(entries.get(REQUEST_ID.key)).orElse(EMPTY_VALUE.value));
         riskEvent.setMetadata(ofNullable(entries.get(METADATA.key)).orElse(EMPTY_VALUE.value));
 
-        String jwt = ofNullable(entries.get(JWT.key)).orElse(EMPTY_VALUE.value);
-
-        riskEvent.setJwt(jwt);
-
-        try {
-            Access access = ofNullable(entries.get(ACCESS.key))
-                    .filter(BlueChecker::isNotBlank)
-                    .map(AccessProcessor::jsonToAccess)
-                    .orElseGet(() ->
-                            ofNullable(jwt)
-                                    .filter(BlueChecker::isNotBlank)
-                                    .map(a -> rpcAuthServiceConsumer.parseAccess(a).toFuture().join()).orElse(UNKNOWN_ACCESS));
-
-            riskEvent.setMemberId(access.getId());
-            riskEvent.setRoleIds(ofNullable(access.getRoleIds())
-                    .filter(BlueChecker::isNotEmpty).map(l -> l.toArray(Long[]::new)).orElse(EMPTY_ROLES));
-            riskEvent.setCredentialType(access.getCredentialType());
-            riskEvent.setDeviceType(access.getDeviceType());
-            riskEvent.setLoginTime(access.getLoginTime());
-        } catch (Exception e) {
-            LOGGER.error("entries = {}, e = {}", entries, e);
-        }
-
         riskEvent.setClientIp(ofNullable(entries.get(CLIENT_IP.key)).orElse(EMPTY_VALUE.value));
         riskEvent.setUserAgent(ofNullable(entries.get(USER_AGENT.key)).orElse(EMPTY_VALUE.value));
         riskEvent.setSecKey(ofNullable(entries.get(SEC_KEY.key)).orElse(EMPTY_VALUE.value));
@@ -167,15 +143,35 @@ public class RiskServiceImpl implements RiskService {
         riskEvent.setExistenceResponseBody(getBoolByBool(ofNullable(entries.get(EXISTENCE_RESPONSE_BODY.key)).map(Boolean::parseBoolean).orElse(TRUE.bool)).status);
         riskEvent.setDurationSeconds(ofNullable(entries.get(DURATION_SECONDS.key)).map(Integer::parseInt).orElse(0));
 
-        return riskEvent;
+        String jwt = ofNullable(entries.get(JWT.key)).orElse(EMPTY_VALUE.value);
+        riskEvent.setJwt(jwt);
+
+        return justOrEmpty(entries.get(ACCESS.key))
+                .filter(BlueChecker::isNotBlank)
+                .map(AccessProcessor::jsonToAccess)
+                .switchIfEmpty(defer(() ->
+                        justOrEmpty(jwt)
+                                .filter(BlueChecker::isNotBlank)
+                                .flatMap(a -> rpcAuthServiceConsumer.parseAccess(a))
+                                .switchIfEmpty(defer(() -> just(UNKNOWN_ACCESS)))
+                )).flatMap(access -> {
+                    riskEvent.setMemberId(access.getId());
+                    riskEvent.setRoleIds(ofNullable(access.getRoleIds())
+                            .filter(BlueChecker::isNotEmpty).map(l -> l.toArray(Long[]::new)).orElse(EMPTY_ROLES));
+                    riskEvent.setCredentialType(access.getCredentialType());
+                    riskEvent.setDeviceType(access.getDeviceType());
+                    riskEvent.setLoginTime(access.getLoginTime());
+
+                    return just(riskEvent);
+                });
     };
 
     /**
      * risk event -> records
      */
-    private final BiFunction<RiskEvent, List<RiskHit>, List<RiskHitRecord>> DATA_EVENT_2_RECORD_EVENTS = (event, hits) -> {
+    private final BiFunction<RiskEvent, List<RiskHit>, Mono<List<RiskHitRecord>>> DATA_EVENT_2_RECORD_EVENTS = (event, hits) -> {
         if (isNull(event) || isEmpty(hits))
-            throw new BlueException(INVALID_PARAM);
+            return error(() -> new BlueException(INVALID_PARAM));
 
         String dataEventType = ofNullable(event.getDataEventType())
                 .filter(BlueChecker::isNotBlank).orElse(EMPTY_VALUE.value).intern();
@@ -264,7 +260,7 @@ public class RiskServiceImpl implements RiskService {
             riskHitRecords.add(riskHitRecord);
         }
 
-        return riskHitRecords;
+        return just(riskHitRecords);
     };
 
     private final BiFunction<RiskEvent, RiskAsserted, Mono<Boolean>> EVENTS_INSERTER = (riskEvent, riskAsserted) -> {
@@ -276,14 +272,12 @@ public class RiskServiceImpl implements RiskService {
         if (!riskAsserted.getHit() || isEmpty(hits))
             return just(false);
 
-        try {
-            List<RiskHitRecord> riskHitRecords = DATA_EVENT_2_RECORD_EVENTS.apply(riskEvent, hits);
-            return riskHitRecordService.insertRiskHitRecords(riskHitRecords);
-        } catch (Exception e) {
-            LOGGER.error("riskEvent = {}, hits = {}, e = {}", riskEvent, hits, e);
-
-            return just(false);
-        }
+        return DATA_EVENT_2_RECORD_EVENTS.apply(riskEvent, hits)
+                .flatMap(riskHitRecordService::insertRiskHitRecords)
+                .onErrorResume(t -> {
+                    LOGGER.error("riskEvent = {}, hits = {}, t = {}", riskEvent, hits, t);
+                    return just(false);
+                });
     };
 
     @Override
@@ -303,7 +297,7 @@ public class RiskServiceImpl implements RiskService {
     public Mono<RiskAsserted> handleDataEvent(DataEvent dataEvent) {
         LOGGER.info("dataEvent = {}", dataEvent);
 
-        return justOrEmpty(dataEvent).map(DATA_EVENT_2_RISK_EVENT).flatMap(this::handleRiskEvent);
+        return justOrEmpty(dataEvent).flatMap(DATA_EVENT_2_RISK_EVENT).flatMap(this::handleRiskEvent);
     }
 
     @Override
@@ -323,7 +317,7 @@ public class RiskServiceImpl implements RiskService {
     public Mono<RiskAsserted> validateDataEvent(DataEvent dataEvent) {
         LOGGER.info("dataEvent = {}", dataEvent);
 
-        return justOrEmpty(dataEvent).map(DATA_EVENT_2_RISK_EVENT).flatMap(this::validateRiskEvent);
+        return justOrEmpty(dataEvent).flatMap(DATA_EVENT_2_RISK_EVENT).flatMap(this::validateRiskEvent);
     }
 
 }

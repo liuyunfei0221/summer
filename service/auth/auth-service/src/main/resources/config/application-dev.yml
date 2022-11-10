@@ -514,7 +514,7 @@ consumers:
       batch-receive-max-num-messages: -1
       batch-receive-max-num-bytes: 10485760
       batch-receive-timeout-millis: 100
-      poll-duration-mills: 1000
+      poll-duration-mills: 50
       working-threads: 2
       enable-negative-acknowledge: true
     system-authority-infos-refresh:
@@ -562,7 +562,7 @@ consumers:
       batch-receive-max-num-messages: -1
       batch-receive-max-num-bytes: 10485760
       batch-receive-timeout-millis: 100
-      poll-duration-mills: 1000
+      poll-duration-mills: 50
       working-threads: 2
       enable-negative-acknowledge: true
     invalid-auth:
@@ -610,7 +610,7 @@ consumers:
       batch-receive-max-num-messages: -1
       batch-receive-max-num-bytes: 10485760
       batch-receive-timeout-millis: 100
-      poll-duration-mills: 1000
+      poll-duration-mills: 50
       working-threads: 2
       enable-negative-acknowledge: true
 
