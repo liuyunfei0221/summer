@@ -1,5 +1,6 @@
 package com.blue.lake.repository.mapper;
 
+import com.blue.lake.model.OptEventCondition;
 import com.blue.lake.repository.entity.OptEvent;
 import org.apache.ibatis.annotations.Param;
 
@@ -27,6 +28,6 @@ public interface OptEventMapper {
 
     int updateByPrimaryKey(OptEvent record);
 
-    List<OptEvent> selectByRowsAndSearchAfter(@Param("rows") long rows, @Param("searchAfter") Long searchAfter);
+    List<OptEvent> selectBySearchAfterAndCondition(@Param("rows") Long rows, @Param("optEventCondition") OptEventCondition optEventCondition, @Param("column") String column, @Param("comparison") String comparison, @Param("searchAfter") Long searchAfter);
 
 }

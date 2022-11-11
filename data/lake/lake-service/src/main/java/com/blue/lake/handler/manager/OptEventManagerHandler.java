@@ -17,6 +17,8 @@ import static reactor.core.publisher.Mono.defer;
 import static reactor.core.publisher.Mono.error;
 
 /**
+ * opt event manager handler
+ *
  * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc"})

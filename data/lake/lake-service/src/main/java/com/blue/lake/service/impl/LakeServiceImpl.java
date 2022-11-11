@@ -1,11 +1,8 @@
 package com.blue.lake.service.impl;
 
 import com.blue.basic.common.base.BlueChecker;
-import com.blue.basic.model.common.ScrollModelRequest;
-import com.blue.basic.model.common.ScrollModelResponse;
 import com.blue.basic.model.event.DataEvent;
 import com.blue.basic.model.exps.BlueException;
-import com.blue.lake.repository.entity.OptEvent;
 import com.blue.lake.service.inter.LakeService;
 import com.blue.lake.service.inter.OptEventService;
 import org.springframework.stereotype.Service;
@@ -16,7 +13,6 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.blue.basic.common.base.BlueChecker.isEmpty;
-import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static java.util.Optional.ofNullable;
 import static reactor.core.publisher.Mono.error;
@@ -58,21 +54,6 @@ public class LakeServiceImpl implements LakeService {
             return error(() -> new BlueException(EMPTY_PARAM));
 
         return EVENTS_INSERTER.apply(dataEvents);
-    }
-
-    /**
-     * select by search after
-     *
-     * @param scrollModelRequest
-     * @return
-     */
-    @Override
-    public Mono<ScrollModelResponse<OptEvent, Long>> selectEventScrollByScrollAndCursor(ScrollModelRequest<Void, Long> scrollModelRequest) {
-        LOGGER.info("scrollModelRequest = {}", scrollModelRequest);
-        if (isNull(scrollModelRequest))
-            return error(() -> new BlueException(EMPTY_PARAM));
-
-        return optEventService.selectOptEventScrollByScrollAndCursor(scrollModelRequest);
     }
 
 }

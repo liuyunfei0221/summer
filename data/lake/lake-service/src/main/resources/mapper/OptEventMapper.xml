@@ -408,18 +408,97 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <select id="selectByRowsAndSearchAfter" resultMap="BaseResultMap">
+    <sql id="Opt_Event_Conditions">
+        <where>
+            <if test="optEventCondition != null and optEventCondition.dataEventType != null and optEventCondition.dataEventType != ''">
+                AND
+                data_event_type = #{optEventCondition.dataEventType,jdbcType=VARCHAR}
+            </if>
+            <if test="optEventCondition != null and optEventCondition.dataEventOpType != null and optEventCondition.dataEventOpType != ''">
+                AND
+                data_event_op_type = #{optEventCondition.dataEventOpType,jdbcType=VARCHAR}
+            </if>
+            <if test="optEventCondition != null and optEventCondition.stampBegin != null">
+                AND
+                stamp &gt;= #{optEventCondition.stampBegin,jdbcType=BIGINT}
+            </if>
+            <if test="optEventCondition != null and optEventCondition.stampBegin != null">
+                AND
+                stamp &lt;= #{optEventCondition.stampBegin,jdbcType=BIGINT}
+            </if>
+            <if test="optEventCondition != null and optEventCondition.method != null and optEventCondition.method != ''">
+                AND
+                method = #{optEventCondition.method,jdbcType=VARCHAR}
+            </if>
+            <if test="optEventCondition != null and optEventCondition.uri != null and optEventCondition.uri != ''">
+                AND
+                uri = #{optEventCondition.uri,jdbcType=VARCHAR}
+            </if>
+            <if test="optEventCondition != null and optEventCondition.realUri != null and optEventCondition.realUri != ''">
+                AND
+                real_uri = #{optEventCondition.realUri,jdbcType=VARCHAR}
+            </if>
+            <if test="optEventCondition != null and optEventCondition.responseStatus != null">
+                AND
+                response_status = #{optEventCondition.responseStatus,jdbcType=INTEGER}
+            </if>
+            <if test="optEventCondition != null and optEventCondition.memberId != null">
+                AND
+                member_id = #{optEventCondition.memberId,jdbcType=BIGINT}
+            </if>
+            <if test="optEventCondition != null and optEventCondition.roleId != null">
+                AND
+                has(role_ids,#{optEventCondition.roleId,jdbcType=BIGINT})
+            </if>
+            <if test="optEventCondition != null and optEventCondition.credentialType != null and optEventCondition.credentialType != ''">
+                AND
+                credential_type = #{optEventCondition.credentialType,jdbcType=VARCHAR}
+            </if>
+            <if test="optEventCondition != null and optEventCondition.deviceType != null and optEventCondition.deviceType != ''">
+                AND
+                device_type = #{optEventCondition.deviceType,jdbcType=VARCHAR}
+            </if>
+            <if test="optEventCondition != null and optEventCondition.loginTimeBegin != null">
+                AND
+                login_time &gt;= #{optEventCondition.loginTimeBegin,jdbcType=BIGINT}
+            </if>
+            <if test="optEventCondition != null and optEventCondition.loginTimeEnd != null">
+                AND
+                login_time &lt;= #{optEventCondition.loginTimeEnd,jdbcType=BIGINT}
+            </if>
+            <if test="optEventCondition != null and optEventCondition.clientIp != null and optEventCondition.clientIp != ''">
+                AND
+                client_ip = #{optEventCondition.clientIp,jdbcType=VARCHAR}
+            </if>
+            <if test="optEventCondition != null and optEventCondition.userAgent != null and optEventCondition.userAgent != ''">
+                AND
+                user_agent = #{optEventCondition.userAgent,jdbcType=VARCHAR}
+            </if>
+            <if test="optEventCondition != null and optEventCondition.durationSecondsMin != null">
+                AND
+                duration_seconds = #{optEventCondition.durationSecondsMin,jdbcType=BIGINT}
+            </if>
+            <if test="optEventCondition != null and optEventCondition.durationSecondsMax != null">
+                AND
+                duration_seconds = #{optEventCondition.durationSecondsMax,jdbcType=BIGINT}
+            </if>
+            <if test="column != null and comparison != null and searchAfter != null and searchAfter > 0">
+                AND
+                ${column} ${comparison} #{searchAfter,jdbcType=BIGINT}
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectBySearchAfterAndCondition" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM
         opt_event
-        <if test="searchAfter != null and searchAfter > 0">
-            <where>
-                id &lt; #{searchAfter.id,jdbcType=BIGINT}
-            </where>
+        <include refid="Opt_Event_Conditions"/>
+        <if test="optEventCondition != null and optEventCondition.sortAttribute != null and optEventCondition.sortAttribute != '' and optEventCondition.sortType != null and optEventCondition.sortType != ''">
+            ORDER BY
+            ${optEventCondition.sortAttribute} ${optEventCondition.sortType}
         </if>
-        ORDER BY
-        stamp DESC
         LIMIT #{rows,jdbcType=BIGINT}
     </select>
 

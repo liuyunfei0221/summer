@@ -14,7 +14,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
- * opt event router
+ * opt event manager router
  *
  * @author liuyunfei
  */
@@ -22,12 +22,12 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 public class OptEventManagerRoute {
 
     @Bean
-    RouterFunction<ServerResponse> optEventRouter(OptEventManagerHandler eventManagerHandler) {
+    RouterFunction<ServerResponse> optEventRouter(OptEventManagerHandler optEventManagerHandler) {
 
         RequestPredicate pathPredicate = path("/blue-lake/manager");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/events", accept(APPLICATION_JSON), eventManagerHandler::scroll)
+                .POST("/events", accept(APPLICATION_JSON), optEventManagerHandler::scroll)
                 .build();
 
         return nest(pathPredicate, routerFunction);

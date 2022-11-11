@@ -237,7 +237,8 @@ public class EventRecordServiceImpl implements EventRecordService {
                 .map(eventRecords ->
                         isNotEmpty(eventRecords) ?
                                 new ScrollModelResponse<>(eventRecords.stream().map(EVENT_RECORD_2_EVENT_RECORD_INFO_CONVERTER).collect(toList()),
-                                        parseSearchAfter(eventRecords, attachment -> String.valueOf(attachment.getId())))
+                                        parseSearchAfter(eventRecords, ofNullable(scrollModelRequest.getCondition()).map(EventRecordCondition::getSortType).orElse(DESC.sortType.identity),
+                                                attachment -> String.valueOf(attachment.getId())))
                                 :
                                 new ScrollModelResponse<>(emptyList(), ""));
     }

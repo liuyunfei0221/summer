@@ -5,6 +5,7 @@ import com.blue.basic.model.common.ScrollModelRequest;
 import com.blue.basic.model.common.ScrollModelResponse;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
+import com.blue.risk.constant.RiskHitRecordSortAttribute;
 import com.blue.risk.repository.entity.RiskHitRecord;
 import com.blue.risk.repository.mapper.RiskHitRecordMapper;
 import com.blue.risk.service.inter.RiskHitRecordService;
@@ -76,7 +77,7 @@ public class RiskHitRecordServiceImpl implements RiskHitRecordService {
         List<RiskHitRecord> hitRecords = riskHitRecordMapper.selectByRowsAndSearchAfter(scrollModelRequest.getRows(), scrollModelRequest.getCursor());
 
         return isNotEmpty(hitRecords) ?
-                just(new ScrollModelResponse<>(hitRecords, parseSearchAfter(hitRecords, RiskHitRecord::getId)))
+                just(new ScrollModelResponse<>(hitRecords, parseSearchAfter(hitRecords, RiskHitRecordSortAttribute.ID.column, RiskHitRecord::getId)))
                 :
                 just(new ScrollModelResponse<>(emptyList(), null));
     }

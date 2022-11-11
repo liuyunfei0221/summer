@@ -9,6 +9,8 @@ import com.blue.basic.model.event.DataEvent;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.lake.config.deploy.NestingResponseDeploy;
+import com.blue.lake.constant.OptEventSortAttribute;
+import com.blue.lake.model.OptEventCondition;
 import com.blue.lake.remote.consumer.RpcAuthServiceConsumer;
 import com.blue.lake.repository.entity.OptEvent;
 import com.blue.lake.repository.mapper.OptEventMapper;
@@ -24,17 +26,23 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.common.base.ConstantProcessor.getBoolByBool;
 import static com.blue.basic.constant.common.BlueBoolean.TRUE;
 import static com.blue.basic.constant.common.BlueDataAttrKey.*;
+import static com.blue.basic.constant.common.ComparisonType.GREATER_THAN;
+import static com.blue.basic.constant.common.ComparisonType.LESS_THAN;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.basic.constant.common.ResponseElement.OK;
+import static com.blue.basic.constant.common.SortType.DESC;
 import static com.blue.basic.constant.common.SpecialAccess.VISITOR;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.common.SummerAttr.DATE_FORMATTER;
+import static com.blue.database.common.ConditionSortProcessor.process;
 import static com.blue.database.common.SearchAfterProcessor.parseSearchAfter;
 import static java.time.Instant.ofEpochSecond;
 import static java.time.LocalDate.ofInstant;
@@ -42,6 +50,7 @@ import static java.time.ZoneId.systemDefault;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
@@ -96,6 +105,17 @@ public class OptEventServiceImpl implements OptEventService {
     private final Access UNKNOWN_ACCESS = VISITOR.access;
 
     private final Long[] EMPTY_ROLES = UNKNOWN_ACCESS.getRoleIds().toArray(Long[]::new);
+
+    private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(OptEventSortAttribute.values())
+            .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
+
+    private static final UnaryOperator<OptEventCondition> CONDITION_PROCESSOR = c -> {
+        OptEventCondition oec = isNotNull(c) ? c : new OptEventCondition();
+
+        process(oec, SORT_ATTRIBUTE_MAPPING, OptEventSortAttribute.STAMP.column);
+
+        return oec;
+    };
 
     /**
      * data event -> option event
@@ -208,15 +228,20 @@ public class OptEventServiceImpl implements OptEventService {
      * @return
      */
     @Override
-    public Mono<ScrollModelResponse<OptEvent, Long>> selectOptEventScrollByScrollAndCursor(ScrollModelRequest<Void, Long> scrollModelRequest) {
+    public Mono<ScrollModelResponse<OptEvent, Long>> selectOptEventScrollByScrollAndCursor(ScrollModelRequest<OptEventCondition, Long> scrollModelRequest) {
         LOGGER.info("scrollModelRequest = {}", scrollModelRequest);
         if (isNull(scrollModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        List<OptEvent> optEvents = optEventMapper.selectByRowsAndSearchAfter(scrollModelRequest.getRows(), scrollModelRequest.getCursor());
+        OptEventCondition optEventCondition = CONDITION_PROCESSOR.apply(scrollModelRequest.getCondition());
+
+        String comparison = DESC.identity.equals(optEventCondition.getSortType()) ? LESS_THAN.identity : GREATER_THAN.identity;
+
+        List<OptEvent> optEvents = optEventMapper.selectBySearchAfterAndCondition(scrollModelRequest.getRows(), optEventCondition, OptEventSortAttribute.ID.column, comparison, scrollModelRequest.getCursor());
 
         return isNotEmpty(optEvents) ?
-                just(new ScrollModelResponse<>(optEvents, parseSearchAfter(optEvents, OptEvent::getId)))
+                just(new ScrollModelResponse<>(optEvents, parseSearchAfter(optEvents,
+                        ofNullable(optEventCondition.getSortType()).orElse(DESC.identity), OptEvent::getId)))
                 :
                 just(new ScrollModelResponse<>(emptyList(), null));
     }

@@ -20,7 +20,7 @@ public enum AttachmentSortAttribute {
     /**
      * createTime
      */
-    CREATE_TIME("createTime", "create_time");
+    CREATE_TIME("createTime", "createTime");
 
     public final String attribute;
 

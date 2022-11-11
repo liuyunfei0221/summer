@@ -417,7 +417,7 @@ dubbo:
 
 
 nesting:
-  uris: [ /blue-risk/manager/records ]
+  uris: [ /blue-lake/manager/events, /blue-risk/manager/records ]
   statuses: [ 200 ]
   response: nesting dolls are prohibited
 

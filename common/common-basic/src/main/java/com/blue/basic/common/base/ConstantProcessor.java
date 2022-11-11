@@ -189,6 +189,12 @@ public final class ConstantProcessor {
             of(SortType.values()).collect(toMap(t -> t.identity, identity(), (a, b) -> a));
 
     /**
+     * valid comparison type identity and comparison mapping
+     */
+    private static final Map<String, ComparisonType> COMPARISON_TYPE_MAPPING =
+            of(ComparisonType.values()).collect(toMap(t -> t.identity, identity(), (a, b) -> a));
+
+    /**
      * valid bulletin type identity and type mapping
      */
     private static final Map<Integer, BulletinType> BULLETIN_TYPE_MAPPING =
@@ -546,6 +552,19 @@ public final class ConstantProcessor {
             return;
 
         if (isBlank(identity) || !SORT_TYPE_MAPPING.containsKey(identity))
+            throw new BlueException(INVALID_IDENTITY);
+    }
+
+    /**
+     * assert comparison type
+     *
+     * @param identity
+     */
+    public static void assertComparisonType(String identity, boolean nullable) {
+        if (nullable && isNull(identity))
+            return;
+
+        if (isBlank(identity) || !COMPARISON_TYPE_MAPPING.containsKey(identity))
             throw new BlueException(INVALID_IDENTITY);
     }
 
@@ -1107,6 +1126,23 @@ public final class ConstantProcessor {
             throw new BlueException(INVALID_IDENTITY);
 
         return sortType;
+    }
+
+    /**
+     * get comparison type by identity
+     *
+     * @param identity
+     * @return
+     */
+    public static ComparisonType getComparisonTypeByIdentity(String identity) {
+        if (isBlank(identity))
+            throw new BlueException(INVALID_IDENTITY);
+
+        ComparisonType comparisonType = COMPARISON_TYPE_MAPPING.get(identity);
+        if (isNull(comparisonType))
+            throw new BlueException(INVALID_IDENTITY);
+
+        return comparisonType;
     }
 
     /**

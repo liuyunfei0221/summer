@@ -299,7 +299,8 @@ public class AttachmentServiceImpl implements AttachmentService {
 
             return isNotEmpty(attachments) ?
                     new ScrollModelResponse<>(attachments.stream().map(a -> ATTACHMENT_2_ATTACHMENT_DETAIL_INFO_CONVERTER.apply(a, memberName)).collect(toList()),
-                            parseSearchAfter(attachments, attachment -> String.valueOf(attachment.getId())))
+                            parseSearchAfter(attachments, ofNullable(scrollModelRequest.getCondition()).map(AttachmentCondition::getSortType).orElse(DESC.sortType.identity),
+                                    attachment -> String.valueOf(attachment.getId())))
                     :
                     new ScrollModelResponse<>(emptyList(), "");
         });
@@ -335,7 +336,7 @@ public class AttachmentServiceImpl implements AttachmentService {
     public Mono<Long> countAttachmentByQuery(Query query) {
         LOGGER.info("query = {}", query);
         if (isNull(query))
-            return error(()->new BlueException(EMPTY_PARAM));
+            return error(() -> new BlueException(EMPTY_PARAM));
 
         return reactiveMongoTemplate.count(query, Attachment.class);
     }

@@ -28,7 +28,7 @@ public final class AttachmentCondition extends SortCondition implements Serializ
     private Long createTimeEnd;
 
     public AttachmentCondition() {
-        super(AttachmentSortAttribute.ID.attribute, DESC.identity);
+        super(AttachmentSortAttribute.CREATE_TIME.attribute, DESC.identity);
     }
 
     public AttachmentCondition(String sortAttribute, String sortType) {

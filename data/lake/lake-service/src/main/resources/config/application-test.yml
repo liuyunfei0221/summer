@@ -337,7 +337,7 @@ consumers:
       batch-receive-max-num-messages: -1
       batch-receive-max-num-bytes: 10485760
       batch-receive-timeout-millis: 100
-      poll-duration-mills: 50
+      poll-duration-mills: 1000
       working-threads: 2
       enable-negative-acknowledge: true
 
@@ -387,7 +387,7 @@ dubbo:
 
 
 nesting:
-  uris: [ /blue-lake/manager/events ]
+  uris: [ /blue-lake/manager/events, /blue-risk/manager/records ]
   statuses: [ 200 ]
   response: nesting dolls are prohibited
 

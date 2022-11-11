@@ -1,18 +1,15 @@
 package com.blue.mongo.common;
 
 
-import org.springframework.data.mongodb.core.query.Criteria;
+import com.blue.basic.constant.common.SortType;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static com.blue.basic.common.base.BlueChecker.*;
-import static com.blue.mongo.constant.SortSchema.ASC;
+import static com.blue.basic.common.base.ConstantProcessor.assertSortType;
 import static com.blue.mongo.constant.SortSchema.DESC;
 import static java.util.Optional.ofNullable;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -23,72 +20,66 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
  * @author liuyunfei
  */
 @SuppressWarnings({"JavadocDeclaration", "unused"})
-public final class MongoSearchAfterProcessor {
+public final class MongoSearchAfterProcessor<T extends Serializable, A extends Serializable> {
 
     private static final String DEFAULT_SORT = DESC.sortType.identity;
 
-    private static final Map<String, BiFunction<String, Object, Criteria>> MAPPING = new HashMap<>(2, 2.0f);
-
-    static {
-        MAPPING.put(DESC.sortType.identity, (attr, searchAfter) ->
-                isNotBlank(attr) && isNotNull(searchAfter) ? where(attr).lt(searchAfter) : null);
-
-        MAPPING.put(ASC.sortType.identity, (attr, searchAfter) ->
-                isNotBlank(attr) && isNotNull(searchAfter) ? where(attr).gt(searchAfter) : null);
-    }
-
-    private static final Function<String, BiFunction<String, Object, Criteria>> CRITERIA_GENERATOR_GETTER = sort ->
-            ofNullable(sort).map(MAPPING::get).orElseGet(() -> MAPPING.get(DEFAULT_SORT));
-
     /**
      * package search after to query
      *
      * @param query
+     * @param sortType
      * @param sortAttribute
      * @param searchAfter
      * @param <A>
      */
-    public static <A extends Serializable> void packageSearchAfter(Query query, String sortAttribute, A searchAfter) {
-        if (isNotNull(query) && isNotBlank(sortAttribute) && isNotNull(searchAfter))
-            ofNullable(CRITERIA_GENERATOR_GETTER.apply(DEFAULT_SORT).apply(sortAttribute, searchAfter))
-                    .ifPresent(query::addCriteria);
-    }
+    public static <A extends Serializable> void packageSearchAfter(Query query, String sortType, String sortAttribute, A searchAfter) {
+        if (isNull(query) || isNotBlank(sortAttribute) || isNull(searchAfter))
+            return;
 
-    /**
-     * package search after to query
-     *
-     * @param query
-     * @param sort
-     * @param sortAttribute
-     * @param searchAfter
-     * @param <A>
-     */
-    public static <A extends Serializable> void packageSearchAfter(Query query, String sort, String sortAttribute, A searchAfter) {
-        if (isNotNull(query) && isNotBlank(sortAttribute) && isNotNull(searchAfter))
-            ofNullable(CRITERIA_GENERATOR_GETTER.apply(sort).apply(sortAttribute, searchAfter))
-                    .ifPresent(query::addCriteria);
+        assertSortType(sortType, true);
+        String tarSortType = ofNullable(sortType).orElse(DEFAULT_SORT);
+
+        if (SortType.DESC.identity.equals(tarSortType)) {
+            query.addCriteria(where(sortAttribute).lt(searchAfter));
+        } else if (SortType.ASC.identity.equals(tarSortType)) {
+            query.addCriteria(where(sortAttribute).gt(searchAfter));
+        }
     }
 
     /**
      * parse data and search after
      *
      * @param data
+     * @param sortType
      * @param searchAfterParser
      * @param <T>
      * @param <A>
      * @return
      */
-    public static <T extends Serializable, A extends Serializable> A parseSearchAfter(List<T> data, Function<T, A> searchAfterParser) {
+    public static <T extends Serializable, A extends Serializable> A parseSearchAfter(List<T> data, String sortType, Function<T, A> searchAfterParser) {
         if (isEmpty(data) || isNull(searchAfterParser))
             return null;
 
-        int index = data.size() - 1;
-
         T t;
         A searchAfter;
-        for (int i = 0; index >= i; index--)
-            if (isNotNull(t = data.get(index)) && isNotNull(searchAfter = searchAfterParser.apply(t)))
-                return searchAfter;
+
+        assertSortType(sortType, true);
+        String tarSortType = ofNullable(sortType).orElse(DEFAULT_SORT);
+
+        if (SortType.DESC.identity.equals(tarSortType)) {
+            int index = data.size() - 1;
+            for (int i = index; i >= 0; i--)
+                if (isNotNull(t = data.get(i)) && isNotNull(searchAfter = searchAfterParser.apply(t)))
+                    return searchAfter;
+        } else if (SortType.ASC.identity.equals(tarSortType)) {
+            int index = data.size() - 1;
+            for (int i = index; i >= 0; i--)
+                if (isNotNull(t = data.get(i)) && isNotNull(searchAfter = searchAfterParser.apply(t)))
+                    return searchAfter;
+        } else {
+            return null;
+        }
 
         return null;
     }

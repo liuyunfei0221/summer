@@ -189,7 +189,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
                                         .collect(toList()));
                             }).flatMap(downloadHistoryInfo ->
                                     just(new ScrollModelResponse<>(downloadHistoryInfo,
-                                            parseSearchAfter(downloadHistories, downloadHistory -> String.valueOf(downloadHistory.getId())))))
+                                            parseSearchAfter(downloadHistories, DESC.sortType.identity, downloadHistory -> String.valueOf(downloadHistory.getId())))))
                     :
                     just(new ScrollModelResponse<>(emptyList(), ""));
         });
