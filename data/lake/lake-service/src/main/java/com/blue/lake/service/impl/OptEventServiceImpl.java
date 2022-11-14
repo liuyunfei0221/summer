@@ -15,8 +15,10 @@ import com.blue.lake.remote.consumer.RpcAuthServiceConsumer;
 import com.blue.lake.repository.entity.OptEvent;
 import com.blue.lake.repository.mapper.OptEventMapper;
 import com.blue.lake.service.inter.OptEventService;
+import com.blue.lake.service.inter.ResourceService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
@@ -30,6 +32,7 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.common.base.CommonFunctions.REQ_RES_KEY_GENERATOR;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.common.base.ConstantProcessor.getBoolByBool;
 import static com.blue.basic.constant.common.BlueBoolean.TRUE;
@@ -49,7 +52,6 @@ import static java.time.LocalDate.ofInstant;
 import static java.time.ZoneId.systemDefault;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.core.publisher.Mono.*;
@@ -68,14 +70,17 @@ public class OptEventServiceImpl implements OptEventService {
 
     private RpcAuthServiceConsumer rpcAuthServiceConsumer;
 
+    private ResourceService resourceService;
+
     private BlueIdentityProcessor blueIdentityProcessor;
 
     private OptEventMapper optEventMapper;
 
     public OptEventServiceImpl(RpcAuthServiceConsumer rpcAuthServiceConsumer, BlueIdentityProcessor blueIdentityProcessor,
-                               OptEventMapper optEventMapper, NestingResponseDeploy nestingResponseDeploy) {
+                               ResourceService resourceService, OptEventMapper optEventMapper, NestingResponseDeploy nestingResponseDeploy) {
         this.rpcAuthServiceConsumer = rpcAuthServiceConsumer;
         this.blueIdentityProcessor = blueIdentityProcessor;
+        this.resourceService = resourceService;
         this.optEventMapper = optEventMapper;
 
         this.nestingRealUris = ofNullable(nestingResponseDeploy.getUris()).filter(uris -> !isEmpty(uris))
@@ -120,9 +125,9 @@ public class OptEventServiceImpl implements OptEventService {
     /**
      * data event -> option event
      */
-    public final Function<DataEvent, OptEvent> DATA_EVENT_2_OPT_EVENT_CONVERTOR = event -> {
+    public final Function<DataEvent, Mono<OptEvent>> DATA_EVENT_2_OPT_EVENT_CONVERTOR = (event) -> {
         if (isNull(event))
-            throw new BlueException(EMPTY_PARAM);
+            return error(() -> new BlueException(EMPTY_PARAM));
 
         OptEvent optEvent = new OptEvent();
 
@@ -142,6 +147,7 @@ public class OptEventServiceImpl implements OptEventService {
 
         String realUri = ofNullable(entries.get(REAL_URI.key)).orElse(EMPTY_VALUE.value);
         optEvent.setRealUri(realUri);
+
         optEvent.setRequestBody(ofNullable(entries.get(REQUEST_BODY.key)).orElse(EMPTY_VALUE.value));
         optEvent.setRequestExtra(ofNullable(entries.get(REQUEST_EXTRA.key)).orElse(EMPTY_VALUE.value));
 
@@ -189,22 +195,38 @@ public class OptEventServiceImpl implements OptEventService {
 
         optEvent.setId(blueIdentityProcessor.generate(OptEvent.class));
 
-        return optEvent;
+        return resourceService.getResourceInfoByResourceKey(REQ_RES_KEY_GENERATOR.apply(optEvent.getMethod(), optEvent.getUri()))
+                .map(ri -> {
+                    optEvent.setResourceId(ri.getId());
+                    optEvent.setService(ri.getModule());
+                    optEvent.setRelativeUri(ri.getRelativeUri());
+                    optEvent.setAbsoluteUri(ri.getAbsoluteUri());
+                    optEvent.setRelationView(ri.getRelationView());
+                    optEvent.setAuthenticate(getBoolByBool(ri.getAuthenticate()).status);
+                    optEvent.setType(ri.getType());
+                    optEvent.setName(ri.getName());
+
+                    return optEvent;
+                }).switchIfEmpty(defer(() -> just(optEvent)));
     };
 
-    private final Function<List<DataEvent>, Mono<Boolean>> EVENTS_INSERTER = dataEvents ->
-            justOrEmpty(dataEvents)
-                    .filter(BlueChecker::isNotEmpty)
-                    .map(des -> dataEvents.stream().map(DATA_EVENT_2_OPT_EVENT_CONVERTOR).collect(toList()))
-                    .map(oes -> {
-                        try {
-                            optEventMapper.insertBatch(oes);
-                            return true;
-                        } catch (Exception e) {
-                            LOGGER.info("optEventMapper.insertBatch() failed, dataEvents = {}, e = {}", dataEvents, e);
-                            return false;
-                        }
-                    }).switchIfEmpty(defer(() -> just(false)));
+    private final Function<List<DataEvent>, Mono<Boolean>> EVENTS_INSERTER = dataEvents -> {
+        if (isEmpty(dataEvents))
+            return just(false);
+
+        return Flux.fromIterable(dataEvents)
+                .flatMap(DATA_EVENT_2_OPT_EVENT_CONVERTOR)
+                .collectList()
+                .map(oes -> {
+                    try {
+                        optEventMapper.insertBatch(oes);
+                        return true;
+                    } catch (Exception e) {
+                        LOGGER.info("optEventMapper.insertBatch() failed, dataEvents = {}, e = {}", dataEvents, e);
+                        return false;
+                    }
+                }).switchIfEmpty(defer(() -> just(false)));
+    };
 
     /**
      * insert events

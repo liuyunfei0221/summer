@@ -163,8 +163,8 @@ fuzziness:
 
 
 highlight:
-  preTags: [<font color='red'>]
-  postTags: [</font>]
+  preTags: [ <font color='red'> ]
+  postTags: [ </font> ]
 
 
 redisson:
@@ -226,6 +226,7 @@ dubbo:
     organization: blue
     shutwait: 20s
     enable-file-cache: true
+    qos-enable: false
   protocol:
     name: dubbo
     host: localhost

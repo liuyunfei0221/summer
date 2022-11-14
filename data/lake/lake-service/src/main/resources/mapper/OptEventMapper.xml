@@ -33,12 +33,21 @@
         <result column="existence_request_body" jdbcType="INTEGER" property="existenceRequestBody"/>
         <result column="existence_response_body" jdbcType="INTEGER" property="existenceResponseBody"/>
         <result column="duration_seconds" jdbcType="INTEGER" property="durationSeconds"/>
+        <result column="resource_id" jdbcType="BIGINT" property="resourceId"/>
+        <result column="service" jdbcType="VARCHAR" property="service"/>
+        <result column="relative_uri" jdbcType="VARCHAR" property="relativeUri"/>
+        <result column="absolute_uri" jdbcType="VARCHAR" property="absoluteUri"/>
+        <result column="relation_view" jdbcType="VARCHAR" property="relationView"/>
+        <result column="authenticate" jdbcType="INTEGER" property="authenticate"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id
         , data_event_type, data_event_op_type, stamp, create_date, method, uri, real_uri, request_body, request_extra, response_status, response_body, response_extra, request_id, metadata, jwt, member_id,
-        role_ids, credential_type, device_type, login_time, client_ip, user_agent, sec_key, request_un_decryption, response_un_encryption,existence_request_body, existence_response_body, duration_seconds
+        role_ids, credential_type, device_type, login_time, client_ip, user_agent, sec_key, request_un_decryption, response_un_encryption, existence_request_body, existence_response_body, duration_seconds,
+        resource_id, service, relative_uri, absolute_uri, relation_view, authenticate, type, name
     </sql>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -72,7 +81,11 @@
         #{loginTime,jdbcType=BIGINT}, #{clientIp,jdbcType=VARCHAR}, #{userAgent,jdbcType=VARCHAR},
         #{secKey,jdbcType=VARCHAR}, #{requestUnDecryption,jdbcType=INTEGER},
         #{responseUnEncryption,jdbcType=INTEGER}, #{existenceRequestBody,jdbcType=INTEGER},
-        #{existenceResponseBody,jdbcType=INTEGER}, #{durationSeconds,jdbcType=INTEGER})
+        #{existenceResponseBody,jdbcType=INTEGER}, #{durationSeconds,jdbcType=INTEGER},
+        #{resourceId,jdbcType=BIGINT}, #{service,jdbcType=VARCHAR},
+        #{relativeUri,jdbcType=VARCHAR}, #{absoluteUri,jdbcType=VARCHAR},
+        #{relationView,jdbcType=VARCHAR}, #{authenticate,jdbcType=INTEGER},
+        #{type,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR})
     </insert>
 
     <insert id="insertBatch" parameterType="java.util.List">
@@ -96,7 +109,12 @@
                 #{item.userAgent,jdbcType=VARCHAR},
                 #{item.secKey,jdbcType=VARCHAR}, #{item.requestUnDecryption,jdbcType=INTEGER},
                 #{item.responseUnEncryption,jdbcType=INTEGER}, #{item.existenceRequestBody,jdbcType=INTEGER},
-                #{item.existenceResponseBody,jdbcType=INTEGER}, #{item.durationSeconds,jdbcType=INTEGER})
+                #{item.existenceResponseBody,jdbcType=INTEGER}, #{item.durationSeconds,jdbcType=INTEGER},
+                #{item.resourceId,jdbcType=BIGINT}, #{item.service,jdbcType=VARCHAR},
+                #{item.relativeUri,jdbcType=VARCHAR}, #{item.absoluteUri,jdbcType=VARCHAR},
+                #{item.relationView,jdbcType=VARCHAR}, #{item.authenticate,jdbcType=INTEGER},
+                #{item.type,jdbcType=INTEGER}, #{item.name,jdbcType=VARCHAR}
+                )
             </foreach>
         </if>
     </insert>
@@ -191,6 +209,30 @@
             <if test="durationSeconds != null">
                 duration_seconds,
             </if>
+            <if test="resourceId != null">
+                resource_id,
+            </if>
+            <if test="service != null">
+                service,
+            </if>
+            <if test="relativeUri != null">
+                relative_uri,
+            </if>
+            <if test="absoluteUri != null">
+                absolute_uri,
+            </if>
+            <if test="relationView != null">
+                relation_view,
+            </if>
+            <if test="authenticate != null">
+                authenticate,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -279,6 +321,30 @@
             </if>
             <if test="durationSeconds != null">
                 #{durationSeconds,jdbcType=INTEGER},
+            </if>
+            <if test="resourceId != null">
+                #{resourceId,jdbcType=BIGINT},
+            </if>
+            <if test="service != null">
+                #{service,jdbcType=VARCHAR},
+            </if>
+            <if test="relativeUri != null">
+                #{relativeUri,jdbcType=VARCHAR},
+            </if>
+            <if test="absoluteUri != null">
+                #{absoluteUri,jdbcType=VARCHAR},
+            </if>
+            <if test="relationView != null">
+                #{relationView,jdbcType=VARCHAR},
+            </if>
+            <if test="authenticate != null">
+                #{authenticate,jdbcType=INTEGER},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=INTEGER},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -371,6 +437,30 @@
             <if test="durationSeconds != null">
                 duration_seconds = #{durationSeconds,jdbcType=INTEGER},
             </if>
+            <if test="resourceId != null">
+                resource_id = #{resourceId,jdbcType=BIGINT},
+            </if>
+            <if test="service != null">
+                service = #{service,jdbcType=VARCHAR},
+            </if>
+            <if test="relativeUri != null">
+                relative_uri = #{relativeUri,jdbcType=VARCHAR},
+            </if>
+            <if test="absoluteUri != null">
+                absolute_uri = #{absoluteUri,jdbcType=VARCHAR},
+            </if>
+            <if test="relationView != null">
+                relation_view = #{relationView,jdbcType=VARCHAR},
+            </if>
+            <if test="authenticate != null">
+                authenticate = #{authenticate,jdbcType=INTEGER},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
@@ -404,7 +494,15 @@
             response_un_encryption  = #{responseUnEncryption,jdbcType=INTEGER},
             existence_request_body  = #{existenceRequestBody,jdbcType=INTEGER},
             existence_response_body = #{existenceResponseBody,jdbcType=INTEGER},
-            duration_seconds        = #{durationSeconds,jdbcType=INTEGER}
+            duration_seconds        = #{durationSeconds,jdbcType=INTEGER},
+            resource_id             = #{resourceId,jdbcType=BIGINT},
+            service                 = #{service,jdbcType=VARCHAR},
+            relative_uri            = #{relativeUri,jdbcType=VARCHAR},
+            absolute_uri            = #{absoluteUri,jdbcType=VARCHAR},
+            relation_view           = #{relationView,jdbcType=VARCHAR},
+            authenticate            = #{authenticate,jdbcType=INTEGER},
+            type                    = #{type,jdbcType=INTEGER},
+            name                    = #{name,jdbcType=VARCHAR}
         where id = #{id,jdbcType=BIGINT}
     </update>
 
@@ -481,6 +579,27 @@
             <if test="optEventCondition != null and optEventCondition.durationSecondsMax != null">
                 AND
                 duration_seconds = #{optEventCondition.durationSecondsMax,jdbcType=BIGINT}
+            </if>
+            <if test="resourceId != null">
+                resource_id = #{optEventCondition.resourceId,jdbcType=BIGINT},
+            </if>
+            <if test="service != null">
+                service = #{optEventCondition.service,jdbcType=VARCHAR},
+            </if>
+            <if test="relativeUri != null">
+                relative_uri = #{optEventCondition.relativeUri,jdbcType=VARCHAR},
+            </if>
+            <if test="absoluteUri != null">
+                absolute_uri = #{optEventCondition.absoluteUri,jdbcType=VARCHAR},
+            </if>
+            <if test="relationView != null">
+                relation_view = #{optEventCondition.relationView,jdbcType=VARCHAR},
+            </if>
+            <if test="authenticate != null">
+                authenticate = #{optEventCondition.authenticate,jdbcType=INTEGER},
+            </if>
+            <if test="type != null">
+                type = #{optEventCondition.type,jdbcType=INTEGER},
             </if>
             <if test="column != null and comparison != null and searchAfter != null and searchAfter > 0">
                 AND

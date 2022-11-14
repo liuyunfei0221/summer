@@ -1,21 +1,21 @@
-package com.blue.lake.model;
+package com.blue.risk.model;
 
 import com.blue.basic.model.common.SortCondition;
-import com.blue.lake.constant.OptEventSortAttribute;
+import com.blue.risk.constant.RiskHitRecordSortAttribute;
 
 import java.io.Serializable;
 
 import static com.blue.basic.constant.common.SortType.DESC;
 
 /**
- * opt event condition for select
+ * risk hit record condition for select
  *
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class OptEventCondition extends SortCondition implements Serializable {
+public final class RiskHitRecordCondition extends SortCondition implements Serializable {
 
-    private static final long serialVersionUID = -9095693550824632374L;
+    private static final long serialVersionUID = 3013093799949929772L;
 
     private String dataEventType;
 
@@ -53,52 +53,24 @@ public final class OptEventCondition extends SortCondition implements Serializab
 
     private Integer durationSecondsMax;
 
-    private Long resourceId;
-
     /**
-     * module/service name
-     */
-    private String service;
-
-    /**
-     * relative uri
-     */
-    private String relativeUri;
-
-    /**
-     * absolute uri
-     */
-    private String absoluteUri;
-
-    /**
-     * relation view
-     */
-    private String relationView;
-
-    /**
-     * authenticate 1.yes 0.no
+     * hit type
      *
-     * @see com.blue.basic.constant.common.BlueBoolean
+     * @see com.blue.basic.constant.risk.RiskType
      */
-    private Integer authenticate;
+    private Integer hitType;
 
-    /**
-     * @see com.blue.basic.constant.auth.ResourceType
-     */
-    private Integer type;
-
-    public OptEventCondition() {
-        super(OptEventSortAttribute.STAMP.attribute, DESC.identity);
+    public RiskHitRecordCondition() {
+        super(RiskHitRecordSortAttribute.STAMP.attribute, DESC.identity);
     }
 
-    public OptEventCondition(String sortAttribute, String sortType) {
+    public RiskHitRecordCondition(String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
     }
 
-    public OptEventCondition(String dataEventType, String dataEventOpType, Long stampBegin, Long stampEnd, String method, String uri, String realUri,
-                             Integer responseStatus, Long memberId, Long roleId, String credentialType, String deviceType, Long loginTimeBegin, Long loginTimeEnd,
-                             String clientIp, String userAgent, Integer durationSecondsMin, Integer durationSecondsMax, Long resourceId, String service, String relativeUri,
-                             String absoluteUri, String relationView, Integer authenticate, Integer type, String sortAttribute, String sortType) {
+    public RiskHitRecordCondition(String dataEventType, String dataEventOpType, Long stampBegin, Long stampEnd, String method, String uri, String realUri,
+                                  Integer responseStatus, Long memberId, Long roleId, String credentialType, String deviceType, Long loginTimeBegin, Long loginTimeEnd,
+                                  String clientIp, String userAgent, Integer durationSecondsMin, Integer durationSecondsMax, Integer hitType, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.dataEventType = dataEventType;
         this.dataEventOpType = dataEventOpType;
@@ -118,13 +90,7 @@ public final class OptEventCondition extends SortCondition implements Serializab
         this.userAgent = userAgent;
         this.durationSecondsMin = durationSecondsMin;
         this.durationSecondsMax = durationSecondsMax;
-        this.resourceId = resourceId;
-        this.service = service;
-        this.relativeUri = relativeUri;
-        this.absoluteUri = absoluteUri;
-        this.relationView = relationView;
-        this.authenticate = authenticate;
-        this.type = type;
+        this.hitType = hitType;
     }
 
     public String getDataEventType() {
@@ -271,65 +237,17 @@ public final class OptEventCondition extends SortCondition implements Serializab
         this.durationSecondsMax = durationSecondsMax;
     }
 
-    public Long getResourceId() {
-        return resourceId;
+    public Integer getHitType() {
+        return hitType;
     }
 
-    public void setResourceId(Long resourceId) {
-        this.resourceId = resourceId;
-    }
-
-    public String getService() {
-        return service;
-    }
-
-    public void setService(String service) {
-        this.service = service;
-    }
-
-    public String getRelativeUri() {
-        return relativeUri;
-    }
-
-    public void setRelativeUri(String relativeUri) {
-        this.relativeUri = relativeUri;
-    }
-
-    public String getAbsoluteUri() {
-        return absoluteUri;
-    }
-
-    public void setAbsoluteUri(String absoluteUri) {
-        this.absoluteUri = absoluteUri;
-    }
-
-    public String getRelationView() {
-        return relationView;
-    }
-
-    public void setRelationView(String relationView) {
-        this.relationView = relationView;
-    }
-
-    public Integer getAuthenticate() {
-        return authenticate;
-    }
-
-    public void setAuthenticate(Integer authenticate) {
-        this.authenticate = authenticate;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
+    public void setHitType(Integer hitType) {
+        this.hitType = hitType;
     }
 
     @Override
     public String toString() {
-        return "OptEventCondition{" +
+        return "RiskHitRecordCondition{" +
                 "dataEventType='" + dataEventType + '\'' +
                 ", dataEventOpType='" + dataEventOpType + '\'' +
                 ", stampBegin=" + stampBegin +
@@ -348,13 +266,9 @@ public final class OptEventCondition extends SortCondition implements Serializab
                 ", userAgent='" + userAgent + '\'' +
                 ", durationSecondsMin=" + durationSecondsMin +
                 ", durationSecondsMax=" + durationSecondsMax +
-                ", resourceId=" + resourceId +
-                ", service='" + service + '\'' +
-                ", relativeUri='" + relativeUri + '\'' +
-                ", absoluteUri='" + absoluteUri + '\'' +
-                ", relationView='" + relationView + '\'' +
-                ", authenticate=" + authenticate +
-                ", type=" + type +
+                ", hitType=" + hitType +
+                ", sortAttribute='" + sortAttribute + '\'' +
+                ", sortType='" + sortType + '\'' +
                 '}';
     }
 

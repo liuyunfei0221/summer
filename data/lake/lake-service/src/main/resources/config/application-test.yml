@@ -355,14 +355,14 @@ dubbo:
     check: false
     timeout: 60000
     simplified: false
-#  metadata-report:
-#    address: zookeeper://43.138.44.171
-#    port: 2181
-#    username: blue
-#    password: LiuZhiyi20200805
-#    timeout: 120000
-#    default: true
-#    check: false
+  #  metadata-report:
+  #    address: zookeeper://43.138.44.171
+  #    port: 2181
+  #    username: blue
+  #    password: LiuZhiyi20200805
+  #    timeout: 120000
+  #    default: true
+  #    check: false
   application:
     id: summer-lake
     name: summer-lake
@@ -370,6 +370,7 @@ dubbo:
     organization: blue
     shutwait: 20s
     enable-file-cache: true
+    qos-enable: false
   protocol:
     name: dubbo
     host: localhost
@@ -384,6 +385,10 @@ dubbo:
     timeout: 5000
     loadbalance: random
     check: false
+
+
+caffeine:
+  expires-second: 30
 
 
 nesting:

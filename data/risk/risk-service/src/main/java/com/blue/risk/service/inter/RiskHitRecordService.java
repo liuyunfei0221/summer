@@ -2,6 +2,7 @@ package com.blue.risk.service.inter;
 
 import com.blue.basic.model.common.ScrollModelRequest;
 import com.blue.basic.model.common.ScrollModelResponse;
+import com.blue.risk.model.RiskHitRecordCondition;
 import com.blue.risk.repository.entity.RiskHitRecord;
 import reactor.core.publisher.Mono;
 
@@ -29,6 +30,6 @@ public interface RiskHitRecordService {
      * @param scrollModelRequest
      * @return
      */
-    Mono<ScrollModelResponse<RiskHitRecord, Long>> selectRiskHitRecordScrollByScrollAndCursor(ScrollModelRequest<Void, Long> scrollModelRequest);
+    Mono<ScrollModelResponse<RiskHitRecord, Long>> selectRiskHitRecordScrollByScrollAndCursor(ScrollModelRequest<RiskHitRecordCondition, Long> scrollModelRequest);
 
 }

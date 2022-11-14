@@ -101,7 +101,6 @@ public class ResourceServiceImpl implements ResourceService {
     private final Supplier<List<Resource>> RESOURCES_WITH_CACHE_SUP = () ->
             synchronizedProcessor.handleSupByOrderedWithSetter(RESOURCES_REFRESH_SYNC.key, RESOURCES_REDIS_SUP, RESOURCES_DB_SUP, RESOURCES_REDIS_SETTER, BlueChecker::isNotEmpty);
 
-
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(ResourceSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
 

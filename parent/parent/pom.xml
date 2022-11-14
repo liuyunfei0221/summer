@@ -26,7 +26,7 @@
 
         <affinity.version>3.23.2</affinity.version>
         <apache.curator.version>5.4.0</apache.curator.version>
-        <apache-dubbo.version>3.1.1</apache-dubbo.version>
+        <apache-dubbo.version>3.1.2</apache-dubbo.version>
         <apache.poi.version>5.2.3</apache.poi.version>
         <apollo.version>2.0.1</apollo.version>
         <aspectj.version>1.9.9.1</aspectj.version>
@@ -47,7 +47,7 @@
         <kaptcha.version>2.3.2</kaptcha.version>
         <mysql-connector-java.version>8.0.31</mysql-connector-java.version>
         <pulsar.version>2.10.2</pulsar.version>
-        <redisson.version>3.17.7</redisson.version>
+        <redisson.version>3.18.0</redisson.version>
         <sharding-jdbc.version>4.1.1</sharding-jdbc.version>
         <seata-spring.version>1.4.2</seata-spring.version>
         <spring-mybatis.version>2.2.2</spring-mybatis.version>

@@ -1,9 +1,10 @@
 package com.blue.lake.repository.entity;
 
-import java.io.Serializable;
-import java.util.stream.Stream;
+import com.blue.basic.serializer.Long2StringSerializer;
+import com.blue.basic.serializer.LongArray2StringArraySerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import static java.util.stream.Collectors.toList;
+import java.io.Serializable;
 
 /**
  * option event
@@ -15,6 +16,7 @@ public class OptEvent implements Serializable {
 
     private static final long serialVersionUID = 2594284948929033405L;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long id;
 
     private String dataEventType;
@@ -47,14 +49,17 @@ public class OptEvent implements Serializable {
 
     private String jwt;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long memberId;
 
+    @JsonSerialize(using = LongArray2StringArraySerializer.class)
     private Long[] roleIds;
 
     private String credentialType;
 
     private String deviceType;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long loginTime;
 
     private String clientIp;
@@ -72,6 +77,44 @@ public class OptEvent implements Serializable {
     private Integer existenceResponseBody;
 
     private Integer durationSeconds;
+
+    @JsonSerialize(using = Long2StringSerializer.class)
+    private Long resourceId;
+
+    /**
+     * module/service name
+     */
+    private String service;
+
+    /**
+     * relative uri
+     */
+    private String relativeUri;
+
+    /**
+     * absolute uri
+     */
+    private String absoluteUri;
+
+    /**
+     * relation view
+     */
+    private String relationView;
+
+    /**
+     * authenticate 1.yes 0.no
+     */
+    private Integer authenticate;
+
+    /**
+     * @see com.blue.basic.constant.auth.ResourceType
+     */
+    private Integer type;
+
+    /**
+     * resource name
+     */
+    private String name;
 
     public Long getId() {
         return id;
@@ -305,39 +348,75 @@ public class OptEvent implements Serializable {
         this.durationSeconds = durationSeconds;
     }
 
+    public Long getResourceId() {
+        return resourceId;
+    }
+
+    public void setResourceId(Long resourceId) {
+        this.resourceId = resourceId;
+    }
+
+    public String getService() {
+        return service;
+    }
+
+    public void setService(String service) {
+        this.service = service;
+    }
+
+    public String getRelativeUri() {
+        return relativeUri;
+    }
+
+    public void setRelativeUri(String relativeUri) {
+        this.relativeUri = relativeUri;
+    }
+
+    public String getAbsoluteUri() {
+        return absoluteUri;
+    }
+
+    public void setAbsoluteUri(String absoluteUri) {
+        this.absoluteUri = absoluteUri;
+    }
+
+    public String getRelationView() {
+        return relationView;
+    }
+
+    public void setRelationView(String relationView) {
+        this.relationView = relationView;
+    }
+
+    public Integer getAuthenticate() {
+        return authenticate;
+    }
+
+    public void setAuthenticate(Integer authenticate) {
+        this.authenticate = authenticate;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public String toString() {
         return "OptEvent{" +
                 "id=" + id +
-                ", dataEventType='" + dataEventType + '\'' +
-                ", dataEventOpType='" + dataEventOpType + '\'' +
-                ", stamp=" + stamp +
-                ", createDate='" + createDate + '\'' +
-                ", method='" + method + '\'' +
-                ", uri='" + uri + '\'' +
-                ", realUri='" + realUri + '\'' +
-                ", requestBody='" + requestBody + '\'' +
-                ", requestExtra='" + requestExtra + '\'' +
-                ", responseStatus=" + responseStatus +
-                ", responseBody='" + responseBody + '\'' +
-                ", responseExtra='" + responseExtra + '\'' +
-                ", requestId='" + requestId + '\'' +
-                ", metadata='" + metadata + '\'' +
-                ", jwt='" + jwt + '\'' +
-                ", memberId=" + memberId +
-                ", roleIds=" + (roleIds != null ? Stream.of(roleIds).collect(toList()) : "[]") +
-                ", credentialType='" + credentialType + '\'' +
-                ", deviceType='" + deviceType + '\'' +
-                ", loginTime=" + loginTime +
-                ", clientIp='" + clientIp + '\'' +
-                ", userAgent='" + userAgent + '\'' +
-                ", secKey='" + secKey + '\'' +
-                ", requestUnDecryption=" + requestUnDecryption +
-                ", responseUnEncryption=" + responseUnEncryption +
-                ", existenceRequestBody=" + existenceRequestBody +
-                ", existenceResponseBody=" + existenceResponseBody +
-                ", durationSeconds=" + durationSeconds +
                 '}';
     }
-
+    
 }

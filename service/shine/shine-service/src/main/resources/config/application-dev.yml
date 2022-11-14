@@ -146,9 +146,6 @@ message:
   element-location: classpath:i18n/element
 
 
-
-
-
 caffeine:
   city-maximum-size: 32768
   expires-second: 30
@@ -226,6 +223,7 @@ dubbo:
     organization: blue
     shutwait: 20s
     enable-file-cache: true
+    qos-enable: false
   protocol:
     name: dubbo
     host: localhost

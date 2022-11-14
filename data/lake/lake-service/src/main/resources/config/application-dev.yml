@@ -346,6 +346,7 @@ dubbo:
     organization: blue
     shutwait: 20s
     enable-file-cache: true
+    qos-enable: false
   protocol:
     name: dubbo
     host: localhost
@@ -360,6 +361,10 @@ dubbo:
     timeout: 5000
     loadbalance: random
     check: false
+
+
+caffeine:
+  expires-second: 30
 
 
 nesting:

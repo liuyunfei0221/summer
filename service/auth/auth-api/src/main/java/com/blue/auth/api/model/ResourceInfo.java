@@ -70,7 +70,7 @@ public final class ResourceInfo implements Serializable {
     private Boolean existenceResponseBody;
 
     /**
-     * resource type: 1.client api 2.manager api 3.open api
+     * @see com.blue.basic.constant.auth.ResourceType
      */
     private Integer type;
 

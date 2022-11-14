@@ -43,6 +43,7 @@ import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_WRITE;
 import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
 import static com.blue.basic.constant.common.ResponseElement.*;
+import static com.blue.basic.constant.common.SpecialIntegerElement.ONE;
 import static com.blue.basic.constant.common.Status.VALID;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCacheAsyncCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
@@ -92,7 +93,7 @@ public class CountryServiceImpl implements CountryService {
                 AFTER_WRITE, this.executorService));
 
         allCountriesCache = generateCacheAsyncCache(new CaffeineConfParams(
-                1, Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
+                ONE.value, Duration.of(caffeineDeploy.getExpiresSecond(), SECONDS),
                 AFTER_WRITE, this.executorService));
     }
 

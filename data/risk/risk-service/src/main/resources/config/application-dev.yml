@@ -52,7 +52,7 @@ data:
       max-lifetime: 1800000
       max-pool-size: 4
       min-idle: 2
-      idle-timeout: 5
+      idle-timeout: 600000
       connection-test-query: SELECT 1
       is-read-only: false
       is-auto-commit: true
@@ -66,7 +66,7 @@ data:
       max-lifetime: 1800000
       max-pool-size: 4
       min-idle: 2
-      idle-timeout: 5
+      idle-timeout: 600000
       connection-test-query: SELECT 1
       is-read-only: false
       is-auto-commit: true
@@ -375,11 +375,12 @@ dubbo:
     owner: blue
     organization: blue
     shutwait: 20s
-    enable-file-cache: false
+    enable-file-cache: true
+    qos-enable: false
   protocol:
     name: dubbo
     host: 127.0.0.1
-    port: 56000
+    port: 56100
     accesslog: /usr/env/log/dubbo/risk/access.log
   provider:
     retries: 0

@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 
 import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.risk.constant.RiskTypeReference.SCROLL_MODEL_FOR_OPT_RECORD_TYPE;
+import static com.blue.risk.constant.RiskTypeReference.SCROLL_MODEL_FOR_RISK_HIT_RECORD_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.defer;
@@ -38,7 +38,7 @@ public class RiskHitRecordManagerHandler {
      * @return
      */
     public Mono<ServerResponse> scroll(ServerRequest serverRequest) {
-        return serverRequest.bodyToMono(SCROLL_MODEL_FOR_OPT_RECORD_TYPE)
+        return serverRequest.bodyToMono(SCROLL_MODEL_FOR_RISK_HIT_RECORD_TYPE)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
                 .flatMap(riskHitRecordService::selectRiskHitRecordScrollByScrollAndCursor)
                 .flatMap(smr ->

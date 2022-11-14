@@ -1,5 +1,6 @@
 package com.blue.risk.repository.mapper;
 
+import com.blue.risk.model.RiskHitRecordCondition;
 import com.blue.risk.repository.entity.RiskHitRecord;
 import org.apache.ibatis.annotations.Param;
 
@@ -28,5 +29,7 @@ public interface RiskHitRecordMapper {
     int updateByPrimaryKey(RiskHitRecord record);
 
     List<RiskHitRecord> selectByRowsAndSearchAfter(@Param("rows") long rows, @Param("searchAfter") Long searchAfter);
+
+    List<RiskHitRecord> selectBySearchAfterAndCondition(@Param("rows") Long rows, @Param("riskHitRecordCondition") RiskHitRecordCondition riskHitRecordCondition, @Param("column") String column, @Param("comparison") String comparison, @Param("searchAfter") Long searchAfter);
 
 }
