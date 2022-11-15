@@ -24,8 +24,7 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 import static com.blue.basic.common.base.BlueChecker.isNull;
-import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
-import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
+import static com.blue.basic.constant.common.ResponseElement.*;
 import static io.netty.buffer.ByteBufAllocator.DEFAULT;
 import static java.lang.String.valueOf;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -74,7 +73,7 @@ public final class MediaCommonFunctions extends CommonFunctions {
         if (throwable instanceof BlueException)
             throw (BlueException) throwable;
 
-        throw new RuntimeException(throwable);
+        throw new BlueException(INTERNAL_SERVER_ERROR);
     };
 
     public static final Function<byte[], Flux<DataBuffer>> BUFFER_FLUX_CONVERTER = bytes -> {
