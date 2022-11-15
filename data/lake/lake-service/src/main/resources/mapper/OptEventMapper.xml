@@ -4,6 +4,7 @@
 <mapper namespace="com.blue.lake.repository.mapper.OptEventMapper">
     <resultMap id="BaseResultMap" type="com.blue.lake.repository.entity.OptEvent">
         <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="cursor" jdbcType="BIGINT" property="cursor"/>
         <result column="data_event_type" jdbcType="VARCHAR" property="dataEventType"/>
         <result column="data_event_op_type" jdbcType="VARCHAR" property="dataEventOpType"/>
         <result column="stamp" jdbcType="BIGINT" property="stamp"/>
@@ -34,7 +35,7 @@
         <result column="existence_response_body" jdbcType="INTEGER" property="existenceResponseBody"/>
         <result column="duration_seconds" jdbcType="INTEGER" property="durationSeconds"/>
         <result column="resource_id" jdbcType="BIGINT" property="resourceId"/>
-        <result column="service" jdbcType="VARCHAR" property="service"/>
+        <result column="module" jdbcType="VARCHAR" property="module"/>
         <result column="relative_uri" jdbcType="VARCHAR" property="relativeUri"/>
         <result column="absolute_uri" jdbcType="VARCHAR" property="absoluteUri"/>
         <result column="relation_view" jdbcType="VARCHAR" property="relationView"/>
@@ -45,9 +46,9 @@
 
     <sql id="Base_Column_List">
         id
-        , data_event_type, data_event_op_type, stamp, create_date, method, uri, real_uri, request_body, request_extra, response_status, response_body, response_extra, request_id, metadata, jwt, member_id,
+        , "cursor", data_event_type, data_event_op_type, stamp, create_date, method, uri, real_uri, request_body, request_extra, response_status, response_body, response_extra, request_id, metadata, jwt, member_id,
         role_ids, credential_type, device_type, login_time, client_ip, user_agent, sec_key, request_un_decryption, response_un_encryption, existence_request_body, existence_response_body, duration_seconds,
-        resource_id, service, relative_uri, absolute_uri, relation_view, authenticate, type, name
+        resource_id, "module", relative_uri, absolute_uri, relation_view, authenticate, type, name
     </sql>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -68,7 +69,7 @@
         <include refid="Base_Column_List"/>
         )
         values
-        (#{id,jdbcType=BIGINT}, #{dataEventType,jdbcType=VARCHAR},
+        (#{id,jdbcType=BIGINT}, #{cursor,jdbcType=BIGINT}, #{dataEventType,jdbcType=VARCHAR},
         #{dataEventOpType,jdbcType=VARCHAR}, #{stamp,jdbcType=BIGINT},
         #{createDate,jdbcType=VARCHAR}, #{method,jdbcType=VARCHAR},
         #{uri,jdbcType=VARCHAR}, #{realUri,jdbcType=VARCHAR},
@@ -82,7 +83,7 @@
         #{secKey,jdbcType=VARCHAR}, #{requestUnDecryption,jdbcType=INTEGER},
         #{responseUnEncryption,jdbcType=INTEGER}, #{existenceRequestBody,jdbcType=INTEGER},
         #{existenceResponseBody,jdbcType=INTEGER}, #{durationSeconds,jdbcType=INTEGER},
-        #{resourceId,jdbcType=BIGINT}, #{service,jdbcType=VARCHAR},
+        #{resourceId,jdbcType=BIGINT}, #{module,jdbcType=VARCHAR},
         #{relativeUri,jdbcType=VARCHAR}, #{absoluteUri,jdbcType=VARCHAR},
         #{relationView,jdbcType=VARCHAR}, #{authenticate,jdbcType=INTEGER},
         #{type,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR})
@@ -94,27 +95,25 @@
             <include refid="Base_Column_List"/>
             ) values
             <foreach collection="list" index="index" item="item" separator=",">
-                (#{item.id,jdbcType=BIGINT}, #{item.dataEventType,jdbcType=VARCHAR},
+                (#{item.id,jdbcType=BIGINT}, #{item.cursor,jdbcType=BIGINT}, #{item.dataEventType,jdbcType=VARCHAR},
                 #{item.dataEventOpType,jdbcType=VARCHAR}, #{item.stamp,jdbcType=BIGINT},
                 #{item.createDate,jdbcType=VARCHAR}, #{item.method,jdbcType=VARCHAR},
                 #{item.uri,jdbcType=VARCHAR}, #{item.realUri,jdbcType=VARCHAR},
                 #{item.requestBody,jdbcType=VARCHAR}, #{item.requestExtra,jdbcType=VARCHAR},
                 #{item.responseStatus,jdbcType=INTEGER}, #{item.responseBody,jdbcType=VARCHAR},
                 #{item.responseExtra,jdbcType=VARCHAR}, #{item.requestId,jdbcType=VARCHAR},
-                #{item.metadata,jdbcType=VARCHAR},
-                #{item.jwt,jdbcType=VARCHAR}, #{item.memberId,jdbcType=BIGINT},
+                #{item.metadata,jdbcType=VARCHAR}, #{item.jwt,jdbcType=VARCHAR}, #{item.memberId,jdbcType=BIGINT},
                 #{item.roleIds,jdbcType=ARRAY,typeHandler=com.blue.lake.repository.type.ClickHouseLongArrayTypeHandler},
                 #{item.credentialType,jdbcType=VARCHAR}, #{item.deviceType,jdbcType=VARCHAR},
                 #{item.loginTime,jdbcType=BIGINT}, #{item.clientIp,jdbcType=VARCHAR},
-                #{item.userAgent,jdbcType=VARCHAR},
-                #{item.secKey,jdbcType=VARCHAR}, #{item.requestUnDecryption,jdbcType=INTEGER},
-                #{item.responseUnEncryption,jdbcType=INTEGER}, #{item.existenceRequestBody,jdbcType=INTEGER},
+                #{item.userAgent,jdbcType=VARCHAR}, #{item.secKey,jdbcType=VARCHAR},
+                #{item.requestUnDecryption,jdbcType=INTEGER}, #{item.responseUnEncryption,jdbcType=INTEGER},
+                #{item.existenceRequestBody,jdbcType=INTEGER},
                 #{item.existenceResponseBody,jdbcType=INTEGER}, #{item.durationSeconds,jdbcType=INTEGER},
-                #{item.resourceId,jdbcType=BIGINT}, #{item.service,jdbcType=VARCHAR},
+                #{item.resourceId,jdbcType=BIGINT}, #{item.module,jdbcType=VARCHAR},
                 #{item.relativeUri,jdbcType=VARCHAR}, #{item.absoluteUri,jdbcType=VARCHAR},
                 #{item.relationView,jdbcType=VARCHAR}, #{item.authenticate,jdbcType=INTEGER},
-                #{item.type,jdbcType=INTEGER}, #{item.name,jdbcType=VARCHAR}
-                )
+                #{item.type,jdbcType=INTEGER}, #{item.name,jdbcType=VARCHAR})
             </foreach>
         </if>
     </insert>
@@ -124,6 +123,9 @@
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
+            </if>
+            <if test="cursor != null">
+                "cursor",
             </if>
             <if test="dataEventType != null">
                 data_event_type,
@@ -212,8 +214,8 @@
             <if test="resourceId != null">
                 resource_id,
             </if>
-            <if test="service != null">
-                service,
+            <if test="module != null">
+                "module",
             </if>
             <if test="relativeUri != null">
                 relative_uri,
@@ -237,6 +239,9 @@
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 #{id,jdbcType=BIGINT},
+            </if>
+            <if test="cursor != null">
+                #{cursor,jdbcType=BIGINT},
             </if>
             <if test="dataEventType != null">
                 #{dataEventType,jdbcType=VARCHAR},
@@ -325,8 +330,8 @@
             <if test="resourceId != null">
                 #{resourceId,jdbcType=BIGINT},
             </if>
-            <if test="service != null">
-                #{service,jdbcType=VARCHAR},
+            <if test="module != null">
+                #{module,jdbcType=VARCHAR},
             </if>
             <if test="relativeUri != null">
                 #{relativeUri,jdbcType=VARCHAR},
@@ -352,6 +357,9 @@
     <update id="updateByPrimaryKeySelective" parameterType="com.blue.lake.repository.entity.OptEvent">
         update opt_event
         <set>
+            <if test="cursor != null">
+                "cursor" = #{cursor,jdbcType=BIGINT},
+            </if>
             <if test="dataEventType != null">
                 data_event_type = #{dataEventType,jdbcType=VARCHAR},
             </if>
@@ -440,8 +448,8 @@
             <if test="resourceId != null">
                 resource_id = #{resourceId,jdbcType=BIGINT},
             </if>
-            <if test="service != null">
-                service = #{service,jdbcType=VARCHAR},
+            <if test="module != null">
+                "module" = #{module,jdbcType=VARCHAR},
             </if>
             <if test="relativeUri != null">
                 relative_uri = #{relativeUri,jdbcType=VARCHAR},
@@ -467,7 +475,8 @@
 
     <update id="updateByPrimaryKey" parameterType="com.blue.lake.repository.entity.OptEvent">
         update opt_event
-        set data_event_type         = #{dataEventType,jdbcType=VARCHAR},
+        set "cursor"                = #{cursor,jdbcType=BIGINT},
+            data_event_type         = #{dataEventType,jdbcType=VARCHAR},
             data_event_op_type      = #{dataEventOpType,jdbcType=VARCHAR},
             stamp                   = #{stamp,jdbcType=BIGINT},
             create_date             = #{createDate,jdbcType=VARCHAR},
@@ -496,7 +505,7 @@
             existence_response_body = #{existenceResponseBody,jdbcType=INTEGER},
             duration_seconds        = #{durationSeconds,jdbcType=INTEGER},
             resource_id             = #{resourceId,jdbcType=BIGINT},
-            service                 = #{service,jdbcType=VARCHAR},
+            "module"                = #{module,jdbcType=VARCHAR},
             relative_uri            = #{relativeUri,jdbcType=VARCHAR},
             absolute_uri            = #{absoluteUri,jdbcType=VARCHAR},
             relation_view           = #{relationView,jdbcType=VARCHAR},
@@ -506,104 +515,115 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
+    <sql id="Column_Conditions">
+        <if test="optEventCondition != null and optEventCondition.dataEventType != null and optEventCondition.dataEventType != ''">
+            AND
+            data_event_type = #{optEventCondition.dataEventType,jdbcType=VARCHAR}
+        </if>
+        <if test="optEventCondition != null and optEventCondition.dataEventOpType != null and optEventCondition.dataEventOpType != ''">
+            AND
+            data_event_op_type = #{optEventCondition.dataEventOpType,jdbcType=VARCHAR}
+        </if>
+        <if test="optEventCondition != null and optEventCondition.stampBegin != null">
+            AND
+            stamp &gt;= #{optEventCondition.stampBegin,jdbcType=BIGINT}
+        </if>
+        <if test="optEventCondition != null and optEventCondition.stampBegin != null">
+            AND
+            stamp &lt;= #{optEventCondition.stampBegin,jdbcType=BIGINT}
+        </if>
+        <if test="optEventCondition != null and optEventCondition.method != null and optEventCondition.method != ''">
+            AND
+            method = #{optEventCondition.method,jdbcType=VARCHAR}
+        </if>
+        <if test="optEventCondition != null and optEventCondition.uri != null and optEventCondition.uri != ''">
+            AND
+            uri = #{optEventCondition.uri,jdbcType=VARCHAR}
+        </if>
+        <if test="optEventCondition != null and optEventCondition.realUri != null and optEventCondition.realUri != ''">
+            AND
+            real_uri = #{optEventCondition.realUri,jdbcType=VARCHAR}
+        </if>
+        <if test="optEventCondition != null and optEventCondition.responseStatus != null">
+            AND
+            response_status = #{optEventCondition.responseStatus,jdbcType=INTEGER}
+        </if>
+        <if test="optEventCondition != null and optEventCondition.memberId != null">
+            AND
+            member_id = #{optEventCondition.memberId,jdbcType=BIGINT}
+        </if>
+        <if test="optEventCondition != null and optEventCondition.roleId != null">
+            AND
+            has(role_ids,#{optEventCondition.roleId,jdbcType=BIGINT})
+        </if>
+        <if test="optEventCondition != null and optEventCondition.credentialType != null and optEventCondition.credentialType != ''">
+            AND
+            credential_type = #{optEventCondition.credentialType,jdbcType=VARCHAR}
+        </if>
+        <if test="optEventCondition != null and optEventCondition.deviceType != null and optEventCondition.deviceType != ''">
+            AND
+            device_type = #{optEventCondition.deviceType,jdbcType=VARCHAR}
+        </if>
+        <if test="optEventCondition != null and optEventCondition.loginTimeBegin != null">
+            AND
+            login_time &gt;= #{optEventCondition.loginTimeBegin,jdbcType=BIGINT}
+        </if>
+        <if test="optEventCondition != null and optEventCondition.loginTimeEnd != null">
+            AND
+            login_time &lt;= #{optEventCondition.loginTimeEnd,jdbcType=BIGINT}
+        </if>
+        <if test="optEventCondition != null and optEventCondition.clientIp != null and optEventCondition.clientIp != ''">
+            AND
+            client_ip = #{optEventCondition.clientIp,jdbcType=VARCHAR}
+        </if>
+        <if test="optEventCondition != null and optEventCondition.userAgent != null and optEventCondition.userAgent != ''">
+            AND
+            user_agent = #{optEventCondition.userAgent,jdbcType=VARCHAR}
+        </if>
+        <if test="optEventCondition != null and optEventCondition.durationSecondsMin != null">
+            AND
+            duration_seconds = #{optEventCondition.durationSecondsMin,jdbcType=BIGINT}
+        </if>
+        <if test="optEventCondition != null and optEventCondition.durationSecondsMax != null">
+            AND
+            duration_seconds = #{optEventCondition.durationSecondsMax,jdbcType=BIGINT}
+        </if>
+        <if test="optEventCondition != null and optEventCondition.resourceId != null">
+            AND
+            resource_id = #{optEventCondition.resourceId,jdbcType=BIGINT}
+        </if>
+        <if test="optEventCondition != null and optEventCondition.module != null and optEventCondition.module != ''">
+            AND
+            "module" = #{optEventCondition.module,jdbcType=VARCHAR}
+        </if>
+        <if test="optEventCondition != null and optEventCondition.relativeUri != null and optEventCondition.relativeUri != ''">
+            AND
+            relative_uri = #{optEventCondition.relativeUri,jdbcType=VARCHAR}
+        </if>
+        <if test="optEventCondition != null and optEventCondition.absoluteUri != null and optEventCondition.absoluteUri != ''">
+            AND
+            absolute_uri = #{optEventCondition.absoluteUri,jdbcType=VARCHAR}
+        </if>
+        <if test="optEventCondition != null and optEventCondition.relationView != null and optEventCondition.relationView != ''">
+            AND
+            relation_view = #{optEventCondition.relationView,jdbcType=VARCHAR}
+        </if>
+        <if test="optEventCondition != null and optEventCondition.authenticate != null">
+            AND
+            authenticate = #{optEventCondition.authenticate,jdbcType=INTEGER}
+        </if>
+        <if test="optEventCondition != null and optEventCondition.type != null">
+            AND
+            type = #{optEventCondition.type,jdbcType=INTEGER}
+        </if>
+    </sql>
+
     <sql id="Opt_Event_Conditions">
         <where>
-            <if test="optEventCondition != null and optEventCondition.dataEventType != null and optEventCondition.dataEventType != ''">
-                AND
-                data_event_type = #{optEventCondition.dataEventType,jdbcType=VARCHAR}
-            </if>
-            <if test="optEventCondition != null and optEventCondition.dataEventOpType != null and optEventCondition.dataEventOpType != ''">
-                AND
-                data_event_op_type = #{optEventCondition.dataEventOpType,jdbcType=VARCHAR}
-            </if>
-            <if test="optEventCondition != null and optEventCondition.stampBegin != null">
-                AND
-                stamp &gt;= #{optEventCondition.stampBegin,jdbcType=BIGINT}
-            </if>
-            <if test="optEventCondition != null and optEventCondition.stampBegin != null">
-                AND
-                stamp &lt;= #{optEventCondition.stampBegin,jdbcType=BIGINT}
-            </if>
-            <if test="optEventCondition != null and optEventCondition.method != null and optEventCondition.method != ''">
-                AND
-                method = #{optEventCondition.method,jdbcType=VARCHAR}
-            </if>
-            <if test="optEventCondition != null and optEventCondition.uri != null and optEventCondition.uri != ''">
-                AND
-                uri = #{optEventCondition.uri,jdbcType=VARCHAR}
-            </if>
-            <if test="optEventCondition != null and optEventCondition.realUri != null and optEventCondition.realUri != ''">
-                AND
-                real_uri = #{optEventCondition.realUri,jdbcType=VARCHAR}
-            </if>
-            <if test="optEventCondition != null and optEventCondition.responseStatus != null">
-                AND
-                response_status = #{optEventCondition.responseStatus,jdbcType=INTEGER}
-            </if>
-            <if test="optEventCondition != null and optEventCondition.memberId != null">
-                AND
-                member_id = #{optEventCondition.memberId,jdbcType=BIGINT}
-            </if>
-            <if test="optEventCondition != null and optEventCondition.roleId != null">
-                AND
-                has(role_ids,#{optEventCondition.roleId,jdbcType=BIGINT})
-            </if>
-            <if test="optEventCondition != null and optEventCondition.credentialType != null and optEventCondition.credentialType != ''">
-                AND
-                credential_type = #{optEventCondition.credentialType,jdbcType=VARCHAR}
-            </if>
-            <if test="optEventCondition != null and optEventCondition.deviceType != null and optEventCondition.deviceType != ''">
-                AND
-                device_type = #{optEventCondition.deviceType,jdbcType=VARCHAR}
-            </if>
-            <if test="optEventCondition != null and optEventCondition.loginTimeBegin != null">
-                AND
-                login_time &gt;= #{optEventCondition.loginTimeBegin,jdbcType=BIGINT}
-            </if>
-            <if test="optEventCondition != null and optEventCondition.loginTimeEnd != null">
-                AND
-                login_time &lt;= #{optEventCondition.loginTimeEnd,jdbcType=BIGINT}
-            </if>
-            <if test="optEventCondition != null and optEventCondition.clientIp != null and optEventCondition.clientIp != ''">
-                AND
-                client_ip = #{optEventCondition.clientIp,jdbcType=VARCHAR}
-            </if>
-            <if test="optEventCondition != null and optEventCondition.userAgent != null and optEventCondition.userAgent != ''">
-                AND
-                user_agent = #{optEventCondition.userAgent,jdbcType=VARCHAR}
-            </if>
-            <if test="optEventCondition != null and optEventCondition.durationSecondsMin != null">
-                AND
-                duration_seconds = #{optEventCondition.durationSecondsMin,jdbcType=BIGINT}
-            </if>
-            <if test="optEventCondition != null and optEventCondition.durationSecondsMax != null">
-                AND
-                duration_seconds = #{optEventCondition.durationSecondsMax,jdbcType=BIGINT}
-            </if>
-            <if test="resourceId != null">
-                resource_id = #{optEventCondition.resourceId,jdbcType=BIGINT},
-            </if>
-            <if test="service != null">
-                service = #{optEventCondition.service,jdbcType=VARCHAR},
-            </if>
-            <if test="relativeUri != null">
-                relative_uri = #{optEventCondition.relativeUri,jdbcType=VARCHAR},
-            </if>
-            <if test="absoluteUri != null">
-                absolute_uri = #{optEventCondition.absoluteUri,jdbcType=VARCHAR},
-            </if>
-            <if test="relationView != null">
-                relation_view = #{optEventCondition.relationView,jdbcType=VARCHAR},
-            </if>
-            <if test="authenticate != null">
-                authenticate = #{optEventCondition.authenticate,jdbcType=INTEGER},
-            </if>
-            <if test="type != null">
-                type = #{optEventCondition.type,jdbcType=INTEGER},
-            </if>
+            <include refid="Column_Conditions"/>
             <if test="column != null and comparison != null and searchAfter != null and searchAfter > 0">
                 AND
-                ${column} ${comparison} #{searchAfter,jdbcType=BIGINT}
+                "${column}" ${comparison} #{searchAfter,jdbcType=BIGINT}
             </if>
         </where>
     </sql>
@@ -619,6 +639,20 @@
             ${optEventCondition.sortAttribute} ${optEventCondition.sortType}
         </if>
         LIMIT #{rows,jdbcType=BIGINT}
+    </select>
+
+    <sql id="Count_Conditions">
+        <where>
+            <include refid="Column_Conditions"/>
+        </where>
+    </sql>
+
+    <select id="countByCondition" resultMap="BaseResultMap">
+        SELECT
+        COUNT(*)
+        FROM
+        opt_event
+        <include refid="Count_Conditions"/>
     </select>
 
 </mapper>

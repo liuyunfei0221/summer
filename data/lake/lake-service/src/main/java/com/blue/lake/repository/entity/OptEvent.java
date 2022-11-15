@@ -19,10 +19,14 @@ public class OptEvent implements Serializable {
     @JsonSerialize(using = Long2StringSerializer.class)
     private Long id;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
+    private Long cursor;
+
     private String dataEventType;
 
     private String dataEventOpType;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long stamp;
 
     private String createDate;
@@ -84,7 +88,7 @@ public class OptEvent implements Serializable {
     /**
      * module/service name
      */
-    private String service;
+    private String module;
 
     /**
      * relative uri
@@ -122,6 +126,14 @@ public class OptEvent implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getCursor() {
+        return cursor;
+    }
+
+    public void setCursor(Long cursor) {
+        this.cursor = cursor;
     }
 
     public String getDataEventType() {
@@ -356,12 +368,12 @@ public class OptEvent implements Serializable {
         this.resourceId = resourceId;
     }
 
-    public String getService() {
-        return service;
+    public String getModule() {
+        return module;
     }
 
-    public void setService(String service) {
-        this.service = service;
+    public void setModule(String module) {
+        this.module = module;
     }
 
     public String getRelativeUri() {
@@ -416,7 +428,15 @@ public class OptEvent implements Serializable {
     public String toString() {
         return "OptEvent{" +
                 "id=" + id +
+                ", cursor=" + cursor +
+                ", dataEventType='" + dataEventType + '\'' +
+                ", dataEventOpType='" + dataEventOpType + '\'' +
+                ", stamp=" + stamp +
+                ", createDate='" + createDate + '\'' +
+                ", method='" + method + '\'' +
+                ", uri='" + uri + '\'' +
+                ", realUri='" + realUri + '\'' +
                 '}';
     }
-    
+
 }

@@ -13,6 +13,11 @@ public enum RiskHitRecordSortAttribute {
     ID("id", "id"),
 
     /**
+     * cursor
+     */
+    CURSOR("cursor", "cursor"),
+
+    /**
      * createTime
      */
     STAMP("stamp", "stamp");

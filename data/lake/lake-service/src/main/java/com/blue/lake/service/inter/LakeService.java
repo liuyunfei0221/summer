@@ -14,10 +14,10 @@ import java.util.List;
 public interface LakeService {
 
     /**
-     * insert events
+     * handle events
      *
      * @param dataEvents
      */
-    Mono<Boolean> insertEvents(List<DataEvent> dataEvents);
+    Mono<Boolean> handleEvents(List<DataEvent> dataEvents);
 
 }

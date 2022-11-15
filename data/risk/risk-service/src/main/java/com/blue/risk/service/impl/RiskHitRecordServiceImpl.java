@@ -27,7 +27,9 @@ import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.basic.constant.common.SortType.DESC;
 import static com.blue.database.common.ConditionSortProcessor.process;
 import static com.blue.database.common.SearchAfterProcessor.parseSearchAfter;
+import static com.blue.risk.constant.RiskHitRecordSortAttribute.CURSOR;
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
@@ -56,18 +58,19 @@ public class RiskHitRecordServiceImpl implements RiskHitRecordService {
             justOrEmpty(records)
                     .filter(BlueChecker::isNotEmpty)
                     .map(rs -> {
-                        try {
-                            for (RiskHitRecord record : records)
-                                if (BlueChecker.isInvalidIdentity(record.getId()))
-                                    record.setId(blueIdentityProcessor.generate(RiskHitRecord.class));
-
-                            riskHitRecordMapper.insertBatch(rs);
-                            return true;
-                        } catch (Exception e) {
-                            LOGGER.info("riskHitRecordMapper.insertBatch() failed, records = {}, e = {}", records, e);
-                            return false;
-                        }
-                    }).switchIfEmpty(defer(() -> just(false)));
+                        riskHitRecordMapper.insertBatch(
+                                rs.stream().filter(BlueChecker::isNotNull)
+                                        .peek(record -> {
+                                            if (isInvalidIdentity(record.getId()))
+                                                record.setId(blueIdentityProcessor.generate(RiskHitRecord.class));
+                                        }).collect(toList()));
+                        return true;
+                    })
+                    .onErrorResume(t -> {
+                        LOGGER.error("RECORDS_INSERTER failed, t = {}", t);
+                        return just(false);
+                    })
+                    .switchIfEmpty(defer(() -> just(false)));
 
     private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(RiskHitRecordSortAttribute.values())
             .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
@@ -97,7 +100,7 @@ public class RiskHitRecordServiceImpl implements RiskHitRecordService {
 
         String comparison = DESC.identity.equals(riskHitRecordCondition.getSortType()) ? LESS_THAN.identity : GREATER_THAN.identity;
 
-        List<RiskHitRecord> hitRecords = riskHitRecordMapper.selectBySearchAfterAndCondition(scrollModelRequest.getRows(), riskHitRecordCondition, RiskHitRecordSortAttribute.ID.column, comparison, scrollModelRequest.getCursor());
+        List<RiskHitRecord> hitRecords = riskHitRecordMapper.selectBySearchAfterAndCondition(scrollModelRequest.getRows(), riskHitRecordCondition, CURSOR.column, comparison, scrollModelRequest.getCursor());
 
         return isNotEmpty(hitRecords) ?
                 just(new ScrollModelResponse<>(hitRecords, parseSearchAfter(hitRecords, DESC.identity, RiskHitRecord::getId)))

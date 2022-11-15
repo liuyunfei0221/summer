@@ -53,6 +53,40 @@ public final class RiskHitRecordCondition extends SortCondition implements Seria
 
     private Integer durationSecondsMax;
 
+    private Long resourceId;
+
+    /**
+     * module/service name
+     */
+    private String module;
+
+    /**
+     * relative uri
+     */
+    private String relativeUri;
+
+    /**
+     * absolute uri
+     */
+    private String absoluteUri;
+
+    /**
+     * relation view
+     */
+    private String relationView;
+
+    /**
+     * authenticate 1.yes 0.no
+     *
+     * @see com.blue.basic.constant.common.BlueBoolean
+     */
+    private Integer authenticate;
+
+    /**
+     * @see com.blue.basic.constant.auth.ResourceType
+     */
+    private Integer type;
+
     /**
      * hit type
      *
@@ -70,7 +104,8 @@ public final class RiskHitRecordCondition extends SortCondition implements Seria
 
     public RiskHitRecordCondition(String dataEventType, String dataEventOpType, Long stampBegin, Long stampEnd, String method, String uri, String realUri,
                                   Integer responseStatus, Long memberId, Long roleId, String credentialType, String deviceType, Long loginTimeBegin, Long loginTimeEnd,
-                                  String clientIp, String userAgent, Integer durationSecondsMin, Integer durationSecondsMax, Integer hitType, String sortAttribute, String sortType) {
+                                  String clientIp, String userAgent, Integer durationSecondsMin, Integer durationSecondsMax, Long resourceId, String module, String relativeUri, String absoluteUri, String relationView,
+                                  Integer authenticate, Integer type, Integer hitType, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.dataEventType = dataEventType;
         this.dataEventOpType = dataEventOpType;
@@ -90,6 +125,13 @@ public final class RiskHitRecordCondition extends SortCondition implements Seria
         this.userAgent = userAgent;
         this.durationSecondsMin = durationSecondsMin;
         this.durationSecondsMax = durationSecondsMax;
+        this.resourceId = resourceId;
+        this.module = module;
+        this.relativeUri = relativeUri;
+        this.absoluteUri = absoluteUri;
+        this.relationView = relationView;
+        this.authenticate = authenticate;
+        this.type = type;
         this.hitType = hitType;
     }
 
@@ -237,6 +279,62 @@ public final class RiskHitRecordCondition extends SortCondition implements Seria
         this.durationSecondsMax = durationSecondsMax;
     }
 
+    public Long getResourceId() {
+        return resourceId;
+    }
+
+    public void setResourceId(Long resourceId) {
+        this.resourceId = resourceId;
+    }
+
+    public String getModule() {
+        return module;
+    }
+
+    public void setModule(String module) {
+        this.module = module;
+    }
+
+    public String getRelativeUri() {
+        return relativeUri;
+    }
+
+    public void setRelativeUri(String relativeUri) {
+        this.relativeUri = relativeUri;
+    }
+
+    public String getAbsoluteUri() {
+        return absoluteUri;
+    }
+
+    public void setAbsoluteUri(String absoluteUri) {
+        this.absoluteUri = absoluteUri;
+    }
+
+    public String getRelationView() {
+        return relationView;
+    }
+
+    public void setRelationView(String relationView) {
+        this.relationView = relationView;
+    }
+
+    public Integer getAuthenticate() {
+        return authenticate;
+    }
+
+    public void setAuthenticate(Integer authenticate) {
+        this.authenticate = authenticate;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
     public Integer getHitType() {
         return hitType;
     }
@@ -266,10 +364,15 @@ public final class RiskHitRecordCondition extends SortCondition implements Seria
                 ", userAgent='" + userAgent + '\'' +
                 ", durationSecondsMin=" + durationSecondsMin +
                 ", durationSecondsMax=" + durationSecondsMax +
+                ", resourceId=" + resourceId +
+                ", module='" + module + '\'' +
+                ", relativeUri='" + relativeUri + '\'' +
+                ", absoluteUri='" + absoluteUri + '\'' +
+                ", relationView='" + relationView + '\'' +
+                ", authenticate=" + authenticate +
+                ", type=" + type +
                 ", hitType=" + hitType +
-                ", sortAttribute='" + sortAttribute + '\'' +
-                ", sortType='" + sortType + '\'' +
                 '}';
     }
-
+    
 }

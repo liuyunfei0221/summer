@@ -2,7 +2,6 @@ package com.blue.lake.service.inter;
 
 import com.blue.basic.model.common.ScrollModelRequest;
 import com.blue.basic.model.common.ScrollModelResponse;
-import com.blue.basic.model.event.DataEvent;
 import com.blue.lake.model.OptEventCondition;
 import com.blue.lake.repository.entity.OptEvent;
 import reactor.core.publisher.Mono;
@@ -20,10 +19,10 @@ public interface OptEventService {
     /**
      * insert events
      *
-     * @param dataEvents
+     * @param optEvents
      * @return
      */
-    Mono<Boolean> insertOptEvents(List<DataEvent> dataEvents);
+    Mono<Boolean> insertOptEvents(List<OptEvent> optEvents);
 
     /**
      * select by search after

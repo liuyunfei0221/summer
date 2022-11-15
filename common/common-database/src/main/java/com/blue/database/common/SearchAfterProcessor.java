@@ -1,6 +1,7 @@
 package com.blue.database.common;
 
 
+import com.blue.basic.common.base.BlueChecker;
 import com.blue.basic.constant.common.SortType;
 
 import java.io.Serializable;
@@ -9,6 +10,8 @@ import java.util.function.Function;
 
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.ConstantProcessor.assertSortType;
+import static com.blue.basic.constant.common.ComparisonType.GREATER_THAN;
+import static com.blue.basic.constant.common.ComparisonType.LESS_THAN;
 import static com.blue.basic.constant.common.SortType.DESC;
 import static java.util.Optional.ofNullable;
 
@@ -57,6 +60,21 @@ public final class SearchAfterProcessor {
         }
 
         return null;
+    }
+
+    /**
+     * parse search after comparison
+     *
+     * @param sortType
+     * @return
+     */
+    public static String parseSearchAfterComparison(String sortType) {
+        return ofNullable(sortType)
+                .filter(BlueChecker::isNotBlank)
+                .map(st -> {
+                    assertSortType(sortType, false);
+                    return DESC.identity.equals(sortType) ? LESS_THAN.expression : GREATER_THAN.expression;
+                }).orElse(LESS_THAN.expression);
     }
 
 }

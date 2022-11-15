@@ -163,6 +163,11 @@ public enum BlueCommonThreshold {
     SEC_ANSWER_LEN_MAX(256L),
 
     /**
+     * non resource id
+     */
+    NON_RESOURCE_ID(0L),
+
+    /**
      * member id for not login
      */
     NOT_LOGGED_IN_MEMBER_ID(0L),

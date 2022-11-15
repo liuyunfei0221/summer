@@ -30,4 +30,6 @@ public interface OptEventMapper {
 
     List<OptEvent> selectBySearchAfterAndCondition(@Param("rows") Long rows, @Param("optEventCondition") OptEventCondition optEventCondition, @Param("column") String column, @Param("comparison") String comparison, @Param("searchAfter") Long searchAfter);
 
+    long countByCondition(@Param("optEventCondition") OptEventCondition optEventCondition);
+
 }

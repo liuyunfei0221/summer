@@ -1,24 +1,31 @@
 package com.blue.risk.repository.entity;
 
+import com.blue.basic.serializer.Long2StringSerializer;
+import com.blue.basic.serializer.LongArray2StringArraySerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.io.Serializable;
-import java.util.Arrays;
 
 /**
  * risk hit record
  *
  * @author liuyunfei
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "DuplicatedCode"})
 public final class RiskHitRecord implements Serializable {
 
     private static final long serialVersionUID = -5000937958564581762L;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long id;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
+    private Long cursor;
     private String dataEventType;
 
     private String dataEventOpType;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long stamp;
 
     private String createDate;
@@ -45,14 +52,17 @@ public final class RiskHitRecord implements Serializable {
 
     private String jwt;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long memberId;
 
+    @JsonSerialize(using = LongArray2StringArraySerializer.class)
     private Long[] roleIds;
 
     private String credentialType;
 
     private String deviceType;
 
+    @JsonSerialize(using = Long2StringSerializer.class)
     private Long loginTime;
 
     private String clientIp;
@@ -70,6 +80,44 @@ public final class RiskHitRecord implements Serializable {
     private Integer existenceResponseBody;
 
     private Integer durationSeconds;
+
+    @JsonSerialize(using = Long2StringSerializer.class)
+    private Long resourceId;
+
+    /**
+     * module/service name
+     */
+    private String module;
+
+    /**
+     * relative uri
+     */
+    private String relativeUri;
+
+    /**
+     * absolute uri
+     */
+    private String absoluteUri;
+
+    /**
+     * relation view
+     */
+    private String relationView;
+
+    /**
+     * authenticate 1.yes 0.no
+     */
+    private Integer authenticate;
+
+    /**
+     * @see com.blue.basic.constant.auth.ResourceType
+     */
+    private Integer type;
+
+    /**
+     * resource name
+     */
+    private String name;
 
     /**
      * hit type
@@ -89,6 +137,14 @@ public final class RiskHitRecord implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getCursor() {
+        return cursor;
+    }
+
+    public void setCursor(Long cursor) {
+        this.cursor = cursor;
     }
 
     public String getDataEventType() {
@@ -315,6 +371,70 @@ public final class RiskHitRecord implements Serializable {
         this.durationSeconds = durationSeconds;
     }
 
+    public Long getResourceId() {
+        return resourceId;
+    }
+
+    public void setResourceId(Long resourceId) {
+        this.resourceId = resourceId;
+    }
+
+    public String getModule() {
+        return module;
+    }
+
+    public void setModule(String module) {
+        this.module = module;
+    }
+
+    public String getRelativeUri() {
+        return relativeUri;
+    }
+
+    public void setRelativeUri(String relativeUri) {
+        this.relativeUri = relativeUri;
+    }
+
+    public String getAbsoluteUri() {
+        return absoluteUri;
+    }
+
+    public void setAbsoluteUri(String absoluteUri) {
+        this.absoluteUri = absoluteUri;
+    }
+
+    public String getRelationView() {
+        return relationView;
+    }
+
+    public void setRelationView(String relationView) {
+        this.relationView = relationView;
+    }
+
+    public Integer getAuthenticate() {
+        return authenticate;
+    }
+
+    public void setAuthenticate(Integer authenticate) {
+        this.authenticate = authenticate;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Integer getHitType() {
         return hitType;
     }
@@ -335,6 +455,7 @@ public final class RiskHitRecord implements Serializable {
     public String toString() {
         return "RiskHitRecord{" +
                 "id=" + id +
+                ", cursor=" + cursor +
                 ", dataEventType='" + dataEventType + '\'' +
                 ", dataEventOpType='" + dataEventOpType + '\'' +
                 ", stamp=" + stamp +
@@ -342,29 +463,6 @@ public final class RiskHitRecord implements Serializable {
                 ", method='" + method + '\'' +
                 ", uri='" + uri + '\'' +
                 ", realUri='" + realUri + '\'' +
-                ", requestBody='" + requestBody + '\'' +
-                ", requestExtra='" + requestExtra + '\'' +
-                ", responseStatus=" + responseStatus +
-                ", responseBody='" + responseBody + '\'' +
-                ", responseExtra='" + responseExtra + '\'' +
-                ", requestId='" + requestId + '\'' +
-                ", metadata='" + metadata + '\'' +
-                ", jwt='" + jwt + '\'' +
-                ", memberId=" + memberId +
-                ", roleIds=" + Arrays.toString(roleIds) +
-                ", credentialType='" + credentialType + '\'' +
-                ", deviceType='" + deviceType + '\'' +
-                ", loginTime=" + loginTime +
-                ", clientIp='" + clientIp + '\'' +
-                ", userAgent='" + userAgent + '\'' +
-                ", secKey='" + secKey + '\'' +
-                ", requestUnDecryption=" + requestUnDecryption +
-                ", responseUnEncryption=" + responseUnEncryption +
-                ", existenceRequestBody=" + existenceRequestBody +
-                ", existenceResponseBody=" + existenceResponseBody +
-                ", durationSeconds=" + durationSeconds +
-                ", hitType=" + hitType +
-                ", illegalExpiresSecond=" + illegalExpiresSecond +
                 '}';
     }
 

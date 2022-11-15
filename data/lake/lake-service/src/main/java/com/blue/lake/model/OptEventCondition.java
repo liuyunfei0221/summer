@@ -58,7 +58,7 @@ public final class OptEventCondition extends SortCondition implements Serializab
     /**
      * module/service name
      */
-    private String service;
+    private String module;
 
     /**
      * relative uri
@@ -97,7 +97,7 @@ public final class OptEventCondition extends SortCondition implements Serializab
 
     public OptEventCondition(String dataEventType, String dataEventOpType, Long stampBegin, Long stampEnd, String method, String uri, String realUri,
                              Integer responseStatus, Long memberId, Long roleId, String credentialType, String deviceType, Long loginTimeBegin, Long loginTimeEnd,
-                             String clientIp, String userAgent, Integer durationSecondsMin, Integer durationSecondsMax, Long resourceId, String service, String relativeUri,
+                             String clientIp, String userAgent, Integer durationSecondsMin, Integer durationSecondsMax, Long resourceId, String module, String relativeUri,
                              String absoluteUri, String relationView, Integer authenticate, Integer type, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.dataEventType = dataEventType;
@@ -119,7 +119,7 @@ public final class OptEventCondition extends SortCondition implements Serializab
         this.durationSecondsMin = durationSecondsMin;
         this.durationSecondsMax = durationSecondsMax;
         this.resourceId = resourceId;
-        this.service = service;
+        this.module = module;
         this.relativeUri = relativeUri;
         this.absoluteUri = absoluteUri;
         this.relationView = relationView;
@@ -279,12 +279,12 @@ public final class OptEventCondition extends SortCondition implements Serializab
         this.resourceId = resourceId;
     }
 
-    public String getService() {
-        return service;
+    public String getModule() {
+        return module;
     }
 
-    public void setService(String service) {
-        this.service = service;
+    public void setModule(String module) {
+        this.module = module;
     }
 
     public String getRelativeUri() {
@@ -349,7 +349,7 @@ public final class OptEventCondition extends SortCondition implements Serializab
                 ", durationSecondsMin=" + durationSecondsMin +
                 ", durationSecondsMax=" + durationSecondsMax +
                 ", resourceId=" + resourceId +
-                ", service='" + service + '\'' +
+                ", module='" + module + '\'' +
                 ", relativeUri='" + relativeUri + '\'' +
                 ", absoluteUri='" + absoluteUri + '\'' +
                 ", relationView='" + relationView + '\'' +

@@ -393,6 +393,10 @@ dubbo:
     check: false
 
 
+caffeine:
+  expires-second: 30
+
+
 nesting:
   uris: [ /blue-lake/manager/events, /blue-risk/manager/records ]
   statuses: [ 200 ]

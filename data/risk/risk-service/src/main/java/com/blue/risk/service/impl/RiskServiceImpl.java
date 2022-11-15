@@ -1,8 +1,10 @@
 package com.blue.risk.service.impl;
 
+import com.blue.auth.api.model.ResourceInfo;
 import com.blue.basic.common.access.AccessProcessor;
 import com.blue.basic.common.base.BlueChecker;
 import com.blue.basic.model.common.Access;
+import com.blue.basic.model.common.BlueResponse;
 import com.blue.basic.model.event.DataEvent;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
@@ -13,6 +15,7 @@ import com.blue.risk.component.risk.RiskProcessor;
 import com.blue.risk.config.deploy.NestingResponseDeploy;
 import com.blue.risk.remote.consumer.RpcAuthServiceConsumer;
 import com.blue.risk.repository.entity.RiskHitRecord;
+import com.blue.risk.service.inter.ResourceService;
 import com.blue.risk.service.inter.RiskHitRecordService;
 import com.blue.risk.service.inter.RiskService;
 import org.apache.commons.lang3.StringUtils;
@@ -20,25 +23,32 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 
 import static com.blue.basic.common.base.BlueChecker.*;
-import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
+import static com.blue.basic.common.base.CommonFunctions.*;
 import static com.blue.basic.common.base.ConstantProcessor.getBoolByBool;
 import static com.blue.basic.constant.common.BlueBoolean.TRUE;
+import static com.blue.basic.constant.common.BlueCommonThreshold.NON_RESOURCE_ID;
 import static com.blue.basic.constant.common.BlueDataAttrKey.*;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 import static com.blue.basic.constant.common.ResponseElement.OK;
 import static com.blue.basic.constant.common.SpecialAccess.VISITOR;
+import static com.blue.basic.constant.common.SpecialIntegerElement.ZERO;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.common.SummerAttr.DATE_FORMATTER;
 import static java.time.Instant.ofEpochSecond;
 import static java.time.LocalDate.ofInstant;
 import static java.time.ZoneId.systemDefault;
+import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
+import static reactor.core.publisher.Flux.fromIterable;
 import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
@@ -57,16 +67,19 @@ public class RiskServiceImpl implements RiskService {
 
     private BlueIdentityProcessor blueIdentityProcessor;
 
+    private ResourceService resourceService;
+
     private final RiskProcessor riskProcessor;
 
     private RiskHitRecordService riskHitRecordService;
 
-    public RiskServiceImpl(RpcAuthServiceConsumer rpcAuthServiceConsumer, BlueIdentityProcessor blueIdentityProcessor, RiskProcessor riskProcessor,
-                           RiskHitRecordService riskHitRecordService, NestingResponseDeploy nestingResponseDeploy) {
+    public RiskServiceImpl(RpcAuthServiceConsumer rpcAuthServiceConsumer, BlueIdentityProcessor blueIdentityProcessor, ResourceService resourceService,
+                           RiskProcessor riskProcessor, RiskHitRecordService riskHitRecordService, NestingResponseDeploy nestingResponseDeploy) {
         this.rpcAuthServiceConsumer = rpcAuthServiceConsumer;
         this.blueIdentityProcessor = blueIdentityProcessor;
-        this.riskHitRecordService = riskHitRecordService;
+        this.resourceService = resourceService;
         this.riskProcessor = riskProcessor;
+        this.riskHitRecordService = riskHitRecordService;
 
         this.nestingRealUris = ofNullable(nestingResponseDeploy.getUris()).filter(uris -> !isEmpty(uris))
                 .map(HashSet::new)
@@ -76,12 +89,9 @@ public class RiskServiceImpl implements RiskService {
                 .map(HashSet::new)
                 .orElseGet(() -> new HashSet<>(0));
 
-        this.nestingRes = ofNullable(nestingResponseDeploy.getResponse()).filter(StringUtils::isNotEmpty)
-                .orElse(EMPTY_VALUE.value);
+        this.nestingRes = GSON.toJson(new BlueResponse<>(OK.code, ofNullable(nestingResponseDeploy.getResponse()).filter(StringUtils::isNotEmpty)
+                .orElse(EMPTY_VALUE.value), OK.message.intern()));
     }
-
-    private static final Function<Long, String> DATE_STR_FUNC = stamp ->
-            ofInstant(ofEpochSecond(stamp), systemDefault()).format(DATE_FORMATTER);
 
     private Set<String> nestingRealUris;
 
@@ -89,12 +99,18 @@ public class RiskServiceImpl implements RiskService {
 
     private String nestingRes;
 
-    private final BiPredicate<String, Integer> NESTING_PREDICATE = (realUri, status) ->
-            (isBlank(realUri) || isNull(status)) || nestingRealUris.contains(realUri) && nestingStatuses.contains(status);
+    private final BiPredicate<String, Integer> NESTING_PREDICATE = (uri, status) ->
+            isNotBlank(uri) && isNotNull(status) && nestingRealUris.contains(uri) && nestingStatuses.contains(status);
 
     private final Access UNKNOWN_ACCESS = VISITOR.access;
 
     private final Long[] EMPTY_ROLES = UNKNOWN_ACCESS.getRoleIds().toArray(Long[]::new);
+
+    private final ResourceInfo NON_RESOURCE = new ResourceInfo(NON_RESOURCE_ID.value, EMPTY_VALUE.value, EMPTY_VALUE.value, EMPTY_VALUE.value, EMPTY_VALUE.value, EMPTY_VALUE.value,
+            false, true, true, false, false, ZERO.value, EMPTY_VALUE.value, EMPTY_VALUE.value);
+
+    private static final Function<Long, String> DATE_STR_FUNC = stamp ->
+            ofInstant(ofEpochSecond(stamp), systemDefault()).format(DATE_FORMATTER);
 
     /**
      * data event -> risk event
@@ -118,18 +134,18 @@ public class RiskServiceImpl implements RiskService {
         Map<String, String> entries = dataEvent.getEntries();
 
         riskEvent.setMethod(ofNullable(entries.get(METHOD.key)).orElse(EMPTY_VALUE.value).intern());
+
+        String uri = ofNullable(entries.get(URI.key)).orElse(EMPTY_VALUE.value);
         riskEvent.setUri(ofNullable(entries.get(URI.key)).orElse(EMPTY_VALUE.value));
-
-        String realUri = ofNullable(entries.get(REAL_URI.key)).orElse(EMPTY_VALUE.value);
-
-        riskEvent.setRealUri(realUri);
+        riskEvent.setRealUri(ofNullable(entries.get(REAL_URI.key)).orElse(EMPTY_VALUE.value));
         riskEvent.setRequestBody(ofNullable(entries.get(REQUEST_BODY.key)).orElse(EMPTY_VALUE.value));
         riskEvent.setRequestExtra(ofNullable(entries.get(REQUEST_EXTRA.key)).orElse(EMPTY_VALUE.value));
 
         int responseStatus = ofNullable(entries.get(RESPONSE_STATUS.key)).map(Integer::parseInt).orElse(OK.status);
 
         riskEvent.setResponseStatus(responseStatus);
-        riskEvent.setResponseBody(ofNullable(entries.get(RESPONSE_BODY.key)).map(body -> NESTING_PREDICATE.test(realUri, responseStatus) ? nestingRes : body).orElse(EMPTY_VALUE.value));
+        riskEvent.setResponseBody(ofNullable(entries.get(RESPONSE_BODY.key)).map(body -> NESTING_PREDICATE.test(uri, responseStatus) ? nestingRes : body).orElse(EMPTY_VALUE.value));
+
         riskEvent.setResponseExtra(ofNullable(entries.get(RESPONSE_EXTRA.key)).orElse(EMPTY_VALUE.value));
         riskEvent.setRequestId(ofNullable(entries.get(REQUEST_ID.key)).orElse(EMPTY_VALUE.value));
         riskEvent.setMetadata(ofNullable(entries.get(METADATA.key)).orElse(EMPTY_VALUE.value));
@@ -171,7 +187,7 @@ public class RiskServiceImpl implements RiskService {
      */
     private final BiFunction<RiskEvent, List<RiskHit>, Mono<List<RiskHitRecord>>> DATA_EVENT_2_RECORD_EVENTS = (event, hits) -> {
         if (isNull(event) || isEmpty(hits))
-            return error(() -> new BlueException(INVALID_PARAM));
+            return just(emptyList());
 
         String dataEventType = ofNullable(event.getDataEventType())
                 .filter(BlueChecker::isNotBlank).orElse(EMPTY_VALUE.value).intern();
@@ -189,7 +205,7 @@ public class RiskServiceImpl implements RiskService {
 
         int responseStatus = ofNullable(event.getResponseStatus()).orElse(OK.status);
 
-        String responseBody = ofNullable(event.getResponseBody()).map(body -> NESTING_PREDICATE.test(realUri, responseStatus) ? nestingRes : body).orElse(EMPTY_VALUE.value);
+        String responseBody = ofNullable(event.getResponseBody()).map(body -> NESTING_PREDICATE.test(uri, responseStatus) ? nestingRes : body).orElse(EMPTY_VALUE.value);
         String responseExtra = ofNullable(event.getResponseExtra()).orElse(EMPTY_VALUE.value);
         String requestId = ofNullable(event.getRequestId()).orElse(EMPTY_VALUE.value);
         String metadata = ofNullable(event.getMetadata()).orElse(EMPTY_VALUE.value);
@@ -210,57 +226,81 @@ public class RiskServiceImpl implements RiskService {
         Integer existenceResponseBody = ofNullable(event.getExistenceResponseBody()).orElseGet(() -> getBoolByBool(TRUE.bool).status);
         Integer durationSeconds = ofNullable(event.getDurationSeconds()).orElse(0);
 
-        List<RiskHitRecord> riskHitRecords = new ArrayList<>(hits.size());
-        RiskHitRecord riskHitRecord;
+        return zip(resourceService.getResourceInfoByResourceKey(REQ_RES_KEY_GENERATOR.apply(method, uri))
+                        .switchIfEmpty(defer(() -> just(NON_RESOURCE))),
+                fromIterable(hits)
+                        .map(hit -> {
+                            RiskHitRecord riskHitRecord = new RiskHitRecord();
 
-        for (RiskHit hit : hits) {
-            riskHitRecord = new RiskHitRecord();
+                            riskHitRecord.setDataEventType(dataEventType);
+                            riskHitRecord.setDataEventOpType(dataEventOpType);
 
-            riskHitRecord.setDataEventType(dataEventType);
-            riskHitRecord.setDataEventOpType(dataEventOpType);
+                            riskHitRecord.setStamp(stamp);
+                            riskHitRecord.setCreateDate(createDate);
 
-            riskHitRecord.setStamp(stamp);
-            riskHitRecord.setCreateDate(createDate);
+                            riskHitRecord.setMethod(method);
+                            riskHitRecord.setUri(uri);
 
-            riskHitRecord.setMethod(method);
-            riskHitRecord.setUri(uri);
+                            riskHitRecord.setRealUri(realUri);
+                            riskHitRecord.setRequestBody(requestBody);
+                            riskHitRecord.setRequestExtra(requestExtra);
 
-            riskHitRecord.setRealUri(realUri);
-            riskHitRecord.setRequestBody(requestBody);
-            riskHitRecord.setRequestExtra(requestExtra);
+                            riskHitRecord.setResponseStatus(responseStatus);
 
-            riskHitRecord.setResponseStatus(responseStatus);
+                            riskHitRecord.setResponseBody(responseBody);
+                            riskHitRecord.setResponseExtra(responseExtra);
+                            riskHitRecord.setRequestId(requestId);
+                            riskHitRecord.setMetadata(metadata);
 
-            riskHitRecord.setResponseBody(responseBody);
-            riskHitRecord.setResponseExtra(responseExtra);
-            riskHitRecord.setRequestId(requestId);
-            riskHitRecord.setMetadata(metadata);
+                            riskHitRecord.setJwt(jwt);
+                            riskHitRecord.setMemberId(memberId);
+                            riskHitRecord.setRoleIds(roleIds);
+                            riskHitRecord.setCredentialType(credentialType);
+                            riskHitRecord.setDeviceType(deviceType);
+                            riskHitRecord.setLoginTime(loginTime);
 
-            riskHitRecord.setJwt(jwt);
-            riskHitRecord.setMemberId(memberId);
-            riskHitRecord.setRoleIds(roleIds);
-            riskHitRecord.setCredentialType(credentialType);
-            riskHitRecord.setDeviceType(deviceType);
-            riskHitRecord.setLoginTime(loginTime);
+                            riskHitRecord.setClientIp(clientIp);
+                            riskHitRecord.setUserAgent(userAgent);
+                            riskHitRecord.setSecKey(secKey);
+                            riskHitRecord.setRequestUnDecryption(requestUnDecryption);
+                            riskHitRecord.setResponseUnEncryption(responseUnEncryption);
+                            riskHitRecord.setExistenceRequestBody(existenceRequestBody);
+                            riskHitRecord.setExistenceResponseBody(existenceResponseBody);
+                            riskHitRecord.setDurationSeconds(durationSeconds);
 
-            riskHitRecord.setClientIp(clientIp);
-            riskHitRecord.setUserAgent(userAgent);
-            riskHitRecord.setSecKey(secKey);
-            riskHitRecord.setRequestUnDecryption(requestUnDecryption);
-            riskHitRecord.setResponseUnEncryption(responseUnEncryption);
-            riskHitRecord.setExistenceRequestBody(existenceRequestBody);
-            riskHitRecord.setExistenceResponseBody(existenceResponseBody);
-            riskHitRecord.setDurationSeconds(durationSeconds);
+                            riskHitRecord.setHitType(hit.getHitType());
+                            riskHitRecord.setIllegalExpiresSecond(hit.getIllegalExpiresSecond());
 
-            riskHitRecord.setHitType(hit.getHitType());
-            riskHitRecord.setIllegalExpiresSecond(hit.getIllegalExpiresSecond());
+                            riskHitRecord.setId(blueIdentityProcessor.generate(RiskHitRecord.class));
 
-            riskHitRecord.setId(blueIdentityProcessor.generate(RiskHitRecord.class));
+                            return riskHitRecord;
+                        }).collectList()
+        ).map(tuple2 -> {
+            ResourceInfo resourceInfo = tuple2.getT1();
+            List<RiskHitRecord> riskHitRecords = tuple2.getT2();
 
-            riskHitRecords.add(riskHitRecord);
-        }
+            Long resourceId = resourceInfo.getId();
+            String module = resourceInfo.getModule().intern();
+            String relativeUri = resourceInfo.getRelativeUri().intern();
+            String absoluteUri = resourceInfo.getAbsoluteUri().intern();
+            String relationView = resourceInfo.getRelationView().intern();
+            int authenticate = getBoolByBool(resourceInfo.getAuthenticate()).status;
+            Integer type = resourceInfo.getType();
+            String name = resourceInfo.getName().intern();
 
-        return just(riskHitRecords);
+            for (RiskHitRecord riskHitRecord : riskHitRecords) {
+                riskHitRecord.setResourceId(resourceId);
+                riskHitRecord.setModule(module);
+                riskHitRecord.setRelativeUri(relativeUri);
+                riskHitRecord.setAbsoluteUri(absoluteUri);
+                riskHitRecord.setRelationView(relationView);
+                riskHitRecord.setAuthenticate(authenticate);
+                riskHitRecord.setType(type);
+                riskHitRecord.setName(name);
+            }
+
+            return riskHitRecords;
+        });
     };
 
     private final BiFunction<RiskEvent, RiskAsserted, Mono<Boolean>> EVENTS_INSERTER = (riskEvent, riskAsserted) -> {

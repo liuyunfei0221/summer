@@ -433,7 +433,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
 -- data manage
 
        (340001, 'POST', 'blue-lake', '/manager/events', '', b'1', b'1', b'1', b'1', b'1', 3,
-        'test lake events', 'test lake events', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+        'opt events scroll of manager', 'opt events scroll of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (340002, 'POST', 'blue-analyze', '/manager/statistics/active/simple', '', b'1', b'1', b'1', b'1', b'1', 3,
         'statistics active simple', 'statistics active simple', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (340003, 'POST', 'blue-analyze', '/manager/statistics/active/merge', '', b'1', b'1', b'1', b'1', b'1', 3,
@@ -441,7 +441,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
        (340004, 'POST', 'blue-analyze', '/manager/statistics/active/summary', '', b'1', b'1', b'1', b'0', b'1', 3,
         'statistics summary', 'statistics summary', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (340005, 'POST', 'blue-risk', '/manager/records', '', b'1', b'1', b'1', b'1', b'1', 3,
-        'test risk records', 'test risk records', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+        'risk hit records scroll of manager', 'risk hit records scroll of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 
 -- agreement api

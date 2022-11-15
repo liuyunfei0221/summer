@@ -45,7 +45,7 @@ public class IllegalRequestValidateRiskHandler implements RiskHandler {
 
         if (200 != riskEvent.getResponseStatus()) {
             i++;
-            if (i % 9 == 0) {
+            if (i % 5 == 0) {
                 try {
                     RiskHit riskHit = new RiskHit(riskEvent.getMemberId(), ip, riskEvent.getMethod(), riskEvent.getUri(), RISK_TYPE.identity, 20L, TIME_STAMP_GETTER.get());
 

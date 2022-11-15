@@ -4,6 +4,7 @@
 <mapper namespace="com.blue.risk.repository.mapper.RiskHitRecordMapper">
     <resultMap id="BaseResultMap" type="com.blue.risk.repository.entity.RiskHitRecord">
         <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="cursor" jdbcType="BIGINT" property="cursor"/>
         <result column="data_event_type" jdbcType="VARCHAR" property="dataEventType"/>
         <result column="data_event_op_type" jdbcType="VARCHAR" property="dataEventOpType"/>
         <result column="stamp" jdbcType="BIGINT" property="stamp"/>
@@ -33,36 +34,31 @@
         <result column="existence_request_body" jdbcType="INTEGER" property="existenceRequestBody"/>
         <result column="existence_response_body" jdbcType="INTEGER" property="existenceResponseBody"/>
         <result column="duration_seconds" jdbcType="INTEGER" property="durationSeconds"/>
+        <result column="resource_id" jdbcType="BIGINT" property="resourceId"/>
+        <result column="module" jdbcType="VARCHAR" property="module"/>
+        <result column="relative_uri" jdbcType="VARCHAR" property="relativeUri"/>
+        <result column="absolute_uri" jdbcType="VARCHAR" property="absoluteUri"/>
+        <result column="relation_view" jdbcType="VARCHAR" property="relationView"/>
+        <result column="authenticate" jdbcType="INTEGER" property="authenticate"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
         <result column="hit_type" jdbcType="INTEGER" property="hitType"/>
         <result column="illegal_expires_second" jdbcType="BIGINT" property="illegalExpiresSecond"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id
-        , data_event_type, data_event_op_type, stamp, create_date, method, uri, real_uri, request_body, request_extra, response_status, response_body, response_extra, request_id, metadata, jwt, member_id,
-        role_ids, credential_type, device_type, login_time, client_ip, user_agent, sec_key, request_un_decryption, response_un_encryption,existence_request_body, existence_response_body, duration_seconds,
-        hit_type, illegal_expires_second
+        , "cursor", data_event_type, data_event_op_type, stamp, create_date, method, uri, real_uri, request_body, request_extra, response_status, response_body, response_extra, request_id, metadata, jwt, member_id,
+        role_ids, credential_type, device_type, login_time, client_ip, user_agent, sec_key, request_un_decryption, response_un_encryption, existence_request_body, existence_response_body, duration_seconds,
+        resource_id, "module", relative_uri, absolute_uri, relation_view, authenticate, type, name, hit_type, illegal_expires_second
     </sql>
-
-    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from risk_hit_record
-        where id = #{id,jdbcType=BIGINT}
-    </select>
-
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-        delete
-        from risk_hit_record
-        where id = #{id,jdbcType=BIGINT}
-    </delete>
 
     <insert id="insert" parameterType="com.blue.risk.repository.entity.RiskHitRecord">
         insert into risk_hit_record (
         <include refid="Base_Column_List"/>
         )
         values
-        (#{id,jdbcType=BIGINT}, #{dataEventType,jdbcType=VARCHAR},
+        (#{id,jdbcType=BIGINT}, #{cursor,jdbcType=BIGINT}, #{dataEventType,jdbcType=VARCHAR},
         #{dataEventOpType,jdbcType=VARCHAR}, #{stamp,jdbcType=BIGINT},
         #{createDate,jdbcType=VARCHAR}, #{method,jdbcType=VARCHAR},
         #{uri,jdbcType=VARCHAR}, #{realUri,jdbcType=VARCHAR},
@@ -76,6 +72,10 @@
         #{secKey,jdbcType=VARCHAR}, #{requestUnDecryption,jdbcType=INTEGER},
         #{responseUnEncryption,jdbcType=INTEGER}, #{existenceRequestBody,jdbcType=INTEGER},
         #{existenceResponseBody,jdbcType=INTEGER}, #{durationSeconds,jdbcType=INTEGER},
+        #{resourceId,jdbcType=BIGINT}, #{module,jdbcType=VARCHAR},
+        #{relativeUri,jdbcType=VARCHAR}, #{absoluteUri,jdbcType=VARCHAR},
+        #{relationView,jdbcType=VARCHAR}, #{authenticate,jdbcType=INTEGER},
+        #{type,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},
         #{hitType,jdbcType=INTEGER}, #{illegalExpiresSecond,jdbcType=BIGINT})
     </insert>
 
@@ -85,7 +85,7 @@
             <include refid="Base_Column_List"/>
             ) values
             <foreach collection="list" index="index" item="item" separator=",">
-                (#{item.id,jdbcType=BIGINT}, #{item.dataEventType,jdbcType=VARCHAR},
+                (#{item.id,jdbcType=BIGINT}, #{item.cursor,jdbcType=BIGINT}, #{item.dataEventType,jdbcType=VARCHAR},
                 #{item.dataEventOpType,jdbcType=VARCHAR}, #{item.stamp,jdbcType=BIGINT},
                 #{item.createDate,jdbcType=VARCHAR}, #{item.method,jdbcType=VARCHAR},
                 #{item.uri,jdbcType=VARCHAR}, #{item.realUri,jdbcType=VARCHAR},
@@ -96,10 +96,14 @@
                 #{item.roleIds,jdbcType=ARRAY,typeHandler=com.blue.risk.repository.type.ClickHouseLongArrayTypeHandler},
                 #{item.credentialType,jdbcType=VARCHAR}, #{item.deviceType,jdbcType=VARCHAR},
                 #{item.loginTime,jdbcType=BIGINT}, #{item.clientIp,jdbcType=VARCHAR},
-                #{item.userAgent,jdbcType=VARCHAR},
-                #{item.secKey,jdbcType=VARCHAR}, #{item.requestUnDecryption,jdbcType=INTEGER},
-                #{item.responseUnEncryption,jdbcType=INTEGER}, #{item.existenceRequestBody,jdbcType=INTEGER},
+                #{item.userAgent,jdbcType=VARCHAR}, #{item.secKey,jdbcType=VARCHAR},
+                #{item.requestUnDecryption,jdbcType=INTEGER}, #{item.responseUnEncryption,jdbcType=INTEGER},
+                #{item.existenceRequestBody,jdbcType=INTEGER},
                 #{item.existenceResponseBody,jdbcType=INTEGER}, #{item.durationSeconds,jdbcType=INTEGER},
+                #{item.resourceId,jdbcType=BIGINT}, #{item.module,jdbcType=VARCHAR},
+                #{item.relativeUri,jdbcType=VARCHAR}, #{item.absoluteUri,jdbcType=VARCHAR},
+                #{item.relationView,jdbcType=VARCHAR}, #{item.authenticate,jdbcType=INTEGER},
+                #{item.type,jdbcType=INTEGER}, #{item.name,jdbcType=VARCHAR},
                 #{item.hitType,jdbcType=INTEGER}, #{item.illegalExpiresSecond,jdbcType=BIGINT})
             </foreach>
         </if>
@@ -110,6 +114,9 @@
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
+            </if>
+            <if test="cursor != null">
+                "cursor",
             </if>
             <if test="dataEventType != null">
                 data_event_type,
@@ -195,6 +202,30 @@
             <if test="durationSeconds != null">
                 duration_seconds,
             </if>
+            <if test="resourceId != null">
+                resource_id,
+            </if>
+            <if test="module != null">
+                "module",
+            </if>
+            <if test="relativeUri != null">
+                relative_uri,
+            </if>
+            <if test="absoluteUri != null">
+                absolute_uri,
+            </if>
+            <if test="relationView != null">
+                relation_view,
+            </if>
+            <if test="authenticate != null">
+                authenticate,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
             <if test="hitType != null">
                 hit_type,
             </if>
@@ -205,6 +236,9 @@
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 #{id,jdbcType=BIGINT},
+            </if>
+            <if test="cursor != null">
+                #{cursor,jdbcType=BIGINT},
             </if>
             <if test="dataEventType != null">
                 #{dataEventType,jdbcType=VARCHAR},
@@ -290,6 +324,30 @@
             <if test="durationSeconds != null">
                 #{durationSeconds,jdbcType=INTEGER},
             </if>
+            <if test="resourceId != null">
+                #{resourceId,jdbcType=BIGINT},
+            </if>
+            <if test="module != null">
+                #{module,jdbcType=VARCHAR},
+            </if>
+            <if test="relativeUri != null">
+                #{relativeUri,jdbcType=VARCHAR},
+            </if>
+            <if test="absoluteUri != null">
+                #{absoluteUri,jdbcType=VARCHAR},
+            </if>
+            <if test="relationView != null">
+                #{relationView,jdbcType=VARCHAR},
+            </if>
+            <if test="authenticate != null">
+                #{authenticate,jdbcType=INTEGER},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=INTEGER},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
             <if test="hitType != null">
                 #{hitType,jdbcType=INTEGER},
             </if>
@@ -299,9 +357,54 @@
         </trim>
     </insert>
 
+    <update id="updateByPrimaryKey" parameterType="com.blue.risk.repository.entity.RiskHitRecord">
+        update risk_hit_record
+        set "cursor"                = #{cursor,jdbcType=BIGINT},
+            data_event_type         = #{dataEventType,jdbcType=VARCHAR},
+            data_event_op_type      = #{dataEventOpType,jdbcType=VARCHAR},
+            stamp                   = #{stamp,jdbcType=BIGINT},
+            create_date             = #{createDate,jdbcType=VARCHAR},
+            method                  = #{method,jdbcType=VARCHAR},
+            uri                     = #{uri,jdbcType=VARCHAR},
+            real_uri                = #{realUri,jdbcType=VARCHAR},
+            request_body            = #{requestBody,jdbcType=VARCHAR},
+            request_extra           = #{requestExtra,jdbcType=VARCHAR},
+            response_status         = #{responseStatus,jdbcType=INTEGER},
+            response_body           = #{responseBody,jdbcType=VARCHAR},
+            response_extra          = #{responseExtra,jdbcType=VARCHAR},
+            request_id              = #{requestId,jdbcType=VARCHAR},
+            metadata                = #{metadata,jdbcType=VARCHAR},
+            jwt                     = #{jwt,jdbcType=VARCHAR},
+            member_id               = #{memberId,jdbcType=BIGINT},
+            role_ids                = #{roleIds,jdbcType=ARRAY,typeHandler=com.blue.risk.repository.type.ClickHouseLongArrayTypeHandler},
+            credential_type         = #{credentialType,jdbcType=VARCHAR},
+            device_type             = #{deviceType,jdbcType=VARCHAR},
+            login_time              = #{loginTime,jdbcType=BIGINT},
+            client_ip               = #{clientIp,jdbcType=VARCHAR},
+            user_agent              = #{userAgent,jdbcType=VARCHAR},
+            sec_key                 = #{secKey,jdbcType=VARCHAR},
+            request_un_decryption   = #{requestUnDecryption,jdbcType=INTEGER},
+            response_un_encryption  = #{responseUnEncryption,jdbcType=INTEGER},
+            existence_request_body  = #{existenceRequestBody,jdbcType=INTEGER},
+            existence_response_body = #{existenceResponseBody,jdbcType=INTEGER},
+            duration_seconds        = #{durationSeconds,jdbcType=INTEGER},
+            resource_id             = #{resourceId,jdbcType=BIGINT},
+            "module"                = #{module,jdbcType=VARCHAR},
+            relative_uri            = #{relativeUri,jdbcType=VARCHAR},
+            absolute_uri            = #{absoluteUri,jdbcType=VARCHAR},
+            relation_view           = #{relationView,jdbcType=VARCHAR},
+            authenticate            = #{authenticate,jdbcType=INTEGER},
+            hit_type                = #{hitType,jdbcType=INTEGER},
+            illegal_expires_second  = #{illegalExpiresSecond,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.blue.risk.repository.entity.RiskHitRecord">
         update risk_hit_record
         <set>
+            <if test="cursor != null">
+                "cursor" = #{cursor,jdbcType=BIGINT},
+            </if>
             <if test="dataEventType != null">
                 data_event_type = #{dataEventType,jdbcType=VARCHAR},
             </if>
@@ -387,6 +490,30 @@
             <if test="durationSeconds != null">
                 duration_seconds = #{durationSeconds,jdbcType=INTEGER},
             </if>
+            <if test="resourceId != null">
+                resource_id = #{resourceId,jdbcType=BIGINT},
+            </if>
+            <if test="module != null">
+                "module" = #{module,jdbcType=VARCHAR},
+            </if>
+            <if test="relativeUri != null">
+                relative_uri = #{relativeUri,jdbcType=VARCHAR},
+            </if>
+            <if test="absoluteUri != null">
+                absolute_uri = #{absoluteUri,jdbcType=VARCHAR},
+            </if>
+            <if test="relationView != null">
+                relation_view = #{relationView,jdbcType=VARCHAR},
+            </if>
+            <if test="authenticate != null">
+                authenticate = #{authenticate,jdbcType=INTEGER},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=INTEGER},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
             <if test="hitType != null">
                 hit_type = #{hitType,jdbcType=INTEGER},
             </if>
@@ -397,137 +524,132 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <update id="updateByPrimaryKey" parameterType="com.blue.risk.repository.entity.RiskHitRecord">
-        update risk_hit_record
-        set data_event_type         = #{dataEventType,jdbcType=VARCHAR},
-            data_event_op_type      = #{dataEventOpType,jdbcType=VARCHAR},
-            stamp                   = #{stamp,jdbcType=BIGINT},
-            create_date             = #{createDate,jdbcType=VARCHAR},
-            method                  = #{method,jdbcType=VARCHAR},
-            uri                     = #{uri,jdbcType=VARCHAR},
-            real_uri                = #{realUri,jdbcType=VARCHAR},
-            request_body            = #{requestBody,jdbcType=VARCHAR},
-            request_extra           = #{requestExtra,jdbcType=VARCHAR},
-            response_status         = #{responseStatus,jdbcType=INTEGER},
-            response_body           = #{responseBody,jdbcType=VARCHAR},
-            response_extra          = #{responseExtra,jdbcType=VARCHAR},
-            request_id              = #{requestId,jdbcType=VARCHAR},
-            metadata                = #{metadata,jdbcType=VARCHAR},
-            jwt                     = #{jwt,jdbcType=VARCHAR},
-            member_id               = #{memberId,jdbcType=BIGINT},
-            role_ids                = #{roleIds,jdbcType=ARRAY,typeHandler=com.blue.risk.repository.type.ClickHouseLongArrayTypeHandler},
-            credential_type         = #{credentialType,jdbcType=VARCHAR},
-            device_type             = #{deviceType,jdbcType=VARCHAR},
-            login_time              = #{loginTime,jdbcType=BIGINT},
-            client_ip               = #{clientIp,jdbcType=VARCHAR},
-            user_agent              = #{userAgent,jdbcType=VARCHAR},
-            sec_key                 = #{secKey,jdbcType=VARCHAR},
-            request_un_decryption   = #{requestUnDecryption,jdbcType=INTEGER},
-            response_un_encryption  = #{responseUnEncryption,jdbcType=INTEGER},
-            existence_request_body  = #{existenceRequestBody,jdbcType=INTEGER},
-            existence_response_body = #{existenceResponseBody,jdbcType=INTEGER},
-            duration_seconds        = #{durationSeconds,jdbcType=INTEGER},
-            hit_type                = #{hitType,jdbcType=INTEGER},
-            illegal_expires_second  = #{illegalExpiresSecond,jdbcType=BIGINT}
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from risk_hit_record
         where id = #{id,jdbcType=BIGINT}
-    </update>
+    </delete>
 
-    <select id="selectByRowsAndSearchAfter" resultMap="BaseResultMap">
-        SELECT
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
         <include refid="Base_Column_List"/>
-        FROM
-        risk_hit_record
-        <if test="searchAfter != null and searchAfter > 0">
-            <where>
-                id &lt; #{searchAfter.id,jdbcType=BIGINT}
-            </where>
-        </if>
-        ORDER BY
-        stamp DESC
-        LIMIT #{rows,jdbcType=BIGINT}
+        from risk_hit_record
+        where id = #{id,jdbcType=BIGINT}
     </select>
+
+    <sql id="Column_Conditions">
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.dataEventType != null and riskHitRecordCondition.dataEventType != ''">
+            AND
+            data_event_type = #{riskHitRecordCondition.dataEventType,jdbcType=VARCHAR}
+        </if>
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.dataEventOpType != null and riskHitRecordCondition.dataEventOpType != ''">
+            AND
+            data_event_op_type = #{riskHitRecordCondition.dataEventOpType,jdbcType=VARCHAR}
+        </if>
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.stampBegin != null">
+            AND
+            stamp &gt;= #{riskHitRecordCondition.stampBegin,jdbcType=BIGINT}
+        </if>
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.stampBegin != null">
+            AND
+            stamp &lt;= #{riskHitRecordCondition.stampBegin,jdbcType=BIGINT}
+        </if>
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.method != null and riskHitRecordCondition.method != ''">
+            AND
+            method = #{riskHitRecordCondition.method,jdbcType=VARCHAR}
+        </if>
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.uri != null and riskHitRecordCondition.uri != ''">
+            AND
+            uri = #{riskHitRecordCondition.uri,jdbcType=VARCHAR}
+        </if>
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.realUri != null and riskHitRecordCondition.realUri != ''">
+            AND
+            real_uri = #{riskHitRecordCondition.realUri,jdbcType=VARCHAR}
+        </if>
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.responseStatus != null">
+            AND
+            response_status = #{riskHitRecordCondition.responseStatus,jdbcType=INTEGER}
+        </if>
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.memberId != null">
+            AND
+            member_id = #{riskHitRecordCondition.memberId,jdbcType=BIGINT}
+        </if>
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.roleId != null">
+            AND
+            has(role_ids,#{riskHitRecordCondition.roleId,jdbcType=BIGINT})
+        </if>
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.credentialType != null and riskHitRecordCondition.credentialType != ''">
+            AND
+            credential_type = #{riskHitRecordCondition.credentialType,jdbcType=VARCHAR}
+        </if>
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.deviceType != null and riskHitRecordCondition.deviceType != ''">
+            AND
+            device_type = #{riskHitRecordCondition.deviceType,jdbcType=VARCHAR}
+        </if>
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.loginTimeBegin != null">
+            AND
+            login_time &gt;= #{riskHitRecordCondition.loginTimeBegin,jdbcType=BIGINT}
+        </if>
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.loginTimeEnd != null">
+            AND
+            login_time &lt;= #{riskHitRecordCondition.loginTimeEnd,jdbcType=BIGINT}
+        </if>
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.clientIp != null and riskHitRecordCondition.clientIp != ''">
+            AND
+            client_ip = #{riskHitRecordCondition.clientIp,jdbcType=VARCHAR}
+        </if>
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.userAgent != null and riskHitRecordCondition.userAgent != ''">
+            AND
+            user_agent = #{riskHitRecordCondition.userAgent,jdbcType=VARCHAR}
+        </if>
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.durationSecondsMin != null">
+            AND
+            duration_seconds = #{riskHitRecordCondition.durationSecondsMin,jdbcType=BIGINT}
+        </if>
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.durationSecondsMax != null">
+            AND
+            duration_seconds = #{riskHitRecordCondition.durationSecondsMax,jdbcType=BIGINT}
+        </if>
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.resourceId != null">
+            AND
+            resource_id = #{riskHitRecordCondition.resourceId,jdbcType=BIGINT}
+        </if>
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.module != null and riskHitRecordCondition.module != ''">
+            AND
+            "module" = #{riskHitRecordCondition.module,jdbcType=VARCHAR}
+        </if>
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.relativeUri != null and riskHitRecordCondition.relativeUri != ''">
+            AND
+            relative_uri = #{riskHitRecordCondition.relativeUri,jdbcType=VARCHAR}
+        </if>
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.absoluteUri != null and riskHitRecordCondition.absoluteUri != ''">
+            AND
+            absolute_uri = #{riskHitRecordCondition.absoluteUri,jdbcType=VARCHAR}
+        </if>
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.relationView != null and riskHitRecordCondition.relationView != ''">
+            AND
+            relation_view = #{riskHitRecordCondition.relationView,jdbcType=VARCHAR}
+        </if>
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.authenticate != null">
+            AND
+            authenticate = #{riskHitRecordCondition.authenticate,jdbcType=INTEGER}
+        </if>
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.type != null">
+            AND
+            type = #{riskHitRecordCondition.type,jdbcType=INTEGER}
+        </if>
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.hitType != null">
+            AND
+            hit_type = #{riskHitRecordCondition.hitType,jdbcType=INTEGER}
+        </if>
+    </sql>
 
     <sql id="Risk_Hit_Record_Conditions">
         <where>
-            <if test="riskHitRecordCondition != null and riskHitRecordCondition.dataEventType != null and riskHitRecordCondition.dataEventType != ''">
-                AND
-                data_event_type = #{riskHitRecordCondition.dataEventType,jdbcType=VARCHAR}
-            </if>
-            <if test="riskHitRecordCondition != null and riskHitRecordCondition.dataEventOpType != null and riskHitRecordCondition.dataEventOpType != ''">
-                AND
-                data_event_op_type = #{riskHitRecordCondition.dataEventOpType,jdbcType=VARCHAR}
-            </if>
-            <if test="riskHitRecordCondition != null and riskHitRecordCondition.stampBegin != null">
-                AND
-                stamp &gt;= #{riskHitRecordCondition.stampBegin,jdbcType=BIGINT}
-            </if>
-            <if test="riskHitRecordCondition != null and riskHitRecordCondition.stampBegin != null">
-                AND
-                stamp &lt;= #{riskHitRecordCondition.stampBegin,jdbcType=BIGINT}
-            </if>
-            <if test="riskHitRecordCondition != null and riskHitRecordCondition.method != null and riskHitRecordCondition.method != ''">
-                AND
-                method = #{riskHitRecordCondition.method,jdbcType=VARCHAR}
-            </if>
-            <if test="riskHitRecordCondition != null and riskHitRecordCondition.uri != null and riskHitRecordCondition.uri != ''">
-                AND
-                uri = #{riskHitRecordCondition.uri,jdbcType=VARCHAR}
-            </if>
-            <if test="riskHitRecordCondition != null and riskHitRecordCondition.realUri != null and riskHitRecordCondition.realUri != ''">
-                AND
-                real_uri = #{riskHitRecordCondition.realUri,jdbcType=VARCHAR}
-            </if>
-            <if test="riskHitRecordCondition != null and riskHitRecordCondition.responseStatus != null">
-                AND
-                response_status = #{riskHitRecordCondition.responseStatus,jdbcType=INTEGER}
-            </if>
-            <if test="riskHitRecordCondition != null and riskHitRecordCondition.memberId != null">
-                AND
-                member_id = #{riskHitRecordCondition.memberId,jdbcType=BIGINT}
-            </if>
-            <if test="riskHitRecordCondition != null and riskHitRecordCondition.roleId != null">
-                AND
-                has(role_ids,#{riskHitRecordCondition.roleId,jdbcType=BIGINT})
-            </if>
-            <if test="riskHitRecordCondition != null and riskHitRecordCondition.credentialType != null and riskHitRecordCondition.credentialType != ''">
-                AND
-                credential_type = #{riskHitRecordCondition.credentialType,jdbcType=VARCHAR}
-            </if>
-            <if test="riskHitRecordCondition != null and riskHitRecordCondition.deviceType != null and riskHitRecordCondition.deviceType != ''">
-                AND
-                device_type = #{riskHitRecordCondition.deviceType,jdbcType=VARCHAR}
-            </if>
-            <if test="riskHitRecordCondition != null and riskHitRecordCondition.loginTimeBegin != null">
-                AND
-                login_time &gt;= #{riskHitRecordCondition.loginTimeBegin,jdbcType=BIGINT}
-            </if>
-            <if test="riskHitRecordCondition != null and riskHitRecordCondition.loginTimeEnd != null">
-                AND
-                login_time &lt;= #{riskHitRecordCondition.loginTimeEnd,jdbcType=BIGINT}
-            </if>
-            <if test="riskHitRecordCondition != null and riskHitRecordCondition.clientIp != null and riskHitRecordCondition.clientIp != ''">
-                AND
-                client_ip = #{riskHitRecordCondition.clientIp,jdbcType=VARCHAR}
-            </if>
-            <if test="riskHitRecordCondition != null and riskHitRecordCondition.userAgent != null and riskHitRecordCondition.userAgent != ''">
-                AND
-                user_agent = #{riskHitRecordCondition.userAgent,jdbcType=VARCHAR}
-            </if>
-            <if test="riskHitRecordCondition != null and riskHitRecordCondition.durationSecondsMin != null">
-                AND
-                duration_seconds = #{riskHitRecordCondition.durationSecondsMin,jdbcType=BIGINT}
-            </if>
-            <if test="riskHitRecordCondition != null and riskHitRecordCondition.durationSecondsMax != null">
-                AND
-                duration_seconds = #{riskHitRecordCondition.durationSecondsMax,jdbcType=BIGINT}
-            </if>
-            <if test="riskHitRecordCondition != null and riskHitRecordCondition.hitType != null">
-                AND
-                hit_type = #{riskHitRecordCondition.hitType,jdbcType=INTEGER}
-            </if>
+            <include refid="Column_Conditions"/>
             <if test="column != null and comparison != null and searchAfter != null and searchAfter > 0">
                 AND
-                ${column} ${comparison} #{searchAfter,jdbcType=BIGINT}
+                "${column}" ${comparison} #{searchAfter,jdbcType=BIGINT}
             </if>
         </where>
     </sql>
@@ -543,6 +665,20 @@
             ${riskHitRecordCondition.sortAttribute} ${riskHitRecordCondition.sortType}
         </if>
         LIMIT #{rows,jdbcType=BIGINT}
+    </select>
+
+    <sql id="Count_Conditions">
+        <where>
+            <include refid="Column_Conditions"/>
+        </where>
+    </sql>
+
+    <select id="countByCondition" resultMap="BaseResultMap">
+        SELECT
+        COUNT(*)
+        FROM
+        opt_event
+        <include refid="Count_Conditions"/>
     </select>
 
 </mapper>

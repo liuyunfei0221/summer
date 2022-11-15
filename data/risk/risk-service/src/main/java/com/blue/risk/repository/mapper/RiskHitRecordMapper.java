@@ -14,22 +14,22 @@ import java.util.List;
 @SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
 public interface RiskHitRecordMapper {
 
-    int deleteByPrimaryKey(Long id);
-
     int insert(RiskHitRecord record);
 
     void insertBatch(@Param("list") List<RiskHitRecord> list);
 
     int insertSelective(RiskHitRecord record);
 
-    RiskHitRecord selectByPrimaryKey(Long id);
+    int updateByPrimaryKey(RiskHitRecord record);
 
     int updateByPrimaryKeySelective(RiskHitRecord record);
 
-    int updateByPrimaryKey(RiskHitRecord record);
+    int deleteByPrimaryKey(Long id);
 
-    List<RiskHitRecord> selectByRowsAndSearchAfter(@Param("rows") long rows, @Param("searchAfter") Long searchAfter);
+    RiskHitRecord selectByPrimaryKey(Long id);
 
     List<RiskHitRecord> selectBySearchAfterAndCondition(@Param("rows") Long rows, @Param("riskHitRecordCondition") RiskHitRecordCondition riskHitRecordCondition, @Param("column") String column, @Param("comparison") String comparison, @Param("searchAfter") Long searchAfter);
+
+    long countByCondition(@Param("riskHitRecordCondition") RiskHitRecordCondition riskHitRecordCondition);
 
 }
