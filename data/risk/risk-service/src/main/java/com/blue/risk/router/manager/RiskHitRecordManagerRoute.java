@@ -28,6 +28,7 @@ public class RiskHitRecordManagerRoute {
 
         RouterFunction<ServerResponse> routerFunction = route()
                 .POST("/records", accept(APPLICATION_JSON), riskHitRecordManagerHandler::scroll)
+                .POST("/records/count", accept(APPLICATION_JSON), riskHitRecordManagerHandler::count)
                 .build();
 
         return nest(pathPredicate, routerFunction);

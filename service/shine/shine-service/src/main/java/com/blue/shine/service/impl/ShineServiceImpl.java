@@ -685,7 +685,7 @@ public class ShineServiceImpl implements ShineService {
      * @return
      */
     @Override
-    public Mono<ScrollModelResponse<ShineInfo, SearchAfterCursor>> selectShineInfoScrollByScrollAndCursor(ScrollModelRequest<ShineCondition, SearchAfterCursor> scrollModelRequest) {
+    public Mono<ScrollModelResponse<ShineInfo, SearchAfterCursor>> selectShineInfoScrollByConditionAndCursor(ScrollModelRequest<ShineCondition, SearchAfterCursor> scrollModelRequest) {
         LOGGER.info("scrollModelRequest = {}", scrollModelRequest);
         if (isNull(scrollModelRequest))
             throw new BlueException(EMPTY_PARAM);
@@ -711,7 +711,7 @@ public class ShineServiceImpl implements ShineService {
      * @return
      */
     @Override
-    public Mono<ScrollModelResponse<ShineInfo, PitCursor>> selectShineInfoScrollByScrollAndCursorBaseOnSnapShot(ScrollModelRequest<ShineCondition, PitCursor> scrollModelRequest) {
+    public Mono<ScrollModelResponse<ShineInfo, PitCursor>> selectShineInfoScrollByConditionAndCursorBaseOnSnapShot(ScrollModelRequest<ShineCondition, PitCursor> scrollModelRequest) {
         LOGGER.info("scrollModelRequest = {}", scrollModelRequest);
         if (isNull(scrollModelRequest))
             throw new BlueException(EMPTY_PARAM);

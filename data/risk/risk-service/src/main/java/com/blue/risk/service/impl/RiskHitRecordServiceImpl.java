@@ -1,6 +1,7 @@
 package com.blue.risk.service.impl;
 
 import com.blue.basic.common.base.BlueChecker;
+import com.blue.basic.model.common.ConditionCountResponse;
 import com.blue.basic.model.common.ScrollModelRequest;
 import com.blue.basic.model.common.ScrollModelResponse;
 import com.blue.basic.model.exps.BlueException;
@@ -83,6 +84,12 @@ public class RiskHitRecordServiceImpl implements RiskHitRecordService {
         return rc;
     };
 
+    /**
+     * insert records
+     *
+     * @param riskHitRecords
+     * @return
+     */
     @Override
     public Mono<Boolean> insertRiskHitRecords(List<RiskHitRecord> riskHitRecords) {
         LOGGER.info("riskHitRecords = {}", riskHitRecords);
@@ -90,8 +97,14 @@ public class RiskHitRecordServiceImpl implements RiskHitRecordService {
         return RECORDS_INSERTER.apply(riskHitRecords);
     }
 
+    /**
+     * select by search after
+     *
+     * @param scrollModelRequest
+     * @return
+     */
     @Override
-    public Mono<ScrollModelResponse<RiskHitRecord, Long>> selectRiskHitRecordScrollByScrollAndCursor(ScrollModelRequest<RiskHitRecordCondition, Long> scrollModelRequest) {
+    public Mono<ScrollModelResponse<RiskHitRecord, Long>> selectRiskHitRecordScrollByConditionAndCursor(ScrollModelRequest<RiskHitRecordCondition, Long> scrollModelRequest) {
         LOGGER.info("scrollModelRequest = {}", scrollModelRequest);
         if (isNull(scrollModelRequest))
             throw new BlueException(EMPTY_PARAM);
@@ -105,7 +118,26 @@ public class RiskHitRecordServiceImpl implements RiskHitRecordService {
         return isNotEmpty(hitRecords) ?
                 just(new ScrollModelResponse<>(hitRecords, parseSearchAfter(hitRecords, DESC.identity, RiskHitRecord::getId)))
                 :
-                just(new ScrollModelResponse<>(emptyList(), null));
+                just(new ScrollModelResponse<>(emptyList()));
+    }
+
+    /**
+     * count by condition
+     *
+     * @param riskHitRecordCondition
+     * @return
+     */
+    @Override
+    public Mono<ConditionCountResponse<RiskHitRecordCondition>> countRiskHitRecordByCondition(RiskHitRecordCondition riskHitRecordCondition) {
+        LOGGER.info("riskHitRecordCondition = {}", riskHitRecordCondition);
+        if (isNull(riskHitRecordCondition))
+            throw new BlueException(EMPTY_PARAM);
+
+        RiskHitRecordCondition countCondition = CONDITION_PROCESSOR.apply(riskHitRecordCondition);
+
+        return justOrEmpty(riskHitRecordMapper.countByCondition(countCondition))
+                .switchIfEmpty(defer(() -> just(0L)))
+                .map(count -> new ConditionCountResponse<>(riskHitRecordCondition, count));
     }
 
 }

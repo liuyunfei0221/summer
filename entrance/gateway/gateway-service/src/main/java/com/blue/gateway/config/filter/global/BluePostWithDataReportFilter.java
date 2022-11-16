@@ -99,7 +99,7 @@ public final class BluePostWithDataReportFilter implements GlobalFilter, Ordered
         EVENT_ATTR_PACKAGER.accept(attributes, dataEvent);
     };
 
-    private Mono<String> getResponseBodyAndReport(ServerWebExchange exchange, HttpStatus responseHttpStatus, Publisher<? extends DataBuffer> body, DataEvent dataEvent) {
+    private Mono<String> getResponseBody(ServerWebExchange exchange, HttpStatus responseHttpStatus, Publisher<? extends DataBuffer> body, DataEvent dataEvent) {
         ServerHttpResponse response = exchange.getResponse();
 
         ofNullable(response.getHeaders().getFirst(BlueHeader.RESPONSE_EXTRA.name))
@@ -113,29 +113,32 @@ public final class BluePostWithDataReportFilter implements GlobalFilter, Ordered
                 .bodyToMono(String.class)
                 .flatMap(responseBody -> {
                             dataEvent.addData(RESPONSE_BODY.key, responseBody);
-                            requestEventReporter.report(dataEvent);
-
                             return just(RESPONSE_BODY_PROCESSOR.apply(responseBody, exchange.getAttributes()));
                         }
                 );
     }
 
-    private ServerHttpResponse getResponseAndReport(ServerWebExchange exchange, DataEvent dataEvent) {
+    private ServerHttpResponse handleResponse(ServerWebExchange exchange, DataEvent dataEvent) {
         ServerHttpResponse response = exchange.getResponse();
-
-        HttpStatus httpStatus = ofNullable(response.getStatusCode()).orElse(OK);
-        dataEvent.addData(RESPONSE_STATUS.key, valueOf(httpStatus.value()).intern());
 
         if (ofNullable(exchange.getAttributes().get(EXISTENCE_RESPONSE_BODY.key))
                 .map(b -> (boolean) b).orElse(true)) {
             //noinspection NullableProblems
             return new ServerHttpResponseDecorator(response) {
+
+                @Override
+                public HttpStatus getStatusCode() {
+                    HttpStatus httpStatus = ofNullable(super.getStatusCode()).orElse(OK);
+                    dataEvent.addData(RESPONSE_STATUS.key, valueOf(httpStatus.value()).intern());
+                    return httpStatus;
+                }
+
                 @Override
                 public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
                     CachedBodyOutputMessage outputMessage = new CachedBodyOutputMessage(
                             exchange, response.getHeaders());
 
-                    return fromPublisher(getResponseBodyAndReport(exchange, httpStatus, body, dataEvent), String.class)
+                    return fromPublisher(getResponseBody(exchange, this.getStatusCode(), body, dataEvent), String.class)
                             .insert(outputMessage, new BodyInserterContext())
                             .then(defer(() ->
                                     getDelegate().writeWith(outputMessage.getBody())))
@@ -146,33 +149,53 @@ public final class BluePostWithDataReportFilter implements GlobalFilter, Ordered
                 }
 
                 @Override
-                public Mono<Void> writeAndFlushWith(
-                        Publisher<? extends Publisher<? extends DataBuffer>> body) {
+                public Mono<Void> writeAndFlushWith(Publisher<? extends Publisher<? extends DataBuffer>> body) {
+                    return writeWith(from(body).flatMapSequential(p -> p));
+                }
+            };
+        } else {
+            //noinspection NullableProblems
+            return new ServerHttpResponseDecorator(response) {
+                @Override
+                public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
+                    dataEvent.addData(RESPONSE_STATUS.key, valueOf(ofNullable(super.getStatusCode()).orElse(OK).value()).intern());
+                    return super.writeWith(body);
+                }
+
+                @Override
+                public Mono<Void> writeAndFlushWith(Publisher<? extends Publisher<? extends DataBuffer>> body) {
                     return writeWith(from(body).flatMapSequential(p -> p));
                 }
             };
         }
-
-        requestEventReporter.report(dataEvent);
-
-        return response;
     }
 
-    private Mono<Void> reportWithoutRequestBody(ServerWebExchange exchange, GatewayFilterChain chain, DataEvent dataEvent) {
+    private Mono<Void> handleWithoutRequestBody(ServerHttpRequest request, ServerWebExchange exchange, GatewayFilterChain chain) {
+        DataEvent dataEvent = new DataEvent();
+
         REQUEST_INFO_PACKAGER.accept(exchange.getAttributes(), dataEvent);
         return chain.filter(
-                exchange.mutate().response(
-                        getResponseAndReport(exchange, dataEvent)
-                ).build());
+                        exchange.mutate().response(
+                                handleResponse(exchange, dataEvent)
+                        ).build())
+                .doOnSuccess(ig -> requestEventReporter.report(dataEvent))
+                .doOnError(throwable -> {
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.putAll(request.getHeaders());
+                    packageError(throwable, request, dataEvent);
+                    ON_ERROR_CONSUMER_WITH_MESSAGE.accept(throwable, new CachedBodyOutputMessage(exchange, headers));
+                    requestEventReporter.report(dataEvent);
+                });
     }
 
-    private Mono<Void> reportWithRequestBody(ServerHttpRequest request, ServerWebExchange exchange, GatewayFilterChain chain, DataEvent dataEvent) {
+    private Mono<Void> handleWithRequestBody(ServerHttpRequest request, ServerWebExchange exchange, GatewayFilterChain chain) {
         HttpHeaders headers = new HttpHeaders();
         headers.putAll(request.getHeaders());
 
         Map<String, Object> attributes = exchange.getAttributes();
-        CachedBodyOutputMessage outputMessage = new CachedBodyOutputMessage(
-                exchange, headers);
+        CachedBodyOutputMessage outputMessage = new CachedBodyOutputMessage(exchange, headers);
+
+        DataEvent dataEvent = new DataEvent();
 
         REQUEST_INFO_PACKAGER.accept(exchange.getAttributes(), dataEvent);
 
@@ -189,25 +212,24 @@ public final class BluePostWithDataReportFilter implements GlobalFilter, Ordered
                 .then(defer(() -> chain.filter(
                         exchange.mutate()
                                 .request(getRequestDecorator(request, headers, outputMessage))
-                                .response(getResponseAndReport(exchange, dataEvent))
+                                .response(handleResponse(exchange, dataEvent))
                                 .build())
                 ))
+                .doOnSuccess(ig -> requestEventReporter.report(dataEvent))
                 .doOnError(throwable -> {
                     packageError(throwable, request, dataEvent);
                     ON_ERROR_CONSUMER_WITH_MESSAGE.accept(throwable, outputMessage);
+                    requestEventReporter.report(dataEvent);
                 });
     }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        DataEvent dataEvent = new DataEvent();
-
-        if (ofNullable(exchange.getAttributes().get(EXISTENCE_REQUEST_BODY.key))
-                .map(b -> (boolean) b).orElse(true)) {
-            return reportWithRequestBody(exchange.getRequest(), exchange, chain, dataEvent);
-        } else {
-            return reportWithoutRequestBody(exchange, chain, dataEvent);
-        }
+        return ofNullable(exchange.getAttributes().get(EXISTENCE_REQUEST_BODY.key))
+                .map(b -> (boolean) b).orElse(true) ?
+                handleWithRequestBody(exchange.getRequest(), exchange, chain)
+                :
+                handleWithoutRequestBody(exchange.getRequest(), exchange, chain);
     }
 
     @Override

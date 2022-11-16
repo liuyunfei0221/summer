@@ -122,13 +122,11 @@ public class AttachmentServiceImpl implements AttachmentService {
 
     private static final Function<AttachmentManagerCondition, Sort> SORTER_CONVERTER = c -> {
         String sortAttribute = ofNullable(c).map(AttachmentManagerCondition::getSortAttribute)
-                .map(SORT_ATTRIBUTE_MAPPING::get)
-                .filter(BlueChecker::isNotBlank)
+                .map(SORT_ATTRIBUTE_MAPPING::get).filter(BlueChecker::isNotBlank)
                 .orElse(AttachmentSortAttribute.CREATE_TIME.column);
 
         String sortType = ofNullable(c).map(AttachmentManagerCondition::getSortType)
-                .filter(BlueChecker::isNotBlank)
-                .orElse(SortType.DESC.identity);
+                .filter(BlueChecker::isNotBlank).orElse(SortType.DESC.identity);
 
         return sortAttribute.equals(AttachmentSortAttribute.ID.column) ?
                 process(singletonList(new SortElement(sortAttribute, sortType)))
@@ -284,7 +282,7 @@ public class AttachmentServiceImpl implements AttachmentService {
      * @return
      */
     @Override
-    public Mono<ScrollModelResponse<AttachmentDetailInfo, String>> selectAttachmentDetailInfoScrollByScrollAndCursorBaseOnMemberId(ScrollModelRequest<AttachmentCondition, Long> scrollModelRequest, Long memberId) {
+    public Mono<ScrollModelResponse<AttachmentDetailInfo, String>> selectAttachmentDetailInfoScrollByConditionAndCursorBaseOnMemberId(ScrollModelRequest<AttachmentCondition, Long> scrollModelRequest, Long memberId) {
         LOGGER.info("scrollModelRequest = {}, memberId = {}", scrollModelRequest, memberId);
         if (isNull(scrollModelRequest))
             throw new BlueException(EMPTY_PARAM);
@@ -302,7 +300,7 @@ public class AttachmentServiceImpl implements AttachmentService {
                             parseSearchAfter(attachments, ofNullable(scrollModelRequest.getCondition()).map(AttachmentCondition::getSortType).orElse(DESC.sortType.identity),
                                     attachment -> String.valueOf(attachment.getId())))
                     :
-                    new ScrollModelResponse<>(emptyList(), "");
+                    new ScrollModelResponse<>(emptyList());
         });
     }
 

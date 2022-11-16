@@ -9,9 +9,9 @@ package com.blue.media.config.filter;
 public enum BlueFilterOrder {
 
     /**
-     * pre with error report
+     * pre processor
      */
-    BLUE_PRE_WITH_ERROR_REPORT(-1005),
+    BLUE_PRE_PROCESSOR(-1005),
 
     /**
      * risk intercept

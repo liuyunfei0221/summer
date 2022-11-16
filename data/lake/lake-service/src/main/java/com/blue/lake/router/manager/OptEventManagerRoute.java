@@ -28,6 +28,7 @@ public class OptEventManagerRoute {
 
         RouterFunction<ServerResponse> routerFunction = route()
                 .POST("/events", accept(APPLICATION_JSON), optEventManagerHandler::scroll)
+                .POST("/events/count", accept(APPLICATION_JSON), optEventManagerHandler::count)
                 .build();
 
         return nest(pathPredicate, routerFunction);

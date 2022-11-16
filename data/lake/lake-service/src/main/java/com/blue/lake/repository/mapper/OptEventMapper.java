@@ -14,19 +14,19 @@ import java.util.List;
 @SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
 public interface OptEventMapper {
 
-    int deleteByPrimaryKey(Long id);
-
     int insert(OptEvent record);
 
     void insertBatch(@Param("list") List<OptEvent> list);
 
     int insertSelective(OptEvent record);
 
-    OptEvent selectByPrimaryKey(Long id);
+    int updateByPrimaryKey(OptEvent record);
 
     int updateByPrimaryKeySelective(OptEvent record);
 
-    int updateByPrimaryKey(OptEvent record);
+    int deleteByPrimaryKey(Long id);
+
+    OptEvent selectByPrimaryKey(Long id);
 
     List<OptEvent> selectBySearchAfterAndCondition(@Param("rows") Long rows, @Param("optEventCondition") OptEventCondition optEventCondition, @Param("column") String column, @Param("comparison") String comparison, @Param("searchAfter") Long searchAfter);
 

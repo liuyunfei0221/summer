@@ -9,7 +9,6 @@ import org.springframework.core.io.buffer.NettyDataBufferFactory;
 import org.springframework.http.codec.multipart.Part;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -177,11 +176,7 @@ public final class MediaCommonFunctions extends CommonFunctions {
     }
 
     public static Mono<Map<String, String>> extractValuesToBind(ServerWebExchange exchange) {
-        MultiValueMap<String, String> queryParams = exchange.getRequest().getQueryParams();
-        Mono<MultiValueMap<String, String>> formData = exchange.getFormData();
-        Mono<MultiValueMap<String, Part>> multipartData = exchange.getMultipartData();
-
-        return zip(just(queryParams), formData, multipartData)
+        return zip(just(exchange.getRequest().getQueryParams()), exchange.getFormData(), exchange.getMultipartData())
                 .map(tuple -> {
                     Map<String, String> result = new HashMap<>(4, 2.0f);
                     tuple.getT1().forEach((key, values) -> addBindStringValue(result, key, values));

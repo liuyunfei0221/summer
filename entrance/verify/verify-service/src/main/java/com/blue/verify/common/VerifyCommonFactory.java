@@ -14,6 +14,7 @@ import reactor.util.Logger;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
+import static com.blue.basic.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static io.netty.buffer.ByteBufAllocator.DEFAULT;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.springframework.core.io.buffer.DataBufferUtils.release;
@@ -56,7 +57,7 @@ public final class VerifyCommonFactory extends CommonFunctions {
         if (throwable instanceof BlueException)
             throw (BlueException) throwable;
 
-        throw new RuntimeException(throwable);
+        throw new BlueException(INTERNAL_SERVER_ERROR);
     };
 
     /**

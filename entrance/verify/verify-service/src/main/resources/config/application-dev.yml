@@ -489,7 +489,7 @@ sender:
         mail.smtp.port: 587
         mail.smtp.ssl: true
         mail.smtp.starttls.enable: true
-        mail.debug: true
+        mail.debug: false
 
   core-pool-size: 2
   maximum-pool-size: 8
@@ -506,4 +506,4 @@ sender:
   selector: selector1
 
 
-debug: true
+debug: false

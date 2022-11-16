@@ -54,7 +54,7 @@ public final class ShineApiHandler {
 
         return serverRequest.bodyToMono(SCROLL_MODEL_FOR_SHINE_CONDITION_TYPE)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
-                .flatMap(shineService::selectShineInfoScrollByScrollAndCursor)
+                .flatMap(shineService::selectShineInfoScrollByConditionAndCursor)
                 .flatMap(smr ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(smr, serverRequest), BlueResponse.class));

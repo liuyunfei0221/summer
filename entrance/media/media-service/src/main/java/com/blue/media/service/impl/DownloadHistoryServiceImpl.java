@@ -191,7 +191,7 @@ public class DownloadHistoryServiceImpl implements DownloadHistoryService {
                                     just(new ScrollModelResponse<>(downloadHistoryInfo,
                                             parseSearchAfter(downloadHistories, DESC.sortType.identity, downloadHistory -> String.valueOf(downloadHistory.getId())))))
                     :
-                    just(new ScrollModelResponse<>(emptyList(), ""));
+                    just(new ScrollModelResponse<>(emptyList()));
         });
     }
 

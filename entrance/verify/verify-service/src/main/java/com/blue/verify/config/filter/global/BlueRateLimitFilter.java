@@ -11,10 +11,13 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
-import static com.blue.basic.common.base.CommonFunctions.SERVER_HTTP_REQUEST_IDENTITY_SYNC_KEY_GETTER;
+import static com.blue.basic.common.base.CommonFunctions.REQUEST_IDENTITY_SYNC_KEY_GETTER;
+import static com.blue.basic.constant.common.BlueDataAttrKey.CLIENT_IP;
 import static com.blue.basic.constant.common.ResponseElement.TOO_MANY_REQUESTS;
+import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.redis.api.generator.BlueRateLimiterGenerator.generateFixedTokenBucketRateLimiter;
 import static com.blue.verify.config.filter.BlueFilterOrder.BLUE_RATE_LIMIT;
+import static java.util.Optional.ofNullable;
 import static reactor.core.publisher.Mono.error;
 
 /**
@@ -34,7 +37,7 @@ public final class BlueRateLimitFilter implements WebFilter, Ordered {
     @SuppressWarnings("NullableProblems")
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        return SERVER_HTTP_REQUEST_IDENTITY_SYNC_KEY_GETTER.apply(exchange.getRequest())
+        return REQUEST_IDENTITY_SYNC_KEY_GETTER.apply(ofNullable(exchange.getAttributes().get(CLIENT_IP.key)).map(String::valueOf).orElse(EMPTY_VALUE.value))
                 .flatMap(blueFixedTokenBucketRateLimiter::isAllowed)
                 .flatMap(a ->
                         a ? chain.filter(exchange) : error(() -> new BlueException(TOO_MANY_REQUESTS))

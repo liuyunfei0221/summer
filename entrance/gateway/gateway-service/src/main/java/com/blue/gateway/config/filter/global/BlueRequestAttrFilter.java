@@ -95,17 +95,16 @@ public final class BlueRequestAttrFilter implements GlobalFilter, Ordered {
                     :
                     error(() -> new BlueException(PAYLOAD_TOO_LARGE));
 
-    private static final Function<ServerHttpRequest, Mono<Boolean>> REQUEST_ASSERTER = request ->
+    private static final Function<ServerHttpRequest, Mono<Void>> REQUEST_ASSERTER = request ->
             isNotNull(request)
                     ?
-                    zip(URI_ASSERTER.apply(request), HEADER_ASSERTER.apply(request), CONTENT_ASSERTER.apply(request)).flatMap(tuple3 -> just(true))
+                    zip(URI_ASSERTER.apply(request), HEADER_ASSERTER.apply(request), CONTENT_ASSERTER.apply(request)).then()
                     :
                     error(() -> new BlueException(BAD_REQUEST));
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        return REQUEST_ASSERTER.apply(exchange.getRequest())
-                .flatMap(b -> chain.filter(exchange));
+        return REQUEST_ASSERTER.apply(exchange.getRequest()).then(chain.filter(exchange));
     }
 
     @Override

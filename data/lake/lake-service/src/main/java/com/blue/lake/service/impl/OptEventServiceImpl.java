@@ -1,6 +1,7 @@
 package com.blue.lake.service.impl;
 
 import com.blue.basic.common.base.BlueChecker;
+import com.blue.basic.model.common.ConditionCountResponse;
 import com.blue.basic.model.common.ScrollModelRequest;
 import com.blue.basic.model.common.ScrollModelResponse;
 import com.blue.basic.model.exps.BlueException;
@@ -108,7 +109,7 @@ public class OptEventServiceImpl implements OptEventService {
      * @return
      */
     @Override
-    public Mono<ScrollModelResponse<OptEvent, Long>> selectOptEventScrollByScrollAndCursor(ScrollModelRequest<OptEventCondition, Long> scrollModelRequest) {
+    public Mono<ScrollModelResponse<OptEvent, Long>> selectOptEventScrollByConditionAndCursor(ScrollModelRequest<OptEventCondition, Long> scrollModelRequest) {
         LOGGER.info("scrollModelRequest = {}", scrollModelRequest);
         if (isNull(scrollModelRequest))
             throw new BlueException(EMPTY_PARAM);
@@ -119,10 +120,29 @@ public class OptEventServiceImpl implements OptEventService {
                 parseSearchAfterComparison(optEventCondition.getSortType()), scrollModelRequest.getCursor());
 
         return isNotEmpty(optEvents) ?
-                just(new ScrollModelResponse<>(optEvents, parseSearchAfter(optEvents,
-                        ofNullable(optEventCondition.getSortType()).orElse(DESC.identity), OptEvent::getCursor)))
+                just(new ScrollModelResponse<>(optEvents,
+                        parseSearchAfter(optEvents, ofNullable(optEventCondition.getSortType()).orElse(DESC.identity), OptEvent::getCursor)))
                 :
-                just(new ScrollModelResponse<>(emptyList(), null));
+                just(new ScrollModelResponse<>(emptyList()));
+    }
+
+    /**
+     * count by condition
+     *
+     * @param optEventCondition
+     * @return
+     */
+    @Override
+    public Mono<ConditionCountResponse<OptEventCondition>> countOptEventByCondition(OptEventCondition optEventCondition) {
+        LOGGER.info("optEventCondition = {}", optEventCondition);
+        if (isNull(optEventCondition))
+            throw new BlueException(EMPTY_PARAM);
+
+        OptEventCondition countCondition = CONDITION_PROCESSOR.apply(optEventCondition);
+
+        return justOrEmpty(optEventMapper.countByCondition(countCondition))
+                .switchIfEmpty(defer(() -> just(0L)))
+                .map(count -> new ConditionCountResponse<>(optEventCondition, count));
     }
 
 }

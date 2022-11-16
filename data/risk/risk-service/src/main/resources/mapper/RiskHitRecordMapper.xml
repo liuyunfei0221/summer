@@ -673,11 +673,11 @@
         </where>
     </sql>
 
-    <select id="countByCondition" resultMap="BaseResultMap">
+    <select id="countByCondition" resultType="java.lang.Long">
         SELECT
-        COUNT(*)
+        COUNT(id)
         FROM
-        opt_event
+        risk_hit_record
         <include refid="Count_Conditions"/>
     </select>
 

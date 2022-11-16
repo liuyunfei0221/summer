@@ -115,9 +115,6 @@ message:
   element-location: classpath:i18n/element
 
 
-
-
-
 cache:
   server-mode: SINGLE
   nodes: [ 172.18.7.1:6379,172.18.7.1:6380,172.18.7.2:6379,172.18.7.2:6380,172.18.7.3:6379,172.18.7.3:6380 ]
@@ -197,10 +194,6 @@ request:
   enableLoggingRequestDetails: false
 
 
-error:
-  errorReportWithRequestBodyContentTypes: [ application/json,multipart/form-data ]
-
-
 handler-type:
   type: ld
 
@@ -272,7 +265,7 @@ reader:
   folder-name: INBOX
   throwable-for-retry: [ jakarta.mail.FolderClosedException ]
   max-waiting-millis-for-refresh: 5000
-  debug: true
+  debug: false
 
 
 sender:
@@ -285,7 +278,7 @@ sender:
         mail.smtp.port: 587
         mail.smtp.ssl: true
         mail.smtp.starttls.enable: true
-        mail.debug: true
+        mail.debug: false
 
   core-pool-size: 2
   maximum-pool-size: 8
@@ -456,4 +449,4 @@ consumers:
       enable-negative-acknowledge: true
 
 
-debug: true
+debug: false

@@ -51,6 +51,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
+import static reactor.core.publisher.Flux.from;
 import static reactor.core.publisher.Mono.defer;
 import static reactor.core.publisher.Mono.just;
 
@@ -69,18 +70,18 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
 
     private final RequestEventReporter requestEventReporter;
 
-    public BluePostWithDataReportFilter(List<HttpMessageReader<?>> httpMessageReaders, RequestBodyProcessor requestBodyProcessor, RequestEventReporter requestEventReporter, EncryptDeploy encryptDeploy) {
+    public BluePostWithDataReportFilter(List<HttpMessageReader<?>> httpMessageReaders, com.blue.basic.common.content.common.RequestBodyProcessor requestBodyProcessor, RequestEventReporter requestEventReporter, EncryptDeploy encryptDeploy) {
         this.httpMessageReaders = httpMessageReaders;
         this.requestBodyProcessor = requestBodyProcessor;
         this.requestEventReporter = requestEventReporter;
 
         EXPIRED_SECONDS = encryptDeploy.getExpire();
 
-        RequestBodyReporter jsonRequestBodyProcessor = new JsonRequestBodyReporter();
-        RequestBodyReporter multipartRequestBodyProcessor = new MultipartRequestBodyReporter();
+        RequestBodyHandler jsonRequestBodyProcessor = new JsonRequestBodyHandler();
+        RequestBodyHandler multipartRequestBodyProcessor = new MultipartRequestBodyHandler();
 
-        REQUEST_BODY_PROCESSOR_HOLDER.put(jsonRequestBodyProcessor.getContentType(), jsonRequestBodyProcessor);
-        REQUEST_BODY_PROCESSOR_HOLDER.put(multipartRequestBodyProcessor.getContentType(), multipartRequestBodyProcessor);
+        REQUEST_BODY_HANDLER_HOLDER.put(jsonRequestBodyProcessor.getContentType(), jsonRequestBodyProcessor);
+        REQUEST_BODY_HANDLER_HOLDER.put(multipartRequestBodyProcessor.getContentType(), multipartRequestBodyProcessor);
     }
 
     private static long EXPIRED_SECONDS;
@@ -101,13 +102,10 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
                     :
                     encryptResponseBody(responseBody, ofNullable(attributes.get(SEC_KEY.key)).map(s -> (String) s).orElse(EMPTY_VALUE.value));
 
-    private void reportError(Throwable throwable, ServerHttpRequest request, RequestEventReporter requestEventReporter, DataEvent dataEvent) {
+    private void packageError(Throwable throwable, ServerHttpRequest request, DataEvent dataEvent) {
         ExceptionElement exceptionElement = THROWABLE_CONVERTER.apply(throwable, getAcceptLanguages(request));
-
         dataEvent.addData(RESPONSE_STATUS.key, valueOf(exceptionElement.getStatus()).intern());
         dataEvent.addData(RESPONSE_BODY.key, GSON.toJson(EXP_ELE_2_RESP.apply(exceptionElement)));
-
-        requestEventReporter.report(dataEvent);
     }
 
     private static final BiConsumer<Map<String, Object>, DataEvent> REQUEST_INFO_PACKAGER = (attributes, dataEvent) -> {
@@ -118,7 +116,7 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
         EVENT_ATTR_PACKAGER.accept(attributes, dataEvent);
     };
 
-    private Mono<String> getResponseBodyAndReport(ServerWebExchange exchange, ServerHttpResponse response, HttpStatus responseHttpStatus, Publisher<? extends DataBuffer> body, DataEvent dataEvent) {
+    private Mono<String> getResponseBody(ServerWebExchange exchange, ServerHttpResponse response, HttpStatus responseHttpStatus, Publisher<? extends DataBuffer> body, DataEvent dataEvent) {
         return ClientResponse
                 .create(responseHttpStatus, httpMessageReaders)
                 .headers(hs -> {
@@ -131,79 +129,99 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
                 .bodyToMono(String.class)
                 .flatMap(responseBody -> {
                             dataEvent.addData(RESPONSE_BODY.key, responseBody);
-                            requestEventReporter.report(dataEvent);
-
                             return just(RESPONSE_BODY_PROCESSOR.apply(responseBody, exchange.getAttributes()));
                         }
                 );
     }
 
-    private ServerHttpResponse getResponseAndReport(ServerWebExchange exchange, DataEvent dataEvent) {
+    private ServerHttpResponse getResponse(ServerWebExchange exchange, DataEvent dataEvent) {
         ServerHttpResponse response = exchange.getResponse();
 
-        HttpStatus httpStatus = ofNullable(response.getStatusCode()).orElse(OK);
-        dataEvent.addData(RESPONSE_STATUS.key, valueOf(httpStatus.value()).intern());
+        return ofNullable(exchange.getAttributes().get(EXISTENCE_RESPONSE_BODY.key))
+                .map(b -> (boolean) b).orElse(true) ?
+                new ServerHttpResponseDecorator(response) {
 
-        if (ofNullable(exchange.getAttributes().get(EXISTENCE_RESPONSE_BODY.key))
-                .map(b -> (boolean) b).orElse(true)) {
-            return new ServerHttpResponseDecorator(response) {
-                @Override
-                public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
-                    return getResponseBodyAndReport(exchange, response, httpStatus, body, dataEvent).flatMap(data -> {
-                        byte[] bytes = data.getBytes(UTF_8);
-                        DataBuffer resBuffer = DATA_BUFFER_FACTORY.allocateBuffer(bytes.length);
-                        resBuffer.write(bytes);
+                    @Override
+                    public HttpStatus getStatusCode() {
+                        HttpStatus httpStatus = ofNullable(super.getStatusCode()).orElse(OK);
+                        dataEvent.addData(RESPONSE_STATUS.key, valueOf(httpStatus.value()).intern());
+                        return httpStatus;
+                    }
 
-                        return getDelegate().writeWith(just(resBuffer));
-                    });
+                    @Override
+                    public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
+                        return getResponseBody(exchange, response, this.getStatusCode(), body, dataEvent).flatMap(data -> {
+                            byte[] bytes = data.getBytes(UTF_8);
+                            DataBuffer resBuffer = DATA_BUFFER_FACTORY.allocateBuffer(bytes.length);
+                            resBuffer.write(bytes);
+
+                            return getDelegate().writeWith(just(resBuffer));
+                        });
+                    }
+
+                    @Override
+                    public Mono<Void> writeAndFlushWith(Publisher<? extends Publisher<? extends DataBuffer>> body) {
+                        return getDelegate().writeWith(Flux.from(body).flatMapSequential(p -> p));
+                    }
                 }
+                :
+                new ServerHttpResponseDecorator(response) {
+                    @Override
+                    public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
+                        dataEvent.addData(RESPONSE_STATUS.key, valueOf(ofNullable(super.getStatusCode()).orElse(OK).value()).intern());
+                        return super.writeWith(body);
+                    }
 
-                @Override
-                public Mono<Void> writeAndFlushWith(Publisher<? extends Publisher<? extends DataBuffer>> body) {
-                    return getDelegate().writeWith(Flux.from(body).flatMapSequential(p -> p));
-                }
-            };
-        }
-
-        requestEventReporter.report(dataEvent);
-
-        return response;
+                    @Override
+                    public Mono<Void> writeAndFlushWith(Publisher<? extends Publisher<? extends DataBuffer>> body) {
+                        return writeWith(from(body).flatMapSequential(p -> p));
+                    }
+                };
     }
 
-    private Mono<Void> reportWithoutRequestBody(ServerWebExchange exchange, WebFilterChain chain, DataEvent dataEvent) {
+    private Mono<Void> reportWithoutRequestBody(ServerWebExchange exchange, WebFilterChain chain) {
+        DataEvent dataEvent = new DataEvent();
+
         REQUEST_INFO_PACKAGER.accept(exchange.getAttributes(), dataEvent);
-        return chain.filter(
-                exchange.mutate().response(
-                        getResponseAndReport(exchange, dataEvent)
-                ).build());
+        return chain.filter(exchange.mutate().response(getResponse(exchange, dataEvent)).build())
+                .doOnSuccess(ig -> requestEventReporter.report(dataEvent))
+                .doOnError(throwable -> {
+                    packageError(throwable, exchange.getRequest(), dataEvent);
+                    requestEventReporter.report(dataEvent);
+                });
     }
 
-    private final Map<String, RequestBodyReporter> REQUEST_BODY_PROCESSOR_HOLDER = new HashMap<>(4, 2.0f);
+    private final Map<String, RequestBodyHandler> REQUEST_BODY_HANDLER_HOLDER = new HashMap<>(4, 2.0f);
 
-    private final Function<HttpHeaders, RequestBodyReporter> REQUEST_BODY_PROCESSOR_GETTER = headers -> {
-        RequestBodyReporter reporter = REQUEST_BODY_PROCESSOR_HOLDER.get(HEADER_VALUE_GETTER.apply(headers, CONTENT_TYPE));
+    private final Function<HttpHeaders, RequestBodyHandler> REQUEST_BODY_HANDLER_GETTER = headers -> {
+        RequestBodyHandler handler = REQUEST_BODY_HANDLER_HOLDER.get(HEADER_VALUE_GETTER.apply(headers, CONTENT_TYPE));
 
-        if (isNull(reporter))
+        if (isNull(handler))
             throw new BlueException(UNSUPPORTED_MEDIA_TYPE);
 
-        return reporter;
+        return handler;
     };
 
-    private Mono<Void> reportWithRequestBody(ServerHttpRequest request, ServerWebExchange exchange, WebFilterChain chain, DataEvent dataEvent) {
+    private Mono<Void> reportWithRequestBody(ServerHttpRequest request, ServerWebExchange exchange, WebFilterChain chain) {
+        DataEvent dataEvent = new DataEvent();
+
         REQUEST_INFO_PACKAGER.accept(exchange.getAttributes(), dataEvent);
-        return REQUEST_BODY_PROCESSOR_GETTER.apply(request.getHeaders()).processor(request, exchange, chain, requestEventReporter, dataEvent);
+        return REQUEST_BODY_HANDLER_GETTER.apply(request.getHeaders())
+                .handle(request, exchange, chain, dataEvent)
+                .doOnSuccess(ig -> requestEventReporter.report(dataEvent))
+                .doOnError(throwable -> {
+                    packageError(throwable, exchange.getRequest(), dataEvent);
+                    requestEventReporter.report(dataEvent);
+                });
     }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        DataEvent dataEvent = new DataEvent();
-
-        if (ofNullable(exchange.getAttributes().get(EXISTENCE_REQUEST_BODY.key))
-                .map(b -> (boolean) b).orElse(true)) {
-            return reportWithRequestBody(exchange.getRequest(), exchange, chain, dataEvent);
-        } else {
-            return reportWithoutRequestBody(exchange, chain, dataEvent);
-        }
+        return ofNullable(exchange.getAttributes().get(EXISTENCE_REQUEST_BODY.key))
+                .map(b -> (boolean) b).orElse(true) ?
+                reportWithRequestBody(exchange.getRequest(), exchange, chain)
+                :
+                reportWithoutRequestBody(exchange, chain);
     }
 
     @Override
@@ -211,12 +229,11 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
         return BLUE_POST_WITH_DATA_REPORT.order;
     }
 
-
     /**
      * reporter
      */
     @SuppressWarnings("JavaDoc")
-    protected interface RequestBodyReporter {
+    protected interface RequestBodyHandler {
 
         /**
          * handle type
@@ -231,11 +248,10 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
          * @param request
          * @param exchange
          * @param chain
-         * @param requestEventReporter
          * @param dataEvent
          * @return
          */
-        Mono<Void> processor(ServerHttpRequest request, ServerWebExchange exchange, WebFilterChain chain, RequestEventReporter requestEventReporter, DataEvent dataEvent);
+        Mono<Void> handle(ServerHttpRequest request, ServerWebExchange exchange, WebFilterChain chain, DataEvent dataEvent);
 
     }
 
@@ -243,7 +259,7 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
      * impl for json
      */
     @SuppressWarnings("JavaDoc")
-    protected class JsonRequestBodyReporter implements RequestBodyReporter {
+    protected class JsonRequestBodyHandler implements RequestBodyHandler {
 
         /**
          * handle type
@@ -261,12 +277,11 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
          * @param request
          * @param exchange
          * @param chain
-         * @param requestEventReporter
          * @param dataEvent
          * @return
          */
         @Override
-        public Mono<Void> processor(ServerHttpRequest request, ServerWebExchange exchange, WebFilterChain chain, RequestEventReporter requestEventReporter, DataEvent dataEvent) {
+        public Mono<Void> handle(ServerHttpRequest request, ServerWebExchange exchange, WebFilterChain chain, DataEvent dataEvent) {
             return ServerRequest.create(exchange, httpMessageReaders)
                     .bodyToMono(String.class)
                     .switchIfEmpty(defer(() -> just(EMPTY_VALUE.value)))
@@ -276,14 +291,11 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
                         return just(REQUEST_DECORATOR_GENERATOR.apply(request, just(requestBodyProcessor.handleRequestBody(tarBody))));
                     })
                     .flatMap(decorator ->
-                            chain.filter(
-                                            exchange.mutate()
-                                                    .request(decorator)
-                                                    .response(getResponseAndReport(exchange, dataEvent))
-                                                    .build())
+                            chain.filter(exchange.mutate().request(decorator)
+                                            .response(getResponse(exchange, dataEvent)).build())
                                     .doOnError(throwable -> {
                                         ON_ERROR_CONSUMER.accept(throwable, decorator);
-                                        reportError(throwable, request, requestEventReporter, dataEvent);
+                                        packageError(throwable, request, dataEvent);
                                     })
                     );
         }
@@ -293,7 +305,7 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
      * impl for part
      */
     @SuppressWarnings("JavaDoc")
-    protected class MultipartRequestBodyReporter implements RequestBodyReporter {
+    protected class MultipartRequestBodyHandler implements RequestBodyHandler {
 
         /**
          * handle type
@@ -311,12 +323,11 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
          * @param request
          * @param exchange
          * @param chain
-         * @param requestEventReporter
          * @param dataEvent
          * @return
          */
         @Override
-        public Mono<Void> processor(ServerHttpRequest request, ServerWebExchange exchange, WebFilterChain chain, RequestEventReporter requestEventReporter, DataEvent dataEvent) {
+        public Mono<Void> handle(ServerHttpRequest request, ServerWebExchange exchange, WebFilterChain chain, DataEvent dataEvent) {
             ServerWebExchangeDecorator serverWebExchangeDecorator = new ServerWebExchangeDecorator(exchange) {
                 @Override
                 public Mono<MultiValueMap<String, Part>> getMultipartData() {
@@ -328,11 +339,8 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
                 }
             };
 
-            return chain.filter(serverWebExchangeDecorator.mutate()
-                            .response(
-                                    getResponseAndReport(exchange, dataEvent)).build())
-                    .doOnError(throwable ->
-                            reportError(throwable, request, requestEventReporter, dataEvent));
+            return chain.filter(serverWebExchangeDecorator.mutate().response(getResponse(exchange, dataEvent)).build())
+                    .doOnError(throwable -> packageError(throwable, request, dataEvent));
         }
     }
 

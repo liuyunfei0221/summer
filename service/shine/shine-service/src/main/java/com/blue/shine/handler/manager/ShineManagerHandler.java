@@ -92,7 +92,7 @@ public final class ShineManagerHandler {
     public Mono<ServerResponse> scrollBaseOnSnapShot(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(SCROLL_MODEL_WITH_SNAP_SHOT_FOR_SHINE_CONDITION_TYPE)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
-                .flatMap(shineService::selectShineInfoScrollByScrollAndCursorBaseOnSnapShot)
+                .flatMap(shineService::selectShineInfoScrollByConditionAndCursorBaseOnSnapShot)
                 .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(pmr, serverRequest), BlueResponse.class));

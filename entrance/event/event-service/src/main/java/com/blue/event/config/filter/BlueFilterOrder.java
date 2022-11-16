@@ -8,11 +8,6 @@ package com.blue.event.config.filter;
 public enum BlueFilterOrder {
 
     /**
-     * pre with error report
-     */
-    BLUE_PRE_WITH_ERROR_REPORT(-1005),
-
-    /**
      * risk intercept
      */
     BLUE_ILLEGAL_ASSERT(-1004),

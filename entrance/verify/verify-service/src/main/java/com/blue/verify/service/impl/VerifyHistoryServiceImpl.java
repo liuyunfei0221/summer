@@ -216,6 +216,7 @@ public class VerifyHistoryServiceImpl implements VerifyHistoryService {
         ).flatMap(tuple2 -> {
             List<VerifyHistory> verifyHistories = tuple2.getT1();
             Long count = tuple2.getT2();
+
             return isNotEmpty(verifyHistories) ?
                     just(VERIFY_HISTORIES_2_VERIFY_HISTORY_INFOS_CONVERTER.apply(verifyHistories))
                             .flatMap(verifyHistoryInfos ->

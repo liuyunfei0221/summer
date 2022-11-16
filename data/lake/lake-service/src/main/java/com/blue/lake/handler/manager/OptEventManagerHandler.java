@@ -2,6 +2,7 @@ package com.blue.lake.handler.manager;
 
 import com.blue.basic.model.common.BlueResponse;
 import com.blue.basic.model.exps.BlueException;
+import com.blue.lake.model.OptEventCondition;
 import com.blue.lake.service.inter.OptEventService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -40,10 +41,25 @@ public class OptEventManagerHandler {
     public Mono<ServerResponse> scroll(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(SCROLL_MODEL_FOR_OPT_EVENT_TYPE)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
-                .flatMap(optEventService::selectOptEventScrollByScrollAndCursor)
+                .flatMap(optEventService::selectOptEventScrollByConditionAndCursor)
                 .flatMap(smr ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(smr, serverRequest), BlueResponse.class));
+    }
+
+    /**
+     * count events
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> count(ServerRequest serverRequest) {
+        return serverRequest.bodyToMono(OptEventCondition.class)
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
+                .flatMap(optEventService::countOptEventByCondition)
+                .flatMap(ccr ->
+                        ok().contentType(APPLICATION_JSON)
+                                .body(success(ccr, serverRequest), BlueResponse.class));
     }
 
 }

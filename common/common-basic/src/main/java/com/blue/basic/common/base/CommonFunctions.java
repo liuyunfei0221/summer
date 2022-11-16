@@ -377,6 +377,8 @@ public class CommonFunctions {
     private static final Predicate<String> VALID_IP_PRE = h ->
             isNotBlank(h) && !UNKNOWN.equalsIgnoreCase(h);
 
+    public static final Function<String, Mono<String>> REQUEST_IDENTITY_SYNC_KEY_GETTER = identity ->
+            just(REQ_SYNC_PRE + ofNullable(identity).filter(BlueChecker::isNotNull).orElse(EMPTY_VALUE.value));
     /**
      * request identity getter func
      */

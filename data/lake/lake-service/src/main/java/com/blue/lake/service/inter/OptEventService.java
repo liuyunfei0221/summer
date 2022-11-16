@@ -1,5 +1,6 @@
 package com.blue.lake.service.inter;
 
+import com.blue.basic.model.common.ConditionCountResponse;
 import com.blue.basic.model.common.ScrollModelRequest;
 import com.blue.basic.model.common.ScrollModelResponse;
 import com.blue.lake.model.OptEventCondition;
@@ -30,6 +31,14 @@ public interface OptEventService {
      * @param scrollModelRequest
      * @return
      */
-    Mono<ScrollModelResponse<OptEvent, Long>> selectOptEventScrollByScrollAndCursor(ScrollModelRequest<OptEventCondition, Long> scrollModelRequest);
+    Mono<ScrollModelResponse<OptEvent, Long>> selectOptEventScrollByConditionAndCursor(ScrollModelRequest<OptEventCondition, Long> scrollModelRequest);
+
+    /**
+     * count by condition
+     *
+     * @param optEventCondition
+     * @return
+     */
+    Mono<ConditionCountResponse<OptEventCondition>> countOptEventByCondition(OptEventCondition optEventCondition);
 
 }

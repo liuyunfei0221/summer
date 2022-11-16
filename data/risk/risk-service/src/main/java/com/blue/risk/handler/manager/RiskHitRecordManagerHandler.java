@@ -2,6 +2,7 @@ package com.blue.risk.handler.manager;
 
 import com.blue.basic.model.common.BlueResponse;
 import com.blue.basic.model.exps.BlueException;
+import com.blue.risk.model.RiskHitRecordCondition;
 import com.blue.risk.service.inter.RiskHitRecordService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -40,10 +41,25 @@ public class RiskHitRecordManagerHandler {
     public Mono<ServerResponse> scroll(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(SCROLL_MODEL_FOR_RISK_HIT_RECORD_TYPE)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
-                .flatMap(riskHitRecordService::selectRiskHitRecordScrollByScrollAndCursor)
+                .flatMap(riskHitRecordService::selectRiskHitRecordScrollByConditionAndCursor)
                 .flatMap(smr ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(smr, serverRequest), BlueResponse.class));
+    }
+
+    /**
+     * count records
+     *
+     * @param serverRequest
+     * @return
+     */
+    public Mono<ServerResponse> count(ServerRequest serverRequest) {
+        return serverRequest.bodyToMono(RiskHitRecordCondition.class)
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
+                .flatMap(riskHitRecordService::countRiskHitRecordByCondition)
+                .flatMap(ccr ->
+                        ok().contentType(APPLICATION_JSON)
+                                .body(success(ccr, serverRequest), BlueResponse.class));
     }
 
 }

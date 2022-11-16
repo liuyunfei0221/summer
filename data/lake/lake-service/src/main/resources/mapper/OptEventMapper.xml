@@ -51,19 +51,6 @@
         resource_id, "module", relative_uri, absolute_uri, relation_view, authenticate, type, name
     </sql>
 
-    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from opt_event
-        where id = #{id,jdbcType=BIGINT}
-    </select>
-
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-        delete
-        from opt_event
-        where id = #{id,jdbcType=BIGINT}
-    </delete>
-
     <insert id="insert" parameterType="com.blue.lake.repository.entity.OptEvent">
         insert into opt_event (
         <include refid="Base_Column_List"/>
@@ -354,6 +341,48 @@
         </trim>
     </insert>
 
+    <update id="updateByPrimaryKey" parameterType="com.blue.lake.repository.entity.OptEvent">
+        update opt_event
+        set "cursor"                = #{cursor,jdbcType=BIGINT},
+            data_event_type         = #{dataEventType,jdbcType=VARCHAR},
+            data_event_op_type      = #{dataEventOpType,jdbcType=VARCHAR},
+            stamp                   = #{stamp,jdbcType=BIGINT},
+            create_date             = #{createDate,jdbcType=VARCHAR},
+            method                  = #{method,jdbcType=VARCHAR},
+            uri                     = #{uri,jdbcType=VARCHAR},
+            real_uri                = #{realUri,jdbcType=VARCHAR},
+            request_body            = #{requestBody,jdbcType=VARCHAR},
+            request_extra           = #{requestExtra,jdbcType=VARCHAR},
+            response_status         = #{responseStatus,jdbcType=INTEGER},
+            response_body           = #{responseBody,jdbcType=VARCHAR},
+            response_extra          = #{responseExtra,jdbcType=VARCHAR},
+            request_id              = #{requestId,jdbcType=VARCHAR},
+            metadata                = #{metadata,jdbcType=VARCHAR},
+            jwt                     = #{jwt,jdbcType=VARCHAR},
+            member_id               = #{memberId,jdbcType=BIGINT},
+            role_ids                = #{roleIds,jdbcType=ARRAY,typeHandler=com.blue.lake.repository.type.ClickHouseLongArrayTypeHandler},
+            credential_type         = #{credentialType,jdbcType=VARCHAR},
+            device_type             = #{deviceType,jdbcType=VARCHAR},
+            login_time              = #{loginTime,jdbcType=BIGINT},
+            client_ip               = #{clientIp,jdbcType=VARCHAR},
+            user_agent              = #{userAgent,jdbcType=VARCHAR},
+            sec_key                 = #{secKey,jdbcType=VARCHAR},
+            request_un_decryption   = #{requestUnDecryption,jdbcType=INTEGER},
+            response_un_encryption  = #{responseUnEncryption,jdbcType=INTEGER},
+            existence_request_body  = #{existenceRequestBody,jdbcType=INTEGER},
+            existence_response_body = #{existenceResponseBody,jdbcType=INTEGER},
+            duration_seconds        = #{durationSeconds,jdbcType=INTEGER},
+            resource_id             = #{resourceId,jdbcType=BIGINT},
+            "module"                = #{module,jdbcType=VARCHAR},
+            relative_uri            = #{relativeUri,jdbcType=VARCHAR},
+            absolute_uri            = #{absoluteUri,jdbcType=VARCHAR},
+            relation_view           = #{relationView,jdbcType=VARCHAR},
+            authenticate            = #{authenticate,jdbcType=INTEGER},
+            type                    = #{type,jdbcType=INTEGER},
+            name                    = #{name,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.blue.lake.repository.entity.OptEvent">
         update opt_event
         <set>
@@ -473,47 +502,18 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <update id="updateByPrimaryKey" parameterType="com.blue.lake.repository.entity.OptEvent">
-        update opt_event
-        set "cursor"                = #{cursor,jdbcType=BIGINT},
-            data_event_type         = #{dataEventType,jdbcType=VARCHAR},
-            data_event_op_type      = #{dataEventOpType,jdbcType=VARCHAR},
-            stamp                   = #{stamp,jdbcType=BIGINT},
-            create_date             = #{createDate,jdbcType=VARCHAR},
-            method                  = #{method,jdbcType=VARCHAR},
-            uri                     = #{uri,jdbcType=VARCHAR},
-            real_uri                = #{realUri,jdbcType=VARCHAR},
-            request_body            = #{requestBody,jdbcType=VARCHAR},
-            request_extra           = #{requestExtra,jdbcType=VARCHAR},
-            response_status         = #{responseStatus,jdbcType=INTEGER},
-            response_body           = #{responseBody,jdbcType=VARCHAR},
-            response_extra          = #{responseExtra,jdbcType=VARCHAR},
-            request_id              = #{requestId,jdbcType=VARCHAR},
-            metadata                = #{metadata,jdbcType=VARCHAR},
-            jwt                     = #{jwt,jdbcType=VARCHAR},
-            member_id               = #{memberId,jdbcType=BIGINT},
-            role_ids                = #{roleIds,jdbcType=ARRAY,typeHandler=com.blue.lake.repository.type.ClickHouseLongArrayTypeHandler},
-            credential_type         = #{credentialType,jdbcType=VARCHAR},
-            device_type             = #{deviceType,jdbcType=VARCHAR},
-            login_time              = #{loginTime,jdbcType=BIGINT},
-            client_ip               = #{clientIp,jdbcType=VARCHAR},
-            user_agent              = #{userAgent,jdbcType=VARCHAR},
-            sec_key                 = #{secKey,jdbcType=VARCHAR},
-            request_un_decryption   = #{requestUnDecryption,jdbcType=INTEGER},
-            response_un_encryption  = #{responseUnEncryption,jdbcType=INTEGER},
-            existence_request_body  = #{existenceRequestBody,jdbcType=INTEGER},
-            existence_response_body = #{existenceResponseBody,jdbcType=INTEGER},
-            duration_seconds        = #{durationSeconds,jdbcType=INTEGER},
-            resource_id             = #{resourceId,jdbcType=BIGINT},
-            "module"                = #{module,jdbcType=VARCHAR},
-            relative_uri            = #{relativeUri,jdbcType=VARCHAR},
-            absolute_uri            = #{absoluteUri,jdbcType=VARCHAR},
-            relation_view           = #{relationView,jdbcType=VARCHAR},
-            authenticate            = #{authenticate,jdbcType=INTEGER},
-            type                    = #{type,jdbcType=INTEGER},
-            name                    = #{name,jdbcType=VARCHAR}
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from opt_event
         where id = #{id,jdbcType=BIGINT}
-    </update>
+    </delete>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from opt_event
+        where id = #{id,jdbcType=BIGINT}
+    </select>
 
     <sql id="Column_Conditions">
         <if test="optEventCondition != null and optEventCondition.dataEventType != null and optEventCondition.dataEventType != ''">
@@ -647,9 +647,9 @@
         </where>
     </sql>
 
-    <select id="countByCondition" resultMap="BaseResultMap">
+    <select id="countByCondition" resultType="java.lang.Long">
         SELECT
-        COUNT(*)
+        count(id)
         FROM
         opt_event
         <include refid="Count_Conditions"/>

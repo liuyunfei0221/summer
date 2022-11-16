@@ -240,7 +240,7 @@ public class EventRecordServiceImpl implements EventRecordService {
                                         parseSearchAfter(eventRecords, ofNullable(scrollModelRequest.getCondition()).map(EventRecordCondition::getSortType).orElse(DESC.sortType.identity),
                                                 attachment -> String.valueOf(attachment.getId())))
                                 :
-                                new ScrollModelResponse<>(emptyList(), ""));
+                                new ScrollModelResponse<>(emptyList()));
     }
 
     /**

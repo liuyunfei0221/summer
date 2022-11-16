@@ -34,7 +34,7 @@ public final class MongoSearchAfterProcessor<T extends Serializable, A extends S
      * @param <A>
      */
     public static <A extends Serializable> void packageSearchAfter(Query query, String sortType, String sortAttribute, A searchAfter) {
-        if (isNull(query) || isNotBlank(sortAttribute) || isNull(searchAfter))
+        if (isNull(query) || isBlank(sortAttribute) || isNull(searchAfter))
             return;
 
         assertSortType(sortType, true);

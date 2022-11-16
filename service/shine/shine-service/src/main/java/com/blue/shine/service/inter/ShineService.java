@@ -104,7 +104,7 @@ public interface ShineService {
      * @param scrollModelRequest
      * @return
      */
-    Mono<ScrollModelResponse<ShineInfo, SearchAfterCursor>> selectShineInfoScrollByScrollAndCursor(ScrollModelRequest<ShineCondition, SearchAfterCursor> scrollModelRequest);
+    Mono<ScrollModelResponse<ShineInfo, SearchAfterCursor>> selectShineInfoScrollByConditionAndCursor(ScrollModelRequest<ShineCondition, SearchAfterCursor> scrollModelRequest);
 
     /**
      * select shine info scroll by cursor with pit
@@ -112,7 +112,7 @@ public interface ShineService {
      * @param scrollModelRequest
      * @return
      */
-    Mono<ScrollModelResponse<ShineInfo, PitCursor>> selectShineInfoScrollByScrollAndCursorBaseOnSnapShot(ScrollModelRequest<ShineCondition, PitCursor> scrollModelRequest);
+    Mono<ScrollModelResponse<ShineInfo, PitCursor>> selectShineInfoScrollByConditionAndCursorBaseOnSnapShot(ScrollModelRequest<ShineCondition, PitCursor> scrollModelRequest);
 
     /**
      * select shine info page by condition

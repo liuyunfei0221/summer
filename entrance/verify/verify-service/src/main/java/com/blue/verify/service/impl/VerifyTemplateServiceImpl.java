@@ -255,8 +255,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
         probe.setLanguage(p.getLanguage());
 
         List<VerifyTemplate> templates = ofNullable(verifyTemplateRepository.findAll(Example.of(probe)).collectList()
-                .toFuture().join())
-                .orElseGet(Collections::emptyList);
+                .toFuture().join()).orElseGet(Collections::emptyList);
 
         if (templates.stream().anyMatch(c -> !id.equals(c.getId())))
             throw new BlueException(DATA_ALREADY_EXIST);
