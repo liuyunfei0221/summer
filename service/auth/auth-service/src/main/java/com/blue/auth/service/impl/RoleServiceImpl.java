@@ -1,10 +1,10 @@
 package com.blue.auth.service.impl;
 
 import com.blue.auth.api.model.RoleInfo;
-import com.blue.auth.api.model.RoleManagerInfo;
 import com.blue.auth.constant.RoleSortAttribute;
 import com.blue.auth.model.RoleCondition;
 import com.blue.auth.model.RoleInsertParam;
+import com.blue.auth.model.RoleManagerInfo;
 import com.blue.auth.model.RoleUpdateParam;
 import com.blue.auth.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.auth.repository.entity.Role;

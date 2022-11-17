@@ -146,9 +146,6 @@ message:
   element-location: classpath:i18n/element
 
 
-
-
-
 caffeine:
   city-maximum-size: 32768
   expires-second: 30

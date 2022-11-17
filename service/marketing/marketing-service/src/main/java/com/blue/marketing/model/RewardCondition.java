@@ -46,7 +46,7 @@ public final class RewardCondition extends SortCondition implements Serializable
     private Long updateTimeEnd;
 
     public RewardCondition() {
-        super(RewardSortAttribute.ID.attribute, DESC.identity);
+        super(RewardSortAttribute.CREATE_TIME.attribute, DESC.identity);
     }
 
     public RewardCondition(String sortAttribute, String sortType) {

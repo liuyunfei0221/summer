@@ -245,11 +245,13 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
                 .filter(BlueChecker::isNotBlank)
                 .orElse(SortType.DESC.identity);
 
-        return sortAttribute.equals(QrCodeConfigSortAttribute.ID.column) ?
-                process(singletonList(new SortElement(sortAttribute, sortType)))
-                :
-                process(Stream.of(sortAttribute, QrCodeConfigSortAttribute.ID.column)
-                        .map(attr -> new SortElement(attr, sortType)).collect(toList()));
+        return process(
+                sortAttribute.equals(QrCodeConfigSortAttribute.ID.column) ?
+                        singletonList(new SortElement(sortAttribute, sortType))
+                        :
+                        Stream.of(sortAttribute, QrCodeConfigSortAttribute.ID.column)
+                                .map(attr -> new SortElement(attr, sortType)).collect(toList())
+        );
     };
 
     private static final Function<QrCodeCondition, Query> CONDITION_PROCESSOR = c -> {

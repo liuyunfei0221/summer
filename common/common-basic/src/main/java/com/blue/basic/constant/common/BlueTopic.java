@@ -23,6 +23,11 @@ public enum BlueTopic {
     REQUEST_EVENT("request-event"),
 
     /**
+     * Risk strategy update
+     */
+    RISK_STRATEGY_UPDATE("risk-strategy-update"),
+
+    /**
      * invalid local access
      */
     INVALID_LOCAL_ACCESS("invalid-local-access"),

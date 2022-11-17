@@ -52,7 +52,7 @@ public final class VerifyTemplateCondition extends SortCondition implements Seri
     private Long updater;
 
     public VerifyTemplateCondition() {
-        super(VerifyTemplateSortAttribute.ID.attribute, DESC.identity);
+        super(VerifyTemplateSortAttribute.CREATE_TIME.attribute, DESC.identity);
     }
 
     public VerifyTemplateCondition(String sortAttribute, String sortType) {

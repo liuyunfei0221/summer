@@ -346,11 +346,13 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
                 .filter(BlueChecker::isNotBlank)
                 .orElse(SortType.DESC.identity);
 
-        return sortAttribute.equals(VerifyTemplateSortAttribute.ID.column) ?
-                process(singletonList(new SortElement(sortAttribute, sortType)))
-                :
-                process(Stream.of(sortAttribute, VerifyTemplateSortAttribute.ID.column)
-                        .map(attr -> new SortElement(attr, sortType)).collect(toList()));
+        return process(
+                sortAttribute.equals(VerifyTemplateSortAttribute.ID.column) ?
+                        singletonList(new SortElement(sortAttribute, sortType))
+                        :
+                        Stream.of(sortAttribute, VerifyTemplateSortAttribute.ID.column)
+                                .map(attr -> new SortElement(attr, sortType)).collect(toList())
+        );
     };
 
     private static final Function<VerifyTemplateCondition, Query> CONDITION_PROCESSOR = c -> {

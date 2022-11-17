@@ -1,36 +1,50 @@
-package com.blue.base.api.model;
+package com.blue.auth.model;
 
 import com.blue.basic.serializer.Long2StringSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.io.Serializable;
 
-
 /**
- * style manager info
+ * role manager info for rest
  *
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class StyleManagerInfo implements Serializable {
+public final class RoleManagerInfo implements Serializable {
 
-    private static final long serialVersionUID = 2353772661918508963L;
+    private static final long serialVersionUID = 2423127593942076797L;
 
+    /**
+     * id
+     */
     @JsonSerialize(using = Long2StringSerializer.class)
     private Long id;
 
-    private String name;
-
-    private String attributes;
-
+    /**
+     * @see com.blue.basic.constant.auth.RoleType
+     */
     private Integer type;
 
-    private Boolean isActive;
+    /**
+     * role name
+     */
+    private String name;
 
     /**
-     * @see com.blue.basic.constant.common.Status
+     * role disc
      */
-    private Integer status;
+    private String description;
+
+    /**
+     * role's level
+     */
+    private Integer level;
+
+    /**
+     * default role?
+     */
+    private Boolean isDefault;
 
     @JsonSerialize(using = Long2StringSerializer.class)
     private Long createTime;
@@ -48,17 +62,17 @@ public final class StyleManagerInfo implements Serializable {
 
     private String updaterName;
 
-    public StyleManagerInfo() {
+    public RoleManagerInfo() {
     }
 
-    public StyleManagerInfo(Long id, String name, String attributes, Integer type, Boolean isActive, Integer status,
-                            Long createTime, Long updateTime, Long creator, String creatorName, Long updater, String updaterName) {
+    public RoleManagerInfo(Long id, Integer type, String name, String description, Integer level, Boolean isDefault, Long createTime, Long updateTime,
+                           Long creator, String creatorName, Long updater, String updaterName) {
         this.id = id;
-        this.name = name;
-        this.attributes = attributes;
         this.type = type;
-        this.isActive = isActive;
-        this.status = status;
+        this.name = name;
+        this.description = description;
+        this.level = level;
+        this.isDefault = isDefault;
         this.createTime = createTime;
         this.updateTime = updateTime;
         this.creator = creator;
@@ -75,22 +89,6 @@ public final class StyleManagerInfo implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(String attributes) {
-        this.attributes = attributes;
-    }
-
     public Integer getType() {
         return type;
     }
@@ -99,20 +97,36 @@ public final class StyleManagerInfo implements Serializable {
         this.type = type;
     }
 
-    public Boolean getIsActive() {
-        return isActive;
+    public String getName() {
+        return name;
     }
 
-    public void setIsActive(Boolean active) {
-        isActive = active;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Integer getStatus() {
-        return status;
+    public String getDescription() {
+        return description;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
+
+    public Boolean getDefault() {
+        return isDefault;
+    }
+
+    public void setDefault(Boolean aDefault) {
+        isDefault = aDefault;
     }
 
     public Long getCreateTime() {
@@ -165,13 +179,13 @@ public final class StyleManagerInfo implements Serializable {
 
     @Override
     public String toString() {
-        return "StyleManagerInfo{" +
+        return "RoleManagerInfo{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", attributes='" + attributes + '\'' +
                 ", type=" + type +
-                ", isActive=" + isActive +
-                ", status=" + status +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", level=" + level +
+                ", isDefault=" + isDefault +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", creator=" + creator +
@@ -180,5 +194,5 @@ public final class StyleManagerInfo implements Serializable {
                 ", updaterName='" + updaterName + '\'' +
                 '}';
     }
-
+    
 }

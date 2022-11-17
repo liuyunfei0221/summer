@@ -223,9 +223,6 @@ message:
   element-location: classpath:i18n/element
 
 
-
-
-
 redisson:
   server-mode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
@@ -560,7 +557,7 @@ consumers:
       acknowledgements-group-time-millis: 100
       replicate-subscription-state: false
       max-total-receiver-queue-size-across-partitions: 5
-      consumer-name: marketingRequestEventSubscription
+      consumer-name: marketingRequestEventSubscription000
       read-compacted: false
       pattern-auto-discovery-period-millis: 1
       priority-level: 0

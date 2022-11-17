@@ -325,6 +325,14 @@
                     AND
                     update_time &lt;= #{resourceCondition.updateTimeEnd,jdbcType=BIGINT}
                 </if>
+                <if test="resourceCondition.creator != null">
+                    AND
+                    creator = #{resourceCondition.creator,jdbcType=BIGINT}
+                </if>
+                <if test="resourceCondition.updater != null">
+                    AND
+                    updater = #{resourceCondition.updater,jdbcType=BIGINT}
+                </if>
             </where>
         </if>
     </sql>

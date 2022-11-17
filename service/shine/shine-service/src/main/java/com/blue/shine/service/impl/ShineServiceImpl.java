@@ -228,11 +228,13 @@ public class ShineServiceImpl implements ShineService {
                 .filter(BlueChecker::isNotBlank)
                 .orElse(SortType.DESC.identity);
 
-        return sortAttribute.equals(ShineSortAttribute.ID.column) ?
-                process(singletonList(new SortElement(sortAttribute, sortType)))
-                :
-                process(Stream.of(sortAttribute, ShineSortAttribute.ID.column)
-                        .map(attr -> new SortElement(attr, sortType)).collect(toList()));
+        return process(
+                sortAttribute.equals(ShineSortAttribute.ID.column) ?
+                        singletonList(new SortElement(sortAttribute, sortType))
+                        :
+                        Stream.of(sortAttribute, ShineSortAttribute.ID.column)
+                                .map(attr -> new SortElement(attr, sortType)).collect(toList())
+        );
     };
 
     private static final Map<String, BiConsumer<List<String>, Shine>> HIGH_LIGHT_PROCESSORS;

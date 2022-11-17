@@ -10,12 +10,12 @@ import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.portal.api.model.NoticeInfo;
-import com.blue.portal.api.model.NoticeManagerInfo;
 import com.blue.portal.config.blue.BlueRedisConfig;
 import com.blue.portal.config.deploy.NoticeDeploy;
 import com.blue.portal.constant.NoticeSortAttribute;
 import com.blue.portal.model.NoticeCondition;
 import com.blue.portal.model.NoticeInsertParam;
+import com.blue.portal.model.NoticeManagerInfo;
 import com.blue.portal.model.NoticeUpdateParam;
 import com.blue.portal.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.portal.repository.entity.Notice;
@@ -78,20 +78,20 @@ public class NoticeServiceImpl implements NoticeService {
 
     private final BlueIdentityProcessor blueIdentityProcessor;
 
-    private NoticeMapper noticeMapper;
-
     private StringRedisTemplate stringRedisTemplate;
 
     private SynchronizedProcessor synchronizedProcessor;
 
+    private NoticeMapper noticeMapper;
+
     public NoticeServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BlueIdentityProcessor blueIdentityProcessor,
-                             NoticeMapper noticeMapper, StringRedisTemplate stringRedisTemplate, SynchronizedProcessor synchronizedProcessor,
-                             ExecutorService executorService, BlueRedisConfig blueRedisConfig, NoticeDeploy noticeDeploy) {
+                             StringRedisTemplate stringRedisTemplate, SynchronizedProcessor synchronizedProcessor,
+                             ExecutorService executorService, BlueRedisConfig blueRedisConfig, NoticeMapper noticeMapper, NoticeDeploy noticeDeploy) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.blueIdentityProcessor = blueIdentityProcessor;
-        this.noticeMapper = noticeMapper;
         this.stringRedisTemplate = stringRedisTemplate;
         this.synchronizedProcessor = synchronizedProcessor;
+        this.noticeMapper = noticeMapper;
 
         this.expireDuration = Duration.of(blueRedisConfig.getEntryTtl(), SECONDS);
 
@@ -264,8 +264,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public NoticeInfo insertNotice(NoticeInsertParam noticeInsertParam, Long operatorId) {
-        LOGGER.info("noticeInsertParam = {}, operatorId = {}",
-                noticeInsertParam, operatorId);
+        LOGGER.info("noticeInsertParam = {}, operatorId = {}", noticeInsertParam, operatorId);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
@@ -295,8 +294,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public NoticeInfo updateNotice(NoticeUpdateParam noticeUpdateParam, Long operatorId) {
-        LOGGER.info("noticeUpdateParam = {}, operatorId = {}",
-                noticeUpdateParam, operatorId);
+        LOGGER.info("noticeUpdateParam = {}, operatorId = {}", noticeUpdateParam, operatorId);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 

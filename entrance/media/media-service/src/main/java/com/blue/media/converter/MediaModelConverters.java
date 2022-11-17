@@ -4,6 +4,7 @@ import com.blue.auth.api.model.RoleInfo;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.media.api.model.*;
 import com.blue.media.model.MessageTemplateInsertParam;
+import com.blue.media.model.MessageTemplateManagerInfo;
 import com.blue.media.model.QrCodeConfigInsertParam;
 import com.blue.media.model.QrCodeConfigManagerInfo;
 import com.blue.media.repository.entity.Attachment;

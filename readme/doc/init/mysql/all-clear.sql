@@ -21,3 +21,5 @@ DROP DATABASE portal_1;
 DROP DATABASE agreement;
 
 DROP DATABASE base;
+
+DROP DATABASE risk;

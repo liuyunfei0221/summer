@@ -1,10 +1,10 @@
 package com.blue.marketing.converter;
 
 import com.blue.basic.model.exps.BlueException;
-import com.blue.marketing.api.model.*;
-import com.blue.marketing.model.EventRecordManagerInfo;
-import com.blue.marketing.model.RewardDateRelationInsertParam;
-import com.blue.marketing.model.RewardInsertParam;
+import com.blue.marketing.api.model.EventRecordInfo;
+import com.blue.marketing.api.model.RewardDateRelationInfo;
+import com.blue.marketing.api.model.RewardInfo;
+import com.blue.marketing.model.*;
 import com.blue.marketing.repository.entity.EventRecord;
 import com.blue.marketing.repository.entity.Reward;
 import com.blue.marketing.repository.entity.RewardDateRelation;

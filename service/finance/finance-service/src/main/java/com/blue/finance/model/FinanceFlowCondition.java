@@ -43,7 +43,7 @@ public final class FinanceFlowCondition extends SortCondition implements Seriali
     private Long createTimeEnd;
 
     public FinanceFlowCondition() {
-        super(FinanceFlowSortAttribute.ID.attribute, SortType.DESC.identity);
+        super(FinanceFlowSortAttribute.CREATE_TIME.attribute, SortType.DESC.identity);
     }
 
     public FinanceFlowCondition(String sortAttribute, String sortType) {

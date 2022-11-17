@@ -47,7 +47,7 @@ public final class QrCodeCondition extends SortCondition implements Serializable
     private Long updater;
 
     public QrCodeCondition() {
-        super(QrCodeConfigSortAttribute.ID.attribute, DESC.identity);
+        super(QrCodeConfigSortAttribute.CREATE_TIME.attribute, DESC.identity);
     }
 
     public QrCodeCondition(String sortAttribute, String sortType) {

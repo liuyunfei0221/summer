@@ -1,4 +1,4 @@
-package com.blue.portal.api.model;
+package com.blue.portal.model;
 
 import com.blue.basic.serializer.Long2StringSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

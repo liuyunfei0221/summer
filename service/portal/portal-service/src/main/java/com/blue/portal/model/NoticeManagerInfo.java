@@ -1,33 +1,34 @@
-package com.blue.marketing.api.model;
+package com.blue.portal.model;
 
 import com.blue.basic.serializer.Long2StringSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.io.Serializable;
 
+
 /**
- * reward date relation manager info
+ * notice manager info
  *
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public class RewardDateRelationManagerInfo implements Serializable {
+public final class NoticeManagerInfo implements Serializable {
 
-    private static final long serialVersionUID = -8079634826209428509L;
+    private static final long serialVersionUID = -2803080292492177899L;
 
     @JsonSerialize(using = Long2StringSerializer.class)
     private Long id;
 
-    @JsonSerialize(using = Long2StringSerializer.class)
-    private Long rewardId;
+    private String title;
 
-    private RewardInfo rewardInfo;
+    private String content;
 
-    private Integer year;
+    private String link;
 
-    private Integer month;
-
-    private Integer day;
+    /**
+     * @see com.blue.basic.constant.portal.NoticeType
+     */
+    private Integer type;
 
     @JsonSerialize(using = Long2StringSerializer.class)
     private Long createTime;
@@ -45,17 +46,15 @@ public class RewardDateRelationManagerInfo implements Serializable {
 
     private String updaterName;
 
-    public RewardDateRelationManagerInfo() {
+    public NoticeManagerInfo() {
     }
 
-    public RewardDateRelationManagerInfo(Long id, Long rewardId, RewardInfo rewardInfo, Integer year, Integer month, Integer day,
-                                         Long createTime, Long updateTime, Long creator, String creatorName, Long updater, String updaterName) {
+    public NoticeManagerInfo(Long id, String title, String content, String link, Integer type, Long createTime, Long updateTime, Long creator, String creatorName, Long updater, String updaterName) {
         this.id = id;
-        this.rewardId = rewardId;
-        this.rewardInfo = rewardInfo;
-        this.year = year;
-        this.month = month;
-        this.day = day;
+        this.title = title;
+        this.content = content;
+        this.link = link;
+        this.type = type;
         this.createTime = createTime;
         this.updateTime = updateTime;
         this.creator = creator;
@@ -72,44 +71,36 @@ public class RewardDateRelationManagerInfo implements Serializable {
         this.id = id;
     }
 
-    public Long getRewardId() {
-        return rewardId;
+    public String getTitle() {
+        return title;
     }
 
-    public void setRewardId(Long rewardId) {
-        this.rewardId = rewardId;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public RewardInfo getRewardInfo() {
-        return rewardInfo;
+    public String getContent() {
+        return content;
     }
 
-    public void setRewardInfo(RewardInfo rewardInfo) {
-        this.rewardInfo = rewardInfo;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public Integer getYear() {
-        return year;
+    public String getLink() {
+        return link;
     }
 
-    public void setYear(Integer year) {
-        this.year = year;
+    public void setLink(String link) {
+        this.link = link;
     }
 
-    public Integer getMonth() {
-        return month;
+    public Integer getType() {
+        return type;
     }
 
-    public void setMonth(Integer month) {
-        this.month = month;
-    }
-
-    public Integer getDay() {
-        return day;
-    }
-
-    public void setDay(Integer day) {
-        this.day = day;
+    public void setType(Integer type) {
+        this.type = type;
     }
 
     public Long getCreateTime() {
@@ -162,13 +153,12 @@ public class RewardDateRelationManagerInfo implements Serializable {
 
     @Override
     public String toString() {
-        return "RewardDateRelationManagerInfo{" +
+        return "NoticeManagerInfo{" +
                 "id=" + id +
-                ", rewardId=" + rewardId +
-                ", rewardInfo=" + rewardInfo +
-                ", year=" + year +
-                ", month=" + month +
-                ", day=" + day +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", link='" + link + '\'' +
+                ", type=" + type +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", creator=" + creator +

@@ -51,7 +51,7 @@ public final class ShineCondition extends SortCondition implements Serializable 
     private Long updater;
 
     public ShineCondition() {
-        super(ShineSortAttribute.ID.attribute, SortType.DESC.identity);
+        super(ShineSortAttribute.CREATE_TIME.attribute, SortType.DESC.identity);
     }
 
     public ShineCondition(String sortAttribute, String sortType) {

@@ -1,13 +1,13 @@
 package com.blue.auth.service.inter;
 
-import com.blue.auth.api.model.ResourceManagerInfo;
-import com.blue.auth.repository.entity.Resource;
-import com.blue.basic.model.common.PageModelRequest;
-import com.blue.basic.model.common.PageModelResponse;
 import com.blue.auth.api.model.ResourceInfo;
 import com.blue.auth.model.ResourceCondition;
 import com.blue.auth.model.ResourceInsertParam;
+import com.blue.auth.model.ResourceManagerInfo;
 import com.blue.auth.model.ResourceUpdateParam;
+import com.blue.auth.repository.entity.Resource;
+import com.blue.basic.model.common.PageModelRequest;
+import com.blue.basic.model.common.PageModelResponse;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -56,7 +56,7 @@ public interface ResourceService {
     Optional<Resource> getResourceOpt(Long id);
 
     /**
-     * get resource mono by role id
+     * get resource mono by resource id
      *
      * @param id
      * @return

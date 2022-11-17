@@ -284,7 +284,7 @@ consumers:
       acknowledgements-group-time-millis: 100
       replicate-subscription-state: false
       max-total-receiver-queue-size-across-partitions: 5
-      consumer-name: lakeRequestEventSubscription
+      consumer-name: lakeRequestEventSubscription000
       read-compacted: false
       pattern-auto-discovery-period-millis: 1
       priority-level: 0

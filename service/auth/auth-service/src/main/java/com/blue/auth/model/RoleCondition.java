@@ -31,6 +31,10 @@ public final class RoleCondition extends SortCondition implements Serializable {
 
     private Long updateTimeEnd;
 
+    private Long creator;
+
+    private Long updater;
+
     public RoleCondition() {
         super(RoleSortAttribute.CREATE_TIME.attribute, DESC.identity);
     }
@@ -39,7 +43,8 @@ public final class RoleCondition extends SortCondition implements Serializable {
         super(sortAttribute, sortType);
     }
 
-    public RoleCondition(Long id, Integer type, String nameLike, Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, String sortAttribute, String sortType) {
+    public RoleCondition(Long id, Integer type, String nameLike, Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd,
+                         Long creator, Long updater, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.id = id;
         this.type = type;
@@ -48,6 +53,8 @@ public final class RoleCondition extends SortCondition implements Serializable {
         this.createTimeEnd = createTimeEnd;
         this.updateTimeBegin = updateTimeBegin;
         this.updateTimeEnd = updateTimeEnd;
+        this.creator = creator;
+        this.updater = updater;
     }
 
     public Long getId() {
@@ -106,6 +113,22 @@ public final class RoleCondition extends SortCondition implements Serializable {
         this.updateTimeEnd = updateTimeEnd;
     }
 
+    public Long getCreator() {
+        return creator;
+    }
+
+    public void setCreator(Long creator) {
+        this.creator = creator;
+    }
+
+    public Long getUpdater() {
+        return updater;
+    }
+
+    public void setUpdater(Long updater) {
+        this.updater = updater;
+    }
+
     @Override
     public String toString() {
         return "RoleCondition{" +
@@ -116,6 +139,8 @@ public final class RoleCondition extends SortCondition implements Serializable {
                 ", createTimeEnd=" + createTimeEnd +
                 ", updateTimeBegin=" + updateTimeBegin +
                 ", updateTimeEnd=" + updateTimeEnd +
+                ", creator=" + creator +
+                ", updater=" + updater +
                 ", sortAttribute='" + sortAttribute + '\'' +
                 ", sortType='" + sortType + '\'' +
                 '}';

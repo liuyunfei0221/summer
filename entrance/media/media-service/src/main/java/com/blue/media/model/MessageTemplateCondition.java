@@ -46,7 +46,7 @@ public final class MessageTemplateCondition extends SortCondition implements Ser
     private Long updater;
 
     public MessageTemplateCondition() {
-        super(MessageTemplateSortAttribute.ID.attribute, DESC.identity);
+        super(MessageTemplateSortAttribute.CREATE_TIME.attribute, DESC.identity);
     }
 
     public MessageTemplateCondition(String sortAttribute, String sortType) {

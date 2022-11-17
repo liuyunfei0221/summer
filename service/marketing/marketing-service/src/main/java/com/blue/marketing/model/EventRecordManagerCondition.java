@@ -48,7 +48,7 @@ public final class EventRecordManagerCondition extends SortCondition implements 
     private Long createTimeEnd;
 
     public EventRecordManagerCondition() {
-        super(EventRecordSortAttribute.ID.attribute, DESC.identity);
+        super(EventRecordSortAttribute.CREATE_TIME.attribute, DESC.identity);
     }
 
     public EventRecordManagerCondition(String sortAttribute, String sortType) {

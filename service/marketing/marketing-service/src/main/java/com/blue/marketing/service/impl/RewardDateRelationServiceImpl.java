@@ -6,7 +6,6 @@ import com.blue.basic.model.common.MonthParam;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.marketing.api.model.RewardDateRelationInfo;
-import com.blue.marketing.api.model.RewardDateRelationManagerInfo;
 import com.blue.marketing.api.model.RewardInfo;
 import com.blue.marketing.constant.RewardDateRelationSortAttribute;
 import com.blue.marketing.model.*;

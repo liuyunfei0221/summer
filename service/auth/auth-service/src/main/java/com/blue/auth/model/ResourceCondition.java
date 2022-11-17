@@ -49,6 +49,10 @@ public final class ResourceCondition extends SortCondition implements Serializab
 
     private Long updateTimeEnd;
 
+    private Long creator;
+
+    private Long updater;
+
     public ResourceCondition() {
         super(ResourceSortAttribute.CREATE_TIME.attribute, DESC.identity);
     }
@@ -58,7 +62,7 @@ public final class ResourceCondition extends SortCondition implements Serializab
     }
 
     public ResourceCondition(Long id, String requestMethod, String module, String uriLike, String relationViewLike, Boolean authenticate, Boolean requestUnDecryption, Boolean responseUnEncryption, Boolean existenceRequestBody, Boolean existenceResponseBody,
-                             Integer type, String nameLike, Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, String sortAttribute, String sortType) {
+                             Integer type, String nameLike, Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd, Long creator, Long updater, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.id = id;
         this.requestMethod = requestMethod;
@@ -76,6 +80,8 @@ public final class ResourceCondition extends SortCondition implements Serializab
         this.createTimeEnd = createTimeEnd;
         this.updateTimeBegin = updateTimeBegin;
         this.updateTimeEnd = updateTimeEnd;
+        this.creator = creator;
+        this.updater = updater;
     }
 
     public Long getId() {
@@ -206,6 +212,22 @@ public final class ResourceCondition extends SortCondition implements Serializab
         this.updateTimeEnd = updateTimeEnd;
     }
 
+    public Long getCreator() {
+        return creator;
+    }
+
+    public void setCreator(Long creator) {
+        this.creator = creator;
+    }
+
+    public Long getUpdater() {
+        return updater;
+    }
+
+    public void setUpdater(Long updater) {
+        this.updater = updater;
+    }
+
     @Override
     public String toString() {
         return "ResourceCondition{" +
@@ -225,6 +247,8 @@ public final class ResourceCondition extends SortCondition implements Serializab
                 ", createTimeEnd=" + createTimeEnd +
                 ", updateTimeBegin=" + updateTimeBegin +
                 ", updateTimeEnd=" + updateTimeEnd +
+                ", creator=" + creator +
+                ", updater=" + updater +
                 ", sortAttribute='" + sortAttribute + '\'' +
                 ", sortType='" + sortType + '\'' +
                 '}';

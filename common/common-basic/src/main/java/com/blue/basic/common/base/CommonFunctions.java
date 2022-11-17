@@ -14,6 +14,7 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Mono;
 
+import java.lang.reflect.Type;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.time.Clock;
@@ -36,6 +37,7 @@ import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.common.SummerAttr.LANGUAGE;
 import static com.blue.basic.constant.common.Symbol.*;
 import static com.blue.basic.constant.common.SyncKeyPrefix.REQUEST_SYNC_PRE;
+import static com.google.gson.reflect.TypeToken.getParameterized;
 import static java.lang.Double.compare;
 import static java.lang.System.currentTimeMillis;
 import static java.time.Instant.now;
@@ -118,6 +120,10 @@ public class CommonFunctions {
      * default languages
      */
     public static final List<String> DEFAULT_LANGUAGES = singletonList(DEFAULT_LANGUAGE);
+
+    public static final Type
+            STRING_MAP_TYPE = getParameterized(Map.class, String.class, String.class).getType(),
+            OBJECT_MAP_TYPE = getParameterized(Map.class, String.class, Object.class).getType();
 
     protected static Supplier<Gson> GSON_SUP = () -> new GsonBuilder().serializeNulls().create();
 

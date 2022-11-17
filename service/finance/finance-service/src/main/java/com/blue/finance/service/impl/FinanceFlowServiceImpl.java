@@ -7,10 +7,10 @@ import com.blue.basic.model.common.PageModelResponse;
 import com.blue.basic.model.common.SortElement;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.finance.api.model.FinanceFlowInfo;
-import com.blue.finance.api.model.FinanceFlowManagerInfo;
 import com.blue.finance.constant.FinanceFlowSortAttribute;
 import com.blue.finance.event.producer.FinanceFlowProducer;
 import com.blue.finance.model.FinanceFlowCondition;
+import com.blue.finance.model.FinanceFlowManagerInfo;
 import com.blue.finance.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.finance.repository.entity.FinanceFlow;
 import com.blue.finance.repository.template.FinanceFlowRepository;
@@ -90,11 +90,13 @@ public class FinanceFlowServiceImpl implements FinanceFlowService {
                 .filter(BlueChecker::isNotBlank)
                 .orElse(SortType.DESC.identity);
 
-        return sortAttribute.equals(FinanceFlowSortAttribute.ID.column) ?
-                process(singletonList(new SortElement(sortAttribute, sortType)))
-                :
-                process(Stream.of(sortAttribute, FinanceFlowSortAttribute.ID.column)
-                        .map(attr -> new SortElement(attr, sortType)).collect(toList()));
+        return process(
+                sortAttribute.equals(FinanceFlowSortAttribute.ID.column) ?
+                        singletonList(new SortElement(sortAttribute, sortType))
+                        :
+                        Stream.of(sortAttribute, FinanceFlowSortAttribute.ID.column)
+                                .map(attr -> new SortElement(attr, sortType)).collect(toList())
+        );
     };
 
     private static final Function<FinanceFlowCondition, Query> CONDITION_PROCESSOR = c -> {

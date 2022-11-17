@@ -50,7 +50,7 @@ public final class BulletinCondition extends SortCondition implements Serializab
     private Long updater;
 
     public BulletinCondition() {
-        super(BulletinSortAttribute.ID.attribute, DESC.identity);
+        super(BulletinSortAttribute.CREATE_TIME.attribute, DESC.identity);
     }
 
     public BulletinCondition(String sortAttribute, String sortType) {

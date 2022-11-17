@@ -150,9 +150,6 @@ message:
   element-location: classpath:i18n/element
 
 
-
-
-
 redisson:
   server-mode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]

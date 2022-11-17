@@ -2,11 +2,11 @@ package com.blue.portal.converter;
 
 import com.blue.basic.model.exps.BlueException;
 import com.blue.portal.api.model.BulletinInfo;
-import com.blue.portal.api.model.BulletinManagerInfo;
 import com.blue.portal.api.model.NoticeInfo;
-import com.blue.portal.api.model.NoticeManagerInfo;
 import com.blue.portal.model.BulletinInsertParam;
+import com.blue.portal.model.BulletinManagerInfo;
 import com.blue.portal.model.NoticeInsertParam;
+import com.blue.portal.model.NoticeManagerInfo;
 import com.blue.portal.repository.entity.Bulletin;
 import com.blue.portal.repository.entity.Notice;
 

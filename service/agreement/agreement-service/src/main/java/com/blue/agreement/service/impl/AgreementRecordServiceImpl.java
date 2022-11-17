@@ -130,11 +130,13 @@ public class AgreementRecordServiceImpl implements AgreementRecordService {
                 .filter(BlueChecker::isNotBlank)
                 .orElse(SortType.DESC.identity);
 
-        return sortAttribute.equals(AgreementRecordSortAttribute.ID.column) ?
-                process(singletonList(new SortElement(sortAttribute, sortType)))
-                :
-                process(Stream.of(sortAttribute, AgreementRecordSortAttribute.ID.column)
-                        .map(attr -> new SortElement(attr, sortType)).collect(toList()));
+        return process(
+                sortAttribute.equals(AgreementRecordSortAttribute.ID.column) ?
+                        singletonList(new SortElement(sortAttribute, sortType))
+                        :
+                        Stream.of(sortAttribute, AgreementRecordSortAttribute.ID.column)
+                                .map(attr -> new SortElement(attr, sortType)).collect(toList())
+        );
     };
 
     private static final Function<AgreementRecordCondition, Query> CONDITION_PROCESSOR = c -> {

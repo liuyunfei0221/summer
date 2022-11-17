@@ -3,8 +3,8 @@ package com.blue.finance.converter;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.finance.api.model.FinanceAccountInfo;
 import com.blue.finance.api.model.FinanceFlowInfo;
-import com.blue.finance.api.model.FinanceFlowManagerInfo;
 import com.blue.finance.api.model.OrderInfo;
+import com.blue.finance.model.FinanceFlowManagerInfo;
 import com.blue.finance.repository.entity.FinanceAccount;
 import com.blue.finance.repository.entity.FinanceFlow;
 import com.blue.finance.repository.entity.Order;
@@ -23,7 +23,7 @@ import static java.util.Optional.ofNullable;
  *
  * @author liuyunfei
  */
-@SuppressWarnings("AliControlFlowStatementWithoutBraces")
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "unused"})
 public final class FinanceModelConverters {
 
     /**

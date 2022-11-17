@@ -60,7 +60,7 @@ public final class AddressCondition extends SortCondition implements Serializabl
     private Long updateTimeEnd;
 
     public AddressCondition() {
-        super(AddressSortAttribute.ID.attribute, SortType.DESC.identity);
+        super(AddressSortAttribute.CREATE_TIME.attribute, SortType.DESC.identity);
     }
 
     public AddressCondition(String sortAttribute, String sortType) {

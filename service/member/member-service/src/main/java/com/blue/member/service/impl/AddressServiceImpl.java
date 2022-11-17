@@ -254,11 +254,13 @@ public class AddressServiceImpl implements AddressService {
                 .filter(BlueChecker::isNotBlank)
                 .orElse(DESC.identity);
 
-        return sortAttribute.equals(AddressSortAttribute.ID.column) ?
-                process(singletonList(new SortElement(sortAttribute, sortType)))
-                :
-                process(Stream.of(sortAttribute, AddressSortAttribute.ID.column)
-                        .map(attr -> new SortElement(attr, sortType)).collect(toList()));
+        return process(
+                sortAttribute.equals(AddressSortAttribute.ID.column) ?
+                        singletonList(new SortElement(sortAttribute, sortType))
+                        :
+                        Stream.of(sortAttribute, AddressSortAttribute.ID.column)
+                                .map(attr -> new SortElement(attr, sortType)).collect(toList())
+        );
     };
 
     private static final Function<AddressCondition, Query> CONDITION_PROCESSOR = c -> {

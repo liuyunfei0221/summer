@@ -124,11 +124,12 @@ public class EventRecordServiceImpl implements EventRecordService {
                 .filter(BlueChecker::isNotBlank)
                 .orElse(SortType.DESC.identity);
 
-        return sortAttribute.equals(EventRecordSortAttribute.ID.column) ?
-                process(singletonList(new SortElement(sortAttribute, sortType)))
-                :
-                process(Stream.of(sortAttribute, EventRecordSortAttribute.ID.column)
-                        .map(attr -> new SortElement(attr, sortType)).collect(toList()));
+        return process(
+                sortAttribute.equals(EventRecordSortAttribute.ID.column) ?
+                        singletonList(new SortElement(sortAttribute, sortType))
+                        :
+                        Stream.of(sortAttribute, EventRecordSortAttribute.ID.column)
+                                .map(attr -> new SortElement(attr, sortType)).collect(toList()));
     };
 
     private static final Function<EventRecordManagerCondition, Query> MANAGER_CONDITION_PROCESSOR = c -> {

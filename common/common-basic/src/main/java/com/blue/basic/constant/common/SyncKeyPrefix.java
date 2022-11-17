@@ -101,7 +101,12 @@ public enum SyncKeyPrefix {
     /**
      * reward date relation update sync key prefix
      */
-    REWARD_DATE_REL_UPDATE_PRE("REWARD_DATE_REL_UPDATE:");
+    REWARD_DATE_REL_UPDATE_PRE("REWARD_DATE_REL_UPDATE:"),
+
+    /**
+     * risk strategy update sync prefix
+     */
+    RISK_STRATEGY_UPDATE_PRE("RISK_STRATEGY_UPDATE_PRE:");
 
     public final String prefix;
 

@@ -41,7 +41,7 @@ public final class EventRecordCondition extends SortCondition implements Seriali
     private Long createTimeEnd;
 
     public EventRecordCondition() {
-        super(EventRecordSortAttribute.ID.attribute, DESC.identity);
+        super(EventRecordSortAttribute.CREATE_TIME.attribute, DESC.identity);
     }
 
     public EventRecordCondition(String sortAttribute, String sortType) {

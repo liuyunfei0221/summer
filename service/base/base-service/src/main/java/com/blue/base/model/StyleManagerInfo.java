@@ -1,41 +1,31 @@
-package com.blue.marketing.api.model;
-
+package com.blue.base.model;
 
 import com.blue.basic.serializer.Long2StringSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.io.Serializable;
 
+
 /**
- * reward manager info
+ * style manager info
  *
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class RewardManagerInfo implements Serializable {
+public final class StyleManagerInfo implements Serializable {
 
-    private static final long serialVersionUID = 8175699924429543753L;
+    private static final long serialVersionUID = 2353772661918508963L;
 
     @JsonSerialize(using = Long2StringSerializer.class)
     private Long id;
 
     private String name;
 
-    private String detail;
+    private String attributes;
 
-    private String link;
-
-    /**
-     * reward type
-     *
-     * @see com.blue.basic.constant.marketing.RewardType
-     */
     private Integer type;
 
-    /**
-     * reward json
-     */
-    private String data;
+    private Boolean isActive;
 
     /**
      * @see com.blue.basic.constant.common.Status
@@ -58,16 +48,16 @@ public final class RewardManagerInfo implements Serializable {
 
     private String updaterName;
 
-    public RewardManagerInfo() {
+    public StyleManagerInfo() {
     }
 
-    public RewardManagerInfo(Long id, String name, String detail, String link, Integer type, String data, Integer status, Long createTime, Long updateTime, Long creator, String creatorName, Long updater, String updaterName) {
+    public StyleManagerInfo(Long id, String name, String attributes, Integer type, Boolean isActive, Integer status,
+                            Long createTime, Long updateTime, Long creator, String creatorName, Long updater, String updaterName) {
         this.id = id;
         this.name = name;
-        this.detail = detail;
-        this.link = link;
+        this.attributes = attributes;
         this.type = type;
-        this.data = data;
+        this.isActive = isActive;
         this.status = status;
         this.createTime = createTime;
         this.updateTime = updateTime;
@@ -93,20 +83,12 @@ public final class RewardManagerInfo implements Serializable {
         this.name = name;
     }
 
-    public String getDetail() {
-        return detail;
+    public String getAttributes() {
+        return attributes;
     }
 
-    public void setDetail(String detail) {
-        this.detail = detail;
-    }
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
+    public void setAttributes(String attributes) {
+        this.attributes = attributes;
     }
 
     public Integer getType() {
@@ -117,12 +99,12 @@ public final class RewardManagerInfo implements Serializable {
         this.type = type;
     }
 
-    public String getData() {
-        return data;
+    public Boolean getIsActive() {
+        return isActive;
     }
 
-    public void setData(String data) {
-        this.data = data;
+    public void setIsActive(Boolean active) {
+        isActive = active;
     }
 
     public Integer getStatus() {
@@ -183,13 +165,12 @@ public final class RewardManagerInfo implements Serializable {
 
     @Override
     public String toString() {
-        return "RewardManagerInfo{" +
+        return "StyleManagerInfo{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", detail='" + detail + '\'' +
-                ", link='" + link + '\'' +
+                ", attributes='" + attributes + '\'' +
                 ", type=" + type +
-                ", data='" + data + '\'' +
+                ", isActive=" + isActive +
                 ", status=" + status +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +

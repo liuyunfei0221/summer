@@ -41,7 +41,7 @@ public final class NoticeCondition extends SortCondition implements Serializable
     private Long updater;
 
     public NoticeCondition() {
-        super(NoticeSortAttribute.ID.attribute, DESC.identity);
+        super(NoticeSortAttribute.CREATE_TIME.attribute, DESC.identity);
     }
 
     public NoticeCondition(String sortAttribute, String sortType) {

@@ -1,4 +1,5 @@
-package com.blue.auth.api.model;
+package com.blue.media.model;
+
 
 import com.blue.basic.serializer.Long2StringSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -6,45 +7,39 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.io.Serializable;
 
 /**
- * role manager info for rest
+ * message template manager info
  *
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class RoleManagerInfo implements Serializable {
+public final class MessageTemplateManagerInfo implements Serializable {
 
-    private static final long serialVersionUID = 2423127593942076797L;
+    private static final long serialVersionUID = 595870764153120707L;
 
-    /**
-     * id
-     */
     @JsonSerialize(using = Long2StringSerializer.class)
     private Long id;
 
+    private String name;
+
+    private String description;
+
     /**
-     * @see com.blue.basic.constant.auth.RoleType
+     * @see com.blue.basic.constant.media.MessageType
      */
     private Integer type;
 
     /**
-     * role name
+     * @see com.blue.basic.constant.media.MessageBusinessType
      */
-    private String name;
+    private Integer businessType;
 
-    /**
-     * role disc
-     */
-    private String description;
+    private String title;
 
-    /**
-     * role's level
-     */
-    private Integer level;
+    private Integer titlePlaceholderCount;
 
-    /**
-     * default role?
-     */
-    private Boolean isDefault;
+    private String content;
+
+    private Integer contentPlaceholderCount;
 
     @JsonSerialize(using = Long2StringSerializer.class)
     private Long createTime;
@@ -62,17 +57,21 @@ public final class RoleManagerInfo implements Serializable {
 
     private String updaterName;
 
-    public RoleManagerInfo() {
+
+    public MessageTemplateManagerInfo() {
     }
 
-    public RoleManagerInfo(Long id, Integer type, String name, String description, Integer level, Boolean isDefault, Long createTime, Long updateTime,
-                           Long creator, String creatorName, Long updater, String updaterName) {
+    public MessageTemplateManagerInfo(Long id, String name, String description, Integer type, Integer businessType, String title, Integer titlePlaceholderCount, String content, Integer contentPlaceholderCount,
+                                      Long createTime, Long updateTime, Long creator, String creatorName, Long updater, String updaterName) {
         this.id = id;
-        this.type = type;
         this.name = name;
         this.description = description;
-        this.level = level;
-        this.isDefault = isDefault;
+        this.type = type;
+        this.businessType = businessType;
+        this.title = title;
+        this.titlePlaceholderCount = titlePlaceholderCount;
+        this.content = content;
+        this.contentPlaceholderCount = contentPlaceholderCount;
         this.createTime = createTime;
         this.updateTime = updateTime;
         this.creator = creator;
@@ -87,14 +86,6 @@ public final class RoleManagerInfo implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
     }
 
     public String getName() {
@@ -113,20 +104,52 @@ public final class RoleManagerInfo implements Serializable {
         this.description = description;
     }
 
-    public Integer getLevel() {
-        return level;
+    public Integer getType() {
+        return type;
     }
 
-    public void setLevel(Integer level) {
-        this.level = level;
+    public void setType(Integer type) {
+        this.type = type;
     }
 
-    public Boolean getDefault() {
-        return isDefault;
+    public Integer getBusinessType() {
+        return businessType;
     }
 
-    public void setDefault(Boolean aDefault) {
-        isDefault = aDefault;
+    public void setBusinessType(Integer businessType) {
+        this.businessType = businessType;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Integer getTitlePlaceholderCount() {
+        return titlePlaceholderCount;
+    }
+
+    public void setTitlePlaceholderCount(Integer titlePlaceholderCount) {
+        this.titlePlaceholderCount = titlePlaceholderCount;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public Integer getContentPlaceholderCount() {
+        return contentPlaceholderCount;
+    }
+
+    public void setContentPlaceholderCount(Integer contentPlaceholderCount) {
+        this.contentPlaceholderCount = contentPlaceholderCount;
     }
 
     public Long getCreateTime() {
@@ -179,13 +202,16 @@ public final class RoleManagerInfo implements Serializable {
 
     @Override
     public String toString() {
-        return "RoleManagerInfo{" +
+        return "MessageTemplateManagerInfo{" +
                 "id=" + id +
-                ", type=" + type +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", level=" + level +
-                ", isDefault=" + isDefault +
+                ", type=" + type +
+                ", businessType=" + businessType +
+                ", title='" + title + '\'' +
+                ", titlePlaceholderCount=" + titlePlaceholderCount +
+                ", content='" + content + '\'' +
+                ", contentPlaceholderCount=" + contentPlaceholderCount +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", creator=" + creator +
@@ -194,5 +220,5 @@ public final class RoleManagerInfo implements Serializable {
                 ", updaterName='" + updaterName + '\'' +
                 '}';
     }
-    
+
 }

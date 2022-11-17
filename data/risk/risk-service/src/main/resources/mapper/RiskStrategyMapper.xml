@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress SqlNoDataSourceInspection, SqlDialectInspection -->
+<mapper namespace="com.blue.risk.repository.mapper.RiskStrategyMapper">
+    <resultMap id="BaseResultMap" type="com.blue.risk.repository.entity.RiskStrategy">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="type" jdbcType="TINYINT" property="type"/>
+        <result column="attributes" jdbcType="LONGVARCHAR" property="attributes"/>
+        <result column="enable" jdbcType="BIT" property="enable"/>
+        <result column="create_time" jdbcType="BIGINT" property="createTime"/>
+        <result column="update_time" jdbcType="BIGINT" property="updateTime"/>
+        <result column="creator" jdbcType="BIGINT" property="creator"/>
+        <result column="updater" jdbcType="BIGINT" property="updater"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        , name, description, type, attributes, enable, create_time, update_time, creator, updater
+    </sql>
+
+    <insert id="insert" parameterType="com.blue.risk.repository.entity.RiskStrategy">
+        insert into risk_strategy (id, name, description, type, attributes, enable,
+                                   create_time, update_time, creator, updater)
+        values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},
+                #{type,jdbcType=TINYINT}, #{attributes,jdbcType=LONGVARCHAR}, #{enable,jdbcType=BIT},
+                #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT}, #{creator,jdbcType=BIGINT},
+                #{updater,jdbcType=BIGINT})
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.blue.risk.repository.entity.RiskStrategy">
+        insert into risk_strategy
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="type != null">
+                type,
+            </if>
+            <if test="attributes != null">
+                attributes,
+            </if>
+            <if test="enable != null">
+                enable,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+            <if test="updater != null">
+                updater,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                #{type,jdbcType=TINYINT},
+            </if>
+            <if test="attributes != null">
+                #{attributes,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="enable != null">
+                #{enable,jdbcType=BIT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=BIGINT},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=BIGINT},
+            </if>
+            <if test="updater != null">
+                #{updater,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateByPrimaryKey" parameterType="com.blue.risk.repository.entity.RiskStrategy">
+        update risk_strategy
+        set name        = #{name,jdbcType=VARCHAR},
+            description = #{description,jdbcType=VARCHAR},
+            type        = #{type,jdbcType=TINYINT},
+            attributes  = #{attributes,jdbcType=LONGVARCHAR},
+            enable      = #{enable,jdbcType=BIT},
+            create_time = #{createTime,jdbcType=BIGINT},
+            update_time = #{updateTime,jdbcType=BIGINT},
+            creator     = #{creator,jdbcType=BIGINT},
+            updater     = #{updater,jdbcType=BIGINT}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.blue.risk.repository.entity.RiskStrategy">
+        update risk_strategy
+        <set>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="type != null">
+                type = #{type,jdbcType=TINYINT},
+            </if>
+            <if test="attributes != null">
+                attributes = #{attributes,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="enable != null">
+                enable = #{enable,jdbcType=BIT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=BIGINT},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=BIGINT},
+            </if>
+            <if test="creator != null">
+                creator = #{creator,jdbcType=BIGINT},
+            </if>
+            <if test="updater != null">
+                updater = #{updater,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete
+        from risk_strategy
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from risk_strategy
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectByType" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        risk_strategy FORCE INDEX(idx_type)
+        WHERE
+        type = #{type,jdbcType=TINYINT}
+        LIMIT 1;
+    </select>
+
+    <select id="select" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        risk_strategy
+    </select>
+
+    <select id="selectByIds" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        risk_strategy
+        WHERE
+        id IN
+        <foreach collection="ids" open="(" close=")" separator="," item="id" index="index">
+            #{id,jdbcType=BIGINT}
+        </foreach>
+    </select>
+
+    <sql id="Risk_Strategy_Conditions">
+        <if test="riskStrategyCondition != null">
+            <where>
+                <if test="riskStrategyCondition.id != null">
+                    AND
+                    id = #{riskStrategyCondition.id,jdbcType=BIGINT}
+                </if>
+                <if test="riskStrategyCondition.nameLike != null and riskStrategyCondition.nameLike != ''">
+                    AND
+                    name LIKE #{riskStrategyCondition.nameLike,jdbcType=VARCHAR}
+                </if>
+                <if test="riskStrategyCondition.type != null">
+                    AND
+                    type = #{riskStrategyCondition.type,jdbcType=TINYINT}
+                </if>
+                <if test="riskStrategyCondition.enable != null">
+                    AND
+                    enable = #{riskStrategyCondition.enable,jdbcType=BIT}
+                </if>
+                <if test="riskStrategyCondition.createTimeBegin != null">
+                    AND
+                    create_time &gt;= #{riskStrategyCondition.createTimeBegin,jdbcType=BIGINT}
+                </if>
+                <if test="riskStrategyCondition.createTimeEnd != null">
+                    AND
+                    create_time &lt;= #{riskStrategyCondition.createTimeEnd,jdbcType=BIGINT}
+                </if>
+                <if test="riskStrategyCondition.updateTimeBegin != null">
+                    AND
+                    update_time &gt;= #{riskStrategyCondition.updateTimeBegin,jdbcType=BIGINT}
+                </if>
+                <if test="riskStrategyCondition.updateTimeEnd != null">
+                    AND
+                    update_time &lt;= #{riskStrategyCondition.updateTimeEnd,jdbcType=BIGINT}
+                </if>
+                <if test="riskStrategyCondition.creator != null">
+                    AND
+                    creator = #{riskStrategyCondition.creator,jdbcType=BIGINT}
+                </if>
+                <if test="riskStrategyCondition.updater != null">
+                    AND
+                    updater = #{riskStrategyCondition.updater,jdbcType=BIGINT}
+                </if>
+            </where>
+        </if>
+    </sql>
+
+    <select id="selectByLimitAndCondition" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        risk_strategy
+        <include refid="Risk_Strategy_Conditions"/>
+        <if test="riskStrategyCondition != null and riskStrategyCondition.sortAttribute != null and riskStrategyCondition.sortAttribute != '' and riskStrategyCondition.sortType != null and riskStrategyCondition.sortType != ''">
+            ORDER BY
+            ${riskStrategyCondition.sortAttribute} ${riskStrategyCondition.sortType}
+        </if>
+        LIMIT #{limit,jdbcType=BIGINT},#{rows,jdbcType=BIGINT}
+    </select>
+
+    <select id="countByCondition" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM
+        risk_strategy
+        <include refid="Risk_Strategy_Conditions"/>
+    </select>
+
+</mapper>

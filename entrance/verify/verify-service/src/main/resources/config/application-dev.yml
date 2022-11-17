@@ -115,9 +115,6 @@ message:
   element-location: classpath:i18n/element
 
 
-
-
-
 cache:
   server-mode: SINGLE
   nodes: [ 172.18.7.1:6379,172.18.7.1:6380,172.18.7.2:6379,172.18.7.2:6380,172.18.7.3:6379,172.18.7.3:6380 ]
@@ -436,17 +433,20 @@ image-verify:
   allow: 10
   send-interval-millis: 30000
 
+
 sms-verify:
   verify-length: 7
   expires-millis: 300000
   allow: 1
   send-interval-millis: 10000
 
+
 mail-verify:
   verify-length: 7
   expires-millis: 300000
   allow: 1
   send-interval-millis: 10000
+
 
 image:
   border: true
@@ -470,10 +470,12 @@ image:
   image-width: 200
   image-height: 50
 
+
 turing:
   allow: 5
   interval-millis: 12000000
   target-verify-types: [ SMS,MAIL ]
+
 
 verify-template:
   cache-expires-second: 21600

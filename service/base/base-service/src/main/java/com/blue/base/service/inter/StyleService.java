@@ -1,9 +1,9 @@
 package com.blue.base.service.inter;
 
 import com.blue.base.api.model.StyleInfo;
-import com.blue.base.api.model.StyleManagerInfo;
 import com.blue.base.model.StyleCondition;
 import com.blue.base.model.StyleInsertParam;
+import com.blue.base.model.StyleManagerInfo;
 import com.blue.base.model.StyleUpdateParam;
 import com.blue.base.repository.entity.Style;
 import com.blue.basic.model.common.PageModelRequest;

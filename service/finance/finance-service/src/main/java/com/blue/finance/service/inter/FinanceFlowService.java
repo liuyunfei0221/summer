@@ -3,8 +3,8 @@ package com.blue.finance.service.inter;
 import com.blue.basic.model.common.PageModelRequest;
 import com.blue.basic.model.common.PageModelResponse;
 import com.blue.finance.api.model.FinanceFlowInfo;
-import com.blue.finance.api.model.FinanceFlowManagerInfo;
 import com.blue.finance.model.FinanceFlowCondition;
+import com.blue.finance.model.FinanceFlowManagerInfo;
 import com.blue.finance.repository.entity.FinanceFlow;
 import org.springframework.data.mongodb.core.query.Query;
 import reactor.core.publisher.Mono;
@@ -17,7 +17,7 @@ import java.util.Optional;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "UnusedReturnValue"})
+@SuppressWarnings({"JavaDoc", "UnusedReturnValue", "unused"})
 public interface FinanceFlowService {
 
     /**

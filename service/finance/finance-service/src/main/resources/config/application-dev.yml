@@ -366,9 +366,6 @@ message:
   element-location: classpath:i18n/element
 
 
-
-
-
 curator:
   connect-string: 172.16.202.219:2181
   connection-timeout-ms: 60000

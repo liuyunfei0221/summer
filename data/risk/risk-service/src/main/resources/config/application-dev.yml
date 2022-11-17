@@ -88,6 +88,20 @@ data:
       index: 1
   broadcast-tables: [ ]
   single-databases-with-tables:
+    - url: jdbc:mysql://172.16.202.219:3306/risk
+      database-conf: useAffectedRows=true&useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
+      username: root
+      password: 1024
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      connection-timeout: 120000
+      max-lifetime: 1800000
+      max-pool-size: 4
+      min-idle: 2
+      idle-timeout: 600000
+      connection-connection-test-query: SELECT 1 FROM DUAL FROM DUAL
+      is-read-only: false
+      is-auto-commit: true
+      single-tables: [ risk_strategy ]
   safe-row-bounds-enabled: false
   safe-result-handler-enabled: false
   map-underscore-to-camel-case: true
@@ -296,6 +310,29 @@ producers:
       enable-encrypt: false
       encryption-key:
       producer-crypto-failure-action: FAIL
+    risk-strategy-update:
+      topic: riskStrategyUpdate
+      producer-name: riskStrategyUpdateProducer000
+      access-mode: Shared
+      send-timeout-millis: 30000
+      max-pending-messages: 1000
+      block-if-queue-full: false
+      message-routing-mode: RoundRobinPartition
+      compression-type: NONE
+      enable-batching: false
+      enable-chunking: true
+      batching-max-publish-delay-millis: 1000
+      round-robin-router-batching-partition-switch-frequency: 2
+      batching-max-messages: 512
+      batching-max-bytes: 512
+      initial-sequence-id: 0
+      auto-update-partitions: true
+      auto-update-partitions-interval-millis: 30000
+      enable-multi-schema: false
+      hashing-schemes: [ JavaStringHash ]
+      enable-encrypt: false
+      encryption-key:
+      producer-crypto-failure-action: FAIL
 
 
 consumers:
@@ -314,7 +351,7 @@ consumers:
       acknowledgements-group-time-millis: 100
       replicate-subscription-state: false
       max-total-receiver-queue-size-across-partitions: 5
-      consumer-name: riskRequestEventSubscription
+      consumer-name: riskRequestEventSubscription000
       read-compacted: false
       pattern-auto-discovery-period-millis: 1
       priority-level: 0
@@ -344,6 +381,50 @@ consumers:
       poll-duration-mills: 50
       working-threads: 2
       enable-negative-acknowledge: true
+    risk-strategy-update:
+      topics: [ riskStrategyUpdate ]
+      topics-pattern:
+      subscription-name: riskStrategyUpdateSubscription
+      ack-timeout-millis: 2000
+      enable-ack-receipt: true
+      ack-timeout-tick-time-millis: 1000
+      negative-ack-redelivery-delay-millis: 100
+      subscription-type: Failover
+      subscription-mode: Durable
+      receiver-queue-size: 1000
+      acknowledgements-group-time-millis: 100
+      replicate-subscription-state: false
+      max-total-receiver-queue-size-across-partitions: 5
+      consumer-name: riskStrategyUpdateSubscription000
+      read-compacted: false
+      pattern-auto-discovery-period-millis: 1
+      priority-level: 0
+      subscription-initial-position: Latest
+      regex-subscription-mode: PersistentOnly
+      auto-update-partitions: true
+      auto-update-partitions-interval-millis: 30000
+      batch-receive-policy: DEFAULT_POLICY
+      enable-retry: true
+      enable-batch-index-acknowledgment: false
+      max-pending-chunked-message: 10
+      auto-ack-oldest-chunked-message-on-queue-full: true
+      expire-time-of-incomplete-chunked-message-millis: 2000
+      pool-messages: false
+      enable-encrypt: false
+      encryption-key:
+      consumer-crypto-failure-action: FAIL
+      enable-dead-letter: true
+      dead-letter-topic: riskStrategyUpdate
+      retry-letter-topic: riskStrategyUpdate
+      max-redeliver-count: 1000
+      start-message-id-inclusive: false
+      enable-batch-receive: false
+      batch-receive-max-num-messages: -1
+      batch-receive-max-num-bytes: 10485760
+      batch-receive-timeout-millis: 100
+      poll-duration-mills: 50
+      working-threads: 2
+      enable-negative-acknowledge: true
 
 
 dubbo:
@@ -359,16 +440,16 @@ dubbo:
     check: false
     timeout: 60000
     simplified: false
-#  metadata-report:
-#    address: zookeeper://172.16.202.219
-#    port: 2181
-#    username:
-#    password:
-#    timeout:
-#    default: true
-#    check: false
-#    sync-report: false
-#    report-metadata: false
+  #  metadata-report:
+  #    address: zookeeper://172.16.202.219
+  #    port: 2181
+  #    username:
+  #    password:
+  #    timeout:
+  #    default: true
+  #    check: false
+  #    sync-report: false
+  #    report-metadata: false
   application:
     id: summer-risk
     name: summer-risk

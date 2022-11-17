@@ -1,4 +1,4 @@
-package com.blue.finance.api.model;
+package com.blue.finance.model;
 
 import com.blue.basic.serializer.Long2StringSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

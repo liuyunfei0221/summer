@@ -1,9 +1,9 @@
 package com.blue.auth.service.inter;
 
 import com.blue.auth.api.model.RoleInfo;
-import com.blue.auth.api.model.RoleManagerInfo;
 import com.blue.auth.model.RoleCondition;
 import com.blue.auth.model.RoleInsertParam;
+import com.blue.auth.model.RoleManagerInfo;
 import com.blue.auth.model.RoleUpdateParam;
 import com.blue.auth.repository.entity.Role;
 import com.blue.basic.model.common.PageModelRequest;

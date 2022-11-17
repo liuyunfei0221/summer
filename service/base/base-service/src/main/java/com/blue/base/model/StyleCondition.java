@@ -42,7 +42,7 @@ public final class StyleCondition extends SortCondition implements Serializable 
     private Long updater;
 
     public StyleCondition() {
-        super(StyleSortAttribute.ID.attribute, DESC.identity);
+        super(StyleSortAttribute.CREATE_TIME.attribute, DESC.identity);
     }
 
     public StyleCondition(String sortAttribute, String sortType) {

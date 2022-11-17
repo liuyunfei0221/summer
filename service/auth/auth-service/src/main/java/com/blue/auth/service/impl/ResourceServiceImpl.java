@@ -1,10 +1,10 @@
 package com.blue.auth.service.impl;
 
 import com.blue.auth.api.model.ResourceInfo;
-import com.blue.auth.api.model.ResourceManagerInfo;
 import com.blue.auth.constant.ResourceSortAttribute;
 import com.blue.auth.model.ResourceCondition;
 import com.blue.auth.model.ResourceInsertParam;
+import com.blue.auth.model.ResourceManagerInfo;
 import com.blue.auth.model.ResourceUpdateParam;
 import com.blue.auth.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.auth.repository.entity.Resource;

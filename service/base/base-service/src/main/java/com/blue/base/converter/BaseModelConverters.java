@@ -2,15 +2,17 @@ package com.blue.base.converter;
 
 import com.blue.base.api.model.*;
 import com.blue.base.model.StyleInsertParam;
-import com.blue.basic.model.exps.BlueException;
+import com.blue.base.model.StyleManagerInfo;
 import com.blue.base.repository.entity.*;
+import com.blue.basic.model.exps.BlueException;
 
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static com.blue.basic.common.base.BlueChecker.*;
+import static com.blue.basic.common.base.BlueChecker.isNotEmpty;
+import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.constant.common.BlueBoolean.FALSE;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;

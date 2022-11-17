@@ -129,9 +129,6 @@ message:
   element-location: classpath:i18n/element
 
 
-
-
-
 dubbo:
   registry:
     id: summer-registry

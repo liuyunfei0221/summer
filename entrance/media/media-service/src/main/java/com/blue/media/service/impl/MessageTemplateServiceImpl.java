@@ -8,12 +8,12 @@ import com.blue.basic.model.common.SortElement;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.media.api.model.MessageTemplateInfo;
-import com.blue.media.api.model.MessageTemplateManagerInfo;
 import com.blue.media.config.deploy.MessageTemplateDeploy;
 import com.blue.media.constant.MessageTemplateSortAttribute;
 import com.blue.media.constant.QrCodeConfigSortAttribute;
 import com.blue.media.model.MessageTemplateCondition;
 import com.blue.media.model.MessageTemplateInsertParam;
+import com.blue.media.model.MessageTemplateManagerInfo;
 import com.blue.media.model.MessageTemplateUpdateParam;
 import com.blue.media.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.media.repository.entity.MessageTemplate;
@@ -251,11 +251,13 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
                 .filter(BlueChecker::isNotBlank)
                 .orElse(SortType.DESC.identity);
 
-        return sortAttribute.equals(QrCodeConfigSortAttribute.ID.column) ?
-                process(singletonList(new SortElement(sortAttribute, sortType)))
-                :
-                process(Stream.of(sortAttribute, QrCodeConfigSortAttribute.ID.column)
-                        .map(attr -> new SortElement(attr, sortType)).collect(toList()));
+        return process(
+                sortAttribute.equals(QrCodeConfigSortAttribute.ID.column) ?
+                        singletonList(new SortElement(sortAttribute, sortType))
+                        :
+                        Stream.of(sortAttribute, QrCodeConfigSortAttribute.ID.column)
+                                .map(attr -> new SortElement(attr, sortType)).collect(toList())
+        );
     };
 
     private static final Function<MessageTemplateCondition, Query> CONDITION_PROCESSOR = c -> {

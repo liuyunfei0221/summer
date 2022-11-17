@@ -2411,3 +2411,26 @@ CREATE TABLE `agreement`
     KEY           `idx_type_create`(`type`,`create_time`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of agreement';
 
+
+
+CREATE
+DATABASE risk CHARACTER SET utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+USE
+risk;
+
+CREATE TABLE `risk_strategy`
+(
+    `id`          bigint       NOT NULL COMMENT 'id',
+    `name`        varchar(128) NOT NULL COMMENT 'strategy name',
+    `description` varchar(256) DEFAULT '' COMMENT 'strategy disc',
+    `type`        tinyint      NOT NULL COMMENT 'strategy type: ...',
+    `attributes`  text         DEFAULT NULL COMMENT 'strategy attributes json',
+    `enable`      bit          NOT NULL COMMENT 'is enable: 1-yes, 0-no',
+    `create_time` bigint       NOT NULL COMMENT 'data create time',
+    `update_time` bigint       NOT NULL COMMENT 'data update time',
+    `creator`     bigint       NOT NULL COMMENT 'creator id',
+    `updater`     bigint       NOT NULL COMMENT 'updater id',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_type`(`type`) USING BTREE,
+    KEY           `idx_create_time`(`create_time`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of risk strategy';

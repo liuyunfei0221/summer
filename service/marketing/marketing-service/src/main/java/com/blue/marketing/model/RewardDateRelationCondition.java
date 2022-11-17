@@ -36,7 +36,7 @@ public final class RewardDateRelationCondition extends SortCondition implements 
     private Long updateTimeEnd;
 
     public RewardDateRelationCondition() {
-        super(RewardDateRelationSortAttribute.ID.attribute, DESC.identity);
+        super(RewardDateRelationSortAttribute.CREATE_TIME.attribute, DESC.identity);
     }
 
     public RewardDateRelationCondition(String sortAttribute, String sortType) {

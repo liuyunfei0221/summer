@@ -46,7 +46,7 @@ public final class CardCondition extends SortCondition implements Serializable {
     private Long updateTimeEnd;
 
     public CardCondition() {
-        super(CardSortAttribute.ID.attribute, SortType.DESC.identity);
+        super(CardSortAttribute.CREATE_TIME.attribute, SortType.DESC.identity);
     }
 
     public CardCondition(String sortAttribute, String sortType) {

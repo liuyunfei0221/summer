@@ -1,4 +1,4 @@
-package com.blue.auth.api.model;
+package com.blue.auth.model;
 
 import com.blue.basic.serializer.Long2StringSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

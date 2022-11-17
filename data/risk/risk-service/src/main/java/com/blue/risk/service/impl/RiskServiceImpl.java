@@ -37,8 +37,7 @@ import static com.blue.basic.common.base.ConstantProcessor.getBoolByBool;
 import static com.blue.basic.constant.common.BlueBoolean.TRUE;
 import static com.blue.basic.constant.common.BlueCommonThreshold.NON_RESOURCE_ID;
 import static com.blue.basic.constant.common.BlueDataAttrKey.*;
-import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
-import static com.blue.basic.constant.common.ResponseElement.OK;
+import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.SpecialAccess.VISITOR;
 import static com.blue.basic.constant.common.SpecialIntegerElement.ZERO;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
@@ -323,41 +322,46 @@ public class RiskServiceImpl implements RiskService {
     @Override
     public Mono<RiskAsserted> handleRiskEvent(RiskEvent riskEvent) {
         LOGGER.info("riskEvent = {}", riskEvent);
+        if (isNull(riskEvent))
+            throw new BlueException(EMPTY_PARAM);
 
         return riskProcessor.handle(riskEvent)
-                .flatMap(ra ->
-                        EVENTS_INSERTER.apply(riskEvent, ra)
-                                .doOnSuccess(b -> LOGGER.warn("b = {}", b))
-                                .doOnError(t -> LOGGER.error("t = {}", t))
-                                .then(just(ra))
+                .flatMap(ra -> EVENTS_INSERTER.apply(riskEvent, ra)
+                        .doOnSuccess(b -> LOGGER.warn("b = {}", b))
+                        .doOnError(t -> LOGGER.error("t = {}", t))
+                        .then(just(ra))
                 );
     }
 
     @Override
     public Mono<RiskAsserted> handleDataEvent(DataEvent dataEvent) {
         LOGGER.info("dataEvent = {}", dataEvent);
+        if (isNull(dataEvent))
+            throw new BlueException(EMPTY_PARAM);
 
-        return justOrEmpty(dataEvent).flatMap(DATA_EVENT_2_RISK_EVENT).flatMap(this::handleRiskEvent);
+        return just(dataEvent).flatMap(DATA_EVENT_2_RISK_EVENT).flatMap(this::handleRiskEvent);
     }
 
     @Override
     public Mono<RiskAsserted> validateRiskEvent(RiskEvent riskEvent) {
         LOGGER.info("riskEvent = {}", riskEvent);
+        if (isNull(riskEvent))
+            throw new BlueException(EMPTY_PARAM);
 
         return riskProcessor.validate(riskEvent)
-                .flatMap(ra ->
-                        EVENTS_INSERTER.apply(riskEvent, ra)
-                                .doOnSuccess(b -> LOGGER.warn("b = {}", b))
-                                .doOnError(t -> LOGGER.error("t = {}", t))
-                                .then(just(ra))
-                );
+                .flatMap(ra -> EVENTS_INSERTER.apply(riskEvent, ra)
+                        .doOnSuccess(b -> LOGGER.warn("b = {}", b))
+                        .doOnError(t -> LOGGER.error("t = {}", t))
+                        .then(just(ra)));
     }
 
     @Override
     public Mono<RiskAsserted> validateDataEvent(DataEvent dataEvent) {
         LOGGER.info("dataEvent = {}", dataEvent);
+        if (isNull(dataEvent))
+            throw new BlueException(EMPTY_PARAM);
 
-        return justOrEmpty(dataEvent).flatMap(DATA_EVENT_2_RISK_EVENT).flatMap(this::validateRiskEvent);
+        return just(dataEvent).flatMap(DATA_EVENT_2_RISK_EVENT).flatMap(this::validateRiskEvent);
     }
 
 }

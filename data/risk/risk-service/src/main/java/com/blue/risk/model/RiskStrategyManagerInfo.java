@@ -1,20 +1,21 @@
-package com.blue.media.api.model;
-
+package com.blue.risk.model;
 
 import com.blue.basic.serializer.Long2StringSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.io.Serializable;
+import java.util.Map;
+
 
 /**
- * message template manager info
+ * risk strategy manager info
  *
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public final class MessageTemplateManagerInfo implements Serializable {
+public final class RiskStrategyManagerInfo implements Serializable {
 
-    private static final long serialVersionUID = 595870764153120707L;
+    private static final long serialVersionUID = -6322346704931894292L;
 
     @JsonSerialize(using = Long2StringSerializer.class)
     private Long id;
@@ -24,22 +25,18 @@ public final class MessageTemplateManagerInfo implements Serializable {
     private String description;
 
     /**
-     * @see com.blue.basic.constant.media.MessageType
+     * hit type
+     *
+     * @see com.blue.basic.constant.risk.RiskType
      */
     private Integer type;
 
     /**
-     * @see com.blue.basic.constant.media.MessageBusinessType
+     * risk attributes
      */
-    private Integer businessType;
+    private Map<String, String> attributes;
 
-    private String title;
-
-    private Integer titlePlaceholderCount;
-
-    private String content;
-
-    private Integer contentPlaceholderCount;
+    private Boolean enable;
 
     @JsonSerialize(using = Long2StringSerializer.class)
     private Long createTime;
@@ -57,21 +54,17 @@ public final class MessageTemplateManagerInfo implements Serializable {
 
     private String updaterName;
 
-
-    public MessageTemplateManagerInfo() {
+    public RiskStrategyManagerInfo() {
     }
 
-    public MessageTemplateManagerInfo(Long id, String name, String description, Integer type, Integer businessType, String title, Integer titlePlaceholderCount, String content, Integer contentPlaceholderCount,
-                                      Long createTime, Long updateTime, Long creator, String creatorName, Long updater, String updaterName) {
+    public RiskStrategyManagerInfo(Long id, String name, String description, Integer type, Map<String, String> attributes, Boolean enable,
+                                   Long createTime, Long updateTime, Long creator, String creatorName, Long updater, String updaterName) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.type = type;
-        this.businessType = businessType;
-        this.title = title;
-        this.titlePlaceholderCount = titlePlaceholderCount;
-        this.content = content;
-        this.contentPlaceholderCount = contentPlaceholderCount;
+        this.attributes = attributes;
+        this.enable = enable;
         this.createTime = createTime;
         this.updateTime = updateTime;
         this.creator = creator;
@@ -112,44 +105,20 @@ public final class MessageTemplateManagerInfo implements Serializable {
         this.type = type;
     }
 
-    public Integer getBusinessType() {
-        return businessType;
+    public Map<String, String> getAttributes() {
+        return attributes;
     }
 
-    public void setBusinessType(Integer businessType) {
-        this.businessType = businessType;
+    public void setAttributes(Map<String, String> attributes) {
+        this.attributes = attributes;
     }
 
-    public String getTitle() {
-        return title;
+    public Boolean getEnable() {
+        return enable;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public Integer getTitlePlaceholderCount() {
-        return titlePlaceholderCount;
-    }
-
-    public void setTitlePlaceholderCount(Integer titlePlaceholderCount) {
-        this.titlePlaceholderCount = titlePlaceholderCount;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public Integer getContentPlaceholderCount() {
-        return contentPlaceholderCount;
-    }
-
-    public void setContentPlaceholderCount(Integer contentPlaceholderCount) {
-        this.contentPlaceholderCount = contentPlaceholderCount;
+    public void setEnable(Boolean enable) {
+        this.enable = enable;
     }
 
     public Long getCreateTime() {
@@ -202,16 +171,13 @@ public final class MessageTemplateManagerInfo implements Serializable {
 
     @Override
     public String toString() {
-        return "MessageTemplateManagerInfo{" +
+        return "RiskStrategyManagerInfo{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", type=" + type +
-                ", businessType=" + businessType +
-                ", title='" + title + '\'' +
-                ", titlePlaceholderCount=" + titlePlaceholderCount +
-                ", content='" + content + '\'' +
-                ", contentPlaceholderCount=" + contentPlaceholderCount +
+                ", attributes=" + attributes +
+                ", enable=" + enable +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", creator=" + creator +

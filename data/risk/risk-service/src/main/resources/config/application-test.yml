@@ -239,40 +239,66 @@ redisson:
   max-tryLock-waiting-millis: 10000
 
 
+pulsar:
+  services: [ 172.16.202.219:6650 ]
+  enable-tls: false
+  tlsTrust-certs-file-path:
+  tls-cert-file-path:
+  tls-key-file-path:
+  tls-allow-insecure-connection:
+  tls-hostname-verification-enable:
+  listener-name:
+  operation-timeout-millis: 30000
+  statsInterval-millis: 60000
+  io-threads: 1
+  listener-threads: 1
+  connections-per-broker: 1
+  use-tcp-no-delay: true
+  memory-limit-kilo-bytes: 512
+  max-concurrent-lookup-requests: 60
+  max-lookup-request: 50000
+  max-lookup-redirects: 3
+  max-number-of-rejected-request-per-connection: 50
+  keep-alive-interval-millis: 30000
+  connection-timeout-millis: 60000
+  starting-backoff-interval-millis: 300
+  max-backoff-interval-millis: 600
+  enable-busy-wait: false
+  clock-zone-id: Asia/Shanghai
+  enable-transaction: false
+  enable-proxy: false
+  proxy-service-url:
+  proxy-protocol: SNI
+
+
 producers:
   configs:
     illegal-mark:
-      services: [ 43.138.111.53:6650 ]
-      enable-tls: false
-      tlsTrust-certs-file-path:
-      tls-cert-file-path:
-      tls-key-file-path:
-      tls-allow-insecure-connection:
-      tls-hostname-verification-enable:
-      listener-name:
-      operation-timeout-millis: 30000
-      statsInterval-millis: 60000
-      io-threads: 1
-      listener-threads: 1
-      connections-per-broker: 1
-      use-tcp-no-delay: true
-      memory-limit-kilo-bytes: 512
-      max-concurrent-lookup-requests: 60
-      max-lookup-request: 50000
-      max-lookup-redirects: 3
-      max-number-of-rejected-request-per-connection: 50
-      keep-alive-interval-millis: 30000
-      connection-timeout-millis: 60000
-      starting-backoff-interval-millis: 300
-      max-backoff-interval-millis: 600
-      enable-busy-wait: false
-      clock-zone-id: Asia/Shanghai
-      enable-transaction: false
-      enable-proxy: false
-      proxy-service-url:
-      proxy-protocol: SNI
       topic: illegalMark
       producer-name: riskIllegalMarkProducer000
+      access-mode: Shared
+      send-timeout-millis: 30000
+      max-pending-messages: 1000
+      block-if-queue-full: false
+      message-routing-mode: RoundRobinPartition
+      compression-type: NONE
+      enable-batching: false
+      enable-chunking: true
+      batching-max-publish-delay-millis: 1000
+      round-robin-router-batching-partition-switch-frequency: 2
+      batching-max-messages: 512
+      batching-max-bytes: 512
+      initial-sequence-id: 0
+      auto-update-partitions: true
+      auto-update-partitions-interval-millis: 30000
+      enable-multi-schema: false
+      hashing-schemes: [ JavaStringHash ]
+      enable-encrypt: false
+      encryption-key:
+      producer-crypto-failure-action: FAIL
+    risk-strategy-update:
+      topic: riskStrategyUpdate
+      producer-name: riskStrategyUpdateProducer000
       access-mode: Shared
       send-timeout-millis: 30000
       max-pending-messages: 1000
@@ -298,35 +324,6 @@ producers:
 consumers:
   configs:
     request-event:
-      services: [ 43.138.111.53:6650 ]
-      enable-tls: false
-      tlsTrust-certs-file-path:
-      tls-cert-file-path:
-      tls-key-file-path:
-      tls-allow-insecure-connection:
-      tls-hostname-verification-enable:
-      listener-name:
-      operation-timeout-millis: 30000
-      statsInterval-millis: 60
-      io-threads: 1
-      listener-threads: 1
-      connections-per-broker: 2
-      use-tcp-no-delay: true
-      memory-limit-kilo-bytes: 1024
-      max-concurrent-lookup-requests: 60
-      max-lookup-request: 1000
-      max-lookup-redirects: 2
-      max-number-of-rejected-request-per-connection: 50
-      keep-alive-interval-millis: 30000
-      connection-timeout-millis: 10000
-      starting-backoff-interval-millis: 1000
-      max-backoff-interval-millis: 30000
-      enable-busy-wait: true
-      clock-zone-id: Asia/Shanghai
-      enable-transaction: false
-      enable-proxy: false
-      proxy-service-url:
-      proxy-protocol: SNI
       topics: [ requestEvent ]
       topics-pattern:
       subscription-name: riskRequestEventSubscription
@@ -340,7 +337,7 @@ consumers:
       acknowledgements-group-time-millis: 100
       replicate-subscription-state: false
       max-total-receiver-queue-size-across-partitions: 5
-      consumer-name: riskRequestEventSubscription
+      consumer-name: riskRequestEventSubscription000
       read-compacted: false
       pattern-auto-discovery-period-millis: 1
       priority-level: 0
@@ -361,6 +358,50 @@ consumers:
       enable-dead-letter: true
       dead-letter-topic: requestEvent
       retry-letter-topic: requestEvent
+      max-redeliver-count: 1000
+      start-message-id-inclusive: false
+      enable-batch-receive: false
+      batch-receive-max-num-messages: -1
+      batch-receive-max-num-bytes: 10485760
+      batch-receive-timeout-millis: 100
+      poll-duration-mills: 50
+      working-threads: 2
+      enable-negative-acknowledge: true
+    risk-strategy-update:
+      topics: [ riskStrategyUpdate ]
+      topics-pattern:
+      subscription-name: riskStrategyUpdateSubscription
+      ack-timeout-millis: 2000
+      enable-ack-receipt: true
+      ack-timeout-tick-time-millis: 1000
+      negative-ack-redelivery-delay-millis: 100
+      subscription-type: Failover
+      subscription-mode: Durable
+      receiver-queue-size: 1000
+      acknowledgements-group-time-millis: 100
+      replicate-subscription-state: false
+      max-total-receiver-queue-size-across-partitions: 5
+      consumer-name: riskStrategyUpdateSubscription000
+      read-compacted: false
+      pattern-auto-discovery-period-millis: 1
+      priority-level: 0
+      subscription-initial-position: Latest
+      regex-subscription-mode: PersistentOnly
+      auto-update-partitions: true
+      auto-update-partitions-interval-millis: 30000
+      batch-receive-policy: DEFAULT_POLICY
+      enable-retry: true
+      enable-batch-index-acknowledgment: false
+      max-pending-chunked-message: 10
+      auto-ack-oldest-chunked-message-on-queue-full: true
+      expire-time-of-incomplete-chunked-message-millis: 2000
+      pool-messages: false
+      enable-encrypt: false
+      encryption-key:
+      consumer-crypto-failure-action: FAIL
+      enable-dead-letter: true
+      dead-letter-topic: riskStrategyUpdate
+      retry-letter-topic: riskStrategyUpdate
       max-redeliver-count: 1000
       start-message-id-inclusive: false
       enable-batch-receive: false

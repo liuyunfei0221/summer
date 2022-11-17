@@ -32,7 +32,7 @@ public final class AttachmentManagerCondition extends SortCondition implements S
     private Long creator;
 
     public AttachmentManagerCondition() {
-        super(AttachmentSortAttribute.ID.attribute, DESC.identity);
+        super(AttachmentSortAttribute.CREATE_TIME.attribute, DESC.identity);
     }
 
     public AttachmentManagerCondition(String sortAttribute, String sortType) {

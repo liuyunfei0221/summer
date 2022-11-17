@@ -209,6 +209,14 @@
                     AND
                     update_time &lt;= #{roleCondition.updateTimeEnd,jdbcType=BIGINT}
                 </if>
+                <if test="roleCondition.creator != null">
+                    AND
+                    creator = #{roleCondition.creator,jdbcType=BIGINT}
+                </if>
+                <if test="roleCondition.updater != null">
+                    AND
+                    updater = #{roleCondition.updater,jdbcType=BIGINT}
+                </if>
             </where>
         </if>
     </sql>

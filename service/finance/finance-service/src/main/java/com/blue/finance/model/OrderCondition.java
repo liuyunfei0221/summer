@@ -43,7 +43,7 @@ public final class OrderCondition extends SortCondition implements Serializable 
     private Long createTimeEnd;
 
     public OrderCondition() {
-        super(OrderSortAttribute.ID.attribute, SortType.DESC.identity);
+        super(OrderSortAttribute.CREATE_TIME.attribute, SortType.DESC.identity);
     }
 
     public OrderCondition(String sortAttribute, String sortType) {

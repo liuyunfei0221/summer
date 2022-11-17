@@ -27,7 +27,7 @@ public final class DownloadHistoryCondition extends SortCondition implements Ser
     private Long createTimeEnd;
 
     public DownloadHistoryCondition() {
-        super(DownloadHistorySortAttribute.ID.attribute, SortType.DESC.identity);
+        super(DownloadHistorySortAttribute.CREATE_TIME.attribute, SortType.DESC.identity);
     }
 
     public DownloadHistoryCondition(String sortAttribute, String sortType) {
