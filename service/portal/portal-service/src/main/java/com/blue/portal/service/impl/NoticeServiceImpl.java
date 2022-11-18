@@ -408,6 +408,9 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     public Mono<List<Notice>> selectNoticeByLimitAndCondition(Long limit, Long rows, NoticeCondition noticeCondition) {
         LOGGER.info("limit = {}, rows = {}, noticeCondition = {}", limit, rows, noticeCondition);
+        if (isInvalidLimit(limit) || isInvalidRows(rows))
+            throw new BlueException(INVALID_PARAM);
+
         return just(noticeMapper.selectByLimitAndCondition(limit, rows, noticeCondition));
     }
 

@@ -3,14 +3,15 @@ package com.blue.lake.service.impl;
 import com.blue.auth.api.model.ResourceInfo;
 import com.blue.basic.common.access.AccessProcessor;
 import com.blue.basic.common.base.BlueChecker;
+import com.blue.basic.constant.common.SpecialAccess;
 import com.blue.basic.model.common.Access;
 import com.blue.basic.model.common.BlueResponse;
 import com.blue.basic.model.event.DataEvent;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.lake.config.deploy.NestingResponseDeploy;
-import com.blue.lake.remote.consumer.RpcAuthServiceConsumer;
 import com.blue.lake.repository.entity.OptEvent;
+import com.blue.lake.service.inter.AuthService;
 import com.blue.lake.service.inter.LakeService;
 import com.blue.lake.service.inter.OptEventService;
 import com.blue.lake.service.inter.ResourceService;
@@ -57,18 +58,18 @@ public class LakeServiceImpl implements LakeService {
 
     private static final Logger LOGGER = getLogger(LakeServiceImpl.class);
 
-    private RpcAuthServiceConsumer rpcAuthServiceConsumer;
-
     private BlueIdentityProcessor blueIdentityProcessor;
+
+    private AuthService authService;
 
     private ResourceService resourceService;
 
     private OptEventService optEventService;
 
-    public LakeServiceImpl(RpcAuthServiceConsumer rpcAuthServiceConsumer, BlueIdentityProcessor blueIdentityProcessor, ResourceService resourceService, OptEventService optEventService,
+    public LakeServiceImpl(BlueIdentityProcessor blueIdentityProcessor, AuthService authService, ResourceService resourceService, OptEventService optEventService,
                            NestingResponseDeploy nestingResponseDeploy) {
-        this.rpcAuthServiceConsumer = rpcAuthServiceConsumer;
         this.blueIdentityProcessor = blueIdentityProcessor;
+        this.authService = authService;
         this.resourceService = resourceService;
         this.optEventService = optEventService;
 
@@ -93,9 +94,9 @@ public class LakeServiceImpl implements LakeService {
     private final BiPredicate<String, Integer> NESTING_PREDICATE = (uri, status) ->
             isNotBlank(uri) && isNotNull(status) && nestingRealUris.contains(uri) && nestingStatuses.contains(status);
 
-    private final Access UNKNOWN_ACCESS = VISITOR.access;
+    private final Access VISITOR_ACCESS = VISITOR.access;
 
-    private final Long[] EMPTY_ROLES = UNKNOWN_ACCESS.getRoleIds().toArray(Long[]::new);
+    private final Long[] EMPTY_ROLES = VISITOR_ACCESS.getRoleIds().toArray(Long[]::new);
 
     private final ResourceInfo NON_RESOURCE = new ResourceInfo(NON_RESOURCE_ID.value, EMPTY_VALUE.value, EMPTY_VALUE.value, EMPTY_VALUE.value, EMPTY_VALUE.value, EMPTY_VALUE.value,
             false, true, true, false, false, ZERO.value, EMPTY_VALUE.value, EMPTY_VALUE.value);
@@ -140,31 +141,6 @@ public class LakeServiceImpl implements LakeService {
         optEvent.setRequestId(ofNullable(entries.get(REQUEST_ID.key)).orElse(EMPTY_VALUE.value));
         optEvent.setMetadata(ofNullable(entries.get(METADATA.key)).orElse(EMPTY_VALUE.value));
 
-        String jwt = entries.get(JWT.key);
-        optEvent.setJwt(ofNullable(jwt).orElse(EMPTY_VALUE.value));
-
-        try {
-            Access access = ofNullable(entries.get(ACCESS.key))
-                    .filter(BlueChecker::isNotBlank)
-                    .map(AccessProcessor::jsonToAccess)
-                    .orElseGet(() ->
-                            ofNullable(jwt)
-                                    .filter(BlueChecker::isNotBlank)
-                                    .map(a ->
-                                            rpcAuthServiceConsumer.parseAccess(a).toFuture().join()
-                                    ).orElse(UNKNOWN_ACCESS)
-                    );
-
-            optEvent.setMemberId(access.getId());
-            optEvent.setRoleIds(ofNullable(access.getRoleIds())
-                    .filter(BlueChecker::isNotEmpty).map(l -> l.toArray(Long[]::new)).orElse(EMPTY_ROLES));
-            optEvent.setCredentialType(access.getCredentialType());
-            optEvent.setDeviceType(access.getDeviceType());
-            optEvent.setLoginTime(access.getLoginTime());
-        } catch (Exception e) {
-            LOGGER.error("dataEvent = {}, e = {}", dataEvent, e);
-        }
-
         optEvent.setClientIp(ofNullable(entries.get(CLIENT_IP.key)).orElse(EMPTY_VALUE.value));
         optEvent.setUserAgent(ofNullable(entries.get(USER_AGENT.key)).orElse(EMPTY_VALUE.value));
         optEvent.setSecKey(ofNullable(entries.get(SEC_KEY.key)).orElse(EMPTY_VALUE.value));
@@ -172,26 +148,51 @@ public class LakeServiceImpl implements LakeService {
         optEvent.setResponseUnEncryption(getBoolByBool(ofNullable(entries.get(RESPONSE_UN_ENCRYPTION.key)).map(Boolean::parseBoolean).orElse(TRUE.bool)).status);
         optEvent.setExistenceRequestBody(getBoolByBool(ofNullable(entries.get(EXISTENCE_REQUEST_BODY.key)).map(Boolean::parseBoolean).orElse(TRUE.bool)).status);
         optEvent.setExistenceResponseBody(getBoolByBool(ofNullable(entries.get(EXISTENCE_RESPONSE_BODY.key)).map(Boolean::parseBoolean).orElse(TRUE.bool)).status);
-        optEvent.setDurationSeconds(ofNullable(entries.get(DURATION_SECONDS.key)).map(Integer::parseInt).orElse(0));
+        optEvent.setDurationSeconds(ofNullable(entries.get(DURATION_SECONDS.key)).map(Integer::parseInt).orElse(ZERO.value));
 
         long id = blueIdentityProcessor.generate(OptEvent.class);
         optEvent.setId(id);
         optEvent.setCursor(id);
 
-        return resourceService.getResourceInfoByResourceKey(REQ_RES_KEY_GENERATOR.apply(optEvent.getMethod(), optEvent.getUri()))
-                .switchIfEmpty(defer(() -> just(NON_RESOURCE)))
-                .map(ri -> {
-                    optEvent.setResourceId(ri.getId());
-                    optEvent.setModule(ri.getModule().intern());
-                    optEvent.setRelativeUri(ri.getRelativeUri().intern());
-                    optEvent.setAbsoluteUri(ri.getAbsoluteUri().intern());
-                    optEvent.setRelationView(ri.getRelationView().intern());
-                    optEvent.setAuthenticate(getBoolByBool(ri.getAuthenticate()).status);
-                    optEvent.setType(ri.getType());
-                    optEvent.setName(ri.getName().intern());
+        String jwt = entries.get(JWT.key);
+        optEvent.setJwt(ofNullable(jwt).orElse(EMPTY_VALUE.value));
 
-                    return optEvent;
-                }).switchIfEmpty(defer(() -> just(optEvent)));
+        return zip(justOrEmpty(entries.get(ACCESS.key))
+                        .filter(BlueChecker::isNotBlank)
+                        .map(AccessProcessor::jsonToAccess)
+                        .switchIfEmpty(defer(() ->
+                                justOrEmpty(jwt)
+                                        .filter(BlueChecker::isNotBlank)
+                                        .flatMap(authService::parseAccess)
+                                        .switchIfEmpty(defer(() -> just(VISITOR_ACCESS)))
+                        )).onErrorResume(t -> {
+                            LOGGER.error("ACCESS_INFO_REMOTE_GETTER failed, t = {}", t);
+                            return just(SpecialAccess.VISITOR.access);
+                        }),
+                resourceService.getResourceInfoByResourceKey(REQ_RES_KEY_GENERATOR.apply(optEvent.getMethod(), optEvent.getUri()))
+                        .switchIfEmpty(defer(() -> just(NON_RESOURCE)))
+        ).map(tuple2 -> {
+            Access access = tuple2.getT1();
+            ResourceInfo resourceInfo = tuple2.getT2();
+
+            optEvent.setMemberId(access.getId());
+            optEvent.setRoleIds(ofNullable(access.getRoleIds())
+                    .filter(BlueChecker::isNotEmpty).map(l -> l.toArray(Long[]::new)).orElse(EMPTY_ROLES));
+            optEvent.setCredentialType(access.getCredentialType());
+            optEvent.setDeviceType(access.getDeviceType());
+            optEvent.setLoginTime(access.getLoginTime());
+
+            optEvent.setResourceId(resourceInfo.getId());
+            optEvent.setModule(resourceInfo.getModule().intern());
+            optEvent.setRelativeUri(resourceInfo.getRelativeUri().intern());
+            optEvent.setAbsoluteUri(resourceInfo.getAbsoluteUri().intern());
+            optEvent.setRelationView(resourceInfo.getRelationView().intern());
+            optEvent.setAuthenticate(getBoolByBool(resourceInfo.getAuthenticate()).status);
+            optEvent.setType(resourceInfo.getType());
+            optEvent.setName(resourceInfo.getName().intern());
+
+            return optEvent;
+        }).switchIfEmpty(defer(() -> just(optEvent)));
     };
 
     private final Function<List<DataEvent>, Mono<Boolean>> EVENTS_INSERTER = dataEvents ->

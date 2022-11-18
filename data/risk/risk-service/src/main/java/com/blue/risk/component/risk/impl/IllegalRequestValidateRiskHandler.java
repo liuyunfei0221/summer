@@ -102,11 +102,12 @@ public class IllegalRequestValidateRiskHandler implements RiskHandler {
 
     @Override
     public void assertStrategy(RiskStrategyInfo riskStrategyInfo) {
-        
+        LOGGER.error("riskStrategyInfo = {}", riskStrategyInfo);
     }
 
     @Override
     public boolean updateStrategy(RiskStrategyInfo riskStrategyInfo) {
+        LOGGER.error("riskStrategyInfo = {}", riskStrategyInfo);
         return true;
     }
 

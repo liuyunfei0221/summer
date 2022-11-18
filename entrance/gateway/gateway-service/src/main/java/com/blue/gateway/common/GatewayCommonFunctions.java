@@ -12,7 +12,6 @@ import reactor.util.Logger;
 
 import java.util.function.BiConsumer;
 
-import static com.blue.basic.constant.common.ResponseElement.INTERNAL_SERVER_ERROR;
 import static org.springframework.core.io.buffer.DataBufferUtils.release;
 import static reactor.core.publisher.Mono.empty;
 import static reactor.util.Loggers.getLogger;
@@ -46,7 +45,7 @@ public final class GatewayCommonFunctions extends CommonFunctions {
         if (throwable instanceof BlueException)
             throw (BlueException) throwable;
 
-        throw new BlueException(INTERNAL_SERVER_ERROR);
+        throw new RuntimeException(throwable);
     };
 
     /**

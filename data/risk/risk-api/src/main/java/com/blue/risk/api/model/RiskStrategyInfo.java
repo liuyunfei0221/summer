@@ -39,6 +39,9 @@ public final class RiskStrategyInfo implements Serializable, Asserter {
 
     private Boolean enable;
 
+    public RiskStrategyInfo() {
+    }
+
     public RiskStrategyInfo(Long id, Integer type, Map<String, String> attributes, Boolean enable) {
         this.id = id;
         this.type = type;

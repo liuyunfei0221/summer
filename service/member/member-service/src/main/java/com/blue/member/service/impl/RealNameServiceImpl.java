@@ -495,7 +495,7 @@ public class RealNameServiceImpl implements RealNameService {
     @Override
     public Mono<List<RealName>> selectRealNameByLimitAndCondition(Long limit, Long rows, RealNameCondition realNameCondition) {
         LOGGER.info("limit = {}, rows = {}, realNameCondition = {}", limit, rows, realNameCondition);
-        if (isNull(limit) || limit < 0 || isNull(rows) || rows < 1)
+        if (isInvalidLimit(limit) || isInvalidRows(rows))
             throw new BlueException(INVALID_PARAM);
 
         return just(realNameMapper.selectByLimitAndCondition(limit, rows, realNameCondition));

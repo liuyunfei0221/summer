@@ -102,7 +102,7 @@ public class FinanceFlowServiceImpl implements FinanceFlowService {
     private static final Function<FinanceFlowCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();
 
-        if (c == null) {
+        if (isNull(c)) {
             query.with(SORTER_CONVERTER.apply(new FinanceFlowCondition()));
             return query;
         }

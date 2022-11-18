@@ -3,6 +3,7 @@ package com.blue.risk.service.impl;
 import com.blue.auth.api.model.ResourceInfo;
 import com.blue.basic.common.access.AccessProcessor;
 import com.blue.basic.common.base.BlueChecker;
+import com.blue.basic.constant.common.SpecialAccess;
 import com.blue.basic.model.common.Access;
 import com.blue.basic.model.common.BlueResponse;
 import com.blue.basic.model.event.DataEvent;
@@ -13,8 +14,8 @@ import com.blue.risk.api.model.RiskEvent;
 import com.blue.risk.api.model.RiskHit;
 import com.blue.risk.component.risk.RiskProcessor;
 import com.blue.risk.config.deploy.NestingResponseDeploy;
-import com.blue.risk.remote.consumer.RpcAuthServiceConsumer;
 import com.blue.risk.repository.entity.RiskHitRecord;
+import com.blue.risk.service.inter.AuthService;
 import com.blue.risk.service.inter.ResourceService;
 import com.blue.risk.service.inter.RiskHitRecordService;
 import com.blue.risk.service.inter.RiskService;
@@ -62,9 +63,9 @@ public class RiskServiceImpl implements RiskService {
 
     private static final Logger LOGGER = getLogger(RiskServiceImpl.class);
 
-    private RpcAuthServiceConsumer rpcAuthServiceConsumer;
-
     private BlueIdentityProcessor blueIdentityProcessor;
+
+    private AuthService authService;
 
     private ResourceService resourceService;
 
@@ -72,10 +73,10 @@ public class RiskServiceImpl implements RiskService {
 
     private RiskHitRecordService riskHitRecordService;
 
-    public RiskServiceImpl(RpcAuthServiceConsumer rpcAuthServiceConsumer, BlueIdentityProcessor blueIdentityProcessor, ResourceService resourceService,
+    public RiskServiceImpl(BlueIdentityProcessor blueIdentityProcessor, AuthService authService, ResourceService resourceService,
                            RiskProcessor riskProcessor, RiskHitRecordService riskHitRecordService, NestingResponseDeploy nestingResponseDeploy) {
-        this.rpcAuthServiceConsumer = rpcAuthServiceConsumer;
         this.blueIdentityProcessor = blueIdentityProcessor;
+        this.authService = authService;
         this.resourceService = resourceService;
         this.riskProcessor = riskProcessor;
         this.riskHitRecordService = riskHitRecordService;
@@ -101,9 +102,9 @@ public class RiskServiceImpl implements RiskService {
     private final BiPredicate<String, Integer> NESTING_PREDICATE = (uri, status) ->
             isNotBlank(uri) && isNotNull(status) && nestingRealUris.contains(uri) && nestingStatuses.contains(status);
 
-    private final Access UNKNOWN_ACCESS = VISITOR.access;
+    private final Access VISITOR_ACCESS = VISITOR.access;
 
-    private final Long[] EMPTY_ROLES = UNKNOWN_ACCESS.getRoleIds().toArray(Long[]::new);
+    private final Long[] EMPTY_ROLES = VISITOR_ACCESS.getRoleIds().toArray(Long[]::new);
 
     private final ResourceInfo NON_RESOURCE = new ResourceInfo(NON_RESOURCE_ID.value, EMPTY_VALUE.value, EMPTY_VALUE.value, EMPTY_VALUE.value, EMPTY_VALUE.value, EMPTY_VALUE.value,
             false, true, true, false, false, ZERO.value, EMPTY_VALUE.value, EMPTY_VALUE.value);
@@ -156,7 +157,7 @@ public class RiskServiceImpl implements RiskService {
         riskEvent.setResponseUnEncryption(getBoolByBool(ofNullable(entries.get(RESPONSE_UN_ENCRYPTION.key)).map(Boolean::parseBoolean).orElse(TRUE.bool)).status);
         riskEvent.setExistenceRequestBody(getBoolByBool(ofNullable(entries.get(EXISTENCE_REQUEST_BODY.key)).map(Boolean::parseBoolean).orElse(TRUE.bool)).status);
         riskEvent.setExistenceResponseBody(getBoolByBool(ofNullable(entries.get(EXISTENCE_RESPONSE_BODY.key)).map(Boolean::parseBoolean).orElse(TRUE.bool)).status);
-        riskEvent.setDurationSeconds(ofNullable(entries.get(DURATION_SECONDS.key)).map(Integer::parseInt).orElse(0));
+        riskEvent.setDurationSeconds(ofNullable(entries.get(DURATION_SECONDS.key)).map(Integer::parseInt).orElse(ZERO.value));
 
         String jwt = ofNullable(entries.get(JWT.key)).orElse(EMPTY_VALUE.value);
         riskEvent.setJwt(jwt);
@@ -167,9 +168,12 @@ public class RiskServiceImpl implements RiskService {
                 .switchIfEmpty(defer(() ->
                         justOrEmpty(jwt)
                                 .filter(BlueChecker::isNotBlank)
-                                .flatMap(a -> rpcAuthServiceConsumer.parseAccess(a))
-                                .switchIfEmpty(defer(() -> just(UNKNOWN_ACCESS)))
-                )).flatMap(access -> {
+                                .flatMap(authService::parseAccess)
+                                .switchIfEmpty(defer(() -> just(VISITOR_ACCESS)))
+                )).onErrorResume(t -> {
+                    LOGGER.error("ACCESS_INFO_REMOTE_GETTER failed, t = {}", t);
+                    return just(SpecialAccess.VISITOR.access);
+                }).flatMap(access -> {
                     riskEvent.setMemberId(access.getId());
                     riskEvent.setRoleIds(ofNullable(access.getRoleIds())
                             .filter(BlueChecker::isNotEmpty).map(l -> l.toArray(Long[]::new)).orElse(EMPTY_ROLES));
@@ -270,7 +274,9 @@ public class RiskServiceImpl implements RiskService {
                             riskHitRecord.setHitType(hit.getHitType());
                             riskHitRecord.setIllegalExpiresSecond(hit.getIllegalExpiresSecond());
 
-                            riskHitRecord.setId(blueIdentityProcessor.generate(RiskHitRecord.class));
+                            long id = blueIdentityProcessor.generate(RiskHitRecord.class);
+                            riskHitRecord.setId(id);
+                            riskHitRecord.setCursor(id);
 
                             return riskHitRecord;
                         }).collectList()

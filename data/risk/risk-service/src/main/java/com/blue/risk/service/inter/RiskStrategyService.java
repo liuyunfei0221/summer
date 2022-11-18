@@ -8,6 +8,7 @@ import com.blue.risk.model.RiskStrategyInsertParam;
 import com.blue.risk.model.RiskStrategyManagerInfo;
 import com.blue.risk.model.RiskStrategyUpdateParam;
 import com.blue.risk.repository.entity.RiskStrategy;
+import org.springframework.data.mongodb.core.query.Query;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public interface RiskStrategyService {
      * @param operatorId
      * @return
      */
-    RiskStrategyInfo insertRiskStrategy(RiskStrategyInsertParam riskStrategyInsertParam, Long operatorId);
+    Mono<RiskStrategyInfo> insertRiskStrategy(RiskStrategyInsertParam riskStrategyInsertParam, Long operatorId);
 
     /**
      * update a exist risk strategy
@@ -36,7 +37,7 @@ public interface RiskStrategyService {
      * @param operatorId
      * @return
      */
-    RiskStrategyInfo updateRiskStrategy(RiskStrategyUpdateParam riskStrategyUpdateParam, Long operatorId);
+    Mono<RiskStrategyInfo> updateRiskStrategy(RiskStrategyUpdateParam riskStrategyUpdateParam, Long operatorId);
 
     /**
      * delete risk strategy
@@ -44,7 +45,7 @@ public interface RiskStrategyService {
      * @param id
      * @return
      */
-    RiskStrategyInfo deleteRiskStrategy(Long id);
+    Mono<RiskStrategyInfo> deleteRiskStrategy(Long id);
 
     /**
      * get risk strategy mono by id
@@ -57,10 +58,10 @@ public interface RiskStrategyService {
     /**
      * get risk strategy by type
      *
-     * @param riskType
+     * @param type
      * @return
      */
-    Mono<RiskStrategy> getRiskStrategyByType(Integer riskType);
+    Mono<RiskStrategy> getRiskStrategyByType(Integer type);
 
     /**
      * select all risk strategies
@@ -74,18 +75,18 @@ public interface RiskStrategyService {
      *
      * @param limit
      * @param rows
-     * @param riskStrategyCondition
+     * @param query
      * @return
      */
-    Mono<List<RiskStrategy>> selectRiskStrategyByLimitAndCondition(Long limit, Long rows, RiskStrategyCondition riskStrategyCondition);
+    Mono<List<RiskStrategy>> selectRiskStrategyByLimitAndCondition(Long limit, Long rows, Query query);
 
     /**
      * count risk strategy by condition
      *
-     * @param riskStrategyCondition
+     * @param query
      * @return
      */
-    Mono<Long> countRiskStrategyByCondition(RiskStrategyCondition riskStrategyCondition);
+    Mono<Long> countRiskStrategyByCondition(Query query);
 
     /**
      * select risk strategy manager info page by condition

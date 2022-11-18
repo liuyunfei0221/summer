@@ -249,6 +249,10 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
 
         Long id = p.getId();
 
+        VerifyTemplate verifyTemplate = verifyTemplateRepository.findById(id).toFuture().join();
+        if (isNull(verifyTemplate))
+            throw new BlueException(DATA_NOT_EXIST);
+
         VerifyTemplate probe = new VerifyTemplate();
         probe.setType(p.getType());
         probe.setBusinessType(p.getBusinessType());
@@ -259,10 +263,6 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
 
         if (templates.stream().anyMatch(c -> !id.equals(c.getId())))
             throw new BlueException(DATA_ALREADY_EXIST);
-
-        VerifyTemplate verifyTemplate = verifyTemplateRepository.findById(id).toFuture().join();
-        if (isNull(verifyTemplate))
-            throw new BlueException(DATA_NOT_EXIST);
 
         return verifyTemplate;
     };
@@ -358,7 +358,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
     private static final Function<VerifyTemplateCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();
 
-        if (c == null) {
+        if (isNull(c)) {
             query.with(SORTER_CONVERTER.apply(new VerifyTemplateCondition()));
             return query;
         }

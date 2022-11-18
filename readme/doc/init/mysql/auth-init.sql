@@ -428,46 +428,65 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
 -- event manage
 
 
--- data api
+-- analyze api
 
--- data manage
+-- analyze manage
 
-       (340001, 'POST', 'blue-lake', '/manager/events', '', b'1', b'1', b'1', b'1', b'1', 3,
-        'opt events scroll of manager', 'opt events scroll of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (340002, 'POST', 'blue-lake', '/manager/events/count', '', b'1', b'1', b'1', b'1', b'1', 3,
-        'opt events count of manager', 'opt events count of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (340003, 'POST', 'blue-analyze', '/manager/statistics/active/simple', '', b'1', b'1', b'1', b'1', b'1', 3,
+       (340001, 'POST', 'blue-analyze', '/manager/statistics/active/simple', '', b'1', b'1', b'1', b'1', b'1', 3,
         'statistics active simple', 'statistics active simple', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (340004, 'POST', 'blue-analyze', '/manager/statistics/active/merge', '', b'1', b'1', b'1', b'1', b'1', 3,
+       (340002, 'POST', 'blue-analyze', '/manager/statistics/active/merge', '', b'1', b'1', b'1', b'1', b'1', 3,
         'statistics merge active', 'statistics merge active', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (340005, 'POST', 'blue-analyze', '/manager/statistics/active/summary', '', b'1', b'1', b'1', b'0', b'1', 3,
+       (340003, 'POST', 'blue-analyze', '/manager/statistics/active/summary', '', b'1', b'1', b'1', b'0', b'1', 3,
         'statistics summary', 'statistics summary', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (340006, 'POST', 'blue-risk', '/manager/records', '', b'1', b'1', b'1', b'1', b'1', 3,
+
+-- lake api
+
+-- lake manage
+
+       (350001, 'POST', 'blue-lake', '/manager/events', '', b'1', b'1', b'1', b'1', b'1', 3,
+        'opt events scroll of manager', 'opt events scroll of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (350002, 'POST', 'blue-lake', '/manager/events/count', '', b'1', b'1', b'1', b'1', b'1', 3,
+        'opt events count of manager', 'opt events count of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+
+-- risk api
+
+-- risk manage
+
+       (360001, 'POST', 'blue-risk', '/manager/records', '', b'1', b'1', b'1', b'1', b'1', 3,
         'risk hit records scroll of manager', 'risk hit records scroll of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(),
         1, 1),
-       (340007, 'POST', 'blue-risk', '/manager/records/count', '', b'1', b'1', b'1', b'1', b'1', 3,
+       (360002, 'POST', 'blue-risk', '/manager/records/count', '', b'1', b'1', b'1', b'1', b'1', 3,
         'risk hit records count of manager', 'risk hit records count of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
         1),
+
+       (360003, 'POST', 'blue-risk', '/manager/strategies', '', b'1', b'1', b'1', b'1', b'1', 3,
+        'strategy page', 'strategy page', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (360004, 'POST', 'blue-risk', '/manager/strategy', '', b'1', b'1', b'1', b'1', b'1', 3,
+        'insert strategy', 'strategy resource', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (360005, 'PUT', 'blue-risk', '/manager/strategy', '', b'1', b'1', b'1', b'1', b'1', 3,
+        'update strategy', 'update strategy', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (360006, 'DELETE', 'blue-risk', '/manager/strategy/{id}', '', b'1', b'1', b'1', b'1', b'1', 3,
+        'delete strategy', 'delete strategy', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 
 -- agreement api
 
-       (350001, 'GET', 'blue-agreement', '/agreement/{type}', '', b'0', b'1', b'1', b'0', b'1', 1,
+       (370001, 'GET', 'blue-agreement', '/agreement/{type}', '', b'0', b'1', b'1', b'0', b'1', 1,
         'agreement of api', 'agreement of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (350002, 'GET', 'blue-agreement', '/agreementRecord/unsigned', '', b'1', b'1', b'1', b'0', b'1', 1,
+       (370002, 'GET', 'blue-agreement', '/agreementRecord/unsigned', '', b'1', b'1', b'1', b'0', b'1', 1,
         'query newest agreements unsigned', 'query newest agreements unsigned', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
         1),
-       (350003, 'POST', 'blue-agreement', '/agreementRecord', '', b'1', b'1', b'1', b'0', b'1', 1,
+       (370003, 'POST', 'blue-agreement', '/agreementRecord', '', b'1', b'1', b'1', b'0', b'1', 1,
         'sign agreement', 'sign agreement', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
 
 -- agreement manage
 
-       (360001, 'POST', 'blue-agreement', '/manager/agreements', '', b'1', b'1', b'1', b'0', b'1', 3,
+       (380001, 'POST', 'blue-agreement', '/manager/agreements', '', b'1', b'1', b'1', b'0', b'1', 3,
         'agreement page of manager', 'agreement page of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (360002, 'POST', 'blue-agreement', '/manager/agreement', '', b'1', b'1', b'1', b'1', b'1', 3,
+       (380002, 'POST', 'blue-agreement', '/manager/agreement', '', b'1', b'1', b'1', b'1', b'1', 3,
         'insert agreement', 'insert agreement', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (360003, 'POST', 'blue-agreement', '/manager/agreementRecords', '', b'1', b'1', b'1', b'0', b'1', 3,
+       (380003, 'POST', 'blue-agreement', '/manager/agreementRecords', '', b'1', b'1', b'1', b'0', b'1', 3,
         'agreement record page of manager', 'agreement record page of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
         1);
 

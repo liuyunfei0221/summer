@@ -450,6 +450,9 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Mono<List<Role>> selectRoleByLimitAndCondition(Long limit, Long rows, RoleCondition roleCondition) {
         LOGGER.info("limit = {}, rows = {}, roleCondition = {}", limit, rows, roleCondition);
+        if (isInvalidLimit(limit) || isInvalidRows(rows))
+            throw new BlueException(INVALID_PARAM);
+
         return just(roleMapper.selectByLimitAndCondition(limit, rows, roleCondition));
     }
 

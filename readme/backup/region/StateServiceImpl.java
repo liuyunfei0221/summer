@@ -305,7 +305,7 @@ public class StateServiceImpl implements StateService {
     private static final Function<StateCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();
 
-        if (c == null)
+        if (isNull(c))
             return query;
 
         State probe = new State();

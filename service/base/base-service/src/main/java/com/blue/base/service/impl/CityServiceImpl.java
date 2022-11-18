@@ -256,6 +256,10 @@ public class CityServiceImpl implements CityService {
 
         Long id = p.getId();
 
+        City city = cityRepository.findById(id).toFuture().join();
+        if (isNull(city))
+            throw new BlueException(DATA_NOT_EXIST);
+
         City probe = new City();
         probe.setStateId(p.getStateId());
         probe.setName(p.getName());
@@ -266,10 +270,6 @@ public class CityServiceImpl implements CityService {
 
         if (cities.stream().anyMatch(c -> !id.equals(c.getId())))
             throw new BlueException(DATA_ALREADY_EXIST);
-
-        City city = cityRepository.findById(id).toFuture().join();
-        if (isNull(city))
-            throw new BlueException(DATA_NOT_EXIST);
 
         return city;
     };
@@ -309,7 +309,7 @@ public class CityServiceImpl implements CityService {
     private static final Function<CityCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();
 
-        if (c == null)
+        if (isNull(c))
             return query;
 
         City probe = new City();

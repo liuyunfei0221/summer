@@ -1,13 +1,17 @@
 package com.blue.risk.service.impl;
 
+import com.blue.basic.common.base.BlueChecker;
+import com.blue.basic.constant.common.SortType;
 import com.blue.basic.model.common.PageModelRequest;
 import com.blue.basic.model.common.PageModelResponse;
+import com.blue.basic.model.common.SortElement;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.redisson.component.SynchronizedProcessor;
 import com.blue.risk.api.model.RiskStrategyInfo;
 import com.blue.risk.component.risk.RiskProcessor;
+import com.blue.risk.constant.RiskStrategyColumnName;
 import com.blue.risk.constant.RiskStrategySortAttribute;
 import com.blue.risk.event.producer.UpdateRiskStrategyProducer;
 import com.blue.risk.model.RiskStrategyCondition;
@@ -16,11 +20,14 @@ import com.blue.risk.model.RiskStrategyManagerInfo;
 import com.blue.risk.model.RiskStrategyUpdateParam;
 import com.blue.risk.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.risk.repository.entity.RiskStrategy;
-import com.blue.risk.repository.mapper.RiskStrategyMapper;
+import com.blue.risk.repository.template.RiskStrategyRepository;
 import com.blue.risk.service.inter.RiskStrategyService;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
@@ -28,21 +35,26 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.basic.common.base.ConstantProcessor.*;
+import static com.blue.basic.common.base.ConstantProcessor.assertRiskType;
 import static com.blue.basic.constant.common.ResponseElement.*;
-import static com.blue.basic.constant.common.Symbol.PERCENT;
 import static com.blue.basic.constant.common.SyncKeyPrefix.RISK_STRATEGY_UPDATE_PRE;
-import static com.blue.database.common.ConditionSortProcessor.process;
+import static com.blue.mongo.common.MongoSortProcessor.process;
+import static com.blue.mongo.constant.LikeElement.PREFIX;
+import static com.blue.mongo.constant.LikeElement.SUFFIX;
 import static com.blue.risk.converter.RiskModelConverters.*;
 import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
+import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.springframework.data.mongodb.core.query.Criteria.byExample;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static reactor.core.publisher.Mono.*;
@@ -69,50 +81,31 @@ public class RiskStrategyServiceImpl implements RiskStrategyService {
 
     private final UpdateRiskStrategyProducer updateRiskStrategyProducer;
 
-    private RiskStrategyMapper riskStrategyMapper;
+    private final ReactiveMongoTemplate reactiveMongoTemplate;
+
+    private RiskStrategyRepository riskStrategyRepository;
 
     public RiskStrategyServiceImpl(RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, BlueIdentityProcessor blueIdentityProcessor, SynchronizedProcessor synchronizedProcessor,
-                                   RiskProcessor riskProcessor, UpdateRiskStrategyProducer updateRiskStrategyProducer, RiskStrategyMapper riskStrategyMapper) {
+                                   RiskProcessor riskProcessor, UpdateRiskStrategyProducer updateRiskStrategyProducer, ReactiveMongoTemplate reactiveMongoTemplate, RiskStrategyRepository riskStrategyRepository) {
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.synchronizedProcessor = synchronizedProcessor;
         this.riskProcessor = riskProcessor;
         this.updateRiskStrategyProducer = updateRiskStrategyProducer;
-        this.riskStrategyMapper = riskStrategyMapper;
+        this.reactiveMongoTemplate = reactiveMongoTemplate;
+        this.riskStrategyRepository = riskStrategyRepository;
     }
-
-    private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(RiskStrategySortAttribute.values())
-            .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
-
-    private static final UnaryOperator<RiskStrategyCondition> CONDITION_PROCESSOR = c -> {
-        RiskStrategyCondition rsc = isNotNull(c) ? c : new RiskStrategyCondition();
-
-        process(rsc, SORT_ATTRIBUTE_MAPPING, RiskStrategySortAttribute.CREATE_TIME.column);
-
-        ofNullable(rsc.getNameLike())
-                .filter(StringUtils::hasText).ifPresent(nameLike -> rsc.setNameLike(PERCENT.identity + nameLike + PERCENT.identity));
-
-        return rsc;
-    };
-
-    private static final Function<List<RiskStrategy>, List<Long>> OPERATORS_GETTER = ns -> {
-        Set<Long> oIds = new HashSet<>(ns.size());
-
-        for (RiskStrategy r : ns) {
-            oIds.add(r.getCreator());
-            oIds.add(r.getUpdater());
-        }
-
-        return new ArrayList<>(oIds);
-    };
 
     private final Consumer<RiskStrategyInsertParam> INSERT_ITEM_VALIDATOR = p -> {
         if (isNull(p))
             throw new BlueException(EMPTY_PARAM);
         p.asserts();
 
-        if (isNotNull(riskStrategyMapper.selectByType(p.getType())))
-            throw new BlueException(NOTICE_TYPE_ALREADY_EXIST, new String[]{String.valueOf(p.getType())});
+        RiskStrategy probe = new RiskStrategy();
+        probe.setType(p.getType());
+
+        if (ofNullable(riskStrategyRepository.count(Example.of(probe)).toFuture().join()).orElse(0L) > 0L)
+            throw new BlueException(DATA_ALREADY_EXIST);
     };
 
     private final Function<RiskStrategyUpdateParam, RiskStrategy> UPDATE_ITEM_VALIDATOR_AND_ORIGIN_RETURNER = p -> {
@@ -122,21 +115,19 @@ public class RiskStrategyServiceImpl implements RiskStrategyService {
 
         Long id = p.getId();
 
-        ofNullable(p.getType())
-                .map(t -> {
-                    assertNoticeType(t, false);
-
-                    return riskStrategyMapper.selectByType(t);
-                })
-                .map(RiskStrategy::getId)
-                .ifPresent(eid -> {
-                    if (!id.equals(eid))
-                        throw new BlueException(NOTICE_TYPE_ALREADY_EXIST, new String[]{getNoticeTypeByIdentity(p.getType()).disc});
-                });
-
-        RiskStrategy riskStrategy = riskStrategyMapper.selectByPrimaryKey(id);
+        RiskStrategy riskStrategy = riskStrategyRepository.findById(id).toFuture().join();
         if (isNull(riskStrategy))
             throw new BlueException(DATA_NOT_EXIST);
+
+        RiskStrategy probe = new RiskStrategy();
+        probe.setType(p.getType());
+
+        List<RiskStrategy> riskStrategies = ofNullable(riskStrategyRepository.findAll(Example.of(probe)).collectList()
+                .toFuture().join())
+                .orElseGet(Collections::emptyList);
+
+        if (riskStrategies.stream().anyMatch(c -> !id.equals(c.getId())))
+            throw new BlueException(DATA_ALREADY_EXIST);
 
         return riskStrategy;
     };
@@ -163,7 +154,7 @@ public class RiskStrategyServiceImpl implements RiskStrategyService {
         }
 
         Integer type = p.getType();
-        assertBulletinType(type, true);
+        assertRiskType(type, true);
         if (type != null && !type.equals(t.getType())) {
             t.setType(type);
             alteration = true;
@@ -194,7 +185,7 @@ public class RiskStrategyServiceImpl implements RiskStrategyService {
         }
 
         Boolean enable = p.getEnable();
-        if (enable != null && enable == t.getEnable()) {
+        if (enable != null && enable != t.getEnable()) {
             t.setEnable(enable);
             alteration = true;
         }
@@ -211,6 +202,74 @@ public class RiskStrategyServiceImpl implements RiskStrategyService {
         return RISK_STRATEGY_UPDATE_PRE.prefix + type;
     };
 
+    private static final Map<String, String> SORT_ATTRIBUTE_MAPPING = Stream.of(RiskStrategySortAttribute.values())
+            .collect(toMap(e -> e.attribute, e -> e.column, (a, b) -> a));
+
+    private static final Function<RiskStrategyCondition, Sort> SORTER_CONVERTER = c -> {
+        String sortAttribute = ofNullable(c).map(RiskStrategyCondition::getSortAttribute)
+                .map(SORT_ATTRIBUTE_MAPPING::get)
+                .filter(BlueChecker::isNotBlank)
+                .orElse(RiskStrategySortAttribute.CREATE_TIME.column);
+
+        String sortType = ofNullable(c).map(RiskStrategyCondition::getSortType)
+                .filter(BlueChecker::isNotBlank)
+                .orElse(SortType.DESC.identity);
+
+        return process(
+                sortAttribute.equals(RiskStrategySortAttribute.ID.column) ?
+                        singletonList(new SortElement(sortAttribute, sortType))
+                        :
+                        Stream.of(sortAttribute, RiskStrategySortAttribute.ID.column)
+                                .map(attr -> new SortElement(attr, sortType)).collect(toList())
+        );
+    };
+
+    private static final Function<RiskStrategyCondition, Query> CONDITION_PROCESSOR = c -> {
+        Query query = new Query();
+
+        if (isNull(c)) {
+            query.with(SORTER_CONVERTER.apply(new RiskStrategyCondition()));
+            return query;
+        }
+
+        RiskStrategy probe = new RiskStrategy();
+
+        ofNullable(c.getId()).ifPresent(probe::setId);
+        ofNullable(c.getType()).ifPresent(probe::setType);
+        ofNullable(c.getEnable()).ifPresent(probe::setEnable);
+        ofNullable(c.getCreator()).ifPresent(probe::setCreator);
+        ofNullable(c.getUpdater()).ifPresent(probe::setUpdater);
+
+        query.addCriteria(byExample(probe));
+
+        ofNullable(c.getNameLike()).ifPresent(nameLike ->
+                query.addCriteria(where(RiskStrategyColumnName.NAME.name).regex(compile(PREFIX.element + nameLike + SUFFIX.element, CASE_INSENSITIVE))));
+
+        ofNullable(c.getCreateTimeBegin()).ifPresent(createTimeBegin ->
+                query.addCriteria(where(RiskStrategyColumnName.CREATE_TIME.name).gte(createTimeBegin)));
+        ofNullable(c.getCreateTimeEnd()).ifPresent(createTimeEnd ->
+                query.addCriteria(where(RiskStrategyColumnName.CREATE_TIME.name).lte(createTimeEnd)));
+        ofNullable(c.getUpdateTimeBegin()).ifPresent(updateTimeBegin ->
+                query.addCriteria(where(RiskStrategyColumnName.UPDATE_TIME.name).gte(updateTimeBegin)));
+        ofNullable(c.getUpdateTimeEnd()).ifPresent(updateTimeEnd ->
+                query.addCriteria(where(RiskStrategyColumnName.UPDATE_TIME.name).lte(updateTimeEnd)));
+
+        query.with(SORTER_CONVERTER.apply(c));
+
+        return query;
+    };
+
+    private static final Function<List<RiskStrategy>, List<Long>> OPERATORS_GETTER = ns -> {
+        Set<Long> oIds = new HashSet<>(ns.size());
+
+        for (RiskStrategy r : ns) {
+            oIds.add(r.getCreator());
+            oIds.add(r.getUpdater());
+        }
+
+        return new ArrayList<>(oIds);
+    };
+
     /**
      * insert risk strategy
      *
@@ -219,8 +278,7 @@ public class RiskStrategyServiceImpl implements RiskStrategyService {
      * @return
      */
     @Override
-    @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public RiskStrategyInfo insertRiskStrategy(RiskStrategyInsertParam riskStrategyInsertParam, Long operatorId) {
+    public Mono<RiskStrategyInfo> insertRiskStrategy(RiskStrategyInsertParam riskStrategyInsertParam, Long operatorId) {
         LOGGER.info("riskStrategyInsertParam = {}, operatorId = {}", riskStrategyInsertParam, operatorId);
         if (isNull(riskStrategyInsertParam))
             throw new BlueException(EMPTY_PARAM);
@@ -237,10 +295,10 @@ public class RiskStrategyServiceImpl implements RiskStrategyService {
 
             RiskStrategyInfo riskStrategyInfo = RISK_STRATEGY_2_RISK_STRATEGY_INFO_CONVERTER.apply(riskStrategy);
             riskProcessor.assertStrategy(riskStrategyInfo);
-            riskStrategyMapper.insert(riskStrategy);
-            updateRiskStrategyProducer.send(riskStrategyInfo);
 
-            return riskStrategyInfo;
+            return riskStrategyRepository.insert(riskStrategy)
+                    .then(just(riskStrategyInfo))
+                    .doOnSuccess(updateRiskStrategyProducer::send);
         });
     }
 
@@ -253,7 +311,7 @@ public class RiskStrategyServiceImpl implements RiskStrategyService {
      */
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public RiskStrategyInfo updateRiskStrategy(RiskStrategyUpdateParam riskStrategyUpdateParam, Long operatorId) {
+    public Mono<RiskStrategyInfo> updateRiskStrategy(RiskStrategyUpdateParam riskStrategyUpdateParam, Long operatorId) {
         LOGGER.info("riskStrategyUpdateParam = {}, operatorId = {}", riskStrategyUpdateParam, operatorId);
         if (isNull(riskStrategyUpdateParam))
             throw new BlueException(EMPTY_PARAM);
@@ -268,10 +326,10 @@ public class RiskStrategyServiceImpl implements RiskStrategyService {
 
             RiskStrategyInfo riskStrategyInfo = RISK_STRATEGY_2_RISK_STRATEGY_INFO_CONVERTER.apply(riskStrategy);
             riskProcessor.assertStrategy(riskStrategyInfo);
-            riskStrategyMapper.updateByPrimaryKey(riskStrategy);
-            updateRiskStrategyProducer.send(riskStrategyInfo);
 
-            return riskStrategyInfo;
+            return riskStrategyRepository.save(riskStrategy)
+                    .then(just(riskStrategyInfo))
+                    .doOnSuccess(updateRiskStrategyProducer::send);
         });
     }
 
@@ -283,27 +341,21 @@ public class RiskStrategyServiceImpl implements RiskStrategyService {
      */
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
-    public RiskStrategyInfo deleteRiskStrategy(Long id) {
+    public Mono<RiskStrategyInfo> deleteRiskStrategy(Long id) {
         LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        RiskStrategy riskStrategy = riskStrategyMapper.selectByPrimaryKey(id);
-        if (isNull(riskStrategy))
-            throw new BlueException(DATA_NOT_EXIST);
-
-        return synchronizedProcessor.handleSupWithSync(RISK_STRATEGY_UPDATE_SYNC_KEY_GEN.apply(riskStrategy.getType()), () -> {
-            if (riskProcessor.selectActiveTypes().contains(riskStrategy.getType()))
-                throw new BlueException(UNSUPPORTED_OPERATE);
-
-            RiskStrategyInfo riskStrategyInfo = RISK_STRATEGY_2_RISK_STRATEGY_INFO_CONVERTER.apply(riskStrategy);
-            riskStrategyInfo.setEnable(false);
-            riskStrategyMapper.deleteByPrimaryKey(id);
-            updateRiskStrategyProducer.send(riskStrategyInfo);
-
-            return riskStrategyInfo;
-        });
-
+        return riskStrategyRepository.findById(id)
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
+                .flatMap(riskStrategy ->
+                        synchronizedProcessor.handleSupWithSync(RISK_STRATEGY_UPDATE_SYNC_KEY_GEN.apply(riskStrategy.getType()), () ->
+                                riskStrategyRepository.delete(riskStrategy)
+                                        .then(just(RISK_STRATEGY_2_RISK_STRATEGY_INFO_CONVERTER.apply(riskStrategy)))
+                                        .map(rs -> {
+                                            rs.setEnable(false);
+                                            return rs;
+                                        }).doOnSuccess(updateRiskStrategyProducer::send)));
     }
 
     /**
@@ -318,21 +370,25 @@ public class RiskStrategyServiceImpl implements RiskStrategyService {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        return justOrEmpty(riskStrategyMapper.selectByPrimaryKey(id));
+        return riskStrategyRepository.findById(id);
     }
 
     /**
      * get risk strategy by type
      *
-     * @param riskType
+     * @param type
      * @return
      */
     @Override
-    public Mono<RiskStrategy> getRiskStrategyByType(Integer riskType) {
-        LOGGER.info("riskType = {}", riskType);
-        assertRiskType(riskType, false);
+    public Mono<RiskStrategy> getRiskStrategyByType(Integer type) {
+        LOGGER.info("type = {}", type);
+        assertRiskType(type, false);
 
-        return justOrEmpty(riskStrategyMapper.selectByType(riskType));
+        RiskStrategy probe = new RiskStrategy();
+        probe.setType(type);
+
+        return riskStrategyRepository.findOne(Example.of(probe))
+                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))));
     }
 
     /**
@@ -342,7 +398,7 @@ public class RiskStrategyServiceImpl implements RiskStrategyService {
      */
     @Override
     public Mono<List<RiskStrategy>> selectRiskStrategy() {
-        return justOrEmpty(riskStrategyMapper.select()).switchIfEmpty(defer(() -> just(emptyList())));
+        return riskStrategyRepository.findAll().collectList();
     }
 
     /**
@@ -350,25 +406,31 @@ public class RiskStrategyServiceImpl implements RiskStrategyService {
      *
      * @param limit
      * @param rows
-     * @param riskStrategyCondition
+     * @param query
      * @return
      */
     @Override
-    public Mono<List<RiskStrategy>> selectRiskStrategyByLimitAndCondition(Long limit, Long rows, RiskStrategyCondition riskStrategyCondition) {
-        LOGGER.info("limit = {}, rows = {}, riskStrategyCondition = {}", limit, rows, riskStrategyCondition);
-        return just(riskStrategyMapper.selectByLimitAndCondition(limit, rows, riskStrategyCondition));
+    public Mono<List<RiskStrategy>> selectRiskStrategyByLimitAndCondition(Long limit, Long rows, Query query) {
+        LOGGER.info("limit = {}, rows = {}, query = {}", limit, rows, query);
+        if (isInvalidLimit(limit) || isInvalidRows(rows))
+            throw new BlueException(INVALID_PARAM);
+
+        Query listQuery = isNotNull(query) ? Query.of(query) : new Query();
+        listQuery.skip(limit).limit(rows.intValue());
+
+        return reactiveMongoTemplate.find(listQuery, RiskStrategy.class).collectList();
     }
 
     /**
      * count risk strategy by condition
      *
-     * @param riskStrategyCondition
+     * @param query
      * @return
      */
     @Override
-    public Mono<Long> countRiskStrategyByCondition(RiskStrategyCondition riskStrategyCondition) {
-        LOGGER.info("riskStrategyCondition = {}", riskStrategyCondition);
-        return just(ofNullable(riskStrategyMapper.countByCondition(riskStrategyCondition)).orElse(0L));
+    public Mono<Long> countRiskStrategyByCondition(Query query) {
+        LOGGER.info("query = {}", query);
+        return reactiveMongoTemplate.count(query, RiskStrategy.class);
     }
 
     /**
@@ -383,10 +445,10 @@ public class RiskStrategyServiceImpl implements RiskStrategyService {
         if (isNull(pageModelRequest))
             throw new BlueException(EMPTY_PARAM);
 
-        RiskStrategyCondition riskStrategyCondition = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
+        Query query = CONDITION_PROCESSOR.apply(pageModelRequest.getCondition());
 
-        return zip(selectRiskStrategyByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), riskStrategyCondition),
-                countRiskStrategyByCondition(riskStrategyCondition))
+        return zip(selectRiskStrategyByLimitAndCondition(pageModelRequest.getLimit(), pageModelRequest.getRows(), query),
+                countRiskStrategyByCondition(query))
                 .flatMap(tuple2 -> {
                     List<RiskStrategy> riskStrategies = tuple2.getT1();
                     Long count = tuple2.getT2();

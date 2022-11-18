@@ -431,6 +431,9 @@ public class BulletinServiceImpl implements BulletinService {
     @Override
     public Mono<List<Bulletin>> selectBulletinByLimitAndCondition(Long limit, Long rows, BulletinCondition bulletinCondition) {
         LOGGER.info("limit = {}, rows = {}, bulletinCondition = {}", limit, rows, bulletinCondition);
+        if (isInvalidLimit(limit) || isInvalidRows(rows))
+            throw new BlueException(INVALID_PARAM);
+
         return just(bulletinMapper.selectByLimitAndCondition(limit, rows, bulletinCondition));
     }
 

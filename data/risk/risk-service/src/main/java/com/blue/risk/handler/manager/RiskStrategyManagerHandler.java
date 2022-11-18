@@ -45,7 +45,7 @@ public final class RiskStrategyManagerHandler {
         return zip(serverRequest.bodyToMono(RiskStrategyInsertParam.class)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
-                .flatMap(tuple2 -> just(riskStrategyService.insertRiskStrategy(tuple2.getT1(), tuple2.getT2().getId())))
+                .flatMap(tuple2 -> riskStrategyService.insertRiskStrategy(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(rsi ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(rsi, serverRequest), BlueResponse.class));
@@ -61,7 +61,7 @@ public final class RiskStrategyManagerHandler {
         return zip(serverRequest.bodyToMono(RiskStrategyUpdateParam.class)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
-                .flatMap(tuple2 -> just(riskStrategyService.updateRiskStrategy(tuple2.getT1(), tuple2.getT2().getId())))
+                .flatMap(tuple2 -> riskStrategyService.updateRiskStrategy(tuple2.getT1(), tuple2.getT2().getId()))
                 .flatMap(rsi ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(rsi, serverRequest), BlueResponse.class));
@@ -75,7 +75,7 @@ public final class RiskStrategyManagerHandler {
      */
     public Mono<ServerResponse> delete(ServerRequest serverRequest) {
         return getLongVariableReact(serverRequest, ID.key)
-                .flatMap(id -> just(riskStrategyService.deleteRiskStrategy(id)))
+                .flatMap(riskStrategyService::deleteRiskStrategy)
                 .flatMap(rsi ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(rsi, serverRequest), BlueResponse.class));

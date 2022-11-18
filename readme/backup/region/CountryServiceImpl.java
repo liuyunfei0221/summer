@@ -279,7 +279,7 @@ public class CountryServiceImpl implements CountryService {
     private static final Function<CountryCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();
 
-        if (c == null)
+        if (isNull(c))
             return query;
 
         Country probe = new Country();

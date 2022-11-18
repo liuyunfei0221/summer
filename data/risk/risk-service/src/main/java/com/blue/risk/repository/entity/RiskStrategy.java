@@ -1,13 +1,22 @@
 package com.blue.risk.repository.entity;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.io.Serializable;
+
 /**
  * risk strategy
  *
  * @author liuyunfei
  */
 @SuppressWarnings("unused")
-public class RiskStrategy {
+@Document(collection = "riskStrategy")
+public class RiskStrategy implements Serializable {
 
+    private static final long serialVersionUID = -3148550420056963016L;
+
+    @Id
     private Long id;
 
     private String name;

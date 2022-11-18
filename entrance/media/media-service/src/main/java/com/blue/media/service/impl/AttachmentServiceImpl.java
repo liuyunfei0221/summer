@@ -140,7 +140,7 @@ public class AttachmentServiceImpl implements AttachmentService {
     private static final Function<AttachmentManagerCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();
 
-        if (c == null) {
+        if (isNull(c)) {
             query.with(SORTER_CONVERTER.apply(new AttachmentManagerCondition()));
             return query;
         }

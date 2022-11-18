@@ -29,7 +29,7 @@ public final class EmailProcessor {
         if (isBlank(email))
             throw new BlueException(BAD_REQUEST);
 
-        String[] elements = split(email, SPLIT);
+        String[] elements =   split(email, SPLIT);
 
         if (elements.length < MIN_ELE_LEN)
             throw new BlueException(BAD_REQUEST);

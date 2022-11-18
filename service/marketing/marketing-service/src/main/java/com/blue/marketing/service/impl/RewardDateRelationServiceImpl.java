@@ -458,6 +458,9 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
     @Override
     public Mono<List<RewardDateRelation>> selectRewardDateRelationByLimitAndCondition(Long limit, Long rows, RewardDateRelationCondition rewardDateRelationCondition) {
         LOGGER.info("limit = {}, rows = {}, rewardDateRelationCondition = {}", limit, rows, rewardDateRelationCondition);
+        if (isInvalidLimit(limit) || isInvalidRows(rows))
+            throw new BlueException(INVALID_PARAM);
+
         return just(rewardDateRelationMapper.selectByLimitAndCondition(limit, rows, rewardDateRelationCondition));
     }
 

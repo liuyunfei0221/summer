@@ -130,7 +130,10 @@ db.eventRecord.createIndex({"type":1});
 
 
 
+-- media
+use risk;
 
+db.eventRecord.createIndex({"type":1});
 
 
 

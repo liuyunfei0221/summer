@@ -164,6 +164,10 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
 
         Long id = p.getId();
 
+        QrCodeConfig qrCodeConfig = qrCodeConfigRepository.findById(id).toFuture().join();
+        if (isNull(qrCodeConfig))
+            throw new BlueException(DATA_NOT_EXIST);
+
         QrCodeConfig probe = new QrCodeConfig();
         probe.setType(p.getType());
 
@@ -173,10 +177,6 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
 
         if (configs.stream().anyMatch(c -> !id.equals(c.getId())))
             throw new BlueException(DATA_ALREADY_EXIST);
-
-        QrCodeConfig qrCodeConfig = qrCodeConfigRepository.findById(id).toFuture().join();
-        if (isNull(qrCodeConfig))
-            throw new BlueException(DATA_NOT_EXIST);
 
         return qrCodeConfig;
     };
@@ -257,7 +257,7 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
     private static final Function<QrCodeCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();
 
-        if (c == null) {
+        if (isNull(c)) {
             query.with(SORTER_CONVERTER.apply(new QrCodeCondition()));
             return query;
         }
@@ -398,6 +398,8 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
     @Override
     public Mono<QrCodeConfig> getQrCodeConfig(Long id) {
         LOGGER.info("id = {}", id);
+        if (isInvalidIdentity(id))
+            throw new BlueException(INVALID_IDENTITY);
 
         return qrCodeConfigRepository.findById(id);
     }
@@ -444,7 +446,6 @@ public class QrCodeConfigServiceImpl implements QrCodeConfigService {
     @Override
     public Mono<Long> countQrCodeConfigByCondition(Query query) {
         LOGGER.info("query = {}", query);
-
         return reactiveMongoTemplate.count(query, QrCodeConfig.class);
     }
 

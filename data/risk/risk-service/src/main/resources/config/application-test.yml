@@ -459,6 +459,8 @@ dubbo:
 
 
 caffeine:
+  access-maximum-size: 2048
+  session-maximum-size: 512
   expires-second: 30
 
 

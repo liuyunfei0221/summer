@@ -319,6 +319,9 @@ public class RewardServiceImpl implements RewardService {
     @Override
     public Mono<List<Reward>> selectRewardByLimitAndCondition(Long limit, Long rows, RewardCondition rewardCondition) {
         LOGGER.info("limit = {}, rows = {}, rewardCondition = {}", limit, rows, rewardCondition);
+        if (isInvalidLimit(limit) || isInvalidRows(rows))
+            throw new BlueException(INVALID_PARAM);
+
         return just(rewardMapper.selectByLimitAndCondition(limit, rows, rewardCondition));
     }
 

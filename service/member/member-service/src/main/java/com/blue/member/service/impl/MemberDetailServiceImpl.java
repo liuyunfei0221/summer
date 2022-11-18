@@ -561,7 +561,7 @@ public class MemberDetailServiceImpl implements MemberDetailService {
     @Override
     public Mono<List<MemberDetail>> selectMemberDetailByLimitAndCondition(Long limit, Long rows, MemberDetailCondition memberDetailCondition) {
         LOGGER.info("limit = {}, rows = {}, memberDetailCondition = {}", limit, rows, memberDetailCondition);
-        if (isNull(limit) || limit < 0 || isNull(rows) || rows < 1)
+        if (isInvalidLimit(limit) || isInvalidRows(rows))
             throw new BlueException(INVALID_PARAM);
 
         return just(memberDetailMapper.selectByLimitAndCondition(limit, rows, memberDetailCondition));

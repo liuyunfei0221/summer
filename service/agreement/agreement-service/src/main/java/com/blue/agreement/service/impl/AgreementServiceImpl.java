@@ -302,6 +302,9 @@ public class AgreementServiceImpl implements AgreementService {
     @Override
     public Mono<List<Agreement>> selectAgreementByLimitAndCondition(Long limit, Long rows, AgreementCondition agreementCondition) {
         LOGGER.info("limit = {}, rows = {}, agreementCondition = {}", limit, rows, agreementCondition);
+        if (isInvalidLimit(limit) || isInvalidRows(rows))
+            throw new BlueException(INVALID_PARAM);
+
         return justOrEmpty(agreementMapper.selectByLimitAndCondition(limit, rows, agreementCondition));
     }
 

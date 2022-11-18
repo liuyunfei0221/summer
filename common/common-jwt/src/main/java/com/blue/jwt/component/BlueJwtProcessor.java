@@ -49,7 +49,9 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
     /**
      * content type
      */
-    private static final String HEADER_CONTENT_TYPE_NAME = CONTENT_TYPE, HEADER_CONTENT_TYPE_VALUE = "application/jwt";
+    private static final String
+            HEADER_CONTENT_TYPE_NAME = CONTENT_TYPE,
+            HEADER_CONTENT_TYPE_VALUE = "application/jwt";
 
     /**
      * header

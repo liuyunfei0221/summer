@@ -598,7 +598,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     @Override
     public Mono<List<MemberBasic>> selectMemberBasicByLimitAndCondition(Long limit, Long rows, MemberBasicCondition memberBasicCondition) {
         LOGGER.info("limit = {}, rows = {}, memberBasicCondition = {}", limit, rows, memberBasicCondition);
-        if (isNull(limit) || limit < 0 || isNull(rows) || rows < 1)
+        if (isInvalidLimit(limit) || isInvalidRows(rows))
             throw new BlueException(INVALID_PARAM);
 
         return just(memberBasicMapper.selectByLimitAndCondition(limit, rows, memberBasicCondition));

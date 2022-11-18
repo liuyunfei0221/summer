@@ -168,6 +168,10 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
 
         Long id = p.getId();
 
+        MessageTemplate messageTemplate = messageTemplateRepository.findById(id).toFuture().join();
+        if (isNull(messageTemplate))
+            throw new BlueException(DATA_NOT_EXIST);
+
         MessageTemplate probe = new MessageTemplate();
         probe.setType(p.getType());
         probe.setBusinessType(p.getBusinessType());
@@ -178,10 +182,6 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
 
         if (configs.stream().anyMatch(c -> !id.equals(c.getId())))
             throw new BlueException(DATA_ALREADY_EXIST);
-
-        MessageTemplate messageTemplate = messageTemplateRepository.findById(id).toFuture().join();
-        if (isNull(messageTemplate))
-            throw new BlueException(DATA_NOT_EXIST);
 
         return messageTemplate;
     };
@@ -263,7 +263,7 @@ public class MessageTemplateServiceImpl implements MessageTemplateService {
     private static final Function<MessageTemplateCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();
 
-        if (c == null) {
+        if (isNull(c)) {
             query.with(SORTER_CONVERTER.apply(new MessageTemplateCondition()));
             return query;
         }

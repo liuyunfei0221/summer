@@ -87,7 +87,7 @@ public class VerifyHistoryServiceImpl implements VerifyHistoryService {
     private static final Function<VerifyHistoryCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();
 
-        if (c == null) {
+        if (isNull(c)) {
             query.with(SORTER_CONVERTER.apply(new VerifyHistoryCondition()));
             return query;
         }

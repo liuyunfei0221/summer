@@ -88,20 +88,6 @@ data:
       index: 1
   broadcast-tables: [ ]
   single-databases-with-tables:
-    - url: jdbc:mysql://172.16.202.219:3306/risk
-      database-conf: useAffectedRows=true&useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
-      username: root
-      password: 1024
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      connection-timeout: 120000
-      max-lifetime: 1800000
-      max-pool-size: 4
-      min-idle: 2
-      idle-timeout: 600000
-      connection-connection-test-query: SELECT 1 FROM DUAL FROM DUAL
-      is-read-only: false
-      is-auto-commit: true
-      single-tables: [ risk_strategy ]
   safe-row-bounds-enabled: false
   safe-result-handler-enabled: false
   map-underscore-to-camel-case: true
@@ -475,6 +461,8 @@ dubbo:
 
 
 caffeine:
+  access-maximum-size: 2048
+  session-maximum-size: 512
   expires-second: 30
 
 

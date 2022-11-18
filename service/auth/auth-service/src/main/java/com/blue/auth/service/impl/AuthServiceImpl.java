@@ -3,7 +3,6 @@ package com.blue.auth.service.impl;
 import com.blue.auth.api.model.*;
 import com.blue.auth.component.access.AccessInfoCache;
 import com.blue.auth.config.deploy.AccessDeploy;
-import com.blue.auth.event.model.InvalidLocalAccessEvent;
 import com.blue.auth.event.producer.InvalidLocalAccessProducer;
 import com.blue.auth.model.AccessInfo;
 import com.blue.auth.model.EncryptedDataParam;

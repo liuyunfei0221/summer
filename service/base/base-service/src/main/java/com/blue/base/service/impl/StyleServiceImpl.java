@@ -460,6 +460,9 @@ public class StyleServiceImpl implements StyleService {
     @Override
     public Mono<List<Style>> selectStyleByLimitAndCondition(Long limit, Long rows, StyleCondition styleCondition) {
         LOGGER.info("limit = {}, rows = {}, styleCondition = {}", limit, rows, styleCondition);
+        if (isInvalidLimit(limit) || isInvalidRows(rows))
+            throw new BlueException(INVALID_PARAM);
+
         return just(styleMapper.selectByLimitAndCondition(limit, rows, styleCondition));
     }
 

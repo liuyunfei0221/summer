@@ -135,7 +135,7 @@ public class EventRecordServiceImpl implements EventRecordService {
     private static final Function<EventRecordManagerCondition, Query> MANAGER_CONDITION_PROCESSOR = c -> {
         Query query = new Query();
 
-        if (c == null) {
+        if (isNull(c)) {
             query.with(MANAGER_SORTER_CONVERTER.apply(new EventRecordManagerCondition()));
             return query;
         }

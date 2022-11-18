@@ -247,6 +247,10 @@ public class StateServiceImpl implements StateService {
 
         Long id = p.getId();
 
+        State state = stateRepository.findById(id).toFuture().join();
+        if (isNull(state))
+            throw new BlueException(DATA_NOT_EXIST);
+
         State probe = new State();
         probe.setCountryId(p.getCountryId());
         probe.setName(p.getName());
@@ -256,11 +260,7 @@ public class StateServiceImpl implements StateService {
 
         if (states.stream().anyMatch(c -> !id.equals(c.getId())))
             throw new BlueException(DATA_ALREADY_EXIST);
-
-        State state = stateRepository.findById(id).toFuture().join();
-        if (isNull(state))
-            throw new BlueException(DATA_NOT_EXIST);
-
+        
         return state;
     };
 
@@ -307,7 +307,7 @@ public class StateServiceImpl implements StateService {
     private static final Function<StateCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();
 
-        if (c == null)
+        if (isNull(c))
             return query;
 
         State probe = new State();

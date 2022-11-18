@@ -259,6 +259,10 @@ public class AreaServiceImpl implements AreaService {
 
         Long id = p.getId();
 
+        Area area = areaRepository.findById(id).toFuture().join();
+        if (isNull(area))
+            throw new BlueException(DATA_NOT_EXIST);
+
         Area probe = new Area();
         probe.setCityId(p.getCityId());
         probe.setName(p.getName());
@@ -269,10 +273,6 @@ public class AreaServiceImpl implements AreaService {
 
         if (areas.stream().anyMatch(a -> !id.equals(a.getId())))
             throw new BlueException(DATA_ALREADY_EXIST);
-
-        Area area = areaRepository.findById(id).toFuture().join();
-        if (isNull(area))
-            throw new BlueException(DATA_NOT_EXIST);
 
         return area;
     };
@@ -313,7 +313,7 @@ public class AreaServiceImpl implements AreaService {
     private static final Function<AreaCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();
 
-        if (c == null)
+        if (isNull(c))
             return query;
 
         Area probe = new Area();

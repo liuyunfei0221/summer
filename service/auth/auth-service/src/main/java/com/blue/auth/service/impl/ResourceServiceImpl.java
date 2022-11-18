@@ -412,6 +412,9 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     public Mono<List<Resource>> selectResourceByLimitAndCondition(Long limit, Long rows, ResourceCondition resourceCondition) {
         LOGGER.info("limit = {}, rows = {}, resourceCondition = {}", limit, rows, resourceCondition);
+        if (isInvalidLimit(limit) || isInvalidRows(rows))
+            throw new BlueException(INVALID_PARAM);
+
         return just(resourceMapper.selectByLimitAndCondition(limit, rows, resourceCondition));
     }
 

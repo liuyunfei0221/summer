@@ -1,8 +1,8 @@
 package com.blue.auth.event.consumer;
 
+import com.blue.auth.api.model.InvalidLocalAccessEvent;
 import com.blue.auth.component.access.AccessInfoCache;
 import com.blue.auth.config.blue.BlueConsumerConfig;
-import com.blue.auth.event.model.InvalidLocalAccessEvent;
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.pulsar.component.BluePulsarListener;

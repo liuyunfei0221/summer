@@ -142,7 +142,7 @@ public class AgreementRecordServiceImpl implements AgreementRecordService {
     private static final Function<AgreementRecordCondition, Query> CONDITION_PROCESSOR = c -> {
         Query query = new Query();
 
-        if (c == null) {
+        if (isNull(c)) {
             query.with(SORTER_CONVERTER.apply(new AgreementRecordCondition()));
             return query;
         }

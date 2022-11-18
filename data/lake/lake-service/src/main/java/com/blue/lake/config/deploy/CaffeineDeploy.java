@@ -12,9 +12,29 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "caffeine")
 public class CaffeineDeploy {
 
+    private int accessMaximumSize;
+
+    private int sessionMaximumSize;
+
     private int expiresSecond;
 
     public CaffeineDeploy() {
+    }
+
+    public int getAccessMaximumSize() {
+        return accessMaximumSize;
+    }
+
+    public void setAccessMaximumSize(int accessMaximumSize) {
+        this.accessMaximumSize = accessMaximumSize;
+    }
+
+    public int getSessionMaximumSize() {
+        return sessionMaximumSize;
+    }
+
+    public void setSessionMaximumSize(int sessionMaximumSize) {
+        this.sessionMaximumSize = sessionMaximumSize;
     }
 
     public int getExpiresSecond() {
@@ -28,7 +48,9 @@ public class CaffeineDeploy {
     @Override
     public String toString() {
         return "CaffeineDeploy{" +
-                "expiresSecond=" + expiresSecond +
+                "accessMaximumSize=" + accessMaximumSize +
+                ", sessionMaximumSize=" + sessionMaximumSize +
+                ", expiresSecond=" + expiresSecond +
                 '}';
     }
 
