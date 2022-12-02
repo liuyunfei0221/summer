@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
  * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "unused"})
-public interface RiskService {
+public interface RiskAnalyzeService {
 
     /**
      * handle event

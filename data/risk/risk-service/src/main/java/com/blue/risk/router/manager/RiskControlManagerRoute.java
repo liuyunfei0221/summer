@@ -1,6 +1,6 @@
-package com.blue.member.router.manager;
+package com.blue.risk.router.manager;
 
-import com.blue.member.handler.manager.RealNameManagerHandler;
+import com.blue.risk.handler.manager.RiskControlManagerHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RequestPredicate;
@@ -14,20 +14,24 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
- * real name manager router
+ * risk control manager route
  *
  * @author liuyunfei
  */
 @Configuration
-public class RealNameManagerRoute {
+public class RiskControlManagerRoute {
 
     @Bean
-    RouterFunction<ServerResponse> realNameManagerRouter(RealNameManagerHandler realNameManagerHandler) {
+    RouterFunction<ServerResponse> riskControlManagerRouter(RiskControlManagerHandler riskControlManagerHandler) {
 
-        RequestPredicate pathPredicate = path("/blue-member/manager");
+        RequestPredicate pathPredicate = path("/blue-risk/manager");
 
         RouterFunction<ServerResponse> routerFunction = route()
-                .POST("/realNames", accept(APPLICATION_JSON), realNameManagerHandler::page)
+                .POST("/illegalMark", accept(APPLICATION_JSON), riskControlManagerHandler::illegalMark)
+                .DELETE("/invalidateAuth", accept(APPLICATION_JSON), riskControlManagerHandler::invalidateAuth)
+                .DELETE("/invalidateAuthBatch", riskControlManagerHandler::invalidateAuthBatch)
+                .PATCH("/updateMemberBasicStatus", accept(APPLICATION_JSON), riskControlManagerHandler::updateMemberBasicStatus)
+                .PATCH("/updateMemberBasicStatusBatch", accept(APPLICATION_JSON), riskControlManagerHandler::updateMemberBasicStatusBatch)
                 .build();
 
         return nest(pathPredicate, routerFunction);

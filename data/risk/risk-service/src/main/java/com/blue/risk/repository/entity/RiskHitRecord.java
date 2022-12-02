@@ -131,6 +131,16 @@ public final class RiskHitRecord implements Serializable {
      */
     private Long illegalExpiresSecond;
 
+    /**
+     * remove session?
+     */
+    private Integer removeSession;
+
+    /**
+     * invalid member status?
+     */
+    private Integer invalidStatus;
+
     public Long getId() {
         return id;
     }
@@ -451,6 +461,22 @@ public final class RiskHitRecord implements Serializable {
         this.illegalExpiresSecond = illegalExpiresSecond;
     }
 
+    public Integer getRemoveSession() {
+        return removeSession;
+    }
+
+    public void setRemoveSession(Integer removeSession) {
+        this.removeSession = removeSession;
+    }
+
+    public Integer getInvalidStatus() {
+        return invalidStatus;
+    }
+
+    public void setInvalidStatus(Integer invalidStatus) {
+        this.invalidStatus = invalidStatus;
+    }
+
     @Override
     public String toString() {
         return "RiskHitRecord{" +
@@ -459,11 +485,12 @@ public final class RiskHitRecord implements Serializable {
                 ", dataEventType='" + dataEventType + '\'' +
                 ", dataEventOpType='" + dataEventOpType + '\'' +
                 ", stamp=" + stamp +
-                ", createDate='" + createDate + '\'' +
-                ", method='" + method + '\'' +
-                ", uri='" + uri + '\'' +
-                ", realUri='" + realUri + '\'' +
+                ", type=" + type +
+                ", name='" + name + '\'' +
+                ", hitType=" + hitType +
+                ", illegalExpiresSecond=" + illegalExpiresSecond +
+                ", removeSession=" + removeSession +
+                ", invalidStatus=" + invalidStatus +
                 '}';
     }
-
 }

@@ -5,14 +5,12 @@ import com.blue.basic.model.common.IdentityParam;
 import com.blue.basic.model.common.PageModelRequest;
 import com.blue.basic.model.common.PageModelResponse;
 import com.blue.basic.model.common.StringDataParam;
-import com.blue.basic.model.event.InvalidAuthEvent;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.media.api.model.AttachmentInfo;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.config.deploy.MemberDeploy;
 import com.blue.member.constant.MemberBasicSortAttribute;
-import com.blue.member.event.producer.InvalidAuthProducer;
 import com.blue.member.model.MemberBasicCondition;
 import com.blue.member.remote.consumer.RpcAttachmentServiceConsumer;
 import com.blue.member.repository.entity.MemberBasic;
@@ -40,15 +38,14 @@ import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.GSON;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.database.common.ConditionSortProcessor.process;
 import static com.blue.basic.common.base.ConstantProcessor.assertStatus;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
 import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
 import static com.blue.basic.constant.common.CacheKeyPrefix.MEMBER_PRE;
 import static com.blue.basic.constant.common.ResponseElement.*;
-import static com.blue.basic.constant.common.Status.VALID;
 import static com.blue.basic.constant.media.AttachmentType.ICON;
 import static com.blue.basic.constant.media.AttachmentType.QR_CODE;
+import static com.blue.database.common.ConditionSortProcessor.process;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BASICS_2_MEMBER_BASICS_INFO;
 import static com.blue.member.converter.MemberModelConverters.MEMBER_BASIC_2_MEMBER_BASIC_INFO;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -73,8 +70,6 @@ public class MemberBasicServiceImpl implements MemberBasicService {
 
     private static final Logger LOGGER = getLogger(MemberBasicServiceImpl.class);
 
-    private final InvalidAuthProducer invalidAuthProducer;
-
     private MemberBasicMapper memberBasicMapper;
 
     private final BlueIdentityProcessor blueIdentityProcessor;
@@ -86,10 +81,9 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     private ExecutorService executorService;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public MemberBasicServiceImpl(InvalidAuthProducer invalidAuthProducer, MemberBasicMapper memberBasicMapper, BlueIdentityProcessor blueIdentityProcessor,
+    public MemberBasicServiceImpl(MemberBasicMapper memberBasicMapper, BlueIdentityProcessor blueIdentityProcessor,
                                   RpcAttachmentServiceConsumer rpcAttachmentServiceConsumer, StringRedisTemplate stringRedisTemplate,
                                   ExecutorService executorService, MemberDeploy memberDeploy) {
-        this.invalidAuthProducer = invalidAuthProducer;
         this.memberBasicMapper = memberBasicMapper;
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.rpcAttachmentServiceConsumer = rpcAttachmentServiceConsumer;
@@ -429,10 +423,32 @@ public class MemberBasicServiceImpl implements MemberBasicService {
         memberBasicMapper.updateStatus(id, status, TIME_STAMP_GETTER.get());
         REDIS_CACHE_DELETER.accept(id);
 
-        if (VALID.status != status)
-            invalidAuthProducer.send(new InvalidAuthEvent(id));
-
         return MEMBER_BASIC_2_MEMBER_BASIC_INFO.apply(memberBasic);
+    }
+
+    /**
+     * update member status batch
+     *
+     * @param ids
+     * @param status
+     * @return
+     */
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
+    public List<MemberBasicInfo> updateMemberBasicStatusBatch(List<Long> ids, Integer status) {
+        LOGGER.info("ids = {}, status = {}", ids, status);
+        if (isEmpty(ids))
+            throw new BlueException(INVALID_IDENTITY);
+        assertStatus(status, false);
+
+        return ids.stream().sorted().map(id -> {
+            try {
+                return this.updateMemberBasicStatus(id, status);
+            } catch (Exception e) {
+                LOGGER.error("update status failed, id = {}, status = {}", id, status);
+                return null;
+            }
+        }).filter(BlueChecker::isNotNull).collect(toList());
     }
 
     /**

@@ -1,8 +1,10 @@
 package com.blue.risk.converter;
 
 import com.blue.basic.common.base.BlueChecker;
+import com.blue.basic.model.event.IllegalMarkEvent;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.risk.api.model.RiskStrategyInfo;
+import com.blue.risk.model.IllegalMarkParam;
 import com.blue.risk.model.RiskStrategyInsertParam;
 import com.blue.risk.model.RiskStrategyManagerInfo;
 import com.blue.risk.repository.entity.RiskStrategy;
@@ -86,6 +88,16 @@ public final class RiskModelConverters {
         return new RiskStrategyManagerInfo(riskStrategy.getId(), riskStrategy.getName(), riskStrategy.getDescription(), riskStrategy.getType(), ATTR_JSON_2_ATTR_MAP_CONVERTER.apply(riskStrategy.getAttributes()),
                 riskStrategy.getEnable(), riskStrategy.getCreateTime(), riskStrategy.getUpdateTime(), riskStrategy.getCreator(), ofNullable(idAndMemberNameMapping).map(m -> m.get(riskStrategy.getCreator())).orElse(EMPTY_VALUE.value),
                 riskStrategy.getUpdater(), ofNullable(idAndMemberNameMapping).map(m -> m.get(riskStrategy.getUpdater())).orElse(EMPTY_VALUE.value));
+    };
+
+
+    public static final Function<IllegalMarkParam, IllegalMarkEvent> ILLEGAL_MARK_PARAM_2_ILLEGAL_MARK_EVENT_CONVERTER = illegalMarkParam -> {
+        if (isNull(illegalMarkParam))
+            throw new BlueException(EMPTY_PARAM);
+        illegalMarkParam.asserts();
+
+        return new IllegalMarkEvent(String.valueOf(illegalMarkParam.getMemberId()), illegalMarkParam.getIp(), illegalMarkParam.getMethod(),
+                illegalMarkParam.getUri(), illegalMarkParam.getMark(), illegalMarkParam.getIllegalExpiresSecond());
     };
 
 }

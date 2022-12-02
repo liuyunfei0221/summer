@@ -239,7 +239,7 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
         'member basic page of manager', 'member basic page of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (190002, 'POST', 'blue-member', '/manager/details', '', b'1', b'1', b'1', b'1', b'1', 3,
         'member detail list', 'member detail list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (190003, 'POST', 'blue-member', '/manager/realnames', '', b'1', b'1', b'1', b'1', b'1', 3,
+       (190003, 'POST', 'blue-member', '/manager/realNames', '', b'1', b'1', b'1', b'1', b'1', 3,
         'member realname page of manager', 'member realname page of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (190004, 'POST', 'blue-member', '/manager/authorities', '', b'1', b'1', b'1', b'1', b'1', 3,
         'authority list', 'authority list', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
@@ -328,7 +328,6 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
        (230015, 'DELETE', 'blue-media', '/manager/qrCodeConfig/{id}', '', b'1', b'1', b'1', b'1', b'1', 3,
         'delete qr code config', 'delete qr code config', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
-
 -- portal api
 
        (250001, 'GET', 'blue-portal', '/bulletins/{type}', '', b'0', b'1', b'1', b'0', b'1', 1,
@@ -398,7 +397,6 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
        (280011, 'DELETE', 'blue-marketing', '/manager/relation/{id}', '', b'1', b'1', b'1', b'1', b'1', 3,
         'delete relation', 'delete relation', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
 
-
 -- shine api
 
        (290001, 'POST', 'blue-shine', '/shines/scroll', '', b'0', b'1', b'1', b'0', b'1', 1,
@@ -458,7 +456,6 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
        (360002, 'POST', 'blue-risk', '/manager/records/count', '', b'1', b'1', b'1', b'1', b'1', 3,
         'risk hit records count of manager', 'risk hit records count of manager', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
         1),
-
        (360003, 'POST', 'blue-risk', '/manager/strategies', '', b'1', b'1', b'1', b'1', b'1', 3,
         'strategy page', 'strategy page', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (360004, 'POST', 'blue-risk', '/manager/strategy', '', b'1', b'1', b'1', b'1', b'1', 3,
@@ -467,6 +464,18 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
         'update strategy', 'update strategy', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (360006, 'DELETE', 'blue-risk', '/manager/strategy/{id}', '', b'1', b'1', b'1', b'1', b'1', 3,
         'delete strategy', 'delete strategy', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+
+       (360007, 'POST', 'blue-risk', '/manager/illegalMark', '', b'1', b'1', b'1', b'1', b'1', 3,
+        'illegal mark', 'illegal mark', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (360008, 'DELETE', 'blue-risk', '/manager/invalidateAuth', '', b'1', b'1', b'1', b'1', b'1', 3,
+        'invalid auth', 'invalid auth', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (360009, 'DELETE', 'blue-risk', '/manager/invalidateAuthBatch', '', b'1', b'1', b'1', b'1', b'1', 3,
+        'invalidate auth batch', 'invalidate auth batch', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (360010, 'PATCH', 'blue-risk', '/manager/updateMemberBasicStatus', '', b'1', b'1', b'1', b'1', b'1', 3,
+        'update member basic status', 'update member basic status', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (360011, 'PATCH', 'blue-risk', '/manager/updateMemberBasicStatusBatch', '', b'1', b'1', b'1', b'1', b'1', 3,
+        'update member basic status batch', 'update member basic status batch', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1,
+        1),
 
 
 -- agreement api

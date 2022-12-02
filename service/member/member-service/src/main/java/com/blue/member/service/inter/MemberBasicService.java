@@ -73,6 +73,15 @@ public interface MemberBasicService {
     MemberBasicInfo updateMemberBasicStatus(Long id, Integer status);
 
     /**
+     * update member status batch
+     *
+     * @param ids
+     * @param status
+     * @return
+     */
+    List<MemberBasicInfo> updateMemberBasicStatusBatch(List<Long> ids, Integer status);
+
+    /**
      * get by id
      *
      * @param id

@@ -44,13 +44,15 @@
         <result column="name" jdbcType="VARCHAR" property="name"/>
         <result column="hit_type" jdbcType="INTEGER" property="hitType"/>
         <result column="illegal_expires_second" jdbcType="BIGINT" property="illegalExpiresSecond"/>
+        <result column="remove_session" jdbcType="INTEGER" property="removeSession"/>
+        <result column="invalid_status" jdbcType="INTEGER" property="invalidStatus"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         id
         , "cursor", data_event_type, data_event_op_type, stamp, create_date, method, uri, real_uri, request_body, request_extra, response_status, response_body, response_extra, request_id, metadata, jwt, member_id,
         role_ids, credential_type, device_type, login_time, client_ip, user_agent, sec_key, request_un_decryption, response_un_encryption, existence_request_body, existence_response_body, duration_seconds,
-        resource_id, "module", relative_uri, absolute_uri, relation_view, authenticate, type, name, hit_type, illegal_expires_second
+        resource_id, "module", relative_uri, absolute_uri, relation_view, authenticate, type, name, hit_type, illegal_expires_second, remove_session, invalid_status
     </sql>
 
     <insert id="insert" parameterType="com.blue.risk.repository.entity.RiskHitRecord">
@@ -75,8 +77,9 @@
         #{resourceId,jdbcType=BIGINT}, #{module,jdbcType=VARCHAR},
         #{relativeUri,jdbcType=VARCHAR}, #{absoluteUri,jdbcType=VARCHAR},
         #{relationView,jdbcType=VARCHAR}, #{authenticate,jdbcType=INTEGER},
-        #{type,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},
-        #{hitType,jdbcType=INTEGER}, #{illegalExpiresSecond,jdbcType=BIGINT})
+        #{type,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{hitType,jdbcType=INTEGER},
+        #{illegalExpiresSecond,jdbcType=BIGINT}, #{removeSession,jdbcType=INTEGER},
+        #{invalidStatus,jdbcType=INTEGER})
     </insert>
 
     <insert id="insertBatch" parameterType="java.util.List">
@@ -98,13 +101,14 @@
                 #{item.loginTime,jdbcType=BIGINT}, #{item.clientIp,jdbcType=VARCHAR},
                 #{item.userAgent,jdbcType=VARCHAR}, #{item.secKey,jdbcType=VARCHAR},
                 #{item.requestUnDecryption,jdbcType=INTEGER}, #{item.responseUnEncryption,jdbcType=INTEGER},
-                #{item.existenceRequestBody,jdbcType=INTEGER},
-                #{item.existenceResponseBody,jdbcType=INTEGER}, #{item.durationSeconds,jdbcType=INTEGER},
-                #{item.resourceId,jdbcType=BIGINT}, #{item.module,jdbcType=VARCHAR},
+                #{item.existenceRequestBody,jdbcType=INTEGER}, #{item.existenceResponseBody,jdbcType=INTEGER},
+                #{item.durationSeconds,jdbcType=INTEGER}, #{item.resourceId,jdbcType=BIGINT},
+                #{item.module,jdbcType=VARCHAR},
                 #{item.relativeUri,jdbcType=VARCHAR}, #{item.absoluteUri,jdbcType=VARCHAR},
                 #{item.relationView,jdbcType=VARCHAR}, #{item.authenticate,jdbcType=INTEGER},
-                #{item.type,jdbcType=INTEGER}, #{item.name,jdbcType=VARCHAR},
-                #{item.hitType,jdbcType=INTEGER}, #{item.illegalExpiresSecond,jdbcType=BIGINT})
+                #{item.type,jdbcType=INTEGER}, #{item.name,jdbcType=VARCHAR}, #{item.hitType,jdbcType=INTEGER},
+                #{item.illegalExpiresSecond,jdbcType=BIGINT}, #{item.removeSession,jdbcType=INTEGER},
+                #{item.invalidStatus,jdbcType=INTEGER})
             </foreach>
         </if>
     </insert>
@@ -232,6 +236,12 @@
             <if test="illegalExpiresSecond != null">
                 illegal_expires_second,
             </if>
+            <if test="removeSession != null">
+                remove_session,
+            </if>
+            <if test="invalidStatus != null">
+                invalid_status,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -354,6 +364,12 @@
             <if test="illegalExpiresSecond != null">
                 #{illegalExpiresSecond,jdbcType=BIGINT},
             </if>
+            <if test="removeSession != null">
+                #{removeSession,jdbcType=INTEGER},
+            </if>
+            <if test="invalidStatus != null">
+                #{invalidStatus,jdbcType=INTEGER},
+            </if>
         </trim>
     </insert>
 
@@ -395,7 +411,9 @@
             relation_view           = #{relationView,jdbcType=VARCHAR},
             authenticate            = #{authenticate,jdbcType=INTEGER},
             hit_type                = #{hitType,jdbcType=INTEGER},
-            illegal_expires_second  = #{illegalExpiresSecond,jdbcType=BIGINT}
+            illegal_expires_second  = #{illegalExpiresSecond,jdbcType=BIGINT},
+            remove_session          = #{removeSession,jdbcType=INTEGER},
+            invalid_status          = #{invalidStatus,jdbcType=INTEGER}
         where id = #{id,jdbcType=BIGINT}
     </update>
 
@@ -520,6 +538,12 @@
             <if test="illegalExpiresSecond != null">
                 illegal_expires_second = #{illegalExpiresSecond,jdbcType=BIGINT},
             </if>
+            <if test="removeSession != null">
+                remove_session = #{removeSession,jdbcType=INTEGER},
+            </if>
+            <if test="invalidStatus != null">
+                invalid_status = #{invalidStatus,jdbcType=INTEGER},
+            </if>
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
@@ -641,6 +665,14 @@
         <if test="riskHitRecordCondition != null and riskHitRecordCondition.hitType != null">
             AND
             hit_type = #{riskHitRecordCondition.hitType,jdbcType=INTEGER}
+        </if>
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.removeSession != null">
+            AND
+            remove_session = #{riskHitRecordCondition.removeSession,jdbcType=INTEGER}
+        </if>
+        <if test="riskHitRecordCondition != null and riskHitRecordCondition.invalidStatus != null">
+            AND
+            invalid_status = #{riskHitRecordCondition.invalidStatus,jdbcType=INTEGER}
         </if>
     </sql>
 

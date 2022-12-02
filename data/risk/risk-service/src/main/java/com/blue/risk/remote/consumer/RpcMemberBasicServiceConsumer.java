@@ -26,6 +26,7 @@ public class RpcMemberBasicServiceConsumer {
                     @Method(name = "getMemberBasicInfo", async = true),
                     @Method(name = "selectMemberBasicInfoByIds", async = true),
                     @Method(name = "getMemberBasicInfoByPhone", async = true),
+                    @Method(name = "getMemberBasicInfoByEmail", async = true),
                     @Method(name = "getMemberBasicInfoByEmail", async = true)
             })
     private RpcMemberBasicService rpcMemberBasicService;
@@ -68,6 +69,28 @@ public class RpcMemberBasicServiceConsumer {
      */
     public Mono<MemberBasicInfo> getMemberBasicInfoByEmail(String email) {
         return fromFuture(rpcMemberBasicService.getMemberBasicInfoByEmail(email));
+    }
+
+    /**
+     * update member status
+     *
+     * @param id
+     * @param status
+     * @return
+     */
+    public Mono<MemberBasicInfo> updateMemberBasicStatus(Long id, Integer status) {
+        return fromFuture(rpcMemberBasicService.updateMemberBasicStatus(id, status));
+    }
+
+    /**
+     * update member status batch
+     *
+     * @param ids
+     * @param status
+     * @return
+     */
+    public Mono<List<MemberBasicInfo>> updateMemberBasicStatusBatch(List<Long> ids, Integer status) {
+        return fromFuture(rpcMemberBasicService.updateMemberBasicStatusBatch(ids, status));
     }
 
 }

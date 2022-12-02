@@ -17,8 +17,8 @@ import com.blue.risk.config.deploy.NestingResponseDeploy;
 import com.blue.risk.repository.entity.RiskHitRecord;
 import com.blue.risk.service.inter.AuthService;
 import com.blue.risk.service.inter.ResourceService;
+import com.blue.risk.service.inter.RiskAnalyzeService;
 import com.blue.risk.service.inter.RiskHitRecordService;
-import com.blue.risk.service.inter.RiskService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -59,9 +59,9 @@ import static reactor.util.Loggers.getLogger;
  */
 @SuppressWarnings({"JavaDoc", "unused"})
 @Service
-public class RiskServiceImpl implements RiskService {
+public class RiskAnalyzeServiceImpl implements RiskAnalyzeService {
 
-    private static final Logger LOGGER = getLogger(RiskServiceImpl.class);
+    private static final Logger LOGGER = getLogger(RiskAnalyzeServiceImpl.class);
 
     private BlueIdentityProcessor blueIdentityProcessor;
 
@@ -73,8 +73,8 @@ public class RiskServiceImpl implements RiskService {
 
     private RiskHitRecordService riskHitRecordService;
 
-    public RiskServiceImpl(BlueIdentityProcessor blueIdentityProcessor, AuthService authService, ResourceService resourceService,
-                           RiskProcessor riskProcessor, RiskHitRecordService riskHitRecordService, NestingResponseDeploy nestingResponseDeploy) {
+    public RiskAnalyzeServiceImpl(BlueIdentityProcessor blueIdentityProcessor, AuthService authService, ResourceService resourceService,
+                                  RiskProcessor riskProcessor, RiskHitRecordService riskHitRecordService, NestingResponseDeploy nestingResponseDeploy) {
         this.blueIdentityProcessor = blueIdentityProcessor;
         this.authService = authService;
         this.resourceService = resourceService;
@@ -136,7 +136,7 @@ public class RiskServiceImpl implements RiskService {
         riskEvent.setMethod(ofNullable(entries.get(METHOD.key)).orElse(EMPTY_VALUE.value).intern());
 
         String uri = ofNullable(entries.get(URI.key)).orElse(EMPTY_VALUE.value);
-        riskEvent.setUri(ofNullable(entries.get(URI.key)).orElse(EMPTY_VALUE.value));
+        riskEvent.setUri(uri);
         riskEvent.setRealUri(ofNullable(entries.get(REAL_URI.key)).orElse(EMPTY_VALUE.value));
         riskEvent.setRequestBody(ofNullable(entries.get(REQUEST_BODY.key)).orElse(EMPTY_VALUE.value));
         riskEvent.setRequestExtra(ofNullable(entries.get(REQUEST_EXTRA.key)).orElse(EMPTY_VALUE.value));
@@ -273,6 +273,8 @@ public class RiskServiceImpl implements RiskService {
 
                             riskHitRecord.setHitType(hit.getHitType());
                             riskHitRecord.setIllegalExpiresSecond(hit.getIllegalExpiresSecond());
+                            riskHitRecord.setRemoveSession(getBoolByBool(hit.getRemoveSession()).status);
+                            riskHitRecord.setInvalidStatus(getBoolByBool(hit.getInvalidStatus()).status);
 
                             long id = blueIdentityProcessor.generate(RiskHitRecord.class);
                             riskHitRecord.setId(id);

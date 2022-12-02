@@ -296,6 +296,29 @@ producers:
       enable-encrypt: false
       encryption-key:
       producer-crypto-failure-action: FAIL
+    invalid-auth:
+      topic: invalidAuth
+      producer-name: invalidAuthProducer000
+      access-mode: Shared
+      send-timeout-millis: 30000
+      max-pending-messages: 1000
+      block-if-queue-full: false
+      message-routing-mode: RoundRobinPartition
+      compression-type: NONE
+      enable-batching: true
+      enable-chunking: false
+      batching-max-publish-delay-millis: 1000
+      round-robin-router-batching-partition-switch-frequency: 2
+      batching-max-messages: 512
+      batching-max-bytes: 512
+      initial-sequence-id: 0
+      auto-update-partitions: true
+      auto-update-partitions-interval-millis: 30000
+      enable-multi-schema: false
+      hashing-schemes: [ JavaStringHash ]
+      enable-encrypt: false
+      encryption-key:
+      producer-crypto-failure-action: FAIL
     risk-strategy-update:
       topic: riskStrategyUpdate
       producer-name: riskStrategyUpdateProducer000

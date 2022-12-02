@@ -89,4 +89,28 @@ public class RpcMemberBasicServiceProvider implements RpcMemberBasicService {
                 .toFuture();
     }
 
+    /**
+     * update member status
+     *
+     * @param id
+     * @param status
+     * @return
+     */
+    @Override
+    public CompletableFuture<MemberBasicInfo> updateMemberBasicStatus(Long id, Integer status) {
+        return just(memberBasicService.updateMemberBasicStatus(id, status)).toFuture();
+    }
+
+    /**
+     * update member status batch
+     *
+     * @param ids
+     * @param status
+     * @return
+     */
+    @Override
+    public CompletableFuture<List<MemberBasicInfo>> updateMemberBasicStatusBatch(List<Long> ids, Integer status) {
+        return just(memberBasicService.updateMemberBasicStatusBatch(ids, status)).toFuture();
+    }
+
 }

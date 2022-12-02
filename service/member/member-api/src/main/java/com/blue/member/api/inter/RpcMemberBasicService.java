@@ -45,4 +45,22 @@ public interface RpcMemberBasicService {
      */
     CompletableFuture<MemberBasicInfo> getMemberBasicInfoByEmail(String email);
 
+    /**
+     * update member status
+     *
+     * @param id
+     * @param status
+     * @return
+     */
+    CompletableFuture<MemberBasicInfo> updateMemberBasicStatus(Long id, Integer status);
+
+    /**
+     * update member status batch
+     *
+     * @param ids
+     * @param status
+     * @return
+     */
+    CompletableFuture<List<MemberBasicInfo>> updateMemberBasicStatusBatch(List<Long> ids, Integer status);
+
 }

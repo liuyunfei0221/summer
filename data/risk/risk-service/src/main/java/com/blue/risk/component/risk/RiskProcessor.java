@@ -13,7 +13,10 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.util.Logger;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -25,8 +28,7 @@ import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 import static java.util.Comparator.comparingInt;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.*;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 import static reactor.core.publisher.Mono.fromFuture;
 import static reactor.core.publisher.Mono.just;
@@ -127,8 +129,7 @@ public class RiskProcessor implements ApplicationListener<ContextRefreshedEvent>
             throw new BlueException(EMPTY_PARAM);
         riskStrategyInfo.asserts();
 
-        if (ofNullable(riskStrategyInfo.getEnable()).orElse(true))
-            STRATEGY_ASSERTER.accept(riskStrategyInfo);
+        STRATEGY_ASSERTER.accept(riskStrategyInfo);
 
         return just(ofNullable(riskStrategyInfo.getType())
                 .map(handlerMapping::get)
@@ -185,7 +186,10 @@ public class RiskProcessor implements ApplicationListener<ContextRefreshedEvent>
      * @return
      */
     public Set<Integer> selectActiveTypes() {
-        return handlerMapping.keySet();
+        return handlerMapping.entrySet().stream()
+                .filter(entry -> entry.getValue().isEnable())
+                .map(Map.Entry::getKey)
+                .collect(toSet());
     }
 
 }

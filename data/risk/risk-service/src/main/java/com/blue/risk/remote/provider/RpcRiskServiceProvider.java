@@ -4,7 +4,7 @@ import com.blue.basic.model.event.DataEvent;
 import com.blue.risk.api.inter.RpcRiskService;
 import com.blue.risk.api.model.RiskAsserted;
 import com.blue.risk.api.model.RiskEvent;
-import com.blue.risk.service.inter.RiskService;
+import com.blue.risk.service.inter.RiskAnalyzeService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
 
@@ -26,10 +26,10 @@ import java.util.concurrent.CompletableFuture;
         })
 public class RpcRiskServiceProvider implements RpcRiskService {
 
-    private final RiskService riskService;
+    private final RiskAnalyzeService riskAnalyzeService;
 
-    public RpcRiskServiceProvider(RiskService riskService) {
-        this.riskService = riskService;
+    public RpcRiskServiceProvider(RiskAnalyzeService riskAnalyzeService) {
+        this.riskAnalyzeService = riskAnalyzeService;
     }
 
     /**
@@ -40,7 +40,7 @@ public class RpcRiskServiceProvider implements RpcRiskService {
      */
     @Override
     public CompletableFuture<RiskAsserted> handleRiskEvent(RiskEvent riskEvent) {
-        return riskService.handleRiskEvent(riskEvent).toFuture();
+        return riskAnalyzeService.handleRiskEvent(riskEvent).toFuture();
     }
 
     /**
@@ -51,7 +51,7 @@ public class RpcRiskServiceProvider implements RpcRiskService {
      */
     @Override
     public CompletableFuture<RiskAsserted> handleDataEvent(DataEvent dataEvent) {
-        return riskService.handleDataEvent(dataEvent).toFuture();
+        return riskAnalyzeService.handleDataEvent(dataEvent).toFuture();
     }
 
     /**
@@ -62,7 +62,7 @@ public class RpcRiskServiceProvider implements RpcRiskService {
      */
     @Override
     public CompletableFuture<RiskAsserted> validateRiskEvent(RiskEvent riskEvent) {
-        return riskService.validateRiskEvent(riskEvent).toFuture();
+        return riskAnalyzeService.validateRiskEvent(riskEvent).toFuture();
     }
 
     /**
@@ -73,7 +73,7 @@ public class RpcRiskServiceProvider implements RpcRiskService {
      */
     @Override
     public CompletableFuture<RiskAsserted> validateDataEvent(DataEvent dataEvent) {
-        return riskService.validateDataEvent(dataEvent).toFuture();
+        return riskAnalyzeService.validateDataEvent(dataEvent).toFuture();
     }
 
 }

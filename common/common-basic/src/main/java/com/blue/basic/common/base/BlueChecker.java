@@ -206,6 +206,46 @@ public final class BlueChecker {
     }
 
     /**
+     * a num is less than 0?
+     *
+     * @param arg
+     * @return
+     */
+    public static boolean isLessThanZero(Long arg) {
+        return arg != null && arg < 0L;
+    }
+
+    /**
+     * a num is less than 0?
+     *
+     * @param arg
+     * @return
+     */
+    public static boolean isLessThanZero(Integer arg) {
+        return arg != null && arg < 0;
+    }
+
+    /**
+     * a num is less or equals than 0?
+     *
+     * @param arg
+     * @return
+     */
+    public static boolean isLessThanOrEqualsZero(Long arg) {
+        return arg != null && arg <= 0L;
+    }
+
+    /**
+     * a num is less or equals than 0?
+     *
+     * @param arg
+     * @return
+     */
+    public static boolean isLessThanOrEqualsZero(Integer arg) {
+        return arg != null && arg <= 0;
+    }
+
+    /**
      * check identity is invalid
      *
      * @param identity
@@ -229,7 +269,7 @@ public final class BlueChecker {
      * @param identities
      */
     public static boolean isInvalidIdentities(Collection<Long> identities) {
-        return identities == null || identities.size() <= 0 || identities.parallelStream().anyMatch(BlueChecker::isInvalidIdentity);
+        return identities == null || identities.size() == 0 || identities.parallelStream().anyMatch(BlueChecker::isInvalidIdentity);
     }
 
     /**

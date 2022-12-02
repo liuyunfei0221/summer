@@ -6,7 +6,7 @@ import com.blue.basic.model.exps.BlueException;
 import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
 import com.blue.pulsar.component.BluePulsarListener;
 import com.blue.risk.config.blue.BlueConsumerConfig;
-import com.blue.risk.service.inter.RiskService;
+import com.blue.risk.service.inter.RiskAnalyzeService;
 import org.apache.pulsar.client.api.PulsarClient;
 import reactor.util.Logger;
 
@@ -35,24 +35,24 @@ public final class DataEventConsumer implements BlueLifecycle {
 
     private final BlueConsumerConfig blueConsumerConfig;
 
-    private final RiskService riskService;
+    private final RiskAnalyzeService riskAnalyzeService;
 
     private BluePulsarListener<DataEvent> pulsarListener;
 
-    public DataEventConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, RiskService riskService) {
+    public DataEventConsumer(PulsarClient pulsarClient, BlueConsumerConfig blueConsumerConfig, RiskAnalyzeService riskAnalyzeService) {
         this.pulsarClient = pulsarClient;
         this.blueConsumerConfig = blueConsumerConfig;
-        this.riskService = riskService;
+        this.riskAnalyzeService = riskAnalyzeService;
     }
 
     @PostConstruct
     private void init() {
         Consumer<DataEvent> dataConsumer = dataEvent ->
                 ofNullable(dataEvent)
-                        .ifPresent(de -> just(de).flatMap(riskService::handleDataEvent)
+                        .ifPresent(de -> just(de).flatMap(riskAnalyzeService::handleDataEvent)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
-                                .doOnError(t -> LOGGER.error("riskService.handle(de) failed, de = {}, t = {}", de, t))
-                                .subscribe(b -> LOGGER.info("riskService.handle(de), b = {}, de = {}", b, de)));
+                                .doOnError(t -> LOGGER.error("riskAnalyzeService.handle(de) failed, de = {}, t = {}", de, t))
+                                .subscribe(b -> LOGGER.info("riskAnalyzeService.handle(de), b = {}, de = {}", b, de)));
 
         this.pulsarListener = BluePulsarListenerGenerator.generateListener(pulsarClient, blueConsumerConfig.getByKey(REQUEST_EVENT.name), dataConsumer);
     }

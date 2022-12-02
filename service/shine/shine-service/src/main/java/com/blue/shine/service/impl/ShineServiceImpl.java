@@ -438,9 +438,8 @@ public class ShineServiceImpl implements ShineService {
      * @return
      */
     public Mono<ShineInfo> insertShine(ShineInsertParam shineInsertParam, Long memberId) {
-//        LOGGER.info("shineInsertParam = {}, memberId = {}",
-//                shineInsertParam, memberId);
-        if (shineInsertParam == null)
+        LOGGER.info("shineInsertParam = {}, memberId = {}", shineInsertParam, memberId);
+        if (isNull(shineInsertParam))
             throw new BlueException(EMPTY_PARAM);
         shineInsertParam.asserts();
         if (isInvalidIdentity(memberId))

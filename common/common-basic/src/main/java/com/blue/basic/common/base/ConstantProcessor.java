@@ -29,7 +29,6 @@ import com.blue.basic.constant.risk.RiskType;
 import com.blue.basic.constant.verify.VerifyBusinessType;
 import com.blue.basic.constant.verify.VerifyType;
 import com.blue.basic.model.exps.BlueException;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 
 import java.util.Map;
@@ -71,14 +70,14 @@ public final class ConstantProcessor {
     /**
      * http method name and method mapping
      */
-    private static final Map<String, HttpMethod> HTTP_METHOD_MAPPING =
-            of(BlueHttpMethod.values()).collect(toMap(bhm -> bhm.value.toUpperCase(), bhm -> bhm.method, (a, b) -> a));
+    private static final Map<String, BlueHttpMethod> HTTP_METHOD_MAPPING =
+            of(BlueHttpMethod.values()).collect(toMap(bhm -> bhm.value.toUpperCase(), identity(), (a, b) -> a));
 
     /**
      * media type identity and media mapping
      */
-    private static final Map<String, MediaType> MEDIA_TYPE_MAPPING =
-            of(BlueMediaType.values()).collect(toMap(t -> t.identity.toLowerCase(), t -> t.mediaType, (a, b) -> a));
+    private static final Map<String, BlueMediaType> MEDIA_TYPE_MAPPING =
+            of(BlueMediaType.values()).collect(toMap(t -> t.identity.toLowerCase(), identity(), (a, b) -> a));
 
     /**
      * file type identity and media mapping
@@ -828,15 +827,15 @@ public final class ConstantProcessor {
      * @param value
      * @return
      */
-    public static HttpMethod getHttpMethodByValue(String value) {
+    public static BlueHttpMethod getHttpMethodByValue(String value) {
         if (isBlank(value))
             throw new BlueException(INVALID_IDENTITY);
 
-        HttpMethod httpMethod = HTTP_METHOD_MAPPING.get(value.toUpperCase());
-        if (isNull(httpMethod))
+        BlueHttpMethod blueHttpMethod = HTTP_METHOD_MAPPING.get(value.toUpperCase());
+        if (isNull(blueHttpMethod))
             throw new BlueException(INVALID_IDENTITY);
 
-        return httpMethod;
+        return blueHttpMethod;
     }
 
     /**
@@ -845,15 +844,15 @@ public final class ConstantProcessor {
      * @param identity
      * @return
      */
-    public static MediaType getMediaTypeByIdentity(String identity) {
+    public static BlueMediaType getMediaTypeByIdentity(String identity) {
         if (isBlank(identity))
             throw new BlueException(INVALID_IDENTITY);
 
-        MediaType mediaType = MEDIA_TYPE_MAPPING.get(identity.toLowerCase());
-        if (isNull(mediaType))
+        BlueMediaType blueMediaType = MEDIA_TYPE_MAPPING.get(identity.toLowerCase());
+        if (isNull(blueMediaType))
             throw new BlueException(INVALID_IDENTITY);
 
-        return mediaType;
+        return blueMediaType;
     }
 
     /**

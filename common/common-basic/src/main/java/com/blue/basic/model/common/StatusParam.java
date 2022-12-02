@@ -17,7 +17,7 @@ public final class StatusParam implements Serializable, Asserter {
     private static final long serialVersionUID = 3631693809321831634L;
 
     /**
-     * id
+     * status
      */
     private Integer status;
 

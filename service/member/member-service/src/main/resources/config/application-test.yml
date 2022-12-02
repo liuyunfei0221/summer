@@ -431,62 +431,6 @@ card:
   max: 8
 
 
-producers:
-  configs:
-    invalid-auth:
-      services: [ 43.138.111.53:6650 ]
-      enable-tls: false
-      tlsTrust-certs-file-path:
-      tls-cert-file-path:
-      tls-key-file-path:
-      tls-allow-insecure-connection:
-      tls-hostname-verification-enable:
-      listener-name:
-      operation-timeout-millis: 30000
-      statsInterval-millis: 60000
-      io-threads: 1
-      listener-threads: 1
-      connections-per-broker: 1
-      use-tcp-no-delay: true
-      memory-limit-kilo-bytes: 512
-      max-concurrent-lookup-requests: 60
-      max-lookup-request: 50000
-      max-lookup-redirects: 3
-      max-number-of-rejected-request-per-connection: 50
-      keep-alive-interval-millis: 30000
-      connection-timeout-millis: 60000
-      starting-backoff-interval-millis: 300
-      max-backoff-interval-millis: 600
-      enable-busy-wait: false
-      clock-zone-id: Asia/Shanghai
-      enable-transaction: false
-      enable-proxy: false
-      proxy-service-url:
-      proxy-protocol: SNI
-      topic: invalidAuth
-      producer-name: invalidAuthProducer000
-      access-mode: Shared
-      send-timeout-millis: 30000
-      max-pending-messages: 1000
-      block-if-queue-full: false
-      message-routing-mode: RoundRobinPartition
-      compression-type: NONE
-      enable-batching: true
-      enable-chunking: false
-      batching-max-publish-delay-millis: 1000
-      round-robin-router-batching-partition-switch-frequency: 2
-      batching-max-messages: 512
-      batching-max-bytes: 512
-      initial-sequence-id: 0
-      auto-update-partitions: true
-      auto-update-partitions-interval-millis: 30000
-      enable-multi-schema: false
-      hashing-schemes: [ JavaStringHash ]
-      enable-encrypt: false
-      encryption-key:
-      producer-crypto-failure-action: FAIL
-
-
 encode:
   salt: I'm a salt :)
 

@@ -94,6 +94,16 @@ public final class RiskHitRecordCondition extends SortCondition implements Seria
      */
     private Integer hitType;
 
+    /**
+     * remove session?
+     */
+    private Integer removeSession;
+
+    /**
+     * invalid member status?
+     */
+    private Integer invalidStatus;
+
     public RiskHitRecordCondition() {
         super(RiskHitRecordSortAttribute.STAMP.attribute, DESC.identity);
     }
@@ -105,7 +115,7 @@ public final class RiskHitRecordCondition extends SortCondition implements Seria
     public RiskHitRecordCondition(String dataEventType, String dataEventOpType, Long stampBegin, Long stampEnd, String method, String uri, String realUri,
                                   Integer responseStatus, Long memberId, Long roleId, String credentialType, String deviceType, Long loginTimeBegin, Long loginTimeEnd,
                                   String clientIp, String userAgent, Integer durationSecondsMin, Integer durationSecondsMax, Long resourceId, String module, String relativeUri, String absoluteUri, String relationView,
-                                  Integer authenticate, Integer type, Integer hitType, String sortAttribute, String sortType) {
+                                  Integer authenticate, Integer type, Integer hitType, Integer removeSession, Integer invalidStatus, String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.dataEventType = dataEventType;
         this.dataEventOpType = dataEventOpType;
@@ -133,6 +143,8 @@ public final class RiskHitRecordCondition extends SortCondition implements Seria
         this.authenticate = authenticate;
         this.type = type;
         this.hitType = hitType;
+        this.removeSession = removeSession;
+        this.invalidStatus = invalidStatus;
     }
 
     public String getDataEventType() {
@@ -343,6 +355,22 @@ public final class RiskHitRecordCondition extends SortCondition implements Seria
         this.hitType = hitType;
     }
 
+    public Integer getRemoveSession() {
+        return removeSession;
+    }
+
+    public void setRemoveSession(Integer removeSession) {
+        this.removeSession = removeSession;
+    }
+
+    public Integer getInvalidStatus() {
+        return invalidStatus;
+    }
+
+    public void setInvalidStatus(Integer invalidStatus) {
+        this.invalidStatus = invalidStatus;
+    }
+
     @Override
     public String toString() {
         return "RiskHitRecordCondition{" +
@@ -372,7 +400,9 @@ public final class RiskHitRecordCondition extends SortCondition implements Seria
                 ", authenticate=" + authenticate +
                 ", type=" + type +
                 ", hitType=" + hitType +
+                ", removeSession=" + removeSession +
+                ", invalidStatus=" + invalidStatus +
                 '}';
     }
-    
+
 }

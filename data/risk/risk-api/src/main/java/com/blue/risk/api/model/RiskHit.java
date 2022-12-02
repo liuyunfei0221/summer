@@ -53,11 +53,22 @@ public final class RiskHit implements Serializable, Asserter {
     private Long illegalExpiresSecond;
 
     /**
+     * remove session?
+     */
+    private Boolean removeSession;
+
+    /**
+     * invalid member status?
+     */
+    private Boolean invalidStatus;
+
+    /**
      * stamp(second)
      */
     private Long stamp;
 
-    public RiskHit(Long memberId, String ip, String method, String uri, Integer hitType, Long illegalExpiresSecond, Long stamp) {
+    public RiskHit(Long memberId, String ip, String method, String uri, Integer hitType,
+                   Long illegalExpiresSecond, Boolean removeSession, Boolean invalidStatus, Long stamp) {
         if (isInvalidIdentity(memberId) && isBlank(ip))
             throw new BlueException(INVALID_PARAM);
 
@@ -69,6 +80,8 @@ public final class RiskHit implements Serializable, Asserter {
         this.uri = uri;
         this.hitType = hitType;
         this.illegalExpiresSecond = illegalExpiresSecond;
+        this.removeSession = removeSession;
+        this.invalidStatus = invalidStatus;
         this.stamp = isNotNull(stamp) ? stamp : TIME_STAMP_GETTER.get();
     }
 
@@ -128,6 +141,22 @@ public final class RiskHit implements Serializable, Asserter {
         this.illegalExpiresSecond = illegalExpiresSecond;
     }
 
+    public Boolean getRemoveSession() {
+        return removeSession;
+    }
+
+    public void setRemoveSession(Boolean removeSession) {
+        this.removeSession = removeSession;
+    }
+
+    public Boolean getInvalidStatus() {
+        return invalidStatus;
+    }
+
+    public void setInvalidStatus(Boolean invalidStatus) {
+        this.invalidStatus = invalidStatus;
+    }
+
     public Long getStamp() {
         return stamp;
     }
@@ -139,12 +168,14 @@ public final class RiskHit implements Serializable, Asserter {
     @Override
     public String toString() {
         return "RiskHit{" +
-                "memberId='" + memberId + '\'' +
+                "memberId=" + memberId +
                 ", ip='" + ip + '\'' +
                 ", method='" + method + '\'' +
                 ", uri='" + uri + '\'' +
                 ", hitType=" + hitType +
                 ", illegalExpiresSecond=" + illegalExpiresSecond +
+                ", removeSession=" + removeSession +
+                ", invalidStatus=" + invalidStatus +
                 ", stamp=" + stamp +
                 '}';
     }

@@ -47,7 +47,8 @@ public class BlueDynamicRoute {
 
     private static final UnaryOperator<String> PATH_PARSER = path -> path;
 
-    private static final Function<String, RequestPredicate> MEDIA_TYPE_PREDICATE_GENERATOR = str -> accept(getMediaTypeByIdentity(str.toLowerCase().intern()));
+    private static final Function<String, RequestPredicate> MEDIA_TYPE_PREDICATE_GENERATOR = str ->
+            accept(getMediaTypeByIdentity(str.toLowerCase().intern()).mediaType);
 
     /**
      * generate endPoint
