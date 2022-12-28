@@ -28,7 +28,7 @@ public interface MemberBasicMapper {
 
     int updateQrCode(@Param("id") Long id, @Param("qrCode") String qrCode, @Param("updateTime") Long updateTime);
 
-    int updateProfile(@Param("id") Long id, @Param("profile") String profile, @Param("updateTime") Long updateTime);
+    int updateIntroduction(@Param("id") Long id, @Param("introduction") String introduction, @Param("updateTime") Long updateTime);
 
     int updateStatus(@Param("id") Long id, @Param("status") Integer status, @Param("updateTime") Long updateTime);
 

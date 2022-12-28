@@ -43,7 +43,7 @@ public class MemberDetailUpdateParam implements Serializable, Asserter {
 
     private String address;
 
-    private String profile;
+    private String introduction;
 
     private String hobby;
 
@@ -55,7 +55,7 @@ public class MemberDetailUpdateParam implements Serializable, Asserter {
     }
 
     public MemberDetailUpdateParam(String name, Integer gender, String phone, String email, String birthDay, Integer chineseZodiac, Integer zodiacSign,
-                                   Integer height, Integer weight, Long cityId, String address, String profile, String hobby, String homepage, String extra) {
+                                   Integer height, Integer weight, Long cityId, String address, String introduction, String hobby, String homepage, String extra) {
         this.name = name;
         this.gender = gender;
         this.phone = phone;
@@ -67,7 +67,7 @@ public class MemberDetailUpdateParam implements Serializable, Asserter {
         this.weight = weight;
         this.cityId = cityId;
         this.address = address;
-        this.profile = profile;
+        this.introduction = introduction;
         this.hobby = hobby;
         this.homepage = homepage;
         this.extra = extra;
@@ -167,12 +167,12 @@ public class MemberDetailUpdateParam implements Serializable, Asserter {
         this.address = address;
     }
 
-    public String getProfile() {
-        return profile;
+    public String getIntroduction() {
+        return introduction;
     }
 
-    public void setProfile(String profile) {
-        this.profile = profile;
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
     }
 
     public String getHobby() {
@@ -213,7 +213,7 @@ public class MemberDetailUpdateParam implements Serializable, Asserter {
                 ", weight=" + weight +
                 ", cityId=" + cityId +
                 ", address='" + address + '\'' +
-                ", profile='" + profile + '\'' +
+                ", introduction='" + introduction + '\'' +
                 ", hobby='" + hobby + '\'' +
                 ", homepage='" + homepage + '\'' +
                 ", extra='" + extra + '\'' +

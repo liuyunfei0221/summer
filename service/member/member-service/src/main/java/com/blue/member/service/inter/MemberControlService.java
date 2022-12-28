@@ -3,7 +3,7 @@ package com.blue.member.service.inter;
 import com.blue.basic.model.common.PageModelRequest;
 import com.blue.basic.model.common.PageModelResponse;
 import com.blue.member.api.model.MemberBasicInfo;
-import com.blue.member.api.model.MemberRegistryParam;
+import com.blue.member.api.model.MemberInitParam;
 import com.blue.member.model.MemberAuthorityInfo;
 import com.blue.member.model.MemberBasicCondition;
 import reactor.core.publisher.Mono;
@@ -11,20 +11,20 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 /**
- * member register service
+ * member control service
  *
  * @author liuyunfei
  */
 @SuppressWarnings("JavaDoc")
-public interface MemberAuthService {
+public interface MemberControlService {
 
     /**
      * member register for auto registry or third party session
      *
-     * @param memberRegistryParam
+     * @param memberInitParam
      * @return
      */
-    MemberBasicInfo registerMemberBasic(MemberRegistryParam memberRegistryParam);
+    MemberBasicInfo initMemberBasic(MemberInitParam memberInitParam);
 
     /**
      * package credential attribute to member basic

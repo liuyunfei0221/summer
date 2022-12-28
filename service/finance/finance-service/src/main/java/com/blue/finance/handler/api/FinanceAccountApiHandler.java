@@ -1,7 +1,7 @@
 package com.blue.finance.handler.api;
 
 import com.blue.basic.model.common.BlueResponse;
-import com.blue.finance.service.inter.FinanceAccountService;
+import com.blue.finance.service.inter.FinanceControlService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -21,10 +21,10 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
 @Component
 public final class FinanceAccountApiHandler {
 
-    private final FinanceAccountService financeAccountService;
+    private final FinanceControlService financeControlService;
 
-    public FinanceAccountApiHandler(FinanceAccountService financeAccountService) {
-        this.financeAccountService = financeAccountService;
+    public FinanceAccountApiHandler(FinanceControlService financeControlService) {
+        this.financeControlService = financeControlService;
     }
 
     /**
@@ -36,7 +36,7 @@ public final class FinanceAccountApiHandler {
     public Mono<ServerResponse> get(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
-                        financeAccountService.getFinanceAccountInfoByMemberId(acc.getId())
+                        financeControlService.getFinanceAccountInfoByMemberIdWithAutoInit(acc.getId())
                                 .flatMap(fai ->
                                         ok()
                                                 .contentType(APPLICATION_JSON)

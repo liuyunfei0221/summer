@@ -202,22 +202,25 @@ public class MemberBasicServiceImpl implements MemberBasicService {
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST)))));
     };
 
-    private final Consumer<MemberBasic> MEMBER_EXIST_VALIDATOR = mb -> {
-        ofNullable(mb.getPhone())
+    private final Consumer<MemberBasic> ITEM_EXIST_VALIDATOR = t -> {
+        if (isNull(t))
+            throw new BlueException(EMPTY_PARAM);
+
+        ofNullable(t.getPhone())
                 .filter(BlueChecker::isNotBlank)
                 .ifPresent(phone -> {
                     if (isNotNull(memberBasicMapper.selectByPhone(phone)))
                         throw new BlueException(PHONE_ALREADY_EXIST);
                 });
 
-        ofNullable(mb.getEmail())
+        ofNullable(t.getEmail())
                 .filter(BlueChecker::isNotBlank)
                 .ifPresent(email -> {
                     if (isNotNull(memberBasicMapper.selectByEmail(email)))
                         throw new BlueException(EMAIL_ALREADY_EXIST);
                 });
 
-        ofNullable(mb.getName())
+        ofNullable(t.getName())
                 .filter(BlueChecker::isNotBlank)
                 .ifPresent(name -> {
                     if (isNotNull(memberBasicMapper.selectByName(name)))
@@ -246,10 +249,8 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     @Transactional(propagation = Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
     public MemberBasicInfo insertMemberBasic(MemberBasic memberBasic) {
         LOGGER.info("memberBasic = {}", memberBasic);
-        if (isNull(memberBasic))
-            throw new BlueException(EMPTY_PARAM);
 
-        MEMBER_EXIST_VALIDATOR.accept(memberBasic);
+        ITEM_EXIST_VALIDATOR.accept(memberBasic);
 
         if (isInvalidIdentity(memberBasic.getId()))
             memberBasic.setId(blueIdentityProcessor.generate(MemberBasic.class));
@@ -363,7 +364,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     }
 
     /**
-     * update member's profile
+     * update member's introduction
      *
      * @param id
      * @param stringDataParam
@@ -371,25 +372,25 @@ public class MemberBasicServiceImpl implements MemberBasicService {
      */
     @Override
     @Transactional(propagation = Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
-    public Mono<MemberBasicInfo> updateMemberBasicProfile(Long id, StringDataParam stringDataParam) {
+    public Mono<MemberBasicInfo> updateMemberBasicIntroduction(Long id, StringDataParam stringDataParam) {
         LOGGER.info("id = {}, stringDataParam = {}", id, stringDataParam);
         if (isInvalidIdentity(id))
             throw new BlueException(UNAUTHORIZED);
         if (isNull(stringDataParam))
             throw new BlueException(EMPTY_PARAM);
 
-        String profile = stringDataParam.getData();
-        if (isBlank(profile))
+        String introduction = stringDataParam.getData();
+        if (isBlank(introduction))
             throw new BlueException(EMPTY_PARAM);
 
         return justOrEmpty(memberBasicMapper.selectByPrimaryKey(id))
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))
                 .flatMap(mb -> {
                     REDIS_CACHE_DELETER.accept(id);
-                    memberBasicMapper.updateProfile(id, profile, TIME_STAMP_GETTER.get());
+                    memberBasicMapper.updateIntroduction(id, introduction, TIME_STAMP_GETTER.get());
                     REDIS_CACHE_DELETER.accept(id);
 
-                    mb.setProfile(profile);
+                    mb.setIntroduction(introduction);
                     return just(mb);
                 })
                 .map(MEMBER_BASIC_2_MEMBER_BASIC_INFO);

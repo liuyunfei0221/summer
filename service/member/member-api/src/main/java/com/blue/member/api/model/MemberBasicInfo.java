@@ -33,7 +33,7 @@ public final class MemberBasicInfo implements Serializable {
      */
     private Integer gender;
 
-    private String profile;
+    private String introduction;
 
     /**
      * @see com.blue.basic.constant.common.Status
@@ -49,7 +49,7 @@ public final class MemberBasicInfo implements Serializable {
     public MemberBasicInfo() {
     }
 
-    public MemberBasicInfo(Long id, String phone, String email, String name, String icon, String qrCode, Integer gender, String profile, Integer status, Long createTime, Long updateTime) {
+    public MemberBasicInfo(Long id, String phone, String email, String name, String icon, String qrCode, Integer gender, String introduction, Integer status, Long createTime, Long updateTime) {
         this.id = id;
         this.phone = phone;
         this.email = email;
@@ -57,7 +57,7 @@ public final class MemberBasicInfo implements Serializable {
         this.icon = icon;
         this.qrCode = qrCode;
         this.gender = gender;
-        this.profile = profile;
+        this.introduction = introduction;
         this.status = status;
         this.createTime = createTime;
         this.updateTime = updateTime;
@@ -119,12 +119,12 @@ public final class MemberBasicInfo implements Serializable {
         this.gender = gender;
     }
 
-    public String getProfile() {
-        return profile;
+    public String getIntroduction() {
+        return introduction;
     }
 
-    public void setProfile(String profile) {
-        this.profile = profile;
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
     }
 
     public Integer getStatus() {
@@ -161,7 +161,7 @@ public final class MemberBasicInfo implements Serializable {
                 ", icon='" + icon + '\'' +
                 ", qrCode='" + qrCode + '\'' +
                 ", gender=" + gender +
-                ", profile='" + profile + '\'' +
+                ", introduction='" + introduction + '\'' +
                 ", status=" + status +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +

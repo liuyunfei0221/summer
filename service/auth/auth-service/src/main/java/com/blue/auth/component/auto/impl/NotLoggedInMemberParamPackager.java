@@ -4,7 +4,7 @@ import com.blue.auth.api.model.CredentialInfo;
 import com.blue.auth.component.auto.inter.MemberParamByAutoLoginPackager;
 import com.blue.basic.constant.auth.CredentialType;
 import com.blue.basic.model.exps.BlueException;
-import com.blue.member.api.model.MemberRegistryParam;
+import com.blue.member.api.model.MemberInitParam;
 
 import static com.blue.basic.constant.auth.CredentialType.NOT_LOGGED_IN;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
@@ -21,10 +21,10 @@ public class NotLoggedInMemberParamPackager implements MemberParamByAutoLoginPac
      * package credential to member register param
      *
      * @param credentialInfo
-     * @param memberRegistryParam
+     * @param memberInitParam
      */
     @Override
-    public void packageCredentialInfoToRegistryParam(CredentialInfo credentialInfo, MemberRegistryParam memberRegistryParam) {
+    public void packageCredentialInfoToRegistryParam(CredentialInfo credentialInfo, MemberInitParam memberInitParam) {
         throw new BlueException(BAD_REQUEST);
     }
 

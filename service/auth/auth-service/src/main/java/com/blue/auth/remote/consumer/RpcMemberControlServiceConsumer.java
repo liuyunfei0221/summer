@@ -1,8 +1,8 @@
 package com.blue.auth.remote.consumer;
 
-import com.blue.member.api.inter.RpcMemberAuthService;
+import com.blue.member.api.inter.RpcMemberControlService;
 import com.blue.member.api.model.MemberBasicInfo;
-import com.blue.member.api.model.MemberRegistryParam;
+import com.blue.member.api.model.MemberInitParam;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.apache.dubbo.config.annotation.Method;
 import org.springframework.stereotype.Component;
@@ -10,30 +10,30 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * rpc member registry reference
+ * rpc member control reference
  *
  * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "unused", "DefaultAnnotationParam"})
 @Component
-public class RpcMemberAuthServiceConsumer {
+public class RpcMemberControlServiceConsumer {
 
     @DubboReference(version = "1.0",
             providedBy = {"summer-member"},
             methods = {
-                    @Method(name = "registerMemberBasic", async = false),
+                    @Method(name = "initMemberBasic", async = false),
                     @Method(name = "updateMemberCredentialAttr", async = false)
             })
-    private RpcMemberAuthService rpcMemberAuthService;
+    private RpcMemberControlService rpcMemberControlService;
 
     /**
      * member register for auto registry or third party session
      *
-     * @param memberRegistryParam
+     * @param memberInitParam
      * @return
      */
-    public MemberBasicInfo registerMemberBasic(MemberRegistryParam memberRegistryParam) {
-        return rpcMemberAuthService.registerMemberBasic(memberRegistryParam);
+    public MemberBasicInfo initMemberBasic(MemberInitParam memberInitParam) {
+        return rpcMemberControlService.initMemberBasic(memberInitParam);
     }
 
     /**
@@ -45,7 +45,7 @@ public class RpcMemberAuthServiceConsumer {
      * @return
      */
     public MemberBasicInfo updateMemberCredentialAttr(List<String> credentialTypes, String credential, Long memberId) {
-        return rpcMemberAuthService.updateMemberCredentialAttr(credentialTypes, credential, memberId);
+        return rpcMemberControlService.updateMemberCredentialAttr(credentialTypes, credential, memberId);
     }
 
 }

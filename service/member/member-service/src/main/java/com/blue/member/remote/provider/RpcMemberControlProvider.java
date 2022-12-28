@@ -1,43 +1,43 @@
 package com.blue.member.remote.provider;
 
-import com.blue.member.api.inter.RpcMemberAuthService;
+import com.blue.member.api.inter.RpcMemberControlService;
 import com.blue.member.api.model.MemberBasicInfo;
-import com.blue.member.api.model.MemberRegistryParam;
-import com.blue.member.service.inter.MemberAuthService;
+import com.blue.member.api.model.MemberInitParam;
+import com.blue.member.service.inter.MemberControlService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
 
 import java.util.List;
 
 /**
- * rpc member registry provider
+ * rpc member control provider
  *
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "JavaDoc", "AlibabaServiceOrDaoClassShouldEndWithImpl", "DefaultAnnotationParam"})
-@DubboService(interfaceClass = RpcMemberAuthService.class,
+@DubboService(interfaceClass = RpcMemberControlService.class,
         version = "1.0",
         methods = {
-                @Method(name = "registerMemberBasic", async = false),
+                @Method(name = "initMemberBasic", async = false),
                 @Method(name = "updateMemberCredentialAttr", async = false)
         })
-public class RpcMemberAuthProvider implements RpcMemberAuthService {
+public class RpcMemberControlProvider implements RpcMemberControlService {
 
-    private final MemberAuthService memberAuthService;
+    private final MemberControlService memberControlService;
 
-    public RpcMemberAuthProvider(MemberAuthService memberAuthService) {
-        this.memberAuthService = memberAuthService;
+    public RpcMemberControlProvider(MemberControlService memberControlService) {
+        this.memberControlService = memberControlService;
     }
 
     /**
      * member register for auto registry or third party session
      *
-     * @param memberRegistryParam
+     * @param memberInitParam
      * @return
      */
     @Override
-    public MemberBasicInfo registerMemberBasic(MemberRegistryParam memberRegistryParam) {
-        return memberAuthService.registerMemberBasic(memberRegistryParam);
+    public MemberBasicInfo initMemberBasic(MemberInitParam memberInitParam) {
+        return memberControlService.initMemberBasic(memberInitParam);
     }
 
     /**
@@ -50,7 +50,7 @@ public class RpcMemberAuthProvider implements RpcMemberAuthService {
      */
     @Override
     public MemberBasicInfo updateMemberCredentialAttr(List<String> credentialTypes, String credential, Long memberId) {
-        return memberAuthService.updateMemberCredentialAttr(credentialTypes, credential, memberId);
+        return memberControlService.updateMemberCredentialAttr(credentialTypes, credential, memberId);
     }
 
 }

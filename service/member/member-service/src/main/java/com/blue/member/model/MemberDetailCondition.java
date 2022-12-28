@@ -50,7 +50,7 @@ public final class MemberDetailCondition extends SortCondition implements Serial
 
     private String address;
 
-    private String profile;
+    private String introduction;
 
     private String hobbyLike;
 
@@ -79,7 +79,7 @@ public final class MemberDetailCondition extends SortCondition implements Serial
 
     public MemberDetailCondition(Long id, Long memberId, String name, Integer gender, String phone, String email, Integer yearOfBirth, Integer monthOfBirth, Integer dayOfBirth,
                                  Integer chineseZodiac, Integer zodiacSign, Integer height, Integer weight, Long countryId, Long stateId, Long cityId, String address,
-                                 String profile, String hobbyLike, String homepage, Integer status, Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd,
+                                 String introduction, String hobbyLike, String homepage, Integer status, Long createTimeBegin, Long createTimeEnd, Long updateTimeBegin, Long updateTimeEnd,
                                  String sortAttribute, String sortType) {
         super(sortAttribute, sortType);
         this.id = id;
@@ -99,7 +99,7 @@ public final class MemberDetailCondition extends SortCondition implements Serial
         this.stateId = stateId;
         this.cityId = cityId;
         this.address = address;
-        this.profile = profile;
+        this.introduction = introduction;
         this.hobbyLike = hobbyLike;
         this.homepage = homepage;
         this.status = status;
@@ -245,12 +245,12 @@ public final class MemberDetailCondition extends SortCondition implements Serial
         this.address = address;
     }
 
-    public String getProfile() {
-        return profile;
+    public String getIntroduction() {
+        return introduction;
     }
 
-    public void setProfile(String profile) {
-        this.profile = profile;
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
     }
 
     public String getHobbyLike() {
@@ -329,7 +329,7 @@ public final class MemberDetailCondition extends SortCondition implements Serial
                 ", stateId=" + stateId +
                 ", cityId=" + cityId +
                 ", address='" + address + '\'' +
-                ", profile='" + profile + '\'' +
+                ", introduction='" + introduction + '\'' +
                 ", hobbyLike='" + hobbyLike + '\'' +
                 ", homepage='" + homepage + '\'' +
                 ", status=" + status +

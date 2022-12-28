@@ -253,9 +253,9 @@ public class MemberDetailServiceImpl implements MemberDetailService {
             alteration = true;
         }
 
-        String profile = p.getProfile();
-        if (isNotBlank(profile) && !profile.equals(t.getProfile())) {
-            t.setProfile(profile);
+        String introduction = p.getIntroduction();
+        if (isNotBlank(introduction) && !introduction.equals(t.getIntroduction())) {
+            t.setIntroduction(introduction);
             alteration = true;
         }
 

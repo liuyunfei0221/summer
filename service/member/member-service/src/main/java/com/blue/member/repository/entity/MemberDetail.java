@@ -55,7 +55,7 @@ public final class MemberDetail implements Serializable {
 
     private String address;
 
-    private String profile;
+    private String introduction;
 
     private String hobby;
 
@@ -229,12 +229,12 @@ public final class MemberDetail implements Serializable {
         this.address = address;
     }
 
-    public String getProfile() {
-        return profile;
+    public String getIntroduction() {
+        return introduction;
     }
 
-    public void setProfile(String profile) {
-        this.profile = profile;
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
     }
 
     public String getHobby() {
@@ -308,7 +308,7 @@ public final class MemberDetail implements Serializable {
                 ", cityId=" + cityId +
                 ", city='" + city + '\'' +
                 ", address='" + address + '\'' +
-                ", profile='" + profile + '\'' +
+                ", introduction='" + introduction + '\'' +
                 ", hobby='" + hobby + '\'' +
                 ", homepage='" + homepage + '\'' +
                 ", extra='" + extra + '\'' +

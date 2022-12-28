@@ -156,7 +156,8 @@ public final class SnowflakeIdentityBuffer {
      * padding async
      */
     private void asyncPadding() {
-        bufferPadExecutor.submit(this::padding);
+        if (!paddingFlag.get())
+            bufferPadExecutor.submit(this::padding);
     }
 
     /**
@@ -164,7 +165,7 @@ public final class SnowflakeIdentityBuffer {
      */
     private void asyncPaddingWithThreshold(long head, long tail) {
         bufferPadExecutor.submit(() -> {
-            if ((int) (tail - head) < paddingThreshold)
+            if (!paddingFlag.get() && (int) (tail - head) < paddingThreshold)
                 asyncPadding();
         });
     }
@@ -181,12 +182,10 @@ public final class SnowflakeIdentityBuffer {
 
         asyncPaddingWithThreshold(curHead, curTail);
 
-        if (nextHead != curHead)
-            return slots[index(nextHead)].getAndUpdate(old -> INVALID);
-
-        asyncPadding();
-
-        return snowflakeIdentityGenerator.generate();
+        return nextHead != curHead ?
+                slots[index(nextHead)].getAndUpdate(old -> INVALID)
+                :
+                snowflakeIdentityGenerator.generate();
     }
 
 }

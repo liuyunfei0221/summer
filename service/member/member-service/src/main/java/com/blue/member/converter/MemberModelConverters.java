@@ -32,11 +32,11 @@ import static java.util.stream.Collectors.toList;
 @SuppressWarnings("AliControlFlowStatementWithoutBraces")
 public final class MemberModelConverters {
 
-    public static final Function<MemberRegistryParam, MemberBasic> MEMBER_REGISTRY_INFO_2_MEMBER_BASIC = memberRegistryParam -> {
-        if (isNull(memberRegistryParam))
+    public static final Function<MemberInitParam, MemberBasic> MEMBER_REGISTRY_INFO_2_MEMBER_BASIC = memberInitParam -> {
+        if (isNull(memberInitParam))
             throw new BlueException(EMPTY_PARAM);
 
-        String phone = ofNullable(memberRegistryParam.getPhone()).orElse(EMPTY_VALUE.value);
+        String phone = ofNullable(memberInitParam.getPhone()).orElse(EMPTY_VALUE.value);
         if (isNotBlank(phone)) {
             if (phone.length() > BlueCommonThreshold.PHONE_LEN_MAX.value)
                 throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone length is too long");
@@ -44,7 +44,7 @@ public final class MemberModelConverters {
                 throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "phone length is too short");
         }
 
-        String email = ofNullable(memberRegistryParam.getEmail()).orElse(EMPTY_VALUE.value);
+        String email = ofNullable(memberInitParam.getEmail()).orElse(EMPTY_VALUE.value);
         if (isNotBlank(email)) {
             if (email.length() > BlueCommonThreshold.EMAIL_LEN_MAX.value)
                 throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "email length is too long");
@@ -55,15 +55,15 @@ public final class MemberModelConverters {
         if (isBlank(phone) && isBlank(email))
             throw new BlueException(BAD_REQUEST);
 
-        String name = memberRegistryParam.getName();
+        String name = memberInitParam.getName();
         if (isBlank(name))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "name can't be blank");
 
-        Integer gender = ofNullable(memberRegistryParam.getGender())
+        Integer gender = ofNullable(memberInitParam.getGender())
                 .orElse(UNKNOWN.identity);
         assertGender(gender, false);
 
-        String source = ofNullable(memberRegistryParam.getSource())
+        String source = ofNullable(memberInitParam.getSource())
                 .filter(BlueChecker::isNotBlank).orElse(APP.identity);
         assertSource(source, false);
 
@@ -73,10 +73,10 @@ public final class MemberModelConverters {
         memberBasic.setPhone(phone);
         memberBasic.setEmail(email);
         memberBasic.setName(name);
-        memberBasic.setIcon(ofNullable(memberRegistryParam.getIcon()).orElse(EMPTY_VALUE.value));
+        memberBasic.setIcon(ofNullable(memberInitParam.getIcon()).orElse(EMPTY_VALUE.value));
         memberBasic.setQrCode(EMPTY_VALUE.value);
         memberBasic.setGender(gender);
-        memberBasic.setProfile(EMPTY_VALUE.value);
+        memberBasic.setIntroduction(EMPTY_VALUE.value);
         memberBasic.setStatus(Status.VALID.status);
         memberBasic.setSource(source);
         memberBasic.setCreateTime(stamp);
@@ -88,7 +88,7 @@ public final class MemberModelConverters {
     public static final Function<MemberBasic, MemberBasicInfo> MEMBER_BASIC_2_MEMBER_BASIC_INFO = memberBasic -> {
         if (memberBasic != null)
             return new MemberBasicInfo(memberBasic.getId(), memberBasic.getPhone(), memberBasic.getEmail(),
-                    memberBasic.getName(), memberBasic.getIcon(), memberBasic.getQrCode(), memberBasic.getGender(), memberBasic.getProfile(),
+                    memberBasic.getName(), memberBasic.getIcon(), memberBasic.getQrCode(), memberBasic.getGender(), memberBasic.getIntroduction(),
                     memberBasic.getStatus(), memberBasic.getCreateTime(), memberBasic.getUpdateTime());
 
         throw new BlueException(EMPTY_PARAM);
@@ -149,7 +149,7 @@ public final class MemberModelConverters {
                     memberDetail.getChineseZodiac(), memberDetail.getZodiacSign(),
                     memberDetail.getHeight(), memberDetail.getWeight(), memberDetail.getCountryId(), memberDetail.getCountry(),
                     memberDetail.getStateId(), memberDetail.getState(), memberDetail.getCityId(),
-                    memberDetail.getCity(), memberDetail.getAddress(), memberDetail.getProfile(),
+                    memberDetail.getCity(), memberDetail.getAddress(), memberDetail.getIntroduction(),
                     memberDetail.getHobby(), memberDetail.getHomepage(), memberDetail.getExtra(), memberDetail.getStatus()
             );
 

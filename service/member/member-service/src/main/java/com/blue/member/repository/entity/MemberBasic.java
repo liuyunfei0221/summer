@@ -32,7 +32,7 @@ public final class MemberBasic implements Serializable {
      */
     private Integer gender;
 
-    private String profile;
+    private String introduction;
 
     private String source;
 
@@ -102,12 +102,12 @@ public final class MemberBasic implements Serializable {
         this.gender = gender;
     }
 
-    public String getProfile() {
-        return profile;
+    public String getIntroduction() {
+        return introduction;
     }
 
-    public void setProfile(String profile) {
-        this.profile = profile;
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
     }
 
     public String getSource() {
@@ -152,7 +152,7 @@ public final class MemberBasic implements Serializable {
                 ", icon='" + icon + '\'' +
                 ", qrCode='" + qrCode + '\'' +
                 ", gender=" + gender +
-                ", profile='" + profile + '\'' +
+                ", introduction='" + introduction + '\'' +
                 ", source='" + source + '\'' +
                 ", status=" + status +
                 ", createTime=" + createTime +

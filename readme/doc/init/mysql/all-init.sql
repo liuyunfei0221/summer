@@ -487,8 +487,8 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
         'update member icon', 'update member icon', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (180003, 'PATCH', 'blue-member', '/basic/qrCode', '', b'1', b'1', b'1', b'0', b'1', 1,
         'update member qrCode', 'update member qrCode', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (180004, 'PATCH', 'blue-member', '/basic/profile', '', b'1', b'1', b'1', b'0', b'1', 1,
-        'update member profile', 'update member profile', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
+       (180004, 'PATCH', 'blue-member', '/basic/introduction', '', b'1', b'1', b'1', b'0', b'1', 1,
+        'update member introduction', 'update member introduction', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (180005, 'PUT', 'blue-member', '/detail', '', b'1', b'1', b'1', b'0', b'1', 1,
         'update member detail', 'update member detail', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (180006, 'GET', 'blue-member', '/detail', '', b'1', b'1', b'1', b'0', b'1', 1,
@@ -1871,44 +1871,44 @@ member_0;
 
 CREATE TABLE `member_basic_0`
 (
-    `id`          bigint NOT NULL COMMENT 'id',
-    `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
-    `email`       varchar(256) DEFAULT '' COMMENT 'email',
-    `name`        varchar(256) DEFAULT '' COMMENT 'name',
-    `icon`        varchar(256) DEFAULT '' COMMENT 'icon link',
-    `qr_code`     varchar(256) DEFAULT '' COMMENT 'qrcode link',
-    `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
-    `profile`     varchar(128) DEFAULT '' COMMENT 'profile',
-    `source`      varchar(16)  DEFAULT 'APP' COMMENT 'source',
-    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
-    `create_time` bigint NOT NULL COMMENT 'data create time',
-    `update_time` bigint NOT NULL COMMENT 'data update time',
+    `id`           bigint NOT NULL COMMENT 'id',
+    `phone`        varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
+    `email`        varchar(256) DEFAULT '' COMMENT 'email',
+    `name`         varchar(256) DEFAULT '' COMMENT 'name',
+    `icon`         varchar(256) DEFAULT '' COMMENT 'icon link',
+    `qr_code`      varchar(256) DEFAULT '' COMMENT 'qrcode link',
+    `gender`       tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `introduction` varchar(256) DEFAULT '' COMMENT 'introduction',
+    `source`       varchar(16)  DEFAULT 'APP' COMMENT 'source',
+    `status`       tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time`  bigint NOT NULL COMMENT 'data create time',
+    `update_time`  bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    KEY           `idx_phone`(`phone`) USING BTREE,
-    KEY           `idx_email`(`email`) USING BTREE,
-    KEY           `idx_name`(`name`) USING BTREE,
-    KEY           `idx_create_source`(`create_time`,`source`) USING BTREE
+    KEY            `idx_phone`(`phone`) USING BTREE,
+    KEY            `idx_email`(`email`) USING BTREE,
+    KEY            `idx_name`(`name`) USING BTREE,
+    KEY            `idx_create_source`(`create_time`,`source`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member basic 0';
 
 CREATE TABLE `member_basic_1`
 (
-    `id`          bigint NOT NULL COMMENT 'id',
-    `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
-    `email`       varchar(256) DEFAULT '' COMMENT 'email',
-    `name`        varchar(256) DEFAULT '' COMMENT 'name',
-    `icon`        varchar(255) DEFAULT '' COMMENT 'icon link',
-    `qr_code`     varchar(256) DEFAULT '' COMMENT 'qrcode link',
-    `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
-    `profile`     varchar(128) DEFAULT '' COMMENT 'profile',
-    `source`      varchar(16)  DEFAULT 'APP' COMMENT 'source',
-    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
-    `create_time` bigint NOT NULL COMMENT 'data create time',
-    `update_time` bigint NOT NULL COMMENT 'data update time',
+    `id`           bigint NOT NULL COMMENT 'id',
+    `phone`        varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
+    `email`        varchar(256) DEFAULT '' COMMENT 'email',
+    `name`         varchar(256) DEFAULT '' COMMENT 'name',
+    `icon`         varchar(256) DEFAULT '' COMMENT 'icon link',
+    `qr_code`      varchar(256) DEFAULT '' COMMENT 'qrcode link',
+    `gender`       tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `introduction` varchar(256) DEFAULT '' COMMENT 'introduction',
+    `source`       varchar(16)  DEFAULT 'APP' COMMENT 'source',
+    `status`       tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time`  bigint NOT NULL COMMENT 'data create time',
+    `update_time`  bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    KEY           `idx_phone`(`phone`) USING BTREE,
-    KEY           `idx_email`(`email`) USING BTREE,
-    KEY           `idx_name`(`name`) USING BTREE,
-    KEY           `idx_create_source`(`create_time`,`source`) USING BTREE
+    KEY            `idx_phone`(`phone`) USING BTREE,
+    KEY            `idx_email`(`email`) USING BTREE,
+    KEY            `idx_name`(`name`) USING BTREE,
+    KEY            `idx_create_source`(`create_time`,`source`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member basic 1';
 
 CREATE TABLE `real_name_0`
@@ -1981,7 +1981,7 @@ CREATE TABLE `member_detail_0`
     `city_id`        bigint       DEFAULT '0' COMMENT 'city id',
     `city`           varchar(256) DEFAULT '' COMMENT 'city name',
     `address`        varchar(512) DEFAULT '' COMMENT 'address',
-    `profile`        varchar(512) DEFAULT '' COMMENT 'profile',
+    `introduction`   varchar(512) DEFAULT '' COMMENT 'introduction',
     `hobby`          varchar(512) DEFAULT '' COMMENT 'hobby',
     `homepage`       varchar(255) DEFAULT '' COMMENT 'personal home page',
     `extra`          varchar(255) DEFAULT '' COMMENT 'extra info',
@@ -2018,7 +2018,7 @@ CREATE TABLE `member_detail_1`
     `city_id`        bigint       DEFAULT '0' COMMENT 'city id',
     `city`           varchar(256) DEFAULT '' COMMENT 'city name',
     `address`        varchar(512) DEFAULT '' COMMENT 'address',
-    `profile`        varchar(512) DEFAULT '' COMMENT 'profile',
+    `introduction`   varchar(512) DEFAULT '' COMMENT 'introduction',
     `hobby`          varchar(512) DEFAULT '' COMMENT 'hobby',
     `homepage`       varchar(255) DEFAULT '' COMMENT 'personal home page',
     `extra`          varchar(255) DEFAULT '' COMMENT 'extra info',
@@ -2044,7 +2044,7 @@ CREATE TABLE `undo_log_0`
     `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
     PRIMARY KEY (`branch_id`),
     UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table 0';
+) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8mb4 COMMENT ='AT transaction mode undo table 0';
 
 CREATE TABLE `undo_log_1`
 (
@@ -2057,7 +2057,7 @@ CREATE TABLE `undo_log_1`
     `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
     PRIMARY KEY (`branch_id`),
     UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table 1';
+) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8mb4 COMMENT ='AT transaction mode undo table 1';
 
 
 -- member1
@@ -2069,44 +2069,44 @@ member_1;
 
 CREATE TABLE `member_basic_0`
 (
-    `id`          bigint NOT NULL COMMENT 'id',
-    `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
-    `email`       varchar(256) DEFAULT '' COMMENT 'email',
-    `name`        varchar(256) DEFAULT '' COMMENT 'name',
-    `icon`        varchar(256) DEFAULT '' COMMENT 'icon link',
-    `qr_code`     varchar(256) DEFAULT '' COMMENT 'qrcode link',
-    `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
-    `profile`     varchar(128) DEFAULT '' COMMENT 'profile',
-    `source`      varchar(16)  DEFAULT 'APP' COMMENT 'source',
-    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
-    `create_time` bigint NOT NULL COMMENT 'data create time',
-    `update_time` bigint NOT NULL COMMENT 'data update time',
+    `id`           bigint NOT NULL COMMENT 'id',
+    `phone`        varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
+    `email`        varchar(256) DEFAULT '' COMMENT 'email',
+    `name`         varchar(256) DEFAULT '' COMMENT 'name',
+    `icon`         varchar(256) DEFAULT '' COMMENT 'icon link',
+    `qr_code`      varchar(256) DEFAULT '' COMMENT 'qrcode link',
+    `gender`       tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `introduction` varchar(256) DEFAULT '' COMMENT 'introduction',
+    `source`       varchar(16)  DEFAULT 'APP' COMMENT 'source',
+    `status`       tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time`  bigint NOT NULL COMMENT 'data create time',
+    `update_time`  bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    KEY           `idx_phone`(`phone`) USING BTREE,
-    KEY           `idx_email`(`email`) USING BTREE,
-    KEY           `idx_name`(`name`) USING BTREE,
-    KEY           `idx_create_source`(`create_time`,`source`) USING BTREE
+    KEY            `idx_phone`(`phone`) USING BTREE,
+    KEY            `idx_email`(`email`) USING BTREE,
+    KEY            `idx_name`(`name`) USING BTREE,
+    KEY            `idx_create_source`(`create_time`,`source`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member basic 0';
 
 CREATE TABLE `member_basic_1`
 (
-    `id`          bigint NOT NULL COMMENT 'id',
-    `phone`       varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
-    `email`       varchar(256) DEFAULT '' COMMENT 'email',
-    `name`        varchar(256) DEFAULT '' COMMENT 'name',
-    `icon`        varchar(255) DEFAULT '' COMMENT 'icon link',
-    `qr_code`     varchar(256) DEFAULT '' COMMENT 'qrcode link',
-    `gender`      tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
-    `profile`     varchar(128) DEFAULT '' COMMENT 'profile',
-    `source`      varchar(16)  DEFAULT 'APP' COMMENT 'source',
-    `status`      tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
-    `create_time` bigint NOT NULL COMMENT 'data create time',
-    `update_time` bigint NOT NULL COMMENT 'data update time',
+    `id`           bigint NOT NULL COMMENT 'id',
+    `phone`        varchar(256) DEFAULT '' COMMENT 'phone format: 8613131693996',
+    `email`        varchar(256) DEFAULT '' COMMENT 'email',
+    `name`         varchar(256) DEFAULT '' COMMENT 'name',
+    `icon`         varchar(256) DEFAULT '' COMMENT 'icon link',
+    `qr_code`      varchar(256) DEFAULT '' COMMENT 'qrcode link',
+    `gender`       tinyint      DEFAULT '3' COMMENT 'gender: 1-male 0-female 2-other 3-unknown',
+    `introduction` varchar(256) DEFAULT '' COMMENT 'introduction',
+    `source`       varchar(16)  DEFAULT 'APP' COMMENT 'source',
+    `status`       tinyint      DEFAULT '1' COMMENT 'data status: 1-valid 0-invalid',
+    `create_time`  bigint NOT NULL COMMENT 'data create time',
+    `update_time`  bigint NOT NULL COMMENT 'data update time',
     PRIMARY KEY (`id`),
-    KEY           `idx_phone`(`phone`) USING BTREE,
-    KEY           `idx_email`(`email`) USING BTREE,
-    KEY           `idx_name`(`name`) USING BTREE,
-    KEY           `idx_create_source`(`create_time`,`source`) USING BTREE
+    KEY            `idx_phone`(`phone`) USING BTREE,
+    KEY            `idx_email`(`email`) USING BTREE,
+    KEY            `idx_name`(`name`) USING BTREE,
+    KEY            `idx_create_source`(`create_time`,`source`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='table of member basic 1';
 
 CREATE TABLE `real_name_0`
@@ -2179,7 +2179,7 @@ CREATE TABLE `member_detail_0`
     `city_id`        bigint       DEFAULT '0' COMMENT 'city id',
     `city`           varchar(256) DEFAULT '' COMMENT 'city name',
     `address`        varchar(512) DEFAULT '' COMMENT 'address',
-    `profile`        varchar(512) DEFAULT '' COMMENT 'profile',
+    `introduction`   varchar(512) DEFAULT '' COMMENT 'introduction',
     `hobby`          varchar(512) DEFAULT '' COMMENT 'hobby',
     `homepage`       varchar(255) DEFAULT '' COMMENT 'personal home page',
     `extra`          varchar(255) DEFAULT '' COMMENT 'extra info',
@@ -2216,7 +2216,7 @@ CREATE TABLE `member_detail_1`
     `city_id`        bigint       DEFAULT '0' COMMENT 'city id',
     `city`           varchar(256) DEFAULT '' COMMENT 'city name',
     `address`        varchar(512) DEFAULT '' COMMENT 'address',
-    `profile`        varchar(512) DEFAULT '' COMMENT 'profile',
+    `introduction`   varchar(512) DEFAULT '' COMMENT 'introduction',
     `hobby`          varchar(512) DEFAULT '' COMMENT 'hobby',
     `homepage`       varchar(255) DEFAULT '' COMMENT 'personal home page',
     `extra`          varchar(255) DEFAULT '' COMMENT 'extra info',
@@ -2242,7 +2242,7 @@ CREATE TABLE `undo_log_0`
     `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
     PRIMARY KEY (`branch_id`),
     UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table 0';
+) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8mb4 COMMENT ='AT transaction mode undo table 0';
 
 CREATE TABLE `undo_log_1`
 (
@@ -2255,7 +2255,7 @@ CREATE TABLE `undo_log_1`
     `log_modified`  DATETIME(6) NOT NULL COMMENT 'modify datetime',
     PRIMARY KEY (`branch_id`),
     UNIQUE KEY `ux_undo_log`(`xid`,`branch_id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8 COMMENT ='AT transaction mode undo table 1';
+) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8mb4 COMMENT ='AT transaction mode undo table 1';
 
 
 -- portal

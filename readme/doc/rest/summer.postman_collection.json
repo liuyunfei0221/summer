@@ -2979,7 +2979,7 @@
 							"raw": "{\r\n    \"data\":\"一个深蓝蓝\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:11000/blue-member/basic/profile",
+							"raw": "localhost:11000/blue-member/basic/introduction",
 							"host": [
 								"localhost"
 							],
@@ -2987,7 +2987,7 @@
 							"path": [
 								"blue-member",
 								"basic",
-								"profile"
+								"introduction"
 							]
 						}
 					},
@@ -3041,7 +3041,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\":\"yunfei\",\r\n    \"gender\":1,\r\n    \"phone\":\"13131693996\",\r\n    \"email\":\"liuyunfei0221@outlook.com\",\r\n    \"birthDay\":\"1989-02-14\",\r\n    \"chineseZodiac\":1,\r\n    \"zodiacSign\":1,\r\n    \"height\":169,\r\n    \"weight\":110,\r\n    \"cityId\":19332,\r\n    \"address\":\"朝阳区朝阳北路22号院柏林爱乐3期5-6-8\",\r\n    \"profile\":\"coding...\",\r\n    \"hobby\":\"coding......\",\r\n    \"homepage\":\"www.bing.cn\",\r\n    \"extra\":\"no\"\r\n}"
+							"raw": "{\r\n    \"name\":\"yunfei\",\r\n    \"gender\":1,\r\n    \"phone\":\"13131693996\",\r\n    \"email\":\"liuyunfei0221@outlook.com\",\r\n    \"birthDay\":\"1989-02-14\",\r\n    \"chineseZodiac\":1,\r\n    \"zodiacSign\":1,\r\n    \"height\":169,\r\n    \"weight\":110,\r\n    \"cityId\":19332,\r\n    \"address\":\"朝阳区朝阳北路22号院柏林爱乐3期5-6-8\",\r\n    \"introduction\":\"coding...\",\r\n    \"hobby\":\"coding......\",\r\n    \"homepage\":\"www.bing.cn\",\r\n    \"extra\":\"no\"\r\n}"
 						},
 						"url": {
 							"raw": "localhost:11000/blue-member/detail",
@@ -3606,7 +3606,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiI5OGQ1ZGFiNTdhM2U5NDU5NWQyM2Y0NzdkZDhjMjQ0MTE4NTAxNTVmODc0ODE4M2I0NDhjMGZkMWIzYmNlMmMzNmMyMGY2YTEyZTEyM2M2OTRiMGU5YzExMjE2YzE4MWVhMGJmYTM3YjJlNmViMzczNzJmMjk4MWY0NDNlZTA2NiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE0MjkxODM5NDI4MTk4NDJfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNDI5MTgzOTQyODE5ODQyIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY2Njg3ODk4IiwibmJmIjoxNjY2Njg3ODk4LCJ0Ijoid2pSQ3Y1dzVyUFoiLCJlYXMiOjE2NzQ0NjM4OTg1OTcsImV4cCI6MTY3NDQ2Mzg5OCwiaWF0IjoxNjY2Njg3ODk4LCJqdGkiOiIwTUxaUlRjSXJIdnRHUDNEUnJiSnVxNGw3OVV0OHVObSJ9.RcNY3STHx-mKhX0m7vawJ9BZpg2wvjHl5VhuFyE4_OFJ4DwmHQ_ZZn6BMWz1v21kvxKJBvpKnu3zMghPVk1N1w",
+								"value": "eyJraWQiOiJmYTgxMTY3YTQ3N2NiZTE1ZGRmMTdjNTZhMGFmM2UwZWQ4YTNkNGNjNDQwZTY2MmUyMTc5NzYzN2MxMGFmMjQzOTZlZDc5ZTAxZWJlOTMwNzQyN2I5MWRkNTM3MmI5MDQ0MDU3OTUwMzRiNTBhZjU0MDMzYjUxMDA4MjExZmU1NCIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTczNzY4Njg2MTI5NjQzNTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjU3Mzc2ODY4NjEyOTY0MzUzIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjcyMjI5MjY3IiwibmJmIjoxNjcyMjI5MjY3LCJ0IjoiMnZCck5MWTJ4Y3QiLCJlYXMiOjE2ODAwMDUyNjc2ODAsImV4cCI6MTY4MDAwNTI2NywiaWF0IjoxNjcyMjI5MjY3LCJqdGkiOiJLMWF0NWdtbmtwNXRkRklsNWl4a05mUUZVdjU2VEY2biJ9.Hj6uXMEvkWEO1wHZcEEyXmQKI6hCA7q-FK_iEiuJdOlV-Mg3xJz5UqK_KP71yYEM3cmRfCSpSaugQvHjEETk8A",
 								"type": "text"
 							}
 						],
@@ -5932,7 +5932,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"verifyType\":\"SMS\",\r\n    \"businessType\":\"PVL_WAR\",\r\n    \"destination\":\"18633783158\"\r\n}"
+							"raw": "{\r\n    \"verifyType\":\"SMS\",\r\n    \"businessType\":\"PVL_WAR\",\r\n    \"destination\":\"13131693996\"\r\n}"
 						},
 						"url": {
 							"raw": "localhost:15000/blue-verify/verify/generate",
@@ -5972,7 +5972,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"18633783158\",\r\n        \"access\":\"7116111\"\r\n    }\r\n}"
+							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"6164448\"\r\n    }\r\n}"
 						},
 						"url": {
 							"raw": "localhost:11000/blue-auth/session",

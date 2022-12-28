@@ -2,7 +2,7 @@ package com.blue.member.handler.manager;
 
 import com.blue.basic.model.common.BlueResponse;
 import com.blue.basic.model.exps.BlueException;
-import com.blue.member.service.inter.MemberAuthService;
+import com.blue.member.service.inter.MemberControlService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -25,10 +25,10 @@ import static reactor.core.publisher.Mono.error;
 @Component
 public class MemberAuthManagerHandler {
 
-    private final MemberAuthService memberAuthService;
+    private final MemberControlService memberControlService;
 
-    public MemberAuthManagerHandler(MemberAuthService memberAuthService) {
-        this.memberAuthService = memberAuthService;
+    public MemberAuthManagerHandler(MemberControlService memberControlService) {
+        this.memberControlService = memberControlService;
     }
 
     /**
@@ -40,7 +40,7 @@ public class MemberAuthManagerHandler {
     public Mono<ServerResponse> page(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(PAGE_MODEL_FOR_MEMBER_BASIC_CONDITION_TYPE)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM))))
-                .flatMap(memberAuthService::selectMemberAuthorityPageMonoByPageAndCondition)
+                .flatMap(memberControlService::selectMemberAuthorityPageMonoByPageAndCondition)
                 .flatMap(pmr ->
                         ok().contentType(APPLICATION_JSON)
                                 .body(success(pmr, serverRequest), BlueResponse.class));

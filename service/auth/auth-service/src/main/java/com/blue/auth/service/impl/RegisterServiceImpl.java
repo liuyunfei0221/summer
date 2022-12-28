@@ -3,11 +3,11 @@ package com.blue.auth.service.impl;
 import com.blue.auth.api.model.CredentialInfo;
 import com.blue.auth.api.model.MemberCredentialInfo;
 import com.blue.auth.component.auto.MemberParamPackagerProcessor;
-import com.blue.auth.remote.consumer.RpcMemberAuthServiceConsumer;
+import com.blue.auth.remote.consumer.RpcMemberControlServiceConsumer;
 import com.blue.auth.service.inter.RegisterService;
 import com.blue.auth.service.inter.AuthControlService;
 import com.blue.member.api.model.MemberBasicInfo;
-import com.blue.member.api.model.MemberRegistryParam;
+import com.blue.member.api.model.MemberInitParam;
 import io.seata.spring.annotation.GlobalTransactional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,23 +32,22 @@ public class RegisterServiceImpl implements RegisterService {
 
     private MemberParamPackagerProcessor memberParamPackagerProcessor;
 
-    private final RpcMemberAuthServiceConsumer rpcMemberAuthServiceConsumer;
+    private final RpcMemberControlServiceConsumer rpcMemberControlServiceConsumer;
 
     private final AuthControlService authControlService;
 
-    public RegisterServiceImpl(MemberParamPackagerProcessor memberParamPackagerProcessor, RpcMemberAuthServiceConsumer rpcMemberAuthServiceConsumer, AuthControlService authControlService) {
+    public RegisterServiceImpl(MemberParamPackagerProcessor memberParamPackagerProcessor, RpcMemberControlServiceConsumer rpcMemberControlServiceConsumer, AuthControlService authControlService) {
         this.memberParamPackagerProcessor = memberParamPackagerProcessor;
-        this.rpcMemberAuthServiceConsumer = rpcMemberAuthServiceConsumer;
+        this.rpcMemberControlServiceConsumer = rpcMemberControlServiceConsumer;
         this.authControlService = authControlService;
     }
 
-    private final BiFunction<List<CredentialInfo>, String, MemberRegistryParam> REGISTRY_PARAM_CONVERTER = (credentials, source) -> {
-        MemberRegistryParam memberRegistryParam = new MemberRegistryParam();
-        credentials.forEach(credential -> memberParamPackagerProcessor.packageCredentialInfoToRegistryParam(credential, memberRegistryParam));
+    private final BiFunction<List<CredentialInfo>, String, MemberInitParam> REGISTRY_PARAM_CONVERTER = (credentials, source) -> {
+        MemberInitParam memberInitParam = new MemberInitParam();
+        credentials.forEach(credential -> memberParamPackagerProcessor.packageCredentialInfoToRegistryParam(credential, memberInitParam));
 
-        return memberRegistryParam;
+        return memberInitParam;
     };
-
 
     /**
      * auto register for a new member
@@ -60,13 +59,13 @@ public class RegisterServiceImpl implements RegisterService {
      */
     @Override
     @GlobalTransactional(propagation = io.seata.tm.api.transaction.Propagation.REQUIRED,
-            rollbackFor = Exception.class, lockRetryInternal = 1, lockRetryTimes = 1, timeoutMills = 30000)
+            rollbackFor = Exception.class, lockRetryInterval = 1, lockRetryTimes = 1, timeoutMills = 30000)
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 30)
     public MemberBasicInfo registerMemberBasic(List<CredentialInfo> credentials, Long roleId, String source) {
         LOGGER.info("credentials = {}, source = {}", credentials, source);
 
-        MemberBasicInfo memberBasicInfo = rpcMemberAuthServiceConsumer.registerMemberBasic(REGISTRY_PARAM_CONVERTER.apply(credentials, source));
+        MemberBasicInfo memberBasicInfo = rpcMemberControlServiceConsumer.initMemberBasic(REGISTRY_PARAM_CONVERTER.apply(credentials, source));
 
         authControlService.initMemberAuthInfo(new MemberCredentialInfo(memberBasicInfo.getId(), credentials), roleId);
 

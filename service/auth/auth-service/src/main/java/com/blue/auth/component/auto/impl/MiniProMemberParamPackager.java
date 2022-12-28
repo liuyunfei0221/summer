@@ -3,7 +3,7 @@ package com.blue.auth.component.auto.impl;
 import com.blue.auth.api.model.CredentialInfo;
 import com.blue.auth.component.auto.inter.MemberParamByAutoLoginPackager;
 import com.blue.basic.constant.auth.CredentialType;
-import com.blue.member.api.model.MemberRegistryParam;
+import com.blue.member.api.model.MemberInitParam;
 
 import static com.blue.basic.common.base.BlueChecker.isNotBlank;
 import static com.blue.basic.common.base.PhoneProcessor.parseLast4no;
@@ -24,15 +24,15 @@ public class MiniProMemberParamPackager implements MemberParamByAutoLoginPackage
      * package credential to member register param
      *
      * @param credentialInfo
-     * @param memberRegistryParam
+     * @param memberInitParam
      */
     @Override
-    public void packageCredentialInfoToRegistryParam(CredentialInfo credentialInfo, MemberRegistryParam memberRegistryParam) {
+    public void packageCredentialInfoToRegistryParam(CredentialInfo credentialInfo, MemberInitParam memberInitParam) {
         String credential = credentialInfo.getCredential();
-        String name = memberRegistryParam.getName();
+        String name = memberInitParam.getName();
 
-        memberRegistryParam.setPhone(credential);
-        memberRegistryParam.setName(isNotBlank(name) ? name : randomAlphabetic((int) ID_LEN_MIN.value) + PAR_CONCATENATION.identity + parseLast4no(credential));
+        memberInitParam.setPhone(credential);
+        memberInitParam.setName(isNotBlank(name) ? name : randomAlphabetic((int) ID_LEN_MIN.value) + PAR_CONCATENATION.identity + parseLast4no(credential));
     }
 
     /**

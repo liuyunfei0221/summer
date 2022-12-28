@@ -2,7 +2,7 @@ package com.blue.auth.component.auto.inter;
 
 import com.blue.auth.api.model.CredentialInfo;
 import com.blue.basic.constant.auth.CredentialType;
-import com.blue.member.api.model.MemberRegistryParam;
+import com.blue.member.api.model.MemberInitParam;
 
 /**
  * member register param by auto session packager interface
@@ -16,9 +16,9 @@ public interface MemberParamByAutoLoginPackager {
      * package credential to member register param
      *
      * @param credentialInfo
-     * @param memberRegistryParam
+     * @param memberInitParam
      */
-    void packageCredentialInfoToRegistryParam(CredentialInfo credentialInfo, MemberRegistryParam memberRegistryParam);
+    void packageCredentialInfoToRegistryParam(CredentialInfo credentialInfo, MemberInitParam memberInitParam);
 
     /**
      * target credential type to package param

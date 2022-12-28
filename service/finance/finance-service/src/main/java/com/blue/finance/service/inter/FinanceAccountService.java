@@ -16,9 +16,9 @@ public interface FinanceAccountService {
     /**
      * init finance account for a new member
      *
-     * @param memberId
+     * @param financeAccount
      */
-    FinanceAccount initMemberFinance(Long memberId);
+    FinanceAccountInfo insertFinanceAccount(FinanceAccount financeAccount);
 
     /**
      * query finance account mono by id

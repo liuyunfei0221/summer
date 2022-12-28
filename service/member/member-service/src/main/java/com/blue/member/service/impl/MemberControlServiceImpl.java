@@ -5,17 +5,16 @@ import com.blue.auth.api.model.RoleInfo;
 import com.blue.basic.model.common.PageModelRequest;
 import com.blue.basic.model.common.PageModelResponse;
 import com.blue.basic.model.exps.BlueException;
-import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
-import com.blue.member.api.model.MemberRegistryParam;
+import com.blue.member.api.model.MemberInitParam;
 import com.blue.member.component.credential.CredentialCollectProcessor;
 import com.blue.member.constant.MemberBasicSortAttribute;
 import com.blue.member.model.MemberAuthorityInfo;
 import com.blue.member.model.MemberBasicCondition;
 import com.blue.member.remote.consumer.RpcRoleServiceConsumer;
 import com.blue.member.repository.entity.MemberBasic;
-import com.blue.member.service.inter.MemberAuthService;
 import com.blue.member.service.inter.MemberBasicService;
+import com.blue.member.service.inter.MemberControlService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
@@ -40,28 +39,24 @@ import static reactor.core.publisher.Mono.zip;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * member register service
+ * member control service
  *
  * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 @Service
-public class MemberAuthServiceImpl implements MemberAuthService {
+public class MemberControlServiceImpl implements MemberControlService {
 
-    private static final Logger LOGGER = getLogger(MemberAuthServiceImpl.class);
+    private static final Logger LOGGER = getLogger(MemberControlServiceImpl.class);
 
     private final MemberBasicService memberBasicService;
-
-    private final BlueIdentityProcessor blueIdentityProcessor;
 
     private final CredentialCollectProcessor credentialCollectProcessor;
 
     private final RpcRoleServiceConsumer rpcRoleServiceConsumer;
 
-    public MemberAuthServiceImpl(MemberBasicService memberBasicService, BlueIdentityProcessor blueIdentityProcessor,
-                                 CredentialCollectProcessor credentialCollectProcessor, RpcRoleServiceConsumer rpcRoleServiceConsumer) {
+    public MemberControlServiceImpl(MemberBasicService memberBasicService, CredentialCollectProcessor credentialCollectProcessor, RpcRoleServiceConsumer rpcRoleServiceConsumer) {
         this.memberBasicService = memberBasicService;
-        this.blueIdentityProcessor = blueIdentityProcessor;
         this.credentialCollectProcessor = credentialCollectProcessor;
         this.rpcRoleServiceConsumer = rpcRoleServiceConsumer;
     }
@@ -80,27 +75,24 @@ public class MemberAuthServiceImpl implements MemberAuthService {
     /**
      * member register for auto registry or third party session
      *
-     * @param memberRegistryParam
+     * @param memberInitParam
      * @return
      */
     @Override
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 30)
-    public MemberBasicInfo registerMemberBasic(MemberRegistryParam memberRegistryParam) {
-        LOGGER.info("memberRegistryDTO = {}", memberRegistryParam);
-        if (isNull(memberRegistryParam))
+    public MemberBasicInfo initMemberBasic(MemberInitParam memberInitParam) {
+        LOGGER.info("memberInitParam = {}", memberInitParam);
+        if (isNull(memberInitParam))
             throw new BlueException(EMPTY_PARAM);
 
-        MemberBasic memberBasic = MEMBER_REGISTRY_INFO_2_MEMBER_BASIC.apply(memberRegistryParam);
+        MemberBasic memberBasic = MEMBER_REGISTRY_INFO_2_MEMBER_BASIC.apply(memberInitParam);
 
-        if (isEmpty(credentialCollectProcessor.collect(memberBasic, memberRegistryParam.getAccess())))
+        if (isEmpty(credentialCollectProcessor.collect(memberBasic, memberInitParam.getAccess())))
             throw new BlueException(BAD_REQUEST);
 
-        long id = blueIdentityProcessor.generate(MemberBasic.class);
-        memberBasic.setId(id);
-
         MemberBasicInfo memberBasicInfo = memberBasicService.insertMemberBasic(memberBasic);
-        LOGGER.info("autoRegisterMemberBasic -> memberBasicInfo = {}", memberBasicInfo);
+        LOGGER.info("memberBasicInfo = {}", memberBasicInfo);
 
         return memberBasicInfo;
     }

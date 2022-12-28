@@ -30,7 +30,7 @@ public class MemberBasicApiRoute {
                 .GET("", memberBasicApiHandler::get)
                 .PATCH("/icon", accept(APPLICATION_JSON), memberBasicApiHandler::updateIcon)
                 .PATCH("/qrCode", accept(APPLICATION_JSON), memberBasicApiHandler::updateQrCode)
-                .PATCH("/profile", accept(APPLICATION_JSON), memberBasicApiHandler::updateProfile)
+                .PATCH("/introduction", accept(APPLICATION_JSON), memberBasicApiHandler::updateIntroduction)
                 .build();
 
         return nest(pathPredicate, routerFunction);

@@ -55,13 +55,13 @@ public interface MemberBasicService {
     Mono<MemberBasicInfo> updateMemberBasicQrCode(Long id, IdentityParam identityParam);
 
     /**
-     * update member's profile
+     * update member's introduction
      *
      * @param id
      * @param stringDataParam
      * @return
      */
-    Mono<MemberBasicInfo> updateMemberBasicProfile(Long id, StringDataParam stringDataParam);
+    Mono<MemberBasicInfo> updateMemberBasicIntroduction(Long id, StringDataParam stringDataParam);
 
     /**
      * update member status

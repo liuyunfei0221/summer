@@ -4,7 +4,7 @@ import com.blue.auth.api.model.CredentialInfo;
 import com.blue.auth.component.auto.inter.MemberParamByAutoLoginPackager;
 import com.blue.basic.common.base.BlueChecker;
 import com.blue.basic.model.exps.BlueException;
-import com.blue.member.api.model.MemberRegistryParam;
+import com.blue.member.api.model.MemberInitParam;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -51,28 +51,28 @@ public class MemberParamPackagerProcessor implements ApplicationListener<Context
                 .collect(toMap(lh -> lh.targetType().identity, lh -> lh, (a, b) -> a));
     }
 
-    private final BiConsumer<CredentialInfo, MemberRegistryParam> REGISTRY_PARAM_PACKAGER = (credentialInfo, registryParam) ->
+    private final BiConsumer<CredentialInfo, MemberInitParam> REGISTRY_PARAM_PACKAGER = (credentialInfo, memberInitParam) ->
             ofNullable(credentialInfo)
                     .map(CredentialInfo::getType)
                     .filter(BlueChecker::isNotBlank)
                     .map(packagers::get)
                     .orElseThrow(() -> new BlueException(INVALID_IDENTITY))
-                    .packageCredentialInfoToRegistryParam(credentialInfo, registryParam);
+                    .packageCredentialInfoToRegistryParam(credentialInfo, memberInitParam);
 
     /**
      * package credential to member register param
      *
      * @param credentialInfo
-     * @param memberRegistryParam
+     * @param memberInitParam
      */
-    public void packageCredentialInfoToRegistryParam(CredentialInfo credentialInfo, MemberRegistryParam memberRegistryParam) {
-        LOGGER.info("void packageCredentialInfoToRegistryParam(CredentialInfo credentialInfo, MemberRegistryParam memberRegistryParam), credentialInfo = {}, memberRegistryParam = {}",
-                credentialInfo, memberRegistryParam);
+    public void packageCredentialInfoToRegistryParam(CredentialInfo credentialInfo, MemberInitParam memberInitParam) {
+        LOGGER.info("credentialInfo = {}, memberInitParam = {}",
+                credentialInfo, memberInitParam);
 
-        if (isNull(memberRegistryParam))
+        if (isNull(memberInitParam))
             throw new BlueException(INVALID_IDENTITY);
 
-        REGISTRY_PARAM_PACKAGER.accept(credentialInfo, memberRegistryParam);
+        REGISTRY_PARAM_PACKAGER.accept(credentialInfo, memberInitParam);
     }
 
 }

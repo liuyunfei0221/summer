@@ -64,7 +64,7 @@ public final class MemberDetailInfo implements Serializable {
 
     private String address;
 
-    private String profile;
+    private String introduction;
 
     private String hobby;
 
@@ -80,7 +80,7 @@ public final class MemberDetailInfo implements Serializable {
     public MemberDetailInfo(Long id, Long memberId, String name, Integer gender, String phone, String email,
                             Integer yearOfBirth, Integer monthOfBirth, Integer dayOfBirth, Integer chineseZodiac, Integer zodiacSign,
                             Integer height, Integer weight, Long countryId, String country, Long stateId, String state, Long cityId, String city, String address,
-                            String profile, String hobby, String homepage, String extra, Integer status) {
+                            String introduction, String hobby, String homepage, String extra, Integer status) {
         this.id = id;
         this.memberId = memberId;
         this.name = name;
@@ -101,7 +101,7 @@ public final class MemberDetailInfo implements Serializable {
         this.cityId = cityId;
         this.city = city;
         this.address = address;
-        this.profile = profile;
+        this.introduction = introduction;
         this.hobby = hobby;
         this.homepage = homepage;
         this.extra = extra;
@@ -268,12 +268,12 @@ public final class MemberDetailInfo implements Serializable {
         this.address = address;
     }
 
-    public String getProfile() {
-        return profile;
+    public String getIntroduction() {
+        return introduction;
     }
 
-    public void setProfile(String profile) {
-        this.profile = profile;
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
     }
 
     public String getHobby() {
@@ -331,7 +331,7 @@ public final class MemberDetailInfo implements Serializable {
                 ", cityId=" + cityId +
                 ", city='" + city + '\'' +
                 ", address='" + address + '\'' +
-                ", profile='" + profile + '\'' +
+                ", introduction='" + introduction + '\'' +
                 ", hobby='" + hobby + '\'' +
                 ", homepage='" + homepage + '\'' +
                 ", extra='" + extra + '\'' +

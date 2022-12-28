@@ -17,7 +17,7 @@ import static com.blue.basic.constant.common.ResponseElement.VERIFY_IS_INVALID;
  * @author liuyunfei
  */
 @SuppressWarnings({"unused", "WeakerAccess", "AliControlFlowStatementWithoutBraces"})
-public final class MemberRegistryParam implements Serializable, Asserter {
+public final class MemberInitParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = 8543617230220651524L;
 
@@ -45,7 +45,7 @@ public final class MemberRegistryParam implements Serializable, Asserter {
      */
     private String source;
 
-    public MemberRegistryParam() {
+    public MemberInitParam() {
     }
 
     @Override
@@ -138,7 +138,7 @@ public final class MemberRegistryParam implements Serializable, Asserter {
 
     @Override
     public String toString() {
-        return "MemberRegistryParam{" +
+        return "memberInitParam{" +
                 "phone='" + phone + '\'' +
                 ", phoneVerify='" + phoneVerify + '\'' +
                 ", email='" + email + '\'' +

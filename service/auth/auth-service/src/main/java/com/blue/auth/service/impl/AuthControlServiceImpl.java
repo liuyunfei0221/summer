@@ -5,7 +5,7 @@ import com.blue.auth.common.AccessEncoder;
 import com.blue.auth.config.deploy.ControlDeploy;
 import com.blue.auth.event.producer.SystemAuthorityInfosRefreshProducer;
 import com.blue.auth.model.*;
-import com.blue.auth.remote.consumer.RpcMemberAuthServiceConsumer;
+import com.blue.auth.remote.consumer.RpcMemberControlServiceConsumer;
 import com.blue.auth.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.auth.remote.consumer.RpcVerifyHandleServiceConsumer;
 import com.blue.auth.repository.entity.Credential;
@@ -77,7 +77,7 @@ public class AuthControlServiceImpl implements AuthControlService {
 
     private final RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer;
 
-    private final RpcMemberAuthServiceConsumer rpcMemberAuthServiceConsumer;
+    private final RpcMemberControlServiceConsumer rpcMemberControlServiceConsumer;
 
     private final RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer;
 
@@ -110,7 +110,7 @@ public class AuthControlServiceImpl implements AuthControlService {
     private final SynchronizedProcessor synchronizedProcessor;
 
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    public AuthControlServiceImpl(RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer, RpcMemberAuthServiceConsumer rpcMemberAuthServiceConsumer,
+    public AuthControlServiceImpl(RpcVerifyHandleServiceConsumer rpcVerifyHandleServiceConsumer, RpcMemberControlServiceConsumer rpcMemberControlServiceConsumer,
                                   RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer, JwtProcessor<MemberPayload> jwtProcessor,
                                   SessionService sessionService, AuthService authService, RoleService roleService, ResourceService resourceService,
                                   RoleResRelationService roleResRelationService, CredentialService credentialService, CredentialHistoryService credentialHistoryService,
@@ -118,7 +118,7 @@ public class AuthControlServiceImpl implements AuthControlService {
                                   SystemAuthorityInfosRefreshProducer systemAuthorityInfosRefreshProducer, ExecutorService executorService,
                                   SynchronizedProcessor synchronizedProcessor, BlueLeakyBucketRateLimiter blueLeakyBucketRateLimiter, ControlDeploy controlDeploy) {
         this.rpcVerifyHandleServiceConsumer = rpcVerifyHandleServiceConsumer;
-        this.rpcMemberAuthServiceConsumer = rpcMemberAuthServiceConsumer;
+        this.rpcMemberControlServiceConsumer = rpcMemberControlServiceConsumer;
         this.rpcMemberBasicServiceConsumer = rpcMemberBasicServiceConsumer;
         this.jwtProcessor = jwtProcessor;
         this.sessionService = sessionService;
@@ -541,7 +541,7 @@ public class AuthControlServiceImpl implements AuthControlService {
      */
     @Override
     @GlobalTransactional(propagation = io.seata.tm.api.transaction.Propagation.REQUIRED,
-            rollbackFor = Exception.class, lockRetryInternal = 1, lockRetryTimes = 1, timeoutMills = 30000)
+            rollbackFor = Exception.class, lockRetryInterval = 1, lockRetryTimes = 1, timeoutMills = 30000)
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 30)
     public MemberBasicInfo insertCredential(CredentialSettingUpParam credentialSettingUpParam, Access access) {
@@ -573,7 +573,7 @@ public class AuthControlServiceImpl implements AuthControlService {
             packageExistAccess(credentials, memberId);
             credentialService.insertCredentials(credentials);
 
-            MemberBasicInfo memberBasicInfo = rpcMemberAuthServiceConsumer.updateMemberCredentialAttr(types, credential, memberId);
+            MemberBasicInfo memberBasicInfo = rpcMemberControlServiceConsumer.updateMemberCredentialAttr(types, credential, memberId);
 
             credentialHistoryService.insertCredentialHistoryByCredentialAndMemberIdAsync(credential, memberId);
 
@@ -590,7 +590,7 @@ public class AuthControlServiceImpl implements AuthControlService {
      */
     @Override
     @GlobalTransactional(propagation = io.seata.tm.api.transaction.Propagation.REQUIRED,
-            rollbackFor = Exception.class, lockRetryInternal = 1, lockRetryTimes = 1, timeoutMills = 30000)
+            rollbackFor = Exception.class, lockRetryInterval = 1, lockRetryTimes = 1, timeoutMills = 30000)
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 30)
     public MemberBasicInfo updateCredential(CredentialModifyParam credentialModifyParam, Access access) {
@@ -631,7 +631,7 @@ public class AuthControlServiceImpl implements AuthControlService {
 
             credentialService.updateCredentialByIds(destinationCredential, destinationCredentials.stream().map(Credential::getId).collect(toList()));
             authService.invalidateAuthByMemberId(memberId).doOnError(throwable -> LOGGER.info("authService.invalidateAuthByMemberId(memberId) failed, memberId = {}, throwable = {}", memberId, throwable)).subscribe();
-            MemberBasicInfo memberBasicInfo = rpcMemberAuthServiceConsumer.updateMemberCredentialAttr(destinationCredentialTypes, destinationCredential, memberId);
+            MemberBasicInfo memberBasicInfo = rpcMemberControlServiceConsumer.updateMemberCredentialAttr(destinationCredentialTypes, destinationCredential, memberId);
 
             credentialHistoryService.insertCredentialHistoryByCredentialAndMemberIdAsync(destinationCredential, memberId);
 

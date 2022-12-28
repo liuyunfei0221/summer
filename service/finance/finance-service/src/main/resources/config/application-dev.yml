@@ -279,16 +279,6 @@ seata:
     exception-rate: 100
   shutdown:
     wait: 3
-  thread-factory:
-    boss-thread-prefix: NettyBoss
-    worker-thread-prefix: NettyServerNIOWorker
-    server-executor-thread-prefix: NettyServerBizHandler
-    share-boss-worker: false
-    client-selector-thread-prefix: NettyClientSelector
-    client-selector-thread-size: 1
-    client-worker-thread-prefix: NettyClientWorkerThread
-    boss-thread-size: 1
-    worker-thread-size: default
   transport:
     type: TCP
     server: NIO
@@ -306,6 +296,7 @@ seata:
     custom:
       name: ""
     type: zk
+    data-type: zk
     zk:
       server-addr: 172.16.202.219:2181
       session-timeout: 60000
@@ -317,6 +308,7 @@ seata:
     custom:
       name: ""
     type: zk
+    preferred-networks:
     zk:
       cluster: default
       server-addr: 172.16.202.219:2181
