@@ -630,10 +630,16 @@ public class AuthControlServiceImpl implements AuthControlService {
                 throw new BlueException(DATA_NOT_EXIST);
 
             credentialService.updateCredentialByIds(destinationCredential, destinationCredentials.stream().map(Credential::getId).collect(toList()));
-            authService.invalidateAuthByMemberId(memberId).doOnError(throwable -> LOGGER.info("authService.invalidateAuthByMemberId(memberId) failed, memberId = {}, throwable = {}", memberId, throwable)).subscribe();
             MemberBasicInfo memberBasicInfo = rpcMemberControlServiceConsumer.updateMemberCredentialAttr(destinationCredentialTypes, destinationCredential, memberId);
-
             credentialHistoryService.insertCredentialHistoryByCredentialAndMemberIdAsync(destinationCredential, memberId);
+
+            try {
+                executorService.submit(() -> authService.invalidateAuthByMemberId(memberId)
+                        .doOnError(throwable -> LOGGER.info("authService.invalidateAuthByMemberId(memberId) failed, memberId = {}, throwable = {}", memberId, throwable))
+                        .subscribe());
+            } catch (Exception e) {
+                LOGGER.info("authService.invalidateAuthByMemberId(memberId) failed, memberId = {}, e = {}", memberId, e);
+            }
 
             return memberBasicInfo;
         });
@@ -705,7 +711,19 @@ public class AuthControlServiceImpl implements AuthControlService {
                                                         .flatMap(validate ->
                                                                 validate ?
                                                                         just(credentialService.updateAccess(memberId, ALLOW_ACCESS_CTS, accessUpdateParam.getAccess()))
-                                                                                .flatMap(b -> b ? authService.invalidateAuthByMemberId(memberId) : just(false))
+                                                                                .flatMap(b -> {
+                                                                                    if (b) {
+                                                                                        try {
+                                                                                            executorService.submit(() -> authService.invalidateAuthByMemberId(memberId)
+                                                                                                    .doOnError(throwable -> LOGGER.info("authService.invalidateAuthByMemberId(memberId) failed, memberId = {}, throwable = {}", memberId, throwable))
+                                                                                                    .subscribe());
+                                                                                        } catch (Exception e) {
+                                                                                            LOGGER.info("authService.invalidateAuthByMemberId(memberId) failed, memberId = {}, e = {}", memberId, e);
+                                                                                        }
+                                                                                    }
+
+                                                                                    return just(b);
+                                                                                })
                                                                         :
                                                                         error(() -> new BlueException(VERIFY_IS_INVALID))))
                                 :
@@ -738,7 +756,19 @@ public class AuthControlServiceImpl implements AuthControlService {
                                                         .flatMap(validate ->
                                                                 validate ?
                                                                         just(credentialService.updateAccess(cre.getMemberId(), ALLOW_ACCESS_CTS, accessResetParam.getAccess()))
-                                                                                .flatMap(b -> b ? authService.invalidateAuthByMemberId(cre.getMemberId()) : just(false))
+                                                                                .flatMap(b -> {
+                                                                                    if (b) {
+                                                                                        try {
+                                                                                            executorService.submit(() -> authService.invalidateAuthByMemberId(cre.getMemberId())
+                                                                                                    .doOnError(throwable -> LOGGER.info("authService.invalidateAuthByMemberId(memberId) failed, cre = {}, throwable = {}", cre, throwable))
+                                                                                                    .subscribe());
+                                                                                        } catch (Exception e) {
+                                                                                            LOGGER.info("authService.invalidateAuthByMemberId(memberId) failed, cre = {}, e = {}", cre, e);
+                                                                                        }
+                                                                                    }
+
+                                                                                    return just(b);
+                                                                                })
                                                                         :
                                                                         error(() -> new BlueException(VERIFY_IS_INVALID))))
                                 :

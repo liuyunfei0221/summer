@@ -18,8 +18,6 @@ public class AccessDeploy {
 
     private Long localExpiresMillis;
 
-    private Long millisLeftToHandleExpire;
-
     private Integer refresherCorePoolSize;
 
     private Integer refresherMaximumPoolSize;
@@ -65,14 +63,6 @@ public class AccessDeploy {
 
     public void setLocalExpiresMillis(Long localExpiresMillis) {
         this.localExpiresMillis = localExpiresMillis;
-    }
-
-    public Long getMillisLeftToHandleExpire() {
-        return millisLeftToHandleExpire;
-    }
-
-    public void setMillisLeftToHandleExpire(Long millisLeftToHandleExpire) {
-        this.millisLeftToHandleExpire = millisLeftToHandleExpire;
     }
 
     public Integer getRefresherCorePoolSize() {
@@ -161,7 +151,6 @@ public class AccessDeploy {
                 "localCacheCapacity=" + localCacheCapacity +
                 ", globalExpiresMillis=" + globalExpiresMillis +
                 ", localExpiresMillis=" + localExpiresMillis +
-                ", millisLeftToHandleExpire=" + millisLeftToHandleExpire +
                 ", refresherCorePoolSize=" + refresherCorePoolSize +
                 ", refresherMaximumPoolSize=" + refresherMaximumPoolSize +
                 ", refresherKeepAliveSeconds=" + refresherKeepAliveSeconds +

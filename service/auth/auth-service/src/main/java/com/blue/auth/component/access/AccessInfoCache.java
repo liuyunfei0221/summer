@@ -16,8 +16,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.concurrent.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.GSON;
@@ -56,9 +56,9 @@ public final class AccessInfoCache {
     private long globalExpiresMillis;
 
     /**
-     * to handle expire
+     * expire threshold
      */
-    private long differenceToHandleExpire;
+    private long globalExpiresMillisThreshold;
 
     /**
      * millis
@@ -77,13 +77,15 @@ public final class AccessInfoCache {
 
     private static final String THREAD_NAME_PRE = "AccessInfoCache-thread-";
     private static final int RANDOM_LEN = 4;
+    private static final long SEGMENT_PART = 3L;
+    private static final long OFFSET_THRESHOLD = 2L;
 
     public AccessInfoCache(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AccessBatchExpireProcessor accessBatchExpireProcessor,
                            Integer refresherCorePoolSize, Integer refresherMaximumPoolSize, Long refresherKeepAliveSeconds,
-                           Integer refresherBlockingQueueCapacity, Long globalExpiresMillis, Long localExpiresMillis, Long millisLeftToHandleExpire, Integer capacity) {
+                           Integer refresherBlockingQueueCapacity, Long globalExpiresMillis, Long localExpiresMillis, Integer capacity) {
 
         assertConf(reactiveStringRedisTemplate, accessBatchExpireProcessor, refresherCorePoolSize, refresherMaximumPoolSize, refresherKeepAliveSeconds,
-                refresherBlockingQueueCapacity, globalExpiresMillis, localExpiresMillis, millisLeftToHandleExpire, capacity);
+                refresherBlockingQueueCapacity, globalExpiresMillis, localExpiresMillis, capacity);
 
         this.reactiveStringRedisTemplate = reactiveStringRedisTemplate;
         this.accessBatchExpireProcessor = accessBatchExpireProcessor;
@@ -99,7 +101,9 @@ public final class AccessInfoCache {
                 refresherKeepAliveSeconds, SECONDS, new ArrayBlockingQueue<>(refresherBlockingQueueCapacity), threadFactory, rejectedExecutionHandler);
 
         this.globalExpiresMillis = globalExpiresMillis;
-        this.differenceToHandleExpire = globalExpiresMillis - millisLeftToHandleExpire;
+
+        this.globalExpiresMillisThreshold = globalExpiresMillis / SEGMENT_PART * OFFSET_THRESHOLD;
+
         this.globalExpireDuration = Duration.of(globalExpiresMillis, UNIT);
 
         CaffeineConf caffeineConf = new CaffeineConfParams(capacity, Duration.of(localExpiresMillis, MILLIS),
@@ -107,12 +111,6 @@ public final class AccessInfoCache {
 
         this.cache = generateCacheAsyncCache(caffeineConf);
     }
-
-    /**
-     * expire?
-     */
-    private final Predicate<Long> EXPIRE_PRE = loginMillisTimeStamp ->
-            MILLIS_STAMP_SUP.get() > (loginMillisTimeStamp + differenceToHandleExpire);
 
     /**
      * accessInfo parser
@@ -126,12 +124,28 @@ public final class AccessInfoCache {
     };
 
     /**
+     * expire?
+     */
+    private final BiPredicate<String, String> EXPIRE_PRE = (keyId, accessStr) -> {
+        if (isBlank(keyId) && isBlank(accessStr))
+            return false;
+
+        Long loginMillisTimeStamp = ACCESS_INFO_PARSER.apply(accessStr).getLoginMillisTimeStamp();
+        if (isNull(loginMillisTimeStamp))
+            return false;
+
+        long currentMillisTimeStamp = MILLIS_STAMP_SUP.get();
+
+        return (currentMillisTimeStamp & 1L) == 0L && ((currentMillisTimeStamp - loginMillisTimeStamp) % globalExpiresMillis) > globalExpiresMillisThreshold;
+    };
+
+    /**
      * redis accessInfo expire
      */
     private final BiConsumer<String, String> ACCESS_EXPIRE_PROCESSOR = (keyId, access) ->
             this.executorService.execute(() -> {
                 try {
-                    if (isNotBlank(keyId) && isNotBlank(access) && EXPIRE_PRE.test(ACCESS_INFO_PARSER.apply(access).getLoginMillisTimeStamp())) {
+                    if (EXPIRE_PRE.test(keyId, access)) {
                         accessBatchExpireProcessor.expireKey(keyId, globalExpiresMillis, UNIT);
                         LOGGER.warn("ACCESS_EXPIRE_PROCESSOR -> SUCCESS, keyId = {}, access = {}", keyId, access);
                     }
@@ -249,7 +263,7 @@ public final class AccessInfoCache {
      */
     private static void assertConf(ReactiveStringRedisTemplate reactiveStringRedisTemplate, AccessBatchExpireProcessor accessBatchExpireProcessor, Integer refresherCorePoolSize,
                                    Integer refresherMaximumPoolSize, Long refresherKeepAliveSeconds, Integer refresherBlockingQueueCapacity,
-                                   Long globalExpiresMillis, Long localExpiresMillis, Long millisLeftToHandleExpire, Integer capacity) {
+                                   Long globalExpiresMillis, Long localExpiresMillis, Integer capacity) {
         if (isNull(reactiveStringRedisTemplate))
             throw new RuntimeException("reactiveStringRedisTemplate can't be null");
 
@@ -276,12 +290,6 @@ public final class AccessInfoCache {
 
         if (localExpiresMillis > globalExpiresMillis)
             throw new RuntimeException("localExpiresSecond can't be null or greater than globalExpiresSecond");
-
-        if (isNull(millisLeftToHandleExpire) || millisLeftToHandleExpire < 1)
-            throw new RuntimeException("millisLeftToHandleExpire can't be null or less than 1");
-
-        if (globalExpiresMillis <= millisLeftToHandleExpire)
-            throw new RuntimeException("globalExpiresMillis can't be less than  or equals millisLeftToHandleExpire");
 
         if (isNull(capacity) || capacity < 1)
             throw new RuntimeException("capacity can't be null or less than 1");

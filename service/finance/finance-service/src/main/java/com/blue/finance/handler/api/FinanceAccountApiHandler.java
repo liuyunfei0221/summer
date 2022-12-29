@@ -36,7 +36,7 @@ public final class FinanceAccountApiHandler {
     public Mono<ServerResponse> get(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
-                        financeControlService.getFinanceAccountInfoByMemberIdWithAutoInit(acc.getId())
+                        financeControlService.getFinanceAccountInfoByMemberId(acc.getId())
                                 .flatMap(fai ->
                                         ok()
                                                 .contentType(APPLICATION_JSON)

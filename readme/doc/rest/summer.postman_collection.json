@@ -21,7 +21,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiZ1VFUkJNS1BiSW9FYVZ2biIsInR5cCI6IkpXVCIsImFsZyI6IkhTMjU2In0.eyJzdWIiOiJhdSIsImQiOiJNT0JJTEUiLCJnIjoiUm9ZelZFRHB0S1EiLCJpc3MiOiJfYmx1ZV8xNjI2NzUxODg0NjI3IiwiaSI6IjgyMDE5ODg0NTgxNTE5MzYiLCJrIjoiQl9TTjo4MjAxOTg4NDU4MTUxOTM2X0FQX01PQklMRSIsImwiOiJBUCIsInAiOiJNRnd3RFFZSktvWklodmNOQVFFQkJRQURTd0F3U0FKQkFQQ2M1Z2p0cHFYNmlPUlhZb3ljYnJBV2plWGpOd1lGZ08rUlhxL2l6N2IzYlI3YUxTcUcrZXpmckoyWGEwLzRyR1pyWlVvbE9HWjc4R1BONXB6VlJBTUNBd0VBQVE9PSIsImF1ZCI6ImNuIiwiciI6IjEzOTU5NDg1ODUxNSIsIm5iZiI6MTYyNjc1MTg4NCwiZXhwIjoxNjI5NDMwMjg0LCJpYXQiOjE2MjY3NTE4ODQsImp0aSI6InVrckZwSEpza0JOUllaaFoifQ.A-oE_g7U5hDop0PvgCoDBjqrexWeLTuONypC-4IvCv4",
+								"value": "eyJraWQiOiIzMzE2YjY3ZWQ0NDc4NzVlYTNjOTllOGQ3MTBjOTEyNzY4ZmFlMGRmNTNhMGU3NmMwMGE2MjQyYWEzZjg3ZWE4N2VhMTMwODFhYWQ4YzlmZGU2MzZjN2JmZGMxZWE4ODFkNzg1ZDRiNzE3OTBhODYxYWFlNWU4MjlkZmE3MzkzNyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTczNzY4Njg2MTI5NjQzNTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjU3Mzc2ODY4NjEyOTY0MzUzIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjcyMzA1NTI4IiwibmJmIjoxNjcyMzA1NTI4LCJ0IjoiVk9VeEhCa3ZCcDMiLCJlYXMiOjE2ODAwODE1Mjg1ODksImV4cCI6MTY4MDA4MTUyOCwiaWF0IjoxNjcyMzA1NTI4LCJqdGkiOiJWcEVsOU9YTm5FT1BycGNrT0JnZERPdkRjbUJrYTZxNSJ9.7Vf-3Lau2_sfbrofMI_PEN7orhIQP8B7DrVnsb9Odru68MwDrR9D3ZGLV33ZYc4s5HrHra0XEoduOlxJjX27FQ",
 								"type": "text"
 							},
 							{
@@ -92,13 +92,13 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiJmZmM5Njk5MzllMjI1NWMwZWRhNzU0YzViZmRmYWFmYzUzMzM4MGRlMjQwYmE2ZWQ5MDkyYTM4MmJjNTdiZTllZWYyMWE1YmEwMmI2YTVkMWZkODEyYmRiNWJlOWMxNTg4YTE1YzQxNDZkNDlhNjdmZjViMjBlZmEyNTZhM2Y0YiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE2MDE4ODc3OTkwMjUxMDRfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNjAxODg3Nzk5MDI1MTA0IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY2ODU4MTc4IiwibmJmIjoxNjY2ODU4MTc4LCJ0IjoiRkdsUDRwY1FIUlciLCJlYXMiOjE2NzQ2MzQxNzgwNTIsImV4cCI6MTY3NDYzNDE3OCwiaWF0IjoxNjY2ODU4MTc4LCJqdGkiOiJSOVIxS3lCdVlLMklhZ1BPOVBSbncxaWkydE5Hc21MMSJ9.eKNEXFd2Kyp0Gt_FKposb4pMOBtcEbSDZ6qVCUjbR2WDzpk4KuzE4lVpHdT8y0N6O186elxD_PD9zT5ET1Eecw",
+								"value": "eyJraWQiOiIzMzE2YjY3ZWQ0NDc4NzVlYTNjOTllOGQ3MTBjOTEyNzY4ZmFlMGRmNTNhMGU3NmMwMGE2MjQyYWEzZjg3ZWE4N2VhMTMwODFhYWQ4YzlmZGU2MzZjN2JmZGMxZWE4ODFkNzg1ZDRiNzE3OTBhODYxYWFlNWU4MjlkZmE3MzkzNyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTczNzY4Njg2MTI5NjQzNTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjU3Mzc2ODY4NjEyOTY0MzUzIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjcyMzA1NTI4IiwibmJmIjoxNjcyMzA1NTI4LCJ0IjoiVk9VeEhCa3ZCcDMiLCJlYXMiOjE2ODAwODE1Mjg1ODksImV4cCI6MTY4MDA4MTUyOCwiaWF0IjoxNjcyMzA1NTI4LCJqdGkiOiJWcEVsOU9YTm5FT1BycGNrT0JnZERPdkRjbUJrYTZxNSJ9.7Vf-3Lau2_sfbrofMI_PEN7orhIQP8B7DrVnsb9Odru68MwDrR9D3ZGLV33ZYc4s5HrHra0XEoduOlxJjX27FQ",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\":\"agreement k\",\r\n    \"content\":\"agreement 22222\",\r\n    \"link\":\"www.bing.con\",\r\n    \"type\":3\r\n}"
+							"raw": "{\r\n    \"title\":\"agreement k\",\r\n    \"content\":\"agreement 22222\",\r\n    \"link\":\"www.bing.con\",\r\n    \"type\":6\r\n}"
 						},
 						"url": {
 							"raw": "localhost:11000/blue-agreement/manager/agreement",
@@ -127,7 +127,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiI1ZjU2YWQ2MmNhMmI5Mjk4Y2Q1Y2M4MjczMzNiYWViMDczOTA3NzY3ZjkzMDkzMGM4MDI2NmE0NjkyMjE3MjdiNWUwMmNhOWYxYzdhODI2YjdkNmU3N2M2NWViNDViZTE0NjNmMDEwMmJkOWYzYzUwNDEzZTQwNzBlMDQ2NGUxZiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE3MTc3NDIzOTQzNDM0MjVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNzE3NzQyMzk0MzQzNDI1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY3ODkxODQ2IiwibmJmIjoxNjY3ODkxODQ2LCJ0IjoiODZxMGNuZXRoa0QiLCJlYXMiOjE2NzU2Njc4NDYzMTUsImV4cCI6MTY3NTY2Nzg0NiwiaWF0IjoxNjY3ODkxODQ2LCJqdGkiOiJ4Z1lZbnEwdko4aXNMSWdtSWxqZ3MzTDdGc1lHb0gyOSJ9.Jw6-_zQ0ujL4KpzHsM0lYjJ98r7GofUBFz8JU-2r3RSkMHS_WiFJU2ttPnLwE5gV5cTdaGRBAM9O1BP1WU99Hg",
+								"value": "eyJraWQiOiIzMzE2YjY3ZWQ0NDc4NzVlYTNjOTllOGQ3MTBjOTEyNzY4ZmFlMGRmNTNhMGU3NmMwMGE2MjQyYWEzZjg3ZWE4N2VhMTMwODFhYWQ4YzlmZGU2MzZjN2JmZGMxZWE4ODFkNzg1ZDRiNzE3OTBhODYxYWFlNWU4MjlkZmE3MzkzNyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTczNzY4Njg2MTI5NjQzNTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjU3Mzc2ODY4NjEyOTY0MzUzIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjcyMzA1NTI4IiwibmJmIjoxNjcyMzA1NTI4LCJ0IjoiVk9VeEhCa3ZCcDMiLCJlYXMiOjE2ODAwODE1Mjg1ODksImV4cCI6MTY4MDA4MTUyOCwiaWF0IjoxNjcyMzA1NTI4LCJqdGkiOiJWcEVsOU9YTm5FT1BycGNrT0JnZERPdkRjbUJrYTZxNSJ9.7Vf-3Lau2_sfbrofMI_PEN7orhIQP8B7DrVnsb9Odru68MwDrR9D3ZGLV33ZYc4s5HrHra0XEoduOlxJjX27FQ",
 								"type": "text"
 							},
 							{
@@ -541,7 +541,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiMDg2MTQxZTE4ZmEyMmY1MTBhOTNjZWM0MWQ3ODlkN2E0YzM4ODNlNjUxNWJmZDg5NTZmYWFlMjkwMWRhYzMxOTQyNTdiYjM0YTAxNDk1OTZmYWIwM2UxZWQ1YjUyMDJkYzEwZjcyMmUwNTVlOTZhNzFiNWVhYzBmNDI3YTczMWQiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1NTg4NzU0OCIsIm5iZiI6MTY1NTg4NzU0OCwidCI6Ik5QTGNjNXBDWFlvIiwiZyI6Ik0iLCJoIjoiQl9TTl9QOjM5NzQ1MjkzNDIzNDc2NzM3X0NMSV9NIiwiYmx1ZUV4cGlyZXNBdFN0YW1wIjoxNjYzNjYzNTQ4NzU2LCJpIjoiMzk3NDUyOTM0MjM0NzY3MzciLCJleHAiOjE2NjM2NjM1NDgsImlhdCI6MTY1NTg4NzU0OCwianRpIjoibFB3TUY0Rk5yeEJ6eUF0SzFmeTVST285bTdTU2ZLWnMiLCJuIjoiUFZBUiJ9.rGtVeApGAPvL_9NDLAC-iS82jotdIZD__fIZaXQ-XDLDtoBgUCNWcl7o6z9szCbi13dSHOSRrjAS2aM_lwx7iw",
+								"value": "eyJraWQiOiIzMzE2YjY3ZWQ0NDc4NzVlYTNjOTllOGQ3MTBjOTEyNzY4ZmFlMGRmNTNhMGU3NmMwMGE2MjQyYWEzZjg3ZWE4N2VhMTMwODFhYWQ4YzlmZGU2MzZjN2JmZGMxZWE4ODFkNzg1ZDRiNzE3OTBhODYxYWFlNWU4MjlkZmE3MzkzNyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTczNzY4Njg2MTI5NjQzNTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjU3Mzc2ODY4NjEyOTY0MzUzIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjcyMzA1NTI4IiwibmJmIjoxNjcyMzA1NTI4LCJ0IjoiVk9VeEhCa3ZCcDMiLCJlYXMiOjE2ODAwODE1Mjg1ODksImV4cCI6MTY4MDA4MTUyOCwiaWF0IjoxNjcyMzA1NTI4LCJqdGkiOiJWcEVsOU9YTm5FT1BycGNrT0JnZERPdkRjbUJrYTZxNSJ9.7Vf-3Lau2_sfbrofMI_PEN7orhIQP8B7DrVnsb9Odru68MwDrR9D3ZGLV33ZYc4s5HrHra0XEoduOlxJjX27FQ",
 								"type": "text"
 							}
 						],
@@ -3606,7 +3606,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiJmYTgxMTY3YTQ3N2NiZTE1ZGRmMTdjNTZhMGFmM2UwZWQ4YTNkNGNjNDQwZTY2MmUyMTc5NzYzN2MxMGFmMjQzOTZlZDc5ZTAxZWJlOTMwNzQyN2I5MWRkNTM3MmI5MDQ0MDU3OTUwMzRiNTBhZjU0MDMzYjUxMDA4MjExZmU1NCIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTczNzY4Njg2MTI5NjQzNTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjU3Mzc2ODY4NjEyOTY0MzUzIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjcyMjI5MjY3IiwibmJmIjoxNjcyMjI5MjY3LCJ0IjoiMnZCck5MWTJ4Y3QiLCJlYXMiOjE2ODAwMDUyNjc2ODAsImV4cCI6MTY4MDAwNTI2NywiaWF0IjoxNjcyMjI5MjY3LCJqdGkiOiJLMWF0NWdtbmtwNXRkRklsNWl4a05mUUZVdjU2VEY2biJ9.Hj6uXMEvkWEO1wHZcEEyXmQKI6hCA7q-FK_iEiuJdOlV-Mg3xJz5UqK_KP71yYEM3cmRfCSpSaugQvHjEETk8A",
+								"value": "eyJraWQiOiIzMzE2YjY3ZWQ0NDc4NzVlYTNjOTllOGQ3MTBjOTEyNzY4ZmFlMGRmNTNhMGU3NmMwMGE2MjQyYWEzZjg3ZWE4N2VhMTMwODFhYWQ4YzlmZGU2MzZjN2JmZGMxZWE4ODFkNzg1ZDRiNzE3OTBhODYxYWFlNWU4MjlkZmE3MzkzNyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTczNzY4Njg2MTI5NjQzNTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjU3Mzc2ODY4NjEyOTY0MzUzIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjcyMzA1NTI4IiwibmJmIjoxNjcyMzA1NTI4LCJ0IjoiVk9VeEhCa3ZCcDMiLCJlYXMiOjE2ODAwODE1Mjg1ODksImV4cCI6MTY4MDA4MTUyOCwiaWF0IjoxNjcyMzA1NTI4LCJqdGkiOiJWcEVsOU9YTm5FT1BycGNrT0JnZERPdkRjbUJrYTZxNSJ9.7Vf-3Lau2_sfbrofMI_PEN7orhIQP8B7DrVnsb9Odru68MwDrR9D3ZGLV33ZYc4s5HrHra0XEoduOlxJjX27FQ",
 								"type": "text"
 							}
 						],
@@ -3636,13 +3636,13 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYWE3NGRmNjE0MjA4YjBiOGE1NjIwYmVmODI2MzM1YmYwZTE2NGJjOGZjOTY3NWY3NDNmM2VjNDYwMWFiMzU3ZGNkZWI0YTk5MGZlYTllNjVhNWU3OTBiMzAxNGE2ZjA4MzE2NTNjYWZhMTZmZmEyOTRjOGYyYjA4MWNjMDIyNzkiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1MDM3MTIyNCIsIm5iZiI6MTY1MDM3MTIyNCwidCI6InZsU3JTYndlZGgzIiwiZyI6Ik0iLCJoIjoiQl9TTjozMzgxNTQ1MjE5NDk2MzQ1N19DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1MzA0OTYyNDMyMywiaSI6IjMzODE1NDUyMTk0OTYzNDU3IiwiZXhwIjoxNjUzMDQ5NjI0LCJpYXQiOjE2NTAzNzEyMjQsImp0aSI6Ik9oZFBUYUtoc01mc2FkY1NwYTVuWElack91S1Y5YUs1IiwibiI6IlBWQVIifQ.cC0JdKQIik2vE_ljbvCWDhb9YbpFbj1iq_nnS9Y_r0cCEDiDnCXjt42gsp-aw_KjAP7vL1IwNJY9UiJdaox0lw",
+								"value": "eyJraWQiOiIzMzE2YjY3ZWQ0NDc4NzVlYTNjOTllOGQ3MTBjOTEyNzY4ZmFlMGRmNTNhMGU3NmMwMGE2MjQyYWEzZjg3ZWE4N2VhMTMwODFhYWQ4YzlmZGU2MzZjN2JmZGMxZWE4ODFkNzg1ZDRiNzE3OTBhODYxYWFlNWU4MjlkZmE3MzkzNyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTczNzY4Njg2MTI5NjQzNTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjU3Mzc2ODY4NjEyOTY0MzUzIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjcyMzA1NTI4IiwibmJmIjoxNjcyMzA1NTI4LCJ0IjoiVk9VeEhCa3ZCcDMiLCJlYXMiOjE2ODAwODE1Mjg1ODksImV4cCI6MTY4MDA4MTUyOCwiaWF0IjoxNjcyMzA1NTI4LCJqdGkiOiJWcEVsOU9YTm5FT1BycGNrT0JnZERPdkRjbUJrYTZxNSJ9.7Vf-3Lau2_sfbrofMI_PEN7orhIQP8B7DrVnsb9Odru68MwDrR9D3ZGLV33ZYc4s5HrHra0XEoduOlxJjX27FQ",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"encrypted\":\"o5KwtOWW1f4eC7Pvso6hnaOawG6EDYrQv1c7ZQOMkySVWxwmozjtSvk02WzAtGfczQtwjtGGGhcseOL55cFaxGJgU1sHFc4JOaAWLUKTs6iErR6KKEvR/+0kwqaO9MLbJgIS0GJYhgbQ5/a4VAFQHJgwpRg1lHkOlpW2MT2PdnsbHHz6Vv/kNh7LruBDAAsNil59APZJtZjONP3+uToprLJeqi/QokFuplYOn3CL3Q+7TJjl9qZvnUNPRQKpgW1NduAPFq9cEsVdk+NN4ssVDJpiX5bSBX3voFzlom0WIMH56mkrT/nUQbXXRqTO15u69cKfjyzi6V4Edy3udKzEvA==\",\r\n    \"signature\":\"Hq3yNe85NqwaeJvxcRkevBmOnVoMD/X9uw6ENlXTQbQK4vl+A4VGmU9624pGdZSrPa3obomoqv52Z7qNB8MZmw==\"\r\n}"
+							"raw": "{\r\n    \"encrypted\":\"XBi6ZCoTJw6QWFxlVJa1bmDGoeyatO8KMaLJTTHeo2gtz00biB09gE0si1cBArzuUgGQQGayAmmKvE39r2N+BkljkQP4e1xD/Xge4ytFZiTYT1rC1luSAYiQNaRdEas1udEaOFKVxpcPGvLUvpyYf+vpmUy4mzW4KxwRmMxJkUJ0mYQWpxlvYOJK8oH11ywtZb2pfDy9Bc5G14bwTufeFA8/76yOP1NMxv0S6gNs9QtA4WHQOY3ZrbTa6mYH6jysd3ah54vfk3Q0hRaTRYFizIm+ghA9xCjOhCnoFWxeOcSC+AZDbaNa1fZ/Y7ltRb4gLMpua69gV/QQiJeZO76uJA==\",\r\n    \"signature\":\"OvI6QphnC89wgMZFs5eO6fzmlZ8n2wlZy2Z2m1yDGMuPLurMpWeLCEmsxz0bRK4ua5yST2eXrw0UMJmf//kK4A==\"\r\n}"
 						},
 						"url": {
 							"raw": "localhost:11000/blue-finance/withdraw",
@@ -5972,7 +5972,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"6164448\"\r\n    }\r\n}"
+							"raw": "{\r\n    \"credentialType\":\"PVAR\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"9520855\"\r\n    }\r\n}"
 						},
 						"url": {
 							"raw": "localhost:11000/blue-auth/session",
@@ -6000,7 +6000,7 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiJkMjc4MjFmZGQ1ZWNjZGQwZGY0NzEyYTlhNGU0MmNlMmUwOTdhZjE1NmE2MjE2MDc5OTMwZmFiMjMxNzhjODg0MjcxNjM0NDI3YWM3NjE1ODM3MGZkM2NkZTE2NDY0OWFlNDUwNzk3MmMzZjU0MTA1YWQyNzMwYWZkMzBhOTMxNyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTM2MzEzODc2MjE2NTQ1MjlfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUzNjMxMzg3NjIxNjU0NTI5IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY4NzQ0MTE5IiwibmJmIjoxNjY4NzQ0MTE5LCJ0IjoibW5OVUlDME9nemciLCJlYXMiOjE2NzY1MjAxMTk1MDUsImV4cCI6MTY3NjUyMDExOSwiaWF0IjoxNjY4NzQ0MTE5LCJqdGkiOiJGcm1LMWdyTlNlY211blhzOUV2M3JxZ1JzOHpXdmV4eCJ9.WzGVDKhO5zy8vQqlhsoIDajDwoXJwizp6RaLZ8r2-_j5yhDWrMIE68QgIC5x2kDtSyIWZt91taCgOyCH4t5qFw",
+								"value": "eyJraWQiOiJhYzFlOTM3NzIxMDcyOWNmOWRmNDk5ZDU1ZGU5NWYxYzBlOGZhODhhNGM0MmUxMGQ4NmVjNjQzNTg4MzE5ZGFkNWUxMmNmMTVmNDMzY2RiNTJiM2Y4ZjAxODM4ZDRhMTIwMTFjYTk1YTQwNGYyNTg5NWI1OGE0NTMxZTExZDY4NCIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTczNzY4Njg2MTI5NjQzNTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjU3Mzc2ODY4NjEyOTY0MzUzIiwibiI6IlBQIiwiYXVkIjoiQmx1ZXIiLCJzIjoiMTY3MjMxNDMwNyIsIm5iZiI6MTY3MjMxNDMwNywidCI6IjVBUm4xNk1HNEM4IiwiZWFzIjoxNjgwMDkwMzA3NjQxLCJleHAiOjE2ODAwOTAzMDcsImlhdCI6MTY3MjMxNDMwNywianRpIjoiR3VndE5wQUREU3V3REthRDF0b3pVMjF6UlIxSmFRZXYifQ.7ak1GAALURNBU2_FnuDBE2u8LD5Wm_-_7ssZIFNzgeCWzbZvzjHO9wYoWCKm_u3vFSBm-E5hAhHeFm3gyU32Wg",
 								"type": "text"
 							},
 							{
@@ -6037,6 +6037,11 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiIzMzE2YjY3ZWQ0NDc4NzVlYTNjOTllOGQ3MTBjOTEyNzY4ZmFlMGRmNTNhMGU3NmMwMGE2MjQyYWEzZjg3ZWE4N2VhMTMwODFhYWQ4YzlmZGU2MzZjN2JmZGMxZWE4ODFkNzg1ZDRiNzE3OTBhODYxYWFlNWU4MjlkZmE3MzkzNyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTczNzY4Njg2MTI5NjQzNTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjU3Mzc2ODY4NjEyOTY0MzUzIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjcyMzA1NTI4IiwibmJmIjoxNjcyMzA1NTI4LCJ0IjoiVk9VeEhCa3ZCcDMiLCJlYXMiOjE2ODAwODE1Mjg1ODksImV4cCI6MTY4MDA4MTUyOCwiaWF0IjoxNjcyMzA1NTI4LCJqdGkiOiJWcEVsOU9YTm5FT1BycGNrT0JnZERPdkRjbUJrYTZxNSJ9.7Vf-3Lau2_sfbrofMI_PEN7orhIQP8B7DrVnsb9Odru68MwDrR9D3ZGLV33ZYc4s5HrHra0XEoduOlxJjX27FQ",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -6070,13 +6075,13 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiJmNmZmN2E0Yjc2M2MwMDE4M2I3ZTc1OWZlMWRiNjg5MTIxYTkwZDM2YzFlOTc0NTkxZmJiYTEzNjFjMTIyZTFkMjA3OGEyOTUyMWE3YjczZWNiY2VhMWUxYjM0ZDI4MDNhMTY1MzM0ZWFlOGFiZTkzMzkyYzE5ZDRjNjZhYjNhMiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDY5MDQ3NTY5NDUyODkyMTdfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ2OTA0NzU2OTQ1Mjg5MjE3IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYyNDczOTE0IiwibmJmIjoxNjYyNDczOTE0LCJ0IjoiTTBZNnc1Y2VQWGUiLCJlYXMiOjE2NzAyNDk5MTQyMzQsImV4cCI6MTY3MDI0OTkxNCwiaWF0IjoxNjYyNDczOTE0LCJqdGkiOiI3MnVCUk5mWXc1VmpYM0dtWlpqOFQ4Z2l3bWVZWkViQyJ9.6aduSILPufecOQsie6NlhSq_mmibVbe7m3x8q6ELGRZ29Hy86-WC_cGdKG2LpScN9_twMqN_9oKvchMNIBJ_wg",
+								"value": "eyJraWQiOiIzMzE2YjY3ZWQ0NDc4NzVlYTNjOTllOGQ3MTBjOTEyNzY4ZmFlMGRmNTNhMGU3NmMwMGE2MjQyYWEzZjg3ZWE4N2VhMTMwODFhYWQ4YzlmZGU2MzZjN2JmZGMxZWE4ODFkNzg1ZDRiNzE3OTBhODYxYWFlNWU4MjlkZmE3MzkzNyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTczNzY4Njg2MTI5NjQzNTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjU3Mzc2ODY4NjEyOTY0MzUzIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjcyMzA1NTI4IiwibmJmIjoxNjcyMzA1NTI4LCJ0IjoiVk9VeEhCa3ZCcDMiLCJlYXMiOjE2ODAwODE1Mjg1ODksImV4cCI6MTY4MDA4MTUyOCwiaWF0IjoxNjcyMzA1NTI4LCJqdGkiOiJWcEVsOU9YTm5FT1BycGNrT0JnZERPdkRjbUJrYTZxNSJ9.7Vf-3Lau2_sfbrofMI_PEN7orhIQP8B7DrVnsb9Odru68MwDrR9D3ZGLV33ZYc4s5HrHra0XEoduOlxJjX27FQ",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"verifyType\":\"MAIL\",\r\n    \"credential\":\"liuyunfei0221@outloot.com\",\r\n    \"verificationCode\":\"8485699\"\r\n}"
+							"raw": "{\r\n    \"verifyType\":\"MAIL\",\r\n    \"credential\":\"liuyunfei0221@outloot.com\",\r\n    \"verificationCode\":\"8849433\"\r\n}"
 						},
 						"url": {
 							"raw": "localhost:11000/blue-auth/credential",
@@ -6160,6 +6165,16 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiI0ZDgwNWQyZGE4MzM3ZjI4NzMzMzljYmE5MzMxNzZlNDRlMWY2YjZmYmRkODJlYmJmNTdmODczMDAzMGJkMjM3YjUxNDhmNTU1NTcyOTNmMmQxMTkzZjhhYjIwY2QyMTFiNWJmZWFhOWU1NmJlNGJjNmYyMDEwZDEwMjgzZmZkOSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTczNzY4Njg2MTI5NjQzNTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjU3Mzc2ODY4NjEyOTY0MzUzIiwibiI6IlBQIiwiYXVkIjoiQmx1ZXIiLCJzIjoiMTY3MjMxMjMwMCIsIm5iZiI6MTY3MjMxMjMwMCwidCI6IkRRak1MMWh1M2xiIiwiZWFzIjoxNjgwMDg4MzAwNzI3LCJleHAiOjE2ODAwODgzMDAsImlhdCI6MTY3MjMxMjMwMCwianRpIjoiSDNtZHpUbTVtOUgwbVpvSFU4Zmc4djJJc25oM0g4MkgifQ.PWMkJF_6WHcpiusDF0qmyCrbrS1Iu5lml_lLYiq7iCml8QhUN-tnvp2fx38DpEihVL27PKgZTgXn9LW0UX4Lqw",
+								"type": "text"
+							},
+							{
+								"key": "Turing-Data",
+								"value": "{\"key\":\"vJtqPh78jvR9QdZb\",\"verify\":\"f1ayWaf\"}",
+								"type": "text"
 							}
 						],
 						"body": {
@@ -6193,13 +6208,13 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiI2NDA4MWM2N2M1YzI0M2I5ZmM4Mzk3YWIyY2FiOTg5ZjU3YmE0YzYyZWMzMjQyMzllZmViMDBhODBjOWRkYWRhMTcxNTI5YWViMWE4NjkzNjI0ODA1NWFlMTk4YThkMmQ0MjFhN2JmMjVkMDZkNjI2YzQ4OGYxZjM3Nzk1YTcyMSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDY4NjY4MzEzMTAzMjM3MTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ2ODY2ODMxMzEwMzIzNzEzIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYyNDQwOTE5IiwibmJmIjoxNjYyNDQwOTE5LCJ0IjoiWktCRXBnQjJtc00iLCJlYXMiOjE2NzAyMTY5MTk3MDgsImV4cCI6MTY3MDIxNjkxOSwiaWF0IjoxNjYyNDQwOTE5LCJqdGkiOiJqYjFiQ3lGdHRORmhPVThDSmJXZFl2MEhqRmJaUm5qUSJ9.WGk8E1gFfdZaVwDkG9R9YcYpnYPH4nHn2lxlfJxdQcorGFozNIVQUhwDbefa9L_ou4M9N0mxks-OCN7GZUncJw",
+								"value": "eyJraWQiOiI0ZDgwNWQyZGE4MzM3ZjI4NzMzMzljYmE5MzMxNzZlNDRlMWY2YjZmYmRkODJlYmJmNTdmODczMDAzMGJkMjM3YjUxNDhmNTU1NTcyOTNmMmQxMTkzZjhhYjIwY2QyMTFiNWJmZWFhOWU1NmJlNGJjNmYyMDEwZDEwMjgzZmZkOSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTczNzY4Njg2MTI5NjQzNTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjU3Mzc2ODY4NjEyOTY0MzUzIiwibiI6IlBQIiwiYXVkIjoiQmx1ZXIiLCJzIjoiMTY3MjMxMjMwMCIsIm5iZiI6MTY3MjMxMjMwMCwidCI6IkRRak1MMWh1M2xiIiwiZWFzIjoxNjgwMDg4MzAwNzI3LCJleHAiOjE2ODAwODgzMDAsImlhdCI6MTY3MjMxMjMwMCwianRpIjoiSDNtZHpUbTVtOUgwbVpvSFU4Zmc4djJJc25oM0g4MkgifQ.PWMkJF_6WHcpiusDF0qmyCrbrS1Iu5lml_lLYiq7iCml8QhUN-tnvp2fx38DpEihVL27PKgZTgXn9LW0UX4Lqw",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"verifyType\":\"SMS\",\r\n    \"verificationCode\":\"1986704\",\r\n    \"access\":\"11111111\"\r\n}"
+							"raw": "{\r\n    \"verifyType\":\"SMS\",\r\n    \"verificationCode\":\"2333839\",\r\n    \"access\":\"99999999\"\r\n}"
 						},
 						"url": {
 							"raw": "localhost:11000/blue-auth/access",
@@ -6216,7 +6231,7 @@
 					"response": []
 				},
 				{
-					"name": "获取密码登录图片验证码",
+					"name": "获取图灵验证码",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -6228,7 +6243,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"verifyType\":\"IMAGE\",\r\n    \"businessType\":\"CAL\"\r\n}"
+							"raw": "{\r\n    \"verifyType\":\"IMAGE\",\r\n    \"businessType\":\"TT\"\r\n}"
 						},
 						"url": {
 							"raw": "localhost:15000/blue-verify/verify/generate",
@@ -6254,51 +6269,26 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"credentialType\":\"PP\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"verificationKey\":\"AnrfjECjY1rEzMBp\",\r\n        \"verificationCode\":\"PQMakXS\",\r\n        \"identity\":\"18633783158\",\r\n        \"access\":\"11111111\"\r\n    }\r\n}"
-						},
-						"url": {
-							"raw": "localhost:11000/blue-auth/login",
-							"host": [
-								"localhost"
-							],
-							"port": "11000",
-							"path": [
-								"blue-auth",
-								"login"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "账号密码登录",
-					"request": {
-						"method": "POST",
-						"header": [
+							},
 							{
-								"key": "Content-Type",
-								"value": "application/json",
+								"key": "Turing-Data",
+								"value": "{\"key\":\"LyEc7duiGUoDgE3T\",\"verify\":\"H3UwRSQ\"}",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"credentialType\":\"PP\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"verificationKey\":\"AnrfjECjY1rEzMBp\",\r\n        \"verificationCode\":\"PQMakXS\",\r\n        \"identity\":\"18633783158\",\r\n        \"access\":\"11111111\"\r\n    }\r\n}"
+							"raw": "{\r\n    \"credentialType\":\"PP\",\r\n    \"deviceType\":\"M\",\r\n    \"account\":{\r\n        \"identity\":\"13131693996\",\r\n        \"access\":\"11111111\"\r\n    }\r\n}"
 						},
 						"url": {
-							"raw": "localhost:11000/blue-auth/auth/login",
+							"raw": "localhost:11000/blue-auth/session",
 							"host": [
 								"localhost"
 							],
 							"port": "11000",
 							"path": [
 								"blue-auth",
-								"auth",
-								"login"
+								"session"
 							]
 						}
 					},
@@ -6313,11 +6303,16 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
+							},
+							{
+								"key": "Turing-Data",
+								"value": "{\"key\":\"oU1Yukb8wGxNcJBn\",\"verify\":\"E9Zvm5c\"}",
+								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"verifyType\":\"SMS\",\r\n    \"businessType\":\"RST_ACC\",\r\n    \"destination\":\"18633783158\"\r\n}"
+							"raw": "{\r\n    \"verifyType\":\"SMS\",\r\n    \"businessType\":\"RST_ACC\",\r\n    \"destination\":\"13131693996\"\r\n}"
 						},
 						"url": {
 							"raw": "localhost:15000/blue-verify/verify/generate",
@@ -6352,7 +6347,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"verifyType\":\"SMS\",\r\n    \"credential\":\"18633783158\",\r\n    \"verificationCode\":\"5440257\",\r\n    \"access\":\"password\"\r\n}"
+							"raw": "{\r\n    \"verifyType\":\"SMS\",\r\n    \"credential\":\"13131693996\",\r\n    \"verificationCode\":\"4939571\",\r\n    \"access\":\"11111111\"\r\n}"
 						},
 						"url": {
 							"raw": "localhost:11000/blue-auth/access",
@@ -6376,6 +6371,16 @@
 							{
 								"key": "Content-Type",
 								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiIzNDA5Yjc2OWRjNzU1Y2U4MzU1YjJmOWIxMmE0OGNmOTkxMGQxYWUzMzJmYTI5YmIwOGY2ZDk5MGQ5MzljZWIzOTQzNGZlNzkwY2NlOTZlOTFkMDZkZWYzMWUxMThlZjJjYWMzY2EzNDllYTE2Mzg5NThmOWUzYjg3Zjk3MGQxMiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTczNzY4Njg2MTI5NjQzNTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjU3Mzc2ODY4NjEyOTY0MzUzIiwibiI6IlBQIiwiYXVkIjoiQmx1ZXIiLCJzIjoiMTY3MjMxMzY2MyIsIm5iZiI6MTY3MjMxMzY2MywidCI6Im1WSVZNWE14dlJwIiwiZWFzIjoxNjgwMDg5NjYzNzYyLCJleHAiOjE2ODAwODk2NjMsImlhdCI6MTY3MjMxMzY2MywianRpIjoiUzZicG5YcEd2andCR1lEQk1YaTBCamFVMko5cjE5eHUifQ.2fb0ZHOCEFYOaulI2YnO_g2L58rO_mnxSSAIBudNeDyaZ9HWQeO_-he6ARG75paquPNI_U9Nh1DQO00LMOrzFA",
+								"type": "text"
+							},
+							{
+								"key": "Turing-Data",
+								"value": "{\"key\":\"AqSLCscIQypSGJIL\",\"verify\":\"miBIUki\"}",
 								"type": "text"
 							}
 						],
@@ -6407,11 +6412,21 @@
 								"key": "Content-Type",
 								"value": "application/json",
 								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "eyJraWQiOiIzNDA5Yjc2OWRjNzU1Y2U4MzU1YjJmOWIxMmE0OGNmOTkxMGQxYWUzMzJmYTI5YmIwOGY2ZDk5MGQ5MzljZWIzOTQzNGZlNzkwY2NlOTZlOTFkMDZkZWYzMWUxMThlZjJjYWMzY2EzNDllYTE2Mzg5NThmOWUzYjg3Zjk3MGQxMiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTczNzY4Njg2MTI5NjQzNTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjU3Mzc2ODY4NjEyOTY0MzUzIiwibiI6IlBQIiwiYXVkIjoiQmx1ZXIiLCJzIjoiMTY3MjMxMzY2MyIsIm5iZiI6MTY3MjMxMzY2MywidCI6Im1WSVZNWE14dlJwIiwiZWFzIjoxNjgwMDg5NjYzNzYyLCJleHAiOjE2ODAwODk2NjMsImlhdCI6MTY3MjMxMzY2MywianRpIjoiUzZicG5YcEd2andCR1lEQk1YaTBCamFVMko5cjE5eHUifQ.2fb0ZHOCEFYOaulI2YnO_g2L58rO_mnxSSAIBudNeDyaZ9HWQeO_-he6ARG75paquPNI_U9Nh1DQO00LMOrzFA",
+								"type": "text"
+							},
+							{
+								"key": "Turing-Data",
+								"value": "{\"key\":\"8dfFN4F7q3gAPXPt\",\"verify\":\"lhs634m\"}",
+								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"verifyType\":\"MAIL\",\r\n    \"businessType\":\"CUP\",\r\n    \"destination\":\"liuyunfei19890221@gmail.com\"\r\n}"
+							"raw": "{\r\n    \"verifyType\":\"MAIL\",\r\n    \"businessType\":\"CUP\",\r\n    \"destination\":\"liuyunfei0221@outlook.com\"\r\n}"
 						},
 						"url": {
 							"raw": "localhost:15000/blue-verify/verify/generate",
@@ -6440,13 +6455,13 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJUeXBlIjoiSnd0Iiwia2lkIjoiYjQ3ODViZTQ3YzIzZjFkM2YzZTUxOWRiN2Q2YTM5NjkwOTQ2ZDlhNzdjODczZGM3Y2JmMzY5M2M1ODJkNmE5NzljMGY5ZDk4ZTYyMGUzYjRiNDdhNzllZTg4NjgxNDAxOWRkNzFjZDhlZDc4MmFmYTg3Mzc3YmFiMWI1YjcyNTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzIjoiMTY1MDI4NDA3NiIsIm5iZiI6MTY1MDI4NDA3NiwidCI6ImNld0p6amtEbUZWIiwiZyI6Ik0iLCJoIjoiQl9TTjozMzgxNTQ1MjE5NDk2MzQ1N19DTElfTSIsImJsdWVFeHBpcmVzQXRTdGFtcCI6MTY1Mjk2MjQ3NjU0NiwiaSI6IjMzODE1NDUyMTk0OTYzNDU3IiwiZXhwIjoxNjUyOTYyNDc2LCJpYXQiOjE2NTAyODQwNzYsImp0aSI6Ilk5UWdDRjMwZ0Zoakw1WnVPdzVFZEV1MkZwdWo4MkFzIiwibiI6IkVQIn0.5SVTliXY22ja_UThC1GzWTCTzvHB2rtLxTmO-WvXT_Bv0de3JBviTeAeFPgZ-ddHot_1VZzLak-GXUFYzocQ0g",
+								"value": "eyJraWQiOiIzNDA5Yjc2OWRjNzU1Y2U4MzU1YjJmOWIxMmE0OGNmOTkxMGQxYWUzMzJmYTI5YmIwOGY2ZDk5MGQ5MzljZWIzOTQzNGZlNzkwY2NlOTZlOTFkMDZkZWYzMWUxMThlZjJjYWMzY2EzNDllYTE2Mzg5NThmOWUzYjg3Zjk3MGQxMiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTczNzY4Njg2MTI5NjQzNTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjU3Mzc2ODY4NjEyOTY0MzUzIiwibiI6IlBQIiwiYXVkIjoiQmx1ZXIiLCJzIjoiMTY3MjMxMzY2MyIsIm5iZiI6MTY3MjMxMzY2MywidCI6Im1WSVZNWE14dlJwIiwiZWFzIjoxNjgwMDg5NjYzNzYyLCJleHAiOjE2ODAwODk2NjMsImlhdCI6MTY3MjMxMzY2MywianRpIjoiUzZicG5YcEd2andCR1lEQk1YaTBCamFVMko5cjE5eHUifQ.2fb0ZHOCEFYOaulI2YnO_g2L58rO_mnxSSAIBudNeDyaZ9HWQeO_-he6ARG75paquPNI_U9Nh1DQO00LMOrzFA",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"currentVerifyType\":\"SMS\",\r\n    \"currentVerificationCode\":\"1443590\",\r\n    \"destinationVerifyType\":\"MAIL\",\r\n    \"destinationCredential\":\"liuyunfei19890221@gmail.com\",\r\n    \"destinationVerificationCode\":\"1267784\"\r\n    \r\n}"
+							"raw": "{\r\n    \"currentVerifyType\":\"SMS\",\r\n    \"currentVerificationCode\":\"7522727\",\r\n    \"destinationVerifyType\":\"MAIL\",\r\n    \"destinationCredential\":\"liuyunfei0221@outlook.com\",\r\n    \"destinationVerificationCode\":\"3725137\"\r\n    \r\n}"
 						},
 						"url": {
 							"raw": "localhost:11000/blue-auth/credential",

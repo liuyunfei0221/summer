@@ -20,11 +20,19 @@ public interface FinanceControlService {
     FinanceAccountInfo initFinanceAccount(Long memberId);
 
     /**
+     * query finance account mono by id
+     *
+     * @param id
+     * @return
+     */
+    Mono<FinanceAccountInfo> getFinanceAccountInfo(Long id);
+
+    /**
      * get finance account mono by member id with auto init
      *
      * @param memberId
      * @return
      */
-    Mono<FinanceAccountInfo> getFinanceAccountInfoByMemberIdWithAutoInit(Long memberId);
+    Mono<FinanceAccountInfo> getFinanceAccountInfoByMemberId(Long memberId);
 
 }

@@ -18,10 +18,8 @@ import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.SyncKeyPrefix.FINANCE_ACCOUNT_INSERT_SYNC_PRE;
-import static reactor.core.publisher.Mono.justOrEmpty;
+import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
-import static reactor.core.publisher.Mono.defer;
-import static reactor.core.publisher.Mono.error;
 
 /**
  * finance control service impl
@@ -96,13 +94,26 @@ public class FinanceControlServiceImpl implements FinanceControlService {
     }
 
     /**
+     * query finance account mono by id
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Mono<FinanceAccountInfo> getFinanceAccountInfo(Long id) {
+        LOGGER.info("id = {}", id);
+
+        return financeAccountService.getFinanceAccountInfo(id);
+    }
+
+    /**
      * get finance account mono by member id with auto init
      *
      * @param memberId
      * @return
      */
     @Override
-    public Mono<FinanceAccountInfo> getFinanceAccountInfoByMemberIdWithAutoInit(Long memberId) {
+    public Mono<FinanceAccountInfo> getFinanceAccountInfoByMemberId(Long memberId) {
         LOGGER.info("memberId = {}", memberId);
         if (isInvalidIdentity(memberId))
             throw new BlueException(INVALID_IDENTITY);

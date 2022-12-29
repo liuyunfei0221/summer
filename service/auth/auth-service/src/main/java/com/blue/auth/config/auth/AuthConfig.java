@@ -40,7 +40,7 @@ public class AuthConfig {
         LOGGER.info("accessDeploy = {}", accessDeploy);
         return new AccessInfoCache(reactiveStringRedisTemplate, accessBatchExpireProcessor, accessDeploy.getRefresherCorePoolSize(),
                 accessDeploy.getRefresherMaximumPoolSize(), accessDeploy.getRefresherKeepAliveSeconds(), accessDeploy.getRefresherBlockingQueueCapacity(),
-                accessDeploy.getGlobalExpiresMillis(), accessDeploy.getLocalExpiresMillis(), accessDeploy.getMillisLeftToHandleExpire(), accessDeploy.getLocalCacheCapacity());
+                accessDeploy.getGlobalExpiresMillis(), accessDeploy.getLocalExpiresMillis(), accessDeploy.getLocalCacheCapacity());
     }
 
 }

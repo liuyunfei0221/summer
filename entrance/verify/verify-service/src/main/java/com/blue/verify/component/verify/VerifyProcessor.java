@@ -27,7 +27,6 @@ import java.util.Set;
 import java.util.function.*;
 import java.util.stream.Stream;
 
-import static com.blue.basic.common.access.AccessProcessor.jsonToAccess;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.getIpReact;
 import static com.blue.basic.common.base.ConstantProcessor.getVerifyBusinessTypeByIdentity;
@@ -135,13 +134,8 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
                     justOrEmpty(serverRequest.headers().firstHeader(AUTHORIZATION.name))
                             .filter(BlueChecker::isNotBlank)
                             .switchIfEmpty(defer(() -> error(() -> new BlueException(UNAUTHORIZED))))
-                            .flatMap(accessStr ->
-                                    just(jsonToAccess(accessStr))
-                                            .onErrorResume(t -> {
-                                                LOGGER.info("t = {}", t);
-                                                return rpcAuthServiceConsumer.parseAccess(accessStr);
-                                            })
-                            ).map(access ->
+                            .flatMap(rpcAuthServiceConsumer::parseAccess)
+                            .map(access ->
                                     !NOT_LOGGED_IN.identity.equals(access.getCredentialType())
                             ).onErrorResume(t -> {
                                 LOGGER.info("t = {}", t);

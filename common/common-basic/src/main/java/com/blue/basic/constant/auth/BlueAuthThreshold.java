@@ -30,7 +30,7 @@ public enum BlueAuthThreshold {
     /**
      * credential length minimum
      */
-    CREDENTIAL_LEN_MIN(13L),
+    CREDENTIAL_LEN_MIN(11L),
 
     /**
      * credential length maximum

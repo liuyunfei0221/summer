@@ -340,8 +340,7 @@ jwt:
 access:
   local-cache-capacity: 16384
   global-expires-millis: 259200000
-  local-expires-millis: 30000
-  millis-left-to-handle-expire: 258000000
+  local-expires-millis: 180000
   refresher-core-pool-size: 2
   refresher-maximum-pool-size: 4
   refresher-keep-alive-seconds: 64

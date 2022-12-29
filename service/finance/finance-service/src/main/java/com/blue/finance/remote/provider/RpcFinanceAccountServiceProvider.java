@@ -2,7 +2,7 @@ package com.blue.finance.remote.provider;
 
 import com.blue.finance.api.inter.RpcFinanceAccountService;
 import com.blue.finance.api.model.FinanceAccountInfo;
-import com.blue.finance.service.inter.FinanceAccountService;
+import com.blue.finance.service.inter.FinanceControlService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
 import reactor.util.Logger;
@@ -28,12 +28,12 @@ public class RpcFinanceAccountServiceProvider implements RpcFinanceAccountServic
 
     private static final Logger LOGGER = getLogger(RpcFinanceAccountServiceProvider.class);
 
-    private final FinanceAccountService financeAccountService;
+    private final FinanceControlService financeControlService;
 
     private final ExecutorService executorService;
 
-    public RpcFinanceAccountServiceProvider(FinanceAccountService financeAccountService, ExecutorService executorService) {
-        this.financeAccountService = financeAccountService;
+    public RpcFinanceAccountServiceProvider(FinanceControlService financeControlService, ExecutorService executorService) {
+        this.financeControlService = financeControlService;
         this.executorService = executorService;
     }
 
@@ -45,7 +45,7 @@ public class RpcFinanceAccountServiceProvider implements RpcFinanceAccountServic
      */
     @Override
     public CompletableFuture<FinanceAccountInfo> getFinanceAccountInfo(Long id) {
-        return financeAccountService.getFinanceAccountInfo(id).toFuture();
+        return financeControlService.getFinanceAccountInfo(id).toFuture();
     }
 
     /**
@@ -56,7 +56,7 @@ public class RpcFinanceAccountServiceProvider implements RpcFinanceAccountServic
      */
     @Override
     public CompletableFuture<FinanceAccountInfo> getFinanceAccountInfoByMemberId(Long memberId) {
-        return financeAccountService.getFinanceAccountInfoByMemberId(memberId).toFuture();
+        return financeControlService.getFinanceAccountInfoByMemberId(memberId).toFuture();
     }
 
 }
