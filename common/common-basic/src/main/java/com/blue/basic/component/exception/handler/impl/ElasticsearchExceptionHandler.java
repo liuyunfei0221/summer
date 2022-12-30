@@ -30,7 +30,7 @@ public final class ElasticsearchExceptionHandler implements ExceptionHandler {
     private static final Function<Throwable, String> MESSAGE_PARSER = throwable -> {
         if (isNull(throwable))
             return EMPTY_VALUE.value;
-        
+
         try {
             return ofNullable(throwable.getMessage())
                     .filter(BlueChecker::isNotBlank)
