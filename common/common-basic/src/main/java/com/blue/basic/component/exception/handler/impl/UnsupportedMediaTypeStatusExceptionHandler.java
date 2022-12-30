@@ -1,7 +1,7 @@
 package com.blue.basic.component.exception.handler.impl;
 
 import com.blue.basic.component.exception.handler.inter.ExceptionHandler;
-import com.blue.basic.component.exception.model.ExceptionInfo;
+import com.blue.basic.component.exception.model.common.ExceptionInfo;
 import org.springframework.web.server.UnsupportedMediaTypeStatusException;
 import reactor.util.Logger;
 

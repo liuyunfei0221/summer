@@ -2,7 +2,7 @@ package com.blue.basic.component.exception.handler.impl;
 
 import com.blue.basic.common.base.BlueChecker;
 import com.blue.basic.component.exception.handler.inter.ExceptionHandler;
-import com.blue.basic.component.exception.model.ExceptionInfo;
+import com.blue.basic.component.exception.model.common.ExceptionInfo;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;

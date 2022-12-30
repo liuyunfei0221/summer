@@ -1,4 +1,4 @@
-package com.blue.basic.component.exception.model;
+package com.blue.basic.component.exception.model.common;
 
 import com.blue.basic.constant.common.ResponseElement;
 import com.blue.basic.model.exps.BlueException;

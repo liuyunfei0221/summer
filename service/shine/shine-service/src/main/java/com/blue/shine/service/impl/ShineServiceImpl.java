@@ -351,13 +351,13 @@ public class ShineServiceImpl implements ShineService {
                     .index(INDEX_NAME)
                     .query(queryAndHighlightColumns.getQuery())
                     .sort(SORT_PROCESSOR.apply(condition))
-                    .from(scrollModelRequest.getFrom().intValue())
                     .size(scrollModelRequest.getRows().intValue());
 
             packageHighlight(builder, queryAndHighlightColumns.getColumns(), preTags, postTags);
 
             ofNullable(scrollModelRequest.getCursor())
                     .map(SearchAfterCursor::getSearchAfter)
+                    .map(sa -> sa.stream().filter(BlueChecker::isNotBlank).collect(toList()))
                     .filter(BlueChecker::isNotEmpty)
                     .ifPresent(cursors ->
                             packageSearchAfter(builder, cursors.stream()
@@ -389,15 +389,15 @@ public class ShineServiceImpl implements ShineService {
                             builder
                                     .query(queryAndHighlightColumns.getQuery())
                                     .sort(SORT_PROCESSOR.apply(condition))
-                                    .from(scrollModelRequest.getFrom().intValue())
                                     .size(scrollModelRequest.getRows().intValue());
 
                             packageHighlight(builder, queryAndHighlightColumns.getColumns(), preTags, postTags);
 
-                            ofNullable(cursor).map(PitCursor::getSearchAfter).filter(BlueChecker::isNotEmpty)
+                            ofNullable(cursor).map(PitCursor::getSearchAfter)
+                                    .map(sa -> sa.stream().filter(BlueChecker::isNotBlank).collect(toList()))
+                                    .filter(BlueChecker::isNotEmpty)
                                     .ifPresent(cursors ->
                                             packageSearchAfter(builder, cursors.stream()
-
                                                     .map(FieldValue::of)
                                                     .collect(toList())));
 

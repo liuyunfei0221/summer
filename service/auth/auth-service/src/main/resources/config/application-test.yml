@@ -217,7 +217,7 @@ seata:
       tcc-action-interceptor-order: -2147482648
       branch-execution-timeout-XA: 120000
       connection-two-phase-hold-timeout-XA: 120000
-      sql-parser-type: druid
+      sql-parser-type: antlr
       lock:
         retry-interval: 10
         retry-times: 30

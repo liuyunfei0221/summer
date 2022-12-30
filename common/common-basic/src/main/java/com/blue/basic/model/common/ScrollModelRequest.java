@@ -22,8 +22,6 @@ public final class ScrollModelRequest<T, A extends Serializable> implements Seri
     private static final long DEFAULT_ROWS = ROWS.value;
     private static final long MAX_ROWS_PER_REQ = MAX_ROWS.value;
 
-    private static final Long FROM = 0L;
-
     /**
      * nums per request
      */
@@ -49,10 +47,6 @@ public final class ScrollModelRequest<T, A extends Serializable> implements Seri
         this.rows = rows;
         this.condition = condition;
         this.cursor = cursor;
-    }
-
-    public Long getFrom() {
-        return FROM;
     }
 
     public Long getRows() {

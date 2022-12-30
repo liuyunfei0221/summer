@@ -16,21 +16,21 @@ import static java.util.Optional.ofNullable;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * elastic search exp handler
+ * elastic search response exp handler
  *
  * @author liuyunfei
  */
 @SuppressWarnings({"unused"})
-public final class ElasticsearchExceptionHandler implements ExceptionHandler {
+public final class ResponseExceptionHandler implements ExceptionHandler {
 
-    private static final Logger LOGGER = getLogger(ElasticsearchExceptionHandler.class);
+    private static final Logger LOGGER = getLogger(ResponseExceptionHandler.class);
 
-    private static final String EXP_NAME = "co.elastic.clients.elasticsearch._types.ElasticsearchException";
+    private static final String EXP_NAME = "org.elasticsearch.client.ResponseException";
 
     private static final Function<Throwable, String> MESSAGE_PARSER = throwable -> {
         if (isNull(throwable))
             return EMPTY_VALUE.value;
-        
+
         try {
             return ofNullable(throwable.getMessage())
                     .filter(BlueChecker::isNotBlank)
@@ -59,7 +59,7 @@ public final class ElasticsearchExceptionHandler implements ExceptionHandler {
 
     @Override
     public ExceptionInfo handle(Throwable throwable) {
-        LOGGER.info("elasticsearchExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
+        LOGGER.info("responseExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
         return new ExceptionInfo(INVALID_REQUEST_PARAM, new String[]{MESSAGE_PARSER.apply(throwable)});
     }
 

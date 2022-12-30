@@ -6,11 +6,16 @@ import com.google.gson.Gson;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.scheduler.Schedulers;
 
 import java.net.URI;
+import java.util.stream.Stream;
 
 import static com.blue.basic.component.rest.api.generator.BlueRestGenerator.generateWebClient;
 import static java.lang.System.currentTimeMillis;
+import static java.util.Collections.emptyMap;
+import static java.util.stream.Collectors.toList;
+import static reactor.netty.http.HttpProtocol.*;
 
 public class DataInit {
 
@@ -24,16 +29,19 @@ public class DataInit {
     private static final String EXTRA_PREFIX = "附加信息-";
     private static final int PRIORITY = 0;
 
-    private static final int INIT_SIZE = 10000;
+    private static final int INIT_SIZE = 1000;
 
-    private static final RestConfParams CONF = new RestConfParams();
+    private static final RestConfParams CONF = new RestConfParams(512, 64, false,
+            7000, false, Stream.of(HTTP11, H2, H2C).collect(toList()),
+            3000, 3000, 3000,
+            1048576, emptyMap());
 
     private static final WebClient WEB_CLIENT = generateWebClient(CONF);
 
     private static final Gson GSON = CommonFunctions.GSON;
 
     private static final String URL = "http://127.0.0.1:11000/blue-shine/manager/shine";
-    private static final String JWT_AUTH = "eyJraWQiOiJhNTBhZTc1MTJjMDU5YzBhOTdiODA3N2I0OWJhOTU3MzI4ZTBiN2FiM2QyOGIwODk0YjFlYjkyZjcwYTI3ZjQxOTQ2NWJiZmJhMDU4OTVlMjlhYjNmNWQ2ZDE2ZjkwNjI3YmI5MTYxYjFlOTc0YjQ3ZmRlYmFiMWVjZTAyYjYxNSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTI5MjU0MzM1MTA4ODc0MjVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUyOTI1NDMzNTEwODg3NDI1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY4MDgxNDIxIiwibmJmIjoxNjY4MDgxNDIxLCJ0IjoibFMwWUd0U3RlUDUiLCJlYXMiOjE2NzU4NTc0MjExMDUsImV4cCI6MTY3NTg1NzQyMSwiaWF0IjoxNjY4MDgxNDIxLCJqdGkiOiJyQUlzTTNtY25RVFFmSWlRV0pQYzZZQkxXZHRyYlh6UCJ9.C4zbCI4pyAYbBKL7pqailHaruRxw5uBeFPT1-TseR8Yf4IOgKGWAe2eWAA3h1MEl4Zj4hKP5qZ1TpiECEi4q1Q";
+    private static final String JWT_AUTH = "eyJraWQiOiJjYTRiNmY3ZTI0YjY1ZWMwYjRkYWJiMWIxZDEwYmI5ZWMzNWU0MzdmYWQ1M2QyMzE5OWJkNzE1ZDY2ZDVlNDZjMmZlMTFhNjhlNmIxNDA4NDc0OThjOGQ2MmE0Mjg4NWQ4ZjZlMzIxMWZlZjM3MWY4ZDZkNWUwMWExZTM2MzA0YSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTczNzY4Njg2MTI5NjQzNTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjU3Mzc2ODY4NjEyOTY0MzUzIiwibiI6IlBQIiwiYXVkIjoiQmx1ZXIiLCJzIjoiMTY3MjM3MzY1MSIsIm5iZiI6MTY3MjM3MzY1MSwidCI6IjRkWlVyMlZCdzFjIiwiZWFzIjoxNjgwMTQ5NjUxNzI1LCJleHAiOjE2ODAxNDk2NTEsImlhdCI6MTY3MjM3MzY1MSwianRpIjoiMVZVNkhVTGh2Mmg1eWtsTW1NbkNSR1FBdHVHSzRZWmoifQ.IDwFP9UUgW3uDWmYM8tq3Skf250ev_FIWYcfTfhhiFIZ9KS5kC_5lExUIHi-UPEauRks1FvXx4N6oi8QSJzEiA";
 
     private static final WebClient.RequestBodySpec REQUEST_BODY_SPEC = WEB_CLIENT.post()
             .uri(URI.create(URL))
@@ -46,7 +54,9 @@ public class DataInit {
             stamp = currentTimeMillis();
             REQUEST_BODY_SPEC.bodyValue(GSON.toJson(new ShineInsertParam(TITLE_PREFIX + stamp, CONTENT_PREFIX + stamp, DETAIL_PREFIX + stamp, CONTACT_PREFIX + stamp,
                             CONTACT_DETAIL_PREFIX + stamp, CITY_ID, ADDRESS_DETAIL_PREFIX + stamp, EXTRA_PREFIX + stamp, PRIORITY))).retrieve()
-                    .bodyToMono(String.class).subscribe(System.err::println);
+                    .bodyToMono(String.class)
+                    .subscribeOn(Schedulers.boundedElastic())
+                    .subscribe(System.out::println, System.err::println);
         }
 
         try {
