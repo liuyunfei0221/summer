@@ -137,6 +137,7 @@ public final class BluePulsarConsumer<T extends Serializable> implements Consume
         }
     }
 
+
     @Override
     public void negativeAcknowledge(Message<?> message) {
         pulsarConsumer.negativeAcknowledge(message);
@@ -240,6 +241,16 @@ public final class BluePulsarConsumer<T extends Serializable> implements Consume
     @Override
     public CompletableFuture<Void> acknowledgeAsync(List<MessageId> messageIdList) {
         return pulsarConsumer.acknowledgeAsync(messageIdList);
+    }
+
+    @Override
+    public CompletableFuture<Void> acknowledgeAsync(Messages<?> messages, Transaction txn) {
+        return pulsarConsumer.acknowledgeAsync(messages, txn);
+    }
+
+    @Override
+    public CompletableFuture<Void> acknowledgeAsync(List<MessageId> messageIdList, Transaction txn) {
+        return pulsarConsumer.acknowledgeAsync(messageIdList, txn);
     }
 
     @Override
