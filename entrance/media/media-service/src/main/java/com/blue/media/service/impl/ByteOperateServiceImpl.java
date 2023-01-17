@@ -3,7 +3,6 @@ package com.blue.media.service.impl;
 import com.blue.basic.common.base.BlueChecker;
 import com.blue.basic.constant.common.BlueFileType;
 import com.blue.basic.model.common.BlueResponse;
-import com.blue.basic.model.common.IdentityParam;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.media.api.model.AttachmentUploadInfo;
@@ -42,10 +41,12 @@ import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.common.base.ConstantProcessor.assertAttachmentType;
+import static com.blue.basic.common.base.PathVariableGetter.getLongVariableReact;
 import static com.blue.basic.constant.common.BlueBoolean.FALSE;
 import static com.blue.basic.constant.common.BlueBoolean.TRUE;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_WRITE;
 import static com.blue.basic.constant.common.BluePrefix.CONTENT_DISPOSITION_FILE_NAME_PREFIX;
+import static com.blue.basic.constant.common.PathVariable.ID;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.Status.VALID;
 import static com.blue.basic.constant.common.Symbol.PERIOD;
@@ -298,11 +299,11 @@ public class ByteOperateServiceImpl implements ByteOperateService {
      */
     @Override
     public Mono<ServerResponse> download(ServerRequest serverRequest) {
-        return zip(serverRequest.bodyToMono(IdentityParam.class)
+        return zip(getLongVariableReact(serverRequest, ID.key)
                         .switchIfEmpty(defer(() -> error(() -> new BlueException(EMPTY_PARAM)))),
                 getAccessReact(serverRequest))
                 .flatMap(tuple2 -> {
-                    Long attachmentId = tuple2.getT1().getId();
+                    Long attachmentId = tuple2.getT1();
                     long memberId = tuple2.getT2().getId();
                     return attachmentService.getAttachment(attachmentId)
                             .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))))

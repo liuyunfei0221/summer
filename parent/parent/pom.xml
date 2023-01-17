@@ -24,7 +24,7 @@
         <spring-boot.version>2.7.7</spring-boot.version>
         <spring-cloud.version>2021.0.5</spring-cloud.version>
 
-        <affinity.version>3.23.2</affinity.version>
+        <affinity.version>3.23.3</affinity.version>
         <apache.curator.version>5.4.0</apache.curator.version>
         <apache-dubbo.version>3.1.4</apache-dubbo.version>
         <apache.poi.version>5.2.3</apache.poi.version>

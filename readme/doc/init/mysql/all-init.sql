@@ -559,9 +559,9 @@ VALUES (100001, 'GET', 'blue-base', '/countries', '', b'0', b'1', b'1', b'0', b'
 
 -- media api
 
-       (220001, 'POST', 'blue-media', '/file/upload', '', b'1', b'1', b'1', b'1', b'1', 1,
+       (220001, 'POST', 'blue-media', '/file', '', b'1', b'1', b'1', b'1', b'1', 1,
         'media upload of api', 'media upload of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
-       (220002, 'POST', 'blue-media', '/file/download', '', b'1', b'1', b'1', b'1', b'0', 1,
+       (220002, 'GET', 'blue-media', '/file/{id}', '', b'1', b'1', b'1', b'1', b'0', 1,
         'file download of api', 'file download of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),
        (220003, 'POST', 'blue-media', '/attachments/scroll', '', b'1', b'1', b'1', b'1', b'1', 1,
         'attachment scroll list of api', 'attachment scroll list of api', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 1, 1),

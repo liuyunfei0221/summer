@@ -4669,7 +4669,7 @@
 									},
 									{
 										"key": "Authorization",
-										"value": "eyJraWQiOiJjYTRiNmY3ZTI0YjY1ZWMwYjRkYWJiMWIxZDEwYmI5ZWMzNWU0MzdmYWQ1M2QyMzE5OWJkNzE1ZDY2ZDVlNDZjMmZlMTFhNjhlNmIxNDA4NDc0OThjOGQ2MmE0Mjg4NWQ4ZjZlMzIxMWZlZjM3MWY4ZDZkNWUwMWExZTM2MzA0YSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTczNzY4Njg2MTI5NjQzNTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjU3Mzc2ODY4NjEyOTY0MzUzIiwibiI6IlBQIiwiYXVkIjoiQmx1ZXIiLCJzIjoiMTY3MjM3MzY1MSIsIm5iZiI6MTY3MjM3MzY1MSwidCI6IjRkWlVyMlZCdzFjIiwiZWFzIjoxNjgwMTQ5NjUxNzI1LCJleHAiOjE2ODAxNDk2NTEsImlhdCI6MTY3MjM3MzY1MSwianRpIjoiMVZVNkhVTGh2Mmg1eWtsTW1NbkNSR1FBdHVHSzRZWmoifQ.IDwFP9UUgW3uDWmYM8tq3Skf250ev_FIWYcfTfhhiFIZ9KS5kC_5lExUIHi-UPEauRks1FvXx4N6oi8QSJzEiA",
+										"value": "eyJraWQiOiJjMTExZDE3YmVkNjMzMWVkMGJjNjAzNmNlZGNiYTA4YzRmMzE1OGZkOTFlYWU0NzEwNTIyZTVlNTEyMjExNzE5MDMyNDQwNDc3NzMxNmY1NTE3NWUyMDRiYWYxMDhkZWUwNTBkMzYyODkyOWRjNmU4OWY0ZTRhNjk5ZDIxNTkyNCIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTkyMjA4OTEzNDY2NjU0NzNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjU5MjIwODkxMzQ2NjY1NDczIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjczOTQ3MjYxIiwibmJmIjoxNjczOTQ3MjYxLCJ0IjoiUmQ2N0J3SkJra1IiLCJlYXMiOjE2ODE3MjMyNjE5NDIsImV4cCI6MTY4MTcyMzI2MSwiaWF0IjoxNjczOTQ3MjYxLCJqdGkiOiIyNnJHell1ZkVlaEg3ZlV0QU1rSkdZY0xncjJwcGlyWSJ9.BkaJ3gBxvRq2bC7KtNpwRvnYrSWadYiJx13erqwqTYZ7q956LiRMiJopzqUTtiajWbGlnI3ND5hZf-aUBPo_tg",
 										"type": "text"
 									}
 								],
@@ -4680,12 +4680,30 @@
 											"key": "attachments",
 											"type": "file",
 											"src": [
-												"/E:/tempFile/source/walls/a_beautiful_view_of_colorful_autumn_trees-wallpaper-2560x1440.jpg",
-												"/E:/tempFile/source/walls/a_bridge_to_autumn-wallpaper-3840x2160.jpg",
-												"/E:/tempFile/source/walls/a_cloudy_day-wallpaper-3840x2160.jpg",
-												"/E:/tempFile/source/walls/a_different_world-wallpaper-3840x2160.jpg",
-												"/E:/tempFile/source/walls/a_field_of_poppies-wallpaper-3840x2160.jpg",
-												"/E:/tempFile/source/walls/a_flower_for_you-wallpaper-3840x2160.jpg"
+												"/E:/tempFile/source/walls/autumn_schachental_switzerland-wallpaper-1920x1080.jpg",
+												"/E:/tempFile/source/walls/autumn_season_3-wallpaper-2560x1440.jpg",
+												"/E:/tempFile/source/walls/autumn_sunshine-wallpaper-2560x1440.jpg",
+												"/E:/tempFile/source/walls/autumn_time_2-wallpaper-1920x1080.jpg",
+												"/E:/tempFile/source/walls/autumn_tones-wallpaper-3840x2160.jpg",
+												"/E:/tempFile/source/walls/autumn_utrecht-wallpaper-3840x2160.jpg",
+												"/E:/tempFile/source/walls/autumn_yellow_trees_reflection_palmer_lake-wallpaper-3840x2160.jpg",
+												"/E:/tempFile/source/walls/autumnal_tints-wallpaper-3840x2160.jpg",
+												"/E:/tempFile/source/walls/autumn-wallpaper-3840x2160.jpg",
+												"/E:/tempFile/source/walls/awesome_flat-wallpaper-3840x2160.jpg",
+												"/E:/tempFile/source/walls/azaleas_bloom_in_spring-wallpaper-2560x1440.jpg",
+												"/E:/tempFile/source/walls/baby_kittens-wallpaper-2560x1440.jpg",
+												"/E:/tempFile/source/walls/baby_pampas_plume_grass-wallpaper-3840x2160.jpg",
+												"/E:/tempFile/source/walls/balsamroot_flowers_tom_mccall_preserve_rowena_oregon-wallpaper-3840x2160(1).jpg",
+												"/E:/tempFile/source/walls/balsamroot_flowers_tom_mccall_preserve_rowena_oregon-wallpaper-3840x2160.jpg",
+												"/E:/tempFile/source/walls/banff_national_park_alberta_canada-wallpaper-3840x2160.jpg",
+												"/E:/tempFile/source/walls/barbara_palvin_victorias_secret_holiday-wallpaper-1920x1080.jpg",
+												"/E:/tempFile/source/walls/bastei_bridge_autumn-wallpaper-3840x2160.jpg",
+												"/E:/tempFile/source/walls/bay_5-wallpaper-3840x2160.jpg",
+												"/E:/tempFile/source/walls/beach_73-wallpaper-2560x1440.jpg",
+												"/E:/tempFile/source/walls/beach_97-wallpaper-3840x2160.jpg",
+												"/E:/tempFile/source/walls/beach_hdr_3-wallpaper-3840x2160.jpg",
+												"/E:/tempFile/source/walls/beach_meadow-wallpaper-2560x1440.jpg",
+												"/E:/tempFile/source/walls/beach_photo_session-wallpaper-3840x2160.jpg"
 											]
 										},
 										{
@@ -4696,15 +4714,14 @@
 									]
 								},
 								"url": {
-									"raw": "localhost:13000/blue-media/file/upload",
+									"raw": "localhost:13000/blue-media/file",
 									"host": [
 										"localhost"
 									],
 									"port": "13000",
 									"path": [
 										"blue-media",
-										"file",
-										"upload"
+										"file"
 									]
 								}
 							},
@@ -4722,13 +4739,13 @@
 									},
 									{
 										"key": "Authorization",
-										"value": "eyJraWQiOiI1ZTQyZDE3MzVlYzc0YTFmYWJjZjUxNTgwMjRiZDNjZWY5YjZhMjYyNDk0Zjk2YzIzNWE3YzdkZTc2OWI1MDhjMzY4NDQ4N2NkNjczMWM5ZTMyNjQ1NzNhYzQ0ZjQ0MTFlZDI0ODQxYTdlOTg0N2M4MTE5N2JmMDA3YmUzYjRkMyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTM0NTQ1MzA1MzIwODE2NjVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUzNDU0NTMwNTMyMDgxNjY1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY4NTgzOTAxIiwibmJmIjoxNjY4NTgzOTAxLCJ0IjoiQ3Z1WnJXYkdLUkoiLCJlYXMiOjE2NzYzNTk5MDEyMzUsImV4cCI6MTY3NjM1OTkwMSwiaWF0IjoxNjY4NTgzOTAxLCJqdGkiOiJLeXJaMFRSUEpNRzN4NE51eW96VTRoUUdlcmFIc1RLdiJ9.3dmOe-PzIYxrSP3PakCMAUVFgRBgOMYYCoXVI-orefjGfaRKUajpDuit484oOzCCYfwddawESZi3AlXHHaY6Sw",
+										"value": "eyJraWQiOiJjMTExZDE3YmVkNjMzMWVkMGJjNjAzNmNlZGNiYTA4YzRmMzE1OGZkOTFlYWU0NzEwNTIyZTVlNTEyMjExNzE5MDMyNDQwNDc3NzMxNmY1NTE3NWUyMDRiYWYxMDhkZWUwNTBkMzYyODkyOWRjNmU4OWY0ZTRhNjk5ZDIxNTkyNCIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTkyMjA4OTEzNDY2NjU0NzNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjU5MjIwODkxMzQ2NjY1NDczIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjczOTQ3MjYxIiwibmJmIjoxNjczOTQ3MjYxLCJ0IjoiUmQ2N0J3SkJra1IiLCJlYXMiOjE2ODE3MjMyNjE5NDIsImV4cCI6MTY4MTcyMzI2MSwiaWF0IjoxNjczOTQ3MjYxLCJqdGkiOiIyNnJHell1ZkVlaEg3ZlV0QU1rSkdZY0xncjJwcGlyWSJ9.BkaJ3gBxvRq2bC7KtNpwRvnYrSWadYiJx13erqwqTYZ7q956LiRMiJopzqUTtiajWbGlnI3ND5hZf-aUBPo_tg",
 										"type": "text"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"rows\":5,\r\n    \"cursor\":53472536108728323\r\n}"
+									"raw": "{\r\n    \"rows\":5,\r\n    \"cursor\":59223282569707588\r\n}"
 								},
 								"url": {
 									"raw": "localhost:13000/blue-media/attachments/scroll",
@@ -4748,11 +4765,11 @@
 						{
 							"name": "文件下载",
 							"request": {
-								"method": "POST",
+								"method": "GET",
 								"header": [
 									{
 										"key": "Authorization",
-										"value": "eyJraWQiOiI1ZTQyZDE3MzVlYzc0YTFmYWJjZjUxNTgwMjRiZDNjZWY5YjZhMjYyNDk0Zjk2YzIzNWE3YzdkZTc2OWI1MDhjMzY4NDQ4N2NkNjczMWM5ZTMyNjQ1NzNhYzQ0ZjQ0MTFlZDI0ODQxYTdlOTg0N2M4MTE5N2JmMDA3YmUzYjRkMyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTM0NTQ1MzA1MzIwODE2NjVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUzNDU0NTMwNTMyMDgxNjY1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY4NTgzOTAxIiwibmJmIjoxNjY4NTgzOTAxLCJ0IjoiQ3Z1WnJXYkdLUkoiLCJlYXMiOjE2NzYzNTk5MDEyMzUsImV4cCI6MTY3NjM1OTkwMSwiaWF0IjoxNjY4NTgzOTAxLCJqdGkiOiJLeXJaMFRSUEpNRzN4NE51eW96VTRoUUdlcmFIc1RLdiJ9.3dmOe-PzIYxrSP3PakCMAUVFgRBgOMYYCoXVI-orefjGfaRKUajpDuit484oOzCCYfwddawESZi3AlXHHaY6Sw",
+										"value": "eyJraWQiOiJjMTExZDE3YmVkNjMzMWVkMGJjNjAzNmNlZGNiYTA4YzRmMzE1OGZkOTFlYWU0NzEwNTIyZTVlNTEyMjExNzE5MDMyNDQwNDc3NzMxNmY1NTE3NWUyMDRiYWYxMDhkZWUwNTBkMzYyODkyOWRjNmU4OWY0ZTRhNjk5ZDIxNTkyNCIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTkyMjA4OTEzNDY2NjU0NzNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjU5MjIwODkxMzQ2NjY1NDczIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjczOTQ3MjYxIiwibmJmIjoxNjczOTQ3MjYxLCJ0IjoiUmQ2N0J3SkJra1IiLCJlYXMiOjE2ODE3MjMyNjE5NDIsImV4cCI6MTY4MTcyMzI2MSwiaWF0IjoxNjczOTQ3MjYxLCJqdGkiOiIyNnJHell1ZkVlaEg3ZlV0QU1rSkdZY0xncjJwcGlyWSJ9.BkaJ3gBxvRq2bC7KtNpwRvnYrSWadYiJx13erqwqTYZ7q956LiRMiJopzqUTtiajWbGlnI3ND5hZf-aUBPo_tg",
 										"type": "text"
 									},
 									{
@@ -4761,17 +4778,8 @@
 										"type": "text"
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"id\":53472536108728322\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
 								"url": {
-									"raw": "localhost:13000/blue-media/file/download",
+									"raw": "localhost:13000/blue-media/file/59223282569707583",
 									"host": [
 										"localhost"
 									],
@@ -4779,7 +4787,7 @@
 									"path": [
 										"blue-media",
 										"file",
-										"download"
+										"59223282569707583"
 									]
 								}
 							},
@@ -5411,7 +5419,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"rows\":2,\r\n    \"condition\":{\r\n        \"id\":null,\r\n        \"titleLike\":\"标\",\r\n        \"contentLike\":\"容\",\r\n        \"detailLike\":\"详\",\r\n        \"contactLike\":\"联\",\r\n        \"contactDetailLike\":\"详\",\r\n        \"countryId\":null,\r\n        \"stateId\":null,\r\n        \"cityId\":null,\r\n        \"addressDetailLike\":null,\r\n        \"extra\":null,\r\n        \"priority\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"creator\":null,\r\n        \"updater\":null,\r\n        \"sortAttribute\":\"createTime\",\r\n        \"sortType\":\"DESC\"\r\n    },\r\n    \"cursor\": {\r\n        \"searchAfter\": [\r\n            \"\"\r\n        ]\r\n    }\r\n}"
+									"raw": "{\r\n    \"rows\":2,\r\n    \"condition\":{\r\n        \"id\":null,\r\n        \"titleLike\":\"标\",\r\n        \"contentLike\":\"容\",\r\n        \"detailLike\":\"详\",\r\n        \"contactLike\":\"联\",\r\n        \"contactDetailLike\":\"详\",\r\n        \"countryId\":14,\r\n        \"stateId\":3907,\r\n        \"cityId\":4816,\r\n        \"addressDetailLike\":\"海\",\r\n        \"extra\":\"加\",\r\n        \"priority\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"creator\":null,\r\n        \"updater\":null,\r\n        \"sortAttribute\":\"createTime\",\r\n        \"sortType\":\"DESC\"\r\n    },\r\n    \"cursor\": {\r\n        \"searchAfter\": [\r\n            \"\"\r\n        ]\r\n    }\r\n}"
 								},
 								"url": {
 									"raw": "localhost:11000/blue-shine/shines/scroll",
@@ -6138,12 +6146,12 @@
 							},
 							{
 								"key": "Authorization",
-								"value": "eyJraWQiOiI1MWJmODFmY2Y0MTMzZGFjNDA4NjNmYTlkYTA1ZjUzNTJlODVlNTYzMGUwNWQ2NzBhNmNlZWQ1YmNhMWEzMGY2MmU4N2RlYmI5YjExY2M3MWRjZjhiM2E5MDhmYWNmYmQ5Y2RhNzU5NTNjMWU5MTVhNmNkMjRiZDNmNTVhY2QzMyIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTczNzY4Njg2MTI5NjQzNTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjU3Mzc2ODY4NjEyOTY0MzUzIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjcyMzczMzU2IiwibmJmIjoxNjcyMzczMzU3LCJ0IjoickdrbnBZejFBcWwiLCJlYXMiOjE2ODAxNDkzNTcwNDMsImV4cCI6MTY4MDE0OTM1NywiaWF0IjoxNjcyMzczMzU3LCJqdGkiOiJHaXpLTDVYaHVoYXFYODhVTnF6MnF2SUVsSUN5aWtvSiJ9.2YdTcuzdS2s3g5bZni6rYVimDWCdIOzGvjJRqa6BPAWeTd3xZqs7NCK46w0kD27rF6ws2BiZaxn51ik7z3s1Tw",
+								"value": "eyJraWQiOiI5ZmIyYmQzYjNhOGZlMzU2ZmQ5NmNhODY0Nzk1YjZiMGQ1MDI2ZjNkOTVmZDE2YWJkNTIyMTk5NDE3M2NhMjBmNWRhZjViOTQ5MzEzOTBlZWIwMjk1YTE1OTJkYzFmYmFiMjllMTJmODlkYTU2NzcyMjBlNzk4OThkMmYyZjMzNSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTczNzY4Njg2MTI5NjQzNTNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjU3Mzc2ODY4NjEyOTY0MzUzIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjczNjEzMzQ4IiwibmJmIjoxNjczNjEzMzQ4LCJ0IjoiSE9jVHpDMHVwZ1kiLCJlYXMiOjE2ODEzODkzNDg1MjEsImV4cCI6MTY4MTM4OTM0OCwiaWF0IjoxNjczNjEzMzQ4LCJqdGkiOiI0RWZqN3V4N2pmNFlUMHB5N1diN2FxMzZrVGNsR2hLaiJ9.EvJFIps79Su4YVTOxfJT0zEsHdm-JPNEeyQN718YBff3Q19_tHG6-xY6NLzHqKOu_UmuBDllGSh_r_R4S8caGA",
 								"type": "text"
 							},
 							{
 								"key": "Accept-Language",
-								"value": "zh",
+								"value": "en",
 								"type": "text"
 							},
 							{

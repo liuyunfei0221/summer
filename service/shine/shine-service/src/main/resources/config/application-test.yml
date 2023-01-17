@@ -133,6 +133,19 @@ es:
   compression-enabled: false
 
 
+pit:
+  time: 2m
+
+
+fuzziness:
+  fuzziness: 1
+
+
+highlight:
+  preTags: [ <font color='red'> ]
+  postTags: [ </font> ]
+
+
 executor:
   core-pool-size: 4
   maximum-pool-size: 8
@@ -149,19 +162,6 @@ message:
 caffeine:
   city-maximum-size: 32768
   expires-second: 30
-
-
-pit:
-  time: 2m
-
-
-fuzziness:
-  fuzziness: 1
-
-
-highlight:
-  preTags: [ <font color='red'> ]
-  postTags: [ </font> ]
 
 
 redisson:

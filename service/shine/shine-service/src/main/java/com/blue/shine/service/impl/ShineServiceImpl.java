@@ -237,11 +237,9 @@ public class ShineServiceImpl implements ShineService {
         );
     };
 
-    private static final Map<String, BiConsumer<List<String>, Shine>> HIGH_LIGHT_PROCESSORS;
+    private static final Map<String, BiConsumer<List<String>, Shine>> HIGH_LIGHT_PROCESSORS = new HashMap<>(8, 1.0f);
 
     static {
-        HIGH_LIGHT_PROCESSORS = new HashMap<>();
-
         HIGH_LIGHT_PROCESSORS.put(TITLE.name, (highlights, entity) -> {
             if (isNotEmpty(highlights) && isNotNull(entity))
                 entity.setTitle(highlights.get(0));
@@ -265,6 +263,16 @@ public class ShineServiceImpl implements ShineService {
         HIGH_LIGHT_PROCESSORS.put(CONTACT_DETAIL.name, (highlights, entity) -> {
             if (isNotEmpty(highlights) && isNotNull(entity))
                 entity.setContactDetail(highlights.get(0));
+        });
+
+        HIGH_LIGHT_PROCESSORS.put(ADDRESS_DETAIL.name, (highlights, entity) -> {
+            if (isNotEmpty(highlights) && isNotNull(entity))
+                entity.setAddressDetail(highlights.get(0));
+        });
+
+        HIGH_LIGHT_PROCESSORS.put(EXTRA.name, (highlights, entity) -> {
+            if (isNotEmpty(highlights) && isNotNull(entity))
+                entity.setExtra(highlights.get(0));
         });
     }
 
@@ -301,22 +309,26 @@ public class ShineServiceImpl implements ShineService {
         });
 
         ofNullable(c.getCountryId()).ifPresent(countryId ->
-                builder.must(TermQuery.of(b -> b.field(COUNTRY_ID.name).value(countryId))._toQuery()));
+                builder.must(MatchQuery.of(b -> b.field(COUNTRY_ID.name).query(countryId))._toQuery()));
 
         ofNullable(c.getStateId()).ifPresent(stateId ->
-                builder.must(TermQuery.of(b -> b.field(STATE_ID.name).value(stateId))._toQuery()));
+                builder.must(MatchQuery.of(b -> b.field(STATE_ID.name).query(stateId))._toQuery()));
 
         ofNullable(c.getCityId()).ifPresent(cityId ->
-                builder.must(TermQuery.of(b -> b.field(CITY_ID.name).value(cityId))._toQuery()));
+                builder.must(MatchQuery.of(b -> b.field(CITY_ID.name).query(cityId))._toQuery()));
 
-        ofNullable(c.getAddressDetailLike()).filter(BlueChecker::isNotBlank).ifPresent(addressDetailLike ->
-                builder.must(MatchQuery.of(b -> b.field(ADDRESS_DETAIL.name).query(addressDetailLike))._toQuery()));
+        ofNullable(c.getAddressDetailLike()).filter(BlueChecker::isNotBlank).ifPresent(addressDetailLike -> {
+            builder.must(FuzzyQuery.of(b -> b.field(ADDRESS_DETAIL.name).value(addressDetailLike).fuzziness(fuzziness))._toQuery());
+            highlightColumns.add(ADDRESS_DETAIL.name);
+        });
 
-        ofNullable(c.getExtra()).filter(BlueChecker::isNotBlank).ifPresent(extra ->
-                builder.must(TermQuery.of(b -> b.field(EXTRA.name).value(extra))._toQuery()));
+        ofNullable(c.getExtra()).filter(BlueChecker::isNotBlank).ifPresent(extra -> {
+            builder.must(FuzzyQuery.of(b -> b.field(EXTRA.name).value(extra).fuzziness(fuzziness))._toQuery());
+            highlightColumns.add(EXTRA.name);
+        });
 
         ofNullable(c.getPriority()).ifPresent(priority ->
-                builder.must(TermQuery.of(b -> b.field(PRIORITY.name).value(priority))._toQuery()));
+                builder.must(MatchQuery.of(b -> b.field(PRIORITY.name).query(priority))._toQuery()));
 
         ofNullable(c.getCreateTimeBegin()).ifPresent(createTimeBegin ->
                 builder.must(RangeQuery.of(b -> b.field(CREATE_TIME.name).gte(JsonData.of(createTimeBegin)))._toQuery()));
@@ -331,10 +343,10 @@ public class ShineServiceImpl implements ShineService {
                 builder.must(RangeQuery.of(b -> b.field(UPDATE_TIME.name).lte(JsonData.of(updateTimeEnd)))._toQuery()));
 
         ofNullable(c.getCreator()).ifPresent(creator ->
-                builder.must(TermQuery.of(b -> b.field(CREATOR.name).value(creator))._toQuery()));
+                builder.must(MatchQuery.of(b -> b.field(CREATOR.name).query(creator))._toQuery()));
 
         ofNullable(c.getUpdater()).ifPresent(updater ->
-                builder.must(TermQuery.of(b -> b.field(UPDATER.name).value(updater))._toQuery()));
+                builder.must(MatchQuery.of(b -> b.field(UPDATER.name).query(updater))._toQuery()));
 
         return new QueryAndHighlightColumns(Query.of(b -> b.bool(builder.build())), highlightColumns);
     };
