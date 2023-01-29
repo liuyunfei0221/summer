@@ -45,10 +45,8 @@ public @interface SummerSpringBootApplication {
             "org.apache.shardingsphere.shardingjdbc.spring.boot.SpringBootConfiguration",
             "org.springframework.boot.autoconfigure.hazelcast.HazelcastAutoConfiguration",
 
-
             "org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration",
             "org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration",
-
 
             "org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration",
             "org.springframework.boot.autoconfigure.data.mongo.ReactiveMongoClientFactory",
@@ -56,10 +54,8 @@ public @interface SummerSpringBootApplication {
             "org.springframework.boot.autoconfigure.mongo.MongoReactiveAutoConfiguration",
             "org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration",
 
-
             "org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchRestClientAutoConfiguration",
             "org.springframework.boot.autoconfigure.data.elasticsearch.ReactiveElasticsearchRestClientAutoConfiguration",
-
 
             "org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JAutoConfiguration",
             "org.springframework.cloud.circuitbreaker.resilience4j.ReactiveResilience4JAutoConfiguration",

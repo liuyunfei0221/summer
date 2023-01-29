@@ -69,7 +69,7 @@ public final class FileGetter {
         try {
             file = new File(getURL(location).getPath());
         } catch (Exception e) {
-            LOGGER.error("List<File> getFiles(String pathDir) failed, location = {}, recursive = {}, e = {}", location, recursive, e);
+            LOGGER.error("getFiles failed, location = {}, recursive = {}, e = {}", location, recursive, e);
             return emptyList();
         }
 
@@ -87,7 +87,7 @@ public final class FileGetter {
         try {
             file = new File(getURL(location).getPath());
         } catch (Exception e) {
-            LOGGER.error("List<File> getFiles(String pathDir) failed, location = {}, e = {0}", location, e);
+            LOGGER.error("getFiles failed, location = {}, e = {0}", location, e);
             return emptyList();
         }
 
@@ -104,7 +104,7 @@ public final class FileGetter {
         try {
             return new File(getURL(location).getPath());
         } catch (Exception e) {
-            LOGGER.error("File getFile(String uri) failed, location = {}, e = {}", location, e);
+            LOGGER.error("getFile failed, location = {}, e = {}", location, e);
             throw new BlueException(BAD_REQUEST);
         }
     }
@@ -120,7 +120,7 @@ public final class FileGetter {
         try {
             return Stream.of(RESOURCE_PATTERN_RESOLVER.getResources(location + MATCH_ALL_PATH + prefix)).collect(toList());
         } catch (Exception e) {
-            LOGGER.error("List<Resource> getResources(String path, String prefix) failed, location = {}, prefix = {}, e = {}", location, prefix, e);
+            LOGGER.error("getResources failed, location = {}, prefix = {}, e = {}", location, prefix, e);
             throw new BlueException(BAD_REQUEST);
         }
     }

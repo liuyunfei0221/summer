@@ -4,7 +4,7 @@ import com.blue.basic.model.common.Session;
 import com.blue.basic.model.exps.BlueException;
 import com.google.gson.JsonSyntaxException;
 
-import static com.blue.basic.common.base.BlueChecker.isNotNull;
+import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.CommonFunctions.GSON;
 import static com.blue.basic.constant.common.ResponseElement.UNAUTHORIZED;
 
@@ -24,10 +24,10 @@ public final class SessionProcessor {
      * @return
      */
     public static String sessionToJson(Session session) {
-        if (isNotNull(session))
-            return GSON.toJson(session);
+        if (isNull(session))
+            throw new BlueException(UNAUTHORIZED);
 
-        throw new BlueException(UNAUTHORIZED);
+        return GSON.toJson(session);
     }
 
     /**
@@ -37,14 +37,14 @@ public final class SessionProcessor {
      * @return
      */
     public static Session jsonToSession(String json) {
-        if (isNotNull(json))
-            try {
-                return GSON.fromJson(json, Session.class);
-            } catch (JsonSyntaxException e) {
-                throw new BlueException(UNAUTHORIZED);
-            }
+        if (isNull(json))
+            throw new BlueException(UNAUTHORIZED);
 
-        throw new BlueException(UNAUTHORIZED);
+        try {
+            return GSON.fromJson(json, Session.class);
+        } catch (JsonSyntaxException e) {
+            throw new BlueException(UNAUTHORIZED);
+        }
     }
 
 }

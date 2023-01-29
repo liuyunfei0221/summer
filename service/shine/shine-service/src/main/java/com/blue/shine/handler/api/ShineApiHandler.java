@@ -11,9 +11,9 @@ import reactor.util.Logger;
 
 import java.util.Map;
 
+import static com.blue.basic.common.base.CommonFunctions.getIp;
 import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.common.base.MetadataGetter.getMetadata;
-import static com.blue.basic.common.base.RequestIpGetter.getRequestIp;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.shine.constant.ShineTypeReference.SCROLL_MODEL_FOR_SHINE_CONDITION_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -46,7 +46,7 @@ public final class ShineApiHandler {
      * @return
      */
     public Mono<ServerResponse> scroll(ServerRequest serverRequest) {
-        String ip = getRequestIp(serverRequest);
+        String ip = getIp(serverRequest);
 
         LOGGER.warn("client ip = {}", ip);
         Map<String, String> metadata = getMetadata(serverRequest);

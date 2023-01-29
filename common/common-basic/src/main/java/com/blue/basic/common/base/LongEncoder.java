@@ -10,7 +10,7 @@ import static com.blue.basic.common.base.BlueChecker.isNotNull;
 @SuppressWarnings("JavaDoc")
 public final class LongEncoder {
 
-    private static final long SEED = 19890221L;
+    private static final long SEED = 20200805L;
 
     private final long SALT_A;
 

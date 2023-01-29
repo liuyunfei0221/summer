@@ -4,7 +4,7 @@ import com.blue.basic.model.common.Access;
 import com.blue.basic.model.exps.BlueException;
 import com.google.gson.JsonSyntaxException;
 
-import static com.blue.basic.common.base.BlueChecker.isNotNull;
+import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.GSON;
 import static com.blue.basic.constant.common.ResponseElement.UNAUTHORIZED;
 
@@ -24,10 +24,10 @@ public final class AccessProcessor {
      * @return
      */
     public static String accessToJson(Access access) {
-        if (isNotNull(access))
-            return GSON.toJson(access);
+        if (isNull(access))
+            throw new BlueException(UNAUTHORIZED);
 
-        throw new BlueException(UNAUTHORIZED);
+        return GSON.toJson(access);
     }
 
     /**
@@ -37,14 +37,14 @@ public final class AccessProcessor {
      * @return
      */
     public static Access jsonToAccess(String json) {
-        if (isNotNull(json))
-            try {
-                return GSON.fromJson(json, Access.class);
-            } catch (JsonSyntaxException e) {
-                throw new BlueException(UNAUTHORIZED);
-            }
+        if (isBlank(json))
+            throw new BlueException(UNAUTHORIZED);
 
-        throw new BlueException(UNAUTHORIZED);
+        try {
+            return GSON.fromJson(json, Access.class);
+        } catch (JsonSyntaxException e) {
+            throw new BlueException(UNAUTHORIZED);
+        }
     }
 
 }

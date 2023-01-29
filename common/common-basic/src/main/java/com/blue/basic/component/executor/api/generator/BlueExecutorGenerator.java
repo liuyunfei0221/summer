@@ -37,7 +37,7 @@ public final class BlueExecutorGenerator {
      * @return
      */
     public static ExecutorService generateExecutorService(ExecutorConf executorConf) {
-        LOGGER.info("ExecutorService executorService(ExecutorConf executorConf), executorConf = {}", executorConf);
+        LOGGER.info("executorConf = {}", executorConf);
         assertConf(executorConf);
 
         String threadNamePre = ofNullable(executorConf.getThreadNamePre())

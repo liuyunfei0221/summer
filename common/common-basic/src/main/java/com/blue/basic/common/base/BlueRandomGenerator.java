@@ -25,7 +25,7 @@ public final class BlueRandomGenerator {
     private static final Map<RandomType, Function<Integer, String>> GENERATOR_MAPPING;
 
     static {
-        GENERATOR_MAPPING = new HashMap<>(16, 2.0f);
+        GENERATOR_MAPPING = new HashMap<>(8, 2.0f);
 
         GENERATOR_MAPPING.put(NUMERIC, RandomStringUtils::randomNumeric);
         GENERATOR_MAPPING.put(ALPHABETIC, RandomStringUtils::randomAlphabetic);

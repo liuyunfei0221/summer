@@ -46,7 +46,7 @@ public class BlueLifecycleBeanDefinitionRegistrar implements ResourceLoaderAware
         String[] basePackages = ofNullable(mapperScanAttrs).map(attr -> attr.getStringArray(BLUE_LIFECYCLE_SCAN_PACKAGE.scanPackagesAttrName))
                 .orElse(BLUE_LIFECYCLE_SCAN_PACKAGE.defaultScanPackages);
 
-        LOGGER.info("BlueLifecycleBeanDefinitionRegistrar.registerBeanDefinitions(@NonNull AnnotationMetadata importingClassMetadata, @NonNull BeanDefinitionRegistry registry), basePackages = {}",
+        LOGGER.info("basePackages = {}",
                 Stream.of(basePackages).collect(toList()));
 
         BlueBeanDefinitionScanner scanner = new BlueBeanDefinitionScanner(registry, BLUE_LIFECYCLE_SCAN_PACKAGE.useDefaultFilters);

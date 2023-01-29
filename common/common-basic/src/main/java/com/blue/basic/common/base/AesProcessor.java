@@ -61,8 +61,8 @@ public final class AesProcessor {
             DECRYPT = getInstance(ALGORITHM);
             DECRYPT.init(DECRYPT_MODE, key);
         } catch (Exception e) {
-            LOGGER.error("AesProcessor(String salt) failed, e = {}", e);
-            throw new RuntimeException("AesProcessor(String salt) failed, e = " + e);
+            LOGGER.error("construct failed, e = {}", e);
+            throw new RuntimeException("construct failed, e = " + e);
         }
     }
 
@@ -79,7 +79,7 @@ public final class AesProcessor {
         try {
             return ENCODER.encodeToString(ENCRYPT.doFinal(originalData.getBytes(UTF_8)));
         } catch (Exception e) {
-            LOGGER.error("String encrypt(String originalData) failed, e = {}", e);
+            LOGGER.error("encrypt failed, e = {}", e);
             throw new BlueException(DECRYPTION_FAILED);
         }
     }
@@ -97,11 +97,10 @@ public final class AesProcessor {
         try {
             return new String(DECRYPT.doFinal(DECODER.decode(encryptData.getBytes(UTF_8))), UTF_8);
         } catch (Exception e) {
-            LOGGER.error("String decrypt(String encryptData) failed, e = {}", e);
+            LOGGER.error("decrypt failed, e = {}", e);
             throw new BlueException(DECRYPTION_FAILED);
         }
     }
-
 
     /**
      * encrypt data
@@ -116,7 +115,7 @@ public final class AesProcessor {
         try {
             return ENCRYPT.doFinal(originalData);
         } catch (Exception e) {
-            LOGGER.error("byte[] encrypt(byte[] originalData) failed, e = {}", e);
+            LOGGER.error("encrypt failed, e = {}", e);
             throw new BlueException(DECRYPTION_FAILED);
         }
     }
@@ -134,7 +133,7 @@ public final class AesProcessor {
         try {
             return DECRYPT.doFinal(encryptData);
         } catch (Exception e) {
-            LOGGER.error("byte[] decrypt(byte[] encryptData) failed, e = {}", e);
+            LOGGER.error("decrypt failed, e = {}", e);
             throw new BlueException(DECRYPTION_FAILED);
         }
     }

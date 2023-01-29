@@ -3,11 +3,13 @@ package com.blue.basic.common.base;
 import com.blue.basic.constant.common.Symbol;
 import com.blue.basic.model.exps.BlueException;
 import org.springframework.cglib.beans.BeanCopier;
+import org.springframework.cglib.core.Converter;
 import reactor.util.Logger;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.blue.basic.common.base.BlueChecker.isNotNull;
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 import static reactor.util.Loggers.getLogger;
@@ -65,6 +67,18 @@ public final class BlueBeanCopier {
             }
 
         return beanCopier;
+    }
+
+    /**
+     * copy object
+     *
+     * @param from
+     * @param to
+     * @param converter
+     */
+    public static void copy(Object from, Object to, Converter converter) {
+        create(from.getClass(), to.getClass(), isNotNull(converter))
+                .copy(from, to, converter);
     }
 
 }

@@ -75,7 +75,7 @@ public final class ClassGetter {
      * @return
      */
     public static List<Class<?>> getClassesByPackage(String packageName, boolean recursive) {
-        LOGGER.info("List<Class<?>> getClassesByPackage(String packageName, boolean recursive), packageName = {}, recursive = {}", packageName, recursive);
+        LOGGER.info("packageName = {}, recursive = {}", packageName, recursive);
 
         List<String> clzNames = new LinkedList<>();
         ClassLoader loader = currentThread().getContextClassLoader();
@@ -98,7 +98,7 @@ public final class ClassGetter {
                         try {
                             jarFile = ((JarURLConnection) url.openConnection()).getJarFile();
                         } catch (Exception e) {
-                            LOGGER.error("getClassesByPackage(String packageName, boolean recursive) failed, Exception e = {}", e);
+                            LOGGER.error("getClassesByPackage failed, Exception e = {}", e);
                         }
                         if (isNotNull(jarFile))
                             clzNames.addAll(getAllClassNameByJar(jarFile, packageName, recursive));
@@ -106,7 +106,7 @@ public final class ClassGetter {
                 }
             }
         } catch (IOException e) {
-            LOGGER.error("getClassesByPackage(String packageName, boolean recursive) failed, IOException e = {}", e);
+            LOGGER.error("getClassesByPackage failed, IOException e = {}", e);
         }
 
         if (isEmpty(clzNames))
@@ -117,7 +117,7 @@ public final class ClassGetter {
                     try {
                         return forName(cn);
                     } catch (ClassNotFoundException e) {
-                        LOGGER.error("getClassesByPackage(String packageName, boolean recursive) failed, ClassNotFoundException e = {}", e);
+                        LOGGER.error("getClassesByPackage failed, ClassNotFoundException e = {}", e);
                     }
                     return null;
                 }).filter(Objects::nonNull).collect(toList());
@@ -138,7 +138,7 @@ public final class ClassGetter {
             HANDLE_FILE.accept(file, clzNames);
         } else {
             File[] listFiles = file.listFiles();
-            if (isNotNull(listFiles) && listFiles.length > 0) {
+            if (isNotNull(listFiles)) {
                 for (File f : listFiles)
                     if (recursive) {
                         clzNames.addAll(getAllClassNameByFile(f, true));
@@ -163,7 +163,7 @@ public final class ClassGetter {
             clazzName = path.substring(indexOf(path, CLASS_PREFIX) + CLASS_PREFIX.length())
                     .replace(separator, PACKAGE_SEPARATOR);
         } else {
-            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "handlePath(String path, List<String> clzNames) failed, path = " + path);
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "handlePath failed, path = " + path);
         }
         if (!clazzName.contains(INNER_CLASS_IDENTITY))
             clzNames.add(clazzName);

@@ -47,7 +47,7 @@ public final class BlueRestGenerator {
         if (isNull(restConf))
             throw new RuntimeException("restConf can't be null");
 
-        LOGGER.info("WebClient generateWebClient(RestConf restConf), restConf = {}", restConf);
+        LOGGER.info("restConf = {}", restConf);
 
         ConnectionProvider connectionProvider = ConnectionProvider.create(PROVIDER_NAME,
                 ofNullable(restConf.getMaxConnections()).filter(v -> v > 0).orElse(DEFAULT_MAX_CONNECTIONS));

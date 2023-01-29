@@ -33,11 +33,12 @@ public final class RequestBodyProcessor {
      * @param requestBody
      * @return
      */
-    public String handleRequestBody(String requestBody) {
-        LOGGER.info("String handleRequestBody(String requestBody), requestBody = {}", requestBody);
-        String handledRequestBody = handle(requestBody);
-        LOGGER.info("String handleRequestBody(String requestBody), handledRequestBody = {}", handledRequestBody);
-        return handledRequestBody;
+    private String handle(String requestBody) {
+        String result = requestBody;
+        for (RequestBodyHandler handler : processors)
+            result = handler.handleRequestBody(result);
+
+        return result;
     }
 
     /**
@@ -46,12 +47,11 @@ public final class RequestBodyProcessor {
      * @param requestBody
      * @return
      */
-    private String handle(String requestBody) {
-        String result = requestBody;
-        for (RequestBodyHandler handler : processors)
-            result = handler.handleRequestBody(result);
-
-        return result;
+    public String handleRequestBody(String requestBody) {
+        LOGGER.info("requestBody = {}", requestBody);
+        String handledRequestBody = handle(requestBody);
+        LOGGER.info("handledRequestBody = {}", handledRequestBody);
+        return handledRequestBody;
     }
 
 }

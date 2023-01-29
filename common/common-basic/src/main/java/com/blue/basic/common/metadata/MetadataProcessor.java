@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static com.blue.basic.common.base.BlueChecker.isNotNull;
+import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.CommonFunctions.GSON;
 import static com.blue.basic.common.base.CommonFunctions.STRING_MAP_TYPE;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_METADATA_PARAM;
@@ -33,10 +33,10 @@ public final class MetadataProcessor {
      * @return
      */
     public static String metadataToJson(Map<String, String> metadata) {
-        if (isNotNull(metadata))
-            return GSON.toJson(metadata);
+        if (isNull(metadata))
+            return EMPTY_JSON.value;
 
-        return EMPTY_JSON.value;
+        return GSON.toJson(metadata);
     }
 
     /**
@@ -46,14 +46,14 @@ public final class MetadataProcessor {
      * @return
      */
     public static Map<String, String> jsonToMetadata(String json) {
-        if (isNotNull(json))
-            try {
-                return GSON.fromJson(json, STRING_MAP_TYPE);
-            } catch (JsonSyntaxException e) {
-                throw new BlueException(INVALID_METADATA_PARAM);
-            }
+        if (isNull(json))
+            return EMPTY_METADATA_SUP.get();
 
-        return EMPTY_METADATA_SUP.get();
+        try {
+            return GSON.fromJson(json, STRING_MAP_TYPE);
+        } catch (JsonSyntaxException e) {
+            throw new BlueException(INVALID_METADATA_PARAM);
+        }
     }
 
 }

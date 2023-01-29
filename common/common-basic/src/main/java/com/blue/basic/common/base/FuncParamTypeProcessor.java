@@ -39,7 +39,7 @@ public final class FuncParamTypeProcessor {
         for (Method method : objClass.getDeclaredMethods())
             if (methodName.equals(method.getName()))
                 return method;
-        throw new RuntimeException("Method getMethod(Class<?> objClass, String methodName) failed, method not found, objClass = " + objClass + ", methodName = " + methodName);
+        throw new RuntimeException("getMethod failed, method not found, objClass = " + objClass + ", methodName = " + methodName);
     }
 
     private static Object invoke(Object obj, String methodName, Object... args) {
@@ -50,7 +50,7 @@ public final class FuncParamTypeProcessor {
             overrideField.set(targetMethod, true);
             return targetMethod.invoke(obj, args);
         } catch (Exception e) {
-            throw new RuntimeException("Object invoke(Object obj, String methodName, Object... args) failed, e = {}", e);
+            throw new RuntimeException("invoke failed, e = {}", e);
         }
     }
 
@@ -69,7 +69,7 @@ public final class FuncParamTypeProcessor {
                     return ((Method) member).getParameterTypes()[0];
             } catch (Exception ignored) {
             }
-        throw new RuntimeException("Class<?> getConsumerLambdaParameterType(Consumer<?> consumer) failed, Class<?> not found");
+        throw new RuntimeException("getConsumerLambdaParameterType failed, Class<?> not found");
     }
 
     private static Class<?> getSupplierLambdaParameterType(Supplier<?> supplier) {
@@ -87,7 +87,7 @@ public final class FuncParamTypeProcessor {
                     return ((Method) member).getParameterTypes()[0];
             } catch (Exception ignored) {
             }
-        throw new RuntimeException("Class<?> getSupplierLambdaParameterType(Supplier<?> supplier) failed, Class<?> not found");
+        throw new RuntimeException("getSupplierLambdaParameterType failed, Class<?> not found");
     }
 
     public static Class<?> getConsumerParameterType(Consumer<?> consumer) {
@@ -100,7 +100,7 @@ public final class FuncParamTypeProcessor {
         }
         if (consumer.getClass().isSynthetic())
             return getConsumerLambdaParameterType(consumer);
-        throw new RuntimeException("Class<?> getConsumerParameterType(Consumer<?> consumer) failed, Class<?> not found");
+        throw new RuntimeException("getConsumerParameterType failed, Class<?> not found");
     }
 
     public static Class<?> getSupplierParameterType(Supplier<?> supplier) {
@@ -113,7 +113,7 @@ public final class FuncParamTypeProcessor {
         }
         if (supplier.getClass().isSynthetic())
             return getSupplierLambdaParameterType(supplier);
-        throw new RuntimeException("Class<?> getSupplierParameterType(Supplier<?> supplier) failed, Class<?> not found");
+        throw new RuntimeException("getSupplierParameterType failed, Class<?> not found");
     }
 
 }

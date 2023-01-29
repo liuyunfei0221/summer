@@ -145,7 +145,7 @@ public final class DefaultBlueCollector<R> implements BlueCollector<R> {
             } catch (InterruptedException e) {
                 stamp = SEGMENT_LOCK.writeLock();
                 this.SEGMENT_COLLECT.add(k);
-                LOGGER.error("void segmentAdd(K k) failed, k = {}, e = {}", k, e.toString());
+                LOGGER.error("segmentAdd failed, k = {}, e = {}", k, e.toString());
             } finally {
                 if (0L != stamp) {
                     SEGMENT_LOCK.unlockWrite(stamp);
@@ -171,7 +171,7 @@ public final class DefaultBlueCollector<R> implements BlueCollector<R> {
                     stamp = SEGMENT_LOCK.readLock();
                     collect = this.SEGMENT_COLLECT;
                 } catch (Exception e) {
-                    LOGGER.error("List<K> segmentCollect() failed, e = {}", e.toString());
+                    LOGGER.error("segmentCollect failed, e = {}", e.toString());
                 } finally {
                     if (0L != stamp) {
                         SEGMENT_LOCK.unlockRead(stamp);

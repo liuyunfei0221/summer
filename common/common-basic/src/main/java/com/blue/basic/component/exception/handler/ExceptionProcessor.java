@@ -47,7 +47,7 @@ public final class ExceptionProcessor {
      */
     private static Map<String, ExceptionHandler> generatorMapping(String dirName) {
         List<Class<?>> classes = getClassesByPackage(dirName, true);
-        LOGGER.info("Map<String, ExceptionHandler> generatorMapping(String dirName), dirName = {}, classes = {}", dirName, classes);
+        LOGGER.info("dirName = {}, classes = {}", dirName, classes);
 
         return classes
                 .stream()
@@ -56,10 +56,10 @@ public final class ExceptionProcessor {
                                 of(clz.getInterfaces()).anyMatch(inter -> BASE_EXP_HANDLER_NAME.equals(inter.getName())))
                 .map(clz -> {
                     try {
-                        LOGGER.info("generatorMapping(String dirName), Load exception handler class, clz = {}", clz.getName());
+                        LOGGER.info("Load exception handler class, clz = {}", clz.getName());
                         return (ExceptionHandler) clz.getConstructor().newInstance();
                     } catch (Exception e) {
-                        LOGGER.info("generatorMapping(String dirName), Load exception handler class failed, clz = {}, e = {}", clz.getName(), e);
+                        LOGGER.info("Load exception handler class failed, clz = {}, e = {}", clz.getName(), e);
                         return null;
                     }
                 })
@@ -84,7 +84,7 @@ public final class ExceptionProcessor {
      * @return
      */
     public static ExceptionElement handle(Throwable throwable, List<String> languages) {
-        LOGGER.info("ExceptionHandleInfo handle(Throwable throwable), throwable = {}", throwable);
+        LOGGER.info("throwable = {}", throwable);
 
         Throwable original = getOriginalThrowable(throwable);
 
@@ -93,10 +93,10 @@ public final class ExceptionProcessor {
             try {
                 return EXP_RES_GETTER.apply(languages, handler.handle(original));
             } catch (Exception e) {
-                LOGGER.error("handle(Throwable throwable), Exception handling failed, throwable = {}, e = {}", throwable, e);
+                LOGGER.error("handle failed, throwable = {}, e = {}", throwable, e);
             }
 
-        LOGGER.error("handle(Throwable throwable), unknown exception, throwable = {}", throwable);
+        LOGGER.error("unknown exception, throwable = {}", throwable);
         return EXP_RES_GETTER.apply(languages, UNKNOWN_EXP_HANDLE_INFO);
     }
 

@@ -34,7 +34,7 @@ public final class Md5Processor {
         try {
             return md5DigestAsHex(originalData.getBytes(UTF_8));
         } catch (Exception e) {
-            LOGGER.error("String encrypt(String originalData) failed, e = {}", e);
+            LOGGER.error("encrypt failed, e = {}", e);
             throw new BlueException(DECRYPTION_FAILED);
         }
     }

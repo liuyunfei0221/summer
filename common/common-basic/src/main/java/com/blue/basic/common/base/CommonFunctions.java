@@ -41,6 +41,7 @@ import static com.google.gson.reflect.TypeToken.getParameterized;
 import static java.lang.Double.compare;
 import static java.lang.System.currentTimeMillis;
 import static java.time.Instant.now;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -644,6 +645,9 @@ public class CommonFunctions {
      * @return
      */
     public static List<String> getAcceptLanguages(ServerRequest serverRequest) {
+        if (isNull(serverRequest))
+            return emptyList();
+
         return LOCALE_LANGUAGES_PARSER.apply(serverRequest.headers().acceptLanguage());
     }
 
@@ -654,6 +658,9 @@ public class CommonFunctions {
      * @return
      */
     public static List<String> getAcceptLanguages(ServerHttpRequest serverHttpRequest) {
+        if (isNull(serverHttpRequest))
+            return emptyList();
+
         return LOCALE_LANGUAGES_PARSER.apply(serverHttpRequest.getHeaders().getAcceptLanguage());
     }
 

@@ -1,7 +1,6 @@
 package com.blue.basic.common.base;
 
 
-import java.text.Collator;
 import java.util.List;
 import java.util.Locale;
 
@@ -24,8 +23,7 @@ public final class ListSorter {
      * @return
      */
     public static List<String> sort(List<String> list, Locale locale) {
-        Collator collator = getInstance(locale);
-        return list.stream().sorted(collator).collect(toList());
+        return list.stream().sorted(getInstance(locale)).collect(toList());
     }
 
 }

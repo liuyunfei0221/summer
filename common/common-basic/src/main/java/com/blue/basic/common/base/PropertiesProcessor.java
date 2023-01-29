@@ -41,9 +41,9 @@ public final class PropertiesProcessor {
         if (isNotNull(file) && file.isFile() && file.canRead()) {
             try (InputStream inputStream = new FileInputStream(file)) {
                 prop.load(inputStream);
-                LOGGER.info("Properties loadProp(File file), file = {}, prop = {}", file, prop);
+                LOGGER.info("loadProp, file = {}, prop = {}", file, prop);
             } catch (IOException e) {
-                LOGGER.error("Properties loadProp(File file) failed, file = {}, e = {}", file, e);
+                LOGGER.error("loadProp failed, file = {}, e = {}", file, e);
             }
         }
 
@@ -62,9 +62,9 @@ public final class PropertiesProcessor {
         if (isNotNull(resource) && resource.exists()) {
             try {
                 prop.load(resource.getInputStream());
-                LOGGER.info("Properties loadProp(Resource resource), resource = {}, prop = {}", resource, prop);
+                LOGGER.info("loadProp, resource = {}, prop = {}", resource, prop);
             } catch (IOException e) {
-                LOGGER.error("Properties loadProp(Resource resource) failed, resource = {}, e = {}", resource, e);
+                LOGGER.error("loadProp failed, resource = {}, e = {}", resource, e);
             }
         }
 
