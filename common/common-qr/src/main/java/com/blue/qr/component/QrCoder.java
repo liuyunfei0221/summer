@@ -123,7 +123,7 @@ public final class QrCoder {
 
             return result.getText();
         } catch (Exception e) {
-            LOGGER.error("parseCode(byte[] qrData), e = {}", e);
+            LOGGER.error("parseCode failed, e = {}", e);
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "parse data failed");
         }
     }
@@ -146,7 +146,7 @@ public final class QrCoder {
 
             return byteArrayOutputStream.toByteArray();
         } catch (Exception e) {
-            LOGGER.error("generateCodeWithoutLogo(String content), e = {}", e);
+            LOGGER.error("generateCodeWithoutLogo failed, e = {}", e);
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "parse data failed");
         }
 
@@ -195,7 +195,7 @@ public final class QrCoder {
 
             return byteArrayOutputStream.toByteArray();
         } catch (Exception e) {
-            LOGGER.error("generateCodeWithLogo(String content, byte[] logoData), e = ", e);
+            LOGGER.error("generateCodeWithLogo failed, e = ", e);
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "parse data failed");
         }
     }

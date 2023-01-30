@@ -33,7 +33,7 @@ public class NoSessionHandler implements SessionHandler {
      */
     @Override
     public Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest) {
-        LOGGER.info("NoLoginHandler -> Mono<ServerResponse> session(LoginParam loginParam, ServerRequest serverRequest), loginParam = {}", loginParam);
+        LOGGER.info("loginParam = {}", loginParam);
 
         return error(() -> new BlueException(FORBIDDEN));
     }

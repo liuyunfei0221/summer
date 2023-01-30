@@ -184,8 +184,7 @@ public class RewardServiceImpl implements RewardService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public RewardInfo insertReward(RewardInsertParam rewardInsertParam, Long operatorId) {
-        LOGGER.info("rewardInsertParam = {}, operatorId = {}",
-                rewardInsertParam, operatorId);
+        LOGGER.info("rewardInsertParam = {}, operatorId = {}", rewardInsertParam, operatorId);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
@@ -211,8 +210,7 @@ public class RewardServiceImpl implements RewardService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public RewardInfo updateReward(RewardUpdateParam rewardUpdateParam, Long operatorId) {
-        LOGGER.info("rewardUpdateParam = {}, operatorId = {}",
-                rewardUpdateParam, operatorId);
+        LOGGER.info("rewardUpdateParam = {}, operatorId = {}", rewardUpdateParam, operatorId);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 

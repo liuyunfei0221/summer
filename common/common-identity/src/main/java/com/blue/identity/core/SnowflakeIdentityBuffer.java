@@ -71,7 +71,7 @@ public final class SnowflakeIdentityBuffer {
      * @param idBufferParam
      */
     public SnowflakeIdentityBuffer(IdBufferParam idBufferParam) {
-        LOGGER.info("SnowflakeIdentityBuffer init, idBufferParam = {}", idBufferParam);
+        LOGGER.info("idBufferParam = {}", idBufferParam);
 
         SnowflakeIdentityGenerator snowflakeIdentityGenerator = idBufferParam.getSnowflakeIdentityGenerator();
         if (isNull(snowflakeIdentityGenerator))
@@ -114,7 +114,7 @@ public final class SnowflakeIdentityBuffer {
         }
 
         this.padding();
-        LOGGER.info("Initialized BlueIdentityBuffer successfully, idBufferParam = {}, indexMask = {}, slots.length = {}, paddingThreshold = {}", idBufferParam, indexMask, slots.length, paddingThreshold);
+        LOGGER.info("idBufferParam = {}, indexMask = {}, slots.length = {}, paddingThreshold = {}", idBufferParam, indexMask, slots.length, paddingThreshold);
     }
 
     /**

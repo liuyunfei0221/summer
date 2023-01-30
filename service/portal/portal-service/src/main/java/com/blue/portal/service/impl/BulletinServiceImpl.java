@@ -276,8 +276,7 @@ public class BulletinServiceImpl implements BulletinService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public BulletinInfo insertBulletin(BulletinInsertParam bulletinInsertParam, Long operatorId) {
-        LOGGER.info("bulletinInsertParam = {}, operatorId = {}",
-                bulletinInsertParam, operatorId);
+        LOGGER.info("bulletinInsertParam = {}, operatorId = {}", bulletinInsertParam, operatorId);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
@@ -307,8 +306,7 @@ public class BulletinServiceImpl implements BulletinService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public BulletinInfo updateBulletin(BulletinUpdateParam bulletinUpdateParam, Long operatorId) {
-        LOGGER.info("bulletinUpdateParam = {}, operatorId = {}",
-                bulletinUpdateParam, operatorId);
+        LOGGER.info("bulletinUpdateParam = {}, operatorId = {}", bulletinUpdateParam, operatorId);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 

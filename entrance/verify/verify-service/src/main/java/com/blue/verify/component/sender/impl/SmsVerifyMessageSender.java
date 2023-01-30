@@ -23,8 +23,7 @@ public class SmsVerifyMessageSender implements VerifyMessageSender {
 
     @Override
     public Mono<Boolean> send(VerifyMessage verifyMessage, VerifyTemplateInfo verifyTemplateInfo) {
-        LOGGER.info("Mono<Boolean> send(), verifyMessage = {}, verifyTemplateInfo = {}", verifyMessage, verifyTemplateInfo);
-
+        LOGGER.info("verifyMessage = {}, verifyTemplateInfo = {}", verifyMessage, verifyTemplateInfo);
         LOGGER.error("verifyMessage = {}", verifyMessage);
 
         return just(true);

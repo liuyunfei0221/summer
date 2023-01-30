@@ -6,7 +6,8 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 
 import java.io.IOException;
 
-import static com.blue.basic.common.base.BlueChecker.isNotNull;
+import static com.blue.basic.common.base.BlueChecker.isNotBlank;
+import static java.lang.Long.parseLong;
 
 /**
  * string2long
@@ -20,10 +21,7 @@ public final class Long2StringDeserializer extends JsonDeserializer<Long> {
     public Long deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         String value = jsonParser.getText();
 
-        if (isNotNull(value))
-            return Long.parseLong(value);
-
-        return null;
+        return isNotBlank(value) ? parseLong(value) : null;
     }
 
 }

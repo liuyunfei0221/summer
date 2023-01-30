@@ -170,15 +170,15 @@ public final class PulsarCommonsGenerator {
                 try (ServiceUrlProvider serviceUrlProvider = autoClusterFailoverBuilder.build()) {
                     serviceUrlProvider.initialize(pulsarClient);
                 } catch (Exception e) {
-                    LOGGER.error("process failover client failed, cause e = {0}", e);
-                    throw new RuntimeException("process failover client failed, cause e = {}", e);
+                    LOGGER.error("generateClient failed, cause e = {0}", e);
+                    throw new RuntimeException("generateClient failed, cause e = {}", e);
                 }
             }
 
             return pulsarClient;
         } catch (Exception e) {
-            LOGGER.error("generate client failed, cause e = {0}", e);
-            throw new RuntimeException("generate client failed, cause e = {}", e);
+            LOGGER.error("generateClient failed, cause e = {0}", e);
+            throw new RuntimeException("generateClient failed, cause e = {}", e);
         }
     }
 
@@ -254,8 +254,8 @@ public final class PulsarCommonsGenerator {
 
             return builder.create();
         } catch (Exception e) {
-            LOGGER.error("generate producer failed, cause e = {0}", e);
-            throw new RuntimeException("generate producer failed, cause e = {}", e);
+            LOGGER.error("generateProducer failed, cause e = {0}", e);
+            throw new RuntimeException("generateProducer failed, cause e = {}", e);
         }
     }
 
@@ -436,8 +436,8 @@ public final class PulsarCommonsGenerator {
 
             return builder.subscribe();
         } catch (Exception e) {
-            LOGGER.error("generate consumer failed, cause e = {0}", e);
-            throw new RuntimeException("generate consumer failed, cause e = {}", e);
+            LOGGER.error("generateConsumer failed, cause e = {0}", e);
+            throw new RuntimeException("generateConsumer failed, cause e = {}", e);
         }
     }
 

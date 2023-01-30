@@ -23,10 +23,8 @@ public final class LongList2StringListDeserializer extends JsonDeserializer<List
     @Override
     public List<Long> deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         Object value = jsonParser.readValueAs(REFERENCE);
-        if (isNotNull(value))
-            return (List<Long>) value;
 
-        return null;
+        return isNotNull(value) ? (List<Long>) value : null;
     }
 
     private static class LongListTypeReference extends TypeReference<List<Long>> {

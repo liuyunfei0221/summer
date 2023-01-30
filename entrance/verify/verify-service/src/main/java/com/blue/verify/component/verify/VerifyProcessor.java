@@ -176,8 +176,7 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
      * @return
      */
     public Mono<String> handle(VerifyType verifyType, VerifyBusinessType verifyBusinessType, String destination, List<String> languages) {
-        LOGGER.info("Mono<String> handle(), verifyType = {}, verifyBusinessType = {}, destination = {}, languages = {}",
-                verifyType, verifyBusinessType, destination, languages);
+        LOGGER.info("verifyType = {}, verifyBusinessType = {}, destination = {}, languages = {}", verifyType, verifyBusinessType, destination, languages);
 
         if (isNotNull(verifyType) && isNotNull(verifyBusinessType)) {
             ALLOWED_ASSERTER.accept(verifyBusinessType.identity, verifyType.identity);
@@ -207,7 +206,7 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
                 .flatMap(tuple3 -> {
                     VerifyParam vp = tuple3.getT1();
                     String ip = tuple3.getT2();
-                    LOGGER.info("Mono<ServerResponse> handle(), vp = {}, ip = {}", vp, ip);
+                    LOGGER.info("vp = {}, ip = {}", vp, ip);
 
                     String verifyType = vp.getVerifyType();
                     String businessType = vp.getBusinessType();
@@ -223,7 +222,7 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
                                             .flatMap(need -> {
                                                 if (need) {
                                                     TuringData turingData = tuple3.getT3();
-                                                    LOGGER.info("Mono<ServerResponse> handle(), turingData = {}", turingData);
+                                                    LOGGER.info("turingData = {}", turingData);
 
                                                     return this.turingValidate(TURING_LIMIT_IDENTITY_WRAPPER.apply(ip), ALLOW, INTERVAL_MILLIS, turingData.getKey(), turingData.getVerify());
                                                 } else {

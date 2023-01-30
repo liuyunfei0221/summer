@@ -44,7 +44,7 @@ public final class BluePulsarProducer<T extends Serializable> implements Produce
 
     @Override
     public MessageId send(T message) {
-        LOGGER.info("producer send, message = {}", message);
+        LOGGER.info("message = {}", message);
         if (message != null)
             try {
                 return pulsarProducer.send(message);
@@ -58,7 +58,7 @@ public final class BluePulsarProducer<T extends Serializable> implements Produce
 
     @Override
     public CompletableFuture<MessageId> sendAsync(T message) {
-        LOGGER.info("producer sendAsync, message = {}", message);
+        LOGGER.info("message = {}", message);
         if (message != null)
             return pulsarProducer.sendAsync(message);
 
@@ -66,7 +66,7 @@ public final class BluePulsarProducer<T extends Serializable> implements Produce
     }
 
     public MessageId sendDeliverAfter(T message, Long delay, TimeUnit unit) {
-        LOGGER.info("producer sendDeliverAfter, message = {}, delay = {}, unit = {}", message, delay, unit);
+        LOGGER.info("message = {}, delay = {}, unit = {}", message, delay, unit);
         if (message != null && delay != null && delay > 0L && unit != null)
             try {
                 return pulsarProducer.newMessage().value(message).deliverAfter(delay, unit).send();
@@ -79,7 +79,7 @@ public final class BluePulsarProducer<T extends Serializable> implements Produce
     }
 
     public CompletableFuture<MessageId> sendDeliverAfterAsync(T message, Long delay, TimeUnit unit) {
-        LOGGER.info("producer sendDeliverAfterAsync, message = {}, delay = {}, unit = {}", message, delay, unit);
+        LOGGER.info("message = {}, delay = {}, unit = {}", message, delay, unit);
         if (message != null && delay != null && delay > 0L && unit != null)
             return pulsarProducer.newMessage().value(message).deliverAfter(delay, unit).sendAsync();
 
@@ -87,7 +87,7 @@ public final class BluePulsarProducer<T extends Serializable> implements Produce
     }
 
     public MessageId sendDeliverAt(T message, Long timestamp) {
-        LOGGER.info("producer sendDeliverAt, message = {}, timestamp = {}", message, timestamp);
+        LOGGER.info("message = {}, timestamp = {}", message, timestamp);
         if (message != null && timestamp != null && timestamp > currentTimeMillis())
             try {
                 return pulsarProducer.newMessage().value(message).deliverAt(timestamp).send();
@@ -100,7 +100,7 @@ public final class BluePulsarProducer<T extends Serializable> implements Produce
     }
 
     public CompletableFuture<MessageId> sendDeliverAtAsync(T message, Long timestamp) {
-        LOGGER.info("producer sendDeliverAtAsync, message = {}, timestamp = {}", message, timestamp);
+        LOGGER.info("message = {}, timestamp = {}", message, timestamp);
         if (message != null && timestamp != null && timestamp > currentTimeMillis())
             return pulsarProducer.newMessage().value(message).deliverAt(timestamp).sendAsync();
 
@@ -115,7 +115,7 @@ public final class BluePulsarProducer<T extends Serializable> implements Produce
      * @return
      */
     public MessageId sendWithTrans(T data, Transaction transaction) {
-        LOGGER.info("producer sendWithTrans, data = {}, transaction = {}", data, transaction);
+        LOGGER.info("data = {}, transaction = {}", data, transaction);
         if (data != null && transaction != null)
             try {
                 return pulsarProducer.newMessage(transaction).value(data).send();
@@ -135,7 +135,7 @@ public final class BluePulsarProducer<T extends Serializable> implements Produce
      * @return
      */
     public CompletableFuture<MessageId> sendWithTransAsync(T data, Transaction transaction) {
-        LOGGER.info("producer sendWithTransAsync, data = {}, transaction = {}", data, transaction);
+        LOGGER.info("data = {}, transaction = {}", data, transaction);
         if (data != null && transaction != null)
             return pulsarProducer.newMessage(transaction)
                     .value(data).sendAsync();
@@ -153,7 +153,7 @@ public final class BluePulsarProducer<T extends Serializable> implements Produce
      * @return
      */
     public MessageId sendWithTransDeliverAfter(T data, Transaction transaction, Long delay, TimeUnit unit) {
-        LOGGER.info("producer sendWithTransDeliverAfter, data = {}, transaction = {}, delay = {}, unit = {}", data, transaction, delay, unit);
+        LOGGER.info("data = {}, transaction = {}, delay = {}, unit = {}", data, transaction, delay, unit);
         if (data != null && transaction != null && delay != null && delay > 0L && unit != null)
             try {
                 return pulsarProducer.newMessage(transaction).value(data).deliverAfter(delay, unit).send();
@@ -175,7 +175,7 @@ public final class BluePulsarProducer<T extends Serializable> implements Produce
      * @return
      */
     public CompletableFuture<MessageId> sendWithTransDeliverAfterAsync(T data, Transaction transaction, Long delay, TimeUnit unit) {
-        LOGGER.info("producer sendWithTransDeliverAfterAsync, data = {}, transaction = {}, delay = {}, unit = {}", data, transaction, delay, unit);
+        LOGGER.info("data = {}, transaction = {}, delay = {}, unit = {}", data, transaction, delay, unit);
         if (data != null && transaction != null && delay != null && delay > 0L && unit != null)
             return pulsarProducer.newMessage(transaction).value(data).deliverAfter(delay, unit).sendAsync();
 
@@ -191,7 +191,7 @@ public final class BluePulsarProducer<T extends Serializable> implements Produce
      * @return
      */
     public MessageId sendWithTransDeliverAt(T data, Transaction transaction, Long timestamp) {
-        LOGGER.info("producer sendWithTransDeliverAt, data = {}, transaction = {}, timestamp = {}", data, transaction, timestamp);
+        LOGGER.info("data = {}, transaction = {}, timestamp = {}", data, transaction, timestamp);
         if (data != null && transaction != null && timestamp != null && timestamp > currentTimeMillis())
             try {
                 return pulsarProducer.newMessage(transaction).value(data).deliverAt(timestamp).send();
@@ -212,7 +212,7 @@ public final class BluePulsarProducer<T extends Serializable> implements Produce
      * @return
      */
     public CompletableFuture<MessageId> sendWithTransDeliverAtAsync(T data, Transaction transaction, Long timestamp) {
-        LOGGER.info("producer sendWithTransDeliverAtAsync, data = {}, transaction = {}, timestamp = {}", data, transaction, timestamp);
+        LOGGER.info("data = {}, transaction = {}, timestamp = {}", data, transaction, timestamp);
         if (data != null && transaction != null && timestamp != null && timestamp > currentTimeMillis())
             return pulsarProducer.newMessage(transaction).value(data).deliverAt(timestamp).sendAsync();
 

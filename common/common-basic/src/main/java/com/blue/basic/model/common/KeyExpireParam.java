@@ -56,6 +56,7 @@ public final class KeyExpireParam implements Serializable {
     public void setKey(String key) {
         if (isBlank(key))
             throw new BlueException(BAD_REQUEST);
+
         this.key = key;
     }
 
@@ -66,6 +67,7 @@ public final class KeyExpireParam implements Serializable {
     public void setExpire(Long expire) {
         if (isInvalidIdentity(expire))
             throw new BlueException(BAD_REQUEST);
+
         this.expire = expire;
     }
 
@@ -76,6 +78,7 @@ public final class KeyExpireParam implements Serializable {
     public void setUnit(ChronoUnit unit) {
         if (isNull(unit))
             throw new BlueException(BAD_REQUEST);
+
         this.unit = unit;
     }
 

@@ -7,6 +7,7 @@ import java.io.Serializable;
  *
  * @author liuyunfei
  */
+@SuppressWarnings("unused")
 public final class SummaryParam implements Serializable {
 
     private static final long serialVersionUID = 3498002276452937696L;

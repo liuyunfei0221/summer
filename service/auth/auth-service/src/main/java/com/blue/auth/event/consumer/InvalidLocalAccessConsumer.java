@@ -53,8 +53,8 @@ public final class InvalidLocalAccessConsumer implements BlueLifecycle {
                         .map(InvalidLocalAccessEvent::getKeyId)
                         .ifPresent(kid -> just(kid).flatMap(accessInfoCache::invalidLocalAccessInfo)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
-                                .doOnError(throwable -> LOGGER.info("accessInfoCache.invalidLocalAccessInfo(kid) failed, kid = {}, throwable = {}", kid, throwable))
-                                .subscribe(b -> LOGGER.info("accessInfoCache.invalidLocalAccessInfo(kid), b = {}, kid = {}", b, kid)));
+                                .doOnError(throwable -> LOGGER.info("invalidLocalAccessInfo failed, kid = {}, throwable = {}", kid, throwable))
+                                .subscribe(b -> LOGGER.info("invalidLocalAccessInfo, b = {}, kid = {}", b, kid)));
 
         this.pulsarListener = generateListener(pulsarClient, blueConsumerConfig.getByKey(INVALID_LOCAL_ACCESS.name), dataConsumer);
     }

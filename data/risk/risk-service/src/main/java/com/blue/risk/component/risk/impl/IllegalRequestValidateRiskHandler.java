@@ -48,7 +48,6 @@ public class IllegalRequestValidateRiskHandler implements RiskHandler {
 
         //TODO
 
-
     };
 
     int i = 0;

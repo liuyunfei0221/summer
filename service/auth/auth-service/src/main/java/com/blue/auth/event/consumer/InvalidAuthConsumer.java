@@ -53,8 +53,8 @@ public final class InvalidAuthConsumer implements BlueLifecycle {
                         .map(InvalidAuthEvent::getMemberId)
                         .ifPresent(mid -> just(mid).flatMap(authControlService::invalidateAuthByMemberId)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
-                                .doOnError(throwable -> LOGGER.info("authControlService.invalidateAuthByMemberId(mid) failed, mid = {}, throwable = {}", mid, throwable))
-                                .subscribe(b -> LOGGER.info("authControlService.invalidateAuthByMemberId(mid), b = {}, mid = {}", b, mid)));
+                                .doOnError(throwable -> LOGGER.info("invalidateAuthByMemberId failed, mid = {}, throwable = {}", mid, throwable))
+                                .subscribe(b -> LOGGER.info("invalidateAuthByMemberId, b = {}, mid = {}", b, mid)));
 
         this.pulsarListener = generateListener(pulsarClient, blueConsumerConfig.getByKey(INVALID_AUTH.name), dataConsumer);
     }

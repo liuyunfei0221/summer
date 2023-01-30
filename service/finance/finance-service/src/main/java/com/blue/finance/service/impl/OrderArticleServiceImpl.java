@@ -98,7 +98,7 @@ public class OrderArticleServiceImpl implements OrderArticleService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public Boolean updateTargetColumnByPrimaryKeySelectiveWithStatusStamp(OrderArticleUpdateModel orderArticleUpdateModel) {
-        LOGGER.info("Boolean updateTargetColumnByPrimaryKeySelectiveWithStatusStamp(OrderArticleUpdateModel orderArticleUpdateModel), orderArticleUpdateModel = {}", orderArticleUpdateModel);
+        LOGGER.info("orderArticleUpdateModel = {}", orderArticleUpdateModel);
         if (isNull(orderArticleUpdateModel))
             throw new BlueException(EMPTY_PARAM);
         orderArticleUpdateModel.asserts();
@@ -114,7 +114,7 @@ public class OrderArticleServiceImpl implements OrderArticleService {
      */
     @Override
     public Optional<OrderArticle> getOrderArticle(Long id) {
-        LOGGER.info("Optional<OrderArticle> getOrderArticle(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -129,7 +129,7 @@ public class OrderArticleServiceImpl implements OrderArticleService {
      */
     @Override
     public Mono<OrderArticle> getOrderArticleMono(Long id) {
-        LOGGER.info("Mono<OrderArticle> getOrderArticleMono(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -144,7 +144,7 @@ public class OrderArticleServiceImpl implements OrderArticleService {
      */
     @Override
     public List<OrderArticle> selectOrderArticleByIds(List<Long> ids) {
-        LOGGER.info("List<OrderArticle> selectOrderArticleByIds(List<Long> ids), ids = {}", ids);
+        LOGGER.info("ids = {}", ids);
         if (isEmpty(ids))
             return emptyList();
 
@@ -159,7 +159,7 @@ public class OrderArticleServiceImpl implements OrderArticleService {
      */
     @Override
     public Mono<List<OrderArticle>> selectOrderArticleMonoByIds(List<Long> ids) {
-        LOGGER.info("Mono<List<OrderArticle>> selectOrderArticleMonoByIds(List<Long> ids), ids = {}", ids);
+        LOGGER.info("ids = {}", ids);
 
         return just(selectOrderArticleByIds(ids));
     }

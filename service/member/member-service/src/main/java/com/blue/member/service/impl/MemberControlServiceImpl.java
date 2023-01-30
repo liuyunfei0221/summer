@@ -108,8 +108,7 @@ public class MemberControlServiceImpl implements MemberControlService {
     @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRED, isolation = REPEATABLE_READ,
             rollbackFor = Exception.class, timeout = 30)
     public MemberBasicInfo updateMemberCredentialAttr(List<String> credentialTypes, String credential, Long memberId) {
-        LOGGER.info("credentialTypes = {}, credential = {}, memberId = {}",
-                credentialTypes, credential, memberId);
+        LOGGER.info("credentialTypes = {}, credential = {}, memberId = {}", credentialTypes, credential, memberId);
 
         MemberBasic memberBasic = memberBasicService.getMemberBasicOpt(memberId)
                 .orElseThrow(() -> new BlueException(DATA_NOT_EXIST));

@@ -145,33 +145,29 @@ public final class AccessInfoCache {
     private final BiConsumer<String, String> ACCESS_EXPIRE_PROCESSOR = (keyId, access) ->
             this.executorService.execute(() -> {
                 try {
-                    if (EXPIRE_PRE.test(keyId, access)) {
+                    if (EXPIRE_PRE.test(keyId, access))
                         accessBatchExpireProcessor.expireKey(keyId, globalExpiresMillis, UNIT);
-                        LOGGER.warn("ACCESS_EXPIRE_PROCESSOR -> SUCCESS, keyId = {}, access = {}", keyId, access);
-                    }
+
                 } catch (Exception e) {
-                    LOGGER.error("accessBatchExpireProcessor.expireKey(keyId, globalExpiresMillis, UNIT) failed, keyId = {}, access = {}, e = {}", keyId, access, e);
+                    LOGGER.error("expireKey failed, keyId = {}, access = {}, e = {}", keyId, access, e);
                 }
             });
 
     /**
      * redis accessInfo getter
      */
-    private final BiFunction<String, Executor, CompletableFuture<String>> REDIS_ACCESS_WITH_LOCAL_CACHE_GETTER = (keyId, executor) -> {
-        LOGGER.warn("REDIS_ACCESS_WITH_LOCAL_CACHE_GETTER, get accessInfo from redis and set in caff, keyId = {}", keyId);
+    private final BiFunction<String, Executor, CompletableFuture<String>> REDIS_ACCESS_WITH_LOCAL_CACHE_GETTER = (keyId, executor) ->
+            reactiveStringRedisTemplate.opsForValue().get(keyId)
+                    .doOnSuccess(v -> {
+                        if (isNotBlank(v))
+                            ACCESS_EXPIRE_PROCESSOR.accept(keyId, v);
+                    }).toFuture();
 
-        return reactiveStringRedisTemplate.opsForValue().get(keyId)
-                .doOnSuccess(v -> {
-                    if (isNotBlank(v))
-                        ACCESS_EXPIRE_PROCESSOR.accept(keyId, v);
-                }).toFuture();
-    };
 
     /**
      * cache accessInfo getter
      */
     private final Function<String, Mono<String>> ACCESS_GETTER_WITH_CACHE = keyId -> {
-        LOGGER.warn("ACCESS_GETTER_WITH_CACHE, get accessInfo from cache, keyId = {}", keyId);
         if (isBlank(keyId))
             return error(() -> new BlueException(UNAUTHORIZED));
 
@@ -182,7 +178,6 @@ public final class AccessInfoCache {
      * cache accessInfo setter
      */
     private final BiFunction<String, AccessInfo, Mono<Boolean>> ACCESS_SETTER_WITH_CACHE = (keyId, accessInfo) -> {
-        LOGGER.info("ACCESS_SETTER_WITH_CACHE, keyId = {}, accessInfo = {}", keyId, accessInfo);
         if (isBlank(keyId) || isNull(accessInfo))
             return error(() -> new BlueException(BAD_REQUEST));
 
@@ -190,7 +185,7 @@ public final class AccessInfoCache {
         return reactiveStringRedisTemplate.opsForValue()
                 .set(keyId, access, globalExpireDuration)
                 .onErrorResume(throwable -> {
-                    LOGGER.error("setAccessInfo(String keyId, String accessInfo) failed, throwable = {}", throwable);
+                    LOGGER.error("setAccessInfo failed, throwable = {}", throwable);
                     return just(false);
                 })
                 .doOnSuccess(ig -> cache.put(keyId, supplyAsync(() -> access, executorService)));
@@ -222,7 +217,6 @@ public final class AccessInfoCache {
      * @param accessInfo
      */
     public Mono<Boolean> setAccessInfo(String keyId, AccessInfo accessInfo) {
-        LOGGER.info("setAccessInfo(), keyId = {}, accessInfo = {}", keyId, accessInfo);
         return ACCESS_SETTER_WITH_CACHE.apply(keyId, accessInfo);
     }
 
@@ -232,7 +226,6 @@ public final class AccessInfoCache {
      * @param keyId
      */
     public Mono<Boolean> invalidAccessInfo(String keyId) {
-        LOGGER.info("invalidAuthInfo(), keyId = {}", keyId);
         return isNotBlank(keyId) ?
                 reactiveStringRedisTemplate.delete(keyId)
                         .map(l -> l > 0L)
@@ -247,7 +240,6 @@ public final class AccessInfoCache {
      * @param keyId
      */
     public Mono<Boolean> invalidLocalAccessInfo(String keyId) {
-        LOGGER.info("invalidLocalAuthInfo(), keyId = {}", keyId);
         try {
             if (isNotBlank(keyId))
                 cache.synchronous().invalidate(keyId);

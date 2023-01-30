@@ -17,7 +17,7 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"AlibabaRemoveCommentedCode", "JavaDoc", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"AlibabaRemoveCommentedCode", "JavaDoc", "AliControlFlowStatementWithoutBraces", "SpringJavaInjectionPointsAutowiringInspection"})
 @ConditionalOnBean(value = {DistributedLockConf.class})
 @AutoConfiguration
 @Order(HIGHEST_PRECEDENCE)
@@ -27,7 +27,7 @@ public class BlueDistributedLockConfiguration {
 
     @Bean
     BlueDistributedLockGenerator distributedLockGenerator(DistributedLockConf distributedLockConf) {
-        LOGGER.info("distributedLockGenerator(DistributedLockConf distributedLockConf), distributedLockConf = {}", distributedLockConf);
+        LOGGER.info("distributedLockConf = {}", distributedLockConf);
         assertConf(distributedLockConf);
         return new BlueDistributedLockGenerator(distributedLockConf);
     }

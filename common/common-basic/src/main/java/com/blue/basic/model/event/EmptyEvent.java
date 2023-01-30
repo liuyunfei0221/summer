@@ -36,4 +36,5 @@ public class EmptyEvent implements Serializable {
                 "value='" + value + '\'' +
                 '}';
     }
+
 }

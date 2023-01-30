@@ -43,7 +43,7 @@ public final class BluePulsarTransProducerCoordinator {
         try {
             return pulsarClient.newTransaction().build().get();
         } catch (Exception e) {
-            throw new RuntimeException("startTransaction() failed, cause: {}", e);
+            throw new RuntimeException("startTransaction failed, cause: {}", e);
         }
     }
 
@@ -56,7 +56,7 @@ public final class BluePulsarTransProducerCoordinator {
         try {
             return pulsarClient.newTransaction().build();
         } catch (Exception e) {
-            throw new RuntimeException("startTransactionAsync() failed, cause: {}", e);
+            throw new RuntimeException("startTransactionAsync failed, cause: {}", e);
         }
     }
 
@@ -71,7 +71,7 @@ public final class BluePulsarTransProducerCoordinator {
         try {
             return pulsarClient.newTransaction().withTransactionTimeout(transTimeout, transTimeoutUnit).build().get();
         } catch (Exception e) {
-            throw new RuntimeException("startTransaction(long transTimeout, TimeUnit transTimeoutUnit) failed, cause: {}", e);
+            throw new RuntimeException("startTransaction failed, cause: {}", e);
         }
     }
 
@@ -86,7 +86,7 @@ public final class BluePulsarTransProducerCoordinator {
         try {
             return pulsarClient.newTransaction().withTransactionTimeout(transTimeout, transTimeoutUnit).build();
         } catch (Exception e) {
-            throw new RuntimeException("startTransactionAsync(long transTimeout, TimeUnit transTimeoutUnit) failed, cause: {}", e);
+            throw new RuntimeException("startTransactionAsync failed, cause: {}", e);
         }
     }
 
@@ -99,7 +99,7 @@ public final class BluePulsarTransProducerCoordinator {
         try {
             transaction.commit().get();
         } catch (Exception e) {
-            throw new RuntimeException("commitTransaction(Transaction transaction) failed, cause: {}", e);
+            throw new RuntimeException("commitTransaction failed, cause: {}", e);
         }
     }
 
@@ -122,7 +122,7 @@ public final class BluePulsarTransProducerCoordinator {
         try {
             transaction.abort().get();
         } catch (Exception e) {
-            throw new RuntimeException("abortTransaction(Transaction transaction) failed, cause: {}", e);
+            throw new RuntimeException("abortTransaction failed, cause: {}", e);
         }
     }
 

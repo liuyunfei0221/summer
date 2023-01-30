@@ -256,7 +256,7 @@ public class OrderProcessServiceImpl implements OrderProcessService {
      */
     @Override
     public void updateOrder(Order order) {
-        LOGGER.info("void updateOrder(Order order), order = {}", order);
+        LOGGER.info("order = {}", order);
         if (isNull(order))
             throw new BlueException(INVALID_PARAM);
 
@@ -280,7 +280,7 @@ public class OrderProcessServiceImpl implements OrderProcessService {
      */
     @Override
     public void updateOrderArticles(List<OrderArticle> orderArticles) {
-        LOGGER.info("void updateOrderArticles(List<OrderArticle> orderArticles), orderArticles = {}", orderArticles);
+        LOGGER.info("orderArticles = {}", orderArticles);
         if (isEmpty(orderArticles))
             throw new BlueException(INVALID_PARAM);
 
@@ -318,7 +318,7 @@ public class OrderProcessServiceImpl implements OrderProcessService {
      */
     @Override
     public void updateReferenceAmounts(List<ReferenceAmount> referenceAmounts) {
-        LOGGER.info("void updateReferenceAmounts(List<ReferenceAmount> referenceAmounts), referenceAmounts = {}", referenceAmounts);
+        LOGGER.info("referenceAmounts = {}", referenceAmounts);
         if (isEmpty(referenceAmounts))
             throw new BlueException(INVALID_PARAM);
 

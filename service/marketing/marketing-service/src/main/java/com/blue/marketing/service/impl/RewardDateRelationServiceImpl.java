@@ -202,8 +202,7 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public RewardDateRelationInfo insertRewardDateRelation(RewardDateRelationInsertParam rewardDateRelationInsertParam, Long operatorId) {
-        LOGGER.info("rewardDateRelationInsertParam = {}, operatorId = {}",
-                rewardDateRelationInsertParam, operatorId);
+        LOGGER.info("rewardDateRelationInsertParam = {}, operatorId = {}", rewardDateRelationInsertParam, operatorId);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 
@@ -232,8 +231,7 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public List<RewardDateRelationInfo> insertRewardDateRelationMonoByYearAndMonth(RewardDateRelationBatchInsertParam rewardDateRelationBatchInsertParam, Long operatorId) {
-        LOGGER.info("rewardDateRelationBatchInsertParam = {}, operatorId = {}",
-                rewardDateRelationBatchInsertParam, operatorId);
+        LOGGER.info("rewardDateRelationBatchInsertParam = {}, operatorId = {}", rewardDateRelationBatchInsertParam, operatorId);
         if (isNull(rewardDateRelationBatchInsertParam))
             throw new BlueException(EMPTY_PARAM);
         rewardDateRelationBatchInsertParam.asserts();
@@ -319,8 +317,7 @@ public class RewardDateRelationServiceImpl implements RewardDateRelationService 
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public RewardDateRelationInfo updateRewardDateRelation(RewardDateRelationUpdateParam rewardDateRelationUpdateParam, Long operatorId) {
-        LOGGER.info("rewardDateRelationUpdateParam = {}, operatorId = {}",
-                rewardDateRelationUpdateParam, operatorId);
+        LOGGER.info("rewardDateRelationUpdateParam = {}, operatorId = {}", rewardDateRelationUpdateParam, operatorId);
         if (isInvalidIdentity(operatorId))
             throw new BlueException(UNAUTHORIZED);
 

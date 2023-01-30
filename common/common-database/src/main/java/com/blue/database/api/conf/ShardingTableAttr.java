@@ -5,6 +5,7 @@ package com.blue.database.api.conf;
  *
  * @author liuyunfei
  */
+@SuppressWarnings("unused")
 public class ShardingTableAttr {
 
     /**

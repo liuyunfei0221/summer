@@ -66,7 +66,7 @@ public final class BluePulsarBatchListener<T extends Serializable> {
                 ofNullable(message).map(Message::getValue).ifPresent(data::add);
 
             consumer.accept(data);
-            LOGGER.info("MESSAGES_CONSUMER handle messages success: messages = {}, data = {}", messages, data);
+            LOGGER.info("messages = {}, data = {}", messages, data);
         }
     };
 
@@ -172,7 +172,7 @@ public final class BluePulsarBatchListener<T extends Serializable> {
                         onSpinWait();
                     }
                 } catch (PulsarClientException e) {
-                    LOGGER.error(" handleBatch() received failed, messages = {}, e = {}", messages, e);
+                    LOGGER.error("handleBatch() received failed, messages = {}, e = {}", messages, e);
                     onSpinWait();
                 }
         }

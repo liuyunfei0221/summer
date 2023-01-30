@@ -7,7 +7,10 @@ import java.io.Serializable;
  *
  * @author liuyunfei
  */
+@SuppressWarnings("unused")
 public final class StringContentAttr implements Serializable {
+
+    private static final long serialVersionUID = -7736949586524198962L;
 
     private String templateName;
 

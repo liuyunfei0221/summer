@@ -47,8 +47,8 @@ final class Transporter {
 
             LOGGER.warn("Transporter connect");
         } catch (MessagingException e) {
-            LOGGER.error("transport connect failed, e = {}", e);
-            throw new RuntimeException("transport connect failed, e = " + e);
+            LOGGER.error("Transport connect failed, e = {}", e);
+            throw new RuntimeException("Transport connect failed, e = " + e);
         }
     };
 
@@ -67,7 +67,7 @@ final class Transporter {
                 TRANSPORT_CONNECTOR.accept(this.session);
                 TRANSPORT_CONTROL.compareAndSet(false, true);
             } catch (Exception e) {
-                throw new RuntimeException("transport connect failed, e = " + e);
+                throw new RuntimeException("Transport connect failed, e = " + e);
             } finally {
                 TRANSPORT_CONTROL.set(true);
             }
@@ -88,7 +88,7 @@ final class Transporter {
             try {
                 this.transport.sendMessage(message, message.getAllRecipients());
             } catch (MessagingException ex) {
-                throw new RuntimeException("sendMsg(Message message), failed, e = " + e);
+                throw new RuntimeException("sendMsg, failed, e = " + e);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

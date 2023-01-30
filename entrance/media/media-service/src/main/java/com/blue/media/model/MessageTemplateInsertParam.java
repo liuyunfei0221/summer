@@ -16,7 +16,7 @@ import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces"})
+@SuppressWarnings({"unused", "AliControlFlowStatementWithoutBraces", "DuplicatedCode"})
 public class MessageTemplateInsertParam implements Serializable, Asserter {
 
     private static final long serialVersionUID = -7766338095091559323L;

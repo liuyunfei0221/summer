@@ -48,8 +48,8 @@ public final class SystemAuthorityInfosRefreshConsumer implements BlueLifecycle 
                 ofNullable(emptyEvent)
                         .ifPresent(ee -> just(ee)
                                 .then(authControlService.refreshSystemAuthorityInfos())
-                                .doOnError(throwable -> LOGGER.info("authControlService.refreshSystemAuthorityInfos() failed, ee = {}, throwable = {}", ee, throwable))
-                                .subscribe(ig -> LOGGER.info("authControlService.refreshSystemAuthorityInfos(), ig = {}, ee = {}", ig, ee)));
+                                .doOnError(throwable -> LOGGER.info("refreshSystemAuthorityInfos failed, ee = {}, throwable = {}", ee, throwable))
+                                .subscribe(ig -> LOGGER.info("refreshSystemAuthorityInfos, ig = {}, ee = {}", ig, ee)));
 
         this.pulsarListener = generateListener(pulsarClient, blueConsumerConfig.getByKey(SYSTEM_AUTHORITY_INFOS_REFRESH.name), dataConsumer);
     }

@@ -68,7 +68,7 @@ public class ByteProcessor implements ApplicationListener<ContextRefreshedEvent>
         HandlerTypeDeploy handlerTypeDeploy;
         try {
             handlerTypeDeploy = applicationContext.getBean(HandlerTypeDeploy.class);
-            LOGGER.info("ByteProcessor onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent), handlerTypeDeploy = {}", handlerTypeDeploy);
+            LOGGER.info("handlerTypeDeploy = {}", handlerTypeDeploy);
         } catch (BeansException e) {
             LOGGER.error("applicationContext.getBean(HandlerTypeDeploy.class), e = {}", e);
             throw new RuntimeException("applicationContext.getBean(HandlerTypeDeploy.class) failed");
@@ -92,7 +92,7 @@ public class ByteProcessor implements ApplicationListener<ContextRefreshedEvent>
      * @return
      */
     public Mono<FileUploadResult> write(Part part, Integer type, Long memberId) {
-        LOGGER.info("Mono<FileUploadResult> write(Part part, Integer type, Long memberId), part = {}, type = {}, memberId = {}",
+        LOGGER.info("part = {}, type = {}, memberId = {}",
                 part, type, memberId);
         if (isNull(part) || isNull(type) || isInvalidIdentity(memberId))
             throw new BlueException(BAD_REQUEST);
@@ -115,8 +115,7 @@ public class ByteProcessor implements ApplicationListener<ContextRefreshedEvent>
      * @return
      */
     public Mono<FileUploadResult> write(byte[] bytes, Integer type, Long memberId, String originalName, String descName) {
-        LOGGER.info("Mono<FileUploadResult> write(byte[] bytes, Integer type, Long memberId, String originalName, String descName), type = {}, memberId = {}",
-                type, memberId);
+        LOGGER.info("type = {}, memberId = {}", type, memberId);
         if (isNull(bytes) || isNull(type) || isInvalidIdentity(memberId) || isBlank(descName))
             throw new BlueException(BAD_REQUEST);
 

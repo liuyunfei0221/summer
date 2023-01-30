@@ -8,7 +8,7 @@ import java.util.function.Supplier;
  *
  * @author liuyunfei
  */
-@SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
+@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "unused"})
 public abstract class BaseIdentityConfParams implements IdentityConf {
 
     protected Integer dataCenter;

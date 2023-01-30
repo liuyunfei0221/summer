@@ -396,7 +396,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      */
     @Override
     public Mono<List<Long>> selectResIdsByRoleId(Long roleId) {
-        LOGGER.info("Mono<List<Long>> selectResIdsMonoByRoleId(Long roleId), roleId = {}", roleId);
+        LOGGER.info("roleId = {}", roleId);
         if (isInvalidIdentity(roleId))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -411,13 +411,13 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      */
     @Override
     public Mono<List<Resource>> selectResByRoleId(Long roleId) {
-        LOGGER.info("Mono<List<Resource>> selectResMonoByRoleId(Long roleId), roleId = {}", roleId);
+        LOGGER.info("roleId = {}", roleId);
         if (isInvalidIdentity(roleId))
             throw new BlueException(INVALID_IDENTITY);
 
         return this.selectResIdsByRoleId(roleId)
                 .flatMap(ids -> {
-                    LOGGER.info("Mono<List<Resource>> selectResMonoByRoleId(Long roleId), ids = {}", ids);
+                    LOGGER.info("ids = {}", ids);
                     return isValidIdentities(ids) ? resourceService.selectResourceByIds(ids) : just(emptyList());
                 });
     }
@@ -430,7 +430,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      */
     @Override
     public Mono<List<Long>> selectRoleIdsByResId(Long resId) {
-        LOGGER.info("Mono<List<Long>> selectRoleIdsMonoByResId(Long resId), resId = {}", resId);
+        LOGGER.info("resId = {}", resId);
         if (isInvalidIdentity(resId))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -445,13 +445,13 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      */
     @Override
     public Mono<List<Role>> selectRoleByResId(Long resId) {
-        LOGGER.info("Mono<List<Role>> selectRoleMonoByResId(Long resId), resId = {}", resId);
+        LOGGER.info("resId = {}", resId);
         if (isInvalidIdentity(resId))
             throw new BlueException(INVALID_IDENTITY);
 
         return this.selectRoleIdsByResId(resId)
                 .flatMap(ids -> {
-                    LOGGER.info("Mono<List<Role>> selectRoleMonoByResId(Long resId), resId = {}, ids = {}", ids);
+                    LOGGER.info("resId = {}, ids = {}", ids);
                     return isEmpty(ids) ? just(emptyList()) : roleService.selectRoleByIds(ids);
                 });
     }
@@ -464,7 +464,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      */
     @Override
     public Mono<List<RoleResRelation>> selectRelationByRoleId(Long roleId) {
-        LOGGER.info("Mono<List<RoleResRelation>> selectRelationByRoleId(Long roleId), roleId = {}", roleId);
+        LOGGER.info("roleId = {}", roleId);
         if (isInvalidIdentity(roleId))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -479,7 +479,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      */
     @Override
     public Mono<List<RoleResRelation>> selectRelationByResId(Long resId) {
-        LOGGER.info("List<RoleResRelation> selectRelationByResId(Long resId), resId = {}", resId);
+        LOGGER.info("resId = {}", resId);
         if (isInvalidIdentity(resId))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -494,7 +494,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      */
     @Override
     public Mono<List<RoleResRelation>> selectRelationByRoleIds(List<Long> roleIds) {
-        LOGGER.info("Mono<List<RoleResRelation>> selectRelationByRoleIds(List<Long> roleIds), roleIds = {}", roleIds);
+        LOGGER.info("roleIds = {}", roleIds);
 
         return isValidIdentities(roleIds) ? just(allotByMax(roleIds, (int) DB_SELECT.value, false)
                 .stream().map(roleResRelationMapper::selectByRoleIds)
@@ -512,7 +512,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
      */
     @Override
     public Mono<List<RoleResRelation>> selectRelationByResIds(List<Long> resIds) {
-        LOGGER.info("Mono<List<RoleResRelation>> selectRelationByResIds(List<Long> resIds), resIds = {}", resIds);
+        LOGGER.info("resIds = {}", resIds);
 
         return isValidIdentities(resIds) ? just(allotByMax(resIds, (int) DB_SELECT.value, false)
                 .stream().map(roleResRelationMapper::selectByResIds)

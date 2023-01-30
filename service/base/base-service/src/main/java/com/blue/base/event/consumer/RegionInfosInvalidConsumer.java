@@ -48,8 +48,8 @@ public final class RegionInfosInvalidConsumer implements BlueLifecycle {
                 ofNullable(emptyEvent)
                         .ifPresent(ee -> just(ee)
                                 .then(regionControlService.invalidAllCache())
-                                .doOnError(throwable -> LOGGER.info("regionControlService.invalidAllCache() failed, ee = {}, throwable = {}", ee, throwable))
-                                .subscribe(ig -> LOGGER.info("regionControlService.invalidAllCache(), ig = {}, ee = {}", ig, ee)));
+                                .doOnError(throwable -> LOGGER.info("invalidAllCache failed, ee = {}, throwable = {}", ee, throwable))
+                                .subscribe(ig -> LOGGER.info("invalidAllCache, ig = {}, ee = {}", ig, ee)));
 
         this.pulsarListener = generateListener(pulsarClient, blueConsumerConfig.getByKey(REGION_INFOS_INVALID.name), dataConsumer);
     }

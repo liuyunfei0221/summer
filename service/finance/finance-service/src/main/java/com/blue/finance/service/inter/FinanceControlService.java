@@ -17,7 +17,7 @@ public interface FinanceControlService {
      *
      * @param memberId
      */
-    FinanceAccountInfo initFinanceAccount(Long memberId);
+    Mono<FinanceAccountInfo> initFinanceAccount(Long memberId);
 
     /**
      * query finance account mono by id

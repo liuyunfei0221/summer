@@ -1,4 +1,4 @@
-package com.blue.hbase.demo;
+package com.blue.process.common.hbase;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.Cell;

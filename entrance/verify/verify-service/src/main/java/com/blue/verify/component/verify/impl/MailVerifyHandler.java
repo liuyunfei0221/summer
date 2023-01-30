@@ -126,13 +126,13 @@ public class MailVerifyHandler implements VerifyHandler {
         verifyHistory.setCreateTime(TIME_STAMP_GETTER.get());
 
         verifyHistoryService.insertVerifyHistory(verifyHistory)
-                .doOnError(throwable -> LOGGER.info("mailVerifyHandler.recordVerify() failed, verifyHistory = {}, throwable = {}", verifyHistory, throwable))
-                .subscribe(vh -> LOGGER.info("mailVerifyHandler.recordVerify() -> insertVerifyHistory(verifyHistory), vh = {}", vh));
+                .doOnError(throwable -> LOGGER.info("recordVerify failed, verifyHistory = {}, throwable = {}", verifyHistory, throwable))
+                .subscribe(vh -> LOGGER.info("vh = {}", vh));
     }
 
     @Override
     public Mono<String> handle(VerifyBusinessType verifyBusinessType, String destination, List<String> languages) {
-        LOGGER.info("MailVerifyHandler -> Mono<String> handle(), businessType = {}, destination = {}, languages = {}", verifyBusinessType, destination, languages);
+        LOGGER.info("businessType = {}, destination = {}, languages = {}", verifyBusinessType, destination, languages);
         if (isNull(verifyBusinessType) || isBlank(destination))
             throw new BlueException(BAD_REQUEST);
 
@@ -157,7 +157,7 @@ public class MailVerifyHandler implements VerifyHandler {
                         allowed ?
                                 this.handle(verifyBusinessType, destination, getAcceptLanguages(serverRequest))
                                         .flatMap(verify -> {
-                                            LOGGER.warn("Mono<ServerResponse> handle(), verifyKey = {}, verify = {}", destination, verify);
+                                            LOGGER.warn("verifyKey = {}, verify = {}", destination, verify);
 
                                             return ok().contentType(APPLICATION_JSON)
                                                     .header(VERIFY_KEY.name, destination)

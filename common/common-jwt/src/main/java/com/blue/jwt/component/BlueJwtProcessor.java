@@ -25,7 +25,6 @@ import static com.blue.basic.constant.common.ResponseElement.UNAUTHORIZED;
 import static com.blue.jwt.constant.JwtConfSchema.*;
 import static com.blue.jwt.constant.JwtDefaultElement.*;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -270,25 +269,23 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
      */
     @Override
     public String create(T t) {
-        if (nonNull(t)) {
-            try {
-                JWTCreator.Builder builder = JWT.create()
-                        .withHeader(COMMON_HEADER);
+        if (isNull(t))
+            throw new BlueException(UNAUTHORIZED);
 
-                ofNullable(DATA_2_CLAIM_PROCESSOR.apply(t))
-                        .ifPresent(cm -> cm.forEach(builder::withClaim));
+        try {
+            JWTCreator.Builder builder = JWT.create()
+                    .withHeader(COMMON_HEADER);
 
-                JWT_COMMON_PACKAGER.accept(builder);
+            ofNullable(DATA_2_CLAIM_PROCESSOR.apply(t))
+                    .ifPresent(cm -> cm.forEach(builder::withClaim));
 
-                return builder.sign(ALGORITHM);
-            } catch (Exception e) {
-                LOGGER.error("String create(T t), failed, t = {}, e = {}", t, e);
-                throw new RuntimeException("String create(T t), failed, t = " + t + ", e = " + e);
-            }
+            JWT_COMMON_PACKAGER.accept(builder);
+
+            return builder.sign(ALGORITHM);
+        } catch (Exception e) {
+            LOGGER.error("create failed, t = {}, e = {}", t, e);
+            throw new RuntimeException("create failed, t = " + t + ", e = " + e);
         }
-
-        LOGGER.error("String create(T t), t can't be null");
-        throw new BlueException(UNAUTHORIZED);
     }
 
     /**
@@ -299,20 +296,20 @@ public final class BlueJwtProcessor<T> implements JwtProcessor<T> {
      */
     @Override
     public T parse(String jwtToken) {
-        if (isNotEmpty(jwtToken))
-            try {
-                DecodedJWT jwt = VERIFIER.verify(jwtToken);
-                JWT_ASSERTER.accept(jwt);
+        if (isBlank(jwtToken))
+            throw new BlueException(UNAUTHORIZED);
 
-                return CLAIM_2_DATA_PROCESSOR.apply(
-                        jwt.getClaims().entrySet().stream()
-                                .collect(toMap(Map.Entry::getKey, e ->
-                                        ofNullable(e.getValue()).map(Claim::asString).orElse(EMPTY_VALUE), (a, b) -> a)));
-            } catch (Exception e) {
-                throw new BlueException(UNAUTHORIZED);
-            }
+        try {
+            DecodedJWT jwt = VERIFIER.verify(jwtToken);
+            JWT_ASSERTER.accept(jwt);
 
-        throw new BlueException(UNAUTHORIZED);
+            return CLAIM_2_DATA_PROCESSOR.apply(
+                    jwt.getClaims().entrySet().stream()
+                            .collect(toMap(Map.Entry::getKey, e ->
+                                    ofNullable(e.getValue()).map(Claim::asString).orElse(EMPTY_VALUE), (a, b) -> a)));
+        } catch (Exception e) {
+            throw new BlueException(UNAUTHORIZED);
+        }
     }
 
     /**

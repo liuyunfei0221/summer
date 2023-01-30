@@ -76,7 +76,7 @@ public class StatisticsProcessor implements ApplicationListener<ContextRefreshed
      * @param dataEvent
      */
     public Mono<Boolean> process(DataEvent dataEvent) {
-        LOGGER.info("Mono<Boolean> process(DataEvent dataEvent), dataEvent = {}", dataEvent);
+        LOGGER.info("dataEvent = {}", dataEvent);
         return fromFuture(supplyAsync(() -> PROCESSOR.apply(dataEvent), executorService));
     }
 

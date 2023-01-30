@@ -76,7 +76,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public Boolean updateTargetColumnByPrimaryKeySelectiveWithStamps(OrderUpdateModel orderUpdateModel) {
-        LOGGER.info("Boolean updateTargetColumnByPrimaryKeySelectiveWithStamps(OrderUpdateModel orderUpdateModel), orderUpdateModel = {}", orderUpdateModel);
+        LOGGER.info("orderUpdateModel = {}", orderUpdateModel);
         if (isNull(orderUpdateModel))
             throw new BlueException(EMPTY_PARAM);
         orderUpdateModel.asserts();
@@ -93,7 +93,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(propagation = REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 30)
     public Boolean updateTargetColumnByPrimaryKeySelectiveWithStamps(OrderVersionUpdateModel orderVersionUpdateModel) {
-        LOGGER.info("Boolean updateTargetColumnByPrimaryKeySelectiveWithStamps(OrderVersionUpdateModel orderVersionUpdateModel), orderVersionUpdateModel = {}", orderVersionUpdateModel);
+        LOGGER.info("orderVersionUpdateModel = {}", orderVersionUpdateModel);
         if (isNull(orderVersionUpdateModel))
             throw new BlueException(EMPTY_PARAM);
         orderVersionUpdateModel.asserts();
@@ -109,7 +109,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public Optional<Order> getOrder(Long id) {
-        LOGGER.info("Optional<Order> getOrder(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -124,7 +124,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public Mono<Order> getOrderMono(Long id) {
-        LOGGER.info("Mono<Order> getOrderMono(Long id), id = {}", id);
+        LOGGER.info("id = {}", id);
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
@@ -139,7 +139,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public List<Order> selectOrderByIds(List<Long> ids) {
-        LOGGER.info("List<Order> selectOrderByIds(List<Long> ids), ids = {}", ids);
+        LOGGER.info("ids = {}", ids);
         if (isEmpty(ids))
             return emptyList();
 
@@ -154,7 +154,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public Mono<List<Order>> selectOrderMonoByIds(List<Long> ids) {
-        LOGGER.info("Mono<List<Order>> selectOrderMonoByIds(List<Long> ids), ids = {}", ids);
+        LOGGER.info("ids = {}", ids);
 
         return just(selectOrderByIds(ids));
     }

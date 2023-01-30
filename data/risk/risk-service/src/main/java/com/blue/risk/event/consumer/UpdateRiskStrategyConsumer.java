@@ -51,8 +51,8 @@ public final class UpdateRiskStrategyConsumer implements BlueLifecycle {
                 ofNullable(riskStrategyInfo)
                         .ifPresent(rsi -> just(rsi).flatMap(riskProcessor::updateStrategy)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
-                                .doOnError(t -> LOGGER.error("riskService.updateCurrentStrategy(rsi) failed, de = {}, t = {}", rsi, t))
-                                .subscribe(b -> LOGGER.info("riskService.updateCurrentStrategy(rsi), b = {}, de = {}", b, rsi)));
+                                .doOnError(t -> LOGGER.error("updateCurrentStrategy failed, de = {}, t = {}", rsi, t))
+                                .subscribe(b -> LOGGER.info("updateCurrentStrategy, b = {}, de = {}", b, rsi)));
 
         this.pulsarListener = BluePulsarListenerGenerator.generateListener(pulsarClient, blueConsumerConfig.getByKey(RISK_STRATEGY_UPDATE.name), dataConsumer);
     }

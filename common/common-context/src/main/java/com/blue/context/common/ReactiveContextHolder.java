@@ -32,7 +32,7 @@ public final class ReactiveContextHolder {
      * @return
      */
     public static Mono<ServerHttpRequest> getServerHttpRequest() {
-        return getServerWebExchange().flatMap(serverWebExchange -> just(serverWebExchange.getRequest()));
+        return getServerWebExchange().map(ServerWebExchange::getRequest);
     }
 
     /**
@@ -41,7 +41,7 @@ public final class ReactiveContextHolder {
      * @return
      */
     public static Mono<ServerHttpResponse> getServerHttpResponse() {
-        return getServerWebExchange().flatMap(serverWebExchange -> just(serverWebExchange.getResponse()));
+        return getServerWebExchange().map(ServerWebExchange::getResponse);
     }
 
 }

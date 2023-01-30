@@ -103,7 +103,7 @@ public final class SynchronizedProcessor {
                             try {
                                 lock.unlock();
                             } catch (Exception e) {
-                                LOGGER.warn("lock.unlock() failed, e = {}", e);
+                                LOGGER.warn("lock.unlock()  failed, e = {}", e);
                             }
                     }
                 });
@@ -177,9 +177,14 @@ public final class SynchronizedProcessor {
         boolean tryLock = false;
         try {
             lock = redissonClient.getLock(syncKey);
-            tryLock = lock.tryLock(maxWaitingMillis, MILLISECONDS);
+            tryLock = lock.tryLock();
 
-            return tryLock ? handlerSup.get() : waitedSup.get();
+            if (tryLock)
+                return handlerSup.get();
+
+            tryLock = lock.tryLock(maxWaitingMillis, MILLISECONDS);
+            
+            return waitedSup.get();
         } catch (Exception e) {
             LOGGER.error("handle failed, syncKey = {}, handlerSup = {}, waitedSup = {}, fallbackSup = {}, maxWaitingMillis = {}",
                     syncKey, handlerSup, waitedSup, fallbackSup, maxWaitingMillis);

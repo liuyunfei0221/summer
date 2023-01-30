@@ -293,8 +293,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
     public Mono<MemberBasicInfo> updateMemberBasicIcon(Long id, IdentityParam identityParam) {
-        LOGGER.info("id = {}, stringDataParam = {}",
-                id, identityParam);
+        LOGGER.info("id = {}, stringDataParam = {}", id, identityParam);
         if (isInvalidIdentity(id))
             throw new BlueException(UNAUTHORIZED);
         if (isNull(identityParam))
@@ -333,8 +332,7 @@ public class MemberBasicServiceImpl implements MemberBasicService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
     public Mono<MemberBasicInfo> updateMemberBasicQrCode(Long id, IdentityParam identityParam) {
-        LOGGER.info("id = {}, stringDataParam = {}",
-                id, identityParam);
+        LOGGER.info("id = {}, stringDataParam = {}", id, identityParam);
         if (isInvalidIdentity(id))
             throw new BlueException(UNAUTHORIZED);
         if (isNull(identityParam))

@@ -33,6 +33,7 @@ public class MonthParam extends YearParam implements Serializable {
     public void asserts() {
         if (isNull(month) || month < ((int) MIN_MONTH.value) || month > ((int) MAX_MONTH.value))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid month");
+
         super.asserts();
     }
 
@@ -51,4 +52,5 @@ public class MonthParam extends YearParam implements Serializable {
                 ", month=" + month +
                 '}';
     }
+
 }

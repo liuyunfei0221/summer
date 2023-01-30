@@ -33,6 +33,7 @@ public class DateParam extends MonthParam implements Serializable {
     public void asserts() {
         if (isNull(day) || day < ((int) MIN_DAY_OF_MONTH.value) || day > ((int) MAX_DAY_OF_MONTH.value))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "invalid day");
+
         super.asserts();
     }
 
@@ -52,4 +53,5 @@ public class DateParam extends MonthParam implements Serializable {
                 ", day=" + day +
                 '}';
     }
+
 }

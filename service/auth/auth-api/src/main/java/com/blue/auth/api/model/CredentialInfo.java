@@ -88,6 +88,3 @@ public final class CredentialInfo implements Serializable {
     }
 
 }
-
-
-

@@ -14,7 +14,6 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
  *
  * @author liuyunfei
  */
-@SuppressWarnings("SpringFacetCodeInspection")
 @ConditionalOnWebApplication(type = REACTIVE)
 @AutoConfiguration
 @Order(HIGHEST_PRECEDENCE)

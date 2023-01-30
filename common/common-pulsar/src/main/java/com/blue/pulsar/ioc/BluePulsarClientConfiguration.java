@@ -15,7 +15,7 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"AlibabaRemoveCommentedCode"})
+@SuppressWarnings({"AlibabaRemoveCommentedCode", "SpringJavaInjectionPointsAutowiringInspection"})
 @ConditionalOnBean(value = {ClientConf.class})
 @AutoConfiguration
 @Order(HIGHEST_PRECEDENCE)

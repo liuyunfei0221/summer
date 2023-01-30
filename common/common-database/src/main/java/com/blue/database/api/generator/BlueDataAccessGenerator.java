@@ -131,8 +131,7 @@ public final class BlueDataAccessGenerator {
      * @return
      */
     public static DataSource generateDataSource(DataAccessConf dataAccessConf, IdentityConf identityConf) {
-        LOGGER.info("static DataSource generateDataSource(DataAccessConf dataAccessConf, IdentityConf identityConf), dataAccessConf = {}, identityConf = {}",
-                dataAccessConf, identityConf);
+        LOGGER.info("dataAccessConf = {}, identityConf = {}", dataAccessConf, identityConf);
 
         if (isNull(dataAccessConf) || isNull(identityConf))
             throw new RuntimeException("shardingConf or identityConf can't be null");
@@ -150,9 +149,8 @@ public final class BlueDataAccessGenerator {
 
             return dataSource;
         } catch (Exception e) {
-            LOGGER.error("static DataSource generateDataSource(DataAccessConf dataAccessConf, IdentityConf identityConf) failed, dataAccessConf = {}, identityConf = {}, e = {}",
-                    dataAccessConf, identityConf, e);
-            throw new RuntimeException("static DataSource generateDataSource(DataAccessConf dataAccessConf, IdentityConf identityConf) failed, e = " + e);
+            LOGGER.error("dataAccessConf = {}, identityConf = {}, e = {}", dataAccessConf, identityConf, e);
+            throw new RuntimeException("generateDataSource failed, e = " + e);
         }
     }
 
@@ -164,8 +162,7 @@ public final class BlueDataAccessGenerator {
      * @return
      */
     public static SqlSessionFactory generateSqlSessionFactory(DataSource dataSource, DataAccessConf dataAccessConf) {
-        LOGGER.info("static SqlSessionFactory generateSqlSessionFactory(DataSource dataSource, DataAccessConf dataAccessConf), dataSource = {}, dataAccessConf = {}",
-                dataSource, dataAccessConf);
+        LOGGER.info("dataSource = {}, dataAccessConf = {}", dataSource, dataAccessConf);
 
         org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
 

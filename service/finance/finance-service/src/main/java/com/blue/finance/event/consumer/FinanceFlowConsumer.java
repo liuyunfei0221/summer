@@ -52,8 +52,8 @@ public final class FinanceFlowConsumer implements BlueLifecycle {
                 ofNullable(financeFlow)
                         .ifPresent(ff -> just(ff).flatMap(financeFlowService::insertFinanceFlow)
                                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INTERNAL_SERVER_ERROR))))
-                                .doOnError(throwable -> LOGGER.info("financeFlowService.insertFinanceFlow(ff) failed, ff = {}, throwable = {}", ff, throwable))
-                                .subscribe(b -> LOGGER.info("financeFlowService.insertFinanceFlow(ff), b = {}, ff = {}", b, ff)));
+                                .doOnError(throwable -> LOGGER.info("insertFinanceFlow failed, ff = {}, throwable = {}", ff, throwable))
+                                .subscribe(b -> LOGGER.info("insertFinanceFlow, b = {}, ff = {}", b, ff)));
 
         this.pulsarListener = generateListener(pulsarClient, blueConsumerConfig.getByKey(FINANCE_FLOW.name), dataConsumer);
     }

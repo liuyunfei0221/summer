@@ -89,4 +89,5 @@ public class CorsConfig {
 
         return new CorsWebFilter(urlBasedCorsConfigurationSource);
     }
+
 }

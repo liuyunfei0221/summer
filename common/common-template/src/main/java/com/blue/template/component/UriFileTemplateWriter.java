@@ -118,7 +118,7 @@ public class UriFileTemplateWriter implements TemplateWriter {
      * @return
      */
     private static WriterElement generateElement(UriFileWriterConf uriFileWriterConf) {
-        LOGGER.info("static WriterElement generateElement(PackageFileWriterConf packageFileWriterConf), packageFileWriterConf = {}", uriFileWriterConf);
+        LOGGER.info("packageFileWriterConf = {}", uriFileWriterConf);
 
         confAssert(uriFileWriterConf);
 

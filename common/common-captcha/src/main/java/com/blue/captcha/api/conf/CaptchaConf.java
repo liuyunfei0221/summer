@@ -3,7 +3,7 @@ package com.blue.captcha.api.conf;
 /**
  * @author liuyunfei
  */
-@SuppressWarnings("AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc")
+@SuppressWarnings({"AlibabaAbstractMethodOrInterfaceMethodMustUseJavadoc", "SpellCheckingInspection"})
 public interface CaptchaConf {
 
     Boolean getBorder();

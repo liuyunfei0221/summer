@@ -13,6 +13,7 @@ import org.apache.curator.retry.BoundedExponentialBackoffRetry;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static com.blue.basic.common.base.BlueChecker.isBlank;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
@@ -70,8 +71,8 @@ public final class BlueDistributedLockGenerator {
      * assert lock name
      */
     private static final Consumer<String> NAME_ASSERTER = name -> {
-        if (isNull(name) || "".equals(name))
-            throw new RuntimeException("name can't be null");
+        if (isBlank(name))
+            throw new RuntimeException("name can't be blank");
     };
 
     /**
@@ -142,8 +143,8 @@ public final class BlueDistributedLockGenerator {
         if (isNull(conf))
             throw new RuntimeException("distributedLockConf can't be null");
 
-        if (!hasText(conf.getConnectString()))
-            throw new RuntimeException("connectString can't be null or ''");
+        if (isBlank(conf.getConnectString()))
+            throw new RuntimeException("connectString can't be blank");
     }
 
 }

@@ -20,6 +20,7 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
  *
  * @author liuyunfei
  */
+@SuppressWarnings("SpellCheckingInspection")
 @Import(RealNameValidatorBeanDefinitionRegistrar.class)
 @Configuration
 @Order(HIGHEST_PRECEDENCE)

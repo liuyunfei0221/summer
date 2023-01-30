@@ -106,7 +106,7 @@ public final class BlueMongoGenerator {
      * @return
      */
     public static MongoClient generateMongoClient(MongoClientSettings mongoClientSettings) {
-        LOGGER.info("MongoClient generateMongoClient(MongoClientSettings mongoClientSettings), mongoClientSettings = {}", mongoClientSettings);
+        LOGGER.info("mongoClientSettings = {}", mongoClientSettings);
         if (isNull(mongoClientSettings))
             throw new RuntimeException("mongoClientSettings can't be null");
 
@@ -121,7 +121,7 @@ public final class BlueMongoGenerator {
      * @return
      */
     public static ReactiveMongoTemplate generateReactiveMongoTemplate(MongoClient mongoClient, MongoConf mongoConf) {
-        LOGGER.info("generateReactiveMongoTemplate(MongoClient mongoClient, String databaseName), mongoClient = {}, mongoConf = {}", mongoClient, mongoConf);
+        LOGGER.info("mongoClient = {}, mongoConf = {}", mongoClient, mongoConf);
         assertConf(mongoConf);
 
         return new ReactiveMongoTemplate(mongoClient, mongoConf.getDatabase());

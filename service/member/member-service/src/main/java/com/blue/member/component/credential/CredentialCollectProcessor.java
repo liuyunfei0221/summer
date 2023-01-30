@@ -63,8 +63,7 @@ public class CredentialCollectProcessor implements ApplicationListener<ContextRe
      * @return
      */
     public List<CredentialInfo> collect(MemberBasic memberBasic, String access) {
-        LOGGER.info("List<CredentialInfo> handle(MemberBasic memberBasic, String access), memberBasic = {}, access = {}",
-                memberBasic, access);
+        LOGGER.info("memberBasic = {}, access = {}", memberBasic, access);
 
         return CREDENTIALS_COLLECTOR.apply(memberBasic, access);
     }
@@ -77,8 +76,7 @@ public class CredentialCollectProcessor implements ApplicationListener<ContextRe
      * @param memberBasic
      */
     public void packageCredentialAttr(List<String> credentialTypes, String credential, MemberBasic memberBasic) {
-        LOGGER.info("void packageCredentialAttr(List<String> credentialTypes, String credential, MemberBasic memberBasic), credentialTypes = {}, credential = {}, memberBasic = {}",
-                credentialTypes, credential, memberBasic);
+        LOGGER.info("credentialTypes = {}, credential = {}, memberBasic = {}", credentialTypes, credential, memberBasic);
 
         collectors.forEach(collector -> collector.packageCredentialAttr(credentialTypes, credential, memberBasic));
     }

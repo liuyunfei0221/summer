@@ -57,7 +57,7 @@ public final class BlueEsGenerator {
 
 
     private static final Function<EsConf, RestClient> REST_CLIENT_GENERATOR = esConf -> {
-        LOGGER.info("Function<EsConf,RestClient> REST_CLIENT_GENERATOR, esConf = {}", esConf);
+        LOGGER.info("esConf = {}", esConf);
         assertConf(esConf);
 
         List<Node> nodeList = esConf.getEsNodes()
@@ -161,7 +161,7 @@ public final class BlueEsGenerator {
      * @return
      */
     public static RestClientTransport generateRestClientTransport(EsConf esConf) {
-        LOGGER.info("RestClientTransport generateRestClientTransport(EsConf esConf), esConf = {}", esConf);
+        LOGGER.info("esConf = {}", esConf);
         if (isNull(esConf))
             throw new RuntimeException("esConf can't be null");
 
@@ -176,7 +176,7 @@ public final class BlueEsGenerator {
      * @return
      */
     public static ElasticsearchClient generateElasticsearchClient(RestClientTransport restClientTransport, EsConf esConf) {
-        LOGGER.info("ElasticsearchClient generateElasticsearchClient(RestClientTransport restClientTransport, EsConf esConf), restClientTransport = {}, esConf = {}", restClientTransport, esConf);
+        LOGGER.info("restClientTransport = {}, esConf = {}", restClientTransport, esConf);
         if (isNull(restClientTransport) || isNull(esConf))
             throw new RuntimeException("restClientTransport or esConf can't be null");
 
@@ -190,7 +190,7 @@ public final class BlueEsGenerator {
      * @return
      */
     public static ElasticsearchAsyncClient generateElasticsearchAsyncClient(RestClientTransport restClientTransport, EsConf esConf) {
-        LOGGER.info("ElasticsearchAsyncClient generateElasticsearchAsyncClient(RestClientTransport restClientTransport, EsConf esConf), restClientTransport = {}, esConf = {}", restClientTransport, esConf);
+        LOGGER.info("restClientTransport = {}, esConf = {}", restClientTransport, esConf);
         if (isNull(restClientTransport) || isNull(esConf))
             throw new RuntimeException("restClientTransport or esConf can't be null");
 

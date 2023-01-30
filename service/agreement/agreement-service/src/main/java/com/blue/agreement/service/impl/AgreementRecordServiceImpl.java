@@ -199,8 +199,7 @@ public class AgreementRecordServiceImpl implements AgreementRecordService {
      */
     @Override
     public Mono<AgreementRecordInfo> insertAgreementRecord(AgreementRecordInsertParam agreementRecordInsertParam, Long memberId) {
-        LOGGER.info("agreementRecordInsertParam = {}, memberId = {}",
-                agreementRecordInsertParam, memberId);
+        LOGGER.info("agreementRecordInsertParam = {}, memberId = {}", agreementRecordInsertParam, memberId);
         if (isNull(agreementRecordInsertParam))
             throw new BlueException(EMPTY_PARAM);
         if (isInvalidIdentity(memberId))

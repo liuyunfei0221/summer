@@ -1,4 +1,4 @@
-package com.blue.hbase.demo;
+package com.blue.process.common.hbase;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -7,11 +7,12 @@ import org.apache.hadoop.hbase.client.*;
 
 import java.nio.charset.StandardCharsets;
 
-public class Test3 {
+public class Test2 {
 
     //    private static final Logger LOGGER = getLogger(BlueHbaseGenerator.class);
 
     public static void main(String[] args) {
+
         String quorum = "172.16.207.11";
         String clientPort = "2181";
 
@@ -22,7 +23,6 @@ public class Test3 {
 
             config.set("hbase.zookeeper.quorum", quorum);
             config.set("hbase.zookeeper.property.clientPort", clientPort);
-
 
             Connection connection = ConnectionFactory.createConnection(config);
 

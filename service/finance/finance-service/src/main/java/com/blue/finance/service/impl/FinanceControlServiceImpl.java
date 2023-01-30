@@ -82,15 +82,15 @@ public class FinanceControlServiceImpl implements FinanceControlService {
      * @param memberId
      */
     @Override
-    public FinanceAccountInfo initFinanceAccount(Long memberId) {
+    public Mono<FinanceAccountInfo> initFinanceAccount(Long memberId) {
         LOGGER.info("memberId = {}", memberId);
 
-        return synchronizedProcessor.handleSupWithSync(FINANCE_ACCOUNT_INSERT_SYNC_KEY_GEN.apply(memberId), () -> {
+        return synchronizedProcessor.handleSupWithTryLock(FINANCE_ACCOUNT_INSERT_SYNC_KEY_GEN.apply(memberId), () -> {
             FinanceAccountInfo financeAccountInfo = financeAccountService.insertFinanceAccount(INIT_FINANCE_ACCT_GEN.apply(memberId));
             LOGGER.info("financeAccountInfo = {}", financeAccountInfo);
 
-            return financeAccountInfo;
-        });
+            return just(financeAccountInfo);
+        }, () -> financeAccountService.getFinanceAccountInfoByMemberId(memberId));
     }
 
     /**
@@ -119,7 +119,7 @@ public class FinanceControlServiceImpl implements FinanceControlService {
             throw new BlueException(INVALID_IDENTITY);
 
         return financeAccountService.getFinanceAccountInfoByMemberId(memberId)
-                .switchIfEmpty(defer(() -> justOrEmpty(this.initFinanceAccount(memberId))))
+                .switchIfEmpty(defer(() -> this.initFinanceAccount(memberId)))
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))));
     }
 

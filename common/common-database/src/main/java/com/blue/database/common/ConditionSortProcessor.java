@@ -19,6 +19,8 @@ import static java.util.Optional.ofNullable;
 @SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces"})
 public final class ConditionSortProcessor {
 
+    public static final String DEFAULT_SORT_TYPE_IDENTITY = DESC.identity;
+
     /**
      * assert and package sort attr
      *
@@ -32,7 +34,7 @@ public final class ConditionSortProcessor {
 
         String sortType = condition.getSortType();
         if (isBlank(sortType))
-            condition.setSortType(DESC.identity);
+            condition.setSortType(DEFAULT_SORT_TYPE_IDENTITY);
         assertSortType(sortType, false);
 
         String sortAttribute = condition.getSortAttribute();

@@ -25,7 +25,7 @@ public final class BlueIdentityProcessorGenerator {
      * @return
      */
     public static BlueIdentityProcessor generateBlueIdentityProcessor(IdentityConf identityConf) {
-        LOGGER.info("BlueIdentityProcessor generateBlueIdentityProcessor(IdentityConf identityConf), identityConf = {}", identityConf);
+        LOGGER.info("identityConf = {}", identityConf);
         if (isNull(identityConf))
             throw new IdentityException("identityConf can't be null");
 

@@ -21,7 +21,7 @@ public class ActivityRewardEventHandler implements EventHandler {
 
     @Override
     public void handleEvent(MarketingEvent marketingEvent) {
-        LOGGER.warn("handleEvent(MarketingEvent marketingEvent), marketingEvent = {}", marketingEvent);
+        LOGGER.warn("marketingEvent = {}", marketingEvent);
         System.err.println(marketingEvent);
     }
 

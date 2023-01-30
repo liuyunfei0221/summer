@@ -19,7 +19,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"AlibabaRemoveCommentedCode"})
+@SuppressWarnings({"AlibabaRemoveCommentedCode", "SpringJavaInjectionPointsAutowiringInspection"})
 @ConditionalOnBean(value = RedissonConf.class)
 @AutoConfiguration
 @Order(HIGHEST_PRECEDENCE)
@@ -29,14 +29,13 @@ public class BlueRedissonConfiguration {
 
     @Bean
     RedissonClient redissonClient(RedissonConf redissonConf) {
-        LOGGER.info("RedissonClient redissonClient(RedissonConf redissonConf), redissonConf = {}", redissonConf);
+        LOGGER.info("redissonConf = {}", redissonConf);
         return generateRedissonClient(redissonConf);
     }
 
     @Bean
     SynchronizedProcessor synchronizedProcessor(RedissonClient redissonClient, RedissonConf redissonConf) {
-        LOGGER.info("SynchronizedProcessor synchronizedProcessor(RedissonClient redissonClient,RedissonConf redissonConf), " +
-                "redissonClient = {}, redissonConf = {}", redissonClient, redissonConf);
+        LOGGER.info("redissonClient = {}, redissonConf = {}", redissonClient, redissonConf);
         return generateSynchronizedProcessor(redissonClient, redissonConf);
     }
 

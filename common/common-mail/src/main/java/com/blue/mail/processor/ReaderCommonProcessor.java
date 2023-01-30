@@ -45,7 +45,7 @@ public final class ReaderCommonProcessor {
                 }
             });
         } catch (Exception e) {
-            LOGGER.error("Session generateSession(MailReaderConf mailReaderConf) failed, e = {}", e);
+            LOGGER.error("generateSession failed, e = {}", e);
             throw new RuntimeException(e);
         }
     }
@@ -66,7 +66,7 @@ public final class ReaderCommonProcessor {
 
             return store;
         } catch (Exception e) {
-            LOGGER.error("Store generateStore(Session session, MailReaderConf mailReaderConf) failed, e = {}", e);
+            LOGGER.error("generateStore failed, e = {}", e);
             throw new RuntimeException(e);
         }
     }
@@ -92,7 +92,7 @@ public final class ReaderCommonProcessor {
 
             return folder;
         } catch (Exception e) {
-            LOGGER.error("Folder openFolder(Store store, MailReaderConf mailReaderConf) failed, e = {}", e);
+            LOGGER.error("openFolder failed, e = {}", e);
             throw new RuntimeException(e);
         }
     }

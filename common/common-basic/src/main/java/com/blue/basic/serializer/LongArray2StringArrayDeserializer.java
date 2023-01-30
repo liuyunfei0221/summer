@@ -22,10 +22,8 @@ public final class LongArray2StringArrayDeserializer extends JsonDeserializer<Lo
     @Override
     public Long[] deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         Object value = jsonParser.readValueAs(REFERENCE);
-        if (isNotNull(value))
-            return (Long[]) value;
 
-        return null;
+        return isNotNull(value) ? (Long[]) value : null;
     }
 
     private static class LongArrayTypeReference extends TypeReference<Long[]> {

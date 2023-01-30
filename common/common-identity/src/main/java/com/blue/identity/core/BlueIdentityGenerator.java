@@ -34,7 +34,7 @@ public final class BlueIdentityGenerator {
      * @param idGenParam
      */
     public BlueIdentityGenerator(IdGenParam idGenParam) {
-        LOGGER.info("BlueIdentityGenerator init, idGenParam = {}", idGenParam);
+        LOGGER.info("idGenParam = {}", idGenParam);
 
         int sequenceBits = SEQUENCE.len;
 
@@ -47,7 +47,7 @@ public final class BlueIdentityGenerator {
                 idGenParam.getScheduledExecutorService(), idGenParam.getPaddingScheduledInitialDelayMillis(), idGenParam.getPaddingScheduledDelayMillis(), bufferSize,
                 ofNullable(idGenParam.getPaddingFactor()).filter(f -> f >= MIN_PADDING_FACTOR.threshold && f <= MAX_PADDING_FACTOR.threshold).orElse(DEFAULT_PADDING_FACTOR.threshold)));
 
-        LOGGER.info("Initialized BlueIdentityGenerator successfully, idGenParam = {}", idGenParam);
+        LOGGER.info("idGenParam = {}", idGenParam);
     }
 
     /**

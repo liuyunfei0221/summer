@@ -47,7 +47,7 @@ public class BlueTransactionConfiguration {
     @Bean
     @ConditionalOnBean(value = {TransConf.class})
     TransactionInterceptor txAdvice(TransactionManager txManager, TransConf transConf) {
-        LOGGER.info("txAdvice(TransactionManager txManager, TransactionConf transactionConf), txManager = {}, transactionConf = {}", txManager, transConf);
+        LOGGER.info("txManager = {}, transactionConf = {}", txManager, transConf);
         assertConf(transConf);
 
         NameMatchTransactionAttributeSource source = new NameMatchTransactionAttributeSource();
@@ -72,7 +72,7 @@ public class BlueTransactionConfiguration {
     @Bean
     @ConditionalOnBean(value = {TransConf.class})
     Advisor advisor(TransactionInterceptor txAdvice, TransConf transConf) {
-        LOGGER.info("advisor(TransactionInterceptor txAdvice, TransactionConf transactionConf), txAdvice = {}, transactionConf = {}", txAdvice, transConf);
+        LOGGER.info("txAdvice = {}, transactionConf = {}", txAdvice, transConf);
         assertConf(transConf);
 
         AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();

@@ -41,7 +41,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "unused"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "unused", "DuplicatedCode"})
 public class PhoneAndPwdSessionHandler implements SessionHandler {
 
     private static final Logger LOGGER = getLogger(PhoneAndPwdSessionHandler.class);
@@ -71,7 +71,7 @@ public class PhoneAndPwdSessionHandler implements SessionHandler {
 
     @Override
     public Mono<ServerResponse> login(LoginParam loginParam, ServerRequest serverRequest) {
-        LOGGER.info("PhoneAndPwdLoginHandler -> Mono<ServerResponse> session(LoginParam loginParam, ServerRequest serverRequest), loginParam = {}", loginParam);
+        LOGGER.info("loginParam = {}", loginParam);
         if (isNull(loginParam))
             throw new BlueException(EMPTY_PARAM);
 

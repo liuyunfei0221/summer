@@ -64,7 +64,6 @@ public final class BlueException extends RuntimeException {
         this.replacements = replacements;
     }
 
-
     public BlueException(Integer status) {
         this.status = status;
         this.code = status;
@@ -135,4 +134,5 @@ public final class BlueException extends RuntimeException {
                 (isNull(replacements) ? EMPTY_VALUE.value : ", replacements=" + Arrays.toString(replacements)) +
                 '}';
     }
+    
 }

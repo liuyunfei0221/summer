@@ -139,6 +139,8 @@ public class AuthControlServiceImpl implements AuthControlService {
         SEND_INTERVAL_MILLIS = controlDeploy.getIntervalMillis();
     }
 
+    private static final String DEFAULT_CRE_EXTRA = "from add credential";
+
     private final int ALLOW;
     private final long SEND_INTERVAL_MILLIS;
 
@@ -319,7 +321,7 @@ public class AuthControlServiceImpl implements AuthControlService {
                     cre.setType(type);
                     cre.setAccess(EMPTY_VALUE.value);
                     cre.setMemberId(memberId);
-                    cre.setExtra("from add credential");
+                    cre.setExtra(DEFAULT_CRE_EXTRA);
                     cre.setStatus(ALLOW_ACCESS_CT_SET.contains(type) ? INVALID.status : VALID.status);
                     cre.setCreateTime(stamp);
                     cre.setUpdateTime(stamp);
@@ -635,10 +637,10 @@ public class AuthControlServiceImpl implements AuthControlService {
 
             try {
                 executorService.submit(() -> authService.invalidateAuthByMemberId(memberId)
-                        .doOnError(throwable -> LOGGER.info("authService.invalidateAuthByMemberId(memberId) failed, memberId = {}, throwable = {}", memberId, throwable))
+                        .doOnError(throwable -> LOGGER.info("invalidateAuthByMemberId failed, memberId = {}, throwable = {}", memberId, throwable))
                         .subscribe());
             } catch (Exception e) {
-                LOGGER.info("authService.invalidateAuthByMemberId(memberId) failed, memberId = {}, e = {}", memberId, e);
+                LOGGER.info("invalidateAuthByMemberId failed, memberId = {}, e = {}", memberId, e);
             }
 
             return memberBasicInfo;
@@ -715,10 +717,10 @@ public class AuthControlServiceImpl implements AuthControlService {
                                                                                     if (b) {
                                                                                         try {
                                                                                             executorService.submit(() -> authService.invalidateAuthByMemberId(memberId)
-                                                                                                    .doOnError(throwable -> LOGGER.info("authService.invalidateAuthByMemberId(memberId) failed, memberId = {}, throwable = {}", memberId, throwable))
+                                                                                                    .doOnError(throwable -> LOGGER.info("invalidateAuthByMemberId failed, memberId = {}, throwable = {}", memberId, throwable))
                                                                                                     .subscribe());
                                                                                         } catch (Exception e) {
-                                                                                            LOGGER.info("authService.invalidateAuthByMemberId(memberId) failed, memberId = {}, e = {}", memberId, e);
+                                                                                            LOGGER.info("invalidateAuthByMemberId failed, memberId = {}, e = {}", memberId, e);
                                                                                         }
                                                                                     }
 
@@ -760,10 +762,10 @@ public class AuthControlServiceImpl implements AuthControlService {
                                                                                     if (b) {
                                                                                         try {
                                                                                             executorService.submit(() -> authService.invalidateAuthByMemberId(cre.getMemberId())
-                                                                                                    .doOnError(throwable -> LOGGER.info("authService.invalidateAuthByMemberId(memberId) failed, cre = {}, throwable = {}", cre, throwable))
+                                                                                                    .doOnError(throwable -> LOGGER.info("invalidateAuthByMemberId failed, cre = {}, throwable = {}", cre, throwable))
                                                                                                     .subscribe());
                                                                                         } catch (Exception e) {
-                                                                                            LOGGER.info("authService.invalidateAuthByMemberId(memberId) failed, cre = {}, e = {}", cre, e);
+                                                                                            LOGGER.info("invalidateAuthByMemberId failed, cre = {}, e = {}", cre, e);
                                                                                         }
                                                                                     }
 

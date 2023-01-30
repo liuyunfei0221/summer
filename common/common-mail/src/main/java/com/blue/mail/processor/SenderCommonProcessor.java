@@ -69,7 +69,7 @@ public final class SenderCommonProcessor {
             });
 
         } catch (Exception e) {
-            LOGGER.error("Session generateSession(MailSenderConf mailSenderConf) failed, e = {}", e);
+            LOGGER.error("generateSession failed, e = {}", e);
             throw new RuntimeException(e);
         }
     }

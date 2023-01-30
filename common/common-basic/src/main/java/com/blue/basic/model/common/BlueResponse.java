@@ -68,4 +68,5 @@ public final class BlueResponse<T> implements Serializable {
                 ", message='" + message + '\'' +
                 '}';
     }
+
 }

@@ -121,7 +121,7 @@ public class StringContentTemplateWriter implements TemplateWriter {
      * @return
      */
     private static WriterElement generateElement(StringContentWriterConf stringContentWriterConf) {
-        LOGGER.info("static WriterElement generateElement(StringContentWriterConf stringContentWriterConf), stringContentWriterConf = {}", stringContentWriterConf);
+        LOGGER.info("stringContentWriterConf = {}", stringContentWriterConf);
 
         confAssert(stringContentWriterConf);
 

@@ -9,7 +9,7 @@ import jakarta.mail.internet.MimeMultipart;
  *
  * @author liuyunfei
  */
-@SuppressWarnings("AlibabaUndefineMagicConstant")
+@SuppressWarnings({"AlibabaUndefineMagicConstant", "DuplicatedCode"})
 public class MessageParser {
 
     public static void parseMessage(Message message) {

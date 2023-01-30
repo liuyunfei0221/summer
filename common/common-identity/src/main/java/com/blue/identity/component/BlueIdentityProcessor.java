@@ -65,7 +65,7 @@ public final class BlueIdentityProcessor {
      * @param identityConf
      */
     public BlueIdentityProcessor(IdentityConf identityConf) {
-        LOGGER.info("BlueIdentityProcessor(IdentityConf identityConf), identityConf = {}", identityConf);
+        LOGGER.info("identityConf = {}", identityConf);
 
         assertConf(identityConf);
 
@@ -92,7 +92,7 @@ public final class BlueIdentityProcessor {
                         null
                 , identityConf.getPaddingScheduledInitialDelayMillis(), identityConf.getPaddingScheduledDelayMillis());
 
-        LOGGER.info("BlueIdentityProcessor init success, idGenParam = {}", idGenParam);
+        LOGGER.info("idGenParam = {}", idGenParam);
     }
 
     /**

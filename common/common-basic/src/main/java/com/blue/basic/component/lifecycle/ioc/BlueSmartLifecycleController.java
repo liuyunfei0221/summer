@@ -44,17 +44,17 @@ public class BlueSmartLifecycleController implements ApplicationContextAware, Sm
      */
     private static final Consumer<Map.Entry<String, BlueLifecycle>>
             ACTION_FOR_START = entry -> {
-        BlueLifecycle blueLifecycle = entry.getValue();
-        try {
-            blueLifecycle.start();
-            LOGGER.info("start() success, {} started, precedence is {}", entry.getKey(), blueLifecycle.startPrecedence());
-        } catch (Exception e) {
-            String beanName = entry.getKey();
-            int precedence = blueLifecycle.startPrecedence();
-            LOGGER.error("start() failed, {} start failed, precedence is {}, e = {}", beanName, precedence, e);
-            throw new RuntimeException("stop() failed, " + beanName + " start failed, precedence is " + precedence + ", e = " + e);
-        }
-    },
+                BlueLifecycle blueLifecycle = entry.getValue();
+                try {
+                    blueLifecycle.start();
+                    LOGGER.info("start() success, {} started, precedence is {}", entry.getKey(), blueLifecycle.startPrecedence());
+                } catch (Exception e) {
+                    String beanName = entry.getKey();
+                    int precedence = blueLifecycle.startPrecedence();
+                    LOGGER.error("start() failed, {} start failed, precedence is {}, e = {}", beanName, precedence, e);
+                    throw new RuntimeException("stop() failed, " + beanName + " start failed, precedence is " + precedence + ", e = " + e);
+                }
+            },
             ACTION_FOR_STOP = entry -> {
                 BlueLifecycle blueLifecycle = entry.getValue();
                 try {

@@ -94,7 +94,7 @@ public final class SnowflakeIdentityGenerator {
     private ExecutorService executorService;
 
     public SnowflakeIdentityGenerator(SnowIdGenParam snowIdGenParam) {
-        LOGGER.info("SnowflakeIdentityGenerator init, snowIdGenParam = {}", snowIdGenParam);
+        LOGGER.info("snowIdGenParam = {}", snowIdGenParam);
 
         int timestampBits = TIME_STAMP.len;
         int dataCenterBits = DATA_CENTER.len;
@@ -149,8 +149,7 @@ public final class SnowflakeIdentityGenerator {
         this.notAlarm = isNull(this.maximumTimeAlarm);
 
         ZoneId zoneId = ZoneId.of(TIME_ZONE);
-        LOGGER.info("Initialized SnowflakeIdentityGenerator successfully, snowIdGenParam = {}, dataCenter = {}, worker = {}, " +
-                        "maxStepTimestamp = {}, maxSequence = {}, sequence = {}, stepSeconds = {}, bootTime = {}, lastTime = {}, stepTime = {}",
+        LOGGER.info("snowIdGenParam = {}, dataCenter = {}, worker = {}, maxStepTimestamp = {}, maxSequence = {}, sequence = {}, stepSeconds = {}, bootTime = {}, lastTime = {}, stepTime = {}",
                 snowIdGenParam, dataCenter, worker, maxStepTimestamp, maxSequence, sequence, this.stepSeconds,
                 ofInstant(ofEpochSecond(bootSeconds), zoneId).format(DATE_TIME_FORMATTER),
                 ofInstant(ofEpochSecond(lastSeconds), zoneId).format(DATE_TIME_FORMATTER),
@@ -167,7 +166,7 @@ public final class SnowflakeIdentityGenerator {
 
         if (stepSeconds + bootSeconds > maxStepTimestamp) {
             long maxTimeStamp = maxStepTimestamp + bootSeconds;
-            LOGGER.error("Critical error !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!, maximum time to reach {}", maxTimeStamp);
+            LOGGER.error("Error !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!, maximum time to reach {}", maxTimeStamp);
             synchronized (this) {
                 maximumTimeAlarm.accept(maxTimeStamp);
             }

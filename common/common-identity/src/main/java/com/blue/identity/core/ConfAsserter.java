@@ -43,7 +43,7 @@ public final class ConfAsserter {
      * @param identityConf
      */
     public static void assertConf(IdentityConf identityConf) {
-        LOGGER.info("void assertConf(IdentityConf identityConf), identityConf = {}", identityConf);
+        LOGGER.info("identityConf = {}", identityConf);
 
         if (isNull(identityConf))
             throw new IdentityException("identityConf can't be null");

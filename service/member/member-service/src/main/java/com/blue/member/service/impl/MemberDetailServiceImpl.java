@@ -331,8 +331,7 @@ public class MemberDetailServiceImpl implements MemberDetailService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
     public MemberDetailInfo updateMemberDetail(Long memberId, MemberDetailUpdateParam memberDetailUpdateParam) {
-        LOGGER.info("memberId = {}, memberDetailUpdateParam = {}",
-                memberId, memberDetailUpdateParam);
+        LOGGER.info("memberId = {}, memberDetailUpdateParam = {}", memberId, memberDetailUpdateParam);
         if (isInvalidIdentity(memberId))
             throw new BlueException(UNAUTHORIZED);
         if (isNull(memberDetailUpdateParam))

@@ -144,7 +144,7 @@ public class ImageVerifyHandler implements VerifyHandler {
                 try {
                     write = ImageIO.write(captchaProcessor.generateImage(verify), imageType, outputStream);
                 } catch (IOException e) {
-                    LOGGER.error("ImageIO.write(captchaProcessor.generateImage(verify), IMAGE_TYPE, outputStream) failed, e = {}", e);
+                    LOGGER.error("ImageIO.write failed, e = {}", e);
                 }
                 return write;
             }, executorService))
@@ -181,13 +181,13 @@ public class ImageVerifyHandler implements VerifyHandler {
         verifyHistory.setCreateTime(TIME_STAMP_GETTER.get());
 
         verifyHistoryService.insertVerifyHistory(verifyHistory)
-                .doOnError(throwable -> LOGGER.info("imageVerifyHandler.recordVerify() failed, verifyHistory = {}, throwable = {}", verifyHistory, throwable))
-                .subscribe(vh -> LOGGER.info("imageVerifyHandler.recordVerify() -> insertVerifyHistory(verifyHistory), vh = {}", vh));
+                .doOnError(throwable -> LOGGER.info("recordVerify failed, verifyHistory = {}, throwable = {}", verifyHistory, throwable))
+                .subscribe(vh -> LOGGER.info("vh = {}", vh));
     }
 
     @Override
     public Mono<String> handle(VerifyBusinessType verifyBusinessType, String destination, List<String> languages) {
-        LOGGER.info("ImageVerifyHandler -> Mono<String> handle(), businessType = {}, destination = {}, languages = {}", verifyBusinessType, destination, languages);
+        LOGGER.info("businessType = {}, destination = {}, languages = {}", verifyBusinessType, destination, languages);
         if (isNull(verifyBusinessType) || isBlank(destination))
             throw new BlueException(BAD_REQUEST);
 
@@ -204,7 +204,7 @@ public class ImageVerifyHandler implements VerifyHandler {
                         allowed ?
                                 this.handle(verifyBusinessType, verifyKey, emptyList())
                                         .flatMap(verify -> {
-                                            LOGGER.warn("Mono<ServerResponse> handle(), verifyKey = {}, verify = {}", verifyKey, verify);
+                                            LOGGER.warn("verifyKey = {}, verify = {}", verifyKey, verify);
 
                                             return using(FastByteArrayOutputStream::new,
                                                     outputStream -> IMAGE_WRITER.apply(verify, outputStream)

@@ -52,8 +52,7 @@ public class CorsConfig {
     @Bean
     @Order(HIGHEST_PRECEDENCE)
     CorsWebFilter corsWebFilter() {
-
-        LOGGER.info("corsWebFilter(), corsDeploy = {}", corsDeploy);
+        LOGGER.info("corsDeploy = {}", corsDeploy);
 
         CorsConfiguration corsConfiguration = new CorsConfiguration();
 

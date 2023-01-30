@@ -62,7 +62,7 @@ public final class BlueHbaseGenerator {
     };
 
     private static final Function<HbaseConf, ExecutorService> EXECUTOR_SERVICE_GENERATOR = hbaseConf -> {
-        LOGGER.info("Function<HbaseConf,ExecutorService> EXECUTOR_SERVICE_GENERATOR, hbaseConf = {}", hbaseConf);
+        LOGGER.info("hbaseConf = {}", hbaseConf);
         assertConf(hbaseConf);
 
         String threadNamePre = ofNullable(hbaseConf.getThreadNamePre())
@@ -87,7 +87,7 @@ public final class BlueHbaseGenerator {
      * @return
      */
     public static Configuration generateConfiguration(HbaseConf hbaseConf) {
-        LOGGER.info("Configuration generateConfiguration(HbaseConf hbaseConf), hbaseConf = {}", hbaseConf);
+        LOGGER.info("hbaseConf = {}", hbaseConf);
         assertConf(hbaseConf);
 
         Configuration configuration = HBaseConfiguration.create();
@@ -113,14 +113,14 @@ public final class BlueHbaseGenerator {
      * @return
      */
     public static Connection generateConnection(Configuration hbaseConfiguration, HbaseConf hbaseConf) {
-        LOGGER.info("Connection generate(Configuration hbaseConfiguration, HbaseConf hbaseConf), hbaseConfiguration = {}, hbaseConf = {}", hbaseConfiguration, hbaseConf);
+        LOGGER.info("hbaseConfiguration = {}, hbaseConf = {}", hbaseConfiguration, hbaseConf);
         if (isNull(hbaseConfiguration) || isNull(hbaseConf))
             throw new RuntimeException("configuration or hbaseConf can't be null");
 
         try {
             return createConnection(hbaseConfiguration, EXECUTOR_SERVICE_GENERATOR.apply(hbaseConf));
         } catch (IOException e) {
-            throw new RuntimeException("Connection generateConnection(Configuration configuration, HbaseConf hbaseConf) failed, hbaseConfiguration = " + hbaseConfiguration + ", hbaseConf = " + hbaseConf);
+            throw new RuntimeException("generateConnection failed, e = " + e);
         }
     }
 
@@ -131,7 +131,7 @@ public final class BlueHbaseGenerator {
      * @return
      */
     public static AsyncConnection generateAsyncConnection(Configuration hbaseConfiguration) {
-        LOGGER.info("Connection generate(Configuration hbaseConfiguration, ExecutorService executorService), hbaseConfiguration = {}", hbaseConfiguration);
+        LOGGER.info("hbaseConfiguration = {}", hbaseConfiguration);
         if (isNull(hbaseConfiguration))
             throw new RuntimeException("configuration can't be null");
 

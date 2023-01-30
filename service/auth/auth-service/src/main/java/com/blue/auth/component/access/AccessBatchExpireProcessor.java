@@ -30,7 +30,7 @@ import static reactor.util.Loggers.getLogger;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AlibabaAvoidManuallyCreateThread", "AliControlFlowStatementWithoutBraces", "SpellCheckingInspection"})
+@SuppressWarnings({"JavaDoc", "AlibabaAvoidManuallyCreateThread", "AliControlFlowStatementWithoutBraces"})
 public final class AccessBatchExpireProcessor {
 
     private static final Logger LOGGER = getLogger(AccessBatchExpireProcessor.class);
@@ -104,7 +104,7 @@ public final class AccessBatchExpireProcessor {
      */
     private final Consumer<KeyExpireParam> IGNORE_FAIL_ELEMENT_PUTTER = keyExpireEvent -> {
         if (!bufferQueue.offer(keyExpireEvent))
-            LOGGER.warn("MAYBE_FAILED_ELEMENT_PUTTER failed, keyExpireEvent = {}", keyExpireEvent);
+            LOGGER.warn("keyExpireEvent = {}", keyExpireEvent);
     };
 
     /**
@@ -154,7 +154,7 @@ public final class AccessBatchExpireProcessor {
         try {
             handleExpireTask();
         } catch (Exception e) {
-            LOGGER.error("void scheduledExpireTask(), e = {}", e);
+            LOGGER.error("scheduledExpireTask failed, e = {}", e);
         }
     }
 
@@ -180,7 +180,6 @@ public final class AccessBatchExpireProcessor {
      * @param unit
      */
     public void expireKey(String key, Long expiresMillis, ChronoUnit unit) {
-        LOGGER.info("void expireKey(String key, Long expiresMillis, ChronoUnit unit), key = {}, expiresMillis = {}, unit = {}", key, expiresMillis, unit);
         assertParams(key, expiresMillis, unit);
 
         ASYNC_ELEMENT_PUTTER.accept(new KeyExpireParam(key, expiresMillis, unit));

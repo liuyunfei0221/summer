@@ -118,16 +118,16 @@ public final class BatchSender {
             transport.sendMessage(message);
         } catch (Throwable throwable) {
             if (RETRY_PREDICATE.test(throwable)) {
-                LOGGER.error("CompletableFuture<Void> sendMessage(Message message) failed, retry, throwable = {0}", throwable);
+                LOGGER.error("sendMessage failed, retry, throwable = {0}", throwable);
                 for (int i = 0; i < retryTimes; i++)
                     try {
                         transport.sendMessage(message);
                         break;
                     } catch (Exception ex) {
-                        LOGGER.error("CompletableFuture<Void> sendMessage(Message message) retry failed, retryTimes = {}, throwable = {}", retryTimes, throwable);
+                        LOGGER.error("sendMessage retry failed, retryTimes = {}, throwable = {}", retryTimes, throwable);
                     }
             }
-            LOGGER.error("CompletableFuture<Void> sendMessage(Message message) failed, throwable = {0}", throwable);
+            LOGGER.error("sendMessage failed, throwable = {0}", throwable);
             throw new RuntimeException("Consumer<Message> MESSAGE_SENDER, failed");
         }
     };

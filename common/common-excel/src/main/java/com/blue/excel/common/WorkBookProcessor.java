@@ -85,7 +85,7 @@ public final class WorkBookProcessor<T> {
      */
     @SuppressWarnings("UnusedAssignment")
     public XSSFWorkbook generate(List<List<T>> sheetElements) {
-        LOGGER.info("XSSFWorkbook generate(List<List<T>> sheetElements), sheetElements = {}", sheetElements);
+        LOGGER.info("sheetElements = {}", sheetElements);
 
         elementsAsserter(sheetElements);
 

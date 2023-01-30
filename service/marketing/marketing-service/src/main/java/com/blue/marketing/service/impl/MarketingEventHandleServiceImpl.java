@@ -76,10 +76,10 @@ public class MarketingEventHandleServiceImpl implements MarketingEventHandleServ
         try {
             marketingEventProcessor.handleEvent(marketingEvent);
             eventRecord.setStatus(HandleStatus.HANDLED.status);
-            LOGGER.info("handleEvent(MarketingEvent marketingEvent) success, marketingEvent = {}", marketingEvent);
+            LOGGER.info("handleEvent success, marketingEvent = {}", marketingEvent);
         } catch (Exception exception) {
             eventRecord.setStatus(HandleStatus.BROKEN.status);
-            LOGGER.error("handleEvent(MarketingEvent marketingEvent) failed, marketingEvent = {}, e = {}", marketingEvent, exception);
+            LOGGER.error("handleEvent failed, marketingEvent = {}, e = {}", marketingEvent, exception);
         }
 
         eventRecordService.insertEventRecord(eventRecord)

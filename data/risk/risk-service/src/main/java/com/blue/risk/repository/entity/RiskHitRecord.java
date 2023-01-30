@@ -493,4 +493,5 @@ public final class RiskHitRecord implements Serializable {
                 ", invalidStatus=" + invalidStatus +
                 '}';
     }
+    
 }

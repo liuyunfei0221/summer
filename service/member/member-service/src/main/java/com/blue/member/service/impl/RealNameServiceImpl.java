@@ -263,8 +263,7 @@ public class RealNameServiceImpl implements RealNameService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, isolation = REPEATABLE_READ, rollbackFor = Exception.class, timeout = 60)
     public RealNameInfo updateRealName(Long memberId, RealNameUpdateParam realNameUpdateParam) {
-        LOGGER.info("memberId = {}, realNameUpdateParam = {}",
-                memberId, realNameUpdateParam);
+        LOGGER.info("memberId = {}, realNameUpdateParam = {}", memberId, realNameUpdateParam);
         if (isInvalidIdentity(memberId))
             throw new BlueException(UNAUTHORIZED);
         if (isNull(realNameUpdateParam))

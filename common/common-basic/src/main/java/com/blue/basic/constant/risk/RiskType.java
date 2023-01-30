@@ -29,7 +29,7 @@ public enum RiskType {
     INVALID_ACCESS_TOO_FREQUENT(4, 4, "Invalid access is too frequent"),
 
     /**
-     * Hit a specific risk control rule
+     * Hit a specific risk control rule //TODO
      */
     HIT_A_SPECIFIC_RISK_CONTROL_RULE(5, 5, "Hit a specific risk control rule");
 

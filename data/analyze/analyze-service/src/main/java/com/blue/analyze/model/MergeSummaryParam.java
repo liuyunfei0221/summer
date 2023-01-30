@@ -8,6 +8,7 @@ import java.util.List;
  *
  * @author liuyunfei
  */
+@SuppressWarnings("unused")
 public class MergeSummaryParam implements Serializable {
 
     private static final long serialVersionUID = -916119028631172684L;
