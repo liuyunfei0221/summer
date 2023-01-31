@@ -36,4 +36,5 @@ public final class UnsupportedMediaTypeStatusExceptionHandler implements Excepti
                         .map(c -> c.getType() + SLASH + c.getSubtype())
                         .orElse(UNKNOWN.identity)});
     }
+
 }

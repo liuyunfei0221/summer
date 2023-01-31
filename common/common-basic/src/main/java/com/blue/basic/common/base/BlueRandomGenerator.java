@@ -50,5 +50,4 @@ public final class BlueRandomGenerator {
                 .orElseThrow(() -> new BlueException(INVALID_IDENTITY));
     }
 
-
 }

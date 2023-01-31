@@ -10,8 +10,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static com.blue.basic.common.base.BlueChecker.isBlank;
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
+import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -65,6 +67,9 @@ public final class FileGetter {
      * @return
      */
     public static List<File> getFiles(String location, boolean recursive) {
+        if (isBlank(location))
+            throw new BlueException(EMPTY_PARAM);
+
         File file;
         try {
             file = new File(getURL(location).getPath());
@@ -83,6 +88,9 @@ public final class FileGetter {
      * @return
      */
     public static List<File> getFiles(String location) {
+        if (isBlank(location))
+            throw new BlueException(EMPTY_PARAM);
+
         File file;
         try {
             file = new File(getURL(location).getPath());
@@ -101,6 +109,9 @@ public final class FileGetter {
      * @return
      */
     public static File getFile(String location) {
+        if (isBlank(location))
+            throw new BlueException(EMPTY_PARAM);
+
         try {
             return new File(getURL(location).getPath());
         } catch (Exception e) {
@@ -117,6 +128,9 @@ public final class FileGetter {
      * @return
      */
     public static List<Resource> getResources(String location, String prefix) {
+        if (isBlank(location))
+            throw new BlueException(EMPTY_PARAM);
+
         try {
             return Stream.of(RESOURCE_PATTERN_RESOLVER.getResources(location + MATCH_ALL_PATH + prefix)).collect(toList());
         } catch (Exception e) {
@@ -142,6 +156,9 @@ public final class FileGetter {
      * @return
      */
     public static Resource getResource(String location) {
+        if (isBlank(location))
+            throw new BlueException(EMPTY_PARAM);
+
         return RESOURCE_PATTERN_RESOLVER.getResource(location);
     }
 

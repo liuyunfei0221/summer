@@ -40,4 +40,5 @@ public final class MethodArgumentNotValidExceptionHandler implements ExceptionHa
                 .map(ObjectError::getDefaultMessage)
                 .orElse(BAD_REQUEST.message)});
     }
+
 }

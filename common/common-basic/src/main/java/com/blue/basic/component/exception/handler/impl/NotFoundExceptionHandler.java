@@ -31,4 +31,5 @@ public final class NotFoundExceptionHandler implements ExceptionHandler {
         LOGGER.info("notFoundExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
         return EXP_HANDLE_INFO;
     }
+
 }

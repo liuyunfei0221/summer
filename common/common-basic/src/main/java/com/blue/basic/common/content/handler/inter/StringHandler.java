@@ -7,7 +7,7 @@ package com.blue.basic.common.content.handler.inter;
  */
 @SuppressWarnings("JavaDoc")
 @FunctionalInterface
-public interface RequestBodyHandler {
+public interface StringHandler {
 
     /**
      * handleRequestBody
@@ -15,6 +15,6 @@ public interface RequestBodyHandler {
      * @param requestBody
      * @return
      */
-    String handleRequestBody(String requestBody);
+    String handle(String requestBody);
 
 }

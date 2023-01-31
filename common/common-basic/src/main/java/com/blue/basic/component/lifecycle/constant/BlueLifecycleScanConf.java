@@ -46,4 +46,5 @@ public enum BlueLifecycleScanConf {
         this.targetType = targetType;
         this.disc = disc;
     }
+
 }

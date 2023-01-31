@@ -1,7 +1,10 @@
 package com.blue.basic.common.base;
 
+import com.blue.basic.model.exps.BlueException;
+
 import static com.blue.basic.common.base.BlueChecker.isNotNull;
 import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 
 /**
  * original throwable getter
@@ -19,7 +22,7 @@ public final class OriginalThrowableGetter {
      */
     public static Throwable getOriginalThrowable(Throwable throwable) {
         if (isNull(throwable))
-            throw new RuntimeException("throwable can't be null");
+            throw new BlueException(EMPTY_PARAM);
 
         Throwable original = throwable;
         Throwable cause;

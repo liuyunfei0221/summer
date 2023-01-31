@@ -40,7 +40,7 @@ public final class MathProcessor {
 
         for (Integer i : sorted) {
             if (isNull(i)) {
-                LOGGER.info("assertDisorderIntegerContinuous, collection has null element");
+                LOGGER.info("collection has null element");
                 return false;
             }
 
@@ -69,7 +69,7 @@ public final class MathProcessor {
 
         for (Long l : sorted) {
             if (isNull(l)) {
-                LOGGER.info("assertDisorderLongContinuous, collection has null element");
+                LOGGER.info("collection has null element");
                 return false;
             }
 

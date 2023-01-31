@@ -1,6 +1,6 @@
 package com.blue.media.config.filter.global;
 
-import com.blue.basic.common.content.common.RequestBodyProcessor;
+import com.blue.basic.common.content.common.StringProcessor;
 import com.blue.basic.constant.common.BlueHeader;
 import com.blue.basic.model.common.ExceptionElement;
 import com.blue.basic.model.event.DataEvent;
@@ -66,13 +66,13 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
 
     private final List<HttpMessageReader<?>> httpMessageReaders;
 
-    private final RequestBodyProcessor requestBodyProcessor;
+    private final StringProcessor stringProcessor;
 
     private final RequestEventReporter requestEventReporter;
 
-    public BluePostWithDataReportFilter(List<HttpMessageReader<?>> httpMessageReaders, com.blue.basic.common.content.common.RequestBodyProcessor requestBodyProcessor, RequestEventReporter requestEventReporter, EncryptDeploy encryptDeploy) {
+    public BluePostWithDataReportFilter(List<HttpMessageReader<?>> httpMessageReaders, StringProcessor stringProcessor, RequestEventReporter requestEventReporter, EncryptDeploy encryptDeploy) {
         this.httpMessageReaders = httpMessageReaders;
-        this.requestBodyProcessor = requestBodyProcessor;
+        this.stringProcessor = stringProcessor;
         this.requestEventReporter = requestEventReporter;
 
         EXPIRED_SECONDS = encryptDeploy.getExpire();
@@ -288,7 +288,7 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
                     .flatMap(requestBody -> {
                         String tarBody = REQUEST_BODY_PROCESSOR.apply(requestBody, exchange.getAttributes());
                         dataEvent.addData(REQUEST_BODY.key, tarBody);
-                        return just(REQUEST_DECORATOR_GENERATOR.apply(request, just(requestBodyProcessor.handleRequestBody(tarBody))));
+                        return just(REQUEST_DECORATOR_GENERATOR.apply(request, just(stringProcessor.handle(tarBody))));
                     })
                     .flatMap(decorator ->
                             chain.filter(exchange.mutate().request(decorator)

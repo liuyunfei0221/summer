@@ -1,7 +1,7 @@
 package com.blue.media.config.universal;
 
-import com.blue.basic.common.content.common.RequestBodyProcessor;
-import com.blue.basic.common.content.handler.inter.RequestBodyHandler;
+import com.blue.basic.common.content.common.StringProcessor;
+import com.blue.basic.common.content.handler.inter.StringHandler;
 import com.blue.basic.common.base.XssAsserter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +19,7 @@ import static java.util.Collections.singletonList;
 public class RequestBodyProcessorConfig {
 
     @Bean
-    RequestBodyProcessor requestBodyProcessor(){
+    StringProcessor stringProcessor(){
 
         /*
          * TODO Here is an extension point
@@ -28,14 +28,14 @@ public class RequestBodyProcessorConfig {
          * Wait for the configuration here, because the generalized configuration is too cumbersome and I don't think it is necessary, so I won't do anything here anymore. If you want to do it,
          * Maybe you can take a look at the global exception handling in common-basic and the configuration item handling in common-identity
          */
-        RequestBodyHandler handler = requestBody -> {
+        StringHandler handler = requestBody -> {
             XssAsserter.check(requestBody);
             return requestBody;
         };
 
-        List<RequestBodyHandler> requestBodyHandlersChain = singletonList(handler);
+        List<StringHandler> stringHandlersChain = singletonList(handler);
 
-        return new RequestBodyProcessor(requestBodyHandlersChain);
+        return new StringProcessor(stringHandlersChain);
     }
 
 }

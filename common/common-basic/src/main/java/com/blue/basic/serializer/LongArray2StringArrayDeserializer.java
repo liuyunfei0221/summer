@@ -7,8 +7,6 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 
 import java.io.IOException;
 
-import static com.blue.basic.common.base.BlueChecker.isNotNull;
-
 /**
  * string2long
  *
@@ -21,9 +19,7 @@ public final class LongArray2StringArrayDeserializer extends JsonDeserializer<Lo
 
     @Override
     public Long[] deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-        Object value = jsonParser.readValueAs(REFERENCE);
-
-        return isNotNull(value) ? (Long[]) value : null;
+        return jsonParser.readValueAs(REFERENCE);
     }
 
     private static class LongArrayTypeReference extends TypeReference<Long[]> {

@@ -1,6 +1,6 @@
 package com.blue.verify.config.filter.global;
 
-import com.blue.basic.common.content.common.RequestBodyProcessor;
+import com.blue.basic.common.content.common.StringProcessor;
 import com.blue.basic.constant.common.BlueHeader;
 import com.blue.basic.model.common.ExceptionElement;
 import com.blue.basic.model.event.DataEvent;
@@ -65,13 +65,13 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
 
     private final List<HttpMessageReader<?>> httpMessageReaders;
 
-    private final RequestBodyProcessor requestBodyProcessor;
+    private final StringProcessor stringProcessor;
 
     private final RequestEventReporter requestEventReporter;
 
-    public BluePostWithDataReportFilter(List<HttpMessageReader<?>> httpMessageReaders, RequestBodyProcessor requestBodyProcessor, RequestEventReporter requestEventReporter) {
+    public BluePostWithDataReportFilter(List<HttpMessageReader<?>> httpMessageReaders, StringProcessor stringProcessor, RequestEventReporter requestEventReporter) {
         this.httpMessageReaders = httpMessageReaders;
-        this.requestBodyProcessor = requestBodyProcessor;
+        this.stringProcessor = stringProcessor;
         this.requestEventReporter = requestEventReporter;
 
         RequestBodyHandler jsonRequestBodyProcessor = new JsonRequestBodyHandler();
@@ -266,7 +266,7 @@ public final class BluePostWithDataReportFilter implements WebFilter, Ordered {
                     .switchIfEmpty(defer(() -> just(EMPTY_VALUE.value)))
                     .flatMap(requestBody -> {
                         dataEvent.addData(REQUEST_BODY.key, requestBody);
-                        return just(REQUEST_DECORATOR_GENERATOR.apply(request, just(requestBodyProcessor.handleRequestBody(requestBody))));
+                        return just(REQUEST_DECORATOR_GENERATOR.apply(request, just(stringProcessor.handle(requestBody))));
                     })
                     .flatMap(decorator ->
                             chain.filter(exchange.mutate().request(decorator)

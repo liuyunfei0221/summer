@@ -27,7 +27,7 @@ public final class SourceGetter {
      * @return
      */
     public static String getSource(ServerRequest serverRequest) {
-        return ofNullable(serverRequest.headers().firstHeader(SOURCE.name)).orElse(EMPTY_VALUE.value);
+        return ofNullable(serverRequest).map(sr -> sr.headers().firstHeader(SOURCE.name)).orElse(EMPTY_VALUE.value);
     }
 
     /**
@@ -37,7 +37,7 @@ public final class SourceGetter {
      * @return
      */
     public static String getSource(ServerHttpRequest serverHttpRequest) {
-        return ofNullable(serverHttpRequest.getHeaders().getFirst(SOURCE.name)).orElse(EMPTY_VALUE.value);
+        return ofNullable(serverHttpRequest).map(shr -> shr.getHeaders().getFirst(SOURCE.name)).orElse(EMPTY_VALUE.value);
     }
 
     /**

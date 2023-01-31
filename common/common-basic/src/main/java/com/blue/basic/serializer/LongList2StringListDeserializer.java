@@ -8,23 +8,19 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import java.io.IOException;
 import java.util.List;
 
-import static com.blue.basic.common.base.BlueChecker.isNotNull;
-
 /**
  * string2long
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"unchecked", "unused"})
+@SuppressWarnings({"unused"})
 public final class LongList2StringListDeserializer extends JsonDeserializer<List<Long>> {
 
     private static final LongListTypeReference REFERENCE = new LongListTypeReference();
 
     @Override
     public List<Long> deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-        Object value = jsonParser.readValueAs(REFERENCE);
-
-        return isNotNull(value) ? (List<Long>) value : null;
+        return jsonParser.readValueAs(REFERENCE);
     }
 
     private static class LongListTypeReference extends TypeReference<List<Long>> {

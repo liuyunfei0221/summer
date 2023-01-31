@@ -24,7 +24,6 @@ public final class PhoneProcessor {
      * @return
      */
     public static String parseLast4no(String phone) {
-
         if (isBlank(phone))
             throw new BlueException(BAD_REQUEST);
 

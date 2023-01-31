@@ -78,4 +78,5 @@ public class DecodingExceptionHandler implements ExceptionHandler {
         LOGGER.info("decodingExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
         return new ExceptionInfo(FILE_INVALID, new String[]{MESSAGE_PARSER.apply(((DecodingException) throwable))});
     }
+
 }

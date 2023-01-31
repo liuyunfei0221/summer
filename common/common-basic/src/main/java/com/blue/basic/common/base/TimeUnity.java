@@ -1,7 +1,6 @@
 package com.blue.basic.common.base;
 
 import com.blue.basic.model.exps.BlueException;
-import org.springframework.util.Assert;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -9,8 +8,9 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
-import static com.blue.basic.common.base.BlueChecker.isNotBlank;
-import static com.blue.basic.common.base.BlueChecker.isNotNull;
+import static com.blue.basic.common.base.BlueChecker.isBlank;
+import static com.blue.basic.common.base.BlueChecker.isNull;
+import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 import static com.blue.basic.constant.common.ResponseElement.TIME_FORMAT_IS_INVALID;
 import static com.blue.basic.constant.common.SpecialLongElement.MILLIS_SEC_DURATION;
 import static com.blue.basic.constant.common.SummerAttr.DATE_TIME_FORMATTER;
@@ -63,7 +63,9 @@ public final class TimeUnity {
      * @return
      */
     public static long convertEpochMilliToSecond(long epochMilli) {
-        Assert.isTrue(epochMilli > 0L, "epochMilli can't be less than 1");
+        if (epochMilli < 1L)
+            throw new BlueException(INVALID_PARAM);
+
         return epochMilli / MILLIS_SEC_DURATION.value;
     }
 
@@ -73,7 +75,9 @@ public final class TimeUnity {
      * @return
      */
     public static long convertDateToEpochSecond(Date date) {
-        Assert.isTrue(isNotNull(date), "date can't be null");
+        if (isNull(date))
+            throw new BlueException(INVALID_PARAM);
+
         return date.toInstant().getEpochSecond();
     }
 
@@ -83,7 +87,9 @@ public final class TimeUnity {
      * @return
      */
     public static long convertLocalDateTimeToMilli(LocalDateTime localDateTime) {
-        Assert.isTrue(isNotNull(localDateTime), "localDateTime can't be null");
+        if (isNull(localDateTime))
+            throw new BlueException(INVALID_PARAM);
+
         return localDateTime.atZone(ZONE_ID).toInstant().toEpochMilli();
     }
 
@@ -93,7 +99,9 @@ public final class TimeUnity {
      * @return
      */
     public static long convertLocalDateTimeToEpochSecond(LocalDateTime localDateTime) {
-        Assert.isTrue(isNotNull(localDateTime), "localDateTime can't be null");
+        if (isNull(localDateTime))
+            throw new BlueException(INVALID_PARAM);
+
         return localDateTime.atZone(ZONE_ID).toInstant().getEpochSecond();
     }
 
@@ -103,7 +111,9 @@ public final class TimeUnity {
      * @return
      */
     public static Date convertEpochSecondToDate(long epochSecond) {
-        Assert.isTrue(epochSecond > 0L, "epochSecond can't be null or less than 1");
+        if (epochSecond < 1L)
+            throw new BlueException(INVALID_PARAM);
+
         return Date.from(Instant.ofEpochSecond(epochSecond));
     }
 
@@ -113,7 +123,9 @@ public final class TimeUnity {
      * @return
      */
     public static Date convertMilliToDate(long milli) {
-        Assert.isTrue(milli > 0L, "milli can't be null or less than 1");
+        if (milli < 1L)
+            throw new BlueException(INVALID_PARAM);
+
         return Date.from(Instant.ofEpochMilli(milli));
     }
 
@@ -123,7 +135,9 @@ public final class TimeUnity {
      * @return
      */
     public static Date convertLocalDateTimeToDate(LocalDateTime localDateTime) {
-        Assert.isTrue(isNotNull(localDateTime), "localDateTime can't be null");
+        if (isNull(localDateTime))
+            throw new BlueException(INVALID_PARAM);
+
         return Date.from(localDateTime.atZone(ZONE_ID).toInstant());
     }
 
@@ -133,7 +147,9 @@ public final class TimeUnity {
      * @return
      */
     public static LocalDateTime convertEpochSecondToLocalDateTime(long epochSecond) {
-        Assert.isTrue(epochSecond > 0, "epochSecond can't be less than 1");
+        if (epochSecond < 1L)
+            throw new BlueException(INVALID_PARAM);
+
         return LocalDateTime.ofInstant(Instant.ofEpochSecond(epochSecond), ZONE_ID);
     }
 
@@ -143,7 +159,9 @@ public final class TimeUnity {
      * @return
      */
     public static LocalDateTime convertMilliToLocalDateTime(long milli) {
-        Assert.isTrue(milli > 0L, "milli can't be less than 1");
+        if (milli < 1L)
+            throw new BlueException(INVALID_PARAM);
+
         return LocalDateTime.ofInstant(Instant.ofEpochMilli(milli), ZONE_ID);
     }
 
@@ -153,12 +171,16 @@ public final class TimeUnity {
      * @return
      */
     public static LocalDateTime convertDateToLocalDateTime(Date date) {
-        Assert.isTrue(isNotNull(date), "date can't be null");
+        if (isNull(date))
+            throw new BlueException(INVALID_PARAM);
+
         return LocalDateTime.ofInstant(date.toInstant(), ZONE_ID);
     }
 
     public static LocalDateTime convertStrToLocalDateTime(String dateTime) {
-        Assert.isTrue(isNotBlank(dateTime), "dateTime can't be blank");
+        if (isBlank(dateTime))
+            throw new BlueException(INVALID_PARAM);
+
         try {
             return LocalDateTime.parse(dateTime, FORMATTER);
         } catch (Exception e) {
@@ -217,9 +239,10 @@ public final class TimeUnity {
      * @return
      */
     public static String convertLocalDateTimeToStr(LocalDateTime localDateTime) {
-        Assert.isTrue(isNotNull(localDateTime), "localDateTime can't be null");
+        if (isNull(localDateTime))
+            throw new BlueException(INVALID_PARAM);
+        
         return localDateTime.format(FORMATTER);
     }
-
 
 }

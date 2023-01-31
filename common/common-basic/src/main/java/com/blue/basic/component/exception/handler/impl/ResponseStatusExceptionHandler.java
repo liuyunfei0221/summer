@@ -30,4 +30,5 @@ public final class ResponseStatusExceptionHandler implements ExceptionHandler {
         LOGGER.info("responseStatusExceptionHandler -> handle(Throwable throwable), throwable = {0}", throwable);
         return new ExceptionInfo(getResponseElementByStatus(((ResponseStatusException) throwable).getStatus().value()));
     }
+
 }
