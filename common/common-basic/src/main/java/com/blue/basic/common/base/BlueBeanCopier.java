@@ -81,4 +81,15 @@ public final class BlueBeanCopier {
                 .copy(from, to, converter);
     }
 
+    /**
+     * copy object
+     *
+     * @param from
+     * @param to
+     */
+    public static void copy(Object from, Object to) {
+        create(from.getClass(), to.getClass(), false)
+                .copy(from, to, null);
+    }
+
 }
