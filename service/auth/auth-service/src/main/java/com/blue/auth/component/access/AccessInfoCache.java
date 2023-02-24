@@ -106,8 +106,7 @@ public final class AccessInfoCache {
 
         this.globalExpireDuration = Duration.of(globalExpiresMillis, UNIT);
 
-        CaffeineConf caffeineConf = new CaffeineConfParams(capacity, Duration.of(localExpiresMillis, MILLIS),
-                AFTER_WRITE, executorService);
+        CaffeineConf caffeineConf = new CaffeineConfParams(capacity, Duration.of(localExpiresMillis, MILLIS), AFTER_WRITE, executorService);
 
         this.cache = generateCacheAsyncCache(caffeineConf);
     }
@@ -156,13 +155,12 @@ public final class AccessInfoCache {
     /**
      * redis accessInfo getter
      */
-    private final BiFunction<String, Executor, CompletableFuture<String>> REDIS_ACCESS_WITH_LOCAL_CACHE_GETTER = (keyId, executor) ->
+    private final BiFunction<String, Executor, CompletableFuture<String>> REDIS_ACCESS_WITH_REDIS_CACHE_GETTER = (keyId, executor) ->
             reactiveStringRedisTemplate.opsForValue().get(keyId)
                     .doOnSuccess(v -> {
                         if (isNotBlank(v))
                             ACCESS_EXPIRE_PROCESSOR.accept(keyId, v);
                     }).toFuture();
-
 
     /**
      * cache accessInfo getter
@@ -171,7 +169,7 @@ public final class AccessInfoCache {
         if (isBlank(keyId))
             return error(() -> new BlueException(UNAUTHORIZED));
 
-        return fromFuture(cache.get(keyId, REDIS_ACCESS_WITH_LOCAL_CACHE_GETTER));
+        return fromFuture(cache.get(keyId, REDIS_ACCESS_WITH_REDIS_CACHE_GETTER));
     };
 
     /**

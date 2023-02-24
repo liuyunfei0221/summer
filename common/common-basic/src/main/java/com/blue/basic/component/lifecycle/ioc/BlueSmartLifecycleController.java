@@ -1,5 +1,6 @@
 package com.blue.basic.component.lifecycle.ioc;
 
+import com.blue.basic.component.lifecycle.constant.BlueLifecyclePhaseConf;
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -8,11 +9,13 @@ import org.springframework.context.SmartLifecycle;
 import org.springframework.lang.NonNull;
 import reactor.util.Logger;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
+import static java.lang.Integer.compare;
 import static java.util.Comparator.comparingInt;
 import static reactor.util.Loggers.getLogger;
 
@@ -30,7 +33,9 @@ public class BlueSmartLifecycleController implements ApplicationContextAware, Sm
 
     private final AtomicBoolean running = new AtomicBoolean(false);
 
-    private Map<String, BlueLifecycle> beans;
+    private int phase;
+
+    private Map<String, BlueLifecycle> cycles;
 
     /**
      * order
@@ -62,7 +67,7 @@ public class BlueSmartLifecycleController implements ApplicationContextAware, Sm
                     LOGGER.info("stop() success, {} stopped, precedence is {}", entry.getKey(), blueLifecycle.stopPrecedence());
                 } catch (Exception e) {
                     String beanName = entry.getKey();
-                    int precedence = blueLifecycle.startPrecedence();
+                    int precedence = blueLifecycle.stopPrecedence();
                     LOGGER.error("stop() failed, {} stop failed, precedence is {}, e = {}", beanName, precedence, e);
                     throw new RuntimeException("stop() failed, " + beanName + " stop failed, precedence is " + precedence + ", e = " + e);
                 }
@@ -74,14 +79,23 @@ public class BlueSmartLifecycleController implements ApplicationContextAware, Sm
     }
 
     @Override
+    public int getPhase() {
+        return phase;
+    }
+
+    @Override
     public void start() {
         if (!running.compareAndSet(false, true))
             return;
 
-        beans = applicationContext.getBeansOfType(BlueLifecycle.class);
+        phase = new ArrayList<>(applicationContext.getBeansOfType(BlueLifecyclePhaseConf.class).values())
+                .stream().max((a, b) -> compare(b.getPhase(), a.getPhase()))
+                .map(BlueLifecyclePhaseConf::getPhase).orElse(DEFAULT_PHASE);
 
-        LOGGER.info("start(), beans = {}", beans);
-        beans
+        cycles = applicationContext.getBeansOfType(BlueLifecycle.class);
+
+        LOGGER.info("start(), cycles = {}", cycles);
+        cycles
                 .entrySet()
                 .stream()
                 .sorted(COMPARATOR_FOR_START)
@@ -95,8 +109,8 @@ public class BlueSmartLifecycleController implements ApplicationContextAware, Sm
         if (!running.compareAndSet(true, false))
             return;
 
-        LOGGER.info("stop(), beans = {}", beans);
-        beans
+        LOGGER.info("stop(), cycles = {}", cycles);
+        cycles
                 .entrySet()
                 .stream()
                 .sorted(COMPARATOR_FOR_STOP)

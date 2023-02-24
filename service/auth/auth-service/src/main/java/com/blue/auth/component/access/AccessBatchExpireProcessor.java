@@ -26,7 +26,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static reactor.util.Loggers.getLogger;
 
 /**
- * refresh auth processor
+ * refresh access processor
  *
  * @author liuyunfei
  */
@@ -133,13 +133,19 @@ public final class AccessBatchExpireProcessor {
             return;
 
         stringRedisTemplate.executePipelined((RedisCallback<Void>) connection -> {
-            DATA_EXPIRE_WITH_WRAPPER_RELEASE_HANDLER.accept(firstData, connection);
+            int size = 0;
 
-            int size = 1;
             KeyExpireParam data;
-            while (size <= BATCH_EXPIRE_MAX_PER_HANDLE && isNotNull(data = NULLABLE_ELEMENT_GETTER.get())) {
-                DATA_EXPIRE_WITH_WRAPPER_RELEASE_HANDLER.accept(data, connection);
-                size++;
+            try {
+                DATA_EXPIRE_WITH_WRAPPER_RELEASE_HANDLER.accept(firstData, connection);
+                size = 1;
+
+                while (size <= BATCH_EXPIRE_MAX_PER_HANDLE && isNotNull(data = NULLABLE_ELEMENT_GETTER.get())) {
+                    DATA_EXPIRE_WITH_WRAPPER_RELEASE_HANDLER.accept(data, connection);
+                    size++;
+                }
+            } catch (Exception e) {
+                LOGGER.warn("stringRedisTemplate.executePipelined failed, e = {}", e);
             }
 
             LOGGER.info("refreshed size: {}", size);
