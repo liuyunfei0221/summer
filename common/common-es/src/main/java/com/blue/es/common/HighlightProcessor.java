@@ -3,6 +3,7 @@ package com.blue.es.common;
 import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.search.Highlight;
 import co.elastic.clients.elasticsearch.core.search.Hit;
+import com.blue.es.model.QueryAndHighlightColumns;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +25,12 @@ public class HighlightProcessor {
     /**
      * package highlight
      *
-     * @param highlightColumns
+     * @param queryAndHighlightColumns
      * @param preTags
      * @param postTags
      */
-    public static void packageHighlight(SearchRequest.Builder builder, List<String> highlightColumns, List<String> preTags, List<String> postTags) {
+    public static void packageHighlight(SearchRequest.Builder builder, QueryAndHighlightColumns queryAndHighlightColumns, List<String> preTags, List<String> postTags) {
+        List<String> highlightColumns = queryAndHighlightColumns.getHighlightColumns();
         final boolean hasPreTags = isNotEmpty(preTags);
         final boolean hasPostTags = isNotEmpty(postTags);
 

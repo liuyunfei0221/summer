@@ -21,14 +21,14 @@ public final class QueryAndHighlightColumns implements Serializable {
 
     private Query query;
 
-    private List<String> columns;
+    private List<String> highlightColumns;
 
     public QueryAndHighlightColumns() {
     }
 
-    public QueryAndHighlightColumns(Query query, List<String> columns) {
+    public QueryAndHighlightColumns(Query query, List<String> highlightColumns) {
         this.query = query;
-        this.columns = columns;
+        this.highlightColumns = highlightColumns;
     }
 
     public Query getQuery() {
@@ -39,19 +39,19 @@ public final class QueryAndHighlightColumns implements Serializable {
         this.query = query;
     }
 
-    public List<String> getColumns() {
-        return isNotNull(columns) ? columns : emptyList();
+    public List<String> getHighlightColumns() {
+        return isNotNull(highlightColumns) ? highlightColumns : emptyList();
     }
 
-    public void setColumns(List<String> columns) {
-        this.columns = columns;
+    public void setHighlightColumns(List<String> highlightColumns) {
+        this.highlightColumns = highlightColumns;
     }
 
     @Override
     public String toString() {
         return "QueryAndHighlightColumns{" +
                 "query=" + query +
-                ", columns=" + columns +
+                ", highlightColumns=" + highlightColumns +
                 '}';
     }
 

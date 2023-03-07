@@ -365,7 +365,7 @@ public class ShineServiceImpl implements ShineService {
                     .sort(SORT_PROCESSOR.apply(condition))
                     .size(scrollModelRequest.getRows().intValue());
 
-            packageHighlight(builder, queryAndHighlightColumns.getColumns(), preTags, postTags);
+            packageHighlight(builder, queryAndHighlightColumns, preTags, postTags);
 
             ofNullable(scrollModelRequest.getCursor())
                     .map(SearchAfterCursor::getSearchAfter)
@@ -403,7 +403,7 @@ public class ShineServiceImpl implements ShineService {
                                     .sort(SORT_PROCESSOR.apply(condition))
                                     .size(scrollModelRequest.getRows().intValue());
 
-                            packageHighlight(builder, queryAndHighlightColumns.getColumns(), preTags, postTags);
+                            packageHighlight(builder, queryAndHighlightColumns, preTags, postTags);
 
                             ofNullable(cursor).map(PitCursor::getSearchAfter)
                                     .map(sa -> sa.stream().filter(BlueChecker::isNotBlank).collect(toList()))
@@ -436,7 +436,7 @@ public class ShineServiceImpl implements ShineService {
                     .from(pageModelRequest.getLimit().intValue())
                     .size(pageModelRequest.getRows().intValue());
 
-            packageHighlight(builder, queryAndHighlightColumns.getColumns(), preTags, postTags);
+            packageHighlight(builder, queryAndHighlightColumns, preTags, postTags);
 
             return builder;
         }));
