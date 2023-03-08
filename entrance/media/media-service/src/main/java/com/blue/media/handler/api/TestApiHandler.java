@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 
 import java.net.URI;
 
-import static com.blue.basic.common.base.AccessGetter.getAccessReact;
+import static com.blue.basic.common.access.AccessGetter.getAccessReact;
 import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static org.springframework.http.MediaType.APPLICATION_JSON;

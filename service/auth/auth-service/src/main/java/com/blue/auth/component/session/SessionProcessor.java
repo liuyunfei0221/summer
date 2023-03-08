@@ -22,11 +22,11 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-import static com.blue.basic.common.base.AccessGetter.getAccessReact;
+import static com.blue.basic.common.access.AccessGetter.getAccessReact;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.getIpReact;
 import static com.blue.basic.common.base.CommonFunctions.success;
-import static com.blue.basic.common.base.TuringDataGetter.getTuringDataReact;
+import static com.blue.basic.common.turing.TuringDataGetter.getTuringDataReact;
 import static com.blue.basic.constant.common.BlueHeader.AUTHORIZATION;
 import static com.blue.basic.constant.common.RateLimitKeyPrefix.ALLOW_TURING_CREDENTIAL_TYPE_RATE_LIMIT_KEY_PRE;
 import static com.blue.basic.constant.common.ResponseElement.*;

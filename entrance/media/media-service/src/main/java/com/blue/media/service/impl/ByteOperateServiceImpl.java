@@ -35,7 +35,7 @@ import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.blue.basic.common.base.AccessGetter.getAccessReact;
+import static com.blue.basic.common.access.AccessGetter.getAccessReact;
 import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;

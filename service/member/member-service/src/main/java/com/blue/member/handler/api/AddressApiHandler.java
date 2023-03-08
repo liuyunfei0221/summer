@@ -10,7 +10,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import static com.blue.basic.common.base.AccessGetter.getAccessReact;
+import static com.blue.basic.common.access.AccessGetter.getAccessReact;
 import static com.blue.basic.common.base.PathVariableGetter.getLongVariableReact;
 import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.constant.common.PathVariable.ID;

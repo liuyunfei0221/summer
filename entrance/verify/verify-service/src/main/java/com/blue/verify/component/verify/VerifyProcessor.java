@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.getIpReact;
 import static com.blue.basic.common.base.ConstantProcessor.getVerifyBusinessTypeByIdentity;
-import static com.blue.basic.common.base.TuringDataGetter.getTuringDataReact;
+import static com.blue.basic.common.turing.TuringDataGetter.getTuringDataReact;
 import static com.blue.basic.constant.auth.CredentialType.NOT_LOGGED_IN;
 import static com.blue.basic.constant.common.BlueCommonThreshold.*;
 import static com.blue.basic.constant.common.BlueHeader.AUTHORIZATION;

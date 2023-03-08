@@ -1,4 +1,4 @@
-package com.blue.basic.common.base;
+package com.blue.basic.common.access;
 
 import com.blue.basic.model.common.Access;
 import com.blue.basic.model.exps.BlueException;

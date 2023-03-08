@@ -13,7 +13,7 @@ import java.util.Map;
 
 import static com.blue.basic.common.base.CommonFunctions.getIp;
 import static com.blue.basic.common.base.CommonFunctions.success;
-import static com.blue.basic.common.base.MetadataGetter.getMetadata;
+import static com.blue.basic.common.metadata.MetadataGetter.getMetadata;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.shine.constant.ShineTypeReference.SCROLL_MODEL_FOR_SHINE_CONDITION_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON;

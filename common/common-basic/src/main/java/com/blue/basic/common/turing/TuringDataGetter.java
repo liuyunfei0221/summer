@@ -1,4 +1,4 @@
-package com.blue.basic.common.base;
+package com.blue.basic.common.turing;
 
 import com.blue.basic.model.common.TuringData;
 import com.blue.basic.model.exps.BlueException;

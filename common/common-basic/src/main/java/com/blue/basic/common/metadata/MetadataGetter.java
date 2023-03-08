@@ -1,4 +1,4 @@
-package com.blue.basic.common.base;
+package com.blue.basic.common.metadata;
 
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Mono;
