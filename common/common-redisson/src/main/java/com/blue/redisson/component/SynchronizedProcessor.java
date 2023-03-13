@@ -75,13 +75,13 @@ public final class SynchronizedProcessor {
                 .filter(validator)
                 .orElseGet(() -> {
                     RLock lock = null;
-                    boolean tryLock = false;
+                    boolean locked = false;
                     try {
-                        tryLock = (lock = redissonClient.getLock(syncKey)).tryLock(DEFAULT_MAX_WAITING_MILLIS, MILLISECONDS);
+                        locked = (lock = redissonClient.getLock(syncKey)).tryLock(DEFAULT_MAX_WAITING_MILLIS, MILLISECONDS);
 
-                        if (!tryLock) {
+                        if (!locked) {
                             lock.lock();
-                            tryLock = true;
+                            locked = true;
                         }
 
                         T res;
@@ -99,7 +99,7 @@ public final class SynchronizedProcessor {
 
                         throw new BlueException(INTERNAL_SERVER_ERROR);
                     } finally {
-                        if (isNotNull(lock) && tryLock)
+                        if (isNotNull(lock) && locked)
                             try {
                                 lock.unlock();
                             } catch (Exception e) {
@@ -174,16 +174,16 @@ public final class SynchronizedProcessor {
             throw new BlueException(INVALID_PARAM);
 
         RLock lock = null;
-        boolean tryLock = false;
+        boolean locked = false;
         try {
             lock = redissonClient.getLock(syncKey);
-            tryLock = lock.tryLock();
+            locked = lock.tryLock();
 
-            if (tryLock)
+            if (locked)
                 return handlerSup.get();
 
-            tryLock = lock.tryLock(maxWaitingMillis, MILLISECONDS);
-            
+            locked = lock.tryLock(maxWaitingMillis, MILLISECONDS);
+
             return waitedSup.get();
         } catch (Exception e) {
             LOGGER.error("handle failed, syncKey = {}, handlerSup = {}, waitedSup = {}, fallbackSup = {}, maxWaitingMillis = {}",
@@ -197,7 +197,7 @@ public final class SynchronizedProcessor {
 
             throw new BlueException(INTERNAL_SERVER_ERROR);
         } finally {
-            if (isNotNull(lock) && tryLock)
+            if (isNotNull(lock) && locked)
                 try {
                     lock.unlock();
                 } catch (Exception e) {
@@ -299,28 +299,28 @@ public final class SynchronizedProcessor {
      *
      * @param syncKey
      * @param handleTask
-     * @param breakOnLockFail
+     * @param breakOnTryLockFail
      */
-    public void handleTaskWithTryLock(String syncKey, HandleTask handleTask, HandleTask fallbackTask, boolean breakOnLockFail) {
+    public void handleTaskWithTryLock(String syncKey, HandleTask handleTask, HandleTask fallbackTask, boolean breakOnTryLockFail) {
         if (isBlank(syncKey) || isNull(handleTask))
             throw new BlueException(INVALID_PARAM);
 
         RLock lock = null;
-        boolean tryLock = false;
+        boolean locked = false;
         try {
             lock = redissonClient.getLock(syncKey);
-            tryLock = lock.tryLock();
+            locked = lock.tryLock();
 
-            if (!tryLock && breakOnLockFail)
+            if (!locked && breakOnTryLockFail)
                 return;
 
             lock.lock();
-            tryLock = true;
+            locked = true;
 
             handleTask.handle();
         } catch (Exception e) {
-            LOGGER.error("handle failed, syncKey = {}, handleTask = {}, fallbackTask = {}, breakOnLockFail = {}, e = {}",
-                    syncKey, handleTask, fallbackTask, breakOnLockFail, e);
+            LOGGER.error("handle failed, syncKey = {}, handleTask = {}, fallbackTask = {}, breakOnTryLockFail = {}, e = {}",
+                    syncKey, handleTask, fallbackTask, breakOnTryLockFail, e);
 
             if (isNotNull(fallbackTask)) {
                 fallbackTask.handle();
@@ -329,7 +329,7 @@ public final class SynchronizedProcessor {
 
             throw e;
         } finally {
-            if (isNotNull(lock) && tryLock)
+            if (isNotNull(lock) && locked)
                 try {
                     lock.unlock();
                 } catch (Exception e) {

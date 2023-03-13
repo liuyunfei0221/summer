@@ -82,8 +82,8 @@ cache:
 
 
 limit:
-  replenish-rate: 10000
-  burst-capacity: 30000
+  replenish-rate: 1
+  burst-capacity: 3
 
 
 circuit:
