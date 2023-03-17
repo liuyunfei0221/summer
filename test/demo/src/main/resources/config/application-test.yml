@@ -1,0 +1,643 @@
+server:
+  address: 127.0.0.1
+  port: 65000
+  netty:
+    connection-timeout: 6s
+    h2c-max-content-length: 0B
+    initial-buffer-size: 128B
+    max-chunk-size: 8KB
+    max-initial-line-length: 4KB
+    validate-headers: true
+  http2:
+    enabled: true
+  error:
+    path: /error
+#  ssl:
+#    client-auth: need
+#    ciphers: [ ]
+#    enabled-protocols: [ ]
+#    key-alias:
+#    key-password:
+#    key-store:
+#    key-store-password:
+#    key-store-type:
+#    key-store-provider:
+#    trust-store:
+#    trust-store-password:
+#    trust-store-type:
+#    trust-store-provider:
+#    protocol: TLS
+
+
+eureka:
+  instance:
+    prefer-ip-address: false
+    lease-renewal-interval-in-seconds: 60
+    instance-id: ${server.address}:${spring.application.name}:${server.port}
+    hostname: ${server.address}
+  client:
+    service-url:
+      defaultZone: http://blue:LiuZhiyi20200805@101.43.192.155:3000/eureka/
+    registry-fetch-interval-seconds: 60
+
+
+mongo:
+  address-attrs:
+    - address: 43.138.111.53
+      port: 27017
+  auth: true
+  auth-base: admin
+  user-name: blue
+  password: LiuZhiyi20200805
+  database: shine
+  retry-reads: false
+  retry-writes: false
+  application-name: blue-shine
+  uuid-representation: JAVA_LEGACY
+  socket-connect-timeout-millis: 60000
+  socket-read-timeout-millis: 60000
+  socket-receive-buffer-size: 10000
+  socket-send-buffer-size: 256
+  cluster-connection-mode: SINGLE
+  cluster-type: STANDALONE
+  cluster-local-threshold-millis: 60000
+  server-selection-timeout-millis: 60000
+  pool-max-size: 12
+  pool-min-size: 2
+  pool-max-wait-time-millis: 60000
+  pool-max-connection-lifeTime-millis: 60000
+  pool-max-connection-idle-time-millis: 60000
+  pool-maintenance-initial-delay-millis: 60000
+  pool-maintenance-frequency-millis: 60000
+
+
+identity:
+  data-center: 0
+  worker: 0
+  service-name: blue-shine
+  boot-seconds: 1618790400
+  buffer-power: 3
+  padding-factor: 50
+  padding-core-pool-size: 1
+  padding-maximum-pool-size: 2
+  keep-alive-seconds: 128
+  padding-blocking-queue-size: 1024
+  padding-scheduled: true
+  padding-scheduled-core-pool-size: 2
+  padding-scheduled-initial-delay-millis: 5000
+  padding-scheduled-delay-millis: 15000
+
+
+cache:
+  server-mode: SINGLE
+  nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
+  address: 43.138.44.171:6379
+  password: LiuZhiyi20200805
+  max-redirects: 4
+  min-idle: 4
+  max-idle: 64
+  max-total: 128
+  max-wait-millis: 16
+  auto-reconnect: true
+  buffer-usage-ratio: 32.0
+  cancel-commands-on-reconnect-failure: false
+  ping-before-activate-connection: false
+  request-queue-size: 64
+  publish-on-scheduler: true
+  tcp-no-delay: true
+  connect-timeout: 10
+  keep-alive: false
+  suspend-reconnect-on-protocol-failure: false
+  command-timeout: 4
+  shutdown-timeout: 8
+  shutdown-quiet-period: 4
+  entry-ttl: 60
+
+
+es:
+  es-nodes:
+    - server:
+        host: localhost
+        port: 9200
+        schema: http
+      bound-servers: [ ]
+      name: blue-es
+      version: 8.6.2
+      roles: [ ]
+      attributes: [ ]
+
+  default-headers:
+  path-prefix: /
+  strict-deprecation-mode: false
+  meta-header-enabled: false
+  compression-enabled: false
+
+
+pit:
+  time: 2m
+
+
+fuzziness:
+  fuzziness: 1
+
+
+highlight:
+  preTags: [ <font color='red'> ]
+  postTags: [ </font> ]
+
+
+executor:
+  core-pool-size: 4
+  maximum-pool-size: 8
+  keep-alive-seconds: 64
+  blocking-queue-capacity: 128
+  thread-name-pre: blue-summer
+
+
+message:
+  message-location: classpath:i18n/message
+  element-location: classpath:i18n/element
+
+
+caffeine:
+  city-maximum-size: 32768
+  expires-second: 30
+
+
+redisson:
+  server-mode: SINGLE
+  nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
+  address: 43.138.44.171:6379
+  password: LiuZhiyi20200805
+  scan-interval: 8000
+  check-slots-coverage: false
+  tcp-no-delay: true
+  master-connection-minimum-idle-size: 2
+  slave-connection-minimum-idle-size: 2
+  master-connection-pool-size: 2
+  slave-connection-pool-size: 2
+  subscription-connection-minimum-idle-size: 2
+  subscription-connection-pool-size: 2
+  subscriptions-per-connection: 2
+  subscription-mode: MASTER
+  timeout: 60000
+  connect-timeout: 60000
+  idle-connection-timeout: 32000
+  retry-attempts: 2
+  retry-interval: 4000
+  keep-alive: true
+  dns-monitoring-interval: -1
+  ping-connection-interval: 300000
+  executor-core-pool-size: 4
+  executor-maximum-pool-size: 8
+  executor-keep-alive-seconds: 64
+  executor-blocking-queue-capacity: 128
+  max-tryLock-waiting-millis: 10000
+
+
+dubbo:
+  registry:
+    id: summer-registry
+    client: curator
+    protocol: zookeeper
+    address: zookeeper://43.138.44.171
+    port: 2181
+    username: blue
+    password: LiuZhiyi20200805
+    file: /usr/env/log/dubbo/shine/registry.properties
+    check: false
+    timeout: 60000
+    simplified: false
+  #  metadata-report:
+  #    address: zookeeper://43.138.44.171
+  #    port: 2181
+  #    username: blue
+  #    password: LiuZhiyi20200805
+  #    timeout: 120000
+  #    default: true
+  #    check: false
+  application:
+    id: summer-shine
+    name: summer-shine
+    owner: blue
+    organization: blue
+    shutwait: 20s
+    enable-file-cache: true
+    qos-enable: false
+  protocol:
+    name: dubbo
+    host: localhost
+    port: 38000
+    accesslog: /usr/env/log/dubbo/shine/access.log
+  provider:
+    retries: 0
+    timeout: 10000
+    loadbalance: random
+  consumer:
+    retries: 0
+    timeout: 10000
+    loadbalance: random
+    check: false
+
+
+shine:
+  priority: 0
+
+
+rest:
+  max-connections: 64
+  worker-count: 64
+  use-global-resources: false
+  connect-timeout-millis: 7000
+  use-tcp-no-delay: false
+  protocols: [ HTTP11,H2,H2C ]
+  response-timeout-millis: 3000
+  read-timeout-millis: 3000
+  write-timeout-millis: 3000
+  max-byte-in-memory-size: 1048576
+
+
+producers:
+  configs:
+    shine-insert:
+      services: [ 172.16.202.219:6650 ]
+      enable-tls: false
+      tlsTrust-certs-file-path:
+      tls-cert-file-path:
+      tls-key-file-path:
+      tls-allow-insecure-connection:
+      tls-hostname-verification-enable:
+      listener-name:
+      operation-timeout-millis: 30000
+      statsInterval-millis: 60000
+      io-threads: 1
+      listener-threads: 1
+      connections-per-broker: 1
+      use-tcp-no-delay: true
+      memory-limit-kilo-bytes: 512
+      max-concurrent-lookup-requests: 60
+      max-lookup-request: 50000
+      max-lookup-redirects: 3
+      max-number-of-rejected-request-per-connection: 50
+      keep-alive-interval-millis: 30000
+      connection-timeout-millis: 60000
+      starting-backoff-interval-millis: 300
+      max-backoff-interval-millis: 600
+      enable-busy-wait: false
+      clock-zone-id: Asia/Shanghai
+      enable-transaction: false
+      enable-proxy: false
+      proxy-service-url:
+      proxy-protocol: SNI
+      topic: shineInsert
+      producer-name: shineInsertProducer000
+      access-mode: Shared
+      send-timeout-millis: 30000
+      max-pending-messages: 1000
+      block-if-queue-full: false
+      message-routing-mode: RoundRobinPartition
+      compression-type: NONE
+      enable-batching: true
+      enable-chunking: false
+      batching-max-publish-delay-millis: 1000
+      round-robin-router-batching-partition-switch-frequency: 2
+      batching-max-messages: 512
+      batching-max-bytes: 512
+      initial-sequence-id: 0
+      auto-update-partitions: true
+      auto-update-partitions-interval-millis: 30000
+      enable-multi-schema: false
+      hashing-schemes: [ JavaStringHash ]
+      enable-encrypt: false
+      encryption-key:
+      producer-crypto-failure-action: FAIL
+    shine-update:
+      services: [ 172.16.202.219:6650 ]
+      enable-tls: false
+      tlsTrust-certs-file-path:
+      tls-cert-file-path:
+      tls-key-file-path:
+      tls-allow-insecure-connection:
+      tls-hostname-verification-enable:
+      listener-name:
+      operation-timeout-millis: 30000
+      statsInterval-millis: 60000
+      io-threads: 1
+      listener-threads: 1
+      connections-per-broker: 1
+      use-tcp-no-delay: true
+      memory-limit-kilo-bytes: 512
+      max-concurrent-lookup-requests: 60
+      max-lookup-request: 50000
+      max-lookup-redirects: 3
+      max-number-of-rejected-request-per-connection: 50
+      keep-alive-interval-millis: 30000
+      connection-timeout-millis: 60000
+      starting-backoff-interval-millis: 300
+      max-backoff-interval-millis: 600
+      enable-busy-wait: false
+      clock-zone-id: Asia/Shanghai
+      enable-transaction: false
+      enable-proxy: false
+      proxy-service-url:
+      proxy-protocol: SNI
+      topic: shineUpdate
+      producer-name: shineUpdateProducer000
+      access-mode: Shared
+      send-timeout-millis: 30000
+      max-pending-messages: 1000
+      block-if-queue-full: false
+      message-routing-mode: RoundRobinPartition
+      compression-type: NONE
+      enable-batching: true
+      enable-chunking: false
+      batching-max-publish-delay-millis: 1000
+      round-robin-router-batching-partition-switch-frequency: 2
+      batching-max-messages: 512
+      batching-max-bytes: 512
+      initial-sequence-id: 0
+      auto-update-partitions: true
+      auto-update-partitions-interval-millis: 30000
+      enable-multi-schema: false
+      hashing-schemes: [ JavaStringHash ]
+      enable-encrypt: false
+      encryption-key:
+      producer-crypto-failure-action: FAIL
+    shine-delete:
+      services: [ 172.16.202.219:6650 ]
+      enable-tls: false
+      tlsTrust-certs-file-path:
+      tls-cert-file-path:
+      tls-key-file-path:
+      tls-allow-insecure-connection:
+      tls-hostname-verification-enable:
+      listener-name:
+      operation-timeout-millis: 30000
+      statsInterval-millis: 60000
+      io-threads: 1
+      listener-threads: 1
+      connections-per-broker: 1
+      use-tcp-no-delay: true
+      memory-limit-kilo-bytes: 512
+      max-concurrent-lookup-requests: 60
+      max-lookup-request: 50000
+      max-lookup-redirects: 3
+      max-number-of-rejected-request-per-connection: 50
+      keep-alive-interval-millis: 30000
+      connection-timeout-millis: 60000
+      starting-backoff-interval-millis: 300
+      max-backoff-interval-millis: 600
+      enable-busy-wait: false
+      clock-zone-id: Asia/Shanghai
+      enable-transaction: false
+      enable-proxy: false
+      proxy-service-url:
+      proxy-protocol: SNI
+      topic: shineDelete
+      producer-name: shineDeleteProducer000
+      access-mode: Shared
+      send-timeout-millis: 30000
+      max-pending-messages: 1000
+      block-if-queue-full: false
+      message-routing-mode: RoundRobinPartition
+      compression-type: NONE
+      enable-batching: true
+      enable-chunking: false
+      batching-max-publish-delay-millis: 1000
+      round-robin-router-batching-partition-switch-frequency: 2
+      batching-max-messages: 512
+      batching-max-bytes: 512
+      initial-sequence-id: 0
+      auto-update-partitions: true
+      auto-update-partitions-interval-millis: 30000
+      enable-multi-schema: false
+      hashing-schemes: [ JavaStringHash ]
+      enable-encrypt: false
+      encryption-key:
+      producer-crypto-failure-action: FAIL
+
+
+consumers:
+  configs:
+    shine-insert:
+      services: [ 172.16.202.219:6650 ]
+      enable-tls: false
+      tlsTrust-certs-file-path:
+      tls-cert-file-path:
+      tls-key-file-path:
+      tls-allow-insecure-connection:
+      tls-hostname-verification-enable:
+      listener-name:
+      operation-timeout-millis: 30000
+      statsInterval-millis: 60
+      io-threads: 1
+      listener-threads: 1
+      connections-per-broker: 2
+      use-tcp-no-delay: true
+      memory-limit-kilo-bytes: 1024
+      max-concurrent-lookup-requests: 60
+      max-lookup-request: 1000
+      max-lookup-redirects: 2
+      max-number-of-rejected-request-per-connection: 50
+      keep-alive-interval-millis: 30000
+      connection-timeout-millis: 10000
+      starting-backoff-interval-millis: 1000
+      max-backoff-interval-millis: 30000
+      enable-busy-wait: true
+      clock-zone-id: Asia/Shanghai
+      enable-transaction: false
+      enable-proxy: false
+      proxy-service-url:
+      proxy-protocol: SNI
+      topics: [ shineInsert ]
+      topics-pattern:
+      subscription-name: shineInsertSubscription
+      ack-timeout-millis: 2000
+      enable-ack-receipt: true
+      ack-timeout-tick-time-millis: 1000
+      negative-ack-redelivery-delay-millis: 100
+      subscription-type: Failover
+      subscription-mode: Durable
+      receiver-queue-size: 1000
+      acknowledgements-group-time-millis: 100
+      replicate-subscription-state: false
+      max-total-receiver-queue-size-across-partitions: 5
+      consumer-name: shineInsertConsumer000
+      read-compacted: false
+      pattern-auto-discovery-period-millis: 1
+      priority-level: 0
+      subscription-initial-position: Latest
+      regex-subscription-mode: PersistentOnly
+      auto-update-partitions: true
+      auto-update-partitions-interval-millis: 30000
+      batch-receive-policy: DEFAULT_POLICY
+      enable-retry: true
+      enable-batch-index-acknowledgment: false
+      max-pending-chunked-message: 10
+      auto-ack-oldest-chunked-message-on-queue-full: true
+      expire-time-of-incomplete-chunked-message-millis: 2000
+      pool-messages: false
+      enable-encrypt: false
+      encryption-key:
+      consumer-crypto-failure-action: FAIL
+      enable-dead-letter: true
+      dead-letter-topic: shineInsert
+      retry-letter-topic: shineInsert
+      max-redeliver-count: 1000
+      start-message-id-inclusive: false
+      enable-batch-receive: false
+      batch-receive-max-num-messages: -1
+      batch-receive-max-num-bytes: 10485760
+      batch-receive-timeout-millis: 100
+      poll-duration-mills: 50
+      working-threads: 2
+      enable-negative-acknowledge: true
+    shine-update:
+      services: [ 172.16.202.219:6650 ]
+      enable-tls: false
+      tlsTrust-certs-file-path:
+      tls-cert-file-path:
+      tls-key-file-path:
+      tls-allow-insecure-connection:
+      tls-hostname-verification-enable:
+      listener-name:
+      operation-timeout-millis: 30000
+      statsInterval-millis: 60
+      io-threads: 1
+      listener-threads: 1
+      connections-per-broker: 2
+      use-tcp-no-delay: true
+      memory-limit-kilo-bytes: 1024
+      max-concurrent-lookup-requests: 60
+      max-lookup-request: 1000
+      max-lookup-redirects: 2
+      max-number-of-rejected-request-per-connection: 50
+      keep-alive-interval-millis: 30000
+      connection-timeout-millis: 10000
+      starting-backoff-interval-millis: 1000
+      max-backoff-interval-millis: 30000
+      enable-busy-wait: true
+      clock-zone-id: Asia/Shanghai
+      enable-transaction: false
+      enable-proxy: false
+      proxy-service-url:
+      proxy-protocol: SNI
+      topics: [ shineUpdate ]
+      topics-pattern:
+      subscription-name: shineUpdateSubscription
+      ack-timeout-millis: 2000
+      enable-ack-receipt: true
+      ack-timeout-tick-time-millis: 1000
+      negative-ack-redelivery-delay-millis: 100
+      subscription-type: Failover
+      subscription-mode: Durable
+      receiver-queue-size: 1000
+      acknowledgements-group-time-millis: 100
+      replicate-subscription-state: false
+      max-total-receiver-queue-size-across-partitions: 5
+      consumer-name: shineUpdateConsumer000
+      read-compacted: false
+      pattern-auto-discovery-period-millis: 1
+      priority-level: 0
+      subscription-initial-position: Latest
+      regex-subscription-mode: PersistentOnly
+      auto-update-partitions: true
+      auto-update-partitions-interval-millis: 30000
+      batch-receive-policy: DEFAULT_POLICY
+      enable-retry: true
+      enable-batch-index-acknowledgment: false
+      max-pending-chunked-message: 10
+      auto-ack-oldest-chunked-message-on-queue-full: true
+      expire-time-of-incomplete-chunked-message-millis: 2000
+      pool-messages: false
+      enable-encrypt: false
+      encryption-key:
+      consumer-crypto-failure-action: FAIL
+      enable-dead-letter: true
+      dead-letter-topic: shineUpdate
+      retry-letter-topic: shineUpdate
+      max-redeliver-count: 1000
+      start-message-id-inclusive: false
+      enable-batch-receive: false
+      batch-receive-max-num-messages: -1
+      batch-receive-max-num-bytes: 10485760
+      batch-receive-timeout-millis: 100
+      poll-duration-mills: 50
+      working-threads: 2
+      enable-negative-acknowledge: true
+    shine-delete:
+      services: [ 172.16.202.219:6650 ]
+      enable-tls: false
+      tlsTrust-certs-file-path:
+      tls-cert-file-path:
+      tls-key-file-path:
+      tls-allow-insecure-connection:
+      tls-hostname-verification-enable:
+      listener-name:
+      operation-timeout-millis: 30000
+      statsInterval-millis: 60
+      io-threads: 1
+      listener-threads: 1
+      connections-per-broker: 2
+      use-tcp-no-delay: true
+      memory-limit-kilo-bytes: 1024
+      max-concurrent-lookup-requests: 60
+      max-lookup-request: 1000
+      max-lookup-redirects: 2
+      max-number-of-rejected-request-per-connection: 50
+      keep-alive-interval-millis: 30000
+      connection-timeout-millis: 10000
+      starting-backoff-interval-millis: 1000
+      max-backoff-interval-millis: 30000
+      enable-busy-wait: true
+      clock-zone-id: Asia/Shanghai
+      enable-transaction: false
+      enable-proxy: false
+      proxy-service-url:
+      proxy-protocol: SNI
+      topics: [ shineDelete ]
+      topics-pattern:
+      subscription-name: shineDeleteSubscription
+      ack-timeout-millis: 2000
+      enable-ack-receipt: true
+      ack-timeout-tick-time-millis: 1000
+      negative-ack-redelivery-delay-millis: 100
+      subscription-type: Failover
+      subscription-mode: Durable
+      receiver-queue-size: 1000
+      acknowledgements-group-time-millis: 100
+      replicate-subscription-state: false
+      max-total-receiver-queue-size-across-partitions: 5
+      consumer-name: shineDeleteConsumer000
+      read-compacted: false
+      pattern-auto-discovery-period-millis: 1
+      priority-level: 0
+      subscription-initial-position: Latest
+      regex-subscription-mode: PersistentOnly
+      auto-update-partitions: true
+      auto-update-partitions-interval-millis: 30000
+      batch-receive-policy: DEFAULT_POLICY
+      enable-retry: true
+      enable-batch-index-acknowledgment: false
+      max-pending-chunked-message: 10
+      auto-ack-oldest-chunked-message-on-queue-full: true
+      expire-time-of-incomplete-chunked-message-millis: 2000
+      pool-messages: false
+      enable-encrypt: false
+      encryption-key:
+      consumer-crypto-failure-action: FAIL
+      enable-dead-letter: true
+      dead-letter-topic: shineDelete
+      retry-letter-topic: shineDelete
+      max-redeliver-count: 1000
+      start-message-id-inclusive: false
+      enable-batch-receive: false
+      batch-receive-max-num-messages: -1
+      batch-receive-max-num-bytes: 10485760
+      batch-receive-timeout-millis: 100
+      poll-duration-mills: 50
+      working-threads: 2
+      enable-negative-acknowledge: true
+
+
+debug: false

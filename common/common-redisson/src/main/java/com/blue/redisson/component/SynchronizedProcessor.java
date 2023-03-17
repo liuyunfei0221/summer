@@ -265,7 +265,7 @@ public final class SynchronizedProcessor {
 
             handleTask.handle();
         } catch (Exception e) {
-            LOGGER.error("handle failed, syncKey = {}, handleTask = {}, HandleTask fallbackTask = {}, e = {}",
+            LOGGER.error("handle failed, syncKey = {}, handleTask = {}, fallbackTask = {}, e = {}",
                     syncKey, handleTask, fallbackTask, e);
 
             if (isNotNull(fallbackTask)) {

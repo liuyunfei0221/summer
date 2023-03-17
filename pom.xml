@@ -80,6 +80,7 @@
         <module>service/shine/shine-api</module>
         <module>service/shine/shine-service</module>
 
+        <module>test/demo</module>
         <module>test/performance</module>
         <module>test/process</module>
     </modules>
