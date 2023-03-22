@@ -51,8 +51,7 @@ import static java.util.stream.Collectors.toMap;
 import static org.springframework.data.domain.Example.of;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
-import static reactor.core.publisher.Mono.just;
-import static reactor.core.publisher.Mono.zip;
+import static reactor.core.publisher.Mono.*;
 import static reactor.util.Loggers.getLogger;
 
 /**
@@ -72,7 +71,7 @@ public class AgreementRecordServiceImpl implements AgreementRecordService {
 
     private final RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer;
 
-    private final AgreementService agreementService;
+    private AgreementService agreementService;
 
     private AgreementRecordRepository agreementRecordRepository;
 
@@ -92,11 +91,16 @@ public class AgreementRecordServiceImpl implements AgreementRecordService {
             throw new BlueException(UNAUTHORIZED);
         p.asserts();
 
-        AgreementRecord probe = new AgreementRecord();
-        probe.setMemberId(mid);
-        probe.setAgreementId(p.getAgreementId());
+        if (agreementService.getAgreement(p.getAgreementId())
+                .switchIfEmpty(error(() -> new BlueException(DATA_NOT_EXIST)))
+                .flatMap(agreement -> {
+                    AgreementRecord probe = new AgreementRecord();
+                    probe.setMemberId(mid);
+                    probe.setAgreementId(agreement.getId());
 
-        if (ofNullable(agreementRecordRepository.count(of(probe)).toFuture().join()).orElse(0L) > 0L)
+                    return agreementRecordRepository.count(of(probe));
+                })
+                .switchIfEmpty(error(() -> new BlueException(DATA_NOT_EXIST))).toFuture().join() > 0L)
             throw new BlueException(DATA_ALREADY_EXIST);
     };
 

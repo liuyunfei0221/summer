@@ -69,7 +69,6 @@ public class BlueSmartLifecycleController implements ApplicationContextAware, Sm
                     String beanName = entry.getKey();
                     int precedence = blueLifecycle.stopPrecedence();
                     LOGGER.error("stop() failed, {} stop failed, precedence is {}, e = {}", beanName, precedence, e);
-                    throw new RuntimeException("stop() failed, " + beanName + " stop failed, precedence is " + precedence + ", e = " + e);
                 }
             };
 

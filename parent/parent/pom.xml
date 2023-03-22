@@ -26,7 +26,7 @@
 
         <affinity.version>3.23.3</affinity.version>
         <apache.curator.version>5.4.0</apache.curator.version>
-        <apache-dubbo.version>3.1.7</apache-dubbo.version>
+        <apache-dubbo.version>3.1.8</apache-dubbo.version>
         <apache.poi.version>5.2.3</apache.poi.version>
         <aspectj.version>1.9.19</aspectj.version>
         <caffeine.version>3.1.5</caffeine.version>
