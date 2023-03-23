@@ -310,7 +310,7 @@
 									},
 									{
 										"key": "Accept-Language",
-										"value": "en-US",
+										"value": "zh-CN",
 										"type": "text"
 									}
 								],
@@ -399,7 +399,7 @@
 									}
 								],
 								"url": {
-									"raw": "localhost:11000/blue-base/states/75",
+									"raw": "localhost:11000/blue-base/states/45",
 									"host": [
 										"localhost"
 									],
@@ -407,7 +407,7 @@
 									"path": [
 										"blue-base",
 										"states",
-										"75"
+										"45"
 									]
 								}
 							},
@@ -4739,13 +4739,13 @@
 									},
 									{
 										"key": "Authorization",
-										"value": "eyJraWQiOiJjMTExZDE3YmVkNjMzMWVkMGJjNjAzNmNlZGNiYTA4YzRmMzE1OGZkOTFlYWU0NzEwNTIyZTVlNTEyMjExNzE5MDMyNDQwNDc3NzMxNmY1NTE3NWUyMDRiYWYxMDhkZWUwNTBkMzYyODkyOWRjNmU4OWY0ZTRhNjk5ZDIxNTkyNCIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTkyMjA4OTEzNDY2NjU0NzNfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjU5MjIwODkxMzQ2NjY1NDczIiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjczOTQ3MjYxIiwibmJmIjoxNjczOTQ3MjYxLCJ0IjoiUmQ2N0J3SkJra1IiLCJlYXMiOjE2ODE3MjMyNjE5NDIsImV4cCI6MTY4MTcyMzI2MSwiaWF0IjoxNjczOTQ3MjYxLCJqdGkiOiIyNnJHell1ZkVlaEg3ZlV0QU1rSkdZY0xncjJwcGlyWSJ9.BkaJ3gBxvRq2bC7KtNpwRvnYrSWadYiJx13erqwqTYZ7q956LiRMiJopzqUTtiajWbGlnI3ND5hZf-aUBPo_tg",
+										"value": "eyJraWQiOiI3NDk1OTYzYjRiZWNlODdiODdmZjVjZWYzMzczZWVlN2JiMDg4NDgwMGQ0YzY5MWY3NWRkNzA1ZGM0N2E1NDE4MTM5NmVjOGRhMmJhYjI1ZGZhOGRiNGE3ZDY0NGYzNmQ3NTZmOWVhMGIyZmE2ODgzN2Y3YTQxNDMzYTYxYTc1ZCIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NjUxMzk5NzQ3NTU4NDQwOTdfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjY1MTM5OTc0NzU1ODQ0MDk3IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjc5NDU4MTg4IiwibmJmIjoxNjc5NDU4MTg4LCJ0IjoiOGRiaWlHZUlqcWwiLCJlYXMiOjE2ODcyMzQxODg0MTgsImV4cCI6MTY4NzIzNDE4OCwiaWF0IjoxNjc5NDU4MTg4LCJqdGkiOiJvQmRpdGNZNTN1cENnRlhPWlhIWkdQOTIzRVFCbkt0cSJ9.dr-4o4nJP85VycisBaDPG24s0AxSUUWZXyHDy3KT6FHla7o2mge3okvQnqP1BC54FA5C7KLhUATOOzkJNfjSlA",
 										"type": "text"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"rows\":5,\r\n    \"cursor\":59223282569707588\r\n}"
+									"raw": "{\r\n    \"rows\":5,\r\n    \"cursor\":null,\r\n    \"condition\":{\r\n        \"linkLike\":null,\r\n        \"nameLike\":null,\r\n        \"fileType\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null\r\n    }\r\n}"
 								},
 								"url": {
 									"raw": "localhost:13000/blue-media/attachments/scroll",
@@ -5266,16 +5266,16 @@
 									},
 									{
 										"key": "Authorization",
-										"value": "eyJraWQiOiIwNmE3YWNkODI2NzUzY2U5MzA2ODhjMzM2NTJjOGY0M2M3NzA1NTRiZDgyNTZjYWQ5ODAyZWY3Y2VmZGRiODlkZDYzOWNiMThlM2QwNDAwYTk1MjkzMzViNTQwMjhiMzU3YjNkYWFjZjcwZTI0YWJlZDE5YjNkOTJiMDA3MDZiOSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDU2Nzk0MjQyNTA1NzY4OTdfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ1Njc5NDI0MjUwNTc2ODk3IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYxMzQxODExIiwibmJmIjoxNjYxMzQxODExLCJ0IjoiNVpxOFVESTM1WmoiLCJlYXMiOjE2NjkxMTc4MTE0MDYsImV4cCI6MTY2OTExNzgxMSwiaWF0IjoxNjYxMzQxODExLCJqdGkiOiJORkl0UEQ3ZjEyaTBGTjZseVZaT2J4a1Z0aHBrZG9lRiJ9.FedMZoJG-WA5WCdTbaSH7WuwgRmkVC8-q880uY1ybJyVoVXE_5oH9j-14Y_4D76jDwAGHtNgktKEQg9uPiRu7A",
+										"value": "eyJraWQiOiI3NDk1OTYzYjRiZWNlODdiODdmZjVjZWYzMzczZWVlN2JiMDg4NDgwMGQ0YzY5MWY3NWRkNzA1ZGM0N2E1NDE4MTM5NmVjOGRhMmJhYjI1ZGZhOGRiNGE3ZDY0NGYzNmQ3NTZmOWVhMGIyZmE2ODgzN2Y3YTQxNDMzYTYxYTc1ZCIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NjUxMzk5NzQ3NTU4NDQwOTdfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjY1MTM5OTc0NzU1ODQ0MDk3IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjc5NDU4MTg4IiwibmJmIjoxNjc5NDU4MTg4LCJ0IjoiOGRiaWlHZUlqcWwiLCJlYXMiOjE2ODcyMzQxODg0MTgsImV4cCI6MTY4NzIzNDE4OCwiaWF0IjoxNjc5NDU4MTg4LCJqdGkiOiJvQmRpdGNZNTN1cENnRlhPWlhIWkdQOTIzRVFCbkt0cSJ9.dr-4o4nJP85VycisBaDPG24s0AxSUUWZXyHDy3KT6FHla7o2mge3okvQnqP1BC54FA5C7KLhUATOOzkJNfjSlA",
 										"type": "text"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"nameLike\":null,\r\n        \"descriptionLike\":null,\r\n        \"type\":null,\r\n        \"genHandlerType\":null,\r\n        \"domainLike\":null,\r\n        \"pathToBeFilledLike\":null,\r\n        \"placeholderCount\":null,\r\n        \"status\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"creator\":null,\r\n        \"updater\":null,\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"DESC\"\r\n    }\r\n}"
+									"raw": "{\r\n    \"page\":1,\r\n    \"rows\":10,\r\n    \"param\":{\r\n        \"id\":null,\r\n        \"nameLike\":null,\r\n        \"type\":null,\r\n        \"businessType\":null,\r\n        \"titleLike\":null,\r\n        \"createTimeBegin\":null,\r\n        \"createTimeEnd\":null,\r\n        \"updateTimeBegin\":null,\r\n        \"updateTimeEnd\":null,\r\n        \"creator\":null,\r\n        \"updater\":null,\r\n        \"sortAttribute\":\"id\",\r\n        \"sortType\":\"DESC\"\r\n    }\r\n}"
 								},
 								"url": {
-									"raw": "localhost:13000/blue-media/manager/qrCodeConfigs",
+									"raw": "localhost:13000/blue-media/manager/messageTemplates",
 									"host": [
 										"localhost"
 									],
@@ -5283,7 +5283,7 @@
 									"path": [
 										"blue-media",
 										"manager",
-										"qrCodeConfigs"
+										"messageTemplates"
 									]
 								}
 							},
@@ -5301,7 +5301,7 @@
 									},
 									{
 										"key": "Authorization",
-										"value": "eyJraWQiOiIwNmE3YWNkODI2NzUzY2U5MzA2ODhjMzM2NTJjOGY0M2M3NzA1NTRiZDgyNTZjYWQ5ODAyZWY3Y2VmZGRiODlkZDYzOWNiMThlM2QwNDAwYTk1MjkzMzViNTQwMjhiMzU3YjNkYWFjZjcwZTI0YWJlZDE5YjNkOTJiMDA3MDZiOSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NDU2Nzk0MjQyNTA1NzY4OTdfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjQ1Njc5NDI0MjUwNTc2ODk3IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjYxMzQxODExIiwibmJmIjoxNjYxMzQxODExLCJ0IjoiNVpxOFVESTM1WmoiLCJlYXMiOjE2NjkxMTc4MTE0MDYsImV4cCI6MTY2OTExNzgxMSwiaWF0IjoxNjYxMzQxODExLCJqdGkiOiJORkl0UEQ3ZjEyaTBGTjZseVZaT2J4a1Z0aHBrZG9lRiJ9.FedMZoJG-WA5WCdTbaSH7WuwgRmkVC8-q880uY1ybJyVoVXE_5oH9j-14Y_4D76jDwAGHtNgktKEQg9uPiRu7A",
+										"value": "eyJraWQiOiI3NDk1OTYzYjRiZWNlODdiODdmZjVjZWYzMzczZWVlN2JiMDg4NDgwMGQ0YzY5MWY3NWRkNzA1ZGM0N2E1NDE4MTM5NmVjOGRhMmJhYjI1ZGZhOGRiNGE3ZDY0NGYzNmQ3NTZmOWVhMGIyZmE2ODgzN2Y3YTQxNDMzYTYxYTc1ZCIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NjUxMzk5NzQ3NTU4NDQwOTdfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjY1MTM5OTc0NzU1ODQ0MDk3IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjc5NDU4MTg4IiwibmJmIjoxNjc5NDU4MTg4LCJ0IjoiOGRiaWlHZUlqcWwiLCJlYXMiOjE2ODcyMzQxODg0MTgsImV4cCI6MTY4NzIzNDE4OCwiaWF0IjoxNjc5NDU4MTg4LCJqdGkiOiJvQmRpdGNZNTN1cENnRlhPWlhIWkdQOTIzRVFCbkt0cSJ9.dr-4o4nJP85VycisBaDPG24s0AxSUUWZXyHDy3KT6FHla7o2mge3okvQnqP1BC54FA5C7KLhUATOOzkJNfjSlA",
 										"type": "text"
 									}
 								],
@@ -5310,7 +5310,7 @@
 									"raw": "{\r\n    \"name\":\"sms login\",\r\n    \"description\":\"sms login\",\r\n    \"type\":\"1\",\r\n    \"businessType\":\"1\",\r\n    \"title\":\"hello, %s\",\r\n    \"content\":\"login verify is %s\"\r\n}"
 								},
 								"url": {
-									"raw": "localhost:13000/blue-media/manager/qrCodeConfig",
+									"raw": "localhost:13000/blue-media/manager/messageTemplate",
 									"host": [
 										"localhost"
 									],
@@ -5318,7 +5318,7 @@
 									"path": [
 										"blue-media",
 										"manager",
-										"qrCodeConfig"
+										"messageTemplate"
 									]
 								}
 							},
@@ -5342,10 +5342,10 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"id\":41232609459571929,\r\n    \"name\":\"member details\",\r\n    \"description\":\"member details\",\r\n    \"type\":2,\r\n    \"genHandlerType\":\"1\",\r\n    \"domain\":\"localhost:11000\",\r\n    \"pathToBeFilled\":\"blue-member/basic/%s\",\r\n    \"placeholderCount\":\"1\",\r\n    \"allowedRoles\":[1,2,3,4,5]\r\n}"
+									"raw": "{\r\n    \"id\":1,\r\n    \"name\":\"sms login\",\r\n    \"description\":\"sms login\",\r\n    \"type\":\"1\",\r\n    \"businessType\":\"1\",\r\n    \"title\":\"hello, %s\",\r\n    \"content\":\"login verify is %s\"\r\n}"
 								},
 								"url": {
-									"raw": "localhost:13000/blue-media/manager/qrCodeConfig",
+									"raw": "localhost:13000/blue-media/manager/messageTemplate",
 									"host": [
 										"localhost"
 									],
@@ -5353,7 +5353,7 @@
 									"path": [
 										"blue-media",
 										"manager",
-										"qrCodeConfig"
+										"messageTemplate"
 									]
 								}
 							},
@@ -5376,7 +5376,7 @@
 									}
 								],
 								"url": {
-									"raw": "localhost:13000/blue-media/manager/qrCodeConfig/41232609459571929",
+									"raw": "localhost:13000/blue-media/manager/messageTemplate/41232609459571929",
 									"host": [
 										"localhost"
 									],
@@ -5384,7 +5384,7 @@
 									"path": [
 										"blue-media",
 										"manager",
-										"qrCodeConfig",
+										"messageTemplate",
 										"41232609459571929"
 									]
 								}

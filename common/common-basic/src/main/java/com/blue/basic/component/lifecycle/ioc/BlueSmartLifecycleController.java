@@ -56,7 +56,7 @@ public class BlueSmartLifecycleController implements ApplicationContextAware, Sm
                 } catch (Exception e) {
                     String beanName = entry.getKey();
                     int precedence = blueLifecycle.startPrecedence();
-                    LOGGER.error("start() failed, {} start failed, precedence is {}, e = {}", beanName, precedence, e);
+                    LOGGER.warn("start() failed, {} start failed, precedence is {}, e = {}", beanName, precedence, e);
                     throw new RuntimeException("stop() failed, " + beanName + " start failed, precedence is " + precedence + ", e = " + e);
                 }
             },
@@ -68,7 +68,7 @@ public class BlueSmartLifecycleController implements ApplicationContextAware, Sm
                 } catch (Exception e) {
                     String beanName = entry.getKey();
                     int precedence = blueLifecycle.stopPrecedence();
-                    LOGGER.error("stop() failed, {} stop failed, precedence is {}, e = {}", beanName, precedence, e);
+                    LOGGER.warn("stop() failed, {} stop failed, precedence is {}, e = {}", beanName, precedence, e);
                 }
             };
 

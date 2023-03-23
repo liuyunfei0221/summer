@@ -6,7 +6,6 @@ import com.blue.mail.component.MailSender;
 import jakarta.mail.Message;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
@@ -28,7 +27,7 @@ import static reactor.util.Loggers.getLogger;
  * @author liuyunfei
  */
 @SuppressWarnings({"JavaDoc", "DuplicatedCode", "AliControlFlowStatementWithoutBraces", "unused"})
-@Component
+//@Component
 public class MailManagerHandler {
 
     private static final Logger LOGGER = getLogger(MailManagerHandler.class);
@@ -45,8 +44,7 @@ public class MailManagerHandler {
     private static final List<String> RECEIVERS = Stream.of(
             "liuyunfei19890221@gmail.com",
             "liuyunfei198902210221@163.com",
-            "liuyunfei19890221@163.com",
-            "yunfei.liu@dreamisland.ai"
+            "liuyunfei19890221@163.com"
     ).collect(toList());
 
 
