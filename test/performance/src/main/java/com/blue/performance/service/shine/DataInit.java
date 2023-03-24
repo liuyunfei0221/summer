@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.scheduler.Schedulers;
+import reactor.netty.http.HttpProtocol;
 
 import java.net.URI;
 import java.util.List;
@@ -18,7 +19,6 @@ import static com.blue.basic.component.rest.api.generator.BlueRestGenerator.gene
 import static java.lang.System.currentTimeMillis;
 import static java.util.Collections.emptyMap;
 import static java.util.stream.Collectors.toList;
-import static reactor.netty.http.HttpProtocol.*;
 
 public class DataInit {
 
@@ -34,7 +34,7 @@ public class DataInit {
             KEY_PREFIXES.get(RANDOM.nextInt(KEY_MAX_SIZE));
 
     private static final RestConfParams CONF = new RestConfParams(512, 64, false,
-            7000, false, Stream.of(HTTP11, H2, H2C).collect(toList()),
+            7000, false, Stream.of(HttpProtocol.values()).collect(toList()),
             3000, 3000, 3000,
             1048576, emptyMap());
 
