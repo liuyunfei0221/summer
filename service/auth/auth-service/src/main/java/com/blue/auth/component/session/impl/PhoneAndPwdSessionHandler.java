@@ -78,6 +78,8 @@ public class PhoneAndPwdSessionHandler implements SessionHandler {
         String phone = loginParam.getData(IDENTITY.key);
         String access = loginParam.getData(ACCESS.key);
 
+        //        String s = Symbol.HYPHEN.identity;
+
         if (isBlank(phone) || isBlank(access))
             throw new BlueException(INVALID_ACCT_OR_PWD);
 

@@ -31,6 +31,7 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 import static com.blue.auth.constant.LoginAttribute.IDENTITY;
+import static com.blue.basic.common.base.BasicElementProcessor.assertPhone;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.GSON;
 import static com.blue.basic.common.base.CommonFunctions.success;
@@ -121,6 +122,8 @@ public class LocalPhoneWithAutoRegisterSessionHandler implements SessionHandler 
         //TODO verify param
 
         String phone = loginParam.getData(IDENTITY.key);
+
+        assertPhone(phone);
 
         String source = ofNullable(getSource(serverRequest))
                 .filter(BlueChecker::isNotBlank).orElse(APP.identity);

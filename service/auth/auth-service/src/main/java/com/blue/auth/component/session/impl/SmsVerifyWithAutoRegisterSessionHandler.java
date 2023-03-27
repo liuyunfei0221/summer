@@ -32,6 +32,7 @@ import java.util.function.UnaryOperator;
 
 import static com.blue.auth.constant.LoginAttribute.ACCESS;
 import static com.blue.auth.constant.LoginAttribute.IDENTITY;
+import static com.blue.basic.common.base.BasicElementProcessor.assertPhone;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.GSON;
 import static com.blue.basic.common.base.CommonFunctions.success;
@@ -126,6 +127,8 @@ public class SmsVerifyWithAutoRegisterSessionHandler implements SessionHandler {
 
         if (isBlank(phone) || isBlank(access))
             throw new BlueException(INVALID_ACCT_OR_PWD);
+
+        assertPhone(phone);
 
         String source = ofNullable(getSource(serverRequest))
                 .filter(BlueChecker::isNotBlank).orElse(APP.identity);

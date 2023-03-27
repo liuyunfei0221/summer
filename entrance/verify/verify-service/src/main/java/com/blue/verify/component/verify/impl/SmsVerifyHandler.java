@@ -136,6 +136,8 @@ public class SmsVerifyHandler implements VerifyHandler {
         if (isNull(verifyBusinessType) || isBlank(destination))
             throw new BlueException(BAD_REQUEST);
 
+//        String s = Symbol.HYPHEN.identity;
+
         //TODO verify destination/phone
 
         return blueLeakyBucketRateLimiter.isAllowed(LIMIT_KEY_WRAPPER.apply(destination), ALLOW, SEND_INTERVAL_MILLIS)

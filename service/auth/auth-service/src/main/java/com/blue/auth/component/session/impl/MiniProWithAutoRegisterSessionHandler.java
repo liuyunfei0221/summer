@@ -30,6 +30,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
+import static com.blue.basic.common.base.BasicElementProcessor.assertPhone;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.GSON;
 import static com.blue.basic.common.base.ConstantProcessor.assertSource;
@@ -124,6 +125,8 @@ public class MiniProWithAutoRegisterSessionHandler implements SessionHandler {
         //TODO verify param
 
         String phone = EMPTY_VALUE.value;
+
+        assertPhone(phone);
 
         String source = ofNullable(getSource(serverRequest))
                 .filter(BlueChecker::isNotBlank).orElse(WE.identity);

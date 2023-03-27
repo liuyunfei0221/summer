@@ -5,8 +5,8 @@ import com.blue.auth.component.auto.inter.MemberParamByAutoLoginPackager;
 import com.blue.basic.constant.auth.CredentialType;
 import com.blue.member.api.model.MemberInitParam;
 
+import static com.blue.basic.common.base.BasicElementProcessor.parseLast4noForPhone;
 import static com.blue.basic.common.base.BlueChecker.isNotBlank;
-import static com.blue.basic.common.base.PhoneProcessor.parseLast4no;
 import static com.blue.basic.constant.auth.CredentialType.PHONE_PWD;
 import static com.blue.basic.constant.common.BlueCommonThreshold.ID_LEN_MIN;
 import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION;
@@ -32,7 +32,7 @@ public class PhonePwdMemberParamPackager implements MemberParamByAutoLoginPackag
         String name = memberInitParam.getName();
 
         memberInitParam.setPhone(credential);
-        memberInitParam.setName(isNotBlank(name) ? name : randomAlphabetic((int) ID_LEN_MIN.value) + PAR_CONCATENATION.identity + parseLast4no(credential));
+        memberInitParam.setName(isNotBlank(name) ? name : randomAlphabetic((int) ID_LEN_MIN.value) + PAR_CONCATENATION.identity + parseLast4noForPhone(credential));
     }
 
     /**

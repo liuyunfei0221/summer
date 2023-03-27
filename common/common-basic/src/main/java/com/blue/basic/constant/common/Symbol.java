@@ -104,6 +104,11 @@ public enum Symbol {
     CLOSE_BRACKET("]"),
 
     /**
+     * @
+     */
+    AT("@"),
+
+    /**
      * text placeholder
      */
     TEXT_PLACEHOLDER("%s");
