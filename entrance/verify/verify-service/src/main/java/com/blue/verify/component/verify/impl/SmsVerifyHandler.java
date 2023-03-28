@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 
+import static com.blue.basic.common.base.BasicElementProcessor.assertPhone;
 import static com.blue.basic.common.base.BlueChecker.isBlank;
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.CommonFunctions.*;
@@ -136,7 +137,7 @@ public class SmsVerifyHandler implements VerifyHandler {
         if (isNull(verifyBusinessType) || isBlank(destination))
             throw new BlueException(BAD_REQUEST);
 
-//        String s = Symbol.HYPHEN.identity;
+        assertPhone(destination);
 
         //TODO verify destination/phone
 

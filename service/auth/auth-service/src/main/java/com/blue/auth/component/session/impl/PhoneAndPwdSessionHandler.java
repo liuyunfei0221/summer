@@ -23,6 +23,7 @@ import java.util.function.Consumer;
 import static com.blue.auth.common.AccessEncoder.matchAccess;
 import static com.blue.auth.constant.LoginAttribute.ACCESS;
 import static com.blue.auth.constant.LoginAttribute.IDENTITY;
+import static com.blue.basic.common.base.BasicElementProcessor.assertPhone;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.constant.auth.CredentialType.PHONE_PWD;
@@ -78,10 +79,10 @@ public class PhoneAndPwdSessionHandler implements SessionHandler {
         String phone = loginParam.getData(IDENTITY.key);
         String access = loginParam.getData(ACCESS.key);
 
-        //        String s = Symbol.HYPHEN.identity;
-
         if (isBlank(phone) || isBlank(access))
             throw new BlueException(INVALID_ACCT_OR_PWD);
+
+        assertPhone(phone);
 
         return credentialService.getCredentialByCredentialAndType(phone, PHONE_PWD.identity)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INVALID_ACCT_OR_PWD))))

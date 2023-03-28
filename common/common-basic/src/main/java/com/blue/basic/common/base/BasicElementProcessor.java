@@ -71,7 +71,6 @@ public final class BasicElementProcessor {
      * @return
      */
     public static String parsePrefixForEmail(String email) {
-
         if (isBlank(email))
             throw new BlueException(BAD_REQUEST);
 

@@ -35,7 +35,6 @@ public final class RequestEventReporter {
      * message sender
      */
     private final Consumer<DataEvent> MESSAGE_SENDER = event -> {
-        LOGGER.info("MESSAGE_SENDER send, event = {}", event);
         try {
             executorService.execute(() ->
                     requestEventProducer.send(event));
@@ -52,7 +51,7 @@ public final class RequestEventReporter {
     public void report(DataEvent dataEvent) {
         try {
             MESSAGE_SENDER.accept(dataEvent);
-            LOGGER.warn("report(DataEvent dataEvent) success, dataEvent = {}", dataEvent);
+            LOGGER.info("report(DataEvent dataEvent) success, dataEvent = {}", dataEvent);
         } catch (Exception e) {
             LOGGER.error("report(DataEvent dataEvent) failed, dataEvent = {}, e = {}", dataEvent, e);
         }

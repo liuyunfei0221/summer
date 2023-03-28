@@ -5,7 +5,6 @@ import com.blue.gateway.config.deploy.CircuitBreakerDeploy;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -21,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static com.blue.basic.common.base.BlueChecker.isBlank;
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_INSTANCE_CIRCUIT_BREAKER;
 import static io.github.resilience4j.reactor.circuitbreaker.operator.CircuitBreakerOperator.of;
@@ -58,7 +58,7 @@ public final class BlueInstanceCircuitBreakerFilter implements GlobalFilter, Ord
         Predicate<Throwable> expPredicate;
 
         String recordFailurePredicateClassName = deploy.getRecordFailurePredicateClassName();
-        if (StringUtils.isBlank(recordFailurePredicateClassName))
+        if (isBlank(recordFailurePredicateClassName))
             throw new RuntimeException("recordFailurePredicateClassName name can't be blank");
         try {
             expPredicate = (Predicate<Throwable>) Class.forName(recordFailurePredicateClassName).getConstructor().newInstance();

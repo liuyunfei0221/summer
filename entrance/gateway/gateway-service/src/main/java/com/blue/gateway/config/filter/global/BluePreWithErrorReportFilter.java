@@ -66,7 +66,6 @@ public final class BluePreWithErrorReportFilter implements GlobalFilter, Ordered
                 dataEvent.addData(RESPONSE_BODY.key, GSON.toJson(EXP_ELE_2_RESP.apply(exceptionElement)));
 
                 requestEventReporter.report(dataEvent);
-                LOGGER.info("report exception event, dataEvent = {}", dataEvent);
 
                 exceptionElement = null;
             });

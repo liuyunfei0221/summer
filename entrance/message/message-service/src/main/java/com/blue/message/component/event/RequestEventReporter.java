@@ -35,7 +35,6 @@ public final class RequestEventReporter {
      * message sender
      */
     private final Consumer<DataEvent> MESSAGE_SENDER = event -> {
-        LOGGER.info("MESSAGE_SENDER send, event = {}", event);
         try {
             executorService.execute(() ->
                     requestEventProducer.send(event));

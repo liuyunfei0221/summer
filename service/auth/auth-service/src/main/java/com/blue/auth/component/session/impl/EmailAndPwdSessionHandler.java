@@ -23,6 +23,7 @@ import java.util.function.Consumer;
 import static com.blue.auth.common.AccessEncoder.matchAccess;
 import static com.blue.auth.constant.LoginAttribute.ACCESS;
 import static com.blue.auth.constant.LoginAttribute.IDENTITY;
+import static com.blue.basic.common.base.BasicElementProcessor.assertEmail;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.constant.auth.CredentialType.EMAIL_PWD;
@@ -80,6 +81,8 @@ public class EmailAndPwdSessionHandler implements SessionHandler {
 
         if (isBlank(email) || isBlank(access))
             throw new BlueException(INVALID_ACCT_OR_PWD);
+
+        assertEmail(email);
 
         return credentialService.getCredentialByCredentialAndType(email, EMAIL_PWD.identity)
                 .switchIfEmpty(defer(() -> error(() -> new BlueException(INVALID_ACCT_OR_PWD))))
