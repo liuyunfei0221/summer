@@ -62,7 +62,7 @@ public class AuthServiceImpl implements AuthService {
             rpcAuthServiceConsumer.parseAccess(authentication)
                     .switchIfEmpty(defer(() -> just(SpecialAccess.VISITOR.access)))
                     .onErrorResume(t -> {
-                        LOGGER.error("ACCESS_INFO_REMOTE_GETTER failed, t = {}", t);
+                        LOGGER.error("ACCESS_INFO_REMOTE_GETTER failed, t = {}", t.getMessage());
                         return just(SpecialAccess.VISITOR.access);
                     }).toFuture();
 
@@ -70,7 +70,7 @@ public class AuthServiceImpl implements AuthService {
             rpcAuthServiceConsumer.parseSession(authentication)
                     .switchIfEmpty(defer(() -> just(SpecialSession.VISITOR.session)))
                     .onErrorResume(t -> {
-                        LOGGER.error("SESSION_INFO_REMOTE_GETTER failed, t = {}", t);
+                        LOGGER.error("SESSION_INFO_REMOTE_GETTER failed, t = {}", t.getMessage());
                         return just(SpecialSession.VISITOR.session);
                     }).toFuture();
 

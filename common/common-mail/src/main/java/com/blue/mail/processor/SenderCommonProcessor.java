@@ -69,7 +69,7 @@ public final class SenderCommonProcessor {
             });
 
         } catch (Exception e) {
-            LOGGER.error("generateSession failed, e = {}", e);
+            LOGGER.error("generateSession failed, e = {}", e.getMessage());
             throw new RuntimeException(e);
         }
     }

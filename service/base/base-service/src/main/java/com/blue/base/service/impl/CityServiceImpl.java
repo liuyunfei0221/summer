@@ -443,7 +443,7 @@ public class CityServiceImpl implements CityService {
                 .flatMap(updateResult -> {
                     long modifiedCount = updateResult.getModifiedCount();
 
-                    LOGGER.info("matchedCount = {}, modifiedCount = {}, wasAcknowledged = {}",
+                    LOGGER.info("countryId = {}, stateId = {}, matchedCount = {}, modifiedCount = {}, wasAcknowledged = {}",
                             countryId, stateId, updateResult.getMatchedCount(), modifiedCount, updateResult.wasAcknowledged());
 
                     return just(modifiedCount);

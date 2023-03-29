@@ -71,7 +71,7 @@ public class OptEventServiceImpl implements OptEventService {
                         return true;
                     })
                     .onErrorResume(t -> {
-                        LOGGER.error("EVENTS_INSERTER failed, t = {}", t);
+                        LOGGER.error("EVENTS_INSERTER failed, t = {}", t.getMessage());
                         return just(false);
                     })
                     .switchIfEmpty(defer(() -> just(false)));

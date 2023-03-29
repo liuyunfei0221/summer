@@ -95,7 +95,7 @@ public final class MailReader {
         try {
             return FOLDER_SUP.get().getMessageCount();
         } catch (Throwable throwable) {
-            LOGGER.error(" throwable = {}", throwable);
+            LOGGER.error(" throwable = {}", throwable.getMessage());
             if (REFRESH_PREDICATE.test(throwable)) {
                 try {
                     return FOLDER_SUP_WITH_REFRESHER.get().getMessageCount();

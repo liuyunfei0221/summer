@@ -138,7 +138,7 @@ public class VerifyProcessor implements ApplicationListener<ContextRefreshedEven
                             .map(access ->
                                     !NOT_LOGGED_IN.identity.equals(access.getCredentialType())
                             ).onErrorResume(t -> {
-                                LOGGER.info("t = {}", t);
+                                LOGGER.info("t = {}", t.getMessage());
                                 return just(false);
                             });
 

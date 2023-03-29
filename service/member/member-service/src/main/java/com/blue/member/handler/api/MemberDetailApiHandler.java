@@ -3,6 +3,7 @@ package com.blue.member.handler.api;
 import com.blue.basic.model.common.BlueResponse;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.member.model.MemberDetailUpdateParam;
+import com.blue.member.service.inter.MemberDetailControlService;
 import com.blue.member.service.inter.MemberDetailService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -27,8 +28,11 @@ public final class MemberDetailApiHandler {
 
     private final MemberDetailService memberDetailService;
 
-    public MemberDetailApiHandler(MemberDetailService memberDetailService) {
+    private final MemberDetailControlService memberDetailControlService;
+
+    public MemberDetailApiHandler(MemberDetailService memberDetailService, MemberDetailControlService memberDetailControlService) {
         this.memberDetailService = memberDetailService;
+        this.memberDetailControlService = memberDetailControlService;
     }
 
     /**
@@ -40,7 +44,7 @@ public final class MemberDetailApiHandler {
     public Mono<ServerResponse> get(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
-                        memberDetailService.getMemberDetailInfoByMemberIdWithAssert(acc.getId())
+                        memberDetailControlService.getMemberDetailInfoByMemberIdWithAssert(acc.getId())
                                 .flatMap(mdi ->
                                         ok().contentType(APPLICATION_JSON)
                                                 .body(success(mdi, serverRequest), BlueResponse.class))

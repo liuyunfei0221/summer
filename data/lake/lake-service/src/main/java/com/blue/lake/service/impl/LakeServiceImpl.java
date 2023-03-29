@@ -166,7 +166,7 @@ public class LakeServiceImpl implements LakeService {
                                         .flatMap(authService::parseAccess)
                                         .switchIfEmpty(defer(() -> just(VISITOR_ACCESS)))
                         )).onErrorResume(t -> {
-                            LOGGER.error("ACCESS_INFO_REMOTE_GETTER failed, t = {}", t);
+                            LOGGER.error("ACCESS_INFO_REMOTE_GETTER failed, t = {}", t.getMessage());
                             return just(SpecialAccess.VISITOR.access);
                         }),
                 resourceService.getResourceInfoByResourceKey(REQ_RES_KEY_GENERATOR.apply(optEvent.getMethod(), optEvent.getUri()))
@@ -204,7 +204,7 @@ public class LakeServiceImpl implements LakeService {
                                     .collectList()
                                     .flatMap(optEventService::insertOptEvents)
                                     .onErrorResume(t -> {
-                                        LOGGER.error("EVENTS_INSERTER failed, t = {}", t);
+                                        LOGGER.error("EVENTS_INSERTER failed, t = {}", t.getMessage());
                                         return just(false);
                                     }))
                     .switchIfEmpty(defer(() -> just(false)));

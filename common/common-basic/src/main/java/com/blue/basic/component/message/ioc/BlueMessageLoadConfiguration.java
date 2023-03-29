@@ -32,7 +32,7 @@ public class BlueMessageLoadConfiguration implements ApplicationListener<Context
             messageConf = applicationContext.getBean(MessageConf.class);
             LOGGER.info("messageConf = {}", messageConf);
         } catch (BeansException e) {
-            LOGGER.error("getBean(MessageConf.class), e = {}", e);
+            LOGGER.error("getBean(MessageConf.class), e = {}", e.getMessage());
             throw new RuntimeException("getBean(MessageConf.class) failed");
         }
 

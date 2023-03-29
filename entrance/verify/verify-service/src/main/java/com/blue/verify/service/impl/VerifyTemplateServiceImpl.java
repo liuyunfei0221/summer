@@ -140,7 +140,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
 
     private final BiConsumer<String, String> REDIS_CACHE_DELETER = (type, businessType) ->
             reactiveStringRedisTemplate.delete(TEMPLATE_CACHE_KEY_GENERATOR.apply(type, businessType))
-                    .subscribe(size -> LOGGER.info("type = {}, businessType = {}, size = {}", type, size));
+                    .subscribe(size -> LOGGER.info("type = {}, businessType = {}, size = {}", type, businessType, size));
 
     private final BiFunction<String, String, Mono<Map<String, VerifyTemplateInfo>>> TEMPLATE_DB_GETTER = (type, businessType) -> {
         assertVerifyType(type, false);
@@ -206,7 +206,7 @@ public class VerifyTemplateServiceImpl implements VerifyTemplateService {
                             try {
                                 lock.unlock();
                             } catch (Exception e) {
-                                LOGGER.warn("lock.unlock() failed, e = {}", e);
+                                LOGGER.warn("lock.unlock() failed, e = {}", e.getMessage());
                             }
                     }
                 }));

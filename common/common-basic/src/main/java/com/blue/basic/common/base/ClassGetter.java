@@ -98,7 +98,7 @@ public final class ClassGetter {
                         try {
                             jarFile = ((JarURLConnection) url.openConnection()).getJarFile();
                         } catch (Exception e) {
-                            LOGGER.error("getClassesByPackage failed, Exception e = {}", e);
+                            LOGGER.error("getClassesByPackage failed, Exception e = {}", e.getMessage());
                         }
                         if (isNotNull(jarFile))
                             clzNames.addAll(getAllClassNameByJar(jarFile, packageName, recursive));
@@ -106,7 +106,7 @@ public final class ClassGetter {
                 }
             }
         } catch (IOException e) {
-            LOGGER.error("getClassesByPackage failed, IOException e = {}", e);
+            LOGGER.error("getClassesByPackage failed, IOException e = {}", e.getMessage());
         }
 
         if (isEmpty(clzNames))
@@ -117,7 +117,7 @@ public final class ClassGetter {
                     try {
                         return forName(cn);
                     } catch (ClassNotFoundException e) {
-                        LOGGER.error("getClassesByPackage failed, ClassNotFoundException e = {}", e);
+                        LOGGER.error("getClassesByPackage failed, ClassNotFoundException e = {}", e.getMessage());
                     }
                     return null;
                 }).filter(Objects::nonNull).collect(toList());

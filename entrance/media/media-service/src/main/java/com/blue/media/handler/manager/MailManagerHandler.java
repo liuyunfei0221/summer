@@ -110,7 +110,7 @@ public class MailManagerHandler {
                     })
                     .exceptionally(t -> {
                         LOGGER.error("SEND FAILED!!!");
-                        LOGGER.error("t = {}", t);
+                        LOGGER.error("t = {}", t.getMessage());
                         return null;
                     });
 

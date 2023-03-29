@@ -183,7 +183,7 @@ public final class AccessInfoCache {
         return reactiveStringRedisTemplate.opsForValue()
                 .set(keyId, access, globalExpireDuration)
                 .onErrorResume(throwable -> {
-                    LOGGER.error("setAccessInfo failed, throwable = {}", throwable);
+                    LOGGER.error("setAccessInfo failed, throwable = {}", throwable.getMessage());
                     return just(false);
                 })
                 .doOnSuccess(ig -> cache.put(keyId, supplyAsync(() -> access, executorService)));

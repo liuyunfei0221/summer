@@ -479,7 +479,7 @@ public class AuthServiceImpl implements AuthService {
 
                             return just(true);
                         }).onErrorResume(throwable -> {
-                            LOGGER.error("throwable = {}", throwable);
+                            LOGGER.error("throwable = {}", throwable.getMessage());
                             return just(false);
                         }).toFuture().join()
         );
@@ -641,7 +641,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Mono<MemberAuth> generateAuth(Long memberId, String credentialType, String deviceType) {
-        LOGGER.info("memberId = {}, credentialType = {}, deviceType", memberId, credentialType, deviceType);
+        LOGGER.info("memberId = {}, credentialType = {}, deviceType = {}", memberId, credentialType, deviceType);
         return isValidIdentity(memberId) && isNotBlank(credentialType) && isNotBlank(deviceType) ?
                 zip(genMemberPayloadMono(memberId, credentialType, deviceType),
                         memberRoleRelationService.selectRoleIdsByMemberId(memberId)
@@ -662,7 +662,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Mono<MemberAuth> generateAuth(Long memberId, List<Long> roleIds, String credentialType, String deviceType) {
-        LOGGER.info("memberId = {}, roleIds = {}, credentialType = {}, deviceType", memberId, roleIds, credentialType, deviceType);
+        LOGGER.info("memberId = {}, roleIds = {}, credentialType = {}, deviceType = {}", memberId, roleIds, credentialType, deviceType);
         return isValidIdentity(memberId) && isValidIdentities(roleIds) && isNotBlank(credentialType) && isNotBlank(deviceType) ?
                 genMemberPayloadMono(memberId, credentialType, deviceType)
                         .flatMap(memberPayload ->
@@ -681,7 +681,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public Mono<MemberAccess> generateAccess(Long memberId, String credentialType, String deviceType) {
-        LOGGER.info("memberId = {}, credentialType = {}, deviceType", memberId, credentialType, deviceType);
+        LOGGER.info("memberId = {}, credentialType = {}, deviceType = {}", memberId, credentialType, deviceType);
         return isValidIdentity(memberId) && isNotBlank(credentialType) && isNotBlank(deviceType) ?
                 zip(genMemberPayloadMono(memberId, credentialType, deviceType),
                         memberRoleRelationService.selectRoleIdsByMemberId(memberId)
@@ -763,7 +763,7 @@ public class AuthServiceImpl implements AuthService {
                     accessInfoCache.invalidAccessInfo(keyId).flatMap(b -> this.invalidateLocalAccessByKeyId(keyId))
             ).flatMap(tuple2 -> just(tuple2.getT1() && tuple2.getT2()))
                     .onErrorResume(t -> {
-                        LOGGER.warn("t = {}", t);
+                        LOGGER.warn("t = {}", t.getMessage());
                         return just(false);
                     });
         } catch (Exception e) {
@@ -875,7 +875,7 @@ public class AuthServiceImpl implements AuthService {
                     return memberPayload;
                 })
                 .onErrorMap(throwable -> {
-                    LOGGER.info("throwable = {}", throwable);
+                    LOGGER.info("throwable = {}", throwable.getMessage());
                     return new BlueException(INVALID_PARAM);
                 });
     }
@@ -906,7 +906,7 @@ public class AuthServiceImpl implements AuthService {
                                         memberPayload.getDeviceType().intern(), parseLong(memberPayload.getLoginTime())));
                             });
                 }).onErrorMap(t -> {
-                    LOGGER.info("t = {}", t);
+                    LOGGER.info("t = {}", t.getMessage());
                     return new BlueException(INVALID_PARAM);
                 });
     }
@@ -937,7 +937,7 @@ public class AuthServiceImpl implements AuthService {
                                         memberPayload.getDeviceType().intern(), parseLong(memberPayload.getLoginTime())));
                             });
                 }).onErrorMap(t -> {
-                    LOGGER.info("t = {}", t);
+                    LOGGER.info("t = {}", t.getMessage());
                     return new BlueException(INVALID_PARAM);
                 });
     }
@@ -961,7 +961,7 @@ public class AuthServiceImpl implements AuthService {
                     return getRsaDecryptModeByIdentity(ep.getRsaDecryptMode())
                             .decipher.apply(ep.getEncrypted(), ep.getSecKey());
                 }).onErrorMap(t -> {
-                    LOGGER.info("t = {}", t);
+                    LOGGER.info("t = {}", t.getMessage());
                     return new BlueException(INVALID_PARAM);
                 });
     }

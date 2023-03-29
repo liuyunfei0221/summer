@@ -171,7 +171,7 @@ public class RiskAnalyzeServiceImpl implements RiskAnalyzeService {
                                 .flatMap(authService::parseAccess)
                                 .switchIfEmpty(defer(() -> just(VISITOR_ACCESS)))
                 )).onErrorResume(t -> {
-                    LOGGER.error("ACCESS_INFO_REMOTE_GETTER failed, t = {}", t);
+                    LOGGER.error("ACCESS_INFO_REMOTE_GETTER failed, t = {}", t.getMessage());
                     return just(SpecialAccess.VISITOR.access);
                 }).flatMap(access -> {
                     riskEvent.setMemberId(access.getId());
@@ -336,7 +336,7 @@ public class RiskAnalyzeServiceImpl implements RiskAnalyzeService {
         return riskProcessor.handle(riskEvent)
                 .flatMap(ra -> EVENTS_INSERTER.apply(riskEvent, ra)
                         .doOnSuccess(b -> LOGGER.warn("b = {}", b))
-                        .doOnError(t -> LOGGER.error("t = {}", t))
+                        .doOnError(t -> LOGGER.error("t = {}", t.getMessage()))
                         .then(just(ra))
                 );
     }
@@ -359,7 +359,7 @@ public class RiskAnalyzeServiceImpl implements RiskAnalyzeService {
         return riskProcessor.validate(riskEvent)
                 .flatMap(ra -> EVENTS_INSERTER.apply(riskEvent, ra)
                         .doOnSuccess(b -> LOGGER.warn("b = {}", b))
-                        .doOnError(t -> LOGGER.error("t = {}", t))
+                        .doOnError(t -> LOGGER.error("t = {}", t.getMessage()))
                         .then(just(ra)));
     }
 

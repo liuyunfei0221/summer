@@ -143,7 +143,7 @@ public final class BlueExecutor<T, R> {
         try {
             boolean await = countDownLatch.await(MAIN_BLOCKING_TIME_OUT, TIME_OUT_UNIT);
         } catch (InterruptedException e) {
-            LOGGER.error("await() throws an Exception = {}", e);
+            LOGGER.error("await() throws an Exception = {}", e.getMessage());
         }
 
         return collector.collect();

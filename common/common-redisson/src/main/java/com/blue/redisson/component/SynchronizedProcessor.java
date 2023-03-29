@@ -103,7 +103,7 @@ public final class SynchronizedProcessor {
                             try {
                                 lock.unlock();
                             } catch (Exception e) {
-                                LOGGER.warn("lock.unlock()  failed, e = {}", e);
+                                LOGGER.warn("lock.unlock()  failed, e = {}", e.getMessage());
                             }
                     }
                 });
@@ -141,7 +141,7 @@ public final class SynchronizedProcessor {
                 try {
                     lock.unlock();
                 } catch (Exception e) {
-                    LOGGER.error("lock.unlock() failed, e = {}", e);
+                    LOGGER.error("lock.unlock() failed, e = {}", e.getMessage());
                 }
         }
     }
@@ -201,7 +201,7 @@ public final class SynchronizedProcessor {
                 try {
                     lock.unlock();
                 } catch (Exception e) {
-                    LOGGER.warn("lock.unlock() failed, e = {}", e);
+                    LOGGER.warn("lock.unlock() failed, e = {}", e.getMessage());
                 }
         }
     }
@@ -279,7 +279,7 @@ public final class SynchronizedProcessor {
                 try {
                     lock.unlock();
                 } catch (Exception e) {
-                    LOGGER.error("lock.unlock() failed, e = {}", e);
+                    LOGGER.error("lock.unlock() failed, e = {}", e.getMessage());
                 }
         }
     }
@@ -333,7 +333,7 @@ public final class SynchronizedProcessor {
                 try {
                     lock.unlock();
                 } catch (Exception e) {
-                    LOGGER.warn("lock.unlock() failed, e = {}", e);
+                    LOGGER.warn("lock.unlock() failed, e = {}", e.getMessage());
                 }
         }
     }

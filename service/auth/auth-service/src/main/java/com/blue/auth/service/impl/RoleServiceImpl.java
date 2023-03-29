@@ -116,7 +116,7 @@ public class RoleServiceImpl implements RoleService {
 
         Role defaultRole = defaultRoles.get(0);
 
-        LOGGER.info("defaultRole = {]", defaultRole);
+        LOGGER.info("defaultRole = {}", defaultRole);
         return defaultRole;
     };
 

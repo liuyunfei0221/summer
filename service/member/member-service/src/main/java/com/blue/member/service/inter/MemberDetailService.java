@@ -70,14 +70,6 @@ public interface MemberDetailService {
     Mono<MemberDetailInfo> getMemberDetailInfoByMemberId(Long memberId);
 
     /**
-     * query member detail by member id with assert
-     *
-     * @param memberId
-     * @return
-     */
-    Mono<MemberDetailInfo> getMemberDetailInfoByMemberIdWithAssert(Long memberId);
-
-    /**
      * select members mono by ids
      *
      * @param ids

@@ -45,7 +45,7 @@ public final class ReaderCommonProcessor {
                 }
             });
         } catch (Exception e) {
-            LOGGER.error("generateSession failed, e = {}", e);
+            LOGGER.error("generateSession failed, e = {}", e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -66,7 +66,7 @@ public final class ReaderCommonProcessor {
 
             return store;
         } catch (Exception e) {
-            LOGGER.error("generateStore failed, e = {}", e);
+            LOGGER.error("generateStore failed, e = {}", e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -92,7 +92,7 @@ public final class ReaderCommonProcessor {
 
             return folder;
         } catch (Exception e) {
-            LOGGER.error("openFolder failed, e = {}", e);
+            LOGGER.error("openFolder failed, e = {}", e.getMessage());
             throw new RuntimeException(e);
         }
     }

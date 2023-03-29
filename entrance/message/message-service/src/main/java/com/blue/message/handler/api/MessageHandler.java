@@ -64,7 +64,7 @@ public final class MessageHandler implements RSocket {
                     TimeUnit.SECONDS.sleep(2);
                 }
             } catch (Exception e) {
-                LOGGER.error("e = {}", e);
+                LOGGER.error("e = {}", e.getMessage());
             }
 
             fluxSink.complete();

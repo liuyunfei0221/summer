@@ -70,7 +70,7 @@ public class ByteProcessor implements ApplicationListener<ContextRefreshedEvent>
             handlerTypeDeploy = applicationContext.getBean(HandlerTypeDeploy.class);
             LOGGER.info("handlerTypeDeploy = {}", handlerTypeDeploy);
         } catch (BeansException e) {
-            LOGGER.error("applicationContext.getBean(HandlerTypeDeploy.class), e = {}", e);
+            LOGGER.error("applicationContext.getBean(HandlerTypeDeploy.class), e = {}", e.getMessage());
             throw new RuntimeException("applicationContext.getBean(HandlerTypeDeploy.class) failed");
         }
 

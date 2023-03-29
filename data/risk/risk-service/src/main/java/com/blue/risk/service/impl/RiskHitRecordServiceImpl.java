@@ -68,7 +68,7 @@ public class RiskHitRecordServiceImpl implements RiskHitRecordService {
                         return true;
                     })
                     .onErrorResume(t -> {
-                        LOGGER.error("RECORDS_INSERTER failed, t = {}", t);
+                        LOGGER.error("RECORDS_INSERTER failed, t = {}", t.getMessage());
                         return just(false);
                     })
                     .switchIfEmpty(defer(() -> just(false)));

@@ -451,7 +451,7 @@ public class RoleResRelationServiceImpl implements RoleResRelationService {
 
         return this.selectRoleIdsByResId(resId)
                 .flatMap(ids -> {
-                    LOGGER.info("resId = {}, ids = {}", ids);
+                    LOGGER.info("resId = {}, ids = {}", resId, ids);
                     return isEmpty(ids) ? just(emptyList()) : roleService.selectRoleByIds(ids);
                 });
     }

@@ -83,10 +83,10 @@ final class MessageProcessor {
             BlueChecker.isNotEmpty(infoMap) ? infoMap.entrySet().stream()
                     .sorted((a, b) -> {
                         if (DEFAULT_LANGUAGE.equals(lowerCase(a.getValue().getIdentity())))
-                            return MIN_VALUE;
+                            return -1;
 
                         if (DEFAULT_LANGUAGE.equals(lowerCase(b.getValue().getIdentity())))
-                            return MAX_VALUE;
+                            return 1;
 
                         return a.getKey().compareTo(b.getKey());
                     })

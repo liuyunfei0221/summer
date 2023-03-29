@@ -70,14 +70,6 @@ public interface RealNameService {
     Mono<RealNameInfo> getRealNameInfoByMemberId(Long memberId);
 
     /**
-     * query real name info by member id with assert
-     *
-     * @param memberId
-     * @return
-     */
-    Mono<RealNameInfo> getRealNameInfoByMemberIdWithAssert(Long memberId);
-
-    /**
      * select real name mono by ids
      *
      * @param ids

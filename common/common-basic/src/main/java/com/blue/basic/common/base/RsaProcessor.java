@@ -118,7 +118,7 @@ public final class RsaProcessor {
             source = null;
             return outputStream.toByteArray();
         } catch (Exception e) {
-            LOGGER.error("handleBySegment failed, e = {}", e);
+            LOGGER.error("handleBySegment failed, e = {}", e.getMessage());
             throw new BlueException(DECRYPTION_FAILED);
         }
     }
@@ -148,7 +148,7 @@ public final class RsaProcessor {
             source = null;
             return signature;
         } catch (Exception e) {
-            LOGGER.error("signBySegment failed, e = {}", e);
+            LOGGER.error("signBySegment failed, e = {}", e.getMessage());
             throw new BlueException(DECRYPTION_FAILED);
         }
     }
@@ -170,7 +170,7 @@ public final class RsaProcessor {
 
             return ENCODER.encodeToString(handleBySegment(data.getBytes(DEFAULT_CHARSET), cipher, ENCRYPT));
         } catch (Exception e) {
-            LOGGER.error("encryptByPrivateKey failed, e = {}", e);
+            LOGGER.error("encryptByPrivateKey failed, e = {}", e.getMessage());
             throw new BlueException(DECRYPTION_FAILED);
         }
     }
@@ -192,7 +192,7 @@ public final class RsaProcessor {
 
             return new String(handleBySegment(DECODER.decode(secData), cipher, DECRYPT), DEFAULT_CHARSET);
         } catch (Exception e) {
-            LOGGER.error("decryptByPublicKey failed, e = {}", e);
+            LOGGER.error("decryptByPublicKey failed, e = {}", e.getMessage());
             throw new BlueException(DECRYPTION_FAILED);
         }
     }
@@ -214,7 +214,7 @@ public final class RsaProcessor {
 
             return ENCODER.encodeToString(handleBySegment(data.getBytes(DEFAULT_CHARSET), cipher, ENCRYPT));
         } catch (Exception e) {
-            LOGGER.error("encryptByPublicKey failed, e = {}", e);
+            LOGGER.error("encryptByPublicKey failed, e = {}", e.getMessage());
             throw new BlueException(DECRYPTION_FAILED);
         }
     }
@@ -236,7 +236,7 @@ public final class RsaProcessor {
 
             return new String(handleBySegment(DECODER.decode(secData), cipher, DECRYPT), DEFAULT_CHARSET);
         } catch (Exception e) {
-            LOGGER.error("decryptByPrivateKey failed, e = {}", e);
+            LOGGER.error("decryptByPrivateKey failed, e = {}", e.getMessage());
             throw new BlueException(DECRYPTION_FAILED);
         }
     }
@@ -258,7 +258,7 @@ public final class RsaProcessor {
 
             return new String(ENCODER.encode(signBySegment(data.getBytes(DEFAULT_CHARSET), signature, SIGN).sign()), DEFAULT_CHARSET);
         } catch (Exception e) {
-            LOGGER.error("sign failed, e = {}", e);
+            LOGGER.error("sign failed, e = {}", e.getMessage());
             throw new BlueException(DECRYPTION_FAILED);
         }
     }
@@ -283,7 +283,7 @@ public final class RsaProcessor {
 
             return signBySegment(data.getBytes(DEFAULT_CHARSET), signature, VERIFY).verify(DECODER.decode(sign.getBytes(DEFAULT_CHARSET)));
         } catch (Exception e) {
-            LOGGER.error("verify failed, e = {}", e);
+            LOGGER.error("verify failed, e = {}", e.getMessage());
             throw new BlueException(DECRYPTION_FAILED);
         }
     }

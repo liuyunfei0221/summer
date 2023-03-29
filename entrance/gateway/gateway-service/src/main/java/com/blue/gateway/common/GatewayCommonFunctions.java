@@ -38,10 +38,10 @@ public final class GatewayCommonFunctions extends CommonFunctions {
                 })
                 .doFinally(signalType -> {
                     LOGGER.info("signalType = {}", signalType.toString());
-                    LOGGER.error("throwable = {}", throwable.toString());
+                    LOGGER.error("throwable = {}", throwable.getMessage());
                 }).subscribe();
 
-        LOGGER.info("throwable = {}", throwable.toString());
+        LOGGER.info("throwable = {}", throwable.getMessage());
         if (throwable instanceof BlueException)
             throw (BlueException) throwable;
 

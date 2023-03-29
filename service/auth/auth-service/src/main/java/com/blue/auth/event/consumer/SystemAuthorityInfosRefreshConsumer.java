@@ -49,7 +49,8 @@ public final class SystemAuthorityInfosRefreshConsumer implements BlueLifecycle 
                         .ifPresent(ee -> just(ee)
                                 .then(authControlService.refreshSystemAuthorityInfos())
                                 .doOnError(throwable -> LOGGER.info("refreshSystemAuthorityInfos failed, ee = {}, throwable = {}", ee, throwable))
-                                .subscribe(ig -> LOGGER.info("refreshSystemAuthorityInfos, ig = {}, ee = {}", ig, ee)));
+                                .doOnEach(voidSignal -> LOGGER.info("refreshSystemAuthorityInfos, voidSignal = {}, ee = {}", voidSignal, ee))
+                                .subscribe());
 
         this.pulsarListener = generateListener(pulsarClient, blueConsumerConfig.getByKey(SYSTEM_AUTHORITY_INFOS_REFRESH.name), dataConsumer);
     }

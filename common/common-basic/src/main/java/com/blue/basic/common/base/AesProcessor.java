@@ -62,7 +62,7 @@ public final class AesProcessor {
             DECRYPT = getInstance(ALGORITHM);
             DECRYPT.init(DECRYPT_MODE, key);
         } catch (Exception e) {
-            LOGGER.error("construct failed, e = {}", e);
+            LOGGER.error("construct failed, e = {}", e.getMessage());
             throw new RuntimeException("construct failed, e = " + e);
         }
     }
@@ -80,7 +80,7 @@ public final class AesProcessor {
         try {
             return ENCODER.encodeToString(ENCRYPT.doFinal(originalData.getBytes(UTF_8)));
         } catch (Exception e) {
-            LOGGER.error("encrypt failed, e = {}", e);
+            LOGGER.error("encrypt failed, e = {}", e.getMessage());
             throw new BlueException(DECRYPTION_FAILED);
         }
     }
@@ -98,7 +98,7 @@ public final class AesProcessor {
         try {
             return new String(DECRYPT.doFinal(DECODER.decode(encryptData.getBytes(UTF_8))), UTF_8);
         } catch (Exception e) {
-            LOGGER.error("decrypt failed, e = {}", e);
+            LOGGER.error("decrypt failed, e = {}", e.getMessage());
             throw new BlueException(DECRYPTION_FAILED);
         }
     }
@@ -116,7 +116,7 @@ public final class AesProcessor {
         try {
             return ENCRYPT.doFinal(originalData);
         } catch (Exception e) {
-            LOGGER.error("encrypt failed, e = {}", e);
+            LOGGER.error("encrypt failed, e = {}", e.getMessage());
             throw new BlueException(DECRYPTION_FAILED);
         }
     }
@@ -134,7 +134,7 @@ public final class AesProcessor {
         try {
             return DECRYPT.doFinal(encryptData);
         } catch (Exception e) {
-            LOGGER.error("decrypt failed, e = {}", e);
+            LOGGER.error("decrypt failed, e = {}", e.getMessage());
             throw new BlueException(DECRYPTION_FAILED);
         }
     }

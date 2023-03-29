@@ -52,7 +52,7 @@ import static reactor.core.publisher.Mono.*;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "unused", "JavadocDeclaration"})
+@SuppressWarnings({"AliControlFlowStatementWithoutBraces", "unused", "JavadocDeclaration", "DuplicatedCode"})
 public class ImageVerifyHandler implements VerifyHandler {
 
     private static final Logger LOGGER = getLogger(ImageVerifyHandler.class);
@@ -145,7 +145,7 @@ public class ImageVerifyHandler implements VerifyHandler {
                 try {
                     write = ImageIO.write(captchaProcessor.generateImage(verify), imageType, outputStream);
                 } catch (IOException e) {
-                    LOGGER.error("ImageIO.write failed, e = {}", e);
+                    LOGGER.error("ImageIO.write failed, e = {}", e.getMessage());
                 }
                 return write;
             }, executorService))
@@ -158,7 +158,7 @@ public class ImageVerifyHandler implements VerifyHandler {
         try {
             stream.close();
         } catch (Exception e) {
-            LOGGER.error("FastByteArrayOutputStream close failed, e = {}", e);
+            LOGGER.error("FastByteArrayOutputStream close failed, e = {}", e.getMessage());
         }
     };
 

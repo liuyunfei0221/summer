@@ -367,30 +367,7 @@ public class RealNameServiceImpl implements RealNameService {
             throw new BlueException(INVALID_IDENTITY);
 
         return justOrEmpty(realNameMapper.selectByMemberId(memberId))
-                .map(REAL_NAME_2_REAL_NAME_INFO)
-                .switchIfEmpty(defer(() -> justOrEmpty(this.initRealName(memberId)).map(REAL_NAME_2_REAL_NAME_INFO)))
-                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))));
-    }
-
-    /**
-     * query real name info by member id with assert
-     *
-     * @param memberId
-     * @return
-     */
-    @Override
-    public Mono<RealNameInfo> getRealNameInfoByMemberIdWithAssert(Long memberId) {
-        LOGGER.info("memberId = {}", memberId);
-        if (isInvalidIdentity(memberId))
-            throw new BlueException(INVALID_IDENTITY);
-
-        return getRealNameInfoByMemberId(memberId)
-                .flatMap(mdi ->
-                        isValidStatus(mdi.getStatus()) ?
-                                just(mdi)
-                                :
-                                error(() -> new BlueException(DATA_HAS_BEEN_FROZEN))
-                );
+                .map(REAL_NAME_2_REAL_NAME_INFO);
     }
 
     /**

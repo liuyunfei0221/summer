@@ -145,7 +145,7 @@ public final class AccessBatchExpireProcessor {
                     size++;
                 }
             } catch (Exception e) {
-                LOGGER.warn("stringRedisTemplate.executePipelined failed, e = {}", e);
+                LOGGER.warn("stringRedisTemplate.executePipelined failed, e = {}", e.getMessage());
             }
 
             LOGGER.info("refreshed size: {}", size);
@@ -160,7 +160,7 @@ public final class AccessBatchExpireProcessor {
         try {
             handleExpireTask();
         } catch (Exception e) {
-            LOGGER.error("scheduledExpireTask failed, e = {}", e);
+            LOGGER.error("scheduledExpireTask failed, e = {}", e.getMessage());
         }
     }
 

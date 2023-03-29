@@ -45,7 +45,7 @@ import static reactor.core.publisher.Mono.using;
  *
  * @author liuyunfei
  */
-@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "unused"})
+@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "unused", "ResultOfMethodCallIgnored"})
 public final class LocalDiskByteHandler implements ByteHandler {
 
     private static final Logger LOGGER = getLogger(LocalDiskByteHandler.class);
@@ -179,7 +179,7 @@ public final class LocalDiskByteHandler implements ByteHandler {
         try {
             channel.close();
         } catch (Exception e) {
-            LOGGER.error("FileChannel close failed, e = {}", e);
+            LOGGER.error("FileChannel close failed, e = {}", e.getMessage());
         }
     };
 

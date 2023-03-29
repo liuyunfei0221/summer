@@ -53,7 +53,7 @@ public class RealNameProcessor implements ApplicationListener<ContextRefreshedEv
             validatorTypeDeploy = applicationContext.getBean(ValidatorTypeDeploy.class);
             LOGGER.info("RealNameProcessor onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent), validatorTypeDeploy = {}", validatorTypeDeploy);
         } catch (BeansException e) {
-            LOGGER.error("applicationContext.getBean(ValidatorTypeDeploy.class), e = {}", e);
+            LOGGER.error("applicationContext.getBean(ValidatorTypeDeploy.class), e = {}", e.getMessage());
             throw new RuntimeException("applicationContext.getBean(ValidatorTypeDeploy.class) failed");
         }
 

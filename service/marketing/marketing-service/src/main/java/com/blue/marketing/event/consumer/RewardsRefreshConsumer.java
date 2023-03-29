@@ -49,7 +49,8 @@ public final class RewardsRefreshConsumer implements BlueLifecycle {
                         .ifPresent(ee -> just(ee)
                                 .then(signInService.refreshDayRewards())
                                 .doOnError(throwable -> LOGGER.info("signInService.refreshDayRewards() failed, ee = {}, throwable = {}", ee, throwable))
-                                .subscribe(ig -> LOGGER.info("signInService.refreshDayRewards(), ig = {}, ee = {}", ig, ee)));
+                                .doOnEach(voidSignal -> LOGGER.info("signInService.refreshDayRewards(), voidSignal = {}, ee = {}", voidSignal, ee))
+                                .subscribe());
 
         this.pulsarListener = BluePulsarListenerGenerator.generateListener(pulsarClient, blueConsumerConfig.getByKey(REWARDS_REFRESH.name), dataConsumer);
     }

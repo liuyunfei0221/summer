@@ -50,12 +50,12 @@ public class ActiveMemberStatisticsCommand implements StatisticsCommand {
                     .ifPresent(mid -> {
                         activeStatisticsService.markActive(mid, MA, D)
                                 .onErrorResume(t -> {
-                                    LOGGER.error("markActive failed, t = {}", t);
+                                    LOGGER.error("markActive failed, t = {}", t.getMessage());
                                     return just(false);
                                 }).toFuture().join();
                         activeStatisticsService.markActive(mid, MA, M)
                                 .onErrorResume(t -> {
-                                    LOGGER.error("markActive failed, t = {}", t);
+                                    LOGGER.error("markActive failed, t = {}", t.getMessage());
                                     return just(false);
                                 }).toFuture().join();
 
@@ -76,12 +76,12 @@ public class ActiveMemberStatisticsCommand implements StatisticsCommand {
                 .ifPresent(memberId -> {
                             LOGGER.info("dayActiveCount = " + activeStatisticsService.selectActiveSimple(MA, D)
                                     .onErrorResume(t -> {
-                                        LOGGER.error("selectActiveSimple failed, t = {}", t);
+                                        LOGGER.error("selectActiveSimple failed, t = {}", t.getMessage());
                                         return empty();
                                     }).toFuture().join());
                             LOGGER.info("monthActiveCount = " + activeStatisticsService.selectActiveSimple(MA, M)
                                     .onErrorResume(t -> {
-                                        LOGGER.error("selectActiveSimple failed, t = {}", t);
+                                        LOGGER.error("selectActiveSimple failed, t = {}", t.getMessage());
                                         return empty();
                                     }).toFuture().join());
                         }

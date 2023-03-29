@@ -380,7 +380,7 @@ public class StyleServiceImpl implements StyleService {
             idAndMemberNameMapping = rpcMemberBasicServiceConsumer.selectMemberBasicInfoByIds(OPERATORS_GETTER.apply(singletonList(newActiveStyle)))
                     .toFuture().join().parallelStream().collect(toMap(MemberBasicInfo::getId, MemberBasicInfo::getName, (a, b) -> a));
         } catch (Exception e) {
-            LOGGER.error("generate idAndNameMapping failed, e = {}", e);
+            LOGGER.error("generate idAndNameMapping failed, e = {}", e.getMessage());
             idAndMemberNameMapping = emptyMap();
         }
 

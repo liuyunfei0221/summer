@@ -70,7 +70,7 @@ public class RiskControlServiceImpl implements RiskControlService {
             illegalMarkProducer.send(illegalMarkEvent);
             return just(true);
         } catch (Exception e) {
-            LOGGER.info("event send failed, e = {}", e);
+            LOGGER.info("event send failed, e = {}", e.getMessage());
             return just(true);
         }
     }
@@ -120,7 +120,7 @@ public class RiskControlServiceImpl implements RiskControlService {
         return fromRunnable(() -> invalidAuthProducer.send(new InvalidAuthEvent(memberId)))
                 .then(just(true))
                 .onErrorResume(t -> {
-                    LOGGER.error("invalidAuthProducer send failed, t = {}", t);
+                    LOGGER.error("invalidAuthProducer send failed, t = {}", t.getMessage());
                     return just(false);
                 });
     }

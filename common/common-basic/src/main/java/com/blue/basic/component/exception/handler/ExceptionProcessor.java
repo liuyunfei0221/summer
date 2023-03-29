@@ -84,7 +84,7 @@ public final class ExceptionProcessor {
      * @return
      */
     public static ExceptionElement handle(Throwable throwable, List<String> languages) {
-        LOGGER.info("throwable = {}", throwable);
+        LOGGER.info("throwable = {}", throwable.getMessage());
 
         Throwable original = getOriginalThrowable(throwable);
 
@@ -96,7 +96,7 @@ public final class ExceptionProcessor {
                 LOGGER.error("handle failed, throwable = {}, e = {}", throwable, e);
             }
 
-        LOGGER.error("unknown exception, throwable = {}", throwable);
+        LOGGER.error("unknown exception, throwable = {}", throwable.getMessage());
         return EXP_RES_GETTER.apply(languages, UNKNOWN_EXP_HANDLE_INFO);
     }
 

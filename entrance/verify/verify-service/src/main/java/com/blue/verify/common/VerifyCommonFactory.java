@@ -50,10 +50,10 @@ public final class VerifyCommonFactory extends CommonFunctions {
                     return empty();
                 }).doFinally(signalType -> {
                     LOGGER.info("signalType = {}", signalType.toString());
-                    LOGGER.error("throwable = {}", throwable);
+                    LOGGER.error("throwable = {}", throwable.getMessage());
                 }).subscribe();
 
-        LOGGER.info("throwable = {}", throwable);
+        LOGGER.info("throwable = {}", throwable.getMessage());
         if (throwable instanceof BlueException)
             throw (BlueException) throwable;
 

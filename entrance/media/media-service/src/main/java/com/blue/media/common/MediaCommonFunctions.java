@@ -65,10 +65,10 @@ public final class MediaCommonFunctions extends CommonFunctions {
                     return empty();
                 }).doFinally(signalType -> {
                     LOGGER.info("signalType = {}", signalType.toString());
-                    LOGGER.error("throwable = {}", throwable);
+                    LOGGER.error("throwable = {}", throwable.getMessage());
                 }).subscribe();
 
-        LOGGER.error("throwable = {}", throwable);
+        LOGGER.error("throwable = {}", throwable.getMessage());
         if (throwable instanceof BlueException)
             throw (BlueException) throwable;
 

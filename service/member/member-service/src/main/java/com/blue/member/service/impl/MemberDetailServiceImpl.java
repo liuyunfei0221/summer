@@ -434,30 +434,7 @@ public class MemberDetailServiceImpl implements MemberDetailService {
             throw new BlueException(INVALID_IDENTITY);
 
         return justOrEmpty(memberDetailMapper.selectByMemberId(memberId))
-                .map(MEMBER_DETAIL_2_MEMBER_DETAIL_INFO)
-                .switchIfEmpty(defer(() -> justOrEmpty(this.initMemberDetail(memberId)).map(MEMBER_DETAIL_2_MEMBER_DETAIL_INFO)))
-                .switchIfEmpty(defer(() -> error(() -> new BlueException(DATA_NOT_EXIST))));
-    }
-
-    /**
-     * query member detail by member id with assert
-     *
-     * @param memberId
-     * @return
-     */
-    @Override
-    public Mono<MemberDetailInfo> getMemberDetailInfoByMemberIdWithAssert(Long memberId) {
-        LOGGER.info("memberId = {}", memberId);
-        if (isInvalidIdentity(memberId))
-            throw new BlueException(INVALID_IDENTITY);
-
-        return getMemberDetailInfoByMemberId(memberId)
-                .flatMap(mdi ->
-                        isValidStatus(mdi.getStatus()) ?
-                                just(mdi)
-                                :
-                                error(() -> new BlueException(DATA_HAS_BEEN_FROZEN))
-                );
+                .map(MEMBER_DETAIL_2_MEMBER_DETAIL_INFO);
     }
 
     /**

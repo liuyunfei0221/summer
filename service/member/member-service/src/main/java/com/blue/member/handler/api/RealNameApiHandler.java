@@ -3,6 +3,7 @@ package com.blue.member.handler.api;
 import com.blue.basic.model.common.BlueResponse;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.member.model.RealNameUpdateParam;
+import com.blue.member.service.inter.RealNameControlService;
 import com.blue.member.service.inter.RealNameService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -27,8 +28,11 @@ public final class RealNameApiHandler {
 
     private final RealNameService realNameService;
 
-    public RealNameApiHandler(RealNameService realNameService) {
+    private final RealNameControlService realNameControlService;
+
+    public RealNameApiHandler(RealNameService realNameService, RealNameControlService realNameControlService) {
         this.realNameService = realNameService;
+        this.realNameControlService = realNameControlService;
     }
 
     /**
@@ -40,7 +44,7 @@ public final class RealNameApiHandler {
     public Mono<ServerResponse> get(ServerRequest serverRequest) {
         return getAccessReact(serverRequest)
                 .flatMap(acc ->
-                        realNameService.getRealNameInfoByMemberIdWithAssert(acc.getId())
+                        realNameControlService.getRealNameInfoByMemberIdWithAssert(acc.getId())
                                 .flatMap(mri ->
                                         ok().contentType(APPLICATION_JSON)
                                                 .body(success(mri, serverRequest), BlueResponse.class))
