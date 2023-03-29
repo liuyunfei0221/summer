@@ -4170,7 +4170,7 @@
 									},
 									{
 										"key": "Authorization",
-										"value": "eyJraWQiOiI1NjcyZGVmOGI5YzBiYzIzMWQ2MGVkNGQ5ZWVlZDg5OTIzYzhhMTJiNjVhMDRlMWI5ODYxZGVjMWM4MGUxYTdhN2M4ZmYxOTRmNTg5NmE5NDU0YTBkMDY1ZmJlMTc1YWM5M2FlOWE0MzE3MTJiYjgxNWMzNGVmZWI5NmViMWU1ZSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE3MTc3NDIzOTQzNDM0MjVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNzE3NzQyMzk0MzQzNDI1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY3MTg2MTA2IiwibmJmIjoxNjY3MTg2MTA2LCJ0IjoiS3hjTnlEMHh4cm4iLCJlYXMiOjE2NzQ5NjIxMDY1MjIsImV4cCI6MTY3NDk2MjEwNiwiaWF0IjoxNjY3MTg2MTA2LCJqdGkiOiJTNWlVbXEyMzFPM0llZUZZd29Gc1FFeWpUNnhteEprRyJ9.Gp4uvhneYqItmRAydNk8kwkKLQDjqZ1jvbDU1d5QZLQQCqvd1fs7R56lIoBhie4cQw8n93hkrbnLj4Qf4wF9Dw",
+										"value": "eyJraWQiOiIxYzFiMGNmYTNhYzQ5MDllYzQ2MTU4ZWY0OWE4YjkyZjdmMTcyMjNmNzlmMjEzNDUxYWVhYzM3NWFkNjZhNDYwZTg0NDdmZjI4ZDAzNmQ5NTViOWRhMWY5ZDNiMDQzMTZhNzJmNmQyMmQ0OWRjMDRkMDdlYzg4MGVlYjQyNWQxMiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NjU3MDkwOTMzNTYwNDQyODlfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjY1NzA5MDkzMzU2MDQ0Mjg5IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjc5OTkxMTY3IiwibmJmIjoxNjc5OTkxMTY3LCJ0Ijoib29RRlFGaVBKQjgiLCJlYXMiOjE2ODc3NjcxNjc3NjYsImV4cCI6MTY4Nzc2NzE2NywiaWF0IjoxNjc5OTkxMTY3LCJqdGkiOiJBNm5oRGFQSWNvY013bEljaDBRTG1xMG95YkFiMklEVSJ9.W2gEwvbl4GIJETI1J_dRjCqK9CDoYFdVhn6fpxWsdOu7w2oN5c4-FxaPaSSlVX4tJV6NTMlxOw_R5pRxkwefWQ",
 										"type": "text"
 									}
 								],
@@ -4204,7 +4204,7 @@
 									},
 									{
 										"key": "Authorization",
-										"value": "eyJraWQiOiI1NjcyZGVmOGI5YzBiYzIzMWQ2MGVkNGQ5ZWVlZDg5OTIzYzhhMTJiNjVhMDRlMWI5ODYxZGVjMWM4MGUxYTdhN2M4ZmYxOTRmNTg5NmE5NDU0YTBkMDY1ZmJlMTc1YWM5M2FlOWE0MzE3MTJiYjgxNWMzNGVmZWI5NmViMWU1ZSIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NTE3MTc3NDIzOTQzNDM0MjVfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjUxNzE3NzQyMzk0MzQzNDI1IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjY3MTg2MTA2IiwibmJmIjoxNjY3MTg2MTA2LCJ0IjoiS3hjTnlEMHh4cm4iLCJlYXMiOjE2NzQ5NjIxMDY1MjIsImV4cCI6MTY3NDk2MjEwNiwiaWF0IjoxNjY3MTg2MTA2LCJqdGkiOiJTNWlVbXEyMzFPM0llZUZZd29Gc1FFeWpUNnhteEprRyJ9.Gp4uvhneYqItmRAydNk8kwkKLQDjqZ1jvbDU1d5QZLQQCqvd1fs7R56lIoBhie4cQw8n93hkrbnLj4Qf4wF9Dw",
+										"value": "eyJraWQiOiIxYzFiMGNmYTNhYzQ5MDllYzQ2MTU4ZWY0OWE4YjkyZjdmMTcyMjNmNzlmMjEzNDUxYWVhYzM3NWFkNjZhNDYwZTg0NDdmZjI4ZDAzNmQ5NTViOWRhMWY5ZDNiMDQzMTZhNzJmNmQyMmQ0OWRjMDRkMDdlYzg4MGVlYjQyNWQxMiIsImN0eSI6ImFwcGxpY2F0aW9uL2p3dCIsInR5cCI6IkpXVCIsImFsZyI6IkhTNTEyIn0.eyJzdWIiOiJIZWxsbyIsImciOiJNIiwiaCI6IkJfU046NjU3MDkwOTMzNTYwNDQyODlfQ0xJX00iLCJpc3MiOiJCbHVlIiwiaSI6IjY1NzA5MDkzMzU2MDQ0Mjg5IiwibiI6IlBWQVIiLCJhdWQiOiJCbHVlciIsInMiOiIxNjc5OTkxMTY3IiwibmJmIjoxNjc5OTkxMTY3LCJ0Ijoib29RRlFGaVBKQjgiLCJlYXMiOjE2ODc3NjcxNjc3NjYsImV4cCI6MTY4Nzc2NzE2NywiaWF0IjoxNjc5OTkxMTY3LCJqdGkiOiJBNm5oRGFQSWNvY013bEljaDBRTG1xMG95YkFiMklEVSJ9.W2gEwvbl4GIJETI1J_dRjCqK9CDoYFdVhn6fpxWsdOu7w2oN5c4-FxaPaSSlVX4tJV6NTMlxOw_R5pRxkwefWQ",
 										"type": "text"
 									}
 								],
@@ -6078,7 +6078,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"verifyType\":\"SMS\",\r\n    \"businessType\":\"PVL_WAR\",\r\n    \"destination\":\"13131693996\"\r\n}"
+							"raw": "{\r\n    \"verifyType\":\"SMS\",\r\n    \"businessType\":\"PVL_WAR\",\r\n    \"destination\":\"86-13131693996\"\r\n}"
 						},
 						"url": {
 							"raw": "localhost:15000/blue-verify/verify/generate",
@@ -6639,7 +6639,53 @@
 					"response": []
 				},
 				{
-					"name": "查询",
+					"name": "es创建索引",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"settings\": {\r\n\t\t\"index\": {\r\n\t\t\t\"number_of_shards\": \"1\",\r\n\t\t\t\"number_of_replicas\": \"1\"\r\n\t\t}\r\n\t},\r\n\t\"mappings\": {\r\n\t\t\"properties\": {\r\n\t\t\t\"addressDetail\": {\r\n\t\t\t\t\"type\": \"text\",\r\n\t\t\t\t\"analyzer\": \"ik_max_word\"\r\n\t\t\t},\r\n\t\t\t\"city\": {\r\n\t\t\t\t\"type\": \"text\"\r\n\t\t\t},\r\n\t\t\t\"cityId\": {\r\n\t\t\t\t\"type\": \"long\"\r\n\t\t\t},\r\n\t\t\t\"contact\": {\r\n\t\t\t\t\"type\": \"text\",\r\n\t\t\t\t\"analyzer\": \"ik_max_word\"\r\n\t\t\t},\r\n\t\t\t\"contactDetail\": {\r\n\t\t\t\t\"type\": \"text\",\r\n\t\t\t\t\"analyzer\": \"ik_max_word\"\r\n\t\t\t},\r\n\t\t\t\"content\": {\r\n\t\t\t\t\"type\": \"text\",\r\n\t\t\t\t\"analyzer\": \"ik_max_word\"\r\n\t\t\t},\r\n\t\t\t\"country\": {\r\n\t\t\t\t\"type\": \"text\"\r\n\t\t\t},\r\n\t\t\t\"countryId\": {\r\n\t\t\t\t\"type\": \"long\"\r\n\t\t\t},\r\n\t\t\t\"createTime\": {\r\n\t\t\t\t\"type\": \"long\"\r\n\t\t\t},\r\n\t\t\t\"creator\": {\r\n\t\t\t\t\"type\": \"long\"\r\n\t\t\t},\r\n\t\t\t\"detail\": {\r\n\t\t\t\t\"type\": \"text\",\r\n\t\t\t\t\"analyzer\": \"ik_max_word\"\r\n\t\t\t},\r\n\t\t\t\"extra\": {\r\n\t\t\t\t\"type\": \"text\",\r\n\t\t\t\t\"analyzer\": \"ik_max_word\"\r\n\t\t\t},\r\n\t\t\t\"id\": {\r\n\t\t\t\t\"type\": \"long\"\r\n\t\t\t},\r\n\t\t\t\"priority\": {\r\n\t\t\t\t\"type\": \"long\"\r\n\t\t\t},\r\n\t\t\t\"state\": {\r\n\t\t\t\t\"type\": \"text\"\r\n\t\t\t},\r\n\t\t\t\"stateId\": {\r\n\t\t\t\t\"type\": \"long\"\r\n\t\t\t},\r\n\t\t\t\"title\": {\r\n\t\t\t\t\"type\": \"text\",\r\n\t\t\t\t\"analyzer\": \"ik_max_word\"\r\n\t\t\t},\r\n\t\t\t\"updateTime\": {\r\n\t\t\t\t\"type\": \"long\"\r\n\t\t\t},\r\n\t\t\t\"updater\": {\r\n\t\t\t\t\"type\": \"long\"\r\n\t\t\t}\r\n\t\t}\r\n\t}\r\n}"
+						},
+						"url": {
+							"raw": "localhost:9200/shine",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"shine"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "es查询索引",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:9200/shine",
+							"host": [
+								"localhost"
+							],
+							"port": "9200",
+							"path": [
+								"shine"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "es查询数据",
 					"request": {
 						"method": "GET",
 						"header": [],
