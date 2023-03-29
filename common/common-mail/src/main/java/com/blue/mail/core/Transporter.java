@@ -47,7 +47,7 @@ final class Transporter {
 
             LOGGER.warn("Transporter connect");
         } catch (MessagingException e) {
-            LOGGER.error("Transport connect failed, e = {}", e);
+            LOGGER.error("Transport connect failed, e = {}", e.getMessage());
             throw new RuntimeException("Transport connect failed, e = " + e);
         }
     };
@@ -56,7 +56,7 @@ final class Transporter {
         try {
             message.setFrom(new InternetAddress(FROM_ADDRESS));
         } catch (MessagingException e) {
-            LOGGER.error("MESSAGE_COMPLETER failed, e = {}", e);
+            LOGGER.error("MESSAGE_COMPLETER failed, e = {}", e.getMessage());
             throw new RuntimeException(e);
         }
     };
