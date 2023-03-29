@@ -5,12 +5,9 @@ import com.blue.finance.api.model.FinanceAccountInfo;
 import com.blue.finance.service.inter.FinanceControlService;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.apache.dubbo.config.annotation.Method;
-import reactor.util.Logger;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
-
-import static reactor.util.Loggers.getLogger;
 
 /**
  * rpc finance account provider
@@ -25,8 +22,6 @@ import static reactor.util.Loggers.getLogger;
                 @Method(name = "getFinanceAccountInfoByMemberId", async = true)
         })
 public class RpcFinanceAccountServiceProvider implements RpcFinanceAccountService {
-
-    private static final Logger LOGGER = getLogger(RpcFinanceAccountServiceProvider.class);
 
     private final FinanceControlService financeControlService;
 

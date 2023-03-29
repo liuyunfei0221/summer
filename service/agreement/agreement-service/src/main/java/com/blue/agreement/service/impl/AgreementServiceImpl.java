@@ -21,12 +21,12 @@ import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.redisson.component.SynchronizedProcessor;
 import com.github.benmanes.caffeine.cache.AsyncCache;
+import org.slf4j.Logger;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.time.Duration;
 import java.util.List;
@@ -59,11 +59,11 @@ import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static reactor.core.publisher.Flux.concat;
 import static reactor.core.publisher.Mono.*;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * agreement service impl

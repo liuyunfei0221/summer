@@ -6,12 +6,12 @@ import com.blue.basic.model.exps.BlueException;
 import com.blue.media.api.model.FileUploadResult;
 import com.blue.media.component.file.processor.inter.ByteHandler;
 import com.blue.media.config.deploy.LocalDiskFileDeploy;
+import org.slf4j.Logger;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.http.codec.multipart.Part;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.io.File;
 import java.nio.channels.FileChannel;
@@ -32,12 +32,12 @@ import static java.nio.channels.FileChannel.open;
 import static java.nio.file.StandardOpenOption.*;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.commons.lang3.StringUtils.lastIndexOf;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.core.io.buffer.DataBufferUtils.readByteChannel;
 import static org.springframework.core.io.buffer.DataBufferUtils.release;
 import static reactor.core.publisher.BufferOverflowStrategy.ERROR;
 import static reactor.core.publisher.Mono.just;
 import static reactor.core.publisher.Mono.using;
-import static reactor.util.Loggers.getLogger;
 
 
 /**

@@ -11,9 +11,9 @@ import com.blue.risk.model.RiskHitRecordCondition;
 import com.blue.risk.repository.entity.RiskHitRecord;
 import com.blue.risk.repository.mapper.RiskHitRecordMapper;
 import com.blue.risk.service.inter.RiskHitRecordService;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -32,8 +32,8 @@ import static com.blue.risk.constant.RiskHitRecordSortAttribute.CURSOR;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.slf4j.LoggerFactory.getLogger;
 import static reactor.core.publisher.Mono.*;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * risk hit record service impl

@@ -6,13 +6,13 @@ import com.blue.member.api.model.RealNameValidateResult;
 import com.blue.member.component.realname.validator.inter.RealNameValidator;
 import com.blue.member.config.deploy.ValidatorTypeDeploy;
 import com.blue.member.repository.entity.RealName;
+import org.slf4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import reactor.util.Logger;
 
 import java.util.Map;
 
@@ -20,8 +20,8 @@ import static com.blue.basic.common.base.BlueChecker.isEmpty;
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static java.util.Optional.ofNullable;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * real name processor

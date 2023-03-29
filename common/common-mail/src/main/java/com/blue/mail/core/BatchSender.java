@@ -7,7 +7,7 @@ import com.blue.mail.api.conf.SenderAttr;
 import jakarta.mail.Message;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +28,7 @@ import static java.lang.Integer.numberOfLeadingZeros;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.runAsync;
 import static java.util.stream.Collectors.toList;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * batch sender

@@ -5,7 +5,6 @@ package com.blue.process.common.mail;//import com.blue.basic.common.base.BlueChe
 //import jakarta.mail.Session;
 //import jakarta.mail.Transport;
 //import jakarta.mail.internet.MimeMessage;
-//import reactor.util.Logger;
 //
 //import java.io.BufferedReader;
 //import java.io.File;
@@ -27,7 +26,6 @@ package com.blue.process.common.mail;//import com.blue.basic.common.base.BlueChe
 //import static java.util.concurrent.CompletableFuture.runAsync;
 //import static java.util.concurrent.TimeUnit.SECONDS;
 //import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
-//import static reactor.util.Loggers.getLogger;
 //
 //@SuppressWarnings({"JavaDoc", "AliControlFlowStatementWithoutBraces", "AlibabaLowerCamelCaseVariableNaming"})
 //public final class MailSender {

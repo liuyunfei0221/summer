@@ -20,9 +20,9 @@ import com.blue.risk.service.inter.ResourceService;
 import com.blue.risk.service.inter.RiskAnalyzeService;
 import com.blue.risk.service.inter.RiskHitRecordService;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.util.HashSet;
 import java.util.List;
@@ -48,9 +48,9 @@ import static java.time.LocalDate.ofInstant;
 import static java.time.ZoneId.systemDefault;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
+import static org.slf4j.LoggerFactory.getLogger;
 import static reactor.core.publisher.Flux.fromIterable;
 import static reactor.core.publisher.Mono.*;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * risk analyse service impl

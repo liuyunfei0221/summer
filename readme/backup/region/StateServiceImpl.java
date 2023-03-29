@@ -26,8 +26,6 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
-import reactor.util.Loggers;
 
 import java.time.Duration;
 import java.util.Collections;
@@ -80,7 +78,7 @@ import static reactor.core.publisher.Mono.*;
 @Service
 public class StateServiceImpl implements StateService {
 
-    private static final Logger LOGGER = Loggers.getLogger(CityServiceImpl.class);
+    private static final Logger LOGGER = getLogger(CityServiceImpl.class);
 
     private BlueIdentityProcessor blueIdentityProcessor;
 

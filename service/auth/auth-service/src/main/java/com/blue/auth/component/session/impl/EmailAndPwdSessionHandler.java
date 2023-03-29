@@ -11,10 +11,10 @@ import com.blue.basic.constant.auth.CredentialType;
 import com.blue.basic.model.common.BlueResponse;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.member.api.model.MemberBasicInfo;
+import org.slf4j.Logger;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,10 +32,10 @@ import static com.blue.basic.constant.common.BlueHeader.*;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.Status.VALID;
 import static java.util.Optional.ofNullable;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.*;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * email and password session handler

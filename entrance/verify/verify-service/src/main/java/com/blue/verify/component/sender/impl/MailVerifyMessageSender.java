@@ -8,8 +8,8 @@ import com.blue.verify.api.model.VerifyTemplateInfo;
 import com.blue.verify.component.sender.inter.VerifyMessageSender;
 import jakarta.mail.Message;
 import jakarta.mail.internet.InternetAddress;
+import org.slf4j.Logger;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.util.function.BiFunction;
 
@@ -17,9 +17,9 @@ import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.ConstantProcessor.assertVerifyBusinessType;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 import static com.blue.basic.constant.verify.VerifyType.MAIL;
+import static org.slf4j.LoggerFactory.getLogger;
 import static reactor.core.publisher.Mono.fromFuture;
 import static reactor.core.publisher.Mono.just;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * mail verify message sender impl

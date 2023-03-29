@@ -2,9 +2,9 @@ package com.blue.basic.common.base;
 
 import com.blue.basic.constant.common.Symbol;
 import com.blue.basic.model.exps.BlueException;
+import org.slf4j.Logger;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.cglib.core.Converter;
-import reactor.util.Logger;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -16,7 +16,7 @@ import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * bean copier base on cglib

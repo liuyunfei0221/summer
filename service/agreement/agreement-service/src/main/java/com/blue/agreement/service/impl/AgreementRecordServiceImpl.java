@@ -19,12 +19,12 @@ import com.blue.basic.model.common.SortElement;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.member.api.model.MemberBasicInfo;
+import org.slf4j.Logger;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.util.HashSet;
 import java.util.List;
@@ -48,11 +48,11 @@ import static java.util.Optional.ofNullable;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.data.domain.Example.of;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 import static reactor.core.publisher.Mono.*;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * agreement record service impl

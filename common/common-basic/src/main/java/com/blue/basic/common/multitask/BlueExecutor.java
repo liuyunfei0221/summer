@@ -1,6 +1,6 @@
 package com.blue.basic.common.multitask;
 
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.blue.basic.common.base.BlueChecker.*;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * batch executor

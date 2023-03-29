@@ -9,7 +9,7 @@ import com.blue.risk.api.model.RiskHit;
 import com.blue.risk.api.model.RiskStrategyInfo;
 import com.blue.risk.component.risk.inter.RiskHandler;
 import com.blue.risk.service.inter.RiskControlService;
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import java.util.function.Consumer;
 
@@ -19,7 +19,7 @@ import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.basic.constant.risk.RiskType.INVALID_ACCESS_TOO_FREQUENT;
 import static java.util.Optional.ofNullable;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * test risk handler

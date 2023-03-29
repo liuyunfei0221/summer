@@ -4,6 +4,7 @@ import com.blue.basic.constant.common.BlueHeader;
 import com.blue.basic.model.common.ExceptionElement;
 import com.blue.basic.model.event.DataEvent;
 import com.blue.gateway.component.event.RequestEventReporter;
+import org.slf4j.Logger;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -31,8 +31,8 @@ import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_PRE_WITH_ERROR_REPORT;
 import static java.lang.String.valueOf;
 import static java.util.Optional.ofNullable;
+import static org.slf4j.LoggerFactory.getLogger;
 import static reactor.core.publisher.Mono.*;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * error reporter

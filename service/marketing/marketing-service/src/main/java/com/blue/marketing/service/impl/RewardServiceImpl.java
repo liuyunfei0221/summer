@@ -16,11 +16,11 @@ import com.blue.marketing.repository.entity.Reward;
 import com.blue.marketing.repository.mapper.RewardMapper;
 import com.blue.marketing.service.inter.RewardService;
 import com.blue.member.api.model.MemberBasicInfo;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -42,10 +42,10 @@ import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 import static reactor.core.publisher.Mono.*;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * reward service impl

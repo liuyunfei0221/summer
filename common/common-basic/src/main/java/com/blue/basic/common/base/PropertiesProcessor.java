@@ -1,7 +1,7 @@
 package com.blue.basic.common.base;
 
+import org.slf4j.Logger;
 import org.springframework.core.io.Resource;
-import reactor.util.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,7 +17,7 @@ import static com.blue.basic.common.base.FileGetter.*;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * prop processor

@@ -2,12 +2,12 @@ package com.blue.basic.component.lifecycle.ioc;
 
 import com.blue.basic.component.lifecycle.constant.BlueLifecyclePhaseConf;
 import com.blue.basic.component.lifecycle.inter.BlueLifecycle;
+import org.slf4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.lang.NonNull;
-import reactor.util.Logger;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 
 import static java.lang.Integer.compare;
 import static java.util.Comparator.comparingInt;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * controller for blue lifecycle

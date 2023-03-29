@@ -2,6 +2,7 @@ package com.blue.redis.ioc;
 
 import com.blue.redis.api.conf.RedisConf;
 import com.blue.redis.component.*;
+import org.slf4j.Logger;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +12,6 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import reactor.util.Logger;
 
 import static com.blue.redis.api.generator.BlueBitMarkerGenerator.generateBitMarker;
 import static com.blue.redis.api.generator.BlueRateLimiterGenerator.generateLeakyBucketRateLimiter;
@@ -19,8 +19,8 @@ import static com.blue.redis.api.generator.BlueRateLimiterGenerator.generateToke
 import static com.blue.redis.api.generator.BlueRedisGenerator.*;
 import static com.blue.redis.api.generator.BlueValidatorGenerator.generateValidator;
 import static com.blue.redis.api.generator.BlueValueMarkerGenerator.generateValueMarker;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * redis configuration

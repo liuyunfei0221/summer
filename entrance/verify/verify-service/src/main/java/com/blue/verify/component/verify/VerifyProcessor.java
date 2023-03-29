@@ -10,6 +10,7 @@ import com.blue.verify.api.model.VerifyParam;
 import com.blue.verify.component.verify.inter.VerifyHandler;
 import com.blue.verify.config.deploy.TuringDeploy;
 import com.blue.verify.remote.consumer.RpcAuthServiceConsumer;
+import org.slf4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.util.Collections;
 import java.util.List;
@@ -42,9 +42,9 @@ import static com.blue.basic.constant.verify.VerifyType.IMAGE;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 import static reactor.core.publisher.Mono.*;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * verify processor

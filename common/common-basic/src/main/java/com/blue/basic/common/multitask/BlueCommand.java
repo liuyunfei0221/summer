@@ -1,8 +1,8 @@
 package com.blue.basic.common.multitask;
 
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * collect command

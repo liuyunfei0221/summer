@@ -7,7 +7,7 @@ import com.blue.marketing.service.inter.MarketingEventHandleService;
 import com.blue.pulsar.api.generator.BluePulsarListenerGenerator;
 import com.blue.pulsar.component.BluePulsarListener;
 import org.apache.pulsar.client.api.PulsarClient;
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
 import java.util.function.Consumer;
@@ -16,7 +16,7 @@ import static com.blue.basic.constant.common.BlueTopic.MARKETING;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
 import static java.util.Optional.ofNullable;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * marketing event consumer

@@ -1,13 +1,13 @@
 package com.blue.verify.config.universal;
 
 import com.blue.verify.config.deploy.CorsDeploy;
+import org.slf4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
-import reactor.util.Logger;
 
 import java.time.Duration;
 import java.util.List;
@@ -15,8 +15,8 @@ import java.util.List;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.List.of;
 import static java.util.Optional.ofNullable;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * cors config

@@ -2,7 +2,7 @@ package com.blue.identity.core;
 
 import com.blue.identity.core.exp.IdentityException;
 import com.blue.identity.core.param.IdBufferParam;
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
@@ -13,7 +13,7 @@ import static com.blue.identity.constant.SnowflakeBufferThreshold.MIN_PADDING_FA
 import static java.lang.Integer.bitCount;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 
 /**

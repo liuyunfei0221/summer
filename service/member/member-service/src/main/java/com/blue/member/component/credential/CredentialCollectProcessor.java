@@ -3,12 +3,12 @@ package com.blue.member.component.credential;
 import com.blue.auth.api.model.CredentialInfo;
 import com.blue.member.component.credential.inter.CredentialCollector;
 import com.blue.member.repository.entity.MemberBasic;
+import org.slf4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import reactor.util.Logger;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -17,8 +17,8 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 import static com.blue.basic.common.base.BlueChecker.isEmpty;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * collect processor

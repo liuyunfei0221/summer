@@ -8,9 +8,9 @@ import com.blue.finance.service.inter.FinanceAccountService;
 import com.blue.finance.service.inter.FinanceControlService;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.redisson.component.SynchronizedProcessor;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.util.function.Function;
 
@@ -18,8 +18,8 @@ import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.SyncKeyPrefix.FINANCE_ACCOUNT_INSERT_SYNC_PRE;
+import static org.slf4j.LoggerFactory.getLogger;
 import static reactor.core.publisher.Mono.*;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * finance control service impl

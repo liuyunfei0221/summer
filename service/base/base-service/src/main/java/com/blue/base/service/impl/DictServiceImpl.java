@@ -11,11 +11,11 @@ import com.blue.base.service.inter.DictService;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.github.benmanes.caffeine.cache.AsyncCache;
+import org.slf4j.Logger;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.time.Duration;
 import java.util.List;
@@ -35,8 +35,8 @@ import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCach
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Collections.emptyList;
+import static org.slf4j.LoggerFactory.getLogger;
 import static reactor.core.publisher.Mono.*;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * dict service

@@ -1,7 +1,7 @@
 package com.blue.basic.common.base;
 
 import com.blue.basic.model.exps.BlueException;
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import java.util.Collection;
 import java.util.List;
@@ -13,7 +13,7 @@ import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 import static java.lang.Long.parseLong;
 import static java.lang.String.valueOf;
 import static java.util.stream.Collectors.toList;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 
 /**

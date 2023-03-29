@@ -8,7 +8,7 @@ import com.blue.identity.core.exp.IdentityException;
 import com.blue.identity.core.param.IdGenParam;
 import com.blue.identity.model.IdentityElement;
 import net.openhft.affinity.AffinityThreadFactory;
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import java.util.Map;
 import java.util.concurrent.*;
@@ -23,7 +23,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static net.openhft.affinity.AffinityStrategies.SAME_CORE;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * IdentityProcessor is the Bean of the context.It also provides a simple static method for parse ID.

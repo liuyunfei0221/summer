@@ -1,9 +1,9 @@
 package com.blue.auth.remote.consumer;
 
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
-import reactor.util.Logger;
 
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * rpc weChat reference

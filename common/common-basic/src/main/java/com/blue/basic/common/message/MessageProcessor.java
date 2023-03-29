@@ -4,9 +4,9 @@ import com.blue.basic.common.base.BlueChecker;
 import com.blue.basic.constant.common.ElementKey;
 import com.blue.basic.model.message.LanguageInfo;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.Logger;
 import org.springframework.core.io.Resource;
 import org.springframework.web.reactive.function.server.ServerRequest;
-import reactor.util.Logger;
 
 import java.io.File;
 import java.util.HashMap;
@@ -36,7 +36,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.*;
 import static org.apache.commons.lang3.math.NumberUtils.isDigits;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * i18n message processor

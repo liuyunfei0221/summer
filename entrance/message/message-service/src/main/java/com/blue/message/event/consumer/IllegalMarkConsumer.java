@@ -6,7 +6,7 @@ import com.blue.message.component.illegal.IllegalAsserter;
 import com.blue.message.config.blue.BlueConsumerConfig;
 import com.blue.pulsar.component.BluePulsarListener;
 import org.apache.pulsar.client.api.PulsarClient;
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
 import java.util.function.Consumer;
@@ -15,8 +15,8 @@ import static com.blue.basic.constant.common.BlueTopic.ILLEGAL_MARK;
 import static com.blue.pulsar.api.generator.BluePulsarListenerGenerator.generateListener;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
+import static org.slf4j.LoggerFactory.getLogger;
 import static reactor.core.publisher.Mono.just;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * illegal mark consumer

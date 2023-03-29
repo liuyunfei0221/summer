@@ -6,10 +6,9 @@ import com.blue.lake.config.deploy.CaffeineDeploy;
 import com.blue.lake.remote.consumer.RpcResourceServiceConsumer;
 import com.blue.lake.service.inter.ResourceService;
 import com.github.benmanes.caffeine.cache.AsyncCache;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
-import reactor.util.Loggers;
 
 import java.time.Duration;
 import java.util.List;
@@ -29,6 +28,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
+import static org.slf4j.LoggerFactory.getLogger;
 import static reactor.core.publisher.Mono.*;
 
 /**
@@ -40,7 +40,7 @@ import static reactor.core.publisher.Mono.*;
 @Service
 public class ResourceServiceImpl implements ResourceService {
 
-    private static final Logger LOGGER = Loggers.getLogger(ResourceServiceImpl.class);
+    private static final Logger LOGGER = getLogger(ResourceServiceImpl.class);
 
     private RpcResourceServiceConsumer rpcResourceServiceConsumer;
 

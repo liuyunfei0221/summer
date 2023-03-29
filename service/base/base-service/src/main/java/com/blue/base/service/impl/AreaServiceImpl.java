@@ -18,6 +18,7 @@ import com.blue.basic.model.exps.BlueException;
 import com.blue.caffeine.api.conf.CaffeineConfParams;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.github.benmanes.caffeine.cache.AsyncCache;
+import org.slf4j.Logger;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
@@ -25,8 +26,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
-import reactor.util.Loggers;
 
 import java.time.Duration;
 import java.util.Collections;
@@ -63,6 +62,7 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
 import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.data.domain.Sort.by;
 import static org.springframework.data.mongodb.core.query.Criteria.byExample;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -78,7 +78,7 @@ import static reactor.core.publisher.Mono.*;
 @Service
 public class AreaServiceImpl implements AreaService {
 
-    private static final Logger LOGGER = Loggers.getLogger(AreaServiceImpl.class);
+    private static final Logger LOGGER = getLogger(AreaServiceImpl.class);
 
     private BlueIdentityProcessor blueIdentityProcessor;
 

@@ -4,20 +4,20 @@ import com.blue.auth.api.model.CredentialInfo;
 import com.blue.auth.api.model.MemberCredentialInfo;
 import com.blue.auth.component.auto.MemberParamPackagerProcessor;
 import com.blue.auth.remote.consumer.RpcMemberControlServiceConsumer;
-import com.blue.auth.service.inter.RegisterService;
 import com.blue.auth.service.inter.AuthControlService;
+import com.blue.auth.service.inter.RegisterService;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.member.api.model.MemberInitParam;
 import io.seata.spring.annotation.GlobalTransactional;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.util.Logger;
 
 import java.util.List;
 import java.util.function.BiFunction;
 
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * auto register member service impl

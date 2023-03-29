@@ -11,9 +11,9 @@ import com.blue.risk.model.IllegalMarkParam;
 import com.blue.risk.remote.consumer.RpcAuthServiceConsumer;
 import com.blue.risk.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.risk.service.inter.RiskControlService;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.util.List;
 
@@ -22,10 +22,10 @@ import static com.blue.basic.common.base.ConstantProcessor.assertStatus;
 import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.risk.converter.RiskModelConverters.ILLEGAL_MARK_PARAM_2_ILLEGAL_MARK_EVENT_CONVERTER;
 import static java.util.stream.Collectors.toList;
+import static org.slf4j.LoggerFactory.getLogger;
 import static reactor.core.publisher.Flux.concat;
 import static reactor.core.publisher.Mono.fromRunnable;
 import static reactor.core.publisher.Mono.just;
-import static reactor.util.Loggers.getLogger;
 
 
 /**

@@ -24,14 +24,12 @@ import org.apache.http.ssl.SSLContexts;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
-import reactor.util.Logger;
 
 import java.net.SocketTimeoutException;
 
 import static java.nio.charset.CodingErrorAction.IGNORE;
 import static java.util.Optional.ofNullable;
 import static org.apache.http.client.config.CookieSpecs.STANDARD;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * rest generator

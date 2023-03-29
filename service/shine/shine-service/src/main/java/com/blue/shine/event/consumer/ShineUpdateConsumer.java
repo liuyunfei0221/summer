@@ -7,7 +7,7 @@ import com.blue.shine.config.blue.BlueConsumerConfig;
 import com.blue.shine.repository.entity.Shine;
 import com.blue.shine.service.inter.ShineService;
 import org.apache.pulsar.client.api.PulsarClient;
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
 import java.util.function.Consumer;
@@ -18,8 +18,8 @@ import static com.blue.pulsar.api.generator.BluePulsarListenerGenerator.generate
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
 import static java.util.Optional.ofNullable;
+import static org.slf4j.LoggerFactory.getLogger;
 import static reactor.core.publisher.Mono.*;
-import static reactor.util.Loggers.getLogger;
 
 
 /**

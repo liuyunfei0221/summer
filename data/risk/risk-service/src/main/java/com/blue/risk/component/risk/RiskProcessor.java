@@ -5,13 +5,13 @@ import com.blue.risk.api.model.RiskAsserted;
 import com.blue.risk.api.model.RiskEvent;
 import com.blue.risk.api.model.RiskStrategyInfo;
 import com.blue.risk.component.risk.inter.RiskHandler;
+import org.slf4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.util.Collection;
 import java.util.List;
@@ -29,10 +29,10 @@ import static java.util.Comparator.comparingInt;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.*;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 import static reactor.core.publisher.Mono.fromFuture;
 import static reactor.core.publisher.Mono.just;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * risk hit processor

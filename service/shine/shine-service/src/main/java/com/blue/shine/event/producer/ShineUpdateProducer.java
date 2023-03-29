@@ -6,7 +6,7 @@ import com.blue.shine.config.blue.BlueProducerConfig;
 import com.blue.shine.repository.entity.Shine;
 import org.apache.pulsar.client.api.MessageId;
 import org.apache.pulsar.client.api.PulsarClient;
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -16,7 +16,7 @@ import static com.blue.basic.constant.common.BlueTopic.SHINE_UPDATE;
 import static com.blue.pulsar.api.generator.BluePulsarProducerGenerator.generateProducer;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * shine update producer

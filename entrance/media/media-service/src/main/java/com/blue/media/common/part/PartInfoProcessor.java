@@ -1,8 +1,8 @@
 package com.blue.media.common.part;
 
 import com.blue.media.common.part.inter.PartInfoHandler;
+import org.slf4j.Logger;
 import org.springframework.http.codec.multipart.Part;
-import reactor.util.Logger;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +15,7 @@ import static com.blue.basic.common.base.ClassGetter.getClassesByPackage;
 import static com.blue.media.common.part.constant.FilePartElementKey.PART_CLASS;
 import static com.blue.media.common.part.constant.FilePartElementKey.PART_NAME;
 import static java.util.stream.Collectors.toMap;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * media info processor

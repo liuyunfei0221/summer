@@ -9,7 +9,7 @@ import org.redisson.api.RedissonClient;
 import org.redisson.config.ClusterServersConfig;
 import org.redisson.config.Config;
 import org.redisson.config.SingleServerConfig;
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,8 +27,8 @@ import static net.openhft.affinity.AffinityStrategies.SAME_CORE;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.redisson.Redisson.create;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.util.CollectionUtils.isEmpty;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * redisson components generator

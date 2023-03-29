@@ -16,6 +16,7 @@ import com.blue.member.remote.consumer.RpcAttachmentServiceConsumer;
 import com.blue.member.repository.entity.MemberBasic;
 import com.blue.member.repository.mapper.MemberBasicMapper;
 import com.blue.member.service.inter.MemberBasicService;
+import org.slf4j.Logger;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.types.Expiration;
@@ -23,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 import reactor.util.function.Tuple2;
 
 import java.time.Duration;
@@ -53,11 +53,11 @@ import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.data.redis.connection.RedisStringCommands.SetOption.UPSERT;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static reactor.core.publisher.Flux.fromIterable;
 import static reactor.core.publisher.Mono.*;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * member basic service impl

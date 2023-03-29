@@ -3,7 +3,7 @@ package com.blue.basic.component.exception.handler;
 import com.blue.basic.component.exception.handler.inter.ExceptionHandler;
 import com.blue.basic.component.exception.model.common.ExceptionInfo;
 import com.blue.basic.model.common.ExceptionElement;
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -18,7 +18,7 @@ import static com.blue.basic.constant.common.ResponseElement.INTERNAL_SERVER_ERR
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Stream.of;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * global exp processor

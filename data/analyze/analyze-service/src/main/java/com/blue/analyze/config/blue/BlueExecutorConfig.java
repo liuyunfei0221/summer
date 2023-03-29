@@ -1,13 +1,13 @@
 package com.blue.analyze.config.blue;
 
 import com.blue.basic.component.executor.api.conf.ExecutorConfParam;
+import org.slf4j.Logger;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
-import reactor.util.Logger;
 
 import java.util.concurrent.RejectedExecutionHandler;
 
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * executor config

@@ -15,10 +15,10 @@ import com.blue.member.remote.consumer.RpcRoleServiceConsumer;
 import com.blue.member.repository.entity.MemberBasic;
 import com.blue.member.service.inter.MemberBasicService;
 import com.blue.member.service.inter.MemberControlService;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -33,10 +33,10 @@ import static com.blue.member.converter.MemberModelConverters.MEMBER_REGISTRY_IN
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static reactor.core.publisher.Mono.just;
 import static reactor.core.publisher.Mono.zip;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * member control service

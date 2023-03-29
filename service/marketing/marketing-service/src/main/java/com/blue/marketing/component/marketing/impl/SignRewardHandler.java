@@ -3,10 +3,10 @@ package com.blue.marketing.component.marketing.impl;
 import com.blue.basic.constant.marketing.MarketingEventType;
 import com.blue.marketing.api.model.MarketingEvent;
 import com.blue.marketing.component.marketing.inter.EventHandler;
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import static com.blue.basic.constant.marketing.MarketingEventType.SIGN_IN_REWARD;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * sign in reward event handler impl

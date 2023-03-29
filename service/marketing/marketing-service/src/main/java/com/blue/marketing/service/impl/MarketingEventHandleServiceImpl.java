@@ -9,18 +9,18 @@ import com.blue.marketing.component.marketing.MarketingEventProcessor;
 import com.blue.marketing.repository.entity.EventRecord;
 import com.blue.marketing.service.inter.EventRecordService;
 import com.blue.marketing.service.inter.MarketingEventHandleService;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.util.Logger;
 
 import java.util.function.Function;
 
 import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
 import static java.util.Optional.ofNullable;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * marketing event handle service

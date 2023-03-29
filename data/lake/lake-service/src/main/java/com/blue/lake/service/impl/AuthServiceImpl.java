@@ -10,10 +10,9 @@ import com.blue.lake.config.deploy.CaffeineDeploy;
 import com.blue.lake.remote.consumer.RpcAuthServiceConsumer;
 import com.blue.lake.service.inter.AuthService;
 import com.github.benmanes.caffeine.cache.AsyncCache;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
-import reactor.util.Loggers;
 
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
@@ -27,6 +26,7 @@ import static com.blue.caffeine.constant.ExpireStrategy.AFTER_WRITE;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
+import static org.slf4j.LoggerFactory.getLogger;
 import static reactor.core.publisher.Mono.*;
 
 /**
@@ -38,7 +38,7 @@ import static reactor.core.publisher.Mono.*;
 @Service
 public class AuthServiceImpl implements AuthService {
 
-    private static final Logger LOGGER = Loggers.getLogger(AuthServiceImpl.class);
+    private static final Logger LOGGER = getLogger(AuthServiceImpl.class);
 
     private RpcAuthServiceConsumer rpcAuthServiceConsumer;
 

@@ -10,10 +10,10 @@ import com.blue.basic.common.base.ConstantProcessor;
 import com.blue.basic.constant.analyze.StatisticsRange;
 import com.blue.basic.constant.analyze.StatisticsType;
 import com.blue.basic.model.exps.BlueException;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +31,9 @@ import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.slf4j.LoggerFactory.getLogger;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
-import static reactor.util.Loggers.getLogger;
 
 
 /**

@@ -6,18 +6,18 @@ import com.blue.base.api.model.CountryInfo;
 import com.blue.base.api.model.StateInfo;
 import com.blue.base.event.producer.RegionInfosInvalidProducer;
 import com.blue.base.model.*;
-import com.blue.basic.model.exps.BlueException;
 import com.blue.base.service.inter.*;
+import com.blue.basic.model.exps.BlueException;
 import com.blue.redisson.component.SynchronizedProcessor;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
-import reactor.util.Loggers;
 
 import static com.blue.basic.common.base.BlueChecker.isInvalidIdentity;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
 import static com.blue.basic.constant.common.SummerAttr.EMPTY_EVENT;
 import static com.blue.basic.constant.common.SyncKey.REGION_UPDATE_SYNC;
+import static org.slf4j.LoggerFactory.getLogger;
 import static reactor.core.publisher.Mono.fromRunnable;
 
 /**
@@ -29,7 +29,7 @@ import static reactor.core.publisher.Mono.fromRunnable;
 @Service
 public class RegionControlServiceImpl implements RegionControlService {
 
-    private static final Logger LOGGER = Loggers.getLogger(RegionControlServiceImpl.class);
+    private static final Logger LOGGER = getLogger(RegionControlServiceImpl.class);
 
     private final CountryService countryService;
 

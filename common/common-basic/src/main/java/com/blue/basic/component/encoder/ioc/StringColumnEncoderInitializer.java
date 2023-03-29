@@ -1,21 +1,21 @@
 package com.blue.basic.component.encoder.ioc;
 
 import com.blue.basic.component.encoder.api.conf.EncoderConf;
+import org.slf4j.Logger;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import reactor.util.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.blue.basic.common.base.BlueChecker.isBlank;
 import static com.blue.basic.component.encoder.api.common.StringColumnEncoder.init;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * initializer for string column encoder

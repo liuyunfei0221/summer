@@ -6,6 +6,7 @@ import com.blue.media.api.model.FileUploadResult;
 import com.blue.media.component.file.preprocessor.inter.PreAndPostWriteProcessorHandler;
 import com.blue.media.component.file.processor.inter.ByteHandler;
 import com.blue.media.config.deploy.HandlerTypeDeploy;
+import org.slf4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
@@ -16,7 +17,6 @@ import org.springframework.http.codec.multipart.Part;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.util.Map;
 
@@ -25,8 +25,8 @@ import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 import static java.util.Collections.emptyMap;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * byte processor

@@ -13,10 +13,10 @@ import com.blue.verify.event.producer.VerifyMessageEventProducer;
 import com.blue.verify.repository.entity.VerifyHistory;
 import com.blue.verify.service.inter.VerifyHistoryService;
 import com.blue.verify.service.inter.VerifyService;
+import org.slf4j.Logger;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.time.Duration;
 import java.util.List;
@@ -33,10 +33,10 @@ import static com.blue.basic.constant.common.ResponseElement.*;
 import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION;
 import static com.blue.basic.constant.verify.VerifyType.SMS;
 import static java.time.temporal.ChronoUnit.MILLIS;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.*;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * sms verify handler

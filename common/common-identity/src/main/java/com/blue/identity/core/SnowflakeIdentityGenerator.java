@@ -2,7 +2,7 @@ package com.blue.identity.core;
 
 import com.blue.identity.core.exp.IdentityException;
 import com.blue.identity.core.param.SnowIdGenParam;
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import java.time.ZoneId;
 import java.util.concurrent.ExecutorService;
@@ -16,7 +16,7 @@ import static java.time.Instant.ofEpochSecond;
 import static java.time.LocalDateTime.ofInstant;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.ThreadLocalRandom.current;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 
 /**

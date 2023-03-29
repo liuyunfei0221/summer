@@ -5,7 +5,7 @@ import com.blue.template.core.TemplateWriter;
 import com.blue.template.model.WriterElement;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,8 +15,8 @@ import java.util.*;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.FileGetter.getFiles;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.util.ResourceUtils.getURL;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * template writer from files of uri

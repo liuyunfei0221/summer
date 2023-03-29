@@ -4,10 +4,10 @@ import com.blue.finance.config.deploy.DynamicApiDeploy;
 import com.blue.finance.handler.dynamic.BlueDynamicHandler;
 import com.blue.finance.repository.entity.DynamicResource;
 import com.blue.finance.service.inter.DynamicResourceService;
+import org.slf4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.*;
-import reactor.util.Logger;
 
 import java.util.List;
 import java.util.function.Function;
@@ -18,11 +18,11 @@ import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.common.base.ConstantProcessor.getMediaTypeByIdentity;
 import static com.blue.basic.constant.common.Symbol.SLASH;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 import static org.springframework.web.reactive.function.server.RequestPredicates.path;
 import static org.springframework.web.reactive.function.server.RouterFunctions.nest;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * dynamic routers

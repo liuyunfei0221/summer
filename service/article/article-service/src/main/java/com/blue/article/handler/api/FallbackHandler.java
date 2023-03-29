@@ -5,16 +5,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
-import reactor.util.Loggers;
 
 /**
  * @author DarkBlue
  */
 @Component
 public class FallbackHandler {
-
-    private static final Logger LOGGER = Loggers.getLogger(FallbackHandler.class);
 
     public Mono<ServerResponse> fallback(ServerRequest serverRequest) {
         ServerRequest.Headers headers = serverRequest.headers();

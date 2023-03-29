@@ -2,13 +2,13 @@ package com.blue.analyze.component.statistics;
 
 import com.blue.analyze.component.statistics.inter.StatisticsCommand;
 import com.blue.basic.model.event.DataEvent;
+import org.slf4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.util.List;
 import java.util.Map;
@@ -20,9 +20,9 @@ import static com.blue.basic.common.base.BlueChecker.isNotNull;
 import static java.util.Comparator.comparingInt;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.toList;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 import static reactor.core.publisher.Mono.fromFuture;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * statistics chain processor

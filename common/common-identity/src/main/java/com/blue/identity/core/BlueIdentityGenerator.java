@@ -4,14 +4,14 @@ import com.blue.identity.core.param.IdBufferParam;
 import com.blue.identity.core.param.IdGenParam;
 import com.blue.identity.core.param.SnowIdGenParam;
 import com.blue.identity.model.IdentityElement;
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import java.util.concurrent.ExecutorService;
 
 import static com.blue.identity.constant.SnowflakeBits.SEQUENCE;
 import static com.blue.identity.constant.SnowflakeBufferThreshold.*;
 import static java.util.Optional.ofNullable;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * buffered generator

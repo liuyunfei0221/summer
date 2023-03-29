@@ -4,12 +4,12 @@ import com.blue.basic.constant.verify.VerifyType;
 import com.blue.verify.api.model.VerifyMessage;
 import com.blue.verify.api.model.VerifyTemplateInfo;
 import com.blue.verify.component.sender.inter.VerifyMessageSender;
+import org.slf4j.Logger;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import static com.blue.basic.constant.verify.VerifyType.SMS;
+import static org.slf4j.LoggerFactory.getLogger;
 import static reactor.core.publisher.Mono.just;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * sms verify message sender impl

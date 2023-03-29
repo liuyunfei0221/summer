@@ -8,10 +8,10 @@ import com.blue.basic.model.exps.BlueException;
 import com.blue.event.component.event.RequestEventReporter;
 import com.blue.event.service.inter.EventReportService;
 import com.blue.jwt.component.JwtProcessor;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import static com.blue.basic.common.access.AccessProcessor.accessToJson;
 import static com.blue.basic.common.base.BlueChecker.isNotBlank;
@@ -29,8 +29,8 @@ import static com.blue.event.constant.EventTypeReference.EVENT_MODEL_FOR_RESOURC
 import static java.lang.Long.parseLong;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
+import static org.slf4j.LoggerFactory.getLogger;
 import static reactor.core.publisher.Mono.*;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * event report service impl

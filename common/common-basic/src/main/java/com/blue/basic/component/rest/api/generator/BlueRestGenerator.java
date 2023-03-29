@@ -4,6 +4,7 @@ import com.blue.basic.common.base.BlueChecker;
 import com.blue.basic.component.rest.api.conf.RestConf;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
+import org.slf4j.Logger;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.http.client.reactive.ReactorResourceFactory;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
@@ -12,7 +13,6 @@ import reactor.netty.http.HttpProtocol;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
 import reactor.netty.resources.LoopResources;
-import reactor.util.Logger;
 
 import java.time.Duration;
 import java.util.function.Function;
@@ -24,8 +24,8 @@ import static io.netty.channel.ChannelOption.TCP_NODELAY;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.web.reactive.function.client.WebClient.builder;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * reactive rest generator

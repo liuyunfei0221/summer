@@ -8,7 +8,7 @@ import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.AsyncConnection;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.net.URL;
@@ -30,8 +30,8 @@ import static net.openhft.affinity.AffinityStrategies.DIFFERENT_CORE;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.commons.lang3.StringUtils.startsWith;
 import static org.apache.hadoop.hbase.client.ConnectionFactory.createConnection;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.util.CollectionUtils.isEmpty;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * hbase components generator

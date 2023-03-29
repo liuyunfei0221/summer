@@ -5,9 +5,9 @@ import com.blue.basic.constant.analyze.StatisticsRange;
 import com.blue.basic.constant.analyze.StatisticsType;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.redis.component.BlueValueMarker;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +22,10 @@ import static com.blue.basic.common.base.BlueChecker.isValidIdentity;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
 import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * member active statistics service impl

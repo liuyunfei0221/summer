@@ -3,13 +3,13 @@ package com.blue.mail.processor;
 import com.blue.mail.api.conf.MailReaderConf;
 import com.sun.mail.util.MailSSLSocketFactory;
 import jakarta.mail.*;
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import java.util.Properties;
 
 import static com.blue.basic.common.base.BlueChecker.*;
 import static jakarta.mail.Session.getInstance;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * @author liuyunfei

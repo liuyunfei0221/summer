@@ -7,10 +7,9 @@ import com.blue.shine.config.deploy.CaffeineDeploy;
 import com.blue.shine.remote.consumer.RpcCityServiceConsumer;
 import com.blue.shine.service.inter.CityService;
 import com.github.benmanes.caffeine.cache.AsyncCache;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
-import reactor.util.Loggers;
 
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
@@ -25,6 +24,7 @@ import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
 import static com.blue.caffeine.api.generator.BlueCaffeineGenerator.generateCacheAsyncCache;
 import static com.blue.caffeine.constant.ExpireStrategy.AFTER_ACCESS;
 import static java.time.temporal.ChronoUnit.SECONDS;
+import static org.slf4j.LoggerFactory.getLogger;
 import static reactor.core.publisher.Mono.*;
 
 /**
@@ -36,7 +36,7 @@ import static reactor.core.publisher.Mono.*;
 @Service
 public class CityServiceImpl implements CityService {
 
-    private static final Logger LOGGER = Loggers.getLogger(CityServiceImpl.class);
+    private static final Logger LOGGER = getLogger(CityServiceImpl.class);
 
     private RpcCityServiceConsumer rpcCityServiceConsumer;
 

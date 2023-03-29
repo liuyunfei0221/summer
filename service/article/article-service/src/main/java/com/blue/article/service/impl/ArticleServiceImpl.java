@@ -6,8 +6,8 @@ import com.blue.article.repository.template.ArticleRepository;
 import com.blue.article.service.inter.ArticleService;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
-import reactor.util.Logger;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,7 +15,7 @@ import java.util.Optional;
 import static com.blue.basic.common.base.BlueChecker.isValidIdentity;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
 import static java.util.Optional.ofNullable;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * article service impl

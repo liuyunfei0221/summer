@@ -6,7 +6,7 @@ import com.blue.pulsar.component.BluePulsarProducer;
 import com.blue.verify.config.blue.BlueProducerConfig;
 import org.apache.pulsar.client.api.MessageId;
 import org.apache.pulsar.client.api.PulsarClient;
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
@@ -16,7 +16,7 @@ import static com.blue.basic.constant.common.BlueTopic.REQUEST_EVENT;
 import static com.blue.pulsar.api.generator.BluePulsarProducerGenerator.generateProducer;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 
 /**

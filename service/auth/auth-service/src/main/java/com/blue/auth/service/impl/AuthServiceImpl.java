@@ -26,10 +26,10 @@ import com.blue.jwt.component.JwtProcessor;
 import com.blue.redisson.api.inter.HandleTask;
 import com.blue.redisson.component.SynchronizedProcessor;
 import com.google.gson.JsonSyntaxException;
+import org.slf4j.Logger;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
@@ -60,9 +60,9 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.*;
 import static java.util.stream.Stream.of;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.util.CollectionUtils.isEmpty;
 import static reactor.core.publisher.Mono.*;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * auth service impl

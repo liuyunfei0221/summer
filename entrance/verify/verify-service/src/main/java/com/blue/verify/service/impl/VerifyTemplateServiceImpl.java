@@ -23,6 +23,7 @@ import com.blue.verify.repository.template.VerifyTemplateRepository;
 import com.blue.verify.service.inter.VerifyTemplateService;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.slf4j.Logger;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
@@ -30,8 +31,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
-import reactor.util.Loggers;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -69,6 +68,7 @@ import static java.util.regex.Pattern.compile;
 import static java.util.stream.Collectors.*;
 import static org.apache.commons.lang3.StringUtils.lowerCase;
 import static org.apache.commons.lang3.StringUtils.replace;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.data.mongodb.core.query.Criteria.byExample;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static reactor.core.publisher.Mono.*;
@@ -82,7 +82,7 @@ import static reactor.core.publisher.Mono.*;
 @Service
 public class VerifyTemplateServiceImpl implements VerifyTemplateService {
 
-    private static final Logger LOGGER = Loggers.getLogger(VerifyTemplateServiceImpl.class);
+    private static final Logger LOGGER = getLogger(VerifyTemplateServiceImpl.class);
 
     private final RpcMemberBasicServiceConsumer rpcMemberBasicServiceConsumer;
 

@@ -17,11 +17,11 @@ import com.blue.member.repository.mapper.RealNameMapper;
 import com.blue.member.service.inter.MemberBasicService;
 import com.blue.member.service.inter.RealNameService;
 import com.blue.redisson.component.SynchronizedProcessor;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -50,10 +50,10 @@ import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static reactor.core.publisher.Flux.fromIterable;
 import static reactor.core.publisher.Mono.*;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * member detail service impl

@@ -21,11 +21,11 @@ import com.blue.member.repository.mapper.MemberDetailMapper;
 import com.blue.member.service.inter.MemberBasicService;
 import com.blue.member.service.inter.MemberDetailService;
 import com.blue.redisson.component.SynchronizedProcessor;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.time.LocalDate;
 import java.util.LinkedList;
@@ -40,7 +40,8 @@ import java.util.stream.Stream;
 import static com.blue.basic.common.base.ArrayAllocator.allotByMax;
 import static com.blue.basic.common.base.BlueChecker.*;
 import static com.blue.basic.common.base.CommonFunctions.TIME_STAMP_GETTER;
-import static com.blue.basic.common.base.ConstantProcessor.*;
+import static com.blue.basic.common.base.ConstantProcessor.assertGender;
+import static com.blue.basic.common.base.ConstantProcessor.assertStatus;
 import static com.blue.basic.constant.common.BlueCommonThreshold.DB_SELECT;
 import static com.blue.basic.constant.common.BlueCommonThreshold.MAX_SERVICE_SELECT;
 import static com.blue.basic.constant.common.ResponseElement.*;
@@ -57,10 +58,10 @@ import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 import static reactor.core.publisher.Flux.fromIterable;
 import static reactor.core.publisher.Mono.*;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * member detail service impl

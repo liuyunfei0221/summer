@@ -1,17 +1,17 @@
 package com.blue.basic.component.message.ioc;
 
 import com.blue.basic.component.message.api.conf.MessageConf;
+import org.slf4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.annotation.Order;
 import org.springframework.lang.NonNull;
-import reactor.util.Logger;
 
 import static com.blue.basic.component.message.api.loader.MessageLoader.load;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * messages loader configuration

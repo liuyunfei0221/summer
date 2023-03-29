@@ -2,6 +2,7 @@ package com.blue.basic.component.lifecycle.ioc;
 
 import com.blue.basic.anno.EnableBlueLifecycle;
 import com.blue.basic.component.common.BlueBeanDefinitionScanner;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar;
@@ -11,16 +12,15 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.lang.NonNull;
-import reactor.util.Logger;
 
 import java.util.stream.Stream;
 
 import static com.blue.basic.component.lifecycle.constant.BlueLifecycleScanConf.BLUE_LIFECYCLE_SCAN_PACKAGE;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 import static org.springframework.core.annotation.AnnotationAttributes.fromMap;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * Registrar for BlueLifecycle obj

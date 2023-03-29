@@ -2,7 +2,7 @@ package com.blue.basic.component.exception.handler.impl;
 
 import com.blue.basic.component.exception.handler.inter.ExceptionHandler;
 import com.blue.basic.component.exception.model.common.ExceptionInfo;
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.function.Function;
@@ -13,7 +13,7 @@ import static com.blue.basic.constant.common.ResponseElement.INTERNAL_SERVER_ERR
 import static com.blue.basic.constant.common.SpecialStringElement.EMPTY_VALUE;
 import static java.util.Optional.ofNullable;
 import static org.apache.commons.lang3.StringUtils.startsWith;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * sql exp handler

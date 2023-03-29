@@ -1,6 +1,6 @@
 package com.blue.basic.common.multitask;
 
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.concurrent.locks.StampedLock;
 import static io.netty.util.internal.ThreadLocalRandom.current;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * batch task collector

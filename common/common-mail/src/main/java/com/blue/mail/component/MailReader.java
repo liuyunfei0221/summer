@@ -8,7 +8,7 @@ import jakarta.mail.event.FolderListener;
 import jakarta.mail.event.MessageChangedListener;
 import jakarta.mail.event.MessageCountListener;
 import jakarta.mail.search.SearchTerm;
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -21,7 +21,7 @@ import static com.blue.mail.processor.ReaderCommonProcessor.*;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.Thread.onSpinWait;
 import static java.util.Optional.ofNullable;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * mail reader

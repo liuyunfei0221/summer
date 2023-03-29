@@ -3,10 +3,10 @@ package com.blue.identity.api.generator;
 import com.blue.identity.api.conf.IdentityConf;
 import com.blue.identity.component.BlueIdentityProcessor;
 import com.blue.identity.core.exp.IdentityException;
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import static com.blue.basic.common.base.BlueChecker.isNull;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * database components generator

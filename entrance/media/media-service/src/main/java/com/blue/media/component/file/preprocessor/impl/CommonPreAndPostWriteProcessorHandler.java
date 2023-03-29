@@ -3,13 +3,13 @@ package com.blue.media.component.file.preprocessor.impl;
 import com.blue.basic.constant.media.AttachmentType;
 import com.blue.media.api.model.FileUploadResult;
 import com.blue.media.component.file.preprocessor.inter.PreAndPostWriteProcessorHandler;
+import org.slf4j.Logger;
 import org.springframework.http.codec.multipart.Part;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import static com.blue.basic.constant.media.AttachmentType.COMMON;
+import static org.slf4j.LoggerFactory.getLogger;
 import static reactor.core.publisher.Mono.just;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * common attachment operate pre and post corona

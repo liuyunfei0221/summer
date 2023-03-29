@@ -6,12 +6,11 @@ import com.blue.media.component.qr.QrCodeGenerateProcessor;
 import com.blue.media.model.QrCodeGenerateParam;
 import com.blue.media.service.inter.QrCodeConfigService;
 import com.blue.media.service.inter.QrCodeGenerateService;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
-import reactor.util.Loggers;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -20,6 +19,7 @@ import java.util.function.Function;
 import static com.blue.basic.common.access.AccessGetter.getAccessReact;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.basic.constant.common.ResponseElement.FORBIDDEN;
+import static org.slf4j.LoggerFactory.getLogger;
 import static reactor.core.publisher.Mono.*;
 
 /**
@@ -31,7 +31,7 @@ import static reactor.core.publisher.Mono.*;
 @Service
 public class QrCodeGenerateServiceImpl implements QrCodeGenerateService {
 
-    private static final Logger LOGGER = Loggers.getLogger(QrCodeGenerateServiceImpl.class);
+    private static final Logger LOGGER = getLogger(QrCodeGenerateServiceImpl.class);
 
     private QrCodeGenerateProcessor qrCodeGenerateProcessor;
 

@@ -3,11 +3,11 @@ package com.blue.shine.handler.api;
 import com.blue.basic.model.common.BlueResponse;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.shine.service.inter.ShineService;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.util.Map;
 
@@ -16,11 +16,11 @@ import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.common.metadata.MetadataGetter.getMetadata;
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.shine.constant.ShineTypeReference.SCROLL_MODEL_FOR_SHINE_CONDITION_TYPE;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.defer;
 import static reactor.core.publisher.Mono.error;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * shine api handler

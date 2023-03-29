@@ -7,9 +7,9 @@ import com.blue.basic.model.exps.BlueException;
 import com.blue.redis.component.BlueValidator;
 import com.blue.verify.config.deploy.VerifyDeploy;
 import com.blue.verify.service.inter.VerifyService;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -21,9 +21,9 @@ import static com.blue.basic.constant.common.ResponseElement.ILLEGAL_REQUEST;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 import static com.blue.basic.constant.common.Symbol.PAR_CONCATENATION;
 import static java.time.temporal.ChronoUnit.MILLIS;
+import static org.slf4j.LoggerFactory.getLogger;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.just;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * @author liuyunfei

@@ -2,8 +2,8 @@ package com.blue.basic.common.base;
 
 import com.blue.basic.model.common.KeyPair;
 import com.blue.basic.model.exps.BlueException;
+import org.slf4j.Logger;
 import org.springframework.util.FastByteArrayOutputStream;
-import reactor.util.Logger;
 
 import javax.crypto.Cipher;
 import java.nio.charset.Charset;
@@ -26,7 +26,7 @@ import static java.util.Base64.getDecoder;
 import static java.util.Base64.getEncoder;
 import static javax.crypto.Cipher.DECRYPT_MODE;
 import static javax.crypto.Cipher.ENCRYPT_MODE;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * rsa util

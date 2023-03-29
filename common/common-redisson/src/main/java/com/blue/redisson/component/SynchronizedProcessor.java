@@ -4,7 +4,7 @@ import com.blue.basic.model.exps.BlueException;
 import com.blue.redisson.api.inter.HandleTask;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -15,7 +15,7 @@ import static com.blue.basic.constant.common.ResponseElement.INTERNAL_SERVER_ERR
 import static com.blue.basic.constant.common.ResponseElement.INVALID_PARAM;
 import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * redisson sync processor

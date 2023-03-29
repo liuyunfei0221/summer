@@ -8,7 +8,7 @@ import com.blue.risk.api.model.RiskStrategyInfo;
 import com.blue.risk.component.risk.RiskProcessor;
 import com.blue.risk.config.blue.BlueConsumerConfig;
 import org.apache.pulsar.client.api.PulsarClient;
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import javax.annotation.PostConstruct;
 import java.util.function.Consumer;
@@ -18,8 +18,8 @@ import static com.blue.basic.constant.common.ResponseElement.INTERNAL_SERVER_ERR
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Integer.MIN_VALUE;
 import static java.util.Optional.ofNullable;
+import static org.slf4j.LoggerFactory.getLogger;
 import static reactor.core.publisher.Mono.*;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * update risk strategy consumer

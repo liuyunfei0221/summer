@@ -3,13 +3,13 @@ package com.blue.auth.config.auth;
 import com.blue.auth.component.access.AccessBatchExpireProcessor;
 import com.blue.auth.component.access.AccessInfoCache;
 import com.blue.auth.config.deploy.AccessDeploy;
+import org.slf4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.ReactiveStringRedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import reactor.util.Logger;
 
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * jwt config

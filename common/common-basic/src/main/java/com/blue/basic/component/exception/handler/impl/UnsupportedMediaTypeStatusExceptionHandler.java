@@ -2,14 +2,14 @@ package com.blue.basic.component.exception.handler.impl;
 
 import com.blue.basic.component.exception.handler.inter.ExceptionHandler;
 import com.blue.basic.component.exception.model.common.ExceptionInfo;
+import org.slf4j.Logger;
 import org.springframework.web.server.UnsupportedMediaTypeStatusException;
-import reactor.util.Logger;
 
 import static com.blue.basic.constant.common.ResponseElement.UNSUPPORTED_MEDIA_TYPE;
 import static com.blue.basic.constant.common.Symbol.SLASH;
 import static com.blue.basic.constant.common.Symbol.UNKNOWN;
 import static java.util.Optional.ofNullable;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * un support exp handler

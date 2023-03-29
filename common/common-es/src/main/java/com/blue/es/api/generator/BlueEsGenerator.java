@@ -19,7 +19,7 @@ import org.apache.http.ssl.SSLContexts;
 import org.elasticsearch.client.Node;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -36,8 +36,8 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.util.CollectionUtils.isEmpty;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * es components generator

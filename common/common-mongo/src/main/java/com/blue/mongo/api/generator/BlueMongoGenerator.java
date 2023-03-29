@@ -7,8 +7,8 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.reactivestreams.client.MongoClient;
 import com.mongodb.reactivestreams.client.MongoClients;
+import org.slf4j.Logger;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
-import reactor.util.Logger;
 
 import java.util.List;
 
@@ -17,8 +17,8 @@ import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.util.CollectionUtils.isEmpty;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * mongo components generator

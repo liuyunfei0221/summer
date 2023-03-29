@@ -5,13 +5,13 @@ import com.blue.gateway.config.deploy.CircuitBreakerDeploy;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
+import org.slf4j.Logger;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.net.URI;
 import java.time.Duration;
@@ -26,8 +26,8 @@ import static com.blue.gateway.config.filter.BlueFilterOrder.BLUE_INSTANCE_CIRCU
 import static io.github.resilience4j.reactor.circuitbreaker.operator.CircuitBreakerOperator.of;
 import static java.time.temporal.ChronoUnit.MILLIS;
 import static java.util.Optional.ofNullable;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * instance circuit breaker

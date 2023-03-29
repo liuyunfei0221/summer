@@ -4,9 +4,9 @@ import com.blue.basic.common.base.BlueChecker;
 import com.blue.basic.common.base.PropertiesProcessor;
 import com.blue.basic.constant.common.ElementKey;
 import com.blue.basic.model.message.LanguageInfo;
+import org.slf4j.Logger;
 import org.springframework.core.io.Resource;
 import org.springframework.web.reactive.function.server.ServerRequest;
-import reactor.util.Logger;
 
 import java.io.File;
 import java.util.HashMap;
@@ -17,8 +17,8 @@ import java.util.function.*;
 import java.util.stream.Stream;
 
 import static com.blue.basic.common.base.BlueChecker.isNotNull;
-import static com.blue.basic.common.base.FileGetter.getFiles;
 import static com.blue.basic.common.base.CommonFunctions.getAcceptLanguages;
+import static com.blue.basic.common.base.FileGetter.getFiles;
 import static com.blue.basic.common.base.FileGetter.getResources;
 import static com.blue.basic.constant.common.BluePrefix.CLASS_PATH_PREFIX;
 import static com.blue.basic.constant.common.BlueSuffix.PROP;
@@ -32,7 +32,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.*;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * i18n element processor

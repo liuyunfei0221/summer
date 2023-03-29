@@ -7,14 +7,14 @@ import com.blue.template.model.WriterElement;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import java.io.Writer;
 import java.util.*;
 
 import static com.blue.basic.common.base.BlueChecker.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * template writer from string contents

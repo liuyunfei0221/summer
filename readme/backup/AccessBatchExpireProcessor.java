@@ -6,7 +6,6 @@ import net.openhft.affinity.AffinityThreadFactory;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import reactor.util.Logger;
 
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.*;
@@ -23,7 +22,6 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static net.openhft.affinity.AffinityStrategies.SAME_CORE;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * refresh auth processor

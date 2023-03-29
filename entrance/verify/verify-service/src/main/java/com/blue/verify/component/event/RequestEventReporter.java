@@ -2,13 +2,13 @@ package com.blue.verify.component.event;
 
 import com.blue.basic.model.event.DataEvent;
 import com.blue.verify.event.producer.RequestEventProducer;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
-import reactor.util.Logger;
 
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * request event reporter

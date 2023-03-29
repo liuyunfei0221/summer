@@ -4,8 +4,8 @@ import com.blue.basic.component.exception.handler.inter.ExceptionHandler;
 import com.blue.basic.component.exception.model.common.ExceptionInfo;
 import com.blue.basic.constant.common.BlueMediaType;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 import org.springframework.core.codec.DecodingException;
-import reactor.util.Logger;
 
 import java.util.Map;
 import java.util.function.Function;
@@ -18,7 +18,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.lastIndexOf;
 import static org.apache.commons.lang3.StringUtils.substring;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * decoding exp handler

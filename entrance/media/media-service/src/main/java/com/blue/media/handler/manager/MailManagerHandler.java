@@ -6,10 +6,10 @@ import com.blue.mail.component.MailSender;
 import jakarta.mail.Message;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
+import org.slf4j.Logger;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -18,10 +18,10 @@ import java.util.stream.Stream;
 import static com.blue.basic.common.base.CommonFunctions.success;
 import static com.blue.basic.constant.media.MailHeader.LIST_UNSUBSCRIBE;
 import static java.util.stream.Collectors.toList;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.just;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * @author liuyunfei

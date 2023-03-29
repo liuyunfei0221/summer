@@ -7,7 +7,7 @@ import com.blue.basic.constant.analyze.StatisticsType;
 import com.blue.basic.constant.common.BlueDataAttrKey;
 import com.blue.basic.model.common.Access;
 import com.blue.basic.model.event.DataEvent;
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import java.util.Optional;
 
@@ -16,9 +16,9 @@ import static com.blue.basic.constant.analyze.StatisticsRange.M;
 import static com.blue.basic.constant.analyze.StatisticsType.MA;
 import static com.blue.basic.constant.common.BlueDataAttrKey.MEMBER_ID;
 import static java.util.Optional.ofNullable;
+import static org.slf4j.LoggerFactory.getLogger;
 import static reactor.core.publisher.Mono.empty;
 import static reactor.core.publisher.Mono.just;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * active member statistics command impl

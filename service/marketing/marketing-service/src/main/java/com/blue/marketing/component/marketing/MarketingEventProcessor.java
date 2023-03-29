@@ -3,12 +3,12 @@ package com.blue.marketing.component.marketing;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.marketing.api.model.MarketingEvent;
 import com.blue.marketing.component.marketing.inter.EventHandler;
+import org.slf4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import reactor.util.Logger;
 
 import java.util.Map;
 import java.util.function.Consumer;
@@ -18,8 +18,8 @@ import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
 import static java.util.stream.Collectors.toMap;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * marketing event handle service

@@ -1,8 +1,8 @@
 package com.blue.basic.common.base;
 
 import com.blue.basic.model.exps.BlueException;
+import org.slf4j.Logger;
 import org.springframework.util.StringUtils;
-import reactor.util.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,8 +23,8 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.indexOf;
 import static org.apache.commons.lang3.StringUtils.lastIndexOf;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.util.CollectionUtils.isEmpty;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * util to obtain classes from package

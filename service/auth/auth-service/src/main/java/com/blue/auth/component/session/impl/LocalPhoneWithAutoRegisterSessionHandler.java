@@ -8,8 +8,8 @@ import com.blue.auth.model.SessionInfo;
 import com.blue.auth.remote.consumer.RpcLocalPhoneServiceConsumer;
 import com.blue.auth.remote.consumer.RpcMemberBasicServiceConsumer;
 import com.blue.auth.service.inter.AuthService;
-import com.blue.auth.service.inter.RegisterService;
 import com.blue.auth.service.inter.CredentialService;
+import com.blue.auth.service.inter.RegisterService;
 import com.blue.auth.service.inter.RoleService;
 import com.blue.basic.common.base.BlueChecker;
 import com.blue.basic.constant.auth.CredentialType;
@@ -17,10 +17,10 @@ import com.blue.basic.model.common.BlueResponse;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.member.api.model.MemberBasicInfo;
 import com.blue.redisson.component.SynchronizedProcessor;
+import org.slf4j.Logger;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,10 +48,10 @@ import static com.blue.basic.constant.common.SyncKeyPrefix.CREDENTIAL_UPDATE_PRE
 import static com.blue.basic.constant.member.SourceType.APP;
 import static java.util.Collections.singletonList;
 import static java.util.Optional.ofNullable;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Mono.*;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * weChat with auto register handler

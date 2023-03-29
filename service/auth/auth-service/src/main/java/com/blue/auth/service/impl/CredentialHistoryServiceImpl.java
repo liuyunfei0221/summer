@@ -9,11 +9,11 @@ import com.blue.auth.service.inter.CredentialHistoryService;
 import com.blue.basic.common.base.BlueChecker;
 import com.blue.basic.model.exps.BlueException;
 import com.blue.identity.component.BlueIdentityProcessor;
+import org.slf4j.Logger;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -27,8 +27,8 @@ import static com.blue.basic.component.encoder.api.common.StringColumnEncoder.en
 import static com.blue.basic.constant.common.ResponseElement.EMPTY_PARAM;
 import static com.blue.basic.constant.common.ResponseElement.INVALID_IDENTITY;
 import static java.util.stream.Collectors.toList;
+import static org.slf4j.LoggerFactory.getLogger;
 import static reactor.core.publisher.Mono.just;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * credential history service

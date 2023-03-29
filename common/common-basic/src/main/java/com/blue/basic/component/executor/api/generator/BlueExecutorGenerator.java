@@ -2,7 +2,7 @@ package com.blue.basic.component.executor.api.generator;
 
 import com.blue.basic.component.executor.api.conf.ExecutorConf;
 import net.openhft.affinity.AffinityThreadFactory;
-import reactor.util.Logger;
+import org.slf4j.Logger;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -15,7 +15,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static net.openhft.affinity.AffinityStrategies.DIFFERENT_CORE;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
-import static reactor.util.Loggers.getLogger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * executor generator

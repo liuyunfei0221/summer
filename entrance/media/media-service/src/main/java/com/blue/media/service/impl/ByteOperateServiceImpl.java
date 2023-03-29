@@ -16,6 +16,7 @@ import com.blue.media.repository.entity.DownloadHistory;
 import com.blue.media.service.inter.AttachmentService;
 import com.blue.media.service.inter.ByteOperateService;
 import com.blue.media.service.inter.DownloadHistoryService;
+import org.slf4j.Logger;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.multipart.FormFieldPart;
@@ -26,7 +27,6 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 
 import java.net.URLEncoder;
 import java.util.List;
@@ -58,6 +58,7 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.lastIndexOf;
 import static org.apache.commons.lang3.StringUtils.substring;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
@@ -66,7 +67,6 @@ import static org.springframework.web.reactive.function.BodyInserters.fromDataBu
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 import static reactor.core.publisher.Flux.fromIterable;
 import static reactor.core.publisher.Mono.*;
-import static reactor.util.Loggers.getLogger;
 
 /**
  * byte operate service impl
