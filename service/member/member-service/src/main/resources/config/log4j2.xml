@@ -2,32 +2,26 @@
 <Configuration status="WARN">
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout charset="UTF-8" pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <PatternLayout charset="UTF-8" pattern="[%d{HH:mm:ss:SSS}] [%p] - %l - %m%n"/>
         </Console>
-        <File name="runninglog" fileName="/usr/env/log/member/running.log" append="true">
-            <PatternLayout charset="UTF-8" pattern="%d{HH:mm:ss.SSS} %-5level %class{36} %L %M - %msg%xEx%n"/>
-        </File>
         <RollingFile name="RollingFileInfo" fileName="/usr/env/log/member/info.log"
                      filePattern="/usr/env/log/member/$${date:yyyy-MM}/info-%d{yyyy-MM-dd}-%i.log">
-            <ThresholdFilter level="INFO" onMatch="ACCEPT"
-                             onMismatch="DENY"/>
+            <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout charset="UTF-8" pattern="[%d{HH:mm:ss:SSS}] [%p] - %l - %m%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy/>
-                <SizeBasedTriggeringPolicy size="50000 MB"/>
+                <SizeBasedTriggeringPolicy size="1 GB"/>
             </Policies>
         </RollingFile>
         <RollingFile name="RollingFileWarn"
                      fileName="/usr/env/log/member/warn.log"
                      filePattern="/usr/env/log/member/$${date:yyyy-MM}/warn-%d{yyyy-MM-dd}-%i.log">
-            <ThresholdFilter level="WARN" onMatch="ACCEPT"
-                             onMismatch="DENY"/>
+            <ThresholdFilter level="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout charset="UTF-8" pattern="[%d{HH:mm:ss:SSS}] [%p] - %l - %m%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy/>
-                <SizeBasedTriggeringPolicy size="500 MB"/>
+                <SizeBasedTriggeringPolicy size="1 GB"/>
             </Policies>
-            <DefaultRolloverStrategy max="20"/>
         </RollingFile>
         <RollingFile name="RollingFileError"
                      fileName="/usr/env/log/member/error.log"
@@ -36,7 +30,7 @@
             <PatternLayout charset="UTF-8" pattern="[%d{HH:mm:ss:SSS}] [%p] - %l - %m%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy/>
-                <SizeBasedTriggeringPolicy size="500 MB"/>
+                <SizeBasedTriggeringPolicy size="1 GB"/>
             </Policies>
         </RollingFile>
     </Appenders>
