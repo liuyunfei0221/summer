@@ -23,7 +23,6 @@ import static java.util.stream.Collectors.toList;
 @SuppressWarnings("DuplicatedCode")
 public class DataInit {
 
-    //    private static final List<String> KEY_PREFIXES = Stream.of("Unlimited-", "Princess-", "Bird Set Free-", "Green Light-", "Farmer-", "Fly Away-", "Unstoppable-", "The Great Wall-").collect(toList());
     private static final List<String> KEY_PREFIXES = Stream.of("大地-", "光辉岁月-", "海阔天空-", "灰色轨迹-", "冷雨夜-", "情人-", "谁伴我闯荡-", "逝去日子-",
             "Unlimited-", "Princess-", "Bird Set Free-", "Green Light-", "Farmer-", "Fly Away-", "Unstoppable-", "The Great Wall-",
             "我的未来不是梦-", "青花瓷-", "七里香-", "千里之外-", "东风破-", "菊花台-", "晴天-", "星晴-", "那些花儿-", "生如夏花-", "平凡之路-", "绿光-", "世界第一等-", "一起走过的日子-", "北京北京-", "突然的自我-").collect(toList());

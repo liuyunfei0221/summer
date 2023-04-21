@@ -29,6 +29,10 @@ public final class State implements Serializable {
 
     private String stateCode;
 
+    private Double longitude;
+
+    private Double latitude;
+
     private Integer status;
 
     private Long createTime;
@@ -75,6 +79,22 @@ public final class State implements Serializable {
         this.stateCode = isNull(stateCode) ? null : stateCode.trim();
     }
 
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
     public Integer getStatus() {
         return status;
     }
@@ -107,6 +127,8 @@ public final class State implements Serializable {
                 ", name='" + name + '\'' +
                 ", fipsCode='" + fipsCode + '\'' +
                 ", stateCode='" + stateCode + '\'' +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
                 ", status=" + status +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +

@@ -1,5 +1,6 @@
 package com.blue.base.api.model;
 
+import com.blue.basic.serializer.Double2StringSerializer;
 import com.blue.basic.serializer.Long2StringSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -26,14 +27,22 @@ public final class CityInfo implements Serializable {
 
     private String name;
 
+    @JsonSerialize(using = Double2StringSerializer.class)
+    private Double longitude;
+
+    @JsonSerialize(using = Double2StringSerializer.class)
+    private Double latitude;
+
     public CityInfo() {
     }
 
-    public CityInfo(Long id, Long countryId, Long stateId, String name) {
+    public CityInfo(Long id, Long countryId, Long stateId, String name, Double longitude, Double latitude) {
         this.id = id;
         this.countryId = countryId;
         this.stateId = stateId;
         this.name = name;
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
 
     public Long getId() {
@@ -68,6 +77,22 @@ public final class CityInfo implements Serializable {
         this.name = name;
     }
 
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
     @Override
     public String toString() {
         return "CityInfo{" +
@@ -75,6 +100,8 @@ public final class CityInfo implements Serializable {
                 ", countryId=" + countryId +
                 ", stateId=" + stateId +
                 ", name='" + name + '\'' +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
                 '}';
     }
 

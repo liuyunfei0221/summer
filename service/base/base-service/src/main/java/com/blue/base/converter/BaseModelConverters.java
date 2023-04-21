@@ -39,7 +39,7 @@ public final class BaseModelConverters {
 
         return new CountryInfo(country.getId(), country.getName(), country.getNativeName(), country.getNumericCode(), country.getCountryCode(),
                 country.getPhoneCode(), country.getCapital(), country.getCurrency(), country.getCurrencySymbol(), country.getTopLevelDomain(),
-                country.getRegion(), country.getEmoji(), country.getEmojiu());
+                country.getRegion(), country.getEmoji(), country.getEmojiu(), country.getLongitude(), country.getLatitude());
     };
 
     /**
@@ -57,7 +57,8 @@ public final class BaseModelConverters {
         if (isNull(state))
             throw new BlueException(EMPTY_PARAM);
 
-        return new StateInfo(state.getId(), state.getCountryId(), state.getName(), state.getFipsCode(), state.getStateCode());
+        return new StateInfo(state.getId(), state.getCountryId(), state.getName(), state.getFipsCode(), state.getStateCode(),
+                state.getLongitude(), state.getLatitude());
     };
 
     /**
@@ -75,7 +76,7 @@ public final class BaseModelConverters {
         if (isNull(city))
             throw new BlueException(EMPTY_PARAM);
 
-        return new CityInfo(city.getId(), city.getCountryId(), city.getStateId(), city.getName());
+        return new CityInfo(city.getId(), city.getCountryId(), city.getStateId(), city.getName(), city.getLongitude(), city.getLatitude());
     };
 
     /**
@@ -93,7 +94,7 @@ public final class BaseModelConverters {
         if (isNull(area))
             throw new BlueException(EMPTY_PARAM);
 
-        return new AreaInfo(area.getId(), area.getCountryId(), area.getStateId(), area.getCityId(), area.getName());
+        return new AreaInfo(area.getId(), area.getCountryId(), area.getStateId(), area.getCityId(), area.getName(), area.getLongitude(), area.getLatitude());
     };
 
     /**
@@ -181,6 +182,5 @@ public final class BaseModelConverters {
             isNotEmpty(ds) ? ds.stream()
                     .map(DICT_2_DICT_INFO_CONVERTER)
                     .collect(toList()) : emptyList();
-
 
 }

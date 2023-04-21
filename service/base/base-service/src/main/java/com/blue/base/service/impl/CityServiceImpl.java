@@ -242,6 +242,8 @@ public class CityServiceImpl implements CityService {
         city.setCountryId(state.getCountryId());
         city.setStateId(stateId);
         city.setName(p.getName());
+        city.setLongitude(p.getLongitude());
+        city.setLatitude(p.getLatitude());
         city.setStatus(VALID.status);
         city.setCreateTime(stamp);
         city.setUpdateTime(stamp);
@@ -297,6 +299,18 @@ public class CityServiceImpl implements CityService {
         String name = p.getName();
         if (isNotBlank(name) && !name.equals(t.getName())) {
             t.setName(name);
+            alteration = true;
+        }
+
+        Double longitude = p.getLongitude();
+        if (isNotNull(longitude) && !longitude.equals(t.getLongitude())) {
+            t.setLongitude(longitude);
+            alteration = true;
+        }
+
+        Double latitude = p.getLatitude();
+        if (isNotNull(latitude) && !latitude.equals(t.getLatitude())) {
+            t.setLatitude(latitude);
             alteration = true;
         }
 

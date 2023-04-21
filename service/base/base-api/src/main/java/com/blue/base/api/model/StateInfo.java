@@ -1,5 +1,6 @@
 package com.blue.base.api.model;
 
+import com.blue.basic.serializer.Double2StringSerializer;
 import com.blue.basic.serializer.Long2StringSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -27,15 +28,23 @@ public final class StateInfo implements Serializable {
 
     private String stateCode;
 
+    @JsonSerialize(using = Double2StringSerializer.class)
+    private Double longitude;
+
+    @JsonSerialize(using = Double2StringSerializer.class)
+    private Double latitude;
+
     public StateInfo() {
     }
 
-    public StateInfo(Long id, Long countryId, String name, String fipsCode, String stateCode) {
+    public StateInfo(Long id, Long countryId, String name, String fipsCode, String stateCode, Double longitude, Double latitude) {
         this.id = id;
         this.countryId = countryId;
         this.name = name;
         this.fipsCode = fipsCode;
         this.stateCode = stateCode;
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
 
     public Long getId() {
@@ -78,6 +87,22 @@ public final class StateInfo implements Serializable {
         this.stateCode = stateCode;
     }
 
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
     @Override
     public String toString() {
         return "StateInfo{" +
@@ -86,6 +111,8 @@ public final class StateInfo implements Serializable {
                 ", name='" + name + '\'' +
                 ", fipsCode='" + fipsCode + '\'' +
                 ", stateCode='" + stateCode + '\'' +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
                 '}';
     }
 

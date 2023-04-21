@@ -448,7 +448,7 @@ dubbo:
 producers:
   configs:
     finance-flow:
-      services: [ 172.16.202.219:6650 ]
+      services: [ 192.168.1.7:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:
       tls-cert-file-path:
@@ -500,7 +500,7 @@ producers:
       encryption-key:
       producer-crypto-failure-action: FAIL
     order-summary-insert:
-      services: [ 172.16.202.219:6650 ]
+      services: [ 192.168.1.7:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:
       tls-cert-file-path:
@@ -552,7 +552,7 @@ producers:
       encryption-key:
       producer-crypto-failure-action: FAIL
     order-summary-update:
-      services: [ 172.16.202.219:6650 ]
+      services: [ 192.168.1.7:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:
       tls-cert-file-path:
@@ -608,7 +608,7 @@ producers:
 consumers:
   configs:
     finance-flow:
-      services: [ 172.16.202.219:6650 ]
+      services: [ 192.168.1.7:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:
       tls-cert-file-path:
@@ -681,7 +681,7 @@ consumers:
       working-threads: 2
       enable-negative-acknowledge: true
     order-summary-insert:
-      services: [ 172.16.202.219:6650 ]
+      services: [ 192.168.1.7:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:
       tls-cert-file-path:
@@ -754,7 +754,7 @@ consumers:
       working-threads: 2
       enable-negative-acknowledge: true
     order-summary-update:
-      services: [ 172.16.202.219:6650 ]
+      services: [ 192.168.1.7:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:
       tls-cert-file-path:

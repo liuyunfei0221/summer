@@ -5,7 +5,7 @@
 
 <generatorConfiguration>
 
-    <classPathEntry location="mysql-connector-java-8.0.29.jar"/>
+    <classPathEntry location="mysql-connector-j-8.0.33.jar"/>
 
     <context id="stormDB" targetRuntime="MyBatis3">
 

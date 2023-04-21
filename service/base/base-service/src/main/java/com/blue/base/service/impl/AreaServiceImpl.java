@@ -245,6 +245,8 @@ public class AreaServiceImpl implements AreaService {
         area.setStateId(city.getStateId());
         area.setCityId(cityId);
         area.setName(p.getName());
+        area.setLongitude(p.getLongitude());
+        area.setLatitude(p.getLatitude());
         area.setStatus(VALID.status);
         area.setCreateTime(stamp);
         area.setUpdateTime(stamp);
@@ -301,6 +303,18 @@ public class AreaServiceImpl implements AreaService {
         String name = p.getName();
         if (isNotBlank(name) && !name.equals(t.getName())) {
             t.setName(name);
+            alteration = true;
+        }
+
+        Double longitude = p.getLongitude();
+        if (isNotNull(longitude) && !longitude.equals(t.getLongitude())) {
+            t.setLongitude(longitude);
+            alteration = true;
+        }
+
+        Double latitude = p.getLatitude();
+        if (isNotNull(latitude) && !latitude.equals(t.getLatitude())) {
+            t.setLatitude(latitude);
             alteration = true;
         }
 

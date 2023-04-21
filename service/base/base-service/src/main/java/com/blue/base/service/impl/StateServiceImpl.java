@@ -233,6 +233,8 @@ public class StateServiceImpl implements StateService {
         state.setName(p.getName());
         state.setFipsCode(p.getFipsCode());
         state.setStateCode(p.getStateCode());
+        state.setLongitude(p.getLongitude());
+        state.setLatitude(p.getLatitude());
         state.setStatus(VALID.status);
         state.setCreateTime(stamp);
         state.setUpdateTime(stamp);
@@ -295,6 +297,18 @@ public class StateServiceImpl implements StateService {
         String stateCode = p.getStateCode();
         if (isNotBlank(stateCode) && !stateCode.equals(t.getStateCode())) {
             t.setStateCode(stateCode);
+            alteration = true;
+        }
+
+        Double longitude = p.getLongitude();
+        if (isNotNull(longitude) && !longitude.equals(t.getLongitude())) {
+            t.setLongitude(longitude);
+            alteration = true;
+        }
+
+        Double latitude = p.getLatitude();
+        if (isNotNull(latitude) && !latitude.equals(t.getLatitude())) {
+            t.setLatitude(latitude);
             alteration = true;
         }
 

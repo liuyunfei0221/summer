@@ -22,8 +22,8 @@ public final class CountryUpdateParam extends CountryInsertParam {
     }
 
     public CountryUpdateParam(Long id, String name, String nativeName, String numericCode, String countryCode, String phoneCode, String capital,
-                              String currency, String currencySymbol, String topLevelDomain, String region, String emoji, String emojiu) {
-        super(name, nativeName, numericCode, countryCode, phoneCode, capital, currency, currencySymbol, topLevelDomain, region, emoji, emojiu);
+                              String currency, String currencySymbol, String topLevelDomain, String region, String emoji, String emojiu, Double longitude, Double latitude) {
+        super(name, nativeName, numericCode, countryCode, phoneCode, capital, currency, currencySymbol, topLevelDomain, region, emoji, emojiu, longitude, latitude);
         this.id = id;
     }
 
@@ -35,7 +35,8 @@ public final class CountryUpdateParam extends CountryInsertParam {
         if (isBlank(super.getName()) && isBlank(super.getNativeName()) && isBlank(super.getNumericCode()) &&
                 isBlank(super.getCountryCode()) && isBlank(super.getPhoneCode()) && isBlank(super.getCapital()) &&
                 isBlank(super.getCurrency()) && isBlank(super.getCurrencySymbol()) && isBlank(super.getTopLevelDomain()) &&
-                isBlank(super.getRegion()) && isBlank(super.getEmoji()) && isBlank(super.getEmojiu()))
+                isBlank(super.getRegion()) && isBlank(super.getEmoji()) && isBlank(super.getEmojiu()) &&
+                isNull(super.getLongitude()) && isNull(super.getLatitude()))
             throw new BlueException(EMPTY_PARAM);
     }
 
@@ -63,6 +64,8 @@ public final class CountryUpdateParam extends CountryInsertParam {
                 ", region='" + region + '\'' +
                 ", emoji='" + emoji + '\'' +
                 ", emojiu='" + emojiu + '\'' +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
                 '}';
     }
 

@@ -6,6 +6,7 @@ import com.blue.basic.model.exps.BlueException;
 import java.io.Serializable;
 
 import static com.blue.basic.common.base.BlueChecker.isBlank;
+import static com.blue.basic.common.base.BlueChecker.isNull;
 import static com.blue.basic.constant.common.ResponseElement.BAD_REQUEST;
 
 /**
@@ -42,11 +43,16 @@ public class CountryInsertParam implements Serializable, Asserter {
 
     protected String emojiu;
 
+    protected Double longitude;
+
+    protected Double latitude;
+
     public CountryInsertParam() {
     }
 
-    public CountryInsertParam(String name, String nativeName, String numericCode, String countryCode, String phoneCode, String capital,
-                              String currency, String currencySymbol, String topLevelDomain, String region, String emoji, String emojiu) {
+    public CountryInsertParam(String name, String nativeName, String numericCode, String countryCode, String phoneCode,
+                              String capital, String currency, String currencySymbol, String topLevelDomain, String region,
+                              String emoji, String emojiu, Double longitude, Double latitude) {
         this.name = name;
         this.nativeName = nativeName;
         this.numericCode = numericCode;
@@ -59,6 +65,8 @@ public class CountryInsertParam implements Serializable, Asserter {
         this.region = region;
         this.emoji = emoji;
         this.emojiu = emojiu;
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
 
     @Override
@@ -87,6 +95,10 @@ public class CountryInsertParam implements Serializable, Asserter {
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "emoji can't be blank");
         if (isBlank(this.emojiu))
             throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "emojiu can't be blank");
+        if (isNull(this.longitude))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "longitude can't be null");
+        if (isNull(this.latitude))
+            throw new BlueException(BAD_REQUEST.status, BAD_REQUEST.code, "latitude can't be null");
     }
 
     public String getName() {
@@ -185,6 +197,22 @@ public class CountryInsertParam implements Serializable, Asserter {
         this.emojiu = emojiu;
     }
 
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
     @Override
     public String toString() {
         return "CountryInsertParam{" +
@@ -200,6 +228,8 @@ public class CountryInsertParam implements Serializable, Asserter {
                 ", region='" + region + '\'' +
                 ", emoji='" + emoji + '\'' +
                 ", emojiu='" + emojiu + '\'' +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
                 '}';
     }
 

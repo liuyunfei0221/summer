@@ -1,7 +1,6 @@
 package com.blue.base.repository.entity;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
@@ -27,6 +26,10 @@ public final class City implements Serializable {
     private Long stateId;
 
     private String name;
+
+    private Double longitude;
+
+    private Double latitude;
 
     private Integer status;
 
@@ -66,6 +69,22 @@ public final class City implements Serializable {
         this.name = isNull(name) ? null : name.trim();
     }
 
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
     public Integer getStatus() {
         return status;
     }
@@ -97,6 +116,8 @@ public final class City implements Serializable {
                 ", countryId=" + countryId +
                 ", stateId=" + stateId +
                 ", name='" + name + '\'' +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
                 ", status=" + status +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +

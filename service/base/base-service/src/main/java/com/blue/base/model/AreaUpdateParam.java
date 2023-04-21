@@ -20,8 +20,8 @@ public final class AreaUpdateParam extends AreaInsertParam {
     public AreaUpdateParam() {
     }
 
-    public AreaUpdateParam(Long id, Long cityId, String name) {
-        super(cityId, name);
+    public AreaUpdateParam(Long id, Long cityId, String name, Double longitude, Double latitude) {
+        super(cityId, name, longitude, latitude);
         this.id = id;
     }
 
@@ -30,7 +30,8 @@ public final class AreaUpdateParam extends AreaInsertParam {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        if (isNull(super.getCityId()) && isBlank(super.getName()))
+        if (isNull(super.getCityId()) && isBlank(super.getName())&&
+                isNull(super.getLongitude()) && isNull(super.getLatitude()))
             throw new BlueException(EMPTY_PARAM);
     }
 
@@ -48,6 +49,8 @@ public final class AreaUpdateParam extends AreaInsertParam {
                 "id=" + id +
                 ", cityId=" + cityId +
                 ", name='" + name + '\'' +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
                 '}';
     }
 

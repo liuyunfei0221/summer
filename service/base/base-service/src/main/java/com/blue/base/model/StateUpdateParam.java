@@ -21,8 +21,8 @@ public final class StateUpdateParam extends StateInsertParam {
     public StateUpdateParam() {
     }
 
-    public StateUpdateParam(Long id, Long countryId, String name, String fipsCode, String stateCode) {
-        super(countryId, name, fipsCode, stateCode);
+    public StateUpdateParam(Long id, Long countryId, String name, String fipsCode, String stateCode, Double longitude, Double latitude) {
+        super(countryId, name, fipsCode, stateCode,  longitude, latitude);
         this.id = id;
     }
 
@@ -31,7 +31,8 @@ public final class StateUpdateParam extends StateInsertParam {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        if (isNull(super.getCountryId()) && isBlank(super.getName()) && isBlank(super.getFipsCode()) && isBlank(super.getStateCode()))
+        if (isNull(super.getCountryId()) && isBlank(super.getName()) && isBlank(super.getFipsCode()) && isBlank(super.getStateCode())&&
+                isNull(super.getLongitude()) && isNull(super.getLatitude()))
             throw new BlueException(EMPTY_PARAM);
     }
 
@@ -51,6 +52,8 @@ public final class StateUpdateParam extends StateInsertParam {
                 ", name='" + name + '\'' +
                 ", fipsCode='" + fipsCode + '\'' +
                 ", stateCode='" + stateCode + '\'' +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
                 '}';
     }
 

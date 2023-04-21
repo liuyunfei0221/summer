@@ -21,8 +21,8 @@ public final class CityUpdateParam extends CityInsertParam {
     public CityUpdateParam() {
     }
 
-    public CityUpdateParam(Long id, Long stateId, String name) {
-        super(stateId, name);
+    public CityUpdateParam(Long id, Long stateId, String name, Double longitude, Double latitude) {
+        super(stateId, name, longitude, latitude);
         this.id = id;
     }
 
@@ -31,7 +31,8 @@ public final class CityUpdateParam extends CityInsertParam {
         if (isInvalidIdentity(id))
             throw new BlueException(INVALID_IDENTITY);
 
-        if (isNull(super.getStateId()) && isBlank(super.getName()))
+        if (isNull(super.getStateId()) && isBlank(super.getName())&&
+                isNull(super.getLongitude()) && isNull(super.getLatitude()))
             throw new BlueException(EMPTY_PARAM);
     }
 
@@ -49,6 +50,8 @@ public final class CityUpdateParam extends CityInsertParam {
                 "id=" + id +
                 ", stateId=" + stateId +
                 ", name='" + name + '\'' +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
                 '}';
     }
 

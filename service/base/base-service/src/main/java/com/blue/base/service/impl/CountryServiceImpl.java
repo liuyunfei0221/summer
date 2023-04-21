@@ -192,6 +192,8 @@ public class CountryServiceImpl implements CountryService {
         country.setRegion(p.getRegion());
         country.setEmoji(p.getEmoji());
         country.setEmojiu(p.getEmojiu());
+        country.setLongitude(p.getLongitude());
+        country.setLatitude(p.getLatitude());
         country.setStatus(VALID.status);
         country.setCreateTime(stamp);
         country.setUpdateTime(stamp);
@@ -279,6 +281,60 @@ public class CountryServiceImpl implements CountryService {
         String phoneCode = p.getPhoneCode();
         if (isNotBlank(phoneCode) && !phoneCode.equals(t.getPhoneCode())) {
             t.setPhoneCode(phoneCode);
+            alteration = true;
+        }
+
+        String capital = p.getCapital();
+        if (isNotBlank(capital) && !capital.equals(t.getCapital())) {
+            t.setCapital(capital);
+            alteration = true;
+        }
+
+        String currency = p.getCurrency();
+        if (isNotBlank(currency) && !currency.equals(t.getCurrency())) {
+            t.setCurrency(currency);
+            alteration = true;
+        }
+
+        String currencySymbol = p.getCurrencySymbol();
+        if (isNotBlank(currencySymbol) && !currencySymbol.equals(t.getCurrencySymbol())) {
+            t.setCurrencySymbol(currencySymbol);
+            alteration = true;
+        }
+
+        String topLevelDomain = p.getTopLevelDomain();
+        if (isNotBlank(topLevelDomain) && !topLevelDomain.equals(t.getTopLevelDomain())) {
+            t.setTopLevelDomain(topLevelDomain);
+            alteration = true;
+        }
+
+        String region = p.getRegion();
+        if (isNotBlank(region) && !region.equals(t.getRegion())) {
+            t.setRegion(region);
+            alteration = true;
+        }
+
+        String emoji = p.getEmoji();
+        if (isNotBlank(emoji) && !emoji.equals(t.getEmoji())) {
+            t.setEmoji(emoji);
+            alteration = true;
+        }
+
+        String emojiu = p.getEmojiu();
+        if (isNotBlank(emojiu) && !emojiu.equals(t.getEmojiu())) {
+            t.setEmojiu(emojiu);
+            alteration = true;
+        }
+
+        Double longitude = p.getLongitude();
+        if (isNotNull(longitude) && !longitude.equals(t.getLongitude())) {
+            t.setLongitude(longitude);
+            alteration = true;
+        }
+
+        Double latitude = p.getLatitude();
+        if (isNotNull(latitude) && !latitude.equals(t.getLatitude())) {
+            t.setLatitude(latitude);
             alteration = true;
         }
 

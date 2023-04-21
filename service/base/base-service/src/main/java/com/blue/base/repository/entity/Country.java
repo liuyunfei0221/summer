@@ -45,6 +45,10 @@ public final class Country implements Serializable {
 
     private String emojiu;
 
+    private Double longitude;
+
+    private Double latitude;
+
     private Integer status;
 
     private Long createTime;
@@ -155,6 +159,22 @@ public final class Country implements Serializable {
         this.emojiu = isNull(emojiu) ? null : emojiu.trim();
     }
 
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
     public Integer getStatus() {
         return status;
     }
@@ -195,6 +215,8 @@ public final class Country implements Serializable {
                 ", region='" + region + '\'' +
                 ", emoji='" + emoji + '\'' +
                 ", emojiu='" + emojiu + '\'' +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
                 ", status=" + status +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +

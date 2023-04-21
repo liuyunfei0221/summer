@@ -1,5 +1,6 @@
 package com.blue.base.api.model;
 
+import com.blue.basic.serializer.Double2StringSerializer;
 import com.blue.basic.serializer.Long2StringSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -42,12 +43,17 @@ public final class CountryInfo implements Serializable {
 
     private String emojiu;
 
+    @JsonSerialize(using = Double2StringSerializer.class)
+    private Double longitude;
+
+    @JsonSerialize(using = Double2StringSerializer.class)
+    private Double latitude;
+
     public CountryInfo() {
     }
 
     public CountryInfo(Long id, String name, String nativeName, String numericCode, String countryCode, String phoneCode,
-                       String capital, String currency, String currencySymbol, String topLevelDomain, String region,
-                       String emoji, String emojiu) {
+                       String capital, String currency, String currencySymbol, String topLevelDomain, String region, String emoji, String emojiu, Double longitude, Double latitude) {
         this.id = id;
         this.name = name;
         this.nativeName = nativeName;
@@ -61,6 +67,8 @@ public final class CountryInfo implements Serializable {
         this.region = region;
         this.emoji = emoji;
         this.emojiu = emojiu;
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
 
     public Long getId() {
@@ -167,6 +175,22 @@ public final class CountryInfo implements Serializable {
         this.emojiu = emojiu;
     }
 
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
     @Override
     public String toString() {
         return "CountryInfo{" +
@@ -183,6 +207,8 @@ public final class CountryInfo implements Serializable {
                 ", region='" + region + '\'' +
                 ", emoji='" + emoji + '\'' +
                 ", emojiu='" + emojiu + '\'' +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
                 '}';
     }
 

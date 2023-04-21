@@ -37,7 +37,7 @@ eureka:
     hostname: ${server.address}
   client:
     service-url:
-      defaultZone: http://blue:LiuZhiyi20200805@172.16.202.219:3000/eureka/
+      defaultZone: http://blue:LiuZhiyi20200805@192.168.1.7:3000/eureka/
     registry-fetch-interval-seconds: 60
 
 
@@ -49,7 +49,7 @@ data:
   worker-to-table-mappings:
   broadcast-tables: [ ]
   single-databases-with-tables:
-    - url: jdbc:mysql://172.16.202.219:3306/agreement
+    - url: jdbc:mysql://192.168.1.7:3306/agreement
       database-conf: useAffectedRows=true&useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -116,7 +116,7 @@ identity:
 
 mongo:
   address-attrs:
-    - address: 172.16.202.219
+    - address: 192.168.1.7
       port: 27017
   auth: false
   auth-base: admin
@@ -147,7 +147,7 @@ mongo:
 cache:
   server-mode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  address: 172.16.202.219:6379
+  address: 192.168.1.7:6379
   password:
   max-redirects: 4
   min-idle: 4
@@ -190,7 +190,7 @@ message:
 redisson:
   server-mode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  address: 172.16.202.219:6379
+  address: 192.168.1.7:6379
   password:
   scan-interval: 8000
   check-slots-coverage: false
@@ -236,7 +236,7 @@ dubbo:
     id: summer-registry
     client: curator
     protocol: zookeeper
-    address: zookeeper://172.16.202.219
+    address: zookeeper://192.168.1.7
     port: 2181
     username:
     password:
@@ -245,7 +245,7 @@ dubbo:
     timeout: 60000
     simplified: false
   #  metadata-report:
-  #    address: zookeeper://172.16.202.219
+  #    address: zookeeper://192.168.1.7
   #    port: 2181
   #    username:
   #    password:
