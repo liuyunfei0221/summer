@@ -240,7 +240,7 @@ redisson:
 
 
 pulsar:
-  services: [ 192.168.1.7:6650 ]
+  services: [ 192.168.1.27:6650 ]
   enable-tls: false
   tlsTrust-certs-file-path:
   tls-cert-file-path:

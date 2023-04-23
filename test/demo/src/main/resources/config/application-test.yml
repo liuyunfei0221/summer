@@ -260,7 +260,7 @@ rest:
 producers:
   configs:
     shine-insert:
-      services: [ 192.168.1.7:6650 ]
+      services: [ 192.168.1.27:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:
       tls-cert-file-path:
@@ -312,7 +312,7 @@ producers:
       encryption-key:
       producer-crypto-failure-action: FAIL
     shine-update:
-      services: [ 192.168.1.7:6650 ]
+      services: [ 192.168.1.27:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:
       tls-cert-file-path:
@@ -364,7 +364,7 @@ producers:
       encryption-key:
       producer-crypto-failure-action: FAIL
     shine-delete:
-      services: [ 192.168.1.7:6650 ]
+      services: [ 192.168.1.27:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:
       tls-cert-file-path:
@@ -420,7 +420,7 @@ producers:
 consumers:
   configs:
     shine-insert:
-      services: [ 192.168.1.7:6650 ]
+      services: [ 192.168.1.27:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:
       tls-cert-file-path:
@@ -493,7 +493,7 @@ consumers:
       working-threads: 2
       enable-negative-acknowledge: true
     shine-update:
-      services: [ 192.168.1.7:6650 ]
+      services: [ 192.168.1.27:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:
       tls-cert-file-path:
@@ -566,7 +566,7 @@ consumers:
       working-threads: 2
       enable-negative-acknowledge: true
     shine-delete:
-      services: [ 192.168.1.7:6650 ]
+      services: [ 192.168.1.27:6650 ]
       enable-tls: false
       tlsTrust-certs-file-path:
       tls-cert-file-path:
