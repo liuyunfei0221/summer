@@ -98,7 +98,7 @@ public final class BlueDataAccessGenerator {
         ofNullable(shardAttr.getMinIdle()).ifPresent(hikariConfig::setMinimumIdle);
         ofNullable(shardAttr.getInitializationFailTimeout()).ifPresent(hikariConfig::setInitializationFailTimeout);
         ofNullable(shardAttr.getConnectionInitSql()).filter(BlueChecker::isNotBlank).ifPresent(hikariConfig::setConnectionInitSql);
-        ofNullable(shardAttr.getConnectionTestQuery()).filter(BlueChecker::isNotBlank).filter(BlueChecker::isNotBlank).ifPresent(hikariConfig::setConnectionTestQuery);
+        ofNullable(shardAttr.getConnectionTestQuery()).filter(BlueChecker::isNotBlank).ifPresent(hikariConfig::setConnectionTestQuery);
         ofNullable(shardAttr.getDataSourceClassName()).filter(BlueChecker::isNotBlank).ifPresent(hikariConfig::setDataSourceClassName);
         ofNullable(shardAttr.getDataSourceJndiName()).filter(BlueChecker::isNotBlank).ifPresent(hikariConfig::setDataSourceJNDI);
         ofNullable(shardAttr.getExceptionOverrideClassName()).filter(BlueChecker::isNotBlank).ifPresent(hikariConfig::setExceptionOverrideClassName);
