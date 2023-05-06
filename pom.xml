@@ -18,7 +18,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>parent/parent</module>
+        <module>deploy/deployment</module>
 
         <module>center/registry</module>
 
@@ -83,6 +83,7 @@
         <module>test/demo</module>
         <module>test/performance</module>
         <module>test/process</module>
+        <module>entrance/gateway/gateway-api</module>
     </modules>
 
     <properties>

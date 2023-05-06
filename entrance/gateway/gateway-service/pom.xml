@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-        <artifactId>parent</artifactId>
+        <artifactId>deployment</artifactId>
         <groupId>com.blue</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
@@ -51,6 +51,11 @@
         <dependency>
             <groupId>com.blue</groupId>
             <artifactId>verify-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.blue</groupId>
+            <artifactId>gateway-api</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>

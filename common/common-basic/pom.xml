@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <parent>
-        <artifactId>parent</artifactId>
+        <artifactId>deployment</artifactId>
         <groupId>com.blue</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
@@ -40,6 +40,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>${javax-annotation.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
