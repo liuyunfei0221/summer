@@ -37,13 +37,13 @@ eureka:
     hostname: ${server.address}
   client:
     service-url:
-      defaultZone: http://blue:LiuZhiyi20200805@192.168.1.27:3000/eureka/
+      defaultZone: http://blue:LiuZhiyi20200805@192.168.1.22:3000/eureka/
     registry-fetch-interval-seconds: 60
 
 
 data:
   sharding-databases:
-    - url: jdbc:mysql://192.168.1.27:3306/finance_0
+    - url: jdbc:mysql://192.168.1.22:3306/finance_0
       database-conf: useAffectedRows=true&useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -57,7 +57,7 @@ data:
       is-read-only: false
       is-auto-commit: true
 
-    - url: jdbc:mysql://192.168.1.27:3306/finance_1
+    - url: jdbc:mysql://192.168.1.22:3306/finance_1
       database-conf: useAffectedRows=true&useSSL=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
       username: root
       password: 1024
@@ -165,7 +165,7 @@ identity:
 
 mongo:
   address-attrs:
-    - address: 192.168.1.27
+    - address: 192.168.1.22
       port: 27017
   auth: false
   auth-base: admin
@@ -272,7 +272,7 @@ seata:
     vgroup-mapping:
       summer_group: default
     group-list:
-      default: 192.168.1.27:8091
+      default: 192.168.1.22:8091
     enable-degrade: false
     disable-global-transaction: false
   log:
@@ -298,7 +298,7 @@ seata:
     type: zk
     data-type: zk
     zk:
-      server-addr: 192.168.1.27:2181
+      server-addr: 192.168.1.22:2181
       session-timeout: 60000
       connect-timeout: 60000
       username: ""
@@ -311,7 +311,7 @@ seata:
     preferred-networks:
     zk:
       cluster: default
-      server-addr: 192.168.1.27:2181
+      server-addr: 192.168.1.22:2181
       session-timeout: 60000
       connect-timeout: 60000
       username: ""
@@ -321,7 +321,7 @@ seata:
 cache:
   server-mode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  address: 192.168.1.27:6379
+  address: 192.168.1.22:6379
   password:
   max-redirects: 4
   min-idle: 4
@@ -359,7 +359,7 @@ message:
 
 
 curator:
-  connect-string: 192.168.1.27:2181
+  connect-string: 192.168.1.22:2181
   connection-timeout-ms: 60000
   session-timeout-ms: 60000
   max-close-wait-ms: 12000
@@ -372,7 +372,7 @@ curator:
 redisson:
   server-mode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  address: 192.168.1.27:6379
+  address: 192.168.1.22:6379
   password:
   scan-interval: 8000
   check-slots-coverage: false
@@ -418,7 +418,7 @@ dubbo:
     id: summer-registry
     client: curator
     protocol: zookeeper
-    address: zookeeper://192.168.1.27
+    address: zookeeper://192.168.1.22
     port: 2181
     username:
     password:
@@ -427,7 +427,7 @@ dubbo:
     timeout: 60000
     simplified: false
   #  metadata-report:
-  #    address: zookeeper://192.168.1.27
+  #    address: zookeeper://192.168.1.22
   #    port: 2181
   #    username:
   #    password:
@@ -461,7 +461,7 @@ dubbo:
 
 
 pulsar:
-  services: [ 192.168.1.27:6650 ]
+  services: [ 192.168.1.22:6650 ]
   enable-tls: false
   tlsTrust-certs-file-path:
   tls-cert-file-path:

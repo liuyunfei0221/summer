@@ -137,7 +137,6 @@ public final class BluePulsarConsumer<T extends Serializable> implements Consume
         }
     }
 
-
     @Override
     public void negativeAcknowledge(Message<?> message) {
         pulsarConsumer.negativeAcknowledge(message);

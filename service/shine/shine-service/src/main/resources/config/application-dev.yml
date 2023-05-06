@@ -37,13 +37,13 @@ eureka:
     hostname: ${server.address}
   client:
     service-url:
-      defaultZone: http://blue:LiuZhiyi20200805@192.168.1.27:3000/eureka/
+      defaultZone: http://blue:LiuZhiyi20200805@192.168.1.22:3000/eureka/
     registry-fetch-interval-seconds: 60
 
 
 mongo:
   address-attrs:
-    - address: 192.168.1.27
+    - address: 192.168.1.22
       port: 27017
   auth: false
   auth-base:
@@ -91,7 +91,7 @@ identity:
 cache:
   server-mode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  address: 192.168.1.27:6379
+  address: 192.168.1.22:6379
   password:
   max-redirects: 4
   min-idle: 4
@@ -122,7 +122,7 @@ es:
         schema: http
       bound-servers: [ ]
       name: blue-es
-      version: 8.6.2
+      version: 8.7.1
       roles: [ ]
       attributes: [ ]
 
@@ -167,7 +167,7 @@ caffeine:
 redisson:
   server-mode: SINGLE
   nodes: [ 172.20.20.2:6379,172.20.20.2:6380,172.20.20.3:6379,172.20.20.3:6380,172.20.20.4:6379,172.20.20.4:6380 ]
-  address: 192.168.1.27:6379
+  address: 192.168.1.22:6379
   password:
   scan-interval: 8000
   check-slots-coverage: false
@@ -200,14 +200,14 @@ dubbo:
     id: summer-registry
     client: curator
     protocol: zookeeper
-    address: zookeeper://192.168.1.27
+    address: zookeeper://192.168.1.22
     port: 2181
     file: /usr/env/log/dubbo/shine/registry.properties
     check: false
     timeout: 60000
     simplified: false
   #  metadata-report:
-  #    address: zookeeper://192.168.1.27
+  #    address: zookeeper://192.168.1.22
   #    port: 2181
   #    username:
   #    password:
@@ -258,7 +258,7 @@ rest:
 
 
 pulsar:
-  services: [ 192.168.1.27:6650 ]
+  services: [ 192.168.1.22:6650 ]
   enable-tls: false
   tlsTrust-certs-file-path:
   tls-cert-file-path:
